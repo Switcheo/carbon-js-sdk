@@ -1,4 +1,4 @@
-import { Carbon } from "@carbon-sdk/CarbonSDK";
+import { Carbon, OverrideConfig } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
 import { registry } from "@carbon-sdk/codec";
@@ -15,21 +15,20 @@ import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
-import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
+import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
-import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
-import { EncodeObject, isOfflineDirectSigner, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
+import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
+import { EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
+import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
-import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, broadcastTxSyncSuccess, TxResponse } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
+import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
 import { sleep } from "@cosmjs/utils";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
-import { TxBody, TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { ConnectedCarbonSDK, default as CarbonSDK } from "../CarbonSDK";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 
@@ -43,7 +42,9 @@ export interface CarbonWalletGenericOpts {
   providerAgent?: ProviderAgent | string;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
   disableRetryOnSequenceError?: boolean; // disable auto retry on nonce error
-  triggerMerge?: boolean
+  triggerMerge?: boolean;
+
+  gasFee?: GasFee;
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -115,9 +116,10 @@ export interface AccountInfo extends Account {
   chainId: string;
 }
 
-export interface GranteeDetails {
+export interface Grantee {
   expiry: Date;
-  mnemonics: string;
+  signer: OfflineDirectSigner;
+  address: string;
   authMsgsVersion: number;
 }
 
@@ -164,11 +166,8 @@ export class CarbonWallet {
   triggerMerge?: boolean;
   publicKey: Buffer;
   query?: CarbonQueryClient;
-  gasFee?: GasFee;
 
   txDefaultBroadCastMode?: BroadcastTxMode;
-
-  defaultFeeDenom: string = DEFAULT_FEE_DENOM;
 
   initialized: boolean = false;
 
@@ -183,15 +182,17 @@ export class CarbonWallet {
   authorizedMsgsVersion?: number;
 
   private tmClient?: Tendermint37Client;
-  private granteeDetails?: GranteeDetails;
-  private granteeSDKInstance?: ConnectedCarbonSDK;
+  private grantee?: Grantee;
   private signingClient?: CarbonSigningClient;
   private chainId?: string;
   private evmChainId?: string;
 
+  private gasFee?: GasFee;
+
   private sequenceInvalidated: boolean = false;
   private txSignManager: QueueManager<SignTxRequest>;
   private txDispatchManager: QueueManager<BroadcastTxRequest>;
+
 
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
@@ -203,6 +204,9 @@ export class CarbonWallet {
     this.defaultTimeoutBlocks = opts.defaultTimeoutBlocks ?? 30; // default ~1 minute
     this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
     this.triggerMerge = opts.triggerMerge ?? false
+
+    this.gasFee = opts.gasFee;
+
     this.updateNetwork(network);
 
     this.onRequestSign = opts.onRequestSign;
@@ -327,35 +331,34 @@ export class CarbonWallet {
     });
   }
 
-  public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee): Promise<CarbonWallet> {
+  public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee, fallbackConfig: OverrideConfig | null = null): Promise<CarbonWallet> {
     this.query = queryClient;
-    this.gasFee = gasFee
+    this.gasFee = gasFee;
 
-    await Promise.all([this.reconnectTmClient(), this.reloadTxFees(), this.reloadAccountSequence(), this.reloadMergeAccountStatus()]);
+    const promises: Promise<unknown>[] = [
+      this.reloadAccountSequence(),
+      this.reloadMergeAccountStatus(),
+    ];
+
+    if (!this.tmClient)
+      promises.push(this.reconnectTmClient(fallbackConfig));
+
+    await Promise.all(promises);
 
     this.initialized = true;
     return this;
   }
 
-  public async setGranteeDetails(details: GranteeDetails | undefined) {
-    this.granteeDetails = details;
-    if (!details) {
-      this.granteeSDKInstance = undefined
-      return
-    }
-    const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network, config: this.configOverride })
-    if (granteeInstance) {
-      this.granteeSDKInstance = granteeInstance;
-    }
+  public setGrantee(grantee?: Grantee) {
+    this.grantee = grantee;
   }
 
   private isGranteeValid(): boolean {
-    if (!this.granteeDetails) return false
-    const { expiry, authMsgsVersion } = this.granteeDetails
-    const bufferPeriod = BUFFER_PERIOD
-    const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(bufferPeriod, 'seconds'))
-    const versionUpToDate = authMsgsVersion === this.authorizedMsgsVersion
-    return hasNotExpired && versionUpToDate && Boolean(this.granteeSDKInstance)
+    if (!this.grantee) return false
+    const { expiry, authMsgsVersion } = this.grantee;
+    const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(BUFFER_PERIOD, 'seconds'));
+    const versionUpToDate = authMsgsVersion === this.authorizedMsgsVersion;
+    return hasNotExpired && versionUpToDate && !!this.grantee.signer;
   }
 
   public updateNetwork(network: Network): CarbonWallet {
@@ -379,7 +382,7 @@ export class CarbonWallet {
     granterAddress?: string
   ): Promise<CarbonWallet.TxRaw> {
     const { memo = "", accountNumber, explicitSignerData, feeDenom } = opts;
-    const signingClient = this.getSigningClient();
+    const signingClient = await this.getSigningClient();
     const [account] = await this.signer.getAccounts();
 
     let signature: StdSignature | null = null;
@@ -434,7 +437,7 @@ export class CarbonWallet {
     const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address })).balances.length > 0
     const isEvmWallet = this.isEvmWallet()
     if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
-      this.sequenceInvalidated = true
+      this.sequenceInvalidated = true;
       throw new Error('Transaction is not allowed from a non-evm wallet for an account with only funds in evm address')
     }
   }
@@ -447,7 +450,7 @@ export class CarbonWallet {
     const { pollIntervalMs = 3_000, timeoutMs = 60_000 } = opts;
 
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
-    const carbonClient = this.getSigningClient();
+    const carbonClient = await this.getSigningClient();
     const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
@@ -462,7 +465,7 @@ export class CarbonWallet {
    */
   async broadcastTxToMempoolWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxToMempoolWithoutConfirmResponse> {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
-    const tmClient = this.getTmClient();
+    const tmClient = await this.getTmClient();
     const response = await tmClient.broadcastTxSync({ tx });
     if (!broadcastTxSyncSuccess(response)) {
       // tx failed
@@ -477,7 +480,7 @@ export class CarbonWallet {
    */
   async broadcastTxWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
-    const tmClient = this.getTmClient();
+    const tmClient = await this.getTmClient();
     return tmClient.broadcastTxAsync({ tx });
   }
 
@@ -510,8 +513,8 @@ export class CarbonWallet {
     } = txRequest;
 
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
-    if (this.granteeDetails && this.isGranteeValid() && isAuthorized) {
-      this.signWithGrantee(txRequest)
+    if (this.isGranteeValid() && isAuthorized) {
+      await this.signWithGrantee(txRequest)
     } else {
       try {
         if (!this.accountInfo
@@ -519,13 +522,10 @@ export class CarbonWallet {
           || this.sequenceInvalidated)
           await this.reloadAccountSequence();
 
-        const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
-        const heightRes = await heightResponse.json();
-        const height = bnOrZero(heightRes.result?.last_height);
         let timeoutHeight;
         // timeoutHeight is not supported for EIP-712
         if (!isCarbonEIP712Signer(this.signer)) {
-          timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
+          timeoutHeight = await this.getTimeoutHeight();
         }
         let sequence: number
         if (!this.accountInfo) {
@@ -567,71 +567,68 @@ export class CarbonWallet {
       reattempts,
       signOpts,
       messages,
-      broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
     try {
-      const instanceWithGrantee = this.granteeSDKInstance
-      if (!instanceWithGrantee) {
-        throw Error('grantee instance not found')
+      if (!this.grantee) {
+        throw new Error("grantee not set");
       }
-      if (instanceWithGrantee && instanceWithGrantee.wallet) {
-        const granteeAddress = instanceWithGrantee.wallet.bech32Address
-        const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
 
-        const msgExecMessage = [{
-          typeUrl: CarbonTx.Types.MsgExec,
-          value: MsgExec.fromPartial({
-            grantee: granteeAddress,
-            msgs: msgs,
-          }),
-        }]
-        if (!instanceWithGrantee.wallet.accountInfo
-          || instanceWithGrantee.wallet.accountInfo?.address === instanceWithGrantee.wallet.evmBech32Address // refresh to check if carbon acc is present
-          || instanceWithGrantee.wallet.sequenceInvalidated)
-          await instanceWithGrantee.wallet.reloadAccountSequence();
+      const signer = this.grantee.signer;
 
-        const heightResponse = await fetch(`${instanceWithGrantee.wallet.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
-        const heightRes = await heightResponse.json();
-        const height = bnOrZero(heightRes.result?.last_height);
-        let timeoutHeight;
-        // timeoutHeight is not supported for EIP-712
-        if (!isCarbonEIP712Signer(instanceWithGrantee.wallet.signer)) {
-          timeoutHeight = height.isZero() ? undefined : height.toNumber() + instanceWithGrantee.wallet.defaultTimeoutBlocks;
-        }
-        let sequence: number
-        if (!instanceWithGrantee.wallet.accountInfo) {
-          sequence = signOpts?.sequence ?? 0
-        } else {
-          sequence = instanceWithGrantee.wallet.accountInfo!.sequence;
-          instanceWithGrantee.wallet.accountInfo = {
-            ...instanceWithGrantee.wallet.accountInfo!,
-            sequence: sequence + 1,
-          };
-        }
-        const overrideBroadcastOpts = {
-          ...broadcastOpts,
-          mode: this.txDefaultBroadCastMode,
-        }
-        const _signOpts: CarbonTx.SignTxOpts = {
-          ...signOpts,
-          explicitSignerData: {
-            timeoutHeight,
-            ...signOpts?.explicitSignerData,
-          },
-        }
-        const signedTx = await instanceWithGrantee.wallet.getSignedTx(granteeAddress, msgExecMessage, sequence, _signOpts, this.bech32Address)
-
-        instanceWithGrantee.wallet.txDispatchManager.enqueue({
-          reattempts,
-          signerAddress: granteeAddress,
-          messages: msgExecMessage,
-          signedTx,
-          broadcastOpts: overrideBroadcastOpts,
-          signOpts: _signOpts,
-          handler: { resolve, reject, requestId: `${sequence}` },
-        })
+      const accounts = await signer.getAccounts();
+      if (!accounts.length) {
+        throw Error("cannot retrieve grantee accounts");
       }
+      const granteeAddress = accounts[0].address;
+      const accountInfo = await this.getAccount(granteeAddress);
+
+      if (!accountInfo) {
+        throw new Error("grantee account not initialized");
+      }
+
+      const msgs = messages.map((message) => registry.encodeAsAny({ ...message }))
+
+      const msgExecMessages: EncodeObject[] = [{
+        typeUrl: CarbonTx.Types.MsgExec,
+        value: MsgExec.fromPartial({
+          grantee: granteeAddress,
+          msgs,
+        }),
+      }]
+
+      const timeoutHeight = await this.getTimeoutHeight();
+      const fee = signOpts?.fee ?? this.estimateTxFee(msgExecMessages, signOpts?.feeDenom);
+      const memo = signOpts?.memo ?? "";
+      const sequence = signOpts?.sequence ?? accountInfo.sequence;
+      const accountNumber = signOpts?.accountNumber ?? accountInfo.accountNumber;
+
+      const _signOpts: CarbonTx.SignTxOpts = {
+        ...signOpts,
+        explicitSignerData: {
+          timeoutHeight,
+          ...signOpts?.explicitSignerData,
+        },
+      }
+
+      const signerData: CarbonSignerData = {
+        accountNumber,
+        chainId: this.getChainId(),
+        sequence,
+        ...signOpts?.explicitSignerData,
+      };
+
+      const tmClient = await this.getTmClient();
+      const signingClient = new CarbonSigningClient(tmClient, signer);
+      const signedTx = await signingClient.sign(granteeAddress, msgExecMessages, fee, memo, signerData, this.bech32Address);
+
+      this.txDispatchManager.enqueue({
+        ...txRequest,
+        reattempts,
+        signedTx,
+        signOpts: _signOpts,
+        handler: { resolve, reject, requestId: `${sequence}` },
+      })
     } catch (error) {
       reject(error)
     }
@@ -755,7 +752,8 @@ export class CarbonWallet {
           throw new TimeoutError(`Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txId)
         }
         const hash = Uint8Array.from(Buffer.from(txId, 'hex'));
-        const response = await this.getTmClient().tx({ hash })
+        const tmClient = await this.getTmClient();
+        const response = await tmClient.tx({ hash })
         const { result } = response
         const isDeliverTxFailure = result.code !== 0
         if (isDeliverTxFailure && throwIfNotIncludedInBlock) throw new CarbonCustomError(`[${result.code}] ${result.log}`, ErrorType.BLOCK_FAIL, response)
@@ -779,16 +777,33 @@ export class CarbonWallet {
     }))
   }
 
-  getSigningClient(): CarbonSigningClient {
-    const tmClient = this.getTmClient();
+  async getSigningClient(): Promise<CarbonSigningClient> {
+    const tmClient = await this.getTmClient();
     if (!this.signingClient) {
       this.signingClient = new CarbonSigningClient(tmClient, this.signer);
     }
     return this.signingClient;
   }
 
-  getTmClient(): Tendermint37Client {
-    if (!this.tmClient) throw new Error("CarbonWallet is not initialized");
+  async getTimeoutHeight() {
+    try {
+      const cacheBuster = ~~(new Date().getTime() / 1000);
+      const response = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${cacheBuster}`);
+      const body = await response.json();
+      if (!body.result?.last_height) return undefined;
+      return bnOrZero(body.result?.last_height).plus(this.defaultTimeoutBlocks).toNumber();
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  async getTmClient(reconnect: boolean = false): Promise<Tendermint37Client> {
+    if (!this.tmClient || reconnect) {
+      this.tmClient = await Tendermint37Client.connect(this.networkConfig.tmRpcUrl);
+      const status = await this.tmClient.status();
+      this.chainId = status.nodeInfo.network;
+      this.evmChainId = CarbonEvmChainIDs[this.network];
+    }
     return this.tmClient;
   }
 
@@ -845,23 +860,14 @@ export class CarbonWallet {
     return null;
   }
 
-  public async reconnectTmClient() {
-    this.tmClient = await Tendermint37Client.connect(this.networkConfig.tmRpcUrl);
-    const status = await this.tmClient.status();
-    this.chainId = status.nodeInfo.network;
-    this.evmChainId = CarbonEvmChainIDs[this.network]
-  }
-
-  public async reloadTxFees() {
-    const txGasPrices = this.gasFee?.txGasPrices ?? {}
-
-    if (!txGasPrices[this.defaultFeeDenom]) {
-      const queryClient = this.getQueryClient()
-      const { minGasPrices } = await queryClient.fee.MinGasPriceAll({});
-      const newDefaultFeeDenom = minGasPrices[0]?.denom;
-      if (newDefaultFeeDenom) {
-        console.warn(`default fee denom ${this.defaultFeeDenom} not supported, using ${newDefaultFeeDenom} instead.`);
-        this.defaultFeeDenom = newDefaultFeeDenom;
+  public async reconnectTmClient(fallbackConfig: OverrideConfig | null) {
+    try {
+      await this.getTmClient(true);
+    } catch (err) {
+      const errorTyped = err as Error;
+      if (errorTyped.message.includes("Failed to fetch") && fallbackConfig) {
+        this.chainId = fallbackConfig.chainId;
+        this.evmChainId = fallbackConfig.evmChainId
       }
     }
   }
@@ -873,26 +879,25 @@ export class CarbonWallet {
     if (!bech32Acc && this.evmBech32Address) {
       evmBech32Acc = await this.getAccount(this.evmBech32Address)
     }
-    const accountAny = bech32Acc ?? evmBech32Acc
-
-    if (!accountAny) return undefined
-    const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
-    return {
-      address,
-      accountNumber: accountNumber.toNumber(),
-      sequence: sequence.toNumber(),
-    }
+    return bech32Acc ?? evmBech32Acc ?? undefined
   }
 
-  private async getAccount(address: string) {
-    let account;
+  private async getAccount(queryAddress: string) {
     try {
-      account = (await this.getQueryClient().auth.Account({ address })).account
+      const account = (await this.getQueryClient().auth.Account({ address: queryAddress })).account
+      if (!account) return;
+
+      const { accountNumber, sequence, address } = BaseAccount.decode(account.value)
+      return {
+        address,
+        accountNumber: accountNumber.toNumber(),
+        sequence: sequence.toNumber(),
+      }
     } catch (error: any) {
-      if (!this.isAccountNotFoundError(error, address))
+      if (!this.isAccountNotFoundError(error, queryAddress))
         throw error
     }
-    return account
+    return
   }
 
   public async reloadAccountSequence() {
@@ -914,15 +919,11 @@ export class CarbonWallet {
   }
 
   public async reloadMergeAccountStatus() {
-    if (this.accountMerged) return
-    const queryClient = this.getQueryClient()
-    const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
-    if (response && response.mappedAddress) {
-      this.accountMerged = true
-    } else {
-      this.accountMerged = false
-    }
-    this.sequenceInvalidated = true
+    if (this.accountMerged) return;
+    const queryClient = this.getQueryClient();
+    const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address });
+    this.accountMerged = !!response?.mappedAddress;
+    this.sequenceInvalidated = true;
   }
 
   public updateMergeAccountStatus() {
@@ -935,7 +936,7 @@ export class CarbonWallet {
     return this.providerAgent === ProviderAgent.MetamaskExtension
   }
 
-  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = this.defaultFeeDenom) {
+  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
     const denomGasPrice = this.gasFee?.getGasPrice(feeDenom);
     let totalGasCost = messages.reduce((result, message) => {
       const gasCost = this.gasFee?.getGasCost(message.typeUrl);
