@@ -1,9 +1,9 @@
-import { TxTypes } from "@carbon-sdk/codec";
 import { Carbon } from "@carbon-sdk/CarbonSDK";
+import { TxTypes } from "@carbon-sdk/codec";
+import { getRewardWithdrawalMsg } from "@carbon-sdk/util/alliance";
 import BigNumber from "bignumber.js";
 import { CarbonTx } from "../util";
 import BaseModule from "./base";
-import { getRewardWithdrawalMsg } from "@carbon-sdk/util/alliance";
 
 export class AllianceModule extends BaseModule {
   public async delegateTokens(params: AllianceModule.DelegateTokensParams, opts?: CarbonTx.SignTxOpts) {
