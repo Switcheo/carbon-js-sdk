@@ -26,6 +26,7 @@ export const InsightsEndpoints = {
   "pools/liquidity": "/pool/liquidity",
   "pool/history": "/pool/history",
   "pool/perp/history": "/pool/perp/history",
+  "pool/perp/apy": "/pool/perp/:id/apy",
   "user/pool/rewards": "/user/:address/pool/rewards",
 
   //market
