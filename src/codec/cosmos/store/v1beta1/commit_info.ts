@@ -1,9 +1,9 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Timestamp } from "../../../../google/protobuf/timestamp";
+import { Timestamp } from "../../../google/protobuf/timestamp";
 
-export const protobufPackage = "cosmos.base.store.v1beta1";
+export const protobufPackage = "cosmos.store.v1beta1";
 
 /**
  * CommitInfo defines commit information used by the multi-store when committing

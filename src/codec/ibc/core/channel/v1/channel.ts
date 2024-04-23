@@ -237,6 +237,18 @@ export interface Acknowledgement {
   error: string | undefined;
 }
 
+/**
+ * Timeout defines an execution deadline structure for 04-channel handlers.
+ * This includes packet lifecycle handlers as well as the upgrade handshake handlers.
+ * A valid Timeout contains either one or both of a timestamp and block height (sequence).
+ */
+export interface Timeout {
+  /** block height after which the packet or upgrade times out */
+  height?: Height;
+  /** block timestamp (in nanoseconds) after which the packet or upgrade times out */
+  timestamp: Long;
+}
+
 const baseChannel: object = {
   state: 0,
   ordering: 0,
@@ -987,6 +999,79 @@ export const Acknowledgement = {
     const message = { ...baseAcknowledgement } as Acknowledgement;
     message.result = object.result ?? undefined;
     message.error = object.error ?? undefined;
+    return message;
+  },
+};
+
+const baseTimeout: object = { timestamp: Long.UZERO };
+
+export const Timeout = {
+  encode(
+    message: Timeout,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.height !== undefined) {
+      Height.encode(message.height, writer.uint32(10).fork()).ldelim();
+    }
+    if (!message.timestamp.isZero()) {
+      writer.uint32(16).uint64(message.timestamp);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Timeout {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTimeout } as Timeout;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.height = Height.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.timestamp = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Timeout {
+    const message = { ...baseTimeout } as Timeout;
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Height.fromJSON(object.height)
+        : undefined;
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? Long.fromString(object.timestamp)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: Timeout): unknown {
+    const obj: any = {};
+    message.height !== undefined &&
+      (obj.height = message.height ? Height.toJSON(message.height) : undefined);
+    message.timestamp !== undefined &&
+      (obj.timestamp = (message.timestamp || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Timeout>): Timeout {
+    const message = { ...baseTimeout } as Timeout;
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Height.fromPartial(object.height)
+        : undefined;
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? Long.fromValue(object.timestamp)
+        : Long.UZERO;
     return message;
   },
 };

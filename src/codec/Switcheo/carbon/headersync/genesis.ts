@@ -9,11 +9,17 @@ export const protobufPackage = "Switcheo.carbon.headersync";
 export interface GenesisState {
   /** Peers for each PoS chain by chain ID. */
   consensusPeers: { [key: string]: ConsensusPeers };
-  /** Header hash for blocks where consensus public keys is updated for PoS chain by chain ID. */
+  /**
+   * Header hash for blocks where consensus public keys is updated for PoS chain
+   * by chain ID.
+   */
   checkpointHashes: { [key: string]: Uint8Array };
   /** Peers for each Zion PoS chain by chain ID. */
   zionConsensusPeers: { [key: string]: ZionConsensusPeers };
-  /** Header Hash for Zion blocks where consensus public keys is updated for PoS chain by chain ID. */
+  /**
+   * Header Hash for Zion blocks where consensus public keys is updated for PoS
+   * chain by chain ID.
+   */
   zionCheckpointHashes: { [key: string]: Uint8Array };
 }
 

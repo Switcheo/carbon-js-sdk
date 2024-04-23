@@ -44,7 +44,10 @@ export interface QueryTokenPairRequest {
  * method.
  */
 export interface QueryTokenPairResponse {
-  /** token_pairs returns the info about a registered token pair for the erc20 module */
+  /**
+   * token_pairs returns the info about a registered token pair for the erc20
+   * module
+   */
   tokenPair?: TokenPair;
 }
 

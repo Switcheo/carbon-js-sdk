@@ -12,7 +12,10 @@ export interface EventRegisterPair {
   erc20Address: string;
 }
 
-/** EventToggleTokenConversion is an event emitted when a coin's token conversion is toggled. */
+/**
+ * EventToggleTokenConversion is an event emitted when a coin's token conversion
+ * is toggled.
+ */
 export interface EventToggleTokenConversion {
   /** denom is the coin's denomination. */
   denom: string;
@@ -44,7 +47,10 @@ export interface EventConvertERC20 {
   amount: string;
   /** denom is the coin's denomination. */
   denom: string;
-  /** contract_address of an ERC20 token contract, that is registered in a token pair */
+  /**
+   * contract_address of an ERC20 token contract, that is registered in a token
+   * pair
+   */
   contractAddress: string;
 }
 

@@ -135,6 +135,7 @@ export interface MsgUpdateToken {
 
 export interface UpdateTokenParams {
   isActive?: boolean;
+  /** struct */
   name?: string;
   symbol?: string;
   decimals?: Long;
@@ -170,9 +171,9 @@ export interface MsgCreateGroup {
   creator: string;
   /** name of group */
   name: string;
-  /** symbol of the cheque token that represents any tokens in the group 1-to-1 */
+  /** symbol of the cheque token that represents */
   chequeTokenSymbol: string;
-  /** oracle_id that helps to get the reference price for this group */
+  /** any tokens in the group 1-to-1 */
   oracleId: string;
 }
 

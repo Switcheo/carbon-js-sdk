@@ -8,7 +8,10 @@ export const protobufPackage = "Switcheo.carbon.evmmerge";
 export interface MsgSignData {
   /** signer is the sdk.AccAddress of the message signer */
   signer: Uint8Array;
-  /** data represents the raw bytes of the content that is signed (text, json, etc) */
+  /**
+   * data represents the raw bytes of the content that is signed (text, json,
+   * etc)
+   */
   data: Uint8Array;
 }
 
