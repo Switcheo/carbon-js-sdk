@@ -115,7 +115,7 @@ export interface QueryPerpPool7DaysAPY extends QueryByPageRequest {
 export interface PerpPool7DaysAPYEntry {
   latestPrice: number;
   previousPrice: number;
-  last7DaysAPY: number;
+  apy: number;
   from: string;
   to: string;
 }
