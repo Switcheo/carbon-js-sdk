@@ -112,7 +112,7 @@ class InsightsQueryClient {
   async TotalUsers(
     req: Insights.QueryGetTotalUsersRequest = {}
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalUsersResponse>> {
-    const request = this.apiManager.path("user/total", req, {});
+    const request = this.apiManager.path("user/total", {}, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTotalUsersResponse>;
   }
