@@ -112,9 +112,36 @@ class InsightsQueryClient {
   async TotalUsers(
     req: Insights.QueryGetTotalUsersRequest = {}
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalUsersResponse>> {
-    const request = this.apiManager.path("user/total", {}, req);
+    const request = this.apiManager.path("user/total", req, {});
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTotalUsersResponse>;
+  }
+
+  async UserPnl(
+    req: Insights.QueryGetUserPnlPathParams,
+    query: Insights.QueryGetUserPnlGraphQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserPnlResponse>> {
+    const request = this.apiManager.path("user/pnl", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserPnlResponse>;
+  }
+
+  async UserBalanceGraph(
+    req: Insights.QueryGetUserBalanceGraphPathParams,
+    query: Insights.QueryGetUserBalanceGraphQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserBalanceGraphResponse>> {
+    const request = this.apiManager.path("user/balance/graph", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserBalanceGraphResponse>;
+  }
+
+  async UserPnlGraph(
+    req: Insights.QueryGetUserPnlGraphPathParams,
+    query: Insights.QueryGetUserPnlGraphQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserPnlGraphResponse>> {
+    const request = this.apiManager.path("user/pnl/graph", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserPnlGraphResponse>;
   }
 
   // Pool api
@@ -155,6 +182,22 @@ class InsightsQueryClient {
     );
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPerpPoolHistoryResponse>;
+  }
+
+  async PerpPool7DApy(
+    query: Insights.QueryPerpPool7DaysAPY
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPerpPool7DaysAPYResponse>> {
+    const routeParams = { id: query.id };
+    const request = this.apiManager.path(
+      "pool/perp/apy",
+      routeParams,
+      {
+        limit: query.limit ?? 10,
+        offset: query.offset ?? 0,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryPerpPool7DaysAPYResponse>;
   }
 
   async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
