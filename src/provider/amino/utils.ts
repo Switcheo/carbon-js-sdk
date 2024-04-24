@@ -122,6 +122,7 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
   switch (type) {
     case ConvertEncType.Dec: {
       const bnVal = NumberUtils.bnOrZero(value);
+      if (bnVal.isZero()) return null;
       return bnVal.toString(10);
     }
     case ConvertEncType.DecOrZero: {
@@ -179,10 +180,12 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         if (!newInput[key]) return;
         if (typeCheck(newInput[key])) {
           aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true);
+          if (aminoObj[snakeKey] === null) delete aminoObj[snakeKey]
           return;
         }
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
           aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true);
+          if (aminoObj[snakeKey] === null) delete aminoObj[snakeKey]
         } else {
           // empty array should be mapped over too
           if (newInput[key]?.length === 0) {
@@ -211,6 +214,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         const camelKey = TypeUtils.snakeToCamel(key);
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
           aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as ConvertEncType, false);
+          if (aminoObj[camelKey] === null) delete aminoObj[camelKey]
         } else {
           if (newInput[key]?.length && typeof newInput[key] === "object") {
             aminoObj[camelKey] = newInput[key].map((newItem: any) =>
