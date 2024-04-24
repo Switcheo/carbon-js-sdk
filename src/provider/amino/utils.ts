@@ -122,7 +122,7 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
   switch (type) {
     case ConvertEncType.Dec: {
       const bnVal = NumberUtils.bnOrZero(value);
-      return toAmino ? bnVal.shiftedBy(-18).toFixed(18) : bnVal.shiftedBy(18).toString(10);
+      return toAmino ? bnVal.toString(10) : bnVal.shiftedBy(18).toString(10);
     }
     case ConvertEncType.DecOrZero: {
       const decBnVal = NumberUtils.bnOrZero(value);
