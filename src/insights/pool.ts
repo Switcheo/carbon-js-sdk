@@ -42,7 +42,7 @@ export interface PoolsLiquidity {
   tokens: PoolTokens[];
 }
 
-export interface QueryGetPoolsRequest extends QueryByPageRequest {}
+export interface QueryGetPoolsRequest extends QueryByPageRequest { }
 
 export interface QueryGetPoolsResponse {
   models: Pool[];
@@ -108,6 +108,23 @@ export interface QueryGetPerpPoolHistoryRequest extends QueryByPageRequest {
   address: string
 }
 
+export interface QueryPerpPool7DaysAPY extends QueryByPageRequest {
+  id: number
+}
+
+export interface PerpPool7DaysAPYEntry {
+  latestPrice: number;
+  previousPrice: number;
+  apy: number;
+  from: string;
+  to: string;
+}
+
+export interface QueryPerpPool7DaysAPYResponse {
+  entries: PerpPool7DaysAPYEntry[];
+  meta: PageMeta;
+}
+
 export interface PerpPositionHistoryEntry {
   poolId: number;
   address: string;
@@ -130,13 +147,13 @@ export interface QueryGetUserRewardsClaimHistoryRequest extends QueryByPageReque
   address: string;
 }
 
-export interface TokenAmounts{
+export interface TokenAmounts {
   denom: string;
   amount: number;
   amountValue: number;
 }
 
-export interface ClaimTransactionEntry{
+export interface ClaimTransactionEntry {
   address: string;
   poolId: number;
   height: number;

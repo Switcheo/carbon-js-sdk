@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "cosmos.base.kv.v1beta1";
+export const protobufPackage = "cosmos.store.internal.kv.v1beta1";
 
 /** Pairs defines a repeated slice of Pair objects. */
 export interface Pairs {

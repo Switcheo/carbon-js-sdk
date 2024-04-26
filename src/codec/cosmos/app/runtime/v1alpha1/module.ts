@@ -37,6 +37,24 @@ export interface Module {
    * to be used in keeper construction.
    */
   overrideStoreKeys: StoreKeyConfig[];
+  /**
+   * order_migrations defines the order in which module migrations are performed.
+   * If this is left empty, it uses the default migration order.
+   * https://pkg.go.dev/github.com/cosmos/cosmos-sdk@v0.47.0-alpha2/types/module#DefaultMigrationsOrder
+   */
+  orderMigrations: string[];
+  /**
+   * precommiters specifies the module names of the precommiters
+   * to call in the order in which they should be called. If this is left empty
+   * no precommit function will be registered.
+   */
+  precommiters: string[];
+  /**
+   * prepare_check_staters specifies the module names of the prepare_check_staters
+   * to call in the order in which they should be called. If this is left empty
+   * no preparecheckstate function will be registered.
+   */
+  prepareCheckStaters: string[];
 }
 
 /**
@@ -56,6 +74,9 @@ const baseModule: object = {
   endBlockers: "",
   initGenesis: "",
   exportGenesis: "",
+  orderMigrations: "",
+  precommiters: "",
+  prepareCheckStaters: "",
 };
 
 export const Module = {
@@ -81,6 +102,15 @@ export const Module = {
     for (const v of message.overrideStoreKeys) {
       StoreKeyConfig.encode(v!, writer.uint32(50).fork()).ldelim();
     }
+    for (const v of message.orderMigrations) {
+      writer.uint32(58).string(v!);
+    }
+    for (const v of message.precommiters) {
+      writer.uint32(66).string(v!);
+    }
+    for (const v of message.prepareCheckStaters) {
+      writer.uint32(74).string(v!);
+    }
     return writer;
   },
 
@@ -93,6 +123,9 @@ export const Module = {
     message.initGenesis = [];
     message.exportGenesis = [];
     message.overrideStoreKeys = [];
+    message.orderMigrations = [];
+    message.precommiters = [];
+    message.prepareCheckStaters = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -115,6 +148,15 @@ export const Module = {
           message.overrideStoreKeys.push(
             StoreKeyConfig.decode(reader, reader.uint32())
           );
+          break;
+        case 7:
+          message.orderMigrations.push(reader.string());
+          break;
+        case 8:
+          message.precommiters.push(reader.string());
+          break;
+        case 9:
+          message.prepareCheckStaters.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -140,6 +182,15 @@ export const Module = {
     );
     message.overrideStoreKeys = (object.overrideStoreKeys ?? []).map((e: any) =>
       StoreKeyConfig.fromJSON(e)
+    );
+    message.orderMigrations = (object.orderMigrations ?? []).map((e: any) =>
+      String(e)
+    );
+    message.precommiters = (object.precommiters ?? []).map((e: any) =>
+      String(e)
+    );
+    message.prepareCheckStaters = (object.prepareCheckStaters ?? []).map(
+      (e: any) => String(e)
     );
     return message;
   },
@@ -174,6 +225,21 @@ export const Module = {
     } else {
       obj.overrideStoreKeys = [];
     }
+    if (message.orderMigrations) {
+      obj.orderMigrations = message.orderMigrations.map((e) => e);
+    } else {
+      obj.orderMigrations = [];
+    }
+    if (message.precommiters) {
+      obj.precommiters = message.precommiters.map((e) => e);
+    } else {
+      obj.precommiters = [];
+    }
+    if (message.prepareCheckStaters) {
+      obj.prepareCheckStaters = message.prepareCheckStaters.map((e) => e);
+    } else {
+      obj.prepareCheckStaters = [];
+    }
     return obj;
   },
 
@@ -186,6 +252,11 @@ export const Module = {
     message.exportGenesis = (object.exportGenesis ?? []).map((e) => e);
     message.overrideStoreKeys = (object.overrideStoreKeys ?? []).map((e) =>
       StoreKeyConfig.fromPartial(e)
+    );
+    message.orderMigrations = (object.orderMigrations ?? []).map((e) => e);
+    message.precommiters = (object.precommiters ?? []).map((e) => e);
+    message.prepareCheckStaters = (object.prepareCheckStaters ?? []).map(
+      (e) => e
     );
     return message;
   },

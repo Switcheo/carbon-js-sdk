@@ -6,9 +6,15 @@ import { StringValue } from "../../../google/protobuf/wrappers";
 export const protobufPackage = "Switcheo.carbon.evmmerge";
 
 export interface MsgMergeAccount {
-  /** bech32 ETH address if coming from EIP-712, bech32 cosmos address if coming from typical cosmos tx */
+  /**
+   * bech32 ETH address if coming from EIP-712, bech32 cosmos address if coming
+   * from typical cosmos tx
+   */
   creator: string;
-  /** Compressed Public key in hex eg 034a1e1f95ebb49bc59b3c2d60afbb4c2fb2b77cd1f1e2322123fdacaa3d12f7a9 */
+  /**
+   * Compressed Public key in hex eg
+   * 034a1e1f95ebb49bc59b3c2d60afbb4c2fb2b77cd1f1e2322123fdacaa3d12f7a9
+   */
   pubKey: string;
   /** hex representation of the pub key signature */
   pubKeySig?: string;

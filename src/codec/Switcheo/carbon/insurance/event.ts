@@ -5,7 +5,7 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.insurance";
 
 /**
- * TODO: ADD CORRECT THINGS
+ * TODO: CLEAN UP IN SEPARATE PR
  * BlockHeight    int64     `json:"block_height"`
  * BlockCreatedAt time.Time `json:"block_created_at"`
  * Amount sdkmath.Int   `json:"amount"`

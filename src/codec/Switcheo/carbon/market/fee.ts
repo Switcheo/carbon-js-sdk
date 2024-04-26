@@ -10,8 +10,9 @@ export const protobufPackage = "Switcheo.carbon.market";
  * the greatest required stake which is fulfilled by the user is used.
  *
  * There must always be at least one fee tier for the `spot` and `futures`
- * `market_type` fee category that has 0 `required_stake` and no `whitelisted_address` so
- * that it can act as the base fee for that market type.
+ * `market_type` fee category that has 0 `required_stake` and no
+ * `whitelisted_address` so that it can act as the base fee for that market
+ * type.
  */
 export interface FeeStructure {
   feeCategory?: FeeCategory;
@@ -33,18 +34,23 @@ export interface FeeCategory {
    * Can be used to override the `market_type` based fee to give
    * specific markets a certain fee discount.
    * Note that if there is already a fee tier for the user's stake that
-   * results in a lower fee for a given trade, that fee structure will be used instead.
+   * results in a lower fee for a given trade, that fee structure will be used
+   * instead.
    */
   marketId: string;
   /**
    * Optional parameter that can be used to give certain addresses
    * additional fee tier(s) for the given `market_type` or `market_id`.
-   * Can only be used to reduce fees, not increase them. Can be used with module accounts.
+   * Can only be used to reduce fees, not increase them. Can be used with module
+   * accounts.
    */
   whitelistedAddress: string;
 }
 
-/** A fee tier represents the trading fee for a user that meets the required stake. */
+/**
+ * A fee tier represents the trading fee for a user that meets the required
+ * stake.
+ */
 export interface FeeTier {
   /** The required stake for a user for the fee tier to apply. */
   requiredStake: string;

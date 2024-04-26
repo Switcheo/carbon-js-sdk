@@ -52,9 +52,21 @@ export interface GenesisState {
    * Since: cosmos-sdk 0.47
    */
   params?: Params;
+  /**
+   * The constitution allows builders to lay a foundation and define purpose.
+   * This is an immutable string set in genesis.
+   * There are no amendments, to go outside of scope, just fork.
+   * constitution is an immutable string in genesis for a chain builder to lay out their vision, ideas and ideals.
+   *
+   * Since: cosmos-sdk 0.50
+   */
+  constitution: string;
 }
 
-const baseGenesisState: object = { startingProposalId: Long.UZERO };
+const baseGenesisState: object = {
+  startingProposalId: Long.UZERO,
+  constitution: "",
+};
 
 export const GenesisState = {
   encode(
@@ -94,6 +106,9 @@ export const GenesisState = {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(66).fork()).ldelim();
     }
+    if (message.constitution !== "") {
+      writer.uint32(74).string(message.constitution);
+    }
     return writer;
   },
 
@@ -130,6 +145,9 @@ export const GenesisState = {
           break;
         case 8:
           message.params = Params.decode(reader, reader.uint32());
+          break;
+        case 9:
+          message.constitution = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -169,6 +187,10 @@ export const GenesisState = {
       object.params !== undefined && object.params !== null
         ? Params.fromJSON(object.params)
         : undefined;
+    message.constitution =
+      object.constitution !== undefined && object.constitution !== null
+        ? String(object.constitution)
+        : "";
     return message;
   },
 
@@ -211,6 +233,8 @@ export const GenesisState = {
         : undefined);
     message.params !== undefined &&
       (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.constitution !== undefined &&
+      (obj.constitution = message.constitution);
     return obj;
   },
 
@@ -244,6 +268,7 @@ export const GenesisState = {
       object.params !== undefined && object.params !== null
         ? Params.fromPartial(object.params)
         : undefined;
+    message.constitution = object.constitution ?? "";
     return message;
   },
 };

@@ -13,9 +13,15 @@ export interface UnbondingDelegation {
   validatorAddress: string;
   /** amount defines the tokens to receive at completion. */
   amount: string;
+  /** alliance denom of the unbonding delegation */
+  denom: string;
 }
 
-const baseUnbondingDelegation: object = { validatorAddress: "", amount: "" };
+const baseUnbondingDelegation: object = {
+  validatorAddress: "",
+  amount: "",
+  denom: "",
+};
 
 export const UnbondingDelegation = {
   encode(
@@ -33,6 +39,9 @@ export const UnbondingDelegation = {
     }
     if (message.amount !== "") {
       writer.uint32(26).string(message.amount);
+    }
+    if (message.denom !== "") {
+      writer.uint32(34).string(message.denom);
     }
     return writer;
   },
@@ -54,6 +63,9 @@ export const UnbondingDelegation = {
           break;
         case 3:
           message.amount = reader.string();
+          break;
+        case 4:
+          message.denom = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -77,6 +89,10 @@ export const UnbondingDelegation = {
       object.amount !== undefined && object.amount !== null
         ? String(object.amount)
         : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
     return message;
   },
 
@@ -87,6 +103,7 @@ export const UnbondingDelegation = {
     message.validatorAddress !== undefined &&
       (obj.validatorAddress = message.validatorAddress);
     message.amount !== undefined && (obj.amount = message.amount);
+    message.denom !== undefined && (obj.denom = message.denom);
     return obj;
   },
 
@@ -95,6 +112,7 @@ export const UnbondingDelegation = {
     message.completionTime = object.completionTime ?? undefined;
     message.validatorAddress = object.validatorAddress ?? "";
     message.amount = object.amount ?? "";
+    message.denom = object.denom ?? "";
     return message;
   },
 };
