@@ -2,18 +2,6 @@
   "output_id": "degen_usd",
   "templates": [
     {
-      "template_id": "response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "120"
-          }
-        }
-      ]
-    },
-    {
       "template_id": "full_response_handler",
       "adapters": [
         {
@@ -35,78 +23,12 @@
   ],
   "jobs": [
     {
-      "output_id": "uniswap_base_degen_weth_rsp",
-      "adapters": [
-        {
-          "adapter": "evm_fetcher",
-          "config": {
-            "custom_node_url_key": "base_rpc",
-            "default_node_rpc": "https://base-mainnet.g.alchemy.com/v2/OxZVgR5bJpnKt4Vi3fwrTlQgQihl6352",
-            "address": "0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a",
-            "calldata": "0xc6a5026a0000000000000000000000004ed4e862860bed51a9570b96d89af5e1b0efefed00000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000bb80000000000000000000000000000000000000000000000000000000000000000"
-          }
-        },
-        {
-          "template": "response_handler"
-        }
-      ]
-    },
-    {
-      "input_id": "uniswap_base_degen_weth_rsp",
-      "output_id": "uniswap_base_degen_weth_18",
-      "adapter": "evm_struct_parser",
-      "config": {
-        "output_type": "uint256",
-        "output_struct": "[\"uint256\",\"uint160\",\"uint32\",\"uint256\"]",
-        "output_index": "0"
-      }
-    },
-    {
-      "input_id": "uniswap_base_degen_weth_18",
-      "output_id": "uniswap_base_degen_weth_18",
-      "adapter": "unchanged_handler",
-      "config": {
-        "strategy": "nullify",
-        "threshold_duration": "900"
-      }
-    },
-    {
-      "input_id": "uniswap_base_degen_weth_18",
-      "output_id": "uniswap_base_degen_weth",
-      "adapter": "decimal_handler",
-      "config": {
-        "operation": "decrease",
-        "exponent": "18"
-      }
-    },
-    {
-      "output_id": "eth_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": "SIDXETH",
-            "stale_allowance": "900"
-          }
-        }
-      ]
-    },
-    {
-      "output_id": "uniswap_base_degen_usd",
-      "adapter": "math_filter",
-      "input_id": "",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"uniswap_base_degen_weth\",\"eth_usd\"]"
-      }
-    },
-    {
       "output_id": "bybit_degen_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bybit_degen_usdt",
+            "custom_node_url_key": "bybit_perps_degen_usdt",
             "default_node_host": "https://api.bybit.com",
             "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=DEGENUSDT",
             "paths": "[\"result.price\"]",
@@ -117,6 +39,80 @@
           "template": "full_response_handler"
         }
       ]
+    },
+    {
+      "output_id": "kucoin_degen_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kucoin_degen_usdt",
+            "default_node_host": "https://api.kucoin.com",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=DEGEN-USDT",
+            "paths": "[\"data.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "htx_degen_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "htx_degen_usdt",
+            "default_node_host": "https://api.huobi.pro",
+            "default_node_path": "/market/trade?symbol=degenusdt",
+            "paths": "[\"tick.data.0.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "bybit_degen_usdt",
+      "output_id": "bybit_degen_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_degen_usdt\", \"kucoin_degen_usdt\", \"htx_degen_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "kucoin_degen_usdt",
+      "output_id": "kucoin_degen_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_degen_usdt\", \"kucoin_degen_usdt\", \"htx_degen_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "htx_degen_usdt",
+      "output_id": "htx_degen_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_degen_usdt\", \"kucoin_degen_usdt\", \"htx_degen_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "degen_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_degen_usdt\", \"kucoin_degen_usdt\", \"htx_degen_usdt\"]",
+        "weights": "[0.5, 0.2, 0.3]"
+      }
     },
     {
       "output_id": "usdt_usd",
@@ -131,40 +127,11 @@
       ]
     },
     {
-      "output_id": "bybit_degen_usd",
+      "output_id": "degen_usd",
       "adapter": "math_filter",
-      "input_id": "",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"bybit_degen_usdt\",\"usdt_usd\"]"
-      }
-    },
-    {
-      "input_id": "bybit_degen_usd",
-      "output_id": "bybit_degen_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_degen_usd\", \"uniswap_base_degen_usd\"]",
-        "tolerance_percentage": "1.5"
-      }
-    },
-    {
-      "input_id": "uniswap_base_degen_usd",
-      "output_id": "uniswap_base_degen_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_degen_usd\", \"uniswap_base_degen_usd\"]",
-        "tolerance_percentage": "1.5"
-      }
-    },
-    {
-      "output_id": "degen_usd",
-      "adapter": "weighted_average",
-      "config": {
-        "value_ids": "[\"uniswap_base_degen_usd\", \"bybit_degen_usd\"]",
-        "weights": "[0.5, 0.5]"
+        "input_ids": "[\"degen_usdt\",\"usdt_usd\"]"
       }
     },
     {

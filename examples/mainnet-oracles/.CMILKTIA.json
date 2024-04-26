@@ -28,15 +28,15 @@
       ]
     },
     {
-      "output_id": "osmosis_milktia_tia_pool",
+      "output_id": "milktia_tia_redemption_rate",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_1335_3",
+            "custom_node_url_key": "milktia_tia_redemption_rate",
             "default_node_host": "https://api-osmosis.carbon.network",
-            "default_node_path": "/cosmwasm/wasm/v1/contract/osmo1f5vfcph2dvfeqcqkhetwv75fda69z7e5c2dldm3kvgj23crkv6wqcn47a0/smart/eyJzdGF0ZSI6e319",
-            "paths": "[\"data.total_native_token\", \"data.total_liquid_stake_token\"]",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/osmo1atjchsl64ewkapy0p4a7h0pvprhpt0jwelem2es0jrd4fqwx7kgslxsvvl/smart/ewogICJyZWRlbXB0aW9uX3JhdGUiOnsKICAgICJkZW5vbSI6ICJmYWN0b3J5L29zbW8xZjV2ZmNwaDJkdmZlcWNxa2hldHd2NzVmZGE2OXo3ZTVjMmRsZG0za3ZnajIzY3JrdjZ3cWNuNDdhMC91bWlsa1RJQSIKICB9Cn0=",
+            "paths": "[\"data.redemption_rate\"]",
             "timeout": "10"
           }
         },
@@ -46,11 +46,30 @@
       ]
     },
     {
-      "output_id": "osmosis_milktia_tia",
+      "output_id": "osmosis_milktia_tia_swap_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_milktia_tia_swap_rate",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/poolmanager/pools/1335/prices?base_asset_denom=factory/osmo1f5vfcph2dvfeqcqkhetwv75fda69z7e5c2dldm3kvgj23crkv6wqcn47a0/umilkTIA&quote_asset_denom=ibc/D79E7D83AB399BFFF93433E54FAA480C191248FC556924A2A8351AE2638B3877",
+            "paths": "[\"spot_price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "milktia_redemption_rate",
       "adapter": "math_filter",
-      "input_id": "osmosis_milktia_tia_pool",
+      "input_id": "",
       "config": {
-        "operation": "divide"
+        "operation": "min",
+        "input_ids": "[\"milktia_tia_redemption_rate\",\"osmosis_milktia_tia_swap_rate\"]"
       }
     },
     {
@@ -58,7 +77,7 @@
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"osmosis_milktia_tia\", \"tia_usd\"]"
+        "input_ids": "[\"milktia_redemption_rate\", \"tia_usd\"]"
       }
     },
     {

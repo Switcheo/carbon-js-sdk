@@ -67,9 +67,9 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kujira_kuji_usdc_3",
+            "custom_node_url_key": "kujira_kuji_usdc_4",
             "default_node_host": "https://rest-kujira.ecostake.com",
-            "default_node_path": "/cosmwasm/wasm/v1/contract/kujira14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sl4e867/smart/eyJib29rIjp7ImxpbWl0IjogMX19",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/kujira1pw96huy6z02uk8hdpruk6g8u700dp8yxjhp46c24rwkzay2lfd3quqdum5/smart/eyJib29rIjp7ImxpbWl0IjogMX19",
             "paths": "[\"data.quote.0.quote_price\"]",
             "timeout": "10"
           }
@@ -80,11 +80,31 @@
       ]
     },
     {
+      "input_id": "osmosis_kuji_usdc",
+      "output_id": "osmosis_kuji_usdc",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"osmosis_kuji_usdc\", \"kujira_kuji_usdc\"]",
+        "tolerance_percentage": "1.5"
+      }
+    },
+    {
+      "input_id": "kujira_kuji_usdc",
+      "output_id": "kujira_kuji_usdc",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"osmosis_kuji_usdc\", \"kujira_kuji_usdc\"]",
+        "tolerance_percentage": "1.5"
+      }
+    },
+    {
       "output_id": "kuji_usdc",
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"kujira_kuji_usdc\", \"osmosis_kuji_usdc\"]",
-        "weights": "[0.7, 0.3]"
+        "weights": "[0.5, 0.5]"
       }
     },
     {
@@ -93,7 +113,7 @@
       "adapter": "float_handler",
       "config": {
         "operation": "round",
-        "precision": "3"
+        "precision": "6"
       }
     },
     {
