@@ -121,9 +121,16 @@ export class CarbonSigningClient extends StargateClient {
     signerData: CarbonSignerData,
     granterAddress?: string
   ): Promise<TxRaw> {
-    if (isCarbonEIP712Signer(this.signer) && (this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
-      return this.signLegacyEip712(signerAddress, messages, fee, memo, signerData)
+    if (isCarbonEIP712Signer(this.signer)) {
+      if ((this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
+        return this.signLegacyEip712(signerAddress, messages, fee, memo, signerData)
+      }
+      // Use amino sigining for metamask as there is a bug with signDirect signature verification
+      // ethermint verifies sign direct dec type  as shifted by 18dp when it should be unshifted (verified with keplr)
+      // therefore the alternative which works here would be to use signamino where the verification is not broken on ethermint.
+      return this.signAmino(signerAddress, messages, fee, memo, signerData, granterAddress);
     }
+
     return isOfflineDirectSigner(this.signer)
       ? this.signDirect(signerAddress, messages, fee, memo, signerData, granterAddress)
       : this.signAmino(signerAddress, messages, fee, memo, signerData, granterAddress);
