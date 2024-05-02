@@ -114,11 +114,11 @@ export interface QueryPerpPoolAPY extends QueryByPageRequest {
 
 export interface PerpPoolAPYEntry {
   denom: string;
-  annualizedApy1day: number;
-  annualizedApy7days: number;
-  annualizedApy14days: number;
-  annualizedApy30days: number;
-  annualizedApy90days: number;
+  annualizedApy1day: number | null;
+  annualizedApy7days: number | null;
+  annualizedApy14days: number | null;
+  annualizedApy30days: number | null;
+  annualizedApy90days: number | null;
 }
 
 export interface QueryPerpPoolAPYResponse {
