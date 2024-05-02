@@ -112,6 +112,19 @@ export interface QueryPerpPool7DaysAPY extends QueryByPageRequest {
   id: number
 }
 
+export interface QueryPerpPoolAPY extends QueryByPageRequest {
+  id: number;
+}
+
+export interface PerpPoolAPYEntry {
+  denom: string;
+  annualizedApy1day: number;
+  annualizedApy7days: number;
+  annualizedApy14days: number;
+  annualizedApy30days: number;
+  annualizedApy90days: number;
+}
+
 export interface PerpPool7DaysAPYEntry {
   latestPrice: number;
   previousPrice: number;
@@ -122,6 +135,11 @@ export interface PerpPool7DaysAPYEntry {
 
 export interface QueryPerpPool7DaysAPYResponse {
   entries: PerpPool7DaysAPYEntry[];
+  meta: PageMeta;
+}
+
+export interface QueryPerpPoolAPYResponse {
+  entries: PerpPoolAPYEntry[];
   meta: PageMeta;
 }
 
