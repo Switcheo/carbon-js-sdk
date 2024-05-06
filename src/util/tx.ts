@@ -4,6 +4,7 @@ import { DEFAULT_FEE } from "@carbon-sdk/constant";
 import { StdFee } from "@cosmjs/amino";
 import { SignerData } from "@cosmjs/stargate";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
+import { EncodeObject } from "@cosmjs/proto-signing";
 export { StdSignDoc } from "@cosmjs/amino";
 
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
@@ -176,3 +177,26 @@ export const TxGasCostTypeMap = {
   [TxTypes.MsgStakePoolToken]: "stake_pool_token",
   [TxTypes.MsgUnstakePoolToken]: "unstake_pool_token",
 };
+
+const LibPackages: string[] = ['ibc', 'cosmos', 'alliance']
+
+const BacklistedMessages: string[] = []
+
+
+// to use signDirect for metamask signing if messages are from libraries (cosmos-sdk, ibc, alliance).
+// Reasons:
+// 1. There is decoding issue with MsgGrantAllowance in amino
+// 2. For Ibc MsgTransfer, there is an overflow issue with timeouttimestamp overflow (from uint32) during unmarshalJSON, even though it is defined as uint64 
+// (This can be resolved from the client side by use sendIBCTransfer instead of sendIBCTransferV2) but using signDirect here fixes it too.
+// 3. Ethermint is still using legacyMsg.getSigners() to verify many amino signed eip712 txs. However, getSigners() is deprecated and not implmented in messages from cosmos-sdk anymore.
+// 4. as of comsos-sdk v0.50 --> very few messages are using legacyDec so we can safely use signDirect
+export const useSignDirectForMetamask = (messages: readonly EncodeObject[]): boolean => {
+  const typeUrls = messages.map(m => m.typeUrl)
+  return !!Object.values(TxTypes).find(typeUrl => isLibMsg(typeUrl) && typeUrls.includes(typeUrl))
+}
+
+export const isLibMsg = (typeUrl: string): boolean => {
+  // /ibc.core.client.v1.UpgradeProposal --> ibc
+  const pkg = typeUrl.split('.')[0].substring(1)
+  return LibPackages.includes(pkg) && !BacklistedMessages.includes(typeUrl)
+}
