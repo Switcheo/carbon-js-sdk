@@ -36,6 +36,7 @@ export class IBCModule extends BaseModule {
       ...(params.timeoutTimestamp && {
         timeoutTimestamp: params.timeoutTimestamp,
       }),
+      memo: params.memo ?? "",
     });
 
     return await wallet.sendTx(
@@ -68,6 +69,7 @@ export class IBCModule extends BaseModule {
       ...params.timeoutTimestamp && ({
         timeoutTimestamp: params.timeoutTimestamp.toNumber(),
       }),
+      memo: params.memo ?? "",
     });
 
     return await wallet.sendTx(
@@ -281,6 +283,7 @@ export namespace IBCModule {
     revisionHeight?: number;
     revisionNumber?: number;
     timeoutTimestamp?: number;
+    memo?: string;
   }
 
   export interface SendIBCTransferV2Params {
@@ -295,5 +298,6 @@ export namespace IBCModule {
       revisionHeight: BigNumber;
     };
     timeoutTimestamp?: BigNumber;
+    memo?: string;
   }
 }
