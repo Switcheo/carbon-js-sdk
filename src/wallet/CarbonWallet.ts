@@ -886,29 +886,26 @@ export class CarbonWallet {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
-  private async getAccount(queryAddress: string) {
-    let retryCount = 0
-    const maxRetries = 2
-    while (retryCount < maxRetries) {
-      try {
-        const account = (await this.getQueryClient().auth.Account({ address: queryAddress }))
-        if (account && account.account) {
-          const { accountNumber, sequence, address } = BaseAccount.decode(account.account.value)
-          return {
-            address,
-            accountNumber: accountNumber.toNumber(),
-            sequence: sequence.toNumber(),
-          }
+  private async getAccount(queryAddress: string, retryCount: number = 0): Promise<any | undefined> {
+    try {
+      const account = (await this.getQueryClient().auth.Account({ address: queryAddress }))
+      if (account && account.account) {
+        const { accountNumber, sequence, address } = BaseAccount.decode(account.account.value)
+        return {
+          address,
+          accountNumber: accountNumber.toNumber(),
+          sequence: sequence.toNumber(),
         }
-      } catch (error: any) {
-        if (!this.isAccountNotFoundError(error, queryAddress))
-          throw error
       }
-      retryCount++
-      if (retryCount < maxRetries) {
-        await this.delay(1000)
-      }
+    } catch (error: any) {
+      if (!this.isAccountNotFoundError(error, queryAddress))
+        throw error
     }
+    if (retryCount < 1) {
+      await this.delay(1000);
+      return this.getAccount(queryAddress, retryCount + 1)
+    }
+
     return undefined
   }
 
