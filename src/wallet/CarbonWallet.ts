@@ -894,8 +894,8 @@ export class CarbonWallet {
 
   private async getAccount(queryAddress: string, retryCount: number = 0): Promise<QueryAccountInfo | undefined> {
     try {
-      const account = (await this.getQueryClient().auth.Account({ address: queryAddress }))
-      if (account && account.account) {
+      const account = await this.getQueryClient().auth.Account({ address: queryAddress })
+      if (account?.account) {
         const { accountNumber, sequence, address } = BaseAccount.decode(account.account.value)
         return {
           address,
