@@ -902,6 +902,8 @@ export class CarbonWallet {
       if (!this.isAccountNotFoundError(error, queryAddress))
         throw error
     }
+    // when grant is just created, querying grantee account info immediately may fail maybe due to backend caching
+    // retry query after 1s to buffer for backend to catch up
     if (retryCount < 1) {
       await this.delay(1000);
       return this.getAccount(queryAddress, retryCount + 1)
