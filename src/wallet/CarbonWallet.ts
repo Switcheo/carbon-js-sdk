@@ -116,6 +116,12 @@ export interface AccountInfo extends Account {
   chainId: string;
 }
 
+export interface QueryAccountInfo {
+  readonly address: string;
+  readonly accountNumber: number;
+  readonly sequence: number;
+}
+
 export interface Grantee {
   expiry: Date;
   signer: OfflineDirectSigner;
@@ -886,7 +892,7 @@ export class CarbonWallet {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
-  private async getAccount(queryAddress: string, retryCount: number = 0): Promise<any | undefined> {
+  private async getAccount(queryAddress: string, retryCount: number = 0): Promise<QueryAccountInfo | undefined> {
     try {
       const account = (await this.getQueryClient().auth.Account({ address: queryAddress }))
       if (account && account.account) {
