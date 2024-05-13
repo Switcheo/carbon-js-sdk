@@ -34,7 +34,7 @@ interface SimpleMap<OracleParams> {
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const TESTNET_ORACLE_URL = "http://localhost:1317/carbon/oracle/v1/oracles?pagination.limit=100"
+  const TESTNET_ORACLE_URL = "https://dev-api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=100"
   const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=100"
 
   const testnetOracles = await fetch(TESTNET_ORACLE_URL).then((res) => res.json());
