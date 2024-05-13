@@ -882,22 +882,34 @@ export class CarbonWallet {
     return bech32Acc ?? evmBech32Acc ?? undefined
   }
 
-  private async getAccount(queryAddress: string) {
-    try {
-      const account = (await this.getQueryClient().auth.Account({ address: queryAddress })).account
-      if (!account) return;
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 
-      const { accountNumber, sequence, address } = BaseAccount.decode(account.value)
-      return {
-        address,
-        accountNumber: accountNumber.toNumber(),
-        sequence: sequence.toNumber(),
+  private async getAccount(queryAddress: string) {
+    let retryCount = 0
+    const maxRetries = 2
+    while (retryCount < maxRetries) {
+      try {
+        const account = (await this.getQueryClient().auth.Account({ address: queryAddress }))
+        if (account && account.account) {
+          const { accountNumber, sequence, address } = BaseAccount.decode(account.account.value)
+          return {
+            address,
+            accountNumber: accountNumber.toNumber(),
+            sequence: sequence.toNumber(),
+          }
+        }
+      } catch (error: any) {
+        if (!this.isAccountNotFoundError(error, queryAddress))
+          throw error
       }
-    } catch (error: any) {
-      if (!this.isAccountNotFoundError(error, queryAddress))
-        throw error
+      retryCount++
+      if (retryCount < maxRetries) {
+        await this.delay(1000)
+      }
     }
-    return
+    return undefined
   }
 
   public async reloadAccountSequence() {
