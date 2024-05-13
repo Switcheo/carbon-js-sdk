@@ -90,6 +90,39 @@ export interface MsgUpdateParams {
  */
 export interface MsgUpdateParamsResponse {}
 
+export interface OracleTxSignatureInfo {
+  validator: Uint8Array;
+  validatorIndex: number;
+  signature: Uint8Array;
+  signedTimestamp: Long;
+}
+
+export interface OracleIndexInfo {
+  /** stored as the oracle index position to save space, */
+  oracleIndex: number;
+  /** convert back to string during processing */
+  oracleDataInfo: OracleDataInfo[];
+}
+
+export interface OracleDataInfo {
+  data: string;
+  oracleTimestampInfo: OracleTimestampInfo[];
+}
+
+export interface OracleTimestampInfo {
+  timestamp: Long;
+  validatorIndexes: number[];
+}
+
+export interface MsgCreateResult {
+  /** proposer is the address of the block proposer */
+  proposer: string;
+  signatureInfo: OracleTxSignatureInfo[];
+  oracleIndexInfo: OracleIndexInfo[];
+}
+
+export interface MsgCreateResultResponse {}
+
 const baseMsgCreateOracle: object = { creator: "" };
 
 export const MsgCreateOracle = {
@@ -1250,6 +1283,501 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
+const baseOracleTxSignatureInfo: object = {
+  validatorIndex: 0,
+  signedTimestamp: Long.ZERO,
+};
+
+export const OracleTxSignatureInfo = {
+  encode(
+    message: OracleTxSignatureInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.validator.length !== 0) {
+      writer.uint32(10).bytes(message.validator);
+    }
+    if (message.validatorIndex !== 0) {
+      writer.uint32(16).int32(message.validatorIndex);
+    }
+    if (message.signature.length !== 0) {
+      writer.uint32(26).bytes(message.signature);
+    }
+    if (!message.signedTimestamp.isZero()) {
+      writer.uint32(32).int64(message.signedTimestamp);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): OracleTxSignatureInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOracleTxSignatureInfo } as OracleTxSignatureInfo;
+    message.validator = new Uint8Array();
+    message.signature = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.validator = reader.bytes();
+          break;
+        case 2:
+          message.validatorIndex = reader.int32();
+          break;
+        case 3:
+          message.signature = reader.bytes();
+          break;
+        case 4:
+          message.signedTimestamp = reader.int64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OracleTxSignatureInfo {
+    const message = { ...baseOracleTxSignatureInfo } as OracleTxSignatureInfo;
+    message.validator =
+      object.validator !== undefined && object.validator !== null
+        ? bytesFromBase64(object.validator)
+        : new Uint8Array();
+    message.validatorIndex =
+      object.validatorIndex !== undefined && object.validatorIndex !== null
+        ? Number(object.validatorIndex)
+        : 0;
+    message.signature =
+      object.signature !== undefined && object.signature !== null
+        ? bytesFromBase64(object.signature)
+        : new Uint8Array();
+    message.signedTimestamp =
+      object.signedTimestamp !== undefined && object.signedTimestamp !== null
+        ? Long.fromString(object.signedTimestamp)
+        : Long.ZERO;
+    return message;
+  },
+
+  toJSON(message: OracleTxSignatureInfo): unknown {
+    const obj: any = {};
+    message.validator !== undefined &&
+      (obj.validator = base64FromBytes(
+        message.validator !== undefined ? message.validator : new Uint8Array()
+      ));
+    message.validatorIndex !== undefined &&
+      (obj.validatorIndex = message.validatorIndex);
+    message.signature !== undefined &&
+      (obj.signature = base64FromBytes(
+        message.signature !== undefined ? message.signature : new Uint8Array()
+      ));
+    message.signedTimestamp !== undefined &&
+      (obj.signedTimestamp = (message.signedTimestamp || Long.ZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<OracleTxSignatureInfo>
+  ): OracleTxSignatureInfo {
+    const message = { ...baseOracleTxSignatureInfo } as OracleTxSignatureInfo;
+    message.validator = object.validator ?? new Uint8Array();
+    message.validatorIndex = object.validatorIndex ?? 0;
+    message.signature = object.signature ?? new Uint8Array();
+    message.signedTimestamp =
+      object.signedTimestamp !== undefined && object.signedTimestamp !== null
+        ? Long.fromValue(object.signedTimestamp)
+        : Long.ZERO;
+    return message;
+  },
+};
+
+const baseOracleIndexInfo: object = { oracleIndex: 0 };
+
+export const OracleIndexInfo = {
+  encode(
+    message: OracleIndexInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.oracleIndex !== 0) {
+      writer.uint32(8).int32(message.oracleIndex);
+    }
+    for (const v of message.oracleDataInfo) {
+      OracleDataInfo.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OracleIndexInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOracleIndexInfo } as OracleIndexInfo;
+    message.oracleDataInfo = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.oracleIndex = reader.int32();
+          break;
+        case 2:
+          message.oracleDataInfo.push(
+            OracleDataInfo.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OracleIndexInfo {
+    const message = { ...baseOracleIndexInfo } as OracleIndexInfo;
+    message.oracleIndex =
+      object.oracleIndex !== undefined && object.oracleIndex !== null
+        ? Number(object.oracleIndex)
+        : 0;
+    message.oracleDataInfo = (object.oracleDataInfo ?? []).map((e: any) =>
+      OracleDataInfo.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: OracleIndexInfo): unknown {
+    const obj: any = {};
+    message.oracleIndex !== undefined &&
+      (obj.oracleIndex = message.oracleIndex);
+    if (message.oracleDataInfo) {
+      obj.oracleDataInfo = message.oracleDataInfo.map((e) =>
+        e ? OracleDataInfo.toJSON(e) : undefined
+      );
+    } else {
+      obj.oracleDataInfo = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OracleIndexInfo>): OracleIndexInfo {
+    const message = { ...baseOracleIndexInfo } as OracleIndexInfo;
+    message.oracleIndex = object.oracleIndex ?? 0;
+    message.oracleDataInfo = (object.oracleDataInfo ?? []).map((e) =>
+      OracleDataInfo.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseOracleDataInfo: object = { data: "" };
+
+export const OracleDataInfo = {
+  encode(
+    message: OracleDataInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.data !== "") {
+      writer.uint32(10).string(message.data);
+    }
+    for (const v of message.oracleTimestampInfo) {
+      OracleTimestampInfo.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OracleDataInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOracleDataInfo } as OracleDataInfo;
+    message.oracleTimestampInfo = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.data = reader.string();
+          break;
+        case 2:
+          message.oracleTimestampInfo.push(
+            OracleTimestampInfo.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OracleDataInfo {
+    const message = { ...baseOracleDataInfo } as OracleDataInfo;
+    message.data =
+      object.data !== undefined && object.data !== null
+        ? String(object.data)
+        : "";
+    message.oracleTimestampInfo = (object.oracleTimestampInfo ?? []).map(
+      (e: any) => OracleTimestampInfo.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: OracleDataInfo): unknown {
+    const obj: any = {};
+    message.data !== undefined && (obj.data = message.data);
+    if (message.oracleTimestampInfo) {
+      obj.oracleTimestampInfo = message.oracleTimestampInfo.map((e) =>
+        e ? OracleTimestampInfo.toJSON(e) : undefined
+      );
+    } else {
+      obj.oracleTimestampInfo = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OracleDataInfo>): OracleDataInfo {
+    const message = { ...baseOracleDataInfo } as OracleDataInfo;
+    message.data = object.data ?? "";
+    message.oracleTimestampInfo = (object.oracleTimestampInfo ?? []).map((e) =>
+      OracleTimestampInfo.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseOracleTimestampInfo: object = {
+  timestamp: Long.ZERO,
+  validatorIndexes: 0,
+};
+
+export const OracleTimestampInfo = {
+  encode(
+    message: OracleTimestampInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.timestamp.isZero()) {
+      writer.uint32(8).int64(message.timestamp);
+    }
+    writer.uint32(18).fork();
+    for (const v of message.validatorIndexes) {
+      writer.int32(v);
+    }
+    writer.ldelim();
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OracleTimestampInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOracleTimestampInfo } as OracleTimestampInfo;
+    message.validatorIndexes = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.timestamp = reader.int64() as Long;
+          break;
+        case 2:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.validatorIndexes.push(reader.int32());
+            }
+          } else {
+            message.validatorIndexes.push(reader.int32());
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OracleTimestampInfo {
+    const message = { ...baseOracleTimestampInfo } as OracleTimestampInfo;
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? Long.fromString(object.timestamp)
+        : Long.ZERO;
+    message.validatorIndexes = (object.validatorIndexes ?? []).map((e: any) =>
+      Number(e)
+    );
+    return message;
+  },
+
+  toJSON(message: OracleTimestampInfo): unknown {
+    const obj: any = {};
+    message.timestamp !== undefined &&
+      (obj.timestamp = (message.timestamp || Long.ZERO).toString());
+    if (message.validatorIndexes) {
+      obj.validatorIndexes = message.validatorIndexes.map((e) => e);
+    } else {
+      obj.validatorIndexes = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OracleTimestampInfo>): OracleTimestampInfo {
+    const message = { ...baseOracleTimestampInfo } as OracleTimestampInfo;
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? Long.fromValue(object.timestamp)
+        : Long.ZERO;
+    message.validatorIndexes = (object.validatorIndexes ?? []).map((e) => e);
+    return message;
+  },
+};
+
+const baseMsgCreateResult: object = { proposer: "" };
+
+export const MsgCreateResult = {
+  encode(
+    message: MsgCreateResult,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.proposer !== "") {
+      writer.uint32(10).string(message.proposer);
+    }
+    for (const v of message.signatureInfo) {
+      OracleTxSignatureInfo.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.oracleIndexInfo) {
+      OracleIndexInfo.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateResult {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateResult } as MsgCreateResult;
+    message.signatureInfo = [];
+    message.oracleIndexInfo = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.proposer = reader.string();
+          break;
+        case 2:
+          message.signatureInfo.push(
+            OracleTxSignatureInfo.decode(reader, reader.uint32())
+          );
+          break;
+        case 3:
+          message.oracleIndexInfo.push(
+            OracleIndexInfo.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateResult {
+    const message = { ...baseMsgCreateResult } as MsgCreateResult;
+    message.proposer =
+      object.proposer !== undefined && object.proposer !== null
+        ? String(object.proposer)
+        : "";
+    message.signatureInfo = (object.signatureInfo ?? []).map((e: any) =>
+      OracleTxSignatureInfo.fromJSON(e)
+    );
+    message.oracleIndexInfo = (object.oracleIndexInfo ?? []).map((e: any) =>
+      OracleIndexInfo.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: MsgCreateResult): unknown {
+    const obj: any = {};
+    message.proposer !== undefined && (obj.proposer = message.proposer);
+    if (message.signatureInfo) {
+      obj.signatureInfo = message.signatureInfo.map((e) =>
+        e ? OracleTxSignatureInfo.toJSON(e) : undefined
+      );
+    } else {
+      obj.signatureInfo = [];
+    }
+    if (message.oracleIndexInfo) {
+      obj.oracleIndexInfo = message.oracleIndexInfo.map((e) =>
+        e ? OracleIndexInfo.toJSON(e) : undefined
+      );
+    } else {
+      obj.oracleIndexInfo = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateResult>): MsgCreateResult {
+    const message = { ...baseMsgCreateResult } as MsgCreateResult;
+    message.proposer = object.proposer ?? "";
+    message.signatureInfo = (object.signatureInfo ?? []).map((e) =>
+      OracleTxSignatureInfo.fromPartial(e)
+    );
+    message.oracleIndexInfo = (object.oracleIndexInfo ?? []).map((e) =>
+      OracleIndexInfo.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseMsgCreateResultResponse: object = {};
+
+export const MsgCreateResultResponse = {
+  encode(
+    _: MsgCreateResultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateResultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateResultResponse,
+    } as MsgCreateResultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCreateResultResponse {
+    const message = {
+      ...baseMsgCreateResultResponse,
+    } as MsgCreateResultResponse;
+    return message;
+  },
+
+  toJSON(_: MsgCreateResultResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgCreateResultResponse>
+  ): MsgCreateResultResponse {
+    const message = {
+      ...baseMsgCreateResultResponse,
+    } as MsgCreateResultResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -1267,6 +1795,7 @@ export interface Msg {
    * Since: cosmos-sdk 0.47
    */
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
+  CreateResult(request: MsgCreateResult): Promise<MsgCreateResultResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1279,6 +1808,7 @@ export class MsgClientImpl implements Msg {
     this.RemoveOracle = this.RemoveOracle.bind(this);
     this.SetOracleSlashEnabled = this.SetOracleSlashEnabled.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
+    this.CreateResult = this.CreateResult.bind(this);
   }
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse> {
     const data = MsgCreateOracle.encode(request).finish();
@@ -1353,6 +1883,18 @@ export class MsgClientImpl implements Msg {
       MsgUpdateParamsResponse.decode(new _m0.Reader(data))
     );
   }
+
+  CreateResult(request: MsgCreateResult): Promise<MsgCreateResultResponse> {
+    const data = MsgCreateResult.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Msg",
+      "CreateResult",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateResultResponse.decode(new _m0.Reader(data))
+    );
+  }
 }
 
 interface Rpc {
@@ -1361,6 +1903,40 @@ interface Rpc {
     method: string,
     data: Uint8Array
   ): Promise<Uint8Array>;
+}
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (const byte of arr) {
+    bin.push(String.fromCharCode(byte));
+  }
+  return btoa(bin.join(""));
 }
 
 type Builtin =

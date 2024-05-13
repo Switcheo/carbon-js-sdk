@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { IdentifiedChannel, PacketState } from "./channel";
+import { Params, IdentifiedChannel, PacketState } from "./channel";
 
 export const protobufPackage = "ibc.core.channel.v1";
 
@@ -16,6 +16,7 @@ export interface GenesisState {
   ackSequences: PacketSequence[];
   /** the sequence for the next generated channel identifier */
   nextChannelSequence: Long;
+  params?: Params;
 }
 
 /**
@@ -58,6 +59,9 @@ export const GenesisState = {
     }
     if (!message.nextChannelSequence.isZero()) {
       writer.uint32(64).uint64(message.nextChannelSequence);
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -110,6 +114,9 @@ export const GenesisState = {
         case 8:
           message.nextChannelSequence = reader.uint64() as Long;
           break;
+        case 9:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -146,6 +153,10 @@ export const GenesisState = {
       object.nextChannelSequence !== null
         ? Long.fromString(object.nextChannelSequence)
         : Long.UZERO;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -204,6 +215,8 @@ export const GenesisState = {
       (obj.nextChannelSequence = (
         message.nextChannelSequence || Long.UZERO
       ).toString());
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -235,6 +248,10 @@ export const GenesisState = {
       object.nextChannelSequence !== null
         ? Long.fromValue(object.nextChannelSequence)
         : Long.UZERO;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };
