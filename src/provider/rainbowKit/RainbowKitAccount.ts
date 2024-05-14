@@ -15,7 +15,7 @@ import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { Blockchain, BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
-import { CarbonEvmChainIDs, Network } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, Network, RequestArguments } from "@carbon-sdk/constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 
@@ -23,11 +23,6 @@ export interface RainbowKitWalletOpts {
   publicKeyMessage?: string
   publicKeyBase64: string;
   walletProvider: SupportedEip6963Provider;
-}
-
-interface RequestArguments {
-  method: string;
-  params?: unknown[] | object;
 }
 
 interface RainbowkitAPI {

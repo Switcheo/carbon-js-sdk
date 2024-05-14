@@ -332,8 +332,9 @@ export class CarbonWallet {
   public static withRainbowKit(rainbowKit: RainbowKitAccount, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, walletProvider: SupportedEip6963Provider, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, compressedPubKeyBase64, addressOptions)
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
-      providerAgent: walletProvider,
       ...opts,
+      providerAgent: walletProvider,
+      isRainbowKit: true,
     });
     return wallet;
   }

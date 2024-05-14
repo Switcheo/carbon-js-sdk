@@ -29,3 +29,8 @@ export const CARBON_GAS_PRICE: GasPriceStep = {
   average: 1.5,
   high: 2,
 };
+
+export interface RequestArguments {
+  method: string;
+  params?: unknown[] | object;
+}

@@ -1,4 +1,4 @@
-import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs, SupportedEip6963Provider } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -104,11 +104,6 @@ const getEncryptMessage = (input: string) => {
     .trim()
     .replace(/^\s+/gm, "");
 };
-
-interface RequestArguments {
-  method: string;
-  params?: unknown[] | object;
-}
 
 interface MetaMaskAPI {
   isMetaMask: boolean;

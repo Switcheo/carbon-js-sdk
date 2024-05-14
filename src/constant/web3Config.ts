@@ -14,12 +14,12 @@ export interface ChangeNetworkParam {
   rpcUrls?: string[];
 }
 
-const CarbonEvmNativeCurrency = {
+export const CarbonEvmNativeCurrency = {
   decimals: 18,
   name: "SWTH",
   symbol: "SWTH",
 }
-  
+
 export const CARBON_EVM_LOCALHOST: ChangeNetworkParam  = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.LocalHost])).toString(16)}`,
   blockExplorerUrls: ["https://evm-scan.carbon.network"],
