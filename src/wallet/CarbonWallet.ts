@@ -438,7 +438,7 @@ export class CarbonWallet {
     const isEvmWallet = this.isEvmWallet()
     if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
       this.sequenceInvalidated = true;
-      throw new Error('Transaction is not allowed from a non-evm wallet for an account with only funds in evm address')
+      throw new Error(`Transaction is not allowed from a non-evm wallet for an account with only funds in evm address: evmAddress: ${this.evmBech32Address}, carbonAddress: ${this.bech32Address}`)
     }
   }
 
