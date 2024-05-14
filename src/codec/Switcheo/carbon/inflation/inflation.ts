@@ -5,7 +5,10 @@ import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.inflation";
 
-/** MintData represents the parameters by the inflation module. */
+/**
+ * MintData represents the parameters by the inflation module.
+ * TODO: CLEAN UP IN SEPARATE PR
+ */
 export interface MintData {
   /** TODO: deprecated, set to reserved after migration */
   legacyFirstBlockTime: Long;

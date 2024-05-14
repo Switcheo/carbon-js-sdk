@@ -17,6 +17,7 @@ export interface Params {
 export interface RewardHistory {
   denom: string;
   index: string;
+  alliance: string;
 }
 
 const baseParams: object = {};
@@ -126,7 +127,7 @@ export const Params = {
   },
 };
 
-const baseRewardHistory: object = { denom: "", index: "" };
+const baseRewardHistory: object = { denom: "", index: "", alliance: "" };
 
 export const RewardHistory = {
   encode(
@@ -138,6 +139,9 @@ export const RewardHistory = {
     }
     if (message.index !== "") {
       writer.uint32(18).string(message.index);
+    }
+    if (message.alliance !== "") {
+      writer.uint32(26).string(message.alliance);
     }
     return writer;
   },
@@ -154,6 +158,9 @@ export const RewardHistory = {
           break;
         case 2:
           message.index = reader.string();
+          break;
+        case 3:
+          message.alliance = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -173,6 +180,10 @@ export const RewardHistory = {
       object.index !== undefined && object.index !== null
         ? String(object.index)
         : "";
+    message.alliance =
+      object.alliance !== undefined && object.alliance !== null
+        ? String(object.alliance)
+        : "";
     return message;
   },
 
@@ -180,6 +191,7 @@ export const RewardHistory = {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
     message.index !== undefined && (obj.index = message.index);
+    message.alliance !== undefined && (obj.alliance = message.alliance);
     return obj;
   },
 
@@ -187,6 +199,7 @@ export const RewardHistory = {
     const message = { ...baseRewardHistory } as RewardHistory;
     message.denom = object.denom ?? "";
     message.index = object.index ?? "";
+    message.alliance = object.alliance ?? "";
     return message;
   },
 };

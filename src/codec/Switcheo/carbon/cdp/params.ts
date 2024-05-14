@@ -47,15 +47,25 @@ export interface Params {
    */
   smallLiquidationSize: string;
   /**
-   * stale_price_grace_period determines the grace period before an oracle price is regarded as stale.
-   * This would cause certain actions like borrowing to be paused
+   * stale_price_grace_period determines the grace period before an oracle price
+   * is regarded as stale. This would cause certain actions like borrowing to be
+   * paused
    */
   stalePriceGracePeriod?: Duration;
-  /** cdp_paused if true, causes all supply, locking, lending, borrowing and liquidations to be paused */
+  /**
+   * cdp_paused if true, causes all supply, locking, lending, borrowing and
+   * liquidations to be paused
+   */
   cdpPaused: boolean;
-  /** time interval in between each adjustment of stablecoin interest rate to help stablecoin price stability */
+  /**
+   * time interval in between each adjustment of stablecoin interest rate to
+   * help stablecoin price stability
+   */
   stablecoinInterestRateEpoch?: Duration;
-  /** used in formula to calculate stablecoin interest rate to help stablecoin price stability */
+  /**
+   * used in formula to calculate stablecoin interest rate to help stablecoin
+   * price stability
+   */
   stablecoinInterestRateAdjusterCoefficient: string;
 }
 

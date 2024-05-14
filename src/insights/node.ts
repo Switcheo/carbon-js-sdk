@@ -16,7 +16,6 @@ export interface NodeItem {
   wsUptime: string; // string rep of number
   insightUptime: string; // string rep of number
   tmWsUrl: string;
-  grpcWebUrl: string;
   appVersion: string;
   appCommit: string;
   creator: Creator;

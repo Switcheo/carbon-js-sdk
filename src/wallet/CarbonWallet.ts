@@ -447,12 +447,12 @@ export class CarbonWallet {
   */
   async checkWalletSignatureCompatibility() {
     const query = this.getQueryClient()
-    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address })).balances.length > 0
-    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address })).balances.length > 0
+    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address, resolveDenom: false })).balances.length > 0
+    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address, resolveDenom: false })).balances.length > 0
     const isEvmWallet = this.isEvmWallet()
     if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
       this.sequenceInvalidated = true;
-      throw new Error('Transaction is not allowed from a non-evm wallet for an account with only funds in evm address')
+      throw new Error(`Transaction is not allowed from a non-evm wallet for an account with only funds in evm address: evmAddress: ${this.evmBech32Address}, carbonAddress: ${this.bech32Address}`)
     }
   }
 
@@ -896,22 +896,34 @@ export class CarbonWallet {
     return bech32Acc ?? evmBech32Acc ?? undefined
   }
 
-  private async getAccount(queryAddress: string) {
-    try {
-      const account = (await this.getQueryClient().auth.Account({ address: queryAddress })).account
-      if (!account) return;
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 
-      const { accountNumber, sequence, address } = BaseAccount.decode(account.value)
-      return {
-        address,
-        accountNumber: accountNumber.toNumber(),
-        sequence: sequence.toNumber(),
+  private async getAccount(queryAddress: string, retryCount: number = 0): Promise<Account | undefined> {
+    try {
+      const result = await this.getQueryClient().auth.Account({ address: queryAddress })
+      if (result?.account) {
+        const { accountNumber, sequence, address } = BaseAccount.decode(result.account.value)
+        return {
+          address,
+          pubkey: null,
+          accountNumber: accountNumber.toNumber(),
+          sequence: sequence.toNumber(),
+        }
       }
     } catch (error: any) {
       if (!this.isAccountNotFoundError(error, queryAddress))
         throw error
     }
-    return
+    // when grant is just created, querying grantee account info immediately may fail maybe due to backend caching
+    // retry query after 1s to buffer for backend to catch up
+    if (retryCount < 1) {
+      await this.delay(1000);
+      return this.getAccount(queryAddress, retryCount + 1)
+    }
+
+    return undefined
   }
 
   public async reloadAccountSequence() {

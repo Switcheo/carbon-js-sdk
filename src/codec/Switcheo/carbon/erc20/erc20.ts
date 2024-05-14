@@ -57,7 +57,10 @@ export interface TokenPair {
   denom: string;
   /** enabled defines the token mapping enable status */
   enabled: boolean;
-  /** contract_owner is the an ENUM specifying the type of ERC20 owner (0 invalid, 1 ModuleAccount, 2 external address) */
+  /**
+   * contract_owner is the an ENUM specifying the type of ERC20 owner (0
+   * invalid, 1 ModuleAccount, 2 external address)
+   */
   contractOwner: Owner;
 }
 
