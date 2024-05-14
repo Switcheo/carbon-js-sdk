@@ -1,4 +1,4 @@
-import { AddressUtils, AminoTypesMap, CarbonSDK, CarbonTx, EVMChain as EVMChainV2, Models } from "@carbon-sdk/index";
+import { AddressUtils, AminoTypesMap, CarbonSDK, CarbonTx, EVMChain as EVMChainV2, Models, SupportedEip6963Provider } from "@carbon-sdk/index";
 import { ETH_SECP256K1_TYPE, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo, EncodeObject } from "@cosmjs/proto-signing";
@@ -16,12 +16,13 @@ import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { Blockchain, BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
 import { CarbonEvmChainIDs, Network } from "@carbon-sdk/constant";
+import { Eip6963Provider } from "../eip6963Provider";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 
 export interface RainbowKitWalletOpts {
   publicKeyMessage?: string
   publicKeyBase64: string;
-  walletProvider: string;
+  walletProvider: SupportedEip6963Provider;
 }
 
 interface RequestArguments {
@@ -42,7 +43,7 @@ export interface SyncResult  {
 
 export type EVMChain = EVMChainV2;
 
-class RainbowKitAccount {
+class RainbowKitAccount extends Eip6963Provider {
   private provider: unknown
   private blockchain: EVMChain = 'Ethereum';
 
@@ -167,6 +168,7 @@ class RainbowKitAccount {
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
+      legacyEip712SignMode: rainbowKit.legacyEip712SignMode,
       getAccounts,
       signDirect,
       sendEvmTransaction,
@@ -176,6 +178,7 @@ class RainbowKitAccount {
   }
 
   constructor(provider: unknown, public readonly legacyEip712SignMode: boolean = false) {
+    super()
     this.provider = provider
   }
 
@@ -342,7 +345,7 @@ class RainbowKitAccount {
     const ethereum = this.getApi()
 
     return await signTransactionWrapper(async () => {
-      const signature= await ethereum.request({ 
+      const signature= await ethereum.request({
         method: 'eth_signTypedData_v4',
         params: [
           evmHexAddress,

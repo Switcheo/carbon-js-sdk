@@ -1,4 +1,4 @@
-import { SupportedEip6963Provider } from "@carbon-sdk/constant"
+import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail, SupportedEip6963Provider } from "@carbon-sdk/constant"
 
 class Eip6963Provider {
   private providers: EIP6963ProviderDetail[] = []
@@ -18,7 +18,7 @@ class Eip6963Provider {
       if(providers.map(p => p.info.uuid).includes(event.detail.info.uuid)) return
       providers = [...providers, event.detail]
     }
-    
+
     window.addEventListener("eip6963:announceProvider", onAnnouncement);
     window.dispatchEvent(new Event("eip6963:requestProvider"));
 

@@ -576,6 +576,7 @@ class CarbonSDK {
 
     const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, rainbowKitWalletOpts.publicKeyBase64, addressOptions, rainbowKitWalletOpts.walletProvider, {
       ...opts,
+      isRainbowKit: true,
       network: this.network,
       config: this.configOverride,
     })

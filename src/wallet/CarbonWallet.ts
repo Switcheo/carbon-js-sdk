@@ -5,7 +5,7 @@ import { registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
-import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs, SupportedEip6963Provider } from "@carbon-sdk/constant";
 import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
@@ -329,7 +329,7 @@ export class CarbonWallet {
     return wallet;
   }
 
-  public static withRainbowKit(rainbowKit: RainbowKitAccount, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, walletProvider: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+  public static withRainbowKit(rainbowKit: RainbowKitAccount, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, walletProvider: SupportedEip6963Provider, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, compressedPubKeyBase64, addressOptions)
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
       providerAgent: walletProvider,

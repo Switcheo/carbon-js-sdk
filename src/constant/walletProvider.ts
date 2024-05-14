@@ -8,5 +8,4 @@ export enum ProviderAgent {
   Metamask = "metamask",
   Web3Auth = "web3auth",
   Rainbow = 'rainbow',
-  Coinbase = 'coinbase wallet',
 }
