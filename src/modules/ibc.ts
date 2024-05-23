@@ -36,7 +36,7 @@ export class IBCModule extends BaseModule {
       ...(params.timeoutTimestamp && {
         timeoutTimestamp: params.timeoutTimestamp,
       }),
-      memo: params.memo ?? "",
+      memo: params.memo,
     });
 
     return await wallet.sendTx(
@@ -69,7 +69,7 @@ export class IBCModule extends BaseModule {
       ...params.timeoutTimestamp && ({
         timeoutTimestamp: params.timeoutTimestamp.toNumber(),
       }),
-      memo: params.memo ?? "",
+      memo: params.memo,
     });
 
     return await wallet.sendTx(
