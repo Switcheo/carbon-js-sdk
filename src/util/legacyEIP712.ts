@@ -2,7 +2,7 @@ import { DEFAULT_CARBON_DOMAIN_FIELDS, LEGACY_DEFAULT_EIP712_TYPES } from "@carb
 import { StdSignDoc } from "@cosmjs/amino/build";
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
 import { TypeUtils } from ".";
-import { parseChainId } from "@carbon-sdk/util/ethermint";
+// import { parseChainId } from "@carbon-sdk/util/ethermint";
 import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
 import { Coin } from "@cosmjs/proto-signing";
@@ -113,7 +113,7 @@ export function legacyConstructEIP712Tx(doc: LegacyEIP712StdSignDoc): LegacyEIP7
     const eip712Tx = {
         types: getTypes(AminoTypesMap.fromAmino(msg).typeUrl, msg.value),
         primaryType: "Tx",
-        domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(doc.chain_id) },
+        domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: "1" },
         message: doc,
     }
     return eip712Tx
