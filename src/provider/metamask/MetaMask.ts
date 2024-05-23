@@ -616,8 +616,10 @@ export class MetaMask {
   }
 
   async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network) {
+    console.log('xx', 'change network if required function runs')
     const required = await this.isChangeNetworkRequired(blockchain, network);
     if (!required) return;
+    console.log('xx', 'change network required')
 
     const metamaskApi = await this.getConnectedAPI();
     const requiredChainId = `0x${MetaMask.getRequiredChainId(network, blockchain).toString(16)}`
@@ -654,8 +656,11 @@ export class MetaMask {
   }
 
   async verifyConnectedAccount(address: string) {
+    console.log('xx', 'verifyConnectedAccount', 'starts')
     const metamaskAPI = await this.getConnectedAPI();
+    console.log('xx', 'verifyConnectedAccount', 'get api done')
     const accounts = (await metamaskAPI.request({ method: "eth_requestAccounts" })) as string[];
+    console.log('xx', 'verifyConnectedAccount', 'get accounts done')
     if (!accounts.find(acc => acc.toLowerCase() === address?.toLowerCase()))
       throw new Error(`${address} not connected on Metamask`);
   }
@@ -751,10 +756,22 @@ export class MetaMask {
   }
 
   async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
-    await this.verifyNetworkAndConnectedAccount(evmHexAddress, parseChainId(evmChainId))
+    // await this.verifyNetworkAndConnectedAccount(evmHexAddress, parseChainId(evmChainId))
+    console.log('xx', 'sign eip 712 runs')
+    await this.verifyConnectedAccount(evmHexAddress)
+    console.log('xx', 'sign eip 712 runs', 'connected acct verified')
     const metamaskAPI = await this.getConnectedAPI();
+    console.log('xx', 'sign eip 712 runs', 'getConnected api')
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
+    console.log('xx', 'sign eip 712 runs', 'create sign doc')
+    console.log('xx', 'evm chain id:',  evmChainId)
+    const metamaskNetwork = await this.syncBlockchain()
+    const requiredChainId = MetaMask.getRequiredChainId(Network.MainNet, 'Carbon')
+    console.log('xx', 'metamask network:',  metamaskNetwork)
+    console.log('xx', 'req chain id',  requiredChainId)
+    console.log('xx', 'sign mode', this.legacyEip712SignMode ? "1" : "2")
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
+    console.log('xx', 'sign eip 712 runs', 'create eip712tx')
     return await signTransactionWrapper(async () => {
       const signature = (await metamaskAPI.request({
         method: 'eth_signTypedData_v4',
@@ -763,12 +780,15 @@ export class MetaMask {
           JSON.stringify(eip712Tx),
         ],
       })) as string
+      console.log('xx', 'sign eip 712 runs', 'sign tx wrapper')
+      console.log('xx', 'signature', signature.split('0x')[1])
       return signature.split('0x')[1]
     })
   }
 
   async sendEvmTransaction(req: ethers.providers.TransactionRequest, metamaskAPI?: MetaMaskAPI) {
     await this.verifyNetworkAndConnectedAccount(req.from!, req.chainId!.toString())
+    console.log('xx', 'send evm tx runs')
     const api = metamaskAPI ?? await this.getConnectedAPI();
     const tx = {
       from: req.from,
