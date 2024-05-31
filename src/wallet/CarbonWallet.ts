@@ -837,6 +837,10 @@ export class CarbonWallet {
     return this.isSigner(CarbonSignerTypes.BrowserInjected);
   }
 
+  isNonSigner() {
+    return this.isSigner(CarbonSignerTypes.PublicKey);
+  }
+
   isSmartWalletEnabled() {
     return !!(this.mnemonic || this.privateKey)
   }
