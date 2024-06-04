@@ -399,6 +399,8 @@ registry.register("/Switcheo.carbon.pricing.MsgUpdateParams", Carbon.Pricing.Msg
 registry.register("/Switcheo.carbon.pricing.MsgUpdateParamsResponse", Carbon.Pricing.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPrice", Carbon.Pricing.MsgUpdateSettlementPrice);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse", Carbon.Pricing.MsgUpdateSettlementPriceResponse);
+registry.register("/Switcheo.carbon.pricing.MsgRemoveTokenPrice", Carbon.Pricing.MsgRemoveTokenPrice);
+registry.register("/Switcheo.carbon.pricing.MsgRemoveTokenPriceResponse", Carbon.Pricing.MsgRemoveTokenPriceResponse);
 registry.register("/Switcheo.carbon.pricing.SettlementPriceProposal", Carbon.Pricing.SettlementPriceProposal);
 
 registry.register("/Switcheo.carbon.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
@@ -1026,6 +1028,8 @@ export const TxTypes = {
   "MsgPricingUpdateParamsResponse": "/Switcheo.carbon.pricing.MsgUpdateParamsResponse",
   "MsgUpdateSettlementPrice": "/Switcheo.carbon.pricing.MsgUpdateSettlementPrice",
   "MsgUpdateSettlementPriceResponse": "/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse",
+  "MsgRemoveTokenPrice": "/Switcheo.carbon.pricing.MsgRemoveTokenPrice",
+  "MsgRemoveTokenPriceResponse": "/Switcheo.carbon.pricing.MsgRemoveTokenPriceResponse",
   "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal",
   "MsgLockproxyCreate": "/Switcheo.carbon.lockproxy.MsgCreate",
   "MsgLockproxyCreateResponse": "/Switcheo.carbon.lockproxy.MsgCreateResponse",
@@ -8068,6 +8072,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "block_created_at",
         "type": "string"
+      },
+      {
+        "name": "msg_exec_index",
+        "type": "uint64"
+      },
+      {
+        "name": "granter",
+        "type": "string"
       }
     ],
     "Transaction": [
@@ -12376,135 +12388,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
-  "/tendermint.oracle": {
-    "Vote": [
-      {
-        "name": "validator",
-        "type": "uint8[]"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "timestamp",
-        "type": "uint64"
-      },
-      {
-        "name": "data",
-        "type": "string"
-      }
-    ],
-    "GossipVote": [
-      {
-        "name": "validator",
-        "type": "uint8[]"
-      },
-      {
-        "name": "public_key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "sign_type",
-        "type": "string"
-      },
-      {
-        "name": "votes",
-        "type": "Vote[]",
-        "packageName": "/tendermint.oracle"
-      },
-      {
-        "name": "signed_timestamp",
-        "type": "uint64"
-      },
-      {
-        "name": "signature",
-        "type": "uint8[]"
-      }
-    ],
-    "CanonicalGossipVote": [
-      {
-        "name": "validator",
-        "type": "uint8[]"
-      },
-      {
-        "name": "public_key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "sign_type",
-        "type": "string"
-      },
-      {
-        "name": "votes",
-        "type": "Vote[]",
-        "packageName": "/tendermint.oracle"
-      }
-    ],
-    "Oracle": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "id",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "status",
-        "type": "string"
-      },
-      {
-        "name": "min_turnout_percentage",
-        "type": "string"
-      },
-      {
-        "name": "max_result_age",
-        "type": "string"
-      },
-      {
-        "name": "security_type",
-        "type": "string"
-      },
-      {
-        "name": "result_strategy",
-        "type": "string"
-      },
-      {
-        "name": "resolution",
-        "type": "string"
-      },
-      {
-        "name": "spec",
-        "type": "string"
-      }
-    ],
-    "Result": [
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "timestamp",
-        "type": "int64"
-      },
-      {
-        "name": "data",
-        "type": "string"
-      }
-    ],
-    "GossipVotes": [
-      {
-        "name": "GossipVotes",
-        "type": "GossipVote[]",
-        "packageName": "/tendermint.oracle"
-      }
-    ]
-  },
   "/Switcheo.carbon.perpspool": {
     "Quote": [
       {
@@ -13113,10 +12996,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "share_token_symbol",
-        "type": "string"
-      },
-      {
         "name": "supply_cap",
         "type": "string"
       },
@@ -13636,6 +13515,13 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.pricing"
       }
     ],
+    "TokenPriceRemoveEvent": [
+      {
+        "name": "price",
+        "type": "TokenPrice",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
     "SetImpactBandEvent": [
       {
         "name": "impact_band",
@@ -13963,7 +13849,23 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgUpdateSettlementPriceResponse": []
+    "MsgUpdateSettlementPriceResponse": [],
+    "MsgRemoveTokenPrice": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveTokenPriceResponse": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ]
   },
   "/Switcheo.carbon.profile": {
     "Profile": [
@@ -14016,10 +13918,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
-        "name": "username",
-        "type": "string"
       }
     ],
     "QueryAllProfileResponse": [
@@ -29597,6 +29495,135 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "checksums",
         "type": "uint8[][]"
+      }
+    ]
+  },
+  "/tendermint.oracle": {
+    "Vote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "GossipVote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "public_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "sign_type",
+        "type": "string"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/tendermint.oracle"
+      },
+      {
+        "name": "signed_timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      }
+    ],
+    "CanonicalGossipVote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "public_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "sign_type",
+        "type": "string"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/tendermint.oracle"
+      }
+    ],
+    "Oracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "min_turnout_percentage",
+        "type": "string"
+      },
+      {
+        "name": "max_result_age",
+        "type": "string"
+      },
+      {
+        "name": "security_type",
+        "type": "string"
+      },
+      {
+        "name": "result_strategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "string"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "Result": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "GossipVotes": [
+      {
+        "name": "GossipVotes",
+        "type": "GossipVote[]",
+        "packageName": "/tendermint.oracle"
       }
     ]
   },

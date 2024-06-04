@@ -13,8 +13,6 @@ export interface MsgCreatePool {
   name: string;
   /** denom of the nav token in the pool that is used to provide liquidity */
   depositDenom: string;
-  /** symbol of the share token that represents any tokens in the pool 1-to-1 */
-  shareTokenSymbol: string;
   /** the maximum amount that can be supplied into the pool */
   supplyCap: string;
   /** deposit fee to charge on a successful deposit to pool in decimal */
@@ -111,7 +109,6 @@ const baseMsgCreatePool: object = {
   creator: "",
   name: "",
   depositDenom: "",
-  shareTokenSymbol: "",
   supplyCap: "",
   depositFee: "",
   withdrawalFee: "",
@@ -132,20 +129,17 @@ export const MsgCreatePool = {
     if (message.depositDenom !== "") {
       writer.uint32(26).string(message.depositDenom);
     }
-    if (message.shareTokenSymbol !== "") {
-      writer.uint32(34).string(message.shareTokenSymbol);
-    }
     if (message.supplyCap !== "") {
-      writer.uint32(42).string(message.supplyCap);
+      writer.uint32(34).string(message.supplyCap);
     }
     if (message.depositFee !== "") {
-      writer.uint32(58).string(message.depositFee);
+      writer.uint32(42).string(message.depositFee);
     }
     if (message.withdrawalFee !== "") {
-      writer.uint32(66).string(message.withdrawalFee);
+      writer.uint32(50).string(message.withdrawalFee);
     }
     if (message.baseBorrowFeePerFundingInterval !== "") {
-      writer.uint32(74).string(message.baseBorrowFeePerFundingInterval);
+      writer.uint32(58).string(message.baseBorrowFeePerFundingInterval);
     }
     return writer;
   },
@@ -167,18 +161,15 @@ export const MsgCreatePool = {
           message.depositDenom = reader.string();
           break;
         case 4:
-          message.shareTokenSymbol = reader.string();
-          break;
-        case 5:
           message.supplyCap = reader.string();
           break;
-        case 7:
+        case 5:
           message.depositFee = reader.string();
           break;
-        case 8:
+        case 6:
           message.withdrawalFee = reader.string();
           break;
-        case 9:
+        case 7:
           message.baseBorrowFeePerFundingInterval = reader.string();
           break;
         default:
@@ -202,10 +193,6 @@ export const MsgCreatePool = {
     message.depositDenom =
       object.depositDenom !== undefined && object.depositDenom !== null
         ? String(object.depositDenom)
-        : "";
-    message.shareTokenSymbol =
-      object.shareTokenSymbol !== undefined && object.shareTokenSymbol !== null
-        ? String(object.shareTokenSymbol)
         : "";
     message.supplyCap =
       object.supplyCap !== undefined && object.supplyCap !== null
@@ -233,8 +220,6 @@ export const MsgCreatePool = {
     message.name !== undefined && (obj.name = message.name);
     message.depositDenom !== undefined &&
       (obj.depositDenom = message.depositDenom);
-    message.shareTokenSymbol !== undefined &&
-      (obj.shareTokenSymbol = message.shareTokenSymbol);
     message.supplyCap !== undefined && (obj.supplyCap = message.supplyCap);
     message.depositFee !== undefined && (obj.depositFee = message.depositFee);
     message.withdrawalFee !== undefined &&
@@ -250,7 +235,6 @@ export const MsgCreatePool = {
     message.creator = object.creator ?? "";
     message.name = object.name ?? "";
     message.depositDenom = object.depositDenom ?? "";
-    message.shareTokenSymbol = object.shareTokenSymbol ?? "";
     message.supplyCap = object.supplyCap ?? "";
     message.depositFee = object.depositFee ?? "";
     message.withdrawalFee = object.withdrawalFee ?? "";
