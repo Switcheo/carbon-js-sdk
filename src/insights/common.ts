@@ -16,6 +16,7 @@ export const InsightsEndpoints = {
   "user/pnl": "/user/:address/pnl",
   "user/balance/graph": "/user/:address/balance/graph",
   "user/pnl/graph": "/user/:address/pnl/graph",
+  "user/fundings": "/user/:address/fundings",
   "user/connected/wallet": "/user/connected/wallet",
 
 
@@ -108,6 +109,11 @@ export interface TimeMeta {
   from: string;
   until: string;
   interval: Interval;
+}
+
+export interface NoIntervalTimeMeta {
+  from: string;
+  until: string;
 }
 
 export interface ParsedTimeMeta {

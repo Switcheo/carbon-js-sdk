@@ -144,6 +144,15 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserPnlGraphResponse>;
   }
 
+  async UserFundings(
+    req: Insights.QueryGetUserFundingsPathParams,
+    query: Insights.QueryGetUserFundingsQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserFundingsResponse>> {
+    const request = this.apiManager.path("user/fundings", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserFundingsResponse>;
+  }
+
   // Pool api
   async Pools(req: Insights.QueryGetPoolsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>> {
     const request = this.apiManager.path("pool/list", {}, req);
