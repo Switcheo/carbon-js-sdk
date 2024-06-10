@@ -2813,7 +2813,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "FundingEvent": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -9885,7 +9885,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgCreatePoolRouteResponse": [],
     "CreatePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -9911,7 +9911,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgRemovePoolRouteResponse": [],
     "RemovePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -9933,7 +9933,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgUpdatePoolRouteResponse": [],
     "UpdatePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -10921,7 +10921,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketParams": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       },
       {
@@ -10994,7 +10994,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "IncomingDisableSpotMarketNames": [
+    "IncomingSpotMarketsToDisable": [
       {
         "name": "ids",
         "type": "string[]"
@@ -11085,7 +11085,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       },
       {
-        "name": "market_name_sequence",
+        "name": "market_id_sequence",
         "type": "int64"
       },
       {
@@ -11146,7 +11146,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetMarketRequest": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       }
     ],
@@ -11178,7 +11178,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetTradingFeesRequest": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -11199,7 +11199,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -11313,7 +11313,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -11354,7 +11354,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MsgCreateMarketResponse": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       }
     ],

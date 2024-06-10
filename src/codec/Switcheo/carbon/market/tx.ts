@@ -11,7 +11,7 @@ export const protobufPackage = "Switcheo.carbon.market";
 
 export interface MsgDisableSpotMarket {
   creator: string;
-  marketName: string;
+  marketId: string;
 }
 
 export interface MsgDisableSpotMarketResponse {}
@@ -30,7 +30,7 @@ export interface MsgCreateMarket {
 }
 
 export interface MsgCreateMarketResponse {
-  name: string;
+  id: string;
 }
 
 export interface MsgUpdateMarket {
@@ -138,7 +138,7 @@ export interface MsgDeleteFeeStructure {
 
 export interface MsgDeleteFeeStructureResponse {}
 
-const baseMsgDisableSpotMarket: object = { creator: "", marketName: "" };
+const baseMsgDisableSpotMarket: object = { creator: "", marketId: "" };
 
 export const MsgDisableSpotMarket = {
   encode(
@@ -148,8 +148,8 @@ export const MsgDisableSpotMarket = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.marketName !== "") {
-      writer.uint32(18).string(message.marketName);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     return writer;
   },
@@ -168,7 +168,7 @@ export const MsgDisableSpotMarket = {
           message.creator = reader.string();
           break;
         case 2:
-          message.marketName = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -184,9 +184,9 @@ export const MsgDisableSpotMarket = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.marketName =
-      object.marketName !== undefined && object.marketName !== null
-        ? String(object.marketName)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
@@ -194,14 +194,14 @@ export const MsgDisableSpotMarket = {
   toJSON(message: MsgDisableSpotMarket): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgDisableSpotMarket>): MsgDisableSpotMarket {
     const message = { ...baseMsgDisableSpotMarket } as MsgDisableSpotMarket;
     message.creator = object.creator ?? "";
-    message.marketName = object.marketName ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };
@@ -414,15 +414,15 @@ export const MsgCreateMarket = {
   },
 };
 
-const baseMsgCreateMarketResponse: object = { name: "" };
+const baseMsgCreateMarketResponse: object = { id: "" };
 
 export const MsgCreateMarketResponse = {
   encode(
     message: MsgCreateMarketResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
     return writer;
   },
@@ -440,7 +440,7 @@ export const MsgCreateMarketResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.name = reader.string();
+          message.id = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -454,16 +454,14 @@ export const MsgCreateMarketResponse = {
     const message = {
       ...baseMsgCreateMarketResponse,
     } as MsgCreateMarketResponse;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
     return message;
   },
 
   toJSON(message: MsgCreateMarketResponse): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
+    message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
@@ -473,7 +471,7 @@ export const MsgCreateMarketResponse = {
     const message = {
       ...baseMsgCreateMarketResponse,
     } as MsgCreateMarketResponse;
-    message.name = object.name ?? "";
+    message.id = object.id ?? "";
     return message;
   },
 };

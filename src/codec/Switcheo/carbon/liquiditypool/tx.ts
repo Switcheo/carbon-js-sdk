@@ -147,7 +147,7 @@ export interface MsgCreatePoolRoute {
 export interface MsgCreatePoolRouteResponse {}
 
 export interface CreatePoolRouteParams {
-  marketName: string;
+  marketId: string;
   poolIds: Long[];
   numQuotes: Long;
 }
@@ -160,7 +160,7 @@ export interface MsgRemovePoolRoute {
 export interface MsgRemovePoolRouteResponse {}
 
 export interface RemovePoolRouteParams {
-  marketName: string;
+  marketId: string;
   poolIds: Long[];
 }
 
@@ -172,7 +172,7 @@ export interface MsgUpdatePoolRoute {
 export interface MsgUpdatePoolRouteResponse {}
 
 export interface UpdatePoolRouteParams {
-  marketName: string;
+  marketId: string;
   poolIds: Long[];
   numQuotes: Long;
 }
@@ -2496,7 +2496,7 @@ export const MsgCreatePoolRouteResponse = {
 };
 
 const baseCreatePoolRouteParams: object = {
-  marketName: "",
+  marketId: "",
   poolIds: Long.UZERO,
   numQuotes: Long.UZERO,
 };
@@ -2506,8 +2506,8 @@ export const CreatePoolRouteParams = {
     message: CreatePoolRouteParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.marketName !== "") {
-      writer.uint32(10).string(message.marketName);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     writer.uint32(18).fork();
     for (const v of message.poolIds) {
@@ -2532,7 +2532,7 @@ export const CreatePoolRouteParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketName = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           if ((tag & 7) === 2) {
@@ -2557,9 +2557,9 @@ export const CreatePoolRouteParams = {
 
   fromJSON(object: any): CreatePoolRouteParams {
     const message = { ...baseCreatePoolRouteParams } as CreatePoolRouteParams;
-    message.marketName =
-      object.marketName !== undefined && object.marketName !== null
-        ? String(object.marketName)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.poolIds = (object.poolIds ?? []).map((e: any) =>
       Long.fromString(e)
@@ -2573,7 +2573,7 @@ export const CreatePoolRouteParams = {
 
   toJSON(message: CreatePoolRouteParams): unknown {
     const obj: any = {};
-    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.poolIds) {
       obj.poolIds = message.poolIds.map((e) => (e || Long.UZERO).toString());
     } else {
@@ -2588,7 +2588,7 @@ export const CreatePoolRouteParams = {
     object: DeepPartial<CreatePoolRouteParams>
   ): CreatePoolRouteParams {
     const message = { ...baseCreatePoolRouteParams } as CreatePoolRouteParams;
-    message.marketName = object.marketName ?? "";
+    message.marketId = object.marketId ?? "";
     message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
@@ -2729,18 +2729,15 @@ export const MsgRemovePoolRouteResponse = {
   },
 };
 
-const baseRemovePoolRouteParams: object = {
-  marketName: "",
-  poolIds: Long.UZERO,
-};
+const baseRemovePoolRouteParams: object = { marketId: "", poolIds: Long.UZERO };
 
 export const RemovePoolRouteParams = {
   encode(
     message: RemovePoolRouteParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.marketName !== "") {
-      writer.uint32(10).string(message.marketName);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     writer.uint32(18).fork();
     for (const v of message.poolIds) {
@@ -2762,7 +2759,7 @@ export const RemovePoolRouteParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketName = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           if ((tag & 7) === 2) {
@@ -2784,9 +2781,9 @@ export const RemovePoolRouteParams = {
 
   fromJSON(object: any): RemovePoolRouteParams {
     const message = { ...baseRemovePoolRouteParams } as RemovePoolRouteParams;
-    message.marketName =
-      object.marketName !== undefined && object.marketName !== null
-        ? String(object.marketName)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.poolIds = (object.poolIds ?? []).map((e: any) =>
       Long.fromString(e)
@@ -2796,7 +2793,7 @@ export const RemovePoolRouteParams = {
 
   toJSON(message: RemovePoolRouteParams): unknown {
     const obj: any = {};
-    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.poolIds) {
       obj.poolIds = message.poolIds.map((e) => (e || Long.UZERO).toString());
     } else {
@@ -2809,7 +2806,7 @@ export const RemovePoolRouteParams = {
     object: DeepPartial<RemovePoolRouteParams>
   ): RemovePoolRouteParams {
     const message = { ...baseRemovePoolRouteParams } as RemovePoolRouteParams;
-    message.marketName = object.marketName ?? "";
+    message.marketId = object.marketId ?? "";
     message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
     return message;
   },
@@ -2947,7 +2944,7 @@ export const MsgUpdatePoolRouteResponse = {
 };
 
 const baseUpdatePoolRouteParams: object = {
-  marketName: "",
+  marketId: "",
   poolIds: Long.UZERO,
   numQuotes: Long.UZERO,
 };
@@ -2957,8 +2954,8 @@ export const UpdatePoolRouteParams = {
     message: UpdatePoolRouteParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.marketName !== "") {
-      writer.uint32(10).string(message.marketName);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     writer.uint32(18).fork();
     for (const v of message.poolIds) {
@@ -2983,7 +2980,7 @@ export const UpdatePoolRouteParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketName = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           if ((tag & 7) === 2) {
@@ -3008,9 +3005,9 @@ export const UpdatePoolRouteParams = {
 
   fromJSON(object: any): UpdatePoolRouteParams {
     const message = { ...baseUpdatePoolRouteParams } as UpdatePoolRouteParams;
-    message.marketName =
-      object.marketName !== undefined && object.marketName !== null
-        ? String(object.marketName)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.poolIds = (object.poolIds ?? []).map((e: any) =>
       Long.fromString(e)
@@ -3024,7 +3021,7 @@ export const UpdatePoolRouteParams = {
 
   toJSON(message: UpdatePoolRouteParams): unknown {
     const obj: any = {};
-    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.poolIds) {
       obj.poolIds = message.poolIds.map((e) => (e || Long.UZERO).toString());
     } else {
@@ -3039,7 +3036,7 @@ export const UpdatePoolRouteParams = {
     object: DeepPartial<UpdatePoolRouteParams>
   ): UpdatePoolRouteParams {
     const message = { ...baseUpdatePoolRouteParams } as UpdatePoolRouteParams;
-    message.marketName = object.marketName ?? "";
+    message.marketId = object.marketId ?? "";
     message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null

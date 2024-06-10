@@ -277,13 +277,13 @@ export namespace LiquidityPoolModule {
   }
 
   export interface CreatePoolRouteParams {
-    marketName: string;
+    marketId: string;
     poolIds: Long[];
     numQuotes: Long;
   }
 
   export interface RemovePoolRouteParams {
-    marketName: string;
+    marketId: string;
     poolIds: Long[];
   }
 
