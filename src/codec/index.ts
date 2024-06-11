@@ -12058,7 +12058,7 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdateParamsResponse": [],
-    "OracleTxSignatureInfo": [
+    "ValidatorSignature": [
       {
         "name": "validator",
         "type": "uint8[]"
@@ -12076,29 +12076,29 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int64"
       }
     ],
-    "OracleIndexInfo": [
+    "VotesForOracle": [
       {
         "name": "oracle_index",
         "type": "int32"
       },
       {
-        "name": "oracle_data_info",
-        "type": "OracleDataInfo[]",
+        "name": "votes_for_data",
+        "type": "VotesForData[]",
         "packageName": "/Switcheo.carbon.oracle"
       }
     ],
-    "OracleDataInfo": [
+    "VotesForData": [
       {
         "name": "data",
         "type": "string"
       },
       {
-        "name": "oracle_timestamp_info",
-        "type": "OracleTimestampInfo[]",
+        "name": "votes_for_timestamps",
+        "type": "VotesForTimestamp[]",
         "packageName": "/Switcheo.carbon.oracle"
       }
     ],
-    "OracleTimestampInfo": [
+    "VotesForTimestamp": [
       {
         "name": "timestamp",
         "type": "int64"
@@ -12114,13 +12114,13 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "signature_info",
-        "type": "OracleTxSignatureInfo[]",
+        "name": "validator_signatures",
+        "type": "ValidatorSignature[]",
         "packageName": "/Switcheo.carbon.oracle"
       },
       {
-        "name": "oracle_index_info",
-        "type": "OracleIndexInfo[]",
+        "name": "votes_for_oracles",
+        "type": "VotesForOracle[]",
         "packageName": "/Switcheo.carbon.oracle"
       }
     ],

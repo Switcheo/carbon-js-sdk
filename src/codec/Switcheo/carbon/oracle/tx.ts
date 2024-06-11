@@ -90,26 +90,26 @@ export interface MsgUpdateParams {
  */
 export interface MsgUpdateParamsResponse {}
 
-export interface OracleTxSignatureInfo {
+export interface ValidatorSignature {
   validator: Uint8Array;
   validatorIndex: number;
   signature: Uint8Array;
   signedTimestamp: Long;
 }
 
-export interface OracleIndexInfo {
+export interface VotesForOracle {
   /** stored as the oracle index position to save space, */
   oracleIndex: number;
   /** convert back to string during processing */
-  oracleDataInfo: OracleDataInfo[];
+  votesForData: VotesForData[];
 }
 
-export interface OracleDataInfo {
+export interface VotesForData {
   data: string;
-  oracleTimestampInfo: OracleTimestampInfo[];
+  votesForTimestamps: VotesForTimestamp[];
 }
 
-export interface OracleTimestampInfo {
+export interface VotesForTimestamp {
   timestamp: Long;
   validatorIndexes: number[];
 }
@@ -117,8 +117,8 @@ export interface OracleTimestampInfo {
 export interface MsgCreateResult {
   /** proposer is the address of the block proposer */
   proposer: string;
-  signatureInfo: OracleTxSignatureInfo[];
-  oracleIndexInfo: OracleIndexInfo[];
+  validatorSignatures: ValidatorSignature[];
+  votesForOracles: VotesForOracle[];
 }
 
 export interface MsgCreateResultResponse {}
@@ -1283,14 +1283,14 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
-const baseOracleTxSignatureInfo: object = {
+const baseValidatorSignature: object = {
   validatorIndex: 0,
   signedTimestamp: Long.ZERO,
 };
 
-export const OracleTxSignatureInfo = {
+export const ValidatorSignature = {
   encode(
-    message: OracleTxSignatureInfo,
+    message: ValidatorSignature,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.validator.length !== 0) {
@@ -1308,13 +1308,10 @@ export const OracleTxSignatureInfo = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): OracleTxSignatureInfo {
+  decode(input: _m0.Reader | Uint8Array, length?: number): ValidatorSignature {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOracleTxSignatureInfo } as OracleTxSignatureInfo;
+    const message = { ...baseValidatorSignature } as ValidatorSignature;
     message.validator = new Uint8Array();
     message.signature = new Uint8Array();
     while (reader.pos < end) {
@@ -1340,8 +1337,8 @@ export const OracleTxSignatureInfo = {
     return message;
   },
 
-  fromJSON(object: any): OracleTxSignatureInfo {
-    const message = { ...baseOracleTxSignatureInfo } as OracleTxSignatureInfo;
+  fromJSON(object: any): ValidatorSignature {
+    const message = { ...baseValidatorSignature } as ValidatorSignature;
     message.validator =
       object.validator !== undefined && object.validator !== null
         ? bytesFromBase64(object.validator)
@@ -1361,7 +1358,7 @@ export const OracleTxSignatureInfo = {
     return message;
   },
 
-  toJSON(message: OracleTxSignatureInfo): unknown {
+  toJSON(message: ValidatorSignature): unknown {
     const obj: any = {};
     message.validator !== undefined &&
       (obj.validator = base64FromBytes(
@@ -1378,10 +1375,8 @@ export const OracleTxSignatureInfo = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<OracleTxSignatureInfo>
-  ): OracleTxSignatureInfo {
-    const message = { ...baseOracleTxSignatureInfo } as OracleTxSignatureInfo;
+  fromPartial(object: DeepPartial<ValidatorSignature>): ValidatorSignature {
+    const message = { ...baseValidatorSignature } as ValidatorSignature;
     message.validator = object.validator ?? new Uint8Array();
     message.validatorIndex = object.validatorIndex ?? 0;
     message.signature = object.signature ?? new Uint8Array();
@@ -1393,27 +1388,27 @@ export const OracleTxSignatureInfo = {
   },
 };
 
-const baseOracleIndexInfo: object = { oracleIndex: 0 };
+const baseVotesForOracle: object = { oracleIndex: 0 };
 
-export const OracleIndexInfo = {
+export const VotesForOracle = {
   encode(
-    message: OracleIndexInfo,
+    message: VotesForOracle,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.oracleIndex !== 0) {
       writer.uint32(8).int32(message.oracleIndex);
     }
-    for (const v of message.oracleDataInfo) {
-      OracleDataInfo.encode(v!, writer.uint32(18).fork()).ldelim();
+    for (const v of message.votesForData) {
+      VotesForData.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): OracleIndexInfo {
+  decode(input: _m0.Reader | Uint8Array, length?: number): VotesForOracle {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOracleIndexInfo } as OracleIndexInfo;
-    message.oracleDataInfo = [];
+    const message = { ...baseVotesForOracle } as VotesForOracle;
+    message.votesForData = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1421,8 +1416,8 @@ export const OracleIndexInfo = {
           message.oracleIndex = reader.int32();
           break;
         case 2:
-          message.oracleDataInfo.push(
-            OracleDataInfo.decode(reader, reader.uint32())
+          message.votesForData.push(
+            VotesForData.decode(reader, reader.uint32())
           );
           break;
         default:
@@ -1433,63 +1428,63 @@ export const OracleIndexInfo = {
     return message;
   },
 
-  fromJSON(object: any): OracleIndexInfo {
-    const message = { ...baseOracleIndexInfo } as OracleIndexInfo;
+  fromJSON(object: any): VotesForOracle {
+    const message = { ...baseVotesForOracle } as VotesForOracle;
     message.oracleIndex =
       object.oracleIndex !== undefined && object.oracleIndex !== null
         ? Number(object.oracleIndex)
         : 0;
-    message.oracleDataInfo = (object.oracleDataInfo ?? []).map((e: any) =>
-      OracleDataInfo.fromJSON(e)
+    message.votesForData = (object.votesForData ?? []).map((e: any) =>
+      VotesForData.fromJSON(e)
     );
     return message;
   },
 
-  toJSON(message: OracleIndexInfo): unknown {
+  toJSON(message: VotesForOracle): unknown {
     const obj: any = {};
     message.oracleIndex !== undefined &&
       (obj.oracleIndex = message.oracleIndex);
-    if (message.oracleDataInfo) {
-      obj.oracleDataInfo = message.oracleDataInfo.map((e) =>
-        e ? OracleDataInfo.toJSON(e) : undefined
+    if (message.votesForData) {
+      obj.votesForData = message.votesForData.map((e) =>
+        e ? VotesForData.toJSON(e) : undefined
       );
     } else {
-      obj.oracleDataInfo = [];
+      obj.votesForData = [];
     }
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OracleIndexInfo>): OracleIndexInfo {
-    const message = { ...baseOracleIndexInfo } as OracleIndexInfo;
+  fromPartial(object: DeepPartial<VotesForOracle>): VotesForOracle {
+    const message = { ...baseVotesForOracle } as VotesForOracle;
     message.oracleIndex = object.oracleIndex ?? 0;
-    message.oracleDataInfo = (object.oracleDataInfo ?? []).map((e) =>
-      OracleDataInfo.fromPartial(e)
+    message.votesForData = (object.votesForData ?? []).map((e) =>
+      VotesForData.fromPartial(e)
     );
     return message;
   },
 };
 
-const baseOracleDataInfo: object = { data: "" };
+const baseVotesForData: object = { data: "" };
 
-export const OracleDataInfo = {
+export const VotesForData = {
   encode(
-    message: OracleDataInfo,
+    message: VotesForData,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.data !== "") {
       writer.uint32(10).string(message.data);
     }
-    for (const v of message.oracleTimestampInfo) {
-      OracleTimestampInfo.encode(v!, writer.uint32(18).fork()).ldelim();
+    for (const v of message.votesForTimestamps) {
+      VotesForTimestamp.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): OracleDataInfo {
+  decode(input: _m0.Reader | Uint8Array, length?: number): VotesForData {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOracleDataInfo } as OracleDataInfo;
-    message.oracleTimestampInfo = [];
+    const message = { ...baseVotesForData } as VotesForData;
+    message.votesForTimestamps = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1497,8 +1492,8 @@ export const OracleDataInfo = {
           message.data = reader.string();
           break;
         case 2:
-          message.oracleTimestampInfo.push(
-            OracleTimestampInfo.decode(reader, reader.uint32())
+          message.votesForTimestamps.push(
+            VotesForTimestamp.decode(reader, reader.uint32())
           );
           break;
         default:
@@ -1509,49 +1504,49 @@ export const OracleDataInfo = {
     return message;
   },
 
-  fromJSON(object: any): OracleDataInfo {
-    const message = { ...baseOracleDataInfo } as OracleDataInfo;
+  fromJSON(object: any): VotesForData {
+    const message = { ...baseVotesForData } as VotesForData;
     message.data =
       object.data !== undefined && object.data !== null
         ? String(object.data)
         : "";
-    message.oracleTimestampInfo = (object.oracleTimestampInfo ?? []).map(
-      (e: any) => OracleTimestampInfo.fromJSON(e)
+    message.votesForTimestamps = (object.votesForTimestamps ?? []).map(
+      (e: any) => VotesForTimestamp.fromJSON(e)
     );
     return message;
   },
 
-  toJSON(message: OracleDataInfo): unknown {
+  toJSON(message: VotesForData): unknown {
     const obj: any = {};
     message.data !== undefined && (obj.data = message.data);
-    if (message.oracleTimestampInfo) {
-      obj.oracleTimestampInfo = message.oracleTimestampInfo.map((e) =>
-        e ? OracleTimestampInfo.toJSON(e) : undefined
+    if (message.votesForTimestamps) {
+      obj.votesForTimestamps = message.votesForTimestamps.map((e) =>
+        e ? VotesForTimestamp.toJSON(e) : undefined
       );
     } else {
-      obj.oracleTimestampInfo = [];
+      obj.votesForTimestamps = [];
     }
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OracleDataInfo>): OracleDataInfo {
-    const message = { ...baseOracleDataInfo } as OracleDataInfo;
+  fromPartial(object: DeepPartial<VotesForData>): VotesForData {
+    const message = { ...baseVotesForData } as VotesForData;
     message.data = object.data ?? "";
-    message.oracleTimestampInfo = (object.oracleTimestampInfo ?? []).map((e) =>
-      OracleTimestampInfo.fromPartial(e)
+    message.votesForTimestamps = (object.votesForTimestamps ?? []).map((e) =>
+      VotesForTimestamp.fromPartial(e)
     );
     return message;
   },
 };
 
-const baseOracleTimestampInfo: object = {
+const baseVotesForTimestamp: object = {
   timestamp: Long.ZERO,
   validatorIndexes: 0,
 };
 
-export const OracleTimestampInfo = {
+export const VotesForTimestamp = {
   encode(
-    message: OracleTimestampInfo,
+    message: VotesForTimestamp,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (!message.timestamp.isZero()) {
@@ -1565,10 +1560,10 @@ export const OracleTimestampInfo = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): OracleTimestampInfo {
+  decode(input: _m0.Reader | Uint8Array, length?: number): VotesForTimestamp {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOracleTimestampInfo } as OracleTimestampInfo;
+    const message = { ...baseVotesForTimestamp } as VotesForTimestamp;
     message.validatorIndexes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -1594,8 +1589,8 @@ export const OracleTimestampInfo = {
     return message;
   },
 
-  fromJSON(object: any): OracleTimestampInfo {
-    const message = { ...baseOracleTimestampInfo } as OracleTimestampInfo;
+  fromJSON(object: any): VotesForTimestamp {
+    const message = { ...baseVotesForTimestamp } as VotesForTimestamp;
     message.timestamp =
       object.timestamp !== undefined && object.timestamp !== null
         ? Long.fromString(object.timestamp)
@@ -1606,7 +1601,7 @@ export const OracleTimestampInfo = {
     return message;
   },
 
-  toJSON(message: OracleTimestampInfo): unknown {
+  toJSON(message: VotesForTimestamp): unknown {
     const obj: any = {};
     message.timestamp !== undefined &&
       (obj.timestamp = (message.timestamp || Long.ZERO).toString());
@@ -1618,8 +1613,8 @@ export const OracleTimestampInfo = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OracleTimestampInfo>): OracleTimestampInfo {
-    const message = { ...baseOracleTimestampInfo } as OracleTimestampInfo;
+  fromPartial(object: DeepPartial<VotesForTimestamp>): VotesForTimestamp {
+    const message = { ...baseVotesForTimestamp } as VotesForTimestamp;
     message.timestamp =
       object.timestamp !== undefined && object.timestamp !== null
         ? Long.fromValue(object.timestamp)
@@ -1639,11 +1634,11 @@ export const MsgCreateResult = {
     if (message.proposer !== "") {
       writer.uint32(10).string(message.proposer);
     }
-    for (const v of message.signatureInfo) {
-      OracleTxSignatureInfo.encode(v!, writer.uint32(18).fork()).ldelim();
+    for (const v of message.validatorSignatures) {
+      ValidatorSignature.encode(v!, writer.uint32(18).fork()).ldelim();
     }
-    for (const v of message.oracleIndexInfo) {
-      OracleIndexInfo.encode(v!, writer.uint32(26).fork()).ldelim();
+    for (const v of message.votesForOracles) {
+      VotesForOracle.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -1652,8 +1647,8 @@ export const MsgCreateResult = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseMsgCreateResult } as MsgCreateResult;
-    message.signatureInfo = [];
-    message.oracleIndexInfo = [];
+    message.validatorSignatures = [];
+    message.votesForOracles = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1661,13 +1656,13 @@ export const MsgCreateResult = {
           message.proposer = reader.string();
           break;
         case 2:
-          message.signatureInfo.push(
-            OracleTxSignatureInfo.decode(reader, reader.uint32())
+          message.validatorSignatures.push(
+            ValidatorSignature.decode(reader, reader.uint32())
           );
           break;
         case 3:
-          message.oracleIndexInfo.push(
-            OracleIndexInfo.decode(reader, reader.uint32())
+          message.votesForOracles.push(
+            VotesForOracle.decode(reader, reader.uint32())
           );
           break;
         default:
@@ -1684,11 +1679,11 @@ export const MsgCreateResult = {
       object.proposer !== undefined && object.proposer !== null
         ? String(object.proposer)
         : "";
-    message.signatureInfo = (object.signatureInfo ?? []).map((e: any) =>
-      OracleTxSignatureInfo.fromJSON(e)
+    message.validatorSignatures = (object.validatorSignatures ?? []).map(
+      (e: any) => ValidatorSignature.fromJSON(e)
     );
-    message.oracleIndexInfo = (object.oracleIndexInfo ?? []).map((e: any) =>
-      OracleIndexInfo.fromJSON(e)
+    message.votesForOracles = (object.votesForOracles ?? []).map((e: any) =>
+      VotesForOracle.fromJSON(e)
     );
     return message;
   },
@@ -1696,19 +1691,19 @@ export const MsgCreateResult = {
   toJSON(message: MsgCreateResult): unknown {
     const obj: any = {};
     message.proposer !== undefined && (obj.proposer = message.proposer);
-    if (message.signatureInfo) {
-      obj.signatureInfo = message.signatureInfo.map((e) =>
-        e ? OracleTxSignatureInfo.toJSON(e) : undefined
+    if (message.validatorSignatures) {
+      obj.validatorSignatures = message.validatorSignatures.map((e) =>
+        e ? ValidatorSignature.toJSON(e) : undefined
       );
     } else {
-      obj.signatureInfo = [];
+      obj.validatorSignatures = [];
     }
-    if (message.oracleIndexInfo) {
-      obj.oracleIndexInfo = message.oracleIndexInfo.map((e) =>
-        e ? OracleIndexInfo.toJSON(e) : undefined
+    if (message.votesForOracles) {
+      obj.votesForOracles = message.votesForOracles.map((e) =>
+        e ? VotesForOracle.toJSON(e) : undefined
       );
     } else {
-      obj.oracleIndexInfo = [];
+      obj.votesForOracles = [];
     }
     return obj;
   },
@@ -1716,11 +1711,11 @@ export const MsgCreateResult = {
   fromPartial(object: DeepPartial<MsgCreateResult>): MsgCreateResult {
     const message = { ...baseMsgCreateResult } as MsgCreateResult;
     message.proposer = object.proposer ?? "";
-    message.signatureInfo = (object.signatureInfo ?? []).map((e) =>
-      OracleTxSignatureInfo.fromPartial(e)
+    message.validatorSignatures = (object.validatorSignatures ?? []).map((e) =>
+      ValidatorSignature.fromPartial(e)
     );
-    message.oracleIndexInfo = (object.oracleIndexInfo ?? []).map((e) =>
-      OracleIndexInfo.fromPartial(e)
+    message.votesForOracles = (object.votesForOracles ?? []).map((e) =>
+      VotesForOracle.fromPartial(e)
     );
     return message;
   },
