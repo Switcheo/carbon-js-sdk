@@ -17,6 +17,7 @@ export const InsightsEndpoints = {
   "user/balance/graph": "/user/:address/balance/graph",
   "user/pnl/graph": "/user/:address/pnl/graph",
   "user/fundings": "/user/:address/fundings",
+  "user/funding/history": "/user/:address/funding/history",
   "user/connected/wallet": "/user/connected/wallet",
 
 
@@ -114,6 +115,12 @@ export interface TimeMeta {
 export interface NoIntervalTimeMeta {
   from: string;
   until: string;
+}
+
+export interface FundingHistoryMeta {
+  from: string;
+  until: string;
+  totalFunding: number;
 }
 
 export interface ParsedTimeMeta {

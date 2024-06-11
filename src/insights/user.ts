@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import { ParsedTimeMeta, QueryByTimeRequest, TimeMeta, NoIntervalTimeMeta } from "./common";
+import { ParsedTimeMeta, QueryByTimeRequest, TimeMeta, NoIntervalTimeMeta, FundingHistoryMeta } from "./common";
 import BigNumber from "bignumber.js";
 
 export interface ActiveAccounts {
@@ -62,6 +62,11 @@ export interface RawUserPnlGraphCoordinate {
 export interface RawUserFundings {
   time: string;
   market: string;
+  amount: string;
+}
+
+export interface RawFundingHistory {
+  timestamp: string;
   amount: string;
 }
 
@@ -148,6 +153,17 @@ export interface QueryGetUserFundingsQueryParams extends QueryByTimeRequest { }
 export interface QueryGetUserFundingsResponse {
   entries: RawUserFundings[];
   meta: NoIntervalTimeMeta;
+}
+
+export interface QueryGetFundingHistoryPathParams {
+  address: string;
+}
+
+export interface QueryGetFundingHistoryQueryParams extends QueryByTimeRequest { }
+
+export interface QueryGetFundingHistoryResponse {
+  entries: RawFundingHistory[];
+  meta: FundingHistoryMeta;
 }
 
 export interface ConnectedWalletParams {
