@@ -77,16 +77,6 @@ const MsgLiquidateCollateral: AminoInit = {
   valueMap: {},
 };
 
-const MsgRepayAssetWithCdpTokens: AminoInit = {
-  aminoType: TxTypes.RepayAssetWithCdpTokens,
-  valueMap: {},
-};
-
-const MsgRepayAssetWithCollateral: AminoInit = {
-  aminoType: TxTypes.RepayAssetWithCollateral,
-  valueMap: {},
-};
-
 const MsgMintStablecoin: AminoInit = {
   aminoType: TxTypes.MintStablecoin,
   valueMap: {},
@@ -94,21 +84,6 @@ const MsgMintStablecoin: AminoInit = {
 
 const MsgReturnStablecoin: AminoInit = {
   aminoType: TxTypes.ReturnStablecoin,
-  valueMap: {},
-};
-
-const MsgLiquidateCollateralWithCdpTokens: AminoInit = {
-  aminoType: TxTypes.LiquidateCollateralWithCdpTokens,
-  valueMap: {},
-};
-
-const MsgLiquidateCollateralWithCollateral: AminoInit = {
-  aminoType: TxTypes.LiquidateCollateralWithCollateral,
-  valueMap: {},
-};
-
-const MsgLiquidateCollateralWithStablecoin: AminoInit = {
-  aminoType: TxTypes.LiquidateCollateralWithStablecoin,
   valueMap: {},
 };
 
@@ -191,13 +166,8 @@ const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSupplyAssetAndLockCollateral]: generateAminoType(MsgSupplyAssetAndLockCollateral),
   [CarbonTx.Types.MsgUnlockCollateralAndWithdrawAsset]: generateAminoType(MsgUnlockCollateralAndWithdrawAsset),
   [CarbonTx.Types.MsgLiquidateCollateral]: generateAminoType(MsgLiquidateCollateral),
-  [CarbonTx.Types.MsgRepayAssetWithCdpTokens]: generateAminoType(MsgRepayAssetWithCdpTokens),
-  [CarbonTx.Types.MsgRepayAssetWithCollateral]: generateAminoType(MsgRepayAssetWithCollateral),
   [CarbonTx.Types.MsgMintStablecoin]: generateAminoType(MsgMintStablecoin),
   [CarbonTx.Types.MsgReturnStablecoin]: generateAminoType(MsgReturnStablecoin),
-  [CarbonTx.Types.MsgLiquidateCollateralWithCdpTokens]: generateAminoType(MsgLiquidateCollateralWithCdpTokens),
-  [CarbonTx.Types.MsgLiquidateCollateralWithCollateral]: generateAminoType(MsgLiquidateCollateralWithCollateral),
-  [CarbonTx.Types.MsgLiquidateCollateralWithStablecoin]: generateAminoType(MsgLiquidateCollateralWithStablecoin),
   [CarbonTx.Types.MsgCreateRewardScheme]: generateAminoType(MsgCreateRewardScheme),
   [CarbonTx.Types.MsgUpdateRewardScheme]: generateAminoType(MsgUpdateRewardScheme),
   [CarbonTx.Types.MsgClaimRewards]: generateAminoType(MsgClaimRewards),
