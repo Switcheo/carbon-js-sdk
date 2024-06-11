@@ -155,13 +155,13 @@ export interface QueryGetUserFundingsResponse {
   meta: NoIntervalTimeMeta;
 }
 
-export interface QueryGetFundingHistoryPathParams {
+export interface QueryGetFundingHistoryChartPathParams {
   address: string;
 }
 
-export interface QueryGetFundingHistoryQueryParams extends QueryByTimeRequest { }
+export interface QueryGetFundingHistoryChartQueryParams extends QueryByTimeRequest { }
 
-export interface QueryGetFundingHistoryResponse {
+export interface QueryGetFundingHistoryChartResponse {
   entries: RawFundingHistory[];
   meta: FundingHistoryMeta;
 }
