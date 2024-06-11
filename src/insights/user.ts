@@ -70,6 +70,11 @@ export interface RawFundingHistory {
   amount: string;
 }
 
+export interface RawFundingBreakdown {
+  market: string;
+  amount: string;
+}
+
 export interface QueryGetUserProfileRequest {
   username?: string;
   address?: string;
@@ -164,6 +169,18 @@ export interface QueryGetFundingHistoryChartQueryParams extends QueryByTimeReque
 export interface QueryGetFundingHistoryChartResponse {
   entries: RawFundingHistory[];
   meta: FundingHistoryMeta;
+}
+
+export interface QueryGetFundingBreakdownChartPathParams {
+  address: string;
+}
+
+export interface QueryGetFundingBreakdownChartQueryParams extends QueryByTimeRequest { }
+
+export interface QueryGetFundingBreakdownChartResponse {
+  paid: RawFundingBreakdown[];
+  received: RawFundingBreakdown[];
+  meta: NoIntervalTimeMeta;
 }
 
 export interface ConnectedWalletParams {

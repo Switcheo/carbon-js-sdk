@@ -162,6 +162,15 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryChartResponse>;
   }
 
+  async UserFundingBreakdown(
+    req: Insights.QueryGetFundingBreakdownChartPathParams,
+    query: Insights.QueryGetFundingBreakdownChartQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingBreakdownChartResponse>> {
+    const request = this.apiManager.path("user/funding/breakdown", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingBreakdownChartResponse>;
+  }
+
   // Pool api
   async Pools(req: Insights.QueryGetPoolsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>> {
     const request = this.apiManager.path("pool/list", {}, req);
