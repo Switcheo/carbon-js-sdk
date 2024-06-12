@@ -178,6 +178,7 @@ export class CDPModule extends BaseModule {
       denom: params.denom,
       amount: params.amount.toString(10),
       debtor: params.debtor,
+      fromCollateral: params.fromCollateral,
     });
 
     return await wallet.sendTx(
@@ -1120,6 +1121,7 @@ export namespace CDPModule {
     denom: string;
     amount: BigNumber;
     debtor: string;
+    fromCollateral: boolean;
   }
   export interface SupplyAssetAndLockCollateralParams {
     denom: string;
