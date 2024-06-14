@@ -739,7 +739,7 @@ export class CarbonWallet {
     return this.sendTxs([msg], opts);
   }
 
-  async waitForTx(txHash: string, throwIfNotIncludedInBlock: boolean = false, timeoutMs: number = 30000, pollIntervalMs: number = 500): Promise<TxResponse> {
+  async waitForTx(txHash: string, throwIfNotIncludedInBlock: boolean = false, timeoutMs: number = 60000, pollIntervalMs: number = 100): Promise<TxResponse> {
     const txId = txHash.toUpperCase()
     let timedOut = false
     const txPollTimeout = setTimeout(() => {
