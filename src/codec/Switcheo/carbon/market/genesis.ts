@@ -17,12 +17,12 @@ export interface GenesisState {
   /** params defines all the paramaters of the module. */
   params?: Params;
   controlledParams?: ControlledParams;
-  marketNameSequence: Long;
+  marketIdSequence: Long;
   stakeEquivalences: StakeEquivalence[];
   feeStructures: FeeStructure[];
 }
 
-const baseGenesisState: object = { marketNameSequence: Long.ZERO };
+const baseGenesisState: object = { marketIdSequence: Long.ZERO };
 
 export const GenesisState = {
   encode(
@@ -41,8 +41,8 @@ export const GenesisState = {
         writer.uint32(26).fork()
       ).ldelim();
     }
-    if (!message.marketNameSequence.isZero()) {
-      writer.uint32(32).int64(message.marketNameSequence);
+    if (!message.marketIdSequence.isZero()) {
+      writer.uint32(32).int64(message.marketIdSequence);
     }
     for (const v of message.stakeEquivalences) {
       StakeEquivalence.encode(v!, writer.uint32(42).fork()).ldelim();
@@ -76,7 +76,7 @@ export const GenesisState = {
           );
           break;
         case 4:
-          message.marketNameSequence = reader.int64() as Long;
+          message.marketIdSequence = reader.int64() as Long;
           break;
         case 5:
           message.stakeEquivalences.push(
@@ -109,10 +109,9 @@ export const GenesisState = {
       object.controlledParams !== undefined && object.controlledParams !== null
         ? ControlledParams.fromJSON(object.controlledParams)
         : undefined;
-    message.marketNameSequence =
-      object.marketNameSequence !== undefined &&
-      object.marketNameSequence !== null
-        ? Long.fromString(object.marketNameSequence)
+    message.marketIdSequence =
+      object.marketIdSequence !== undefined && object.marketIdSequence !== null
+        ? Long.fromString(object.marketIdSequence)
         : Long.ZERO;
     message.stakeEquivalences = (object.stakeEquivalences ?? []).map((e: any) =>
       StakeEquivalence.fromJSON(e)
@@ -138,9 +137,9 @@ export const GenesisState = {
       (obj.controlledParams = message.controlledParams
         ? ControlledParams.toJSON(message.controlledParams)
         : undefined);
-    message.marketNameSequence !== undefined &&
-      (obj.marketNameSequence = (
-        message.marketNameSequence || Long.ZERO
+    message.marketIdSequence !== undefined &&
+      (obj.marketIdSequence = (
+        message.marketIdSequence || Long.ZERO
       ).toString());
     if (message.stakeEquivalences) {
       obj.stakeEquivalences = message.stakeEquivalences.map((e) =>
@@ -170,10 +169,9 @@ export const GenesisState = {
       object.controlledParams !== undefined && object.controlledParams !== null
         ? ControlledParams.fromPartial(object.controlledParams)
         : undefined;
-    message.marketNameSequence =
-      object.marketNameSequence !== undefined &&
-      object.marketNameSequence !== null
-        ? Long.fromValue(object.marketNameSequence)
+    message.marketIdSequence =
+      object.marketIdSequence !== undefined && object.marketIdSequence !== null
+        ? Long.fromValue(object.marketIdSequence)
         : Long.ZERO;
     message.stakeEquivalences = (object.stakeEquivalences ?? []).map((e) =>
       StakeEquivalence.fromPartial(e)
