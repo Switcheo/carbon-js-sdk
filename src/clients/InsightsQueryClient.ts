@@ -1,4 +1,3 @@
-import { ResponseEcho } from "@carbon-sdk/codec/tendermint/abci/types";
 import { NetworkConfig } from "@carbon-sdk/constant";
 import { Insights } from "@carbon-sdk/index";
 import { ConnectedWalletParams, ConnectedWalletResponse, InsightsQueryResponse } from "@carbon-sdk/insights";
