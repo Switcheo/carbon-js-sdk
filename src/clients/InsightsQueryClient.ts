@@ -1,3 +1,4 @@
+import { ResponseEcho } from "@carbon-sdk/codec/tendermint/abci/types";
 import { NetworkConfig } from "@carbon-sdk/constant";
 import { Insights } from "@carbon-sdk/index";
 import { ConnectedWalletParams, ConnectedWalletResponse, InsightsQueryResponse } from "@carbon-sdk/insights";
@@ -532,6 +533,21 @@ class InsightsQueryClient {
     );
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
+  }
+
+  async FundingHistoryGraphData(
+    query: Insights.QueryGetFundingHistoryGraphDataRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryGraphDataResponse>> {
+    const request = this.apiManager.path(
+      "market/funding/history/chart",
+      {},
+      {
+        market: query.market ?? "",
+        period: query.period ?? 0,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryGraphDataResponse>;
   }
 
   async ProposalVotes(
