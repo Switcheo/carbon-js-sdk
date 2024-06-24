@@ -34,8 +34,8 @@ export interface QueryGetFundingHistoryRequest {
 }
 
 export interface QueryGetFundingHistoryGraphDataRequest {
-  market?: string;
-  period?: number;
+  market: string;
+  period: number;
 }
 
 export interface FundingHistoryGraphData {

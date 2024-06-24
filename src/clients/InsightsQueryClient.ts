@@ -541,8 +541,8 @@ class InsightsQueryClient {
       "market/funding/history/chart",
       {},
       {
-        market: query.market ?? "",
-        period: query.period ?? 0,
+        market: query.market,
+        period: query.period
       }
     );
     const response = await request.get();
