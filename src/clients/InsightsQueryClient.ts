@@ -542,7 +542,7 @@ class InsightsQueryClient {
       {},
       {
         market: query.market,
-        period: query.period
+        period: query.period,
       }
     );
     const response = await request.get();
