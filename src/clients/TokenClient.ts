@@ -4,8 +4,8 @@ import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/que
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
 import { QueryConnectionsResponse } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
 import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint';
-import { CoinGeckoTokenNames, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
-import { cibtIbcTokenRegex, cosmBridgeRegex, ibcTokenRegex, ibcWhitelist } from "@carbon-sdk/constant/ibc";
+import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
+import { cibtIbcTokenRegex, cosmBridgeRegex, ibcTokenRegex, ibcWhitelist, swthChannels } from "@carbon-sdk/constant/ibc";
 import { GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BRIDGE_IDS, BlockchainV2, BridgeMap, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
@@ -51,6 +51,7 @@ class TokenClient {
   public readonly bridges: BridgeMap = { polynetwork: [], ibc: [] };
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
+  public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
 
   public initialUsdValuesLoaded: boolean = false;
@@ -63,7 +64,7 @@ class TokenClient {
   }
 
   public async initialize(): Promise<void> {
-    this.setGeckoTokenNames();
+    this.setCommonAssetConfig();
 
     try {
       await Promise.all([
@@ -84,6 +85,10 @@ class TokenClient {
       ...this.additionalGeckoDenoms,
       ...map,
     };
+  }
+
+  public getCommonDenom(denom: string): string {
+    return this.commonAssetNames[denom] ?? denom;
   }
 
   public getDecimals(denom: string): number | undefined {
@@ -122,7 +127,11 @@ class TokenClient {
   }
 
   public getSymbol(denom: string): string {
-    return this.symbols[denom] ?? denom;
+    if (TokenClient.isCdpToken(denom)) {
+      return this.symbols[denom] ?? denom;
+    }
+    const commonDenom = this.getCommonDenom(denom);
+    return this.symbols[commonDenom] ?? commonDenom.toUpperCase();
   }
 
   public getUSDValue(denom: string): BigNumber | undefined {
@@ -716,12 +725,19 @@ class TokenClient {
     return tokens;
   }
 
-  public setGeckoTokenNames() {
+  public setCommonAssetConfig() {
     // whitelisted ibc tokens
     ibcWhitelist.forEach((chainId: string) => {
       const currencies = IBCUtils.EmbedChainInfos[chainId].currencies;
+      const channelObj = swthChannels[chainId]?.ibc;
       currencies.forEach((asset: AppCurrency) => {
+        const channel =
+          asset.coinMinimalDenom !== "swth" ? channelObj?.sourceChannel ?? "channel-0" : channelObj?.dstChannel ?? "channel-0";
+        const assetDenom = TokenClient.isIBCDenom(asset.coinMinimalDenom)
+          ? asset.coinMinimalDenom
+          : IBCUtils.makeIBCMinimalDenom(channel, asset.coinMinimalDenom);
         const symbolSmall = asset.coinDenom.toLowerCase();
+        if (!this.commonAssetNames[assetDenom]) this.commonAssetNames[assetDenom] = symbolSmall;
         if (asset.coinGeckoId && !this.geckoTokenNames[symbolSmall]) this.geckoTokenNames[symbolSmall] = asset.coinGeckoId;
       });
     });
