@@ -21,8 +21,8 @@
         {
           "adapter": "oracle_result_fetcher",
           "config": {
-              "oracle_id": ".CLUNA",
-              "stale_allowance": "900"
+            "oracle_id": ".CLUNA",
+            "stale_allowance": "900"
           }
         }
       ]
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "output_id": "ampluna_astroport_redemption_rate",
+      "output_id": "ampluna_astroport_redemption_rate_6",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
@@ -65,11 +65,47 @@
     },
     {
       "output_id": "ampluna_astroport_redemption_rate",
-      "input_id": "ampluna_astroport_redemption_rate",
+      "input_id": "ampluna_astroport_redemption_rate_6",
       "adapter": "decimal_handler",
       "config": {
         "operation": "decrease",
         "exponent": "6"
+      }
+    },
+    {
+      "output_id": "ampluna_whitewhale_redemption_rate_6",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "ampluna_whitewhale_redemption_rate",
+            "default_node_host": "https://phoenix-lcd.terra.dev",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/terra1tsx0dmasjvd45k6tdywzv77d5t9k3lpzyuleavuah77pg3lwm9cq4469pm/smart/eyJzaW11bGF0aW9uIjp7Im9mZmVyX2Fzc2V0Ijp7ImFtb3VudCI6IjEwMDAwMDAiLCJpbmZvIjp7InRva2VuIjp7ImNvbnRyYWN0X2FkZHIiOiJ0ZXJyYTFlY2dhenlkMHdhYWozZzdsOWNteTVndWxoeGtwczJnbXh1OWdoZHVjdnV5cGpxNjhtcTJzNWx2c2N0In19fX19",
+            "paths": "[\"data.return_amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "ampluna_whitewhale_redemption_rate",
+      "input_id": "ampluna_whitewhale_redemption_rate_6",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "6"
+      }
+    },
+    {
+      "output_id": "ampluna_redemption_rate_min_interim",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"ampluna_eris_redemption_rate\", \"ampluna_astroport_redemption_rate\"]"
       }
     },
     {
@@ -78,7 +114,7 @@
       "input_id": "",
       "config": {
         "operation": "min",
-        "input_ids": "[\"ampluna_eris_redemption_rate\",\"ampluna_astroport_redemption_rate\"]"
+        "input_ids": "[\"ampluna_redemption_rate_min_interim\", \"ampluna_whitewhale_redemption_rate\"]"
       }
     },
     {

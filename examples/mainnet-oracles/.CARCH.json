@@ -1,0 +1,231 @@
+{
+  "output_id": "arch_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "3600"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "gate_arch_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "gate_arch_usdt",
+            "default_node_host": "https://api.gateio.ws",
+            "default_node_path": "/api/v4/spot/tickers?currency_pair=ARCH_USDT",
+            "paths": "[\"0.last\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "gate_arch_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"gate_arch_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "cryptodotcom_arch_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "cryptodotcom_arch_usd",
+            "default_node_host": "https://api.crypto.com",
+            "default_node_path": "/exchange/v1/public/get-tickers?instrument_name=ARCH_USD",
+            "paths": "[\"result.data.0.a\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_arch_usdc_12",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_arch_usdc",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/poolmanager/pools/1375/prices?base_asset_denom=ibc/23AB778D694C1ECFC59B91D8C399C115CC53B0BD1C61020D8E19519F002BDD85&quote_asset_denom=ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+            "paths": "[\"spot_price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_arch_usdc",
+      "input_id": "osmosis_arch_usdc_12",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "increase",
+        "exponent": "12"
+      }
+    },
+    {
+      "output_id": "usdc_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDC",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_arch_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"osmosis_arch_usdc\",\"usdc_usd\"]"
+      }
+    },
+    {
+      "output_id": "astrovault_axv_xarch_pool",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "astrovault_axv_xarch_pool",
+            "default_node_host": "https://archway-api.w3coins.io",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/archway1d5s2ynrfnnjckg25h57693s5c9yljesqny2f4jcgycq6d7l7hvks08hfuv/smart/ewogICJwb29sIjoge30KfQ==",
+            "paths": "[\"data.assets.0.amount\", \"data.assets.1.amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "astrovault_arch_axv_12",
+      "adapter": "math_filter",
+      "input_id": "astrovault_axv_xarch_pool",
+      "config": {
+        "operation": "divide"
+      }
+    },
+    {
+      "output_id": "astrovault_arch_axv",
+      "input_id": "astrovault_arch_axv_12",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "increase",
+        "exponent": "12"
+      }
+    },
+    {
+      "output_id": "astrovault_axv_usdc_pool",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "astrovault_axv_usdc_pool",
+            "default_node_host": "https://archway-api.w3coins.io",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/archway1fnw37ae9rqs9alu0z9x6jxmd3tnyvnccugks3t28gg5yuv2me4rsxs7gtl/smart/ewogICJwb29sIjoge30KfQ==",
+            "paths": "[\"data.assets.1.amount\", \"data.assets.0.amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "astrovault_axv_usdc",
+      "adapter": "math_filter",
+      "input_id": "astrovault_axv_usdc_pool",
+      "config": {
+        "operation": "divide"
+      }
+    },
+    {
+      "output_id": "astrovault_arch_usdc",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"astrovault_arch_axv\",\"astrovault_axv_usdc\"]"
+      }
+    },
+    {
+      "output_id": "astrovault_arch_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"astrovault_arch_usdc\",\"usdc_usd\"]"
+      }
+    },
+    {
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"osmosis_arch_usd\", \"cryptodotcom_arch_usd\",\"gate_arch_usd\",\"astrovault_arch_usd\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "arch_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"osmosis_arch_usd\",\"cryptodotcom_arch_usd\",\"gate_arch_usd\",\"astrovault_arch_usd\"]",
+        "weights": "[0.25, 0.25, 0.25, 0.25]"
+      }
+    },
+    {
+      "output_id": "arch_usd",
+      "input_id": "arch_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "output_id": "eth_btc",
+  "templates": [],
+  "jobs": [
+    {
+      "output_id": "btc_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": "SIDXBTC",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "eth_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": "SIDXETH",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "eth_btc",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "divide",
+        "input_ids": "[\"eth_usd\",\"btc_usd\"]"
+      }
+    },
+    {
+      "output_id": "eth_btc",
+      "input_id": "eth_btc",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

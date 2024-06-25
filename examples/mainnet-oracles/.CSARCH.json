@@ -1,0 +1,110 @@
+{
+  "output_id": "sarch_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "arch_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CARCH",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "sarch_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "sarch_redemption_rate",
+            "default_node_host": "https://archway-api.w3coins.io",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/archway1p3wrpsrxldc6laecc8r3ck52cmg3chu06mmm3thqvt6exy36f79q575rsq/smart/eyJzdGF0dXNfaW5mbyI6e319",
+            "paths": "[\"data.ratio\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "astrovault_xarch_sarch_pool",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "astrovault_xarch_sarch_pool",
+            "default_node_host": "https://archway-api.w3coins.io",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/archway1352tn8gyl6df9azwznldg5ths0xst720xgc82q2as3c5kz0tx64qm0dq3j/smart/ewogICJwb29sIjoge30KfQ==",
+            "paths": "[\"data.assets.0.amount\", \"data.assets.1.amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "sarch_swap_rate",
+      "adapter": "math_filter",
+      "input_id": "astrovault_xarch_sarch_pool",
+      "config": {
+        "operation": "divide"
+      }
+    },
+    {
+      "output_id": "sarch_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"sarch_redemption_rate\",\"sarch_swap_rate\"]"
+      }
+    },
+    {
+      "output_id": "sarch_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"sarch_redemption_rate\",\"arch_usd\"]"
+      }
+    },
+    {
+      "output_id": "sarch_usd",
+      "input_id": "sarch_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "sarch_usd",
+      "input_id": "sarch_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

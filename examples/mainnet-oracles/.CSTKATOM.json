@@ -123,12 +123,21 @@
       }
     },
     {
+      "output_id": "stkatom_redemption_rate_interim",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"dexter_stkatom_atom_swap_rate\", \"persistence_stkatom_redemption_rate\"]"
+      }
+    },
+    {
       "output_id": "stkatom_redemption_rate",
       "adapter": "math_filter",
       "input_id": "",
       "config": {
-        "operation": "[\"min\",\"min\"]",
-        "input_ids": "[\"dexter_stkatom_atom_swap_rate\", \"persistence_stkatom_redemption_rate\", \"astroport_stkatom_atom_redemption_rate\"]"
+        "operation": "min",
+        "input_ids": "[\"stkatom_redemption_rate_interim\", \"astroport_stkatom_atom_redemption_rate\"]"
       }
     },
     {

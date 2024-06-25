@@ -1,0 +1,230 @@
+{
+  "output_id": "dinj_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bybit_inj_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_inj_usdt",
+            "default_node_host": "https://api.bybit.com",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=INJUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_inj_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_inj_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=INJUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_inj_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_inj_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=INJ-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "bybit_inj_usdt",
+      "output_id": "bybit_inj_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_inj_usdt\", \"binance_inj_usdt\", \"okx_inj_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "binance_inj_usdt",
+      "output_id": "binance_inj_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_inj_usdt\", \"binance_inj_usdt\", \"okx_inj_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "okx_inj_usdt",
+      "output_id": "okx_inj_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_inj_usdt\", \"binance_inj_usdt\", \"okx_inj_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "inj_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_inj_usdt\", \"binance_inj_usdt\", \"okx_inj_usdt\"]",
+        "weights": "[0.3, 0.4, 0.3]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "inj_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"inj_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "dojo_dinj_inj_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "dojo_dinj_inj_redemption_rate",
+            "default_node_host": "https://injective-rest.publicnode.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/inj17glv5mk2pvhpwkdjljacmr2fx9pfc3djepy6xh/smart/eyJzdGF0ZSI6e319",
+            "paths": "[\"data.exchange_rate\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "dojo_dinj_inj_swap_rate_18",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "dojo_dinj_inj_swap_rate",
+            "default_node_host": "https://injective-rest.publicnode.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/inj1apnwjz58gn96ypw9amkph2s9z0ux8df484yp04/smart/eyJzaW11bGF0aW9uIjp7Im9mZmVyX2Fzc2V0Ijp7ImFtb3VudCI6IjEwMDAwMDAwMDAwMDAwMDAwMDAiLCJpbmZvIjp7InRva2VuIjp7ImNvbnRyYWN0X2FkZHIiOiJpbmoxMzR3Zmp1dHl3bnk5cW55dXgyeGdkbW0waGZqN213cGwzOXIzcjkifX19fX0=",
+            "paths": "[\"data.return_amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "dojo_dinj_inj_swap_rate",
+      "input_id": "dojo_dinj_inj_swap_rate_18",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "18"
+      }
+    },
+    {
+      "output_id": "dinj_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"dojo_dinj_inj_redemption_rate\",\"dojo_dinj_inj_swap_rate\"]"
+      }
+    },
+    {
+      "output_id": "dinj_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"dinj_redemption_rate\",\"inj_usd\"]"
+      }
+    },
+    {
+      "output_id": "dinj_usd",
+      "input_id": "dinj_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "dinj_usd",
+      "input_id": "dinj_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}
