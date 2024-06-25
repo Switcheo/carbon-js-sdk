@@ -178,7 +178,7 @@ class TokenClient {
       denom = denom.toLowerCase();
     }
 
-    const symbol = this.symbols[denom] ?? denom;;
+    const symbol = this.symbols[denom] ?? denom;
     if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = symbol.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
