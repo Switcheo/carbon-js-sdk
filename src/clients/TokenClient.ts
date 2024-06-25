@@ -121,6 +121,10 @@ class TokenClient {
     return bridge?.chainName;
   }
 
+  /**
+   * use getTokenName directly instead
+   * @deprecated
+   */
   public getSymbol(denom: string): string {
     return this.symbols[denom] ?? denom;
   }
@@ -174,7 +178,7 @@ class TokenClient {
       denom = denom.toLowerCase();
     }
 
-    const symbol = this.getSymbol(denom);
+    const symbol = this.symbols[denom] ?? denom;;
     if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = symbol.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
