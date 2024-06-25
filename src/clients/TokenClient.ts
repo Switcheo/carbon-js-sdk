@@ -538,8 +538,12 @@ class TokenClient {
     return this.bridges.ibc.map(bridge => bridge.chainName)
   }
 
+  public getIbcBridgeFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): IbcBridge | undefined => {
+    return this.bridges.ibc.find(bridge => (bridge.chainName === blockchain || bridge.chainName.toLowerCase() === blockchain));
+  };
+
   public getIbcChainFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): string | undefined => {
-    const ibcBridge = this.bridges.ibc.find(bridge => (bridge.chainName === blockchain || bridge.chainName.toLowerCase() === blockchain));
+    const ibcBridge = this.getIbcBridgeFromBlockchainV2(blockchain);
     return ibcBridge?.chain_id_name;
   };
 
