@@ -117,11 +117,6 @@ export interface CallContractArgs {
   data?: string;
 }
 
-// export interface MetaMaskSyncResult {
-//   blockchain?: Blockchain | BlockchainV2;
-//   chainId?: number;
-// }
-
 export interface StoredMnemonicInfo {
   mnemonic: string,
   chain: EVMChainV2,
