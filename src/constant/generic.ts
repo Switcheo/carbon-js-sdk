@@ -3,6 +3,8 @@ import { StdFee } from "@cosmjs/amino";
 import { coins } from "@cosmjs/proto-signing";
 import BigNumber from "bignumber.js";
 import Long from "long";
+import { EVMChain as EVMChainV2 } from "@carbon-sdk/index";
+import { Blockchain, BlockchainV2 } from "@carbon-sdk/util/blockchain";
 
 export const DEFAULT_FEE_DENOM = "swth";
 
@@ -33,4 +35,11 @@ export const CARBON_GAS_PRICE: GasPriceStep = {
 export interface RequestArguments {
   method: string;
   params?: unknown[] | object;
+}
+
+export type EVMChain = EVMChainV2;
+
+export interface SyncResult  {
+  blockchain?: Blockchain | BlockchainV2;
+  chainId?: number;
 }

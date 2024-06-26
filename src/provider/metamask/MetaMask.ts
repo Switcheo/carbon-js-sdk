@@ -1,6 +1,6 @@
-import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EVMChain, EthNetworkConfig, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
+import { ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
@@ -26,8 +26,6 @@ import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { Eip6963Provider } from "../eip6963Provider";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
-
-export type EVMChain = EVMChainV2;
 
 type ChainContracts = {
   [key in Network]: string;
@@ -119,10 +117,10 @@ export interface CallContractArgs {
   data?: string;
 }
 
-export interface MetaMaskSyncResult {
-  blockchain?: Blockchain | BlockchainV2;
-  chainId?: number;
-}
+// export interface MetaMaskSyncResult {
+//   blockchain?: Blockchain | BlockchainV2;
+//   chainId?: number;
+// }
 
 export interface StoredMnemonicInfo {
   mnemonic: string,
@@ -374,7 +372,7 @@ export class MetaMask extends Eip6963Provider {
     return this.connectedAccount
   }
 
-  async syncBlockchain(): Promise<MetaMaskSyncResult> {
+  async syncBlockchain(): Promise<SyncResult> {
     const metamaskAPI = await this.getConnectedAPI()
     const chainIdHex = (await metamaskAPI?.request({ method: "eth_chainId" })) as string;
     const chainId = chainIdHex ? parseInt(chainIdHex, 16) : undefined;

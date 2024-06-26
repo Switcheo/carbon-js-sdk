@@ -1,4 +1,4 @@
-import { AddressUtils, AminoTypesMap, CarbonSDK, CarbonTx, EVMChain as EVMChainV2, Models, SupportedEip6963Provider } from "@carbon-sdk/index";
+import { AddressUtils, AminoTypesMap, CarbonSDK, CarbonTx, Models, SupportedEip6963Provider } from "@carbon-sdk/index";
 import { ETH_SECP256K1_TYPE, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo, EncodeObject } from "@cosmjs/proto-signing";
@@ -14,8 +14,8 @@ import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
-import { Blockchain, BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
-import { CarbonEvmChainIDs, Network, RequestArguments } from "@carbon-sdk/constant";
+import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
+import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 
@@ -30,13 +30,6 @@ interface RainbowkitAPI {
   request: (args: RequestArguments) => Promise<unknown>;
   on: (eventName: string, listener: (...args: unknown[]) => void) => any;
 }
-
-export interface SyncResult  {
-  blockchain?: Blockchain | BlockchainV2;
-  chainId?: number;
-}
-
-export type EVMChain = EVMChainV2;
 
 class RainbowKitAccount extends Eip6963Provider {
   private provider: unknown
