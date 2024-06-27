@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import { ParsedTimeMeta, QueryByTimeRequest, TimeMeta, NoIntervalTimeMeta, FundingHistoryMeta } from "./common";
+import { ParsedTimeMeta, QueryByTimeRequest, TimeMeta, NoIntervalTimeMeta } from "./common";
 import BigNumber from "bignumber.js";
 
 export interface ActiveAccounts {
@@ -65,10 +65,6 @@ export interface RawUserFundings {
   amount: string;
 }
 
-export interface RawFundingHistory {
-  timestamp: string;
-  amount: string;
-}
 
 export interface RawFundingBreakdown {
   market: string;

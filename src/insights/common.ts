@@ -117,12 +117,6 @@ export interface NoIntervalTimeMeta {
   until: string;
 }
 
-export interface FundingHistoryMeta {
-  from: string;
-  until: string;
-  totalFunding: number;
-}
-
 export interface ParsedTimeMeta {
   from: Dayjs;
   until: Dayjs;
