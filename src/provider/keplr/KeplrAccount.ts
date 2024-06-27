@@ -1,5 +1,5 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
-import { CARBON_GAS_PRICE, Network, NetworkConfigs, decTypeDecimals } from "@carbon-sdk/constant";
+import { CARBON_GAS_PRICE, CarbonEvmChainIDs, Network, NetworkConfigs, decTypeDecimals } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
@@ -7,7 +7,7 @@ import { Algo } from "@cosmjs/proto-signing";
 import { AppCurrency, ChainInfo, EthSignType, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 import { ethers } from "ethers";
-import { PUBLIC_KEY_SIGNING_TEXT, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
+import { PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { parseEvmError } from "../metamask/error";
 
@@ -217,6 +217,10 @@ class KeplrAccount {
       rpc: config.tmRpcUrl,
       chainName: `Carbon (${config.network})`,
       chainId: chainId,
+      evm: {
+        chainId: Number(parseChainId(CarbonEvmChainIDs[config.network])),
+        rpc: config.evmJsonRpcUrl,
+      },
       bech32Config: {
         bech32PrefixAccAddr: `${bech32Prefix}`,
         bech32PrefixAccPub: `${bech32Prefix}pub`,
