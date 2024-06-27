@@ -126,6 +126,11 @@ class TokenClient {
     return bridge?.chainName;
   }
 
+
+  /**
+   * use getTokenName directly instead
+   * @deprecated
+  */
   public getSymbol(denom: string): string {
     if (TokenClient.isCdpToken(denom)) {
       return this.symbols[denom] ?? denom;
