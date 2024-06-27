@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { MessageType } from "./message_type";
 import { Timestamp } from "../../../google/protobuf/timestamp";
+import { UInt64Value, StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.misc";
 
@@ -11,6 +12,8 @@ export interface Message {
   message: string;
   messageType?: MessageType;
   blockCreatedAt?: Date;
+  msgExecIndex?: Long;
+  granter?: string;
 }
 
 const baseMessage: object = { hash: "", message: "" };
@@ -38,6 +41,18 @@ export const Message = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.msgExecIndex !== undefined) {
+      UInt64Value.encode(
+        { value: message.msgExecIndex! },
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
+    if (message.granter !== undefined) {
+      StringValue.encode(
+        { value: message.granter! },
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -61,6 +76,15 @@ export const Message = {
           message.blockCreatedAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 5:
+          message.msgExecIndex = UInt64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 6:
+          message.granter = StringValue.decode(reader, reader.uint32()).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -88,6 +112,14 @@ export const Message = {
       object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
         ? fromJsonTimestamp(object.blockCreatedAt)
         : undefined;
+    message.msgExecIndex =
+      object.msgExecIndex !== undefined && object.msgExecIndex !== null
+        ? Long.fromValue(object.msgExecIndex)
+        : undefined;
+    message.granter =
+      object.granter !== undefined && object.granter !== null
+        ? String(object.granter)
+        : undefined;
     return message;
   },
 
@@ -101,6 +133,9 @@ export const Message = {
         : undefined);
     message.blockCreatedAt !== undefined &&
       (obj.blockCreatedAt = message.blockCreatedAt.toISOString());
+    message.msgExecIndex !== undefined &&
+      (obj.msgExecIndex = message.msgExecIndex);
+    message.granter !== undefined && (obj.granter = message.granter);
     return obj;
   },
 
@@ -113,6 +148,11 @@ export const Message = {
         ? MessageType.fromPartial(object.messageType)
         : undefined;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
+    message.msgExecIndex =
+      object.msgExecIndex !== undefined && object.msgExecIndex !== null
+        ? Long.fromValue(object.msgExecIndex)
+        : undefined;
+    message.granter = object.granter ?? undefined;
     return message;
   },
 };

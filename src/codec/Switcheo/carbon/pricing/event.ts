@@ -14,6 +14,10 @@ export interface TokenPriceUpdateEvent {
   price?: TokenPrice;
 }
 
+export interface TokenPriceRemoveEvent {
+  price?: TokenPrice;
+}
+
 export interface SetImpactBandEvent {
   impactBand: number;
   type: string;
@@ -149,6 +153,70 @@ export const TokenPriceUpdateEvent = {
     object: DeepPartial<TokenPriceUpdateEvent>
   ): TokenPriceUpdateEvent {
     const message = { ...baseTokenPriceUpdateEvent } as TokenPriceUpdateEvent;
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? TokenPrice.fromPartial(object.price)
+        : undefined;
+    return message;
+  },
+};
+
+const baseTokenPriceRemoveEvent: object = {};
+
+export const TokenPriceRemoveEvent = {
+  encode(
+    message: TokenPriceRemoveEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.price !== undefined) {
+      TokenPrice.encode(message.price, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): TokenPriceRemoveEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTokenPriceRemoveEvent } as TokenPriceRemoveEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.price = TokenPrice.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TokenPriceRemoveEvent {
+    const message = { ...baseTokenPriceRemoveEvent } as TokenPriceRemoveEvent;
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? TokenPrice.fromJSON(object.price)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: TokenPriceRemoveEvent): unknown {
+    const obj: any = {};
+    message.price !== undefined &&
+      (obj.price = message.price
+        ? TokenPrice.toJSON(message.price)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<TokenPriceRemoveEvent>
+  ): TokenPriceRemoveEvent {
+    const message = { ...baseTokenPriceRemoveEvent } as TokenPriceRemoveEvent;
     message.price =
       object.price !== undefined && object.price !== null
         ? TokenPrice.fromPartial(object.price)
