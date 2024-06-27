@@ -160,17 +160,6 @@ export interface QueryGetUserFundingsResponse {
   meta: NoIntervalTimeMeta;
 }
 
-export interface QueryGetFundingHistoryChartPathParams {
-  address: string;
-}
-
-export interface QueryGetFundingHistoryChartQueryParams extends QueryByTimeRequest { }
-
-export interface QueryGetFundingHistoryChartResponse {
-  entries: RawFundingHistory[];
-  meta: FundingHistoryMeta;
-}
-
 export interface QueryGetFundingBreakdownChartPathParams {
   address: string;
 }

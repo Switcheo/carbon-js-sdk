@@ -153,15 +153,6 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserFundingsResponse>;
   }
 
-  async UserFundingHistory(
-    req: Insights.QueryGetFundingHistoryChartPathParams,
-    query: Insights.QueryGetFundingHistoryChartQueryParams
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryChartResponse>> {
-    const request = this.apiManager.path("user/funding/history", req, query);
-    const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryChartResponse>;
-  }
-
   async UserFundingBreakdown(
     req: Insights.QueryGetFundingBreakdownChartPathParams,
     query: Insights.QueryGetFundingBreakdownChartQueryParams
