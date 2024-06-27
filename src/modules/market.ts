@@ -10,20 +10,20 @@ export class MarketModule extends BaseModule {
   public async getFeeTiers(marketType: string): Promise<Carbon.Market.FeeTier[]> {
     const fetchDataResponse: Carbon.Market.QueryGetFeeTiersResponse = await this.sdkProvider.query.market.FeeTiers({
       marketType: marketType,
-      marketName: '',
+      marketId: '',
       userAddress: '',
     })
     return fetchDataResponse?.feeTiers ?? []
   }
 
-  public async getTradingFees(marketName: string, userAddress: string): Promise<Carbon.Market.TradingFees> {
+  public async getTradingFees(marketId: string, userAddress: string): Promise<Carbon.Market.TradingFees> {
     const fetchDataResponse: Carbon.Market.QueryGetTradingFeesResponse = await this.sdkProvider.query.market.TradingFees({
-      marketName: marketName,
+      marketId: marketId,
       userAddress: userAddress,
     })
     return fetchDataResponse?.fees ?? { takerFee: '', makerFee: '' }
   }
-  
+
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -66,7 +66,7 @@ export class MarketModule extends BaseModule {
     const wallet = this.getWallet();
     const value = MsgDisableSpotMarket.fromPartial({
       creator: params.creator,
-      marketName: params.marketName,
+      marketId: params.marketId,
     })
     return await wallet.sendTx(
       {
@@ -184,7 +184,7 @@ export namespace MarketModule {
   }
   export interface DisableSpotMarketParams {
     creator: string;
-    marketName: string;
+    marketId: string;
   }
 
   export interface AddFeeTierParams {
