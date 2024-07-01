@@ -7,7 +7,7 @@ import { Algo } from "@cosmjs/proto-signing";
 import { AppCurrency, ChainInfo, EthSignType, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 import { ethers } from "ethers";
-import { PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
+import { PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { parseEvmError } from "../metamask/error";
 
@@ -53,16 +53,16 @@ class KeplrAccount {
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
-        const request = await populateEvmTransactionDetails(api, req)
+        const unsignedTx = await populateUnsignedEvmTranscation(api, req)
         const signedTx = await keplr!.signEthereum(
           // carbon chain id
           api.wallet?.getChainId() ?? '',
           // cosmos address
           api.wallet?.bech32Address ?? '',
-          JSON.stringify(request),
+          JSON.stringify(unsignedTx),
           EthSignType.TRANSACTION,
         )
-        const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
+        const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
         const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
         return (await provider.sendTransaction(rlpEncodedHex)).hash
       }
@@ -103,16 +103,17 @@ class KeplrAccount {
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
-        const request = await populateEvmTransactionDetails(api, req)
+        const unsignedTx = await populateUnsignedEvmTranscation(api, req)
         const signedTx = await keplr!.signEthereum(
           // carbon chain id
           api.wallet?.getChainId() ?? '',
           // cosmos address
           api.wallet?.bech32Address ?? '',
-          JSON.stringify(request),
+          JSON.stringify(unsignedTx),
           EthSignType.TRANSACTION,
         )
-        const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
+        // const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`
+        const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
         const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
         return (await provider.sendTransaction(rlpEncodedHex)).hash
       }
