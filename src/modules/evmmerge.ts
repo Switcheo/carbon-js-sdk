@@ -1,4 +1,4 @@
-import { MsgMergeAccount } from "@carbon-sdk/codec";
+import { MsgMergeAccount } from "@carbon-sdk/codec/Switcheo/carbon/evmmerge/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 

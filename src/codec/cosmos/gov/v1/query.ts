@@ -8,6 +8,7 @@ import {
   VotingParams,
   DepositParams,
   TallyParams,
+  Params,
   Deposit,
   TallyResult,
   proposalStatusFromJSON,
@@ -19,6 +20,14 @@ export const protobufPackage = "cosmos.gov.v1";
 
 /** Since: cosmos-sdk 0.46 */
 
+/** QueryConstitutionRequest is the request type for the Query/Constitution RPC method */
+export interface QueryConstitutionRequest {}
+
+/** QueryConstitutionResponse is the response type for the Query/Constitution RPC method */
+export interface QueryConstitutionResponse {
+  constitution: string;
+}
+
 /** QueryProposalRequest is the request type for the Query/Proposal RPC method. */
 export interface QueryProposalRequest {
   /** proposal_id defines the unique id of the proposal. */
@@ -27,6 +36,7 @@ export interface QueryProposalRequest {
 
 /** QueryProposalResponse is the response type for the Query/Proposal RPC method. */
 export interface QueryProposalResponse {
+  /** proposal is the requested governance proposal. */
   proposal?: Proposal;
 }
 
@@ -47,6 +57,7 @@ export interface QueryProposalsRequest {
  * method.
  */
 export interface QueryProposalsResponse {
+  /** proposals defines all the requested governance proposals. */
   proposals: Proposal[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
@@ -62,7 +73,7 @@ export interface QueryVoteRequest {
 
 /** QueryVoteResponse is the response type for the Query/Vote RPC method. */
 export interface QueryVoteResponse {
-  /** vote defined the queried vote. */
+  /** vote defines the queried vote. */
   vote?: Vote;
 }
 
@@ -76,7 +87,7 @@ export interface QueryVotesRequest {
 
 /** QueryVotesResponse is the response type for the Query/Votes RPC method. */
 export interface QueryVotesResponse {
-  /** votes defined the queried votes. */
+  /** votes defines the queried votes. */
   votes: Vote[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
@@ -93,12 +104,33 @@ export interface QueryParamsRequest {
 
 /** QueryParamsResponse is the response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
-  /** voting_params defines the parameters related to voting. */
+  /**
+   * Deprecated: Prefer to use `params` instead.
+   * voting_params defines the parameters related to voting.
+   *
+   * @deprecated
+   */
   votingParams?: VotingParams;
-  /** deposit_params defines the parameters related to deposit. */
+  /**
+   * Deprecated: Prefer to use `params` instead.
+   * deposit_params defines the parameters related to deposit.
+   *
+   * @deprecated
+   */
   depositParams?: DepositParams;
-  /** tally_params defines the parameters related to tally. */
+  /**
+   * Deprecated: Prefer to use `params` instead.
+   * tally_params defines the parameters related to tally.
+   *
+   * @deprecated
+   */
   tallyParams?: TallyParams;
+  /**
+   * params defines all the paramaters of x/gov module.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  params?: Params;
 }
 
 /** QueryDepositRequest is the request type for the Query/Deposit RPC method. */
@@ -125,6 +157,7 @@ export interface QueryDepositsRequest {
 
 /** QueryDepositsResponse is the response type for the Query/Deposits RPC method. */
 export interface QueryDepositsResponse {
+  /** deposits defines the requested deposits. */
   deposits: Deposit[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
@@ -141,6 +174,123 @@ export interface QueryTallyResultResponse {
   /** tally defines the requested tally. */
   tally?: TallyResult;
 }
+
+const baseQueryConstitutionRequest: object = {};
+
+export const QueryConstitutionRequest = {
+  encode(
+    _: QueryConstitutionRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryConstitutionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryConstitutionRequest,
+    } as QueryConstitutionRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryConstitutionRequest {
+    const message = {
+      ...baseQueryConstitutionRequest,
+    } as QueryConstitutionRequest;
+    return message;
+  },
+
+  toJSON(_: QueryConstitutionRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryConstitutionRequest>
+  ): QueryConstitutionRequest {
+    const message = {
+      ...baseQueryConstitutionRequest,
+    } as QueryConstitutionRequest;
+    return message;
+  },
+};
+
+const baseQueryConstitutionResponse: object = { constitution: "" };
+
+export const QueryConstitutionResponse = {
+  encode(
+    message: QueryConstitutionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.constitution !== "") {
+      writer.uint32(10).string(message.constitution);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryConstitutionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryConstitutionResponse,
+    } as QueryConstitutionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.constitution = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryConstitutionResponse {
+    const message = {
+      ...baseQueryConstitutionResponse,
+    } as QueryConstitutionResponse;
+    message.constitution =
+      object.constitution !== undefined && object.constitution !== null
+        ? String(object.constitution)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryConstitutionResponse): unknown {
+    const obj: any = {};
+    message.constitution !== undefined &&
+      (obj.constitution = message.constitution);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryConstitutionResponse>
+  ): QueryConstitutionResponse {
+    const message = {
+      ...baseQueryConstitutionResponse,
+    } as QueryConstitutionResponse;
+    message.constitution = object.constitution ?? "";
+    return message;
+  },
+};
 
 const baseQueryProposalRequest: object = { proposalId: Long.UZERO };
 
@@ -813,6 +963,9 @@ export const QueryParamsResponse = {
         writer.uint32(26).fork()
       ).ldelim();
     }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -831,6 +984,9 @@ export const QueryParamsResponse = {
           break;
         case 3:
           message.tallyParams = TallyParams.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.params = Params.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -854,6 +1010,10 @@ export const QueryParamsResponse = {
       object.tallyParams !== undefined && object.tallyParams !== null
         ? TallyParams.fromJSON(object.tallyParams)
         : undefined;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -871,6 +1031,8 @@ export const QueryParamsResponse = {
       (obj.tallyParams = message.tallyParams
         ? TallyParams.toJSON(message.tallyParams)
         : undefined);
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -887,6 +1049,10 @@ export const QueryParamsResponse = {
     message.tallyParams =
       object.tallyParams !== undefined && object.tallyParams !== null
         ? TallyParams.fromPartial(object.tallyParams)
+        : undefined;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
         : undefined;
     return message;
   },
@@ -1331,6 +1497,10 @@ export const QueryTallyResultResponse = {
 
 /** Query defines the gRPC querier service for gov module */
 export interface Query {
+  /** Constitution queries the chain's constitution. */
+  Constitution(
+    request: QueryConstitutionRequest
+  ): Promise<QueryConstitutionResponse>;
   /** Proposal queries proposal details based on ProposalID. */
   Proposal(request: QueryProposalRequest): Promise<QueryProposalResponse>;
   /** Proposals queries all proposals based on given status. */
@@ -1341,7 +1511,7 @@ export interface Query {
   Votes(request: QueryVotesRequest): Promise<QueryVotesResponse>;
   /** Params queries all parameters of the gov module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-  /** Deposit queries single deposit information based proposalID, depositAddr. */
+  /** Deposit queries single deposit information based on proposalID, depositAddr. */
   Deposit(request: QueryDepositRequest): Promise<QueryDepositResponse>;
   /** Deposits queries all deposits of a single proposal. */
   Deposits(request: QueryDepositsRequest): Promise<QueryDepositsResponse>;
@@ -1355,6 +1525,7 @@ export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
+    this.Constitution = this.Constitution.bind(this);
     this.Proposal = this.Proposal.bind(this);
     this.Proposals = this.Proposals.bind(this);
     this.Vote = this.Vote.bind(this);
@@ -1364,6 +1535,20 @@ export class QueryClientImpl implements Query {
     this.Deposits = this.Deposits.bind(this);
     this.TallyResult = this.TallyResult.bind(this);
   }
+  Constitution(
+    request: QueryConstitutionRequest
+  ): Promise<QueryConstitutionResponse> {
+    const data = QueryConstitutionRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.gov.v1.Query",
+      "Constitution",
+      data
+    );
+    return promise.then((data) =>
+      QueryConstitutionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   Proposal(request: QueryProposalRequest): Promise<QueryProposalResponse> {
     const data = QueryProposalRequest.encode(request).finish();
     const promise = this.rpc.request("cosmos.gov.v1.Query", "Proposal", data);

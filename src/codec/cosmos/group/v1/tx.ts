@@ -145,6 +145,9 @@ export interface MsgUpdateGroupPolicyAdmin {
   newAdmin: string;
 }
 
+/** MsgUpdateGroupPolicyAdminResponse is the Msg/UpdateGroupPolicyAdmin response type. */
+export interface MsgUpdateGroupPolicyAdminResponse {}
+
 /** MsgCreateGroupWithPolicy is the Msg/CreateGroupWithPolicy request type. */
 export interface MsgCreateGroupWithPolicy {
   /** admin is the account address of the group and group policy admin. */
@@ -172,9 +175,6 @@ export interface MsgCreateGroupWithPolicyResponse {
   groupPolicyAddress: string;
 }
 
-/** MsgUpdateGroupPolicyAdminResponse is the Msg/UpdateGroupPolicyAdmin response type. */
-export interface MsgUpdateGroupPolicyAdminResponse {}
-
 /** MsgUpdateGroupPolicyDecisionPolicy is the Msg/UpdateGroupPolicyDecisionPolicy request type. */
 export interface MsgUpdateGroupPolicyDecisionPolicy {
   /** admin is the account address of the group admin. */
@@ -194,7 +194,7 @@ export interface MsgUpdateGroupPolicyMetadata {
   admin: string;
   /** group_policy_address is the account address of group policy. */
   groupPolicyAddress: string;
-  /** metadata is the updated group policy metadata. */
+  /** metadata is the group policy metadata to be updated. */
   metadata: string;
 }
 
@@ -210,7 +210,7 @@ export interface MsgSubmitProposal {
    * Proposers signatures will be counted as yes votes.
    */
   proposers: string[];
-  /** metadata is any arbitrary metadata to attached to the proposal. */
+  /** metadata is any arbitrary metadata attached to the proposal. */
   metadata: string;
   /** messages is a list of `sdk.Msg`s that will be executed if the proposal passes. */
   messages: Any[];
@@ -220,6 +220,18 @@ export interface MsgSubmitProposal {
    * If so, proposers signatures are considered as Yes votes.
    */
   exec: Exec;
+  /**
+   * title is the title of the proposal.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  title: string;
+  /**
+   * summary is the summary of the proposal.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  summary: string;
 }
 
 /** MsgSubmitProposalResponse is the Msg/SubmitProposal response type. */
@@ -247,7 +259,7 @@ export interface MsgVote {
   voter: string;
   /** option is the voter's choice on the proposal. */
   option: VoteOption;
-  /** metadata is any arbitrary metadata to attached to the vote. */
+  /** metadata is any arbitrary metadata attached to the vote. */
   metadata: string;
   /**
    * exec defines whether the proposal should be executed
@@ -1122,6 +1134,58 @@ export const MsgUpdateGroupPolicyAdmin = {
   },
 };
 
+const baseMsgUpdateGroupPolicyAdminResponse: object = {};
+
+export const MsgUpdateGroupPolicyAdminResponse = {
+  encode(
+    _: MsgUpdateGroupPolicyAdminResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateGroupPolicyAdminResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateGroupPolicyAdminResponse,
+    } as MsgUpdateGroupPolicyAdminResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateGroupPolicyAdminResponse {
+    const message = {
+      ...baseMsgUpdateGroupPolicyAdminResponse,
+    } as MsgUpdateGroupPolicyAdminResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateGroupPolicyAdminResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateGroupPolicyAdminResponse>
+  ): MsgUpdateGroupPolicyAdminResponse {
+    const message = {
+      ...baseMsgUpdateGroupPolicyAdminResponse,
+    } as MsgUpdateGroupPolicyAdminResponse;
+    return message;
+  },
+};
+
 const baseMsgCreateGroupWithPolicy: object = {
   admin: "",
   groupMetadata: "",
@@ -1351,58 +1415,6 @@ export const MsgCreateGroupWithPolicyResponse = {
         ? Long.fromValue(object.groupId)
         : Long.UZERO;
     message.groupPolicyAddress = object.groupPolicyAddress ?? "";
-    return message;
-  },
-};
-
-const baseMsgUpdateGroupPolicyAdminResponse: object = {};
-
-export const MsgUpdateGroupPolicyAdminResponse = {
-  encode(
-    _: MsgUpdateGroupPolicyAdminResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateGroupPolicyAdminResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateGroupPolicyAdminResponse,
-    } as MsgUpdateGroupPolicyAdminResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgUpdateGroupPolicyAdminResponse {
-    const message = {
-      ...baseMsgUpdateGroupPolicyAdminResponse,
-    } as MsgUpdateGroupPolicyAdminResponse;
-    return message;
-  },
-
-  toJSON(_: MsgUpdateGroupPolicyAdminResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgUpdateGroupPolicyAdminResponse>
-  ): MsgUpdateGroupPolicyAdminResponse {
-    const message = {
-      ...baseMsgUpdateGroupPolicyAdminResponse,
-    } as MsgUpdateGroupPolicyAdminResponse;
     return message;
   },
 };
@@ -1709,6 +1721,8 @@ const baseMsgSubmitProposal: object = {
   proposers: "",
   metadata: "",
   exec: 0,
+  title: "",
+  summary: "",
 };
 
 export const MsgSubmitProposal = {
@@ -1730,6 +1744,12 @@ export const MsgSubmitProposal = {
     }
     if (message.exec !== 0) {
       writer.uint32(40).int32(message.exec);
+    }
+    if (message.title !== "") {
+      writer.uint32(50).string(message.title);
+    }
+    if (message.summary !== "") {
+      writer.uint32(58).string(message.summary);
     }
     return writer;
   },
@@ -1758,6 +1778,12 @@ export const MsgSubmitProposal = {
         case 5:
           message.exec = reader.int32() as any;
           break;
+        case 6:
+          message.title = reader.string();
+          break;
+        case 7:
+          message.summary = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1783,6 +1809,14 @@ export const MsgSubmitProposal = {
       object.exec !== undefined && object.exec !== null
         ? execFromJSON(object.exec)
         : 0;
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.summary =
+      object.summary !== undefined && object.summary !== null
+        ? String(object.summary)
+        : "";
     return message;
   },
 
@@ -1804,6 +1838,8 @@ export const MsgSubmitProposal = {
       obj.messages = [];
     }
     message.exec !== undefined && (obj.exec = execToJSON(message.exec));
+    message.title !== undefined && (obj.title = message.title);
+    message.summary !== undefined && (obj.summary = message.summary);
     return obj;
   },
 
@@ -1814,6 +1850,8 @@ export const MsgSubmitProposal = {
     message.metadata = object.metadata ?? "";
     message.messages = (object.messages ?? []).map((e) => Any.fromPartial(e));
     message.exec = object.exec ?? 0;
+    message.title = object.title ?? "";
+    message.summary = object.summary ?? "";
     return message;
   },
 };

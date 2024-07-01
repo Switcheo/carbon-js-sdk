@@ -19,7 +19,7 @@ export class EvmModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgEvmEthereumTx,
+      typeUrl: CarbonTx.Types.MsgEthereumTx,
       value,
     }, opts);
   }
