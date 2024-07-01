@@ -20,6 +20,11 @@ export interface Positions {
   positions: Position[];
 }
 
+export interface OpenInterest {
+  marketId: string;
+  openInterest: string;
+}
+
 export interface APIPosition {
   marketId: string;
   address: string;
@@ -251,6 +256,72 @@ export const Positions = {
     message.positions = (object.positions ?? []).map((e) =>
       Position.fromPartial(e)
     );
+    return message;
+  },
+};
+
+const baseOpenInterest: object = { marketId: "", openInterest: "" };
+
+export const OpenInterest = {
+  encode(
+    message: OpenInterest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
+    }
+    if (message.openInterest !== "") {
+      writer.uint32(18).string(message.openInterest);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OpenInterest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOpenInterest } as OpenInterest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketId = reader.string();
+          break;
+        case 2:
+          message.openInterest = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OpenInterest {
+    const message = { ...baseOpenInterest } as OpenInterest;
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.openInterest =
+      object.openInterest !== undefined && object.openInterest !== null
+        ? String(object.openInterest)
+        : "";
+    return message;
+  },
+
+  toJSON(message: OpenInterest): unknown {
+    const obj: any = {};
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    message.openInterest !== undefined &&
+      (obj.openInterest = message.openInterest);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OpenInterest>): OpenInterest {
+    const message = { ...baseOpenInterest } as OpenInterest;
+    message.marketId = object.marketId ?? "";
+    message.openInterest = object.openInterest ?? "";
     return message;
   },
 };

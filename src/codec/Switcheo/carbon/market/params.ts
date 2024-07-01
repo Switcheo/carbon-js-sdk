@@ -35,6 +35,7 @@ export interface Params {
   defaultLpSpotMakerFee: string;
   defaultLpFuturesTakerFee: string;
   defaultLpFuturesMakerFee: string;
+  defaultMaxOpenInterestUsd: string;
 }
 
 /** ParamsToUpdate allows optional fields for Params. */
@@ -66,6 +67,7 @@ export interface ParamsToUpdate {
   defaultLpSpotMakerFee: string;
   defaultLpFuturesTakerFee: string;
   defaultLpFuturesMakerFee: string;
+  defaultMaxOpenInterestUsd: string;
 }
 
 const baseParams: object = {
@@ -91,6 +93,7 @@ const baseParams: object = {
   defaultLpSpotMakerFee: "",
   defaultLpFuturesTakerFee: "",
   defaultLpFuturesMakerFee: "",
+  defaultMaxOpenInterestUsd: "",
 };
 
 export const Params = {
@@ -169,6 +172,9 @@ export const Params = {
     }
     if (message.defaultLpFuturesMakerFee !== "") {
       writer.uint32(186).string(message.defaultLpFuturesMakerFee);
+    }
+    if (message.defaultMaxOpenInterestUsd !== "") {
+      writer.uint32(194).string(message.defaultMaxOpenInterestUsd);
     }
     return writer;
   },
@@ -251,6 +257,9 @@ export const Params = {
           break;
         case 23:
           message.defaultLpFuturesMakerFee = reader.string();
+          break;
+        case 24:
+          message.defaultMaxOpenInterestUsd = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -375,6 +384,11 @@ export const Params = {
       object.defaultLpFuturesMakerFee !== null
         ? String(object.defaultLpFuturesMakerFee)
         : "";
+    message.defaultMaxOpenInterestUsd =
+      object.defaultMaxOpenInterestUsd !== undefined &&
+      object.defaultMaxOpenInterestUsd !== null
+        ? String(object.defaultMaxOpenInterestUsd)
+        : "";
     return message;
   },
 
@@ -432,6 +446,8 @@ export const Params = {
       (obj.defaultLpFuturesTakerFee = message.defaultLpFuturesTakerFee);
     message.defaultLpFuturesMakerFee !== undefined &&
       (obj.defaultLpFuturesMakerFee = message.defaultLpFuturesMakerFee);
+    message.defaultMaxOpenInterestUsd !== undefined &&
+      (obj.defaultMaxOpenInterestUsd = message.defaultMaxOpenInterestUsd);
     return obj;
   },
 
@@ -467,6 +483,7 @@ export const Params = {
     message.defaultLpSpotMakerFee = object.defaultLpSpotMakerFee ?? "";
     message.defaultLpFuturesTakerFee = object.defaultLpFuturesTakerFee ?? "";
     message.defaultLpFuturesMakerFee = object.defaultLpFuturesMakerFee ?? "";
+    message.defaultMaxOpenInterestUsd = object.defaultMaxOpenInterestUsd ?? "";
     return message;
   },
 };
@@ -490,6 +507,7 @@ const baseParamsToUpdate: object = {
   defaultLpSpotMakerFee: "",
   defaultLpFuturesTakerFee: "",
   defaultLpFuturesMakerFee: "",
+  defaultMaxOpenInterestUsd: "",
 };
 
 export const ParamsToUpdate = {
@@ -580,6 +598,9 @@ export const ParamsToUpdate = {
     }
     if (message.defaultLpFuturesMakerFee !== "") {
       writer.uint32(186).string(message.defaultLpFuturesMakerFee);
+    }
+    if (message.defaultMaxOpenInterestUsd !== "") {
+      writer.uint32(194).string(message.defaultMaxOpenInterestUsd);
     }
     return writer;
   },
@@ -674,6 +695,9 @@ export const ParamsToUpdate = {
           break;
         case 23:
           message.defaultLpFuturesMakerFee = reader.string();
+          break;
+        case 24:
+          message.defaultMaxOpenInterestUsd = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -798,6 +822,11 @@ export const ParamsToUpdate = {
       object.defaultLpFuturesMakerFee !== null
         ? String(object.defaultLpFuturesMakerFee)
         : "";
+    message.defaultMaxOpenInterestUsd =
+      object.defaultMaxOpenInterestUsd !== undefined &&
+      object.defaultMaxOpenInterestUsd !== null
+        ? String(object.defaultMaxOpenInterestUsd)
+        : "";
     return message;
   },
 
@@ -855,6 +884,8 @@ export const ParamsToUpdate = {
       (obj.defaultLpFuturesTakerFee = message.defaultLpFuturesTakerFee);
     message.defaultLpFuturesMakerFee !== undefined &&
       (obj.defaultLpFuturesMakerFee = message.defaultLpFuturesMakerFee);
+    message.defaultMaxOpenInterestUsd !== undefined &&
+      (obj.defaultMaxOpenInterestUsd = message.defaultMaxOpenInterestUsd);
     return obj;
   },
 
@@ -891,6 +922,7 @@ export const ParamsToUpdate = {
     message.defaultLpSpotMakerFee = object.defaultLpSpotMakerFee ?? "";
     message.defaultLpFuturesTakerFee = object.defaultLpFuturesTakerFee ?? "";
     message.defaultLpFuturesMakerFee = object.defaultLpFuturesMakerFee ?? "";
+    message.defaultMaxOpenInterestUsd = object.defaultMaxOpenInterestUsd ?? "";
     return message;
   },
 };

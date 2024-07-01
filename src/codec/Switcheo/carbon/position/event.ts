@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Position } from "./position";
+import { Position, OpenInterest } from "./position";
 
 export const protobufPackage = "Switcheo.carbon.position";
 
@@ -14,6 +14,10 @@ export interface PositionEvent {
   updatedBlockHeight: Long;
   tradeId: Long;
   updateReason: Long;
+}
+
+export interface OpenInterestEvent {
+  openInterest?: OpenInterest;
 }
 
 const basePositionEvent: object = {
@@ -187,6 +191,68 @@ export const PositionEvent = {
       object.updateReason !== undefined && object.updateReason !== null
         ? Long.fromValue(object.updateReason)
         : Long.UZERO;
+    return message;
+  },
+};
+
+const baseOpenInterestEvent: object = {};
+
+export const OpenInterestEvent = {
+  encode(
+    message: OpenInterestEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.openInterest !== undefined) {
+      OpenInterest.encode(
+        message.openInterest,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OpenInterestEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOpenInterestEvent } as OpenInterestEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.openInterest = OpenInterest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OpenInterestEvent {
+    const message = { ...baseOpenInterestEvent } as OpenInterestEvent;
+    message.openInterest =
+      object.openInterest !== undefined && object.openInterest !== null
+        ? OpenInterest.fromJSON(object.openInterest)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: OpenInterestEvent): unknown {
+    const obj: any = {};
+    message.openInterest !== undefined &&
+      (obj.openInterest = message.openInterest
+        ? OpenInterest.toJSON(message.openInterest)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OpenInterestEvent>): OpenInterestEvent {
+    const message = { ...baseOpenInterestEvent } as OpenInterestEvent;
+    message.openInterest =
+      object.openInterest !== undefined && object.openInterest !== null
+        ? OpenInterest.fromPartial(object.openInterest)
+        : undefined;
     return message;
   },
 };
