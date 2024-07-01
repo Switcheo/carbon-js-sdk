@@ -1,4 +1,4 @@
-import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/order/tx";
+import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/Switcheo/carbon/order/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
@@ -14,7 +14,7 @@ export class OrderModule extends BaseModule {
       creator: wallet.bech32Address,
       isPostOnly: params.isPostOnly,
       isReduceOnly: params.isReduceOnly,
-      market: params.market,
+      marketId: params.market,
       orderType: params.orderType,
       price: params.price?.shiftedBy(18).toString(10),
       quantity: params.quantity.toString(10),
@@ -44,7 +44,7 @@ export class OrderModule extends BaseModule {
         creator: wallet.bech32Address,
         isPostOnly: params.isPostOnly,
         isReduceOnly: params.isReduceOnly,
-        market: params.market,
+        marketId: params.market,
         orderType: params.orderType,
         price: params.price?.shiftedBy(18).toString(10),
         quantity: params.quantity.toString(10),
@@ -147,7 +147,7 @@ export class OrderModule extends BaseModule {
 
     const value = MsgCancelAll.fromPartial({
       creator: wallet.bech32Address,
-      market: params.market,
+      marketId: params.market,
     });
 
     return await wallet.sendTx(

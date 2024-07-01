@@ -17,6 +17,12 @@ export const protobufPackage = "cosmos.app.v1alpha1";
 export interface Config {
   /** modules are the module configurations for the app. */
   modules: ModuleConfig[];
+  /**
+   * golang_bindings specifies explicit interface to implementation type bindings which
+   * depinject uses to resolve interface inputs to provider functions.  The scope of this
+   * field's configuration is global (not module specific).
+   */
+  golangBindings: GolangBinding[];
 }
 
 /** ModuleConfig is a module configuration for an app. */
@@ -39,6 +45,20 @@ export interface ModuleConfig {
    * define a ModuleDescriptor using the cosmos.app.v1alpha1.is_module extension.
    */
   config?: Any;
+  /**
+   * golang_bindings specifies explicit interface to implementation type bindings which
+   * depinject uses to resolve interface inputs to provider functions.  The scope of this
+   * field's configuration is module specific.
+   */
+  golangBindings: GolangBinding[];
+}
+
+/** GolangBinding is an explicit interface type to implementing type binding for dependency injection. */
+export interface GolangBinding {
+  /** interface_type is the interface type which will be bound to a specific implementation type */
+  interfaceType: string;
+  /** implementation is the implementing type which will be supplied when an input of type interface is requested */
+  implementation: string;
 }
 
 const baseConfig: object = {};
@@ -51,6 +71,9 @@ export const Config = {
     for (const v of message.modules) {
       ModuleConfig.encode(v!, writer.uint32(10).fork()).ldelim();
     }
+    for (const v of message.golangBindings) {
+      GolangBinding.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -59,11 +82,17 @@ export const Config = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseConfig } as Config;
     message.modules = [];
+    message.golangBindings = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.modules.push(ModuleConfig.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.golangBindings.push(
+            GolangBinding.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -78,6 +107,9 @@ export const Config = {
     message.modules = (object.modules ?? []).map((e: any) =>
       ModuleConfig.fromJSON(e)
     );
+    message.golangBindings = (object.golangBindings ?? []).map((e: any) =>
+      GolangBinding.fromJSON(e)
+    );
     return message;
   },
 
@@ -90,6 +122,13 @@ export const Config = {
     } else {
       obj.modules = [];
     }
+    if (message.golangBindings) {
+      obj.golangBindings = message.golangBindings.map((e) =>
+        e ? GolangBinding.toJSON(e) : undefined
+      );
+    } else {
+      obj.golangBindings = [];
+    }
     return obj;
   },
 
@@ -97,6 +136,9 @@ export const Config = {
     const message = { ...baseConfig } as Config;
     message.modules = (object.modules ?? []).map((e) =>
       ModuleConfig.fromPartial(e)
+    );
+    message.golangBindings = (object.golangBindings ?? []).map((e) =>
+      GolangBinding.fromPartial(e)
     );
     return message;
   },
@@ -115,6 +157,9 @@ export const ModuleConfig = {
     if (message.config !== undefined) {
       Any.encode(message.config, writer.uint32(18).fork()).ldelim();
     }
+    for (const v of message.golangBindings) {
+      GolangBinding.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -122,6 +167,7 @@ export const ModuleConfig = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseModuleConfig } as ModuleConfig;
+    message.golangBindings = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -130,6 +176,11 @@ export const ModuleConfig = {
           break;
         case 2:
           message.config = Any.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.golangBindings.push(
+            GolangBinding.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -149,6 +200,9 @@ export const ModuleConfig = {
       object.config !== undefined && object.config !== null
         ? Any.fromJSON(object.config)
         : undefined;
+    message.golangBindings = (object.golangBindings ?? []).map((e: any) =>
+      GolangBinding.fromJSON(e)
+    );
     return message;
   },
 
@@ -157,6 +211,13 @@ export const ModuleConfig = {
     message.name !== undefined && (obj.name = message.name);
     message.config !== undefined &&
       (obj.config = message.config ? Any.toJSON(message.config) : undefined);
+    if (message.golangBindings) {
+      obj.golangBindings = message.golangBindings.map((e) =>
+        e ? GolangBinding.toJSON(e) : undefined
+      );
+    } else {
+      obj.golangBindings = [];
+    }
     return obj;
   },
 
@@ -167,6 +228,76 @@ export const ModuleConfig = {
       object.config !== undefined && object.config !== null
         ? Any.fromPartial(object.config)
         : undefined;
+    message.golangBindings = (object.golangBindings ?? []).map((e) =>
+      GolangBinding.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseGolangBinding: object = { interfaceType: "", implementation: "" };
+
+export const GolangBinding = {
+  encode(
+    message: GolangBinding,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.interfaceType !== "") {
+      writer.uint32(10).string(message.interfaceType);
+    }
+    if (message.implementation !== "") {
+      writer.uint32(18).string(message.implementation);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GolangBinding {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGolangBinding } as GolangBinding;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.interfaceType = reader.string();
+          break;
+        case 2:
+          message.implementation = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GolangBinding {
+    const message = { ...baseGolangBinding } as GolangBinding;
+    message.interfaceType =
+      object.interfaceType !== undefined && object.interfaceType !== null
+        ? String(object.interfaceType)
+        : "";
+    message.implementation =
+      object.implementation !== undefined && object.implementation !== null
+        ? String(object.implementation)
+        : "";
+    return message;
+  },
+
+  toJSON(message: GolangBinding): unknown {
+    const obj: any = {};
+    message.interfaceType !== undefined &&
+      (obj.interfaceType = message.interfaceType);
+    message.implementation !== undefined &&
+      (obj.implementation = message.implementation);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GolangBinding>): GolangBinding {
+    const message = { ...baseGolangBinding } as GolangBinding;
+    message.interfaceType = object.interfaceType ?? "";
+    message.implementation = object.implementation ?? "";
     return message;
   },
 };

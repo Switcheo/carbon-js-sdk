@@ -4,10 +4,12 @@ import _m0 from "protobufjs/minimal";
 import { Any } from "../../../google/protobuf/any";
 import {
   VoteOption,
+  Params,
   WeightedVoteOption,
   voteOptionFromJSON,
   voteOptionToJSON,
 } from "./gov";
+import { Timestamp } from "../../../google/protobuf/timestamp";
 import { Coin } from "../../base/v1beta1/coin";
 
 export const protobufPackage = "cosmos.gov.v1";
@@ -19,15 +21,37 @@ export const protobufPackage = "cosmos.gov.v1";
  * proposal Content.
  */
 export interface MsgSubmitProposal {
+  /** messages are the arbitrary messages to be executed if proposal passes. */
   messages: Any[];
+  /** initial_deposit is the deposit value that must be paid at proposal submission. */
   initialDeposit: Coin[];
+  /** proposer is the account address of the proposer. */
   proposer: string;
   /** metadata is any arbitrary metadata attached to the proposal. */
   metadata: string;
+  /**
+   * title is the title of the proposal.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  title: string;
+  /**
+   * summary is the summary of the proposal
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  summary: string;
+  /**
+   * expedited defines if the proposal is expedited or not
+   *
+   * Since: cosmos-sdk 0.50
+   */
+  expedited: boolean;
 }
 
 /** MsgSubmitProposalResponse defines the Msg/SubmitProposal response type. */
 export interface MsgSubmitProposalResponse {
+  /** proposal_id defines the unique id of the proposal. */
   proposalId: Long;
 }
 
@@ -47,9 +71,13 @@ export interface MsgExecLegacyContentResponse {}
 
 /** MsgVote defines a message to cast a vote. */
 export interface MsgVote {
+  /** proposal_id defines the unique id of the proposal. */
   proposalId: Long;
+  /** voter is the voter address for the proposal. */
   voter: string;
+  /** option defines the vote option. */
   option: VoteOption;
+  /** metadata is any arbitrary metadata attached to the Vote. */
   metadata: string;
 }
 
@@ -58,9 +86,13 @@ export interface MsgVoteResponse {}
 
 /** MsgVoteWeighted defines a message to cast a vote. */
 export interface MsgVoteWeighted {
+  /** proposal_id defines the unique id of the proposal. */
   proposalId: Long;
+  /** voter is the voter address for the proposal. */
   voter: string;
+  /** options defines the weighted vote options. */
   options: WeightedVoteOption[];
+  /** metadata is any arbitrary metadata attached to the VoteWeighted. */
   metadata: string;
 }
 
@@ -69,15 +101,75 @@ export interface MsgVoteWeightedResponse {}
 
 /** MsgDeposit defines a message to submit a deposit to an existing proposal. */
 export interface MsgDeposit {
+  /** proposal_id defines the unique id of the proposal. */
   proposalId: Long;
+  /** depositor defines the deposit addresses from the proposals. */
   depositor: string;
+  /** amount to be deposited by depositor. */
   amount: Coin[];
 }
 
 /** MsgDepositResponse defines the Msg/Deposit response type. */
 export interface MsgDepositResponse {}
 
-const baseMsgSubmitProposal: object = { proposer: "", metadata: "" };
+/**
+ * MsgUpdateParams is the Msg/UpdateParams request type.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface MsgUpdateParams {
+  /** authority is the address that controls the module (defaults to x/gov unless overwritten). */
+  authority: string;
+  /**
+   * params defines the x/gov parameters to update.
+   *
+   * NOTE: All parameters must be supplied.
+   */
+  params?: Params;
+}
+
+/**
+ * MsgUpdateParamsResponse defines the response structure for executing a
+ * MsgUpdateParams message.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface MsgUpdateParamsResponse {}
+
+/**
+ * MsgCancelProposal is the Msg/CancelProposal request type.
+ *
+ * Since: cosmos-sdk 0.50
+ */
+export interface MsgCancelProposal {
+  /** proposal_id defines the unique id of the proposal. */
+  proposalId: Long;
+  /** proposer is the account address of the proposer. */
+  proposer: string;
+}
+
+/**
+ * MsgCancelProposalResponse defines the response structure for executing a
+ * MsgCancelProposal message.
+ *
+ * Since: cosmos-sdk 0.50
+ */
+export interface MsgCancelProposalResponse {
+  /** proposal_id defines the unique id of the proposal. */
+  proposalId: Long;
+  /** canceled_time is the time when proposal is canceled. */
+  canceledTime?: Date;
+  /** canceled_height defines the block height at which the proposal is canceled. */
+  canceledHeight: Long;
+}
+
+const baseMsgSubmitProposal: object = {
+  proposer: "",
+  metadata: "",
+  title: "",
+  summary: "",
+  expedited: false,
+};
 
 export const MsgSubmitProposal = {
   encode(
@@ -95,6 +187,15 @@ export const MsgSubmitProposal = {
     }
     if (message.metadata !== "") {
       writer.uint32(34).string(message.metadata);
+    }
+    if (message.title !== "") {
+      writer.uint32(42).string(message.title);
+    }
+    if (message.summary !== "") {
+      writer.uint32(50).string(message.summary);
+    }
+    if (message.expedited === true) {
+      writer.uint32(56).bool(message.expedited);
     }
     return writer;
   },
@@ -120,6 +221,15 @@ export const MsgSubmitProposal = {
         case 4:
           message.metadata = reader.string();
           break;
+        case 5:
+          message.title = reader.string();
+          break;
+        case 6:
+          message.summary = reader.string();
+          break;
+        case 7:
+          message.expedited = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -142,6 +252,18 @@ export const MsgSubmitProposal = {
       object.metadata !== undefined && object.metadata !== null
         ? String(object.metadata)
         : "";
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.summary =
+      object.summary !== undefined && object.summary !== null
+        ? String(object.summary)
+        : "";
+    message.expedited =
+      object.expedited !== undefined && object.expedited !== null
+        ? Boolean(object.expedited)
+        : false;
     return message;
   },
 
@@ -163,6 +285,9 @@ export const MsgSubmitProposal = {
     }
     message.proposer !== undefined && (obj.proposer = message.proposer);
     message.metadata !== undefined && (obj.metadata = message.metadata);
+    message.title !== undefined && (obj.title = message.title);
+    message.summary !== undefined && (obj.summary = message.summary);
+    message.expedited !== undefined && (obj.expedited = message.expedited);
     return obj;
   },
 
@@ -174,6 +299,9 @@ export const MsgSubmitProposal = {
     );
     message.proposer = object.proposer ?? "";
     message.metadata = object.metadata ?? "";
+    message.title = object.title ?? "";
+    message.summary = object.summary ?? "";
+    message.expedited = object.expedited ?? false;
     return message;
   },
 };
@@ -793,9 +921,304 @@ export const MsgDepositResponse = {
   },
 };
 
+const baseMsgUpdateParams: object = { authority: "" };
+
+export const MsgUpdateParams = {
+  encode(
+    message: MsgUpdateParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateParams {
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateParams): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    message.authority = object.authority ?? "";
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateParamsResponse: object = {};
+
+export const MsgUpdateParamsResponse = {
+  encode(
+    _: MsgUpdateParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateParamsResponse {
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateParamsResponse>
+  ): MsgUpdateParamsResponse {
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    return message;
+  },
+};
+
+const baseMsgCancelProposal: object = { proposalId: Long.UZERO, proposer: "" };
+
+export const MsgCancelProposal = {
+  encode(
+    message: MsgCancelProposal,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.proposalId.isZero()) {
+      writer.uint32(8).uint64(message.proposalId);
+    }
+    if (message.proposer !== "") {
+      writer.uint32(18).string(message.proposer);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCancelProposal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCancelProposal } as MsgCancelProposal;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.proposalId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.proposer = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCancelProposal {
+    const message = { ...baseMsgCancelProposal } as MsgCancelProposal;
+    message.proposalId =
+      object.proposalId !== undefined && object.proposalId !== null
+        ? Long.fromString(object.proposalId)
+        : Long.UZERO;
+    message.proposer =
+      object.proposer !== undefined && object.proposer !== null
+        ? String(object.proposer)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgCancelProposal): unknown {
+    const obj: any = {};
+    message.proposalId !== undefined &&
+      (obj.proposalId = (message.proposalId || Long.UZERO).toString());
+    message.proposer !== undefined && (obj.proposer = message.proposer);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCancelProposal>): MsgCancelProposal {
+    const message = { ...baseMsgCancelProposal } as MsgCancelProposal;
+    message.proposalId =
+      object.proposalId !== undefined && object.proposalId !== null
+        ? Long.fromValue(object.proposalId)
+        : Long.UZERO;
+    message.proposer = object.proposer ?? "";
+    return message;
+  },
+};
+
+const baseMsgCancelProposalResponse: object = {
+  proposalId: Long.UZERO,
+  canceledHeight: Long.UZERO,
+};
+
+export const MsgCancelProposalResponse = {
+  encode(
+    message: MsgCancelProposalResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.proposalId.isZero()) {
+      writer.uint32(8).uint64(message.proposalId);
+    }
+    if (message.canceledTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.canceledTime),
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    if (!message.canceledHeight.isZero()) {
+      writer.uint32(24).uint64(message.canceledHeight);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCancelProposalResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCancelProposalResponse,
+    } as MsgCancelProposalResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.proposalId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.canceledTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 3:
+          message.canceledHeight = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCancelProposalResponse {
+    const message = {
+      ...baseMsgCancelProposalResponse,
+    } as MsgCancelProposalResponse;
+    message.proposalId =
+      object.proposalId !== undefined && object.proposalId !== null
+        ? Long.fromString(object.proposalId)
+        : Long.UZERO;
+    message.canceledTime =
+      object.canceledTime !== undefined && object.canceledTime !== null
+        ? fromJsonTimestamp(object.canceledTime)
+        : undefined;
+    message.canceledHeight =
+      object.canceledHeight !== undefined && object.canceledHeight !== null
+        ? Long.fromString(object.canceledHeight)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgCancelProposalResponse): unknown {
+    const obj: any = {};
+    message.proposalId !== undefined &&
+      (obj.proposalId = (message.proposalId || Long.UZERO).toString());
+    message.canceledTime !== undefined &&
+      (obj.canceledTime = message.canceledTime.toISOString());
+    message.canceledHeight !== undefined &&
+      (obj.canceledHeight = (message.canceledHeight || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCancelProposalResponse>
+  ): MsgCancelProposalResponse {
+    const message = {
+      ...baseMsgCancelProposalResponse,
+    } as MsgCancelProposalResponse;
+    message.proposalId =
+      object.proposalId !== undefined && object.proposalId !== null
+        ? Long.fromValue(object.proposalId)
+        : Long.UZERO;
+    message.canceledTime = object.canceledTime ?? undefined;
+    message.canceledHeight =
+      object.canceledHeight !== undefined && object.canceledHeight !== null
+        ? Long.fromValue(object.canceledHeight)
+        : Long.UZERO;
+    return message;
+  },
+};
+
 /** Msg defines the gov Msg service. */
 export interface Msg {
-  /** SubmitProposal defines a method to create new proposal given a content. */
+  /** SubmitProposal defines a method to create new proposal given the messages. */
   SubmitProposal(
     request: MsgSubmitProposal
   ): Promise<MsgSubmitProposalResponse>;
@@ -812,6 +1235,21 @@ export interface Msg {
   VoteWeighted(request: MsgVoteWeighted): Promise<MsgVoteWeightedResponse>;
   /** Deposit defines a method to add deposit on a specific proposal. */
   Deposit(request: MsgDeposit): Promise<MsgDepositResponse>;
+  /**
+   * UpdateParams defines a governance operation for updating the x/gov module
+   * parameters. The authority is defined in the keeper.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
+  /**
+   * CancelProposal defines a method to cancel governance proposal
+   *
+   * Since: cosmos-sdk 0.50
+   */
+  CancelProposal(
+    request: MsgCancelProposal
+  ): Promise<MsgCancelProposalResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -823,6 +1261,8 @@ export class MsgClientImpl implements Msg {
     this.Vote = this.Vote.bind(this);
     this.VoteWeighted = this.VoteWeighted.bind(this);
     this.Deposit = this.Deposit.bind(this);
+    this.UpdateParams = this.UpdateParams.bind(this);
+    this.CancelProposal = this.CancelProposal.bind(this);
   }
   SubmitProposal(
     request: MsgSubmitProposal
@@ -873,6 +1313,28 @@ export class MsgClientImpl implements Msg {
       MsgDepositResponse.decode(new _m0.Reader(data))
     );
   }
+
+  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
+    const data = MsgUpdateParams.encode(request).finish();
+    const promise = this.rpc.request("cosmos.gov.v1.Msg", "UpdateParams", data);
+    return promise.then((data) =>
+      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CancelProposal(
+    request: MsgCancelProposal
+  ): Promise<MsgCancelProposalResponse> {
+    const data = MsgCancelProposal.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.gov.v1.Msg",
+      "CancelProposal",
+      data
+    );
+    return promise.then((data) =>
+      MsgCancelProposalResponse.decode(new _m0.Reader(data))
+    );
+  }
 }
 
 interface Rpc {
@@ -902,6 +1364,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

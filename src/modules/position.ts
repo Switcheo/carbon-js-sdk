@@ -1,4 +1,4 @@
-import { MsgSetMargin } from "@carbon-sdk/codec/position/tx";
+import { MsgSetMargin } from "@carbon-sdk/codec/Switcheo/carbon/position/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
@@ -9,7 +9,7 @@ export class PositionModule extends BaseModule {
 
     const value = MsgSetMargin.fromPartial({
       creator: wallet.bech32Address,
-      market: params.market,
+      marketId: params.market,
       margin: params.margin.toString(10),
     });
 
@@ -28,7 +28,7 @@ export class PositionModule extends BaseModule {
     const msgs = params.map((param) => {
       const value = MsgSetMargin.fromPartial({
         creator: wallet.bech32Address,
-        market: param.market,
+        marketId: param.market,
         margin: param.margin.toString(10),
       });
 

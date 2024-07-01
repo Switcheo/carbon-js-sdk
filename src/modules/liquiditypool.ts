@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import Long from "long";
 import BaseModule from "./base";
 import { BN_ZERO } from "@carbon-sdk/util/number";
-import { QueryMintDataResponse } from "@carbon-sdk/codec/inflation/query";
+import { QueryMintDataResponse } from "@carbon-sdk/codec/Switcheo/carbon/inflation/query";
 
 export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
