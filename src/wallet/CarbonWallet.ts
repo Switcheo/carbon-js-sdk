@@ -1,5 +1,5 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { MsgMergeAccount } from "@carbon-sdk/codec";
+import { MsgMergeAccount } from "@carbon-sdk/codec/Switcheo/carbon/evmmerge/tx";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
@@ -17,8 +17,8 @@ import { SimpleMap } from "@carbon-sdk/util/type";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
-import { Tendermint34Client, TxResponse } from "@cosmjs/tendermint-rpc";
-import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
+import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, broadcastTxSyncSuccess, TxResponse } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
 import { sleep } from "@cosmjs/utils";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import { Leap } from "@cosmos-kit/leap";
@@ -29,7 +29,7 @@ import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateK
 import { CarbonSigningClient } from "./CarbonSigningClient";
 
 export interface CarbonWalletGenericOpts {
-  tmClient?: Tendermint34Client;
+  tmClient?: Tendermint37Client;
   txDefaultBroadcastMode?: BroadcastTxMode;
   network?: Network;
   config?: Partial<NetworkConfig>;
@@ -172,7 +172,7 @@ export class CarbonWallet {
   // for analytics
   providerAgent?: ProviderAgent | string;
 
-  private tmClient?: Tendermint34Client;
+  private tmClient?: Tendermint37Client;
   private signingClient?: CarbonSigningClient;
   private chainId?: string;
   private evmChainId?: string;
@@ -393,8 +393,8 @@ export class CarbonWallet {
   */
   async checkWalletSignatureCompatibility() {
     const query = this.getQueryClient()
-    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address })).balances.length > 0
-    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address })).balances.length > 0
+    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address, resolveDenom: false })).balances.length > 0
+    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address, resolveDenom: false })).balances.length > 0
     const isEvmWallet = this.isEvmWallet()
     if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
       this.sequenceInvalidated = true
@@ -670,7 +670,7 @@ export class CarbonWallet {
     return this.signingClient;
   }
 
-  getTmClient(): Tendermint34Client {
+  getTmClient(): Tendermint37Client {
     if (!this.tmClient) throw new Error("CarbonWallet is not initialized");
     return this.tmClient;
   }
@@ -751,7 +751,7 @@ export class CarbonWallet {
   }
 
   public async reconnectTmClient() {
-    this.tmClient = await Tendermint34Client.connect(this.networkConfig.tmRpcUrl);
+    this.tmClient = await Tendermint37Client.connect(this.networkConfig.tmRpcUrl);
     const status = await this.tmClient.status();
     this.chainId = status.nodeInfo.network;
     this.evmChainId = CarbonEvmChainIDs[this.network]

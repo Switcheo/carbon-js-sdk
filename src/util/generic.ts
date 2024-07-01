@@ -1,5 +1,5 @@
 import { sha256 } from "@cosmjs/crypto";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 
 export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) => {
   const result: T = { ...defaults };
@@ -59,7 +59,7 @@ export const toTxHash = (bytes?: Uint8Array | Buffer): string | undefined => {
  *
  * Broadcast methods are untouched to ensure retries don't hit cache.
  */
-export const modifyTmClient = (tmClient: Tendermint34Client) => {
+export const modifyTmClient = (tmClient: Tendermint37Client) => {
   try {
     const p = (tmClient as any).p;
     const newEncoder = { ...p };
@@ -156,11 +156,11 @@ export namespace QueueManager {
   }
 }
 
-export const getBestRpcTmClient = async (rpcUrls: string[]): Promise<{ client: Tendermint34Client, rpcUrl: string }> => {
+export const getBestRpcTmClient = async (rpcUrls: string[]): Promise<{ client: Tendermint37Client, rpcUrl: string }> => {
   for (const rpcUrl of rpcUrls) {
     try {
       return {
-        client: await Tendermint34Client.connect(rpcUrl),
+        client: await Tendermint37Client.connect(rpcUrl),
         rpcUrl,
       };
     } catch (error) {

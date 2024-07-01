@@ -1,5 +1,5 @@
-import { MsgProcessCrossChainTx, MsgProcessZionCrossChainTx } from "@carbon-sdk/codec/ccm/tx";
-import { MsgSyncHeaders } from "@carbon-sdk/codec/headersync/tx";
+import { MsgProcessCrossChainTx, MsgProcessZionCrossChainTx } from "@carbon-sdk/codec/Switcheo/carbon/ccm/tx";
+import { MsgSyncHeaders } from "@carbon-sdk/codec/Switcheo/carbon/headersync/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { CHAIN_IDS } from "@carbon-sdk/util/blockchain";
 import BaseModule from "./base";

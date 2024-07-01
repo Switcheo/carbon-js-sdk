@@ -1,4 +1,4 @@
-import { MsgSetLeverage } from "@carbon-sdk/codec/leverage/tx";
+import { MsgSetLeverage } from "@carbon-sdk/codec/Switcheo/carbon/leverage/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
@@ -9,7 +9,7 @@ export class LeverageModule extends BaseModule {
 
     const value = MsgSetLeverage.fromPartial({
       creator: wallet.bech32Address,
-      market: params.market,
+      marketId: params.market,
       leverage: params.leverage.shiftedBy(18).toString(10),
     });
 
@@ -28,7 +28,7 @@ export class LeverageModule extends BaseModule {
     const msgs = params.map((param) => {
       const value = MsgSetLeverage.fromPartial({
         creator: wallet.bech32Address,
-        market: param.market,
+        marketId: param.market,
         leverage: param.leverage.shiftedBy(18).toString(10),
       });
 

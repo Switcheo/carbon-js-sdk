@@ -1,4 +1,4 @@
-import { MsgActivateSubAccount, MsgCreateSubAccount, MsgRemoveSubAccount } from "@carbon-sdk/codec/subaccount/tx";
+import { MsgActivateSubAccount, MsgCreateSubAccount, MsgRemoveSubAccount } from "@carbon-sdk/codec/Switcheo/carbon/subaccount/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 

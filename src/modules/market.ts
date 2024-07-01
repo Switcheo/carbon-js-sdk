@@ -1,6 +1,6 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
-import { MsgAddFeeTier, MsgCreateMarket, MsgDisableSpotMarket, MsgRemoveFeeTier, MsgSetStakeEquivalence, MsgUpdateFeeTier, MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
+import { MsgAddFeeTier, MsgCreateMarket, MsgDisableSpotMarket, MsgRemoveFeeTier, MsgSetStakeEquivalence, MsgUpdateFeeTier, MsgUpdateMarket } from "@carbon-sdk/codec/Switcheo/carbon/market/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
@@ -10,7 +10,7 @@ export class MarketModule extends BaseModule {
   public async getFeeTiers(marketType: string): Promise<Carbon.Market.FeeTier[]> {
     const fetchDataResponse: Carbon.Market.QueryGetFeeTiersResponse = await this.sdkProvider.query.market.FeeTiers({
       marketType: marketType,
-      marketName: '',
+      marketId: '',
       userAddress: '',
     })
     return fetchDataResponse?.feeTiers ?? []
@@ -18,7 +18,7 @@ export class MarketModule extends BaseModule {
 
   public async getTradingFees(marketName: string, userAddress: string): Promise<Carbon.Market.TradingFees> {
     const fetchDataResponse: Carbon.Market.QueryGetTradingFeesResponse = await this.sdkProvider.query.market.TradingFees({
-      marketName: marketName,
+      marketId: marketName,
       userAddress: userAddress,
     })
     return fetchDataResponse?.fees ?? { takerFee: '', makerFee: '' }
@@ -66,7 +66,7 @@ export class MarketModule extends BaseModule {
     const wallet = this.getWallet();
     const value = MsgDisableSpotMarket.fromPartial({
       creator: params.creator,
-      marketName: params.marketName,
+      marketId: params.marketName,
     })
     return await wallet.sendTx(
       {
