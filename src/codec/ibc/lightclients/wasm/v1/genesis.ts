@@ -2,39 +2,43 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "cosmos.base.kv.v1beta1";
+export const protobufPackage = "ibc.lightclients.wasm.v1";
 
-/** Pairs defines a repeated slice of Pair objects. */
-export interface Pairs {
-  pairs: Pair[];
+/** GenesisState defines 08-wasm's keeper genesis state */
+export interface GenesisState {
+  /** uploaded light client wasm contracts */
+  contracts: Contract[];
 }
 
-/** Pair defines a key/value bytes tuple. */
-export interface Pair {
-  key: Uint8Array;
-  value: Uint8Array;
+/** Contract stores contract code */
+export interface Contract {
+  /** contract byte code */
+  codeBytes: Uint8Array;
 }
 
-const basePairs: object = {};
+const baseGenesisState: object = {};
 
-export const Pairs = {
-  encode(message: Pairs, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.pairs) {
-      Pair.encode(v!, writer.uint32(10).fork()).ldelim();
+export const GenesisState = {
+  encode(
+    message: GenesisState,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.contracts) {
+      Contract.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Pairs {
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePairs } as Pairs;
-    message.pairs = [];
+    const message = { ...baseGenesisState } as GenesisState;
+    message.contracts = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pairs.push(Pair.decode(reader, reader.uint32()));
+          message.contracts.push(Contract.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -44,56 +48,58 @@ export const Pairs = {
     return message;
   },
 
-  fromJSON(object: any): Pairs {
-    const message = { ...basePairs } as Pairs;
-    message.pairs = (object.pairs ?? []).map((e: any) => Pair.fromJSON(e));
+  fromJSON(object: any): GenesisState {
+    const message = { ...baseGenesisState } as GenesisState;
+    message.contracts = (object.contracts ?? []).map((e: any) =>
+      Contract.fromJSON(e)
+    );
     return message;
   },
 
-  toJSON(message: Pairs): unknown {
+  toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    if (message.pairs) {
-      obj.pairs = message.pairs.map((e) => (e ? Pair.toJSON(e) : undefined));
+    if (message.contracts) {
+      obj.contracts = message.contracts.map((e) =>
+        e ? Contract.toJSON(e) : undefined
+      );
     } else {
-      obj.pairs = [];
+      obj.contracts = [];
     }
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Pairs>): Pairs {
-    const message = { ...basePairs } as Pairs;
-    message.pairs = (object.pairs ?? []).map((e) => Pair.fromPartial(e));
+  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+    const message = { ...baseGenesisState } as GenesisState;
+    message.contracts = (object.contracts ?? []).map((e) =>
+      Contract.fromPartial(e)
+    );
     return message;
   },
 };
 
-const basePair: object = {};
+const baseContract: object = {};
 
-export const Pair = {
-  encode(message: Pair, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.key.length !== 0) {
-      writer.uint32(10).bytes(message.key);
-    }
-    if (message.value.length !== 0) {
-      writer.uint32(18).bytes(message.value);
+export const Contract = {
+  encode(
+    message: Contract,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.codeBytes.length !== 0) {
+      writer.uint32(10).bytes(message.codeBytes);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Pair {
+  decode(input: _m0.Reader | Uint8Array, length?: number): Contract {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePair } as Pair;
-    message.key = new Uint8Array();
-    message.value = new Uint8Array();
+    const message = { ...baseContract } as Contract;
+    message.codeBytes = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.key = reader.bytes();
-          break;
-        case 2:
-          message.value = reader.bytes();
+          message.codeBytes = reader.bytes();
           break;
         default:
           reader.skipType(tag & 7);
@@ -103,36 +109,27 @@ export const Pair = {
     return message;
   },
 
-  fromJSON(object: any): Pair {
-    const message = { ...basePair } as Pair;
-    message.key =
-      object.key !== undefined && object.key !== null
-        ? bytesFromBase64(object.key)
-        : new Uint8Array();
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? bytesFromBase64(object.value)
+  fromJSON(object: any): Contract {
+    const message = { ...baseContract } as Contract;
+    message.codeBytes =
+      object.codeBytes !== undefined && object.codeBytes !== null
+        ? bytesFromBase64(object.codeBytes)
         : new Uint8Array();
     return message;
   },
 
-  toJSON(message: Pair): unknown {
+  toJSON(message: Contract): unknown {
     const obj: any = {};
-    message.key !== undefined &&
-      (obj.key = base64FromBytes(
-        message.key !== undefined ? message.key : new Uint8Array()
-      ));
-    message.value !== undefined &&
-      (obj.value = base64FromBytes(
-        message.value !== undefined ? message.value : new Uint8Array()
+    message.codeBytes !== undefined &&
+      (obj.codeBytes = base64FromBytes(
+        message.codeBytes !== undefined ? message.codeBytes : new Uint8Array()
       ));
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Pair>): Pair {
-    const message = { ...basePair } as Pair;
-    message.key = object.key ?? new Uint8Array();
-    message.value = object.value ?? new Uint8Array();
+  fromPartial(object: DeepPartial<Contract>): Contract {
+    const message = { ...baseContract } as Contract;
+    message.codeBytes = object.codeBytes ?? new Uint8Array();
     return message;
   },
 };

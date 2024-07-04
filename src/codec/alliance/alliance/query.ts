@@ -40,11 +40,6 @@ export interface QueryAllianceResponse {
   alliance?: AllianceAsset;
 }
 
-/** @deprecated */
-export interface QueryIBCAllianceRequest {
-  hash: string;
-}
-
 export interface QueryAllianceValidatorRequest {
   validatorAddr: string;
 }
@@ -92,14 +87,6 @@ export interface QueryAllianceDelegationRequest {
   pagination?: PageRequest;
 }
 
-/** @deprecated */
-export interface QueryIBCAllianceDelegationRequest {
-  delegatorAddr: string;
-  validatorAddr: string;
-  hash: string;
-  pagination?: PageRequest;
-}
-
 export interface QueryAllianceDelegationResponse {
   delegation?: DelegationResponse;
 }
@@ -109,14 +96,6 @@ export interface QueryAllianceDelegationRewardsRequest {
   delegatorAddr: string;
   validatorAddr: string;
   denom: string;
-  pagination?: PageRequest;
-}
-
-/** @deprecated */
-export interface QueryIBCAllianceDelegationRewardsRequest {
-  delegatorAddr: string;
-  validatorAddr: string;
-  hash: string;
   pagination?: PageRequest;
 }
 
@@ -134,6 +113,16 @@ export interface QueryAllianceValidatorResponse {
 export interface QueryAllianceValidatorsResponse {
   validators: QueryAllianceValidatorResponse[];
   pagination?: PageResponse;
+}
+
+/** AllianceDelegation */
+export interface QueryAllianceUnbondingsByDelegatorRequest {
+  delegatorAddr: string;
+  pagination?: PageRequest;
+}
+
+export interface QueryAllianceUnbondingsByDelegatorResponse {
+  unbondings: UnbondingDelegation[];
 }
 
 /** AllianceDelegation */
@@ -168,6 +157,16 @@ export interface QueryAllianceRedelegationsRequest {
 }
 
 export interface QueryAllianceRedelegationsResponse {
+  redelegations: RedelegationEntry[];
+  pagination?: PageResponse;
+}
+
+export interface QueryAllianceRedelegationsByDelegatorRequest {
+  delegatorAddr: string;
+  pagination?: PageRequest;
+}
+
+export interface QueryAllianceRedelegationsByDelegatorResponse {
   redelegations: RedelegationEntry[];
   pagination?: PageResponse;
 }
@@ -537,70 +536,6 @@ export const QueryAllianceResponse = {
       object.alliance !== undefined && object.alliance !== null
         ? AllianceAsset.fromPartial(object.alliance)
         : undefined;
-    return message;
-  },
-};
-
-const baseQueryIBCAllianceRequest: object = { hash: "" };
-
-export const QueryIBCAllianceRequest = {
-  encode(
-    message: QueryIBCAllianceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.hash !== "") {
-      writer.uint32(10).string(message.hash);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryIBCAllianceRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryIBCAllianceRequest,
-    } as QueryIBCAllianceRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.hash = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryIBCAllianceRequest {
-    const message = {
-      ...baseQueryIBCAllianceRequest,
-    } as QueryIBCAllianceRequest;
-    message.hash =
-      object.hash !== undefined && object.hash !== null
-        ? String(object.hash)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryIBCAllianceRequest): unknown {
-    const obj: any = {};
-    message.hash !== undefined && (obj.hash = message.hash);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryIBCAllianceRequest>
-  ): QueryIBCAllianceRequest {
-    const message = {
-      ...baseQueryIBCAllianceRequest,
-    } as QueryIBCAllianceRequest;
-    message.hash = object.hash ?? "";
     return message;
   },
 };
@@ -1276,118 +1211,6 @@ export const QueryAllianceDelegationRequest = {
   },
 };
 
-const baseQueryIBCAllianceDelegationRequest: object = {
-  delegatorAddr: "",
-  validatorAddr: "",
-  hash: "",
-};
-
-export const QueryIBCAllianceDelegationRequest = {
-  encode(
-    message: QueryIBCAllianceDelegationRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.delegatorAddr !== "") {
-      writer.uint32(10).string(message.delegatorAddr);
-    }
-    if (message.validatorAddr !== "") {
-      writer.uint32(18).string(message.validatorAddr);
-    }
-    if (message.hash !== "") {
-      writer.uint32(26).string(message.hash);
-    }
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(34).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryIBCAllianceDelegationRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryIBCAllianceDelegationRequest,
-    } as QueryIBCAllianceDelegationRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.delegatorAddr = reader.string();
-          break;
-        case 2:
-          message.validatorAddr = reader.string();
-          break;
-        case 3:
-          message.hash = reader.string();
-          break;
-        case 4:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryIBCAllianceDelegationRequest {
-    const message = {
-      ...baseQueryIBCAllianceDelegationRequest,
-    } as QueryIBCAllianceDelegationRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.validatorAddr =
-      object.validatorAddr !== undefined && object.validatorAddr !== null
-        ? String(object.validatorAddr)
-        : "";
-    message.hash =
-      object.hash !== undefined && object.hash !== null
-        ? String(object.hash)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryIBCAllianceDelegationRequest): unknown {
-    const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
-    message.validatorAddr !== undefined &&
-      (obj.validatorAddr = message.validatorAddr);
-    message.hash !== undefined && (obj.hash = message.hash);
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryIBCAllianceDelegationRequest>
-  ): QueryIBCAllianceDelegationRequest {
-    const message = {
-      ...baseQueryIBCAllianceDelegationRequest,
-    } as QueryIBCAllianceDelegationRequest;
-    message.delegatorAddr = object.delegatorAddr ?? "";
-    message.validatorAddr = object.validatorAddr ?? "";
-    message.hash = object.hash ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
 const baseQueryAllianceDelegationResponse: object = {};
 
 export const QueryAllianceDelegationResponse = {
@@ -1568,118 +1391,6 @@ export const QueryAllianceDelegationRewardsRequest = {
     message.delegatorAddr = object.delegatorAddr ?? "";
     message.validatorAddr = object.validatorAddr ?? "";
     message.denom = object.denom ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryIBCAllianceDelegationRewardsRequest: object = {
-  delegatorAddr: "",
-  validatorAddr: "",
-  hash: "",
-};
-
-export const QueryIBCAllianceDelegationRewardsRequest = {
-  encode(
-    message: QueryIBCAllianceDelegationRewardsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.delegatorAddr !== "") {
-      writer.uint32(10).string(message.delegatorAddr);
-    }
-    if (message.validatorAddr !== "") {
-      writer.uint32(18).string(message.validatorAddr);
-    }
-    if (message.hash !== "") {
-      writer.uint32(26).string(message.hash);
-    }
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(34).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryIBCAllianceDelegationRewardsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryIBCAllianceDelegationRewardsRequest,
-    } as QueryIBCAllianceDelegationRewardsRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.delegatorAddr = reader.string();
-          break;
-        case 2:
-          message.validatorAddr = reader.string();
-          break;
-        case 3:
-          message.hash = reader.string();
-          break;
-        case 4:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryIBCAllianceDelegationRewardsRequest {
-    const message = {
-      ...baseQueryIBCAllianceDelegationRewardsRequest,
-    } as QueryIBCAllianceDelegationRewardsRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.validatorAddr =
-      object.validatorAddr !== undefined && object.validatorAddr !== null
-        ? String(object.validatorAddr)
-        : "";
-    message.hash =
-      object.hash !== undefined && object.hash !== null
-        ? String(object.hash)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryIBCAllianceDelegationRewardsRequest): unknown {
-    const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
-    message.validatorAddr !== undefined &&
-      (obj.validatorAddr = message.validatorAddr);
-    message.hash !== undefined && (obj.hash = message.hash);
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryIBCAllianceDelegationRewardsRequest>
-  ): QueryIBCAllianceDelegationRewardsRequest {
-    const message = {
-      ...baseQueryIBCAllianceDelegationRewardsRequest,
-    } as QueryIBCAllianceDelegationRewardsRequest;
-    message.delegatorAddr = object.delegatorAddr ?? "";
-    message.validatorAddr = object.validatorAddr ?? "";
-    message.hash = object.hash ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -1977,6 +1688,165 @@ export const QueryAllianceValidatorsResponse = {
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
         : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllianceUnbondingsByDelegatorRequest: object = {
+  delegatorAddr: "",
+};
+
+export const QueryAllianceUnbondingsByDelegatorRequest = {
+  encode(
+    message: QueryAllianceUnbondingsByDelegatorRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.delegatorAddr !== "") {
+      writer.uint32(10).string(message.delegatorAddr);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllianceUnbondingsByDelegatorRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllianceUnbondingsByDelegatorRequest,
+    } as QueryAllianceUnbondingsByDelegatorRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.delegatorAddr = reader.string();
+          break;
+        case 3:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllianceUnbondingsByDelegatorRequest {
+    const message = {
+      ...baseQueryAllianceUnbondingsByDelegatorRequest,
+    } as QueryAllianceUnbondingsByDelegatorRequest;
+    message.delegatorAddr =
+      object.delegatorAddr !== undefined && object.delegatorAddr !== null
+        ? String(object.delegatorAddr)
+        : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllianceUnbondingsByDelegatorRequest): unknown {
+    const obj: any = {};
+    message.delegatorAddr !== undefined &&
+      (obj.delegatorAddr = message.delegatorAddr);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllianceUnbondingsByDelegatorRequest>
+  ): QueryAllianceUnbondingsByDelegatorRequest {
+    const message = {
+      ...baseQueryAllianceUnbondingsByDelegatorRequest,
+    } as QueryAllianceUnbondingsByDelegatorRequest;
+    message.delegatorAddr = object.delegatorAddr ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllianceUnbondingsByDelegatorResponse: object = {};
+
+export const QueryAllianceUnbondingsByDelegatorResponse = {
+  encode(
+    message: QueryAllianceUnbondingsByDelegatorResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.unbondings) {
+      UnbondingDelegation.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllianceUnbondingsByDelegatorResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllianceUnbondingsByDelegatorResponse,
+    } as QueryAllianceUnbondingsByDelegatorResponse;
+    message.unbondings = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.unbondings.push(
+            UnbondingDelegation.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllianceUnbondingsByDelegatorResponse {
+    const message = {
+      ...baseQueryAllianceUnbondingsByDelegatorResponse,
+    } as QueryAllianceUnbondingsByDelegatorResponse;
+    message.unbondings = (object.unbondings ?? []).map((e: any) =>
+      UnbondingDelegation.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryAllianceUnbondingsByDelegatorResponse): unknown {
+    const obj: any = {};
+    if (message.unbondings) {
+      obj.unbondings = message.unbondings.map((e) =>
+        e ? UnbondingDelegation.toJSON(e) : undefined
+      );
+    } else {
+      obj.unbondings = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllianceUnbondingsByDelegatorResponse>
+  ): QueryAllianceUnbondingsByDelegatorResponse {
+    const message = {
+      ...baseQueryAllianceUnbondingsByDelegatorResponse,
+    } as QueryAllianceUnbondingsByDelegatorResponse;
+    message.unbondings = (object.unbondings ?? []).map((e) =>
+      UnbondingDelegation.fromPartial(e)
+    );
     return message;
   },
 };
@@ -2574,19 +2444,195 @@ export const QueryAllianceRedelegationsResponse = {
   },
 };
 
+const baseQueryAllianceRedelegationsByDelegatorRequest: object = {
+  delegatorAddr: "",
+};
+
+export const QueryAllianceRedelegationsByDelegatorRequest = {
+  encode(
+    message: QueryAllianceRedelegationsByDelegatorRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.delegatorAddr !== "") {
+      writer.uint32(10).string(message.delegatorAddr);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllianceRedelegationsByDelegatorRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllianceRedelegationsByDelegatorRequest,
+    } as QueryAllianceRedelegationsByDelegatorRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.delegatorAddr = reader.string();
+          break;
+        case 2:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllianceRedelegationsByDelegatorRequest {
+    const message = {
+      ...baseQueryAllianceRedelegationsByDelegatorRequest,
+    } as QueryAllianceRedelegationsByDelegatorRequest;
+    message.delegatorAddr =
+      object.delegatorAddr !== undefined && object.delegatorAddr !== null
+        ? String(object.delegatorAddr)
+        : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllianceRedelegationsByDelegatorRequest): unknown {
+    const obj: any = {};
+    message.delegatorAddr !== undefined &&
+      (obj.delegatorAddr = message.delegatorAddr);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllianceRedelegationsByDelegatorRequest>
+  ): QueryAllianceRedelegationsByDelegatorRequest {
+    const message = {
+      ...baseQueryAllianceRedelegationsByDelegatorRequest,
+    } as QueryAllianceRedelegationsByDelegatorRequest;
+    message.delegatorAddr = object.delegatorAddr ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllianceRedelegationsByDelegatorResponse: object = {};
+
+export const QueryAllianceRedelegationsByDelegatorResponse = {
+  encode(
+    message: QueryAllianceRedelegationsByDelegatorResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.redelegations) {
+      RedelegationEntry.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllianceRedelegationsByDelegatorResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllianceRedelegationsByDelegatorResponse,
+    } as QueryAllianceRedelegationsByDelegatorResponse;
+    message.redelegations = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.redelegations.push(
+            RedelegationEntry.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllianceRedelegationsByDelegatorResponse {
+    const message = {
+      ...baseQueryAllianceRedelegationsByDelegatorResponse,
+    } as QueryAllianceRedelegationsByDelegatorResponse;
+    message.redelegations = (object.redelegations ?? []).map((e: any) =>
+      RedelegationEntry.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllianceRedelegationsByDelegatorResponse): unknown {
+    const obj: any = {};
+    if (message.redelegations) {
+      obj.redelegations = message.redelegations.map((e) =>
+        e ? RedelegationEntry.toJSON(e) : undefined
+      );
+    } else {
+      obj.redelegations = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllianceRedelegationsByDelegatorResponse>
+  ): QueryAllianceRedelegationsByDelegatorResponse {
+    const message = {
+      ...baseQueryAllianceRedelegationsByDelegatorResponse,
+    } as QueryAllianceRedelegationsByDelegatorResponse;
+    message.redelegations = (object.redelegations ?? []).map((e) =>
+      RedelegationEntry.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 export interface Query {
-  Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-  /** Query paginated alliances */
-  Alliances(request: QueryAlliancesRequest): Promise<QueryAlliancesResponse>;
   /**
-   * Query a specific alliance by ibc hash
-   * @deprecated: this endpoint will be replaced for by the encoded version
-   * of the denom e.g.: GET:/terra/alliances/ibc%2Falliance
-   *
-   * @deprecated
+   * Query Alliance module parameters more info about the params
+   * https://docs.alliance.money/tech/parameters
    */
-  IBCAlliance(request: QueryIBCAllianceRequest): Promise<QueryAllianceResponse>;
-  /** Query all paginated alliance delegations */
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Query all alliances with pagination */
+  Alliances(request: QueryAlliancesRequest): Promise<QueryAlliancesResponse>;
+  /** Query all alliances delegations with pagination */
   AllAlliancesDelegations(
     request: QueryAllAlliancesDelegationsRequest
   ): Promise<QueryAlliancesDelegationsResponse>;
@@ -2606,43 +2652,31 @@ export interface Query {
   AlliancesDelegationByValidator(
     request: QueryAlliancesDelegationByValidatorRequest
   ): Promise<QueryAlliancesDelegationsResponse>;
-  /** Query a delegation to an alliance by delegator addr, validator_addr and denom */
+  /** Query a specific delegation by delegator addr, validator addr and denom */
   AllianceDelegation(
     request: QueryAllianceDelegationRequest
   ): Promise<QueryAllianceDelegationResponse>;
-  /**
-   * Query a delegation to an alliance by delegator addr, validator_addr and denom
-   * @deprecated: this endpoint will be replaced for by the encoded version
-   * of the denom e.g.: GET:/terra/alliances/terradr1231/terravaloper41234/ibc%2Falliance
-   *
-   * @deprecated
-   */
-  IBCAllianceDelegation(
-    request: QueryIBCAllianceDelegationRequest
-  ): Promise<QueryAllianceDelegationResponse>;
-  /** Query for rewards by delegator addr, validator_addr and denom */
+  /** Query a specific delegation rewards by delegator addr, validator addr and denom */
   AllianceDelegationRewards(
     request: QueryAllianceDelegationRewardsRequest
   ): Promise<QueryAllianceDelegationRewardsResponse>;
-  /**
-   * Query for rewards by delegator addr, validator_addr and denom
-   * @deprecated: this endpoint will be replaced for by the encoded version
-   * of the denom e.g.: GET:/terra/alliances/terradr1231/terravaloper41234/ibc%2Falliance
-   *
-   * @deprecated
-   */
-  IBCAllianceDelegationRewards(
-    request: QueryIBCAllianceDelegationRewardsRequest
-  ): Promise<QueryAllianceDelegationRewardsResponse>;
-  /** Query for rewards by delegator addr, validator_addr and denom */
+  /** Query unbondings by delegator address */
+  AllianceUnbondingsByDelegator(
+    request: QueryAllianceUnbondingsByDelegatorRequest
+  ): Promise<QueryAllianceUnbondingsByDelegatorResponse>;
+  /** Query unbondings by denom, delegator addr */
   AllianceUnbondingsByDenomAndDelegator(
     request: QueryAllianceUnbondingsByDenomAndDelegatorRequest
   ): Promise<QueryAllianceUnbondingsByDenomAndDelegatorResponse>;
-  /** Query for rewards by delegator addr, validator_addr and denom */
+  /** Query unbondings by denom, delegator addr, validator addr */
   AllianceUnbondings(
     request: QueryAllianceUnbondingsRequest
   ): Promise<QueryAllianceUnbondingsResponse>;
-  /** Query redelegations by denom and delegator address */
+  /** Query paginated redelegations delegator addr */
+  AllianceRedelegationsByDelegator(
+    request: QueryAllianceRedelegationsByDelegatorRequest
+  ): Promise<QueryAllianceRedelegationsByDelegatorResponse>;
+  /** Query paginated redelegations by denom and delegator addr */
   AllianceRedelegations(
     request: QueryAllianceRedelegationsRequest
   ): Promise<QueryAllianceRedelegationsResponse>;
@@ -2656,7 +2690,6 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.Alliances = this.Alliances.bind(this);
-    this.IBCAlliance = this.IBCAlliance.bind(this);
     this.AllAlliancesDelegations = this.AllAlliancesDelegations.bind(this);
     this.AllianceValidator = this.AllianceValidator.bind(this);
     this.AllAllianceValidators = this.AllAllianceValidators.bind(this);
@@ -2664,13 +2697,14 @@ export class QueryClientImpl implements Query {
     this.AlliancesDelegationByValidator =
       this.AlliancesDelegationByValidator.bind(this);
     this.AllianceDelegation = this.AllianceDelegation.bind(this);
-    this.IBCAllianceDelegation = this.IBCAllianceDelegation.bind(this);
     this.AllianceDelegationRewards = this.AllianceDelegationRewards.bind(this);
-    this.IBCAllianceDelegationRewards =
-      this.IBCAllianceDelegationRewards.bind(this);
+    this.AllianceUnbondingsByDelegator =
+      this.AllianceUnbondingsByDelegator.bind(this);
     this.AllianceUnbondingsByDenomAndDelegator =
       this.AllianceUnbondingsByDenomAndDelegator.bind(this);
     this.AllianceUnbondings = this.AllianceUnbondings.bind(this);
+    this.AllianceRedelegationsByDelegator =
+      this.AllianceRedelegationsByDelegator.bind(this);
     this.AllianceRedelegations = this.AllianceRedelegations.bind(this);
     this.Alliance = this.Alliance.bind(this);
   }
@@ -2691,20 +2725,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAlliancesResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  IBCAlliance(
-    request: QueryIBCAllianceRequest
-  ): Promise<QueryAllianceResponse> {
-    const data = QueryIBCAllianceRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "alliance.alliance.Query",
-      "IBCAlliance",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllianceResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -2793,20 +2813,6 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  IBCAllianceDelegation(
-    request: QueryIBCAllianceDelegationRequest
-  ): Promise<QueryAllianceDelegationResponse> {
-    const data = QueryIBCAllianceDelegationRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "alliance.alliance.Query",
-      "IBCAllianceDelegation",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllianceDelegationResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   AllianceDelegationRewards(
     request: QueryAllianceDelegationRewardsRequest
   ): Promise<QueryAllianceDelegationRewardsResponse> {
@@ -2821,18 +2827,18 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  IBCAllianceDelegationRewards(
-    request: QueryIBCAllianceDelegationRewardsRequest
-  ): Promise<QueryAllianceDelegationRewardsResponse> {
+  AllianceUnbondingsByDelegator(
+    request: QueryAllianceUnbondingsByDelegatorRequest
+  ): Promise<QueryAllianceUnbondingsByDelegatorResponse> {
     const data =
-      QueryIBCAllianceDelegationRewardsRequest.encode(request).finish();
+      QueryAllianceUnbondingsByDelegatorRequest.encode(request).finish();
     const promise = this.rpc.request(
       "alliance.alliance.Query",
-      "IBCAllianceDelegationRewards",
+      "AllianceUnbondingsByDelegator",
       data
     );
     return promise.then((data) =>
-      QueryAllianceDelegationRewardsResponse.decode(new _m0.Reader(data))
+      QueryAllianceUnbondingsByDelegatorResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -2866,6 +2872,21 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllianceUnbondingsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AllianceRedelegationsByDelegator(
+    request: QueryAllianceRedelegationsByDelegatorRequest
+  ): Promise<QueryAllianceRedelegationsByDelegatorResponse> {
+    const data =
+      QueryAllianceRedelegationsByDelegatorRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "alliance.alliance.Query",
+      "AllianceRedelegationsByDelegator",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllianceRedelegationsByDelegatorResponse.decode(new _m0.Reader(data))
     );
   }
 

@@ -42,7 +42,7 @@ export interface PoolsLiquidity {
   tokens: PoolTokens[];
 }
 
-export interface QueryGetPoolsRequest extends QueryByPageRequest {}
+export interface QueryGetPoolsRequest extends QueryByPageRequest { }
 
 export interface QueryGetPoolsResponse {
   models: Pool[];
@@ -104,6 +104,41 @@ export interface PositionHistoryEntry {
   actions: Action[];
 }
 
+export interface QueryGetPerpPoolHistoryRequest extends QueryByPageRequest {
+  address: string
+}
+
+export interface QueryPerpPoolAPY extends QueryByPageRequest {
+  id: number;
+}
+
+export interface PerpPoolAPYEntry {
+  denom: string;
+  annualizedApy1day: number | null;
+  annualizedApy7days: number | null;
+  annualizedApy14days: number | null;
+  annualizedApy30days: number | null;
+  annualizedApy90days: number | null;
+}
+
+export interface QueryPerpPoolAPYResponse {
+  entries: PerpPoolAPYEntry[];
+  meta: PageMeta;
+}
+
+export interface PerpPositionHistoryEntry {
+  poolId: number;
+  address: string;
+  netDeposit: number;
+  deposit: number;
+  withdrawal: number;
+}
+
+export interface QueryGetPerpPoolHistoryResponse {
+  entries: PerpPositionHistoryEntry[];
+  meta: PageMeta;
+}
+
 export interface QueryGetPoolHistoryResponse {
   entries: PositionHistoryEntry[];
   meta: PageMeta;
@@ -113,13 +148,13 @@ export interface QueryGetUserRewardsClaimHistoryRequest extends QueryByPageReque
   address: string;
 }
 
-export interface TokenAmounts{
+export interface TokenAmounts {
   denom: string;
   amount: number;
   amountValue: number;
 }
 
-export interface ClaimTransactionEntry{
+export interface ClaimTransactionEntry {
   address: string;
   poolId: number;
   height: number;

@@ -1,7 +1,7 @@
-import { TxTypes } from "@carbon-sdk/codec";
 import { Carbon } from "@carbon-sdk/CarbonSDK";
+import { TxTypes } from "@carbon-sdk/codec";
+import { getRewardWithdrawalMsg } from "@carbon-sdk/util/alliance";
 import BigNumber from "bignumber.js";
-import { MsgWithdrawDelegatorReward } from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 import { CarbonTx } from "../util";
 import BaseModule from "./base";
 
@@ -85,25 +85,9 @@ export class AllianceModule extends BaseModule {
 
   public async withdrawAllRewards(params: AllianceModule.WithdrawAllRewardsParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    const walletAddress = wallet.bech32Address;
     const msgs = params.delegations.map((delegation) => {
-      if (delegation.denom === "swth") {
-        return {
-          typeUrl: TxTypes.MsgWithdrawDelegatorReward,
-          value: MsgWithdrawDelegatorReward.fromPartial({
-            delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
-            validatorAddress: delegation.validatorAddress,
-          }),
-        }
-      } else {
-        return {
-          typeUrl: TxTypes.MsgAllianceClaimDelegationRewards,
-          value: Carbon.Alliance.MsgClaimDelegationRewards.fromPartial({
-            delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
-            validatorAddress: delegation.validatorAddress,
-            denom: delegation.denom,
-          }),
-        }
-      }
+      return getRewardWithdrawalMsg(walletAddress, delegation.denom, delegation.validatorAddress, params.delegatorAddress)
     });
     return wallet.sendTxs(msgs, opts);
   }

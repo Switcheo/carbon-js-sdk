@@ -173,7 +173,7 @@ class KeplrAccount {
     const config = configProvider.getConfig();
     const bech32Prefix = config.Bech32Prefix;
 
-    const chainId = await configProvider.query.chain.getChainId();
+    const chainId = config.chainId;
     const url = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json"
     let keplrChainInfo
     try {

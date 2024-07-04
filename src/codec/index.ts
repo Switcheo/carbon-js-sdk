@@ -4,33 +4,36 @@ import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { MsgUpdateParams as MsgConsensusUpdateParams, MsgUpdateParamsResponse as MsgConsensusUpdateParamsResponse } from "./cosmos/consensus/v1/tx";
 import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCancelUpgradeResponse } from "./cosmos/upgrade/v1beta1/tx";
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
-import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
+import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse, MsgPruneAllowances, MsgPruneAllowancesResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgUpdateParams as MsgMintUpdateParams, MsgUpdateParamsResponse as MsgMintUpdateParamsResponse } from "./cosmos/mint/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
 import { MsgSend as MsgNftSend, MsgSendResponse as MsgNftSendResponse } from "./cosmos/nft/v1beta1/tx";
 import { MsgUpdateParams as MsgAuthUpdateParams, MsgUpdateParamsResponse as MsgAuthUpdateParamsResponse } from "./cosmos/auth/v1beta1/tx";
 import { MsgCreateGroup as MsgGroupCreateGroup, MsgCreateGroupResponse as MsgGroupCreateGroupResponse, MsgUpdateGroupMembers as MsgGroupUpdateGroupMembers, MsgUpdateGroupMembersResponse as MsgGroupUpdateGroupMembersResponse, MsgUpdateGroupAdmin as MsgGroupUpdateGroupAdmin, MsgUpdateGroupAdminResponse as MsgGroupUpdateGroupAdminResponse, MsgUpdateGroupMetadata as MsgGroupUpdateGroupMetadata, MsgUpdateGroupMetadataResponse as MsgGroupUpdateGroupMetadataResponse, MsgCreateGroupPolicy as MsgGroupCreateGroupPolicy, MsgCreateGroupPolicyResponse as MsgGroupCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin as MsgGroupUpdateGroupPolicyAdmin, MsgUpdateGroupPolicyAdminResponse as MsgGroupUpdateGroupPolicyAdminResponse, MsgCreateGroupWithPolicy as MsgGroupCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse as MsgGroupCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyDecisionPolicy as MsgGroupUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse as MsgGroupUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata as MsgGroupUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse as MsgGroupUpdateGroupPolicyMetadataResponse, MsgSubmitProposal as MsgGroupSubmitProposal, MsgSubmitProposalResponse as MsgGroupSubmitProposalResponse, MsgWithdrawProposal as MsgGroupWithdrawProposal, MsgWithdrawProposalResponse as MsgGroupWithdrawProposalResponse, MsgVote as MsgGroupVote, MsgVoteResponse as MsgGroupVoteResponse, MsgExec as MsgGroupExec, MsgExecResponse as MsgGroupExecResponse, MsgLeaveGroup as MsgGroupLeaveGroup, MsgLeaveGroupResponse as MsgGroupLeaveGroupResponse } from "./cosmos/group/v1/tx";
 import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse, MsgUpdateParams as MsgBankUpdateParams, MsgUpdateParamsResponse as MsgBankUpdateParamsResponse, MsgSetSendEnabled, MsgSetSendEnabledResponse } from "./cosmos/bank/v1beta1/tx";
-import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse, MsgUpdateParams as MsgDistributionUpdateParams, MsgUpdateParamsResponse as MsgDistributionUpdateParamsResponse, MsgCommunityPoolSpend, MsgCommunityPoolSpendResponse } from "./cosmos/distribution/v1beta1/tx";
+import { MsgAuthorizeCircuitBreaker, MsgAuthorizeCircuitBreakerResponse, MsgTripCircuitBreaker, MsgTripCircuitBreakerResponse, MsgResetCircuitBreaker, MsgResetCircuitBreakerResponse } from "./cosmos/circuit/v1/tx";
+import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse, MsgUpdateParams as MsgDistributionUpdateParams, MsgUpdateParamsResponse as MsgDistributionUpdateParamsResponse, MsgCommunityPoolSpend, MsgCommunityPoolSpendResponse, MsgDepositValidatorRewardsPool, MsgDepositValidatorRewardsPoolResponse } from "./cosmos/distribution/v1beta1/tx";
 import { CommunityPoolSpendProposal } from "./cosmos/distribution/v1beta1/distribution";
 import { MsgVerifyInvariant, MsgVerifyInvariantResponse, MsgUpdateParams as MsgCrisisUpdateParams, MsgUpdateParamsResponse as MsgCrisisUpdateParamsResponse } from "./cosmos/crisis/v1beta1/tx";
 import { MsgCreateVestingAccount, MsgCreateVestingAccountResponse, MsgCreatePermanentLockedAccount, MsgCreatePermanentLockedAccountResponse, MsgCreatePeriodicVestingAccount, MsgCreatePeriodicVestingAccountResponse } from "./cosmos/vesting/v1beta1/tx";
 import { MsgCreateValidator, MsgCreateValidatorResponse, MsgEditValidator, MsgEditValidatorResponse, MsgDelegate, MsgDelegateResponse, MsgBeginRedelegate, MsgBeginRedelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgCancelUnbondingDelegation, MsgCancelUnbondingDelegationResponse, MsgUpdateParams as MsgStakingUpdateParams, MsgUpdateParamsResponse as MsgStakingUpdateParamsResponse } from "./cosmos/staking/v1beta1/tx";
 import { ParameterChangeProposal } from "./cosmos/params/v1beta1/params";
-import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
+import { MsgGrant, MsgGrantResponse, MsgExec, MsgExecResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
 import { MsgUnjail, MsgUnjailResponse, MsgUpdateParams as MsgSlashingUpdateParams, MsgUpdateParamsResponse as MsgSlashingUpdateParamsResponse } from "./cosmos/slashing/v1beta1/tx";
-import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent as MsgGovExecLegacyContent, MsgExecLegacyContentResponse as MsgGovExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted as MsgGovVoteWeighted, MsgVoteWeightedResponse as MsgGovVoteWeightedResponse, MsgDeposit as MsgGovDeposit, MsgDepositResponse as MsgGovDepositResponse, MsgUpdateParams as MsgGovUpdateParams, MsgUpdateParamsResponse as MsgGovUpdateParamsResponse } from "./cosmos/gov/v1/tx";
+import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent as MsgGovExecLegacyContent, MsgExecLegacyContentResponse as MsgGovExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted as MsgGovVoteWeighted, MsgVoteWeightedResponse as MsgGovVoteWeightedResponse, MsgDeposit as MsgGovDeposit, MsgDepositResponse as MsgGovDepositResponse, MsgUpdateParams as MsgGovUpdateParams, MsgUpdateParamsResponse as MsgGovUpdateParamsResponse, MsgCancelProposal as MsgGovCancelProposal, MsgCancelProposalResponse as MsgGovCancelProposalResponse } from "./cosmos/gov/v1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
-import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
-import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
-import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
+import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse, MsgUpdateParams as MsgConnectionUpdateParams, MsgUpdateParamsResponse as MsgConnectionUpdateParamsResponse } from "./ibc/core/connection/v1/tx";
+import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse, MsgChannelUpgradeInit, MsgChannelUpgradeInitResponse, MsgChannelUpgradeTry, MsgChannelUpgradeTryResponse, MsgChannelUpgradeAck, MsgChannelUpgradeAckResponse, MsgChannelUpgradeConfirm, MsgChannelUpgradeConfirmResponse, MsgChannelUpgradeOpen, MsgChannelUpgradeOpenResponse, MsgChannelUpgradeTimeout, MsgChannelUpgradeTimeoutResponse, MsgChannelUpgradeCancel, MsgChannelUpgradeCancelResponse, MsgUpdateParams, MsgUpdateParamsResponse, MsgPruneAcknowledgements, MsgPruneAcknowledgementsResponse } from "./ibc/core/channel/v1/tx";
+import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse, MsgRecoverClient, MsgRecoverClientResponse, MsgIBCSoftwareUpgrade, MsgIBCSoftwareUpgradeResponse, MsgUpdateParams as MsgClientUpdateParams, MsgUpdateParamsResponse as MsgClientUpdateParamsResponse } from "./ibc/core/client/v1/tx";
+import { MsgStoreCode, MsgStoreCodeResponse, MsgRemoveChecksum, MsgRemoveChecksumResponse, MsgMigrateContract, MsgMigrateContractResponse } from "./ibc/lightclients/wasm/v1/tx";
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
 import { MsgRegisterPayee, MsgRegisterPayeeResponse, MsgRegisterCounterpartyPayee, MsgRegisterCounterpartyPayeeResponse, MsgPayPacketFee, MsgPayPacketFeeResponse, MsgPayPacketFeeAsync, MsgPayPacketFeeAsyncResponse } from "./ibc/applications/fee/v1/tx";
-import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
-import { MsgRegisterInterchainAccount, MsgRegisterInterchainAccountResponse, MsgSendTx, MsgSendTxResponse } from "./ibc/applications/interchain_accounts/controller/v1/tx";
+import { MsgTransfer, MsgTransferResponse, MsgUpdateParams as MsgTransferUpdateParams, MsgUpdateParamsResponse as MsgTransferUpdateParamsResponse } from "./ibc/applications/transfer/v1/tx";
+import { MsgUpdateParams as MsgInterchainAccHostUpdateParams, MsgUpdateParamsResponse as MsgInterchainAccHostUpdateParamsResponse } from "./ibc/applications/interchain_accounts/host/v1/tx";
+import { MsgRegisterInterchainAccount, MsgRegisterInterchainAccountResponse, MsgSendTx, MsgSendTxResponse, MsgUpdateParams as MsgInterchainAccControllerUpdateParams, MsgUpdateParamsResponse as MsgInterchainAccControllerUpdateParamsResponse } from "./ibc/applications/interchain_accounts/controller/v1/tx";
 import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as MsgFeemarketUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
 import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
-import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
+import { Proposal } from "./cosmos/gov/v1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
 
 export * from './cosmos-models';
@@ -248,6 +251,8 @@ registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled", Carbon.Ora
 registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse", Carbon.Oracle.MsgSetOracleSlashEnabledResponse);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateParams", Carbon.Oracle.MsgUpdateParams);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateParamsResponse", Carbon.Oracle.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.oracle.MsgCreateResult", Carbon.Oracle.MsgCreateResult);
+registry.register("/Switcheo.carbon.oracle.MsgCreateResultResponse", Carbon.Oracle.MsgCreateResultResponse);
 registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", Carbon.Oracle.CreateOracleProposal);
 
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", Carbon.Evmcontract.MsgDeactivateContract);
@@ -435,6 +440,8 @@ registry.register("/Switcheo.carbon.pricing.MsgUpdateParams", Carbon.Pricing.Msg
 registry.register("/Switcheo.carbon.pricing.MsgUpdateParamsResponse", Carbon.Pricing.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPrice", Carbon.Pricing.MsgUpdateSettlementPrice);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse", Carbon.Pricing.MsgUpdateSettlementPriceResponse);
+registry.register("/Switcheo.carbon.pricing.MsgRemoveTokenPrice", Carbon.Pricing.MsgRemoveTokenPrice);
+registry.register("/Switcheo.carbon.pricing.MsgRemoveTokenPriceResponse", Carbon.Pricing.MsgRemoveTokenPriceResponse);
 registry.register("/Switcheo.carbon.pricing.SettlementPriceProposal", Carbon.Pricing.SettlementPriceProposal);
 
 registry.register("/Switcheo.carbon.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
@@ -479,6 +486,8 @@ registry.register("/cosmos.feegrant.v1beta1.MsgGrantAllowance", MsgGrantAllowanc
 registry.register("/cosmos.feegrant.v1beta1.MsgGrantAllowanceResponse", MsgGrantAllowanceResponse);
 registry.register("/cosmos.feegrant.v1beta1.MsgRevokeAllowance", MsgRevokeAllowance);
 registry.register("/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse", MsgRevokeAllowanceResponse);
+registry.register("/cosmos.feegrant.v1beta1.MsgPruneAllowances", MsgPruneAllowances);
+registry.register("/cosmos.feegrant.v1beta1.MsgPruneAllowancesResponse", MsgPruneAllowancesResponse);
 
 registry.register("/cosmos.mint.v1beta1.MsgUpdateParams", MsgMintUpdateParams);
 registry.register("/cosmos.mint.v1beta1.MsgUpdateParamsResponse", MsgMintUpdateParamsResponse);
@@ -530,6 +539,13 @@ registry.register("/cosmos.bank.v1beta1.MsgUpdateParamsResponse", MsgBankUpdateP
 registry.register("/cosmos.bank.v1beta1.MsgSetSendEnabled", MsgSetSendEnabled);
 registry.register("/cosmos.bank.v1beta1.MsgSetSendEnabledResponse", MsgSetSendEnabledResponse);
 
+registry.register("/cosmos.circuit.v1.MsgAuthorizeCircuitBreaker", MsgAuthorizeCircuitBreaker);
+registry.register("/cosmos.circuit.v1.MsgAuthorizeCircuitBreakerResponse", MsgAuthorizeCircuitBreakerResponse);
+registry.register("/cosmos.circuit.v1.MsgTripCircuitBreaker", MsgTripCircuitBreaker);
+registry.register("/cosmos.circuit.v1.MsgTripCircuitBreakerResponse", MsgTripCircuitBreakerResponse);
+registry.register("/cosmos.circuit.v1.MsgResetCircuitBreaker", MsgResetCircuitBreaker);
+registry.register("/cosmos.circuit.v1.MsgResetCircuitBreakerResponse", MsgResetCircuitBreakerResponse);
+
 registry.register("/cosmos.distribution.v1beta1.MsgSetWithdrawAddress", MsgSetWithdrawAddress);
 registry.register("/cosmos.distribution.v1beta1.MsgSetWithdrawAddressResponse", MsgSetWithdrawAddressResponse);
 registry.register("/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward", MsgWithdrawDelegatorReward);
@@ -542,6 +558,8 @@ registry.register("/cosmos.distribution.v1beta1.MsgUpdateParams", MsgDistributio
 registry.register("/cosmos.distribution.v1beta1.MsgUpdateParamsResponse", MsgDistributionUpdateParamsResponse);
 registry.register("/cosmos.distribution.v1beta1.MsgCommunityPoolSpend", MsgCommunityPoolSpend);
 registry.register("/cosmos.distribution.v1beta1.MsgCommunityPoolSpendResponse", MsgCommunityPoolSpendResponse);
+registry.register("/cosmos.distribution.v1beta1.MsgDepositValidatorRewardsPool", MsgDepositValidatorRewardsPool);
+registry.register("/cosmos.distribution.v1beta1.MsgDepositValidatorRewardsPoolResponse", MsgDepositValidatorRewardsPoolResponse);
 registry.register("/cosmos.distribution.v1beta1.CommunityPoolSpendProposal", CommunityPoolSpendProposal);
 
 registry.register("/cosmos.crisis.v1beta1.MsgVerifyInvariant", MsgVerifyInvariant);
@@ -574,9 +592,9 @@ registry.register("/cosmos.staking.v1beta1.MsgUpdateParamsResponse", MsgStakingU
 registry.register("/cosmos.params.v1beta1.ParameterChangeProposal", ParameterChangeProposal);
 
 registry.register("/cosmos.authz.v1beta1.MsgGrant", MsgGrant);
-registry.register("/cosmos.authz.v1beta1.MsgExecResponse", MsgExecResponse);
-registry.register("/cosmos.authz.v1beta1.MsgExec", MsgExec);
 registry.register("/cosmos.authz.v1beta1.MsgGrantResponse", MsgGrantResponse);
+registry.register("/cosmos.authz.v1beta1.MsgExec", MsgExec);
+registry.register("/cosmos.authz.v1beta1.MsgExecResponse", MsgExecResponse);
 registry.register("/cosmos.authz.v1beta1.MsgRevoke", MsgRevoke);
 registry.register("/cosmos.authz.v1beta1.MsgRevokeResponse", MsgRevokeResponse);
 
@@ -597,6 +615,9 @@ registry.register("/cosmos.gov.v1.MsgDeposit", MsgGovDeposit);
 registry.register("/cosmos.gov.v1.MsgDepositResponse", MsgGovDepositResponse);
 registry.register("/cosmos.gov.v1.MsgUpdateParams", MsgGovUpdateParams);
 registry.register("/cosmos.gov.v1.MsgUpdateParamsResponse", MsgGovUpdateParamsResponse);
+registry.register("/cosmos.gov.v1.MsgCancelProposal", MsgGovCancelProposal);
+registry.register("/cosmos.gov.v1.MsgCancelProposalResponse", MsgGovCancelProposalResponse);
+registry.register("/cosmos.gov.v1.Proposal", Proposal);
 
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal);
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
@@ -606,8 +627,6 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
 registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
-registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
-registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
@@ -617,6 +636,8 @@ registry.register("/ibc.core.connection.v1.MsgConnectionOpenAck", MsgConnectionO
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenAckResponse", MsgConnectionOpenAckResponse);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenConfirm", MsgConnectionOpenConfirm);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenConfirmResponse", MsgConnectionOpenConfirmResponse);
+registry.register("/ibc.core.connection.v1.MsgUpdateParams", MsgConnectionUpdateParams);
+registry.register("/ibc.core.connection.v1.MsgUpdateParamsResponse", MsgConnectionUpdateParamsResponse);
 
 registry.register("/ibc.core.channel.v1.MsgChannelOpenInit", MsgChannelOpenInit);
 registry.register("/ibc.core.channel.v1.MsgChannelOpenInitResponse", MsgChannelOpenInitResponse);
@@ -638,6 +659,24 @@ registry.register("/ibc.core.channel.v1.MsgTimeoutOnClose", MsgTimeoutOnClose);
 registry.register("/ibc.core.channel.v1.MsgTimeoutOnCloseResponse", MsgTimeoutOnCloseResponse);
 registry.register("/ibc.core.channel.v1.MsgAcknowledgement", MsgAcknowledgement);
 registry.register("/ibc.core.channel.v1.MsgAcknowledgementResponse", MsgAcknowledgementResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeInit", MsgChannelUpgradeInit);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeInitResponse", MsgChannelUpgradeInitResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeTry", MsgChannelUpgradeTry);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeTryResponse", MsgChannelUpgradeTryResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeAck", MsgChannelUpgradeAck);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeAckResponse", MsgChannelUpgradeAckResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeConfirm", MsgChannelUpgradeConfirm);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeConfirmResponse", MsgChannelUpgradeConfirmResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeOpen", MsgChannelUpgradeOpen);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeOpenResponse", MsgChannelUpgradeOpenResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeTimeout", MsgChannelUpgradeTimeout);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeTimeoutResponse", MsgChannelUpgradeTimeoutResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeCancel", MsgChannelUpgradeCancel);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeCancelResponse", MsgChannelUpgradeCancelResponse);
+registry.register("/ibc.core.channel.v1.MsgUpdateParams", MsgUpdateParams);
+registry.register("/ibc.core.channel.v1.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
+registry.register("/ibc.core.channel.v1.MsgPruneAcknowledgements", MsgPruneAcknowledgements);
+registry.register("/ibc.core.channel.v1.MsgPruneAcknowledgementsResponse", MsgPruneAcknowledgementsResponse);
 
 registry.register("/ibc.core.client.v1.MsgCreateClient", MsgCreateClient);
 registry.register("/ibc.core.client.v1.MsgCreateClientResponse", MsgCreateClientResponse);
@@ -647,8 +686,21 @@ registry.register("/ibc.core.client.v1.MsgUpgradeClient", MsgUpgradeClient);
 registry.register("/ibc.core.client.v1.MsgUpgradeClientResponse", MsgUpgradeClientResponse);
 registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviour", MsgSubmitMisbehaviour);
 registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviourResponse", MsgSubmitMisbehaviourResponse);
+registry.register("/ibc.core.client.v1.MsgRecoverClient", MsgRecoverClient);
+registry.register("/ibc.core.client.v1.MsgRecoverClientResponse", MsgRecoverClientResponse);
+registry.register("/ibc.core.client.v1.MsgIBCSoftwareUpgrade", MsgIBCSoftwareUpgrade);
+registry.register("/ibc.core.client.v1.MsgIBCSoftwareUpgradeResponse", MsgIBCSoftwareUpgradeResponse);
+registry.register("/ibc.core.client.v1.MsgUpdateParams", MsgClientUpdateParams);
+registry.register("/ibc.core.client.v1.MsgUpdateParamsResponse", MsgClientUpdateParamsResponse);
 registry.register("/ibc.core.client.v1.ClientUpdateProposal", ClientUpdateProposal);
 registry.register("/ibc.core.client.v1.UpgradeProposal", UpgradeProposal);
+
+registry.register("/ibc.lightclients.wasm.v1.MsgStoreCode", MsgStoreCode);
+registry.register("/ibc.lightclients.wasm.v1.MsgStoreCodeResponse", MsgStoreCodeResponse);
+registry.register("/ibc.lightclients.wasm.v1.MsgRemoveChecksum", MsgRemoveChecksum);
+registry.register("/ibc.lightclients.wasm.v1.MsgRemoveChecksumResponse", MsgRemoveChecksumResponse);
+registry.register("/ibc.lightclients.wasm.v1.MsgMigrateContract", MsgMigrateContract);
+registry.register("/ibc.lightclients.wasm.v1.MsgMigrateContractResponse", MsgMigrateContractResponse);
 
 registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
 
@@ -663,11 +715,18 @@ registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse", MsgPa
 
 registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
 registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
+registry.register("/ibc.applications.transfer.v1.MsgUpdateParams", MsgTransferUpdateParams);
+registry.register("/ibc.applications.transfer.v1.MsgUpdateParamsResponse", MsgTransferUpdateParamsResponse);
+
+registry.register("/ibc.applications.interchain_accounts.host.v1.MsgUpdateParams", MsgInterchainAccHostUpdateParams);
+registry.register("/ibc.applications.interchain_accounts.host.v1.MsgUpdateParamsResponse", MsgInterchainAccHostUpdateParamsResponse);
 
 registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount", MsgRegisterInterchainAccount);
 registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse", MsgRegisterInterchainAccountResponse);
 registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgSendTx", MsgSendTx);
 registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgSendTxResponse", MsgSendTxResponse);
+registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgUpdateParams", MsgInterchainAccControllerUpdateParams);
+registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgUpdateParamsResponse", MsgInterchainAccControllerUpdateParamsResponse);
 
 registry.register("/ethermint.feemarket.v1.MsgUpdateParams", MsgFeemarketUpdateParams);
 registry.register("/ethermint.feemarket.v1.MsgUpdateParamsResponse", MsgFeemarketUpdateParamsResponse);
@@ -692,8 +751,8 @@ export const TxTypes = {
   "MsgCancelOrderResponse": "/Switcheo.carbon.order.MsgCancelOrderResponse",
   "MsgCancelAll": "/Switcheo.carbon.order.MsgCancelAll",
   "MsgCancelAllResponse": "/Switcheo.carbon.order.MsgCancelAllResponse",
-  "MsgUpdateParams": "/Switcheo.carbon.order.MsgUpdateParams",
-  "MsgUpdateParamsResponse": "/Switcheo.carbon.order.MsgUpdateParamsResponse",
+  "MsgUpdateParams": "/ibc.core.channel.v1.MsgUpdateParams",
+  "MsgUpdateParamsResponse": "/ibc.core.channel.v1.MsgUpdateParamsResponse",
   "MsgAddRateStrategy": "/Switcheo.carbon.cdp.MsgAddRateStrategy",
   "MsgAddRateStrategyResponse": "/Switcheo.carbon.cdp.MsgAddRateStrategyResponse",
   "MsgUpdateRateStrategy": "/Switcheo.carbon.cdp.MsgUpdateRateStrategy",
@@ -874,6 +933,8 @@ export const TxTypes = {
   "MsgSetOracleSlashEnabledResponse": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse",
   "MsgOracleUpdateParams": "/Switcheo.carbon.oracle.MsgUpdateParams",
   "MsgOracleUpdateParamsResponse": "/Switcheo.carbon.oracle.MsgUpdateParamsResponse",
+  "MsgCreateResult": "/Switcheo.carbon.oracle.MsgCreateResult",
+  "MsgCreateResultResponse": "/Switcheo.carbon.oracle.MsgCreateResultResponse",
   "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
   "MsgDeactivateContract": "/Switcheo.carbon.evmcontract.MsgDeactivateContract",
   "MsgDeactivateContractResponse": "/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse",
@@ -1048,6 +1109,8 @@ export const TxTypes = {
   "MsgPricingUpdateParamsResponse": "/Switcheo.carbon.pricing.MsgUpdateParamsResponse",
   "MsgUpdateSettlementPrice": "/Switcheo.carbon.pricing.MsgUpdateSettlementPrice",
   "MsgUpdateSettlementPriceResponse": "/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse",
+  "MsgRemoveTokenPrice": "/Switcheo.carbon.pricing.MsgRemoveTokenPrice",
+  "MsgRemoveTokenPriceResponse": "/Switcheo.carbon.pricing.MsgRemoveTokenPriceResponse",
   "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal",
   "MsgLockproxyCreate": "/Switcheo.carbon.lockproxy.MsgCreate",
   "MsgLockproxyCreateResponse": "/Switcheo.carbon.lockproxy.MsgCreateResponse",
@@ -1087,6 +1150,8 @@ export const TxTypes = {
   "MsgGrantAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgGrantAllowanceResponse",
   "MsgRevokeAllowance": "/cosmos.feegrant.v1beta1.MsgRevokeAllowance",
   "MsgRevokeAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse",
+  "MsgPruneAllowances": "/cosmos.feegrant.v1beta1.MsgPruneAllowances",
+  "MsgPruneAllowancesResponse": "/cosmos.feegrant.v1beta1.MsgPruneAllowancesResponse",
   "MsgMintUpdateParams": "/cosmos.mint.v1beta1.MsgUpdateParams",
   "MsgMintUpdateParamsResponse": "/cosmos.mint.v1beta1.MsgUpdateParamsResponse",
   "MsgSubmitEvidence": "/cosmos.evidence.v1beta1.MsgSubmitEvidence",
@@ -1131,6 +1196,12 @@ export const TxTypes = {
   "MsgBankUpdateParamsResponse": "/cosmos.bank.v1beta1.MsgUpdateParamsResponse",
   "MsgSetSendEnabled": "/cosmos.bank.v1beta1.MsgSetSendEnabled",
   "MsgSetSendEnabledResponse": "/cosmos.bank.v1beta1.MsgSetSendEnabledResponse",
+  "MsgAuthorizeCircuitBreaker": "/cosmos.circuit.v1.MsgAuthorizeCircuitBreaker",
+  "MsgAuthorizeCircuitBreakerResponse": "/cosmos.circuit.v1.MsgAuthorizeCircuitBreakerResponse",
+  "MsgTripCircuitBreaker": "/cosmos.circuit.v1.MsgTripCircuitBreaker",
+  "MsgTripCircuitBreakerResponse": "/cosmos.circuit.v1.MsgTripCircuitBreakerResponse",
+  "MsgResetCircuitBreaker": "/cosmos.circuit.v1.MsgResetCircuitBreaker",
+  "MsgResetCircuitBreakerResponse": "/cosmos.circuit.v1.MsgResetCircuitBreakerResponse",
   "MsgSetWithdrawAddress": "/cosmos.distribution.v1beta1.MsgSetWithdrawAddress",
   "MsgSetWithdrawAddressResponse": "/cosmos.distribution.v1beta1.MsgSetWithdrawAddressResponse",
   "MsgWithdrawDelegatorReward": "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
@@ -1143,6 +1214,8 @@ export const TxTypes = {
   "MsgDistributionUpdateParamsResponse": "/cosmos.distribution.v1beta1.MsgUpdateParamsResponse",
   "MsgCommunityPoolSpend": "/cosmos.distribution.v1beta1.MsgCommunityPoolSpend",
   "MsgCommunityPoolSpendResponse": "/cosmos.distribution.v1beta1.MsgCommunityPoolSpendResponse",
+  "MsgDepositValidatorRewardsPool": "/cosmos.distribution.v1beta1.MsgDepositValidatorRewardsPool",
+  "MsgDepositValidatorRewardsPoolResponse": "/cosmos.distribution.v1beta1.MsgDepositValidatorRewardsPoolResponse",
   "CommunityPoolSpendProposal": "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
   "MsgVerifyInvariant": "/cosmos.crisis.v1beta1.MsgVerifyInvariant",
   "MsgVerifyInvariantResponse": "/cosmos.crisis.v1beta1.MsgVerifyInvariantResponse",
@@ -1170,9 +1243,9 @@ export const TxTypes = {
   "MsgStakingUpdateParamsResponse": "/cosmos.staking.v1beta1.MsgUpdateParamsResponse",
   "ParameterChangeProposal": "/cosmos.params.v1beta1.ParameterChangeProposal",
   "MsgGrant": "/cosmos.authz.v1beta1.MsgGrant",
-  "MsgExecResponse": "/cosmos.authz.v1beta1.MsgExecResponse",
-  "MsgExec": "/cosmos.authz.v1beta1.MsgExec",
   "MsgGrantResponse": "/cosmos.authz.v1beta1.MsgGrantResponse",
+  "MsgExec": "/cosmos.authz.v1beta1.MsgExec",
+  "MsgExecResponse": "/cosmos.authz.v1beta1.MsgExecResponse",
   "MsgRevoke": "/cosmos.authz.v1beta1.MsgRevoke",
   "MsgRevokeResponse": "/cosmos.authz.v1beta1.MsgRevokeResponse",
   "MsgUnjail": "/cosmos.slashing.v1beta1.MsgUnjail",
@@ -1191,6 +1264,9 @@ export const TxTypes = {
   "MsgGovDepositResponse": "/cosmos.gov.v1.MsgDepositResponse",
   "MsgGovUpdateParams": "/cosmos.gov.v1.MsgUpdateParams",
   "MsgGovUpdateParamsResponse": "/cosmos.gov.v1.MsgUpdateParamsResponse",
+  "MsgGovCancelProposal": "/cosmos.gov.v1.MsgCancelProposal",
+  "MsgGovCancelProposalResponse": "/cosmos.gov.v1.MsgCancelProposalResponse",
+  "Proposal": "/cosmos.gov.v1.Proposal",
   "MsgSubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
   "MsgSubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
   "MsgVote": "/cosmos.gov.v1beta1.MsgVote",
@@ -1199,8 +1275,6 @@ export const TxTypes = {
   "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
-  "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
-  "Proposal": "/cosmos.gov.v1beta1.Proposal",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
@@ -1209,6 +1283,8 @@ export const TxTypes = {
   "MsgConnectionOpenAckResponse": "/ibc.core.connection.v1.MsgConnectionOpenAckResponse",
   "MsgConnectionOpenConfirm": "/ibc.core.connection.v1.MsgConnectionOpenConfirm",
   "MsgConnectionOpenConfirmResponse": "/ibc.core.connection.v1.MsgConnectionOpenConfirmResponse",
+  "MsgConnectionUpdateParams": "/ibc.core.connection.v1.MsgUpdateParams",
+  "MsgConnectionUpdateParamsResponse": "/ibc.core.connection.v1.MsgUpdateParamsResponse",
   "MsgChannelOpenInit": "/ibc.core.channel.v1.MsgChannelOpenInit",
   "MsgChannelOpenInitResponse": "/ibc.core.channel.v1.MsgChannelOpenInitResponse",
   "MsgChannelOpenTry": "/ibc.core.channel.v1.MsgChannelOpenTry",
@@ -1229,6 +1305,22 @@ export const TxTypes = {
   "MsgTimeoutOnCloseResponse": "/ibc.core.channel.v1.MsgTimeoutOnCloseResponse",
   "MsgAcknowledgement": "/ibc.core.channel.v1.MsgAcknowledgement",
   "MsgAcknowledgementResponse": "/ibc.core.channel.v1.MsgAcknowledgementResponse",
+  "MsgChannelUpgradeInit": "/ibc.core.channel.v1.MsgChannelUpgradeInit",
+  "MsgChannelUpgradeInitResponse": "/ibc.core.channel.v1.MsgChannelUpgradeInitResponse",
+  "MsgChannelUpgradeTry": "/ibc.core.channel.v1.MsgChannelUpgradeTry",
+  "MsgChannelUpgradeTryResponse": "/ibc.core.channel.v1.MsgChannelUpgradeTryResponse",
+  "MsgChannelUpgradeAck": "/ibc.core.channel.v1.MsgChannelUpgradeAck",
+  "MsgChannelUpgradeAckResponse": "/ibc.core.channel.v1.MsgChannelUpgradeAckResponse",
+  "MsgChannelUpgradeConfirm": "/ibc.core.channel.v1.MsgChannelUpgradeConfirm",
+  "MsgChannelUpgradeConfirmResponse": "/ibc.core.channel.v1.MsgChannelUpgradeConfirmResponse",
+  "MsgChannelUpgradeOpen": "/ibc.core.channel.v1.MsgChannelUpgradeOpen",
+  "MsgChannelUpgradeOpenResponse": "/ibc.core.channel.v1.MsgChannelUpgradeOpenResponse",
+  "MsgChannelUpgradeTimeout": "/ibc.core.channel.v1.MsgChannelUpgradeTimeout",
+  "MsgChannelUpgradeTimeoutResponse": "/ibc.core.channel.v1.MsgChannelUpgradeTimeoutResponse",
+  "MsgChannelUpgradeCancel": "/ibc.core.channel.v1.MsgChannelUpgradeCancel",
+  "MsgChannelUpgradeCancelResponse": "/ibc.core.channel.v1.MsgChannelUpgradeCancelResponse",
+  "MsgPruneAcknowledgements": "/ibc.core.channel.v1.MsgPruneAcknowledgements",
+  "MsgPruneAcknowledgementsResponse": "/ibc.core.channel.v1.MsgPruneAcknowledgementsResponse",
   "MsgCreateClient": "/ibc.core.client.v1.MsgCreateClient",
   "MsgCreateClientResponse": "/ibc.core.client.v1.MsgCreateClientResponse",
   "MsgUpdateClient": "/ibc.core.client.v1.MsgUpdateClient",
@@ -1237,8 +1329,20 @@ export const TxTypes = {
   "MsgUpgradeClientResponse": "/ibc.core.client.v1.MsgUpgradeClientResponse",
   "MsgSubmitMisbehaviour": "/ibc.core.client.v1.MsgSubmitMisbehaviour",
   "MsgSubmitMisbehaviourResponse": "/ibc.core.client.v1.MsgSubmitMisbehaviourResponse",
+  "MsgRecoverClient": "/ibc.core.client.v1.MsgRecoverClient",
+  "MsgRecoverClientResponse": "/ibc.core.client.v1.MsgRecoverClientResponse",
+  "MsgIBCSoftwareUpgrade": "/ibc.core.client.v1.MsgIBCSoftwareUpgrade",
+  "MsgIBCSoftwareUpgradeResponse": "/ibc.core.client.v1.MsgIBCSoftwareUpgradeResponse",
+  "MsgClientUpdateParams": "/ibc.core.client.v1.MsgUpdateParams",
+  "MsgClientUpdateParamsResponse": "/ibc.core.client.v1.MsgUpdateParamsResponse",
   "ClientUpdateProposal": "/ibc.core.client.v1.ClientUpdateProposal",
   "UpgradeProposal": "/ibc.core.client.v1.UpgradeProposal",
+  "MsgStoreCode": "/ibc.lightclients.wasm.v1.MsgStoreCode",
+  "MsgStoreCodeResponse": "/ibc.lightclients.wasm.v1.MsgStoreCodeResponse",
+  "MsgRemoveChecksum": "/ibc.lightclients.wasm.v1.MsgRemoveChecksum",
+  "MsgRemoveChecksumResponse": "/ibc.lightclients.wasm.v1.MsgRemoveChecksumResponse",
+  "MsgMigrateContract": "/ibc.lightclients.wasm.v1.MsgMigrateContract",
+  "MsgMigrateContractResponse": "/ibc.lightclients.wasm.v1.MsgMigrateContractResponse",
   "Header": "/ibc.lightclients.tendermint.v1.Header",
   "MsgRegisterPayee": "/ibc.applications.fee.v1.MsgRegisterPayee",
   "MsgRegisterPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterPayeeResponse",
@@ -1250,10 +1354,16 @@ export const TxTypes = {
   "MsgPayPacketFeeAsyncResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse",
   "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
   "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
+  "MsgTransferUpdateParams": "/ibc.applications.transfer.v1.MsgUpdateParams",
+  "MsgTransferUpdateParamsResponse": "/ibc.applications.transfer.v1.MsgUpdateParamsResponse",
+  "MsgInterchainAccHostUpdateParams": "/ibc.applications.interchain_accounts.host.v1.MsgUpdateParams",
+  "MsgInterchainAccHostUpdateParamsResponse": "/ibc.applications.interchain_accounts.host.v1.MsgUpdateParamsResponse",
   "MsgRegisterInterchainAccount": "/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount",
   "MsgRegisterInterchainAccountResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse",
   "MsgSendTx": "/ibc.applications.interchain_accounts.controller.v1.MsgSendTx",
   "MsgSendTxResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgSendTxResponse",
+  "MsgInterchainAccControllerUpdateParams": "/ibc.applications.interchain_accounts.controller.v1.MsgUpdateParams",
+  "MsgInterchainAccControllerUpdateParamsResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgUpdateParamsResponse",
   "MsgFeemarketUpdateParams": "/ethermint.feemarket.v1.MsgUpdateParams",
   "MsgFeemarketUpdateParamsResponse": "/ethermint.feemarket.v1.MsgUpdateParamsResponse",
   "MsgEthereumTx": "/ethermint.evm.v1.MsgEthereumTx",
@@ -1269,14 +1379,15 @@ export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
-export { FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
+export { Empty } from "./google/protobuf/empty";
+export { Edition, editionFromJSON, editionToJSON, ExtensionRangeOptions_VerificationState, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FeatureSet_FieldPresence, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, FeatureSet_EnumType, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, FeatureSet_RepeatedFieldEncoding, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, FeatureSet_Utf8Validation, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, FeatureSet_MessageEncoding, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, FeatureSet_JsonFormat, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/alliance/gov";
 export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse, MsgCreateAlliance, MsgCreateAllianceResponse, MsgUpdateAlliance, MsgUpdateAllianceResponse, MsgDeleteAlliance, MsgDeleteAllianceResponse } from "./alliance/alliance/tx";
 export { Delegation, Undelegation, QueuedUndelegation, AllianceValidatorInfo } from "./alliance/alliance/delegations";
 export { QueuedRedelegation, Redelegation, RedelegationEntry } from "./alliance/alliance/redelegations";
 export { DelegateAllianceEvent, UndelegateAllianceEvent, RedelegateAllianceEvent, ClaimAllianceRewardsEvent, DeductAllianceAssetsEvent } from "./alliance/alliance/events";
-export { QueryParamsRequest, QueryParamsResponse, QueryAlliancesRequest, QueryAlliancesResponse, QueryAllianceRequest, QueryAllianceResponse, QueryIBCAllianceRequest, QueryAllianceValidatorRequest, QueryAllAllianceValidatorsRequest, QueryAllAlliancesDelegationsRequest, QueryAlliancesDelegationsRequest, QueryAlliancesDelegationByValidatorRequest, DelegationResponse, QueryAlliancesDelegationsResponse, QueryAllianceDelegationRequest, QueryIBCAllianceDelegationRequest, QueryAllianceDelegationResponse, QueryAllianceDelegationRewardsRequest, QueryIBCAllianceDelegationRewardsRequest, QueryAllianceDelegationRewardsResponse, QueryAllianceValidatorResponse, QueryAllianceValidatorsResponse, QueryAllianceUnbondingsByDenomAndDelegatorRequest, QueryAllianceUnbondingsByDenomAndDelegatorResponse, QueryAllianceUnbondingsRequest, QueryAllianceUnbondingsResponse, QueryAllianceRedelegationsRequest, QueryAllianceRedelegationsResponse } from "./alliance/alliance/query";
+export { QueryParamsRequest, QueryParamsResponse, QueryAlliancesRequest, QueryAlliancesResponse, QueryAllianceRequest, QueryAllianceResponse, QueryAllianceValidatorRequest, QueryAllAllianceValidatorsRequest, QueryAllAlliancesDelegationsRequest, QueryAlliancesDelegationsRequest, QueryAlliancesDelegationByValidatorRequest, DelegationResponse, QueryAlliancesDelegationsResponse, QueryAllianceDelegationRequest, QueryAllianceDelegationResponse, QueryAllianceDelegationRewardsRequest, QueryAllianceDelegationRewardsResponse, QueryAllianceValidatorResponse, QueryAllianceValidatorsResponse, QueryAllianceUnbondingsByDelegatorRequest, QueryAllianceUnbondingsByDelegatorResponse, QueryAllianceUnbondingsByDenomAndDelegatorRequest, QueryAllianceUnbondingsByDenomAndDelegatorResponse, QueryAllianceUnbondingsRequest, QueryAllianceUnbondingsResponse, QueryAllianceRedelegationsRequest, QueryAllianceRedelegationsResponse, QueryAllianceRedelegationsByDelegatorRequest, QueryAllianceRedelegationsByDelegatorResponse } from "./alliance/alliance/query";
 export { RewardHistory } from "./alliance/alliance/params";
 export { UnbondingDelegation } from "./alliance/alliance/unbonding";
 export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
@@ -1347,6 +1458,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "syntax",
         "type": "string"
+      },
+      {
+        "name": "edition",
+        "type": "",
+        "packageName": "/google.protobuf"
       }
     ],
     "DescriptorProto": [
@@ -1404,6 +1520,21 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
+      },
+      {
+        "name": "declaration",
+        "type": "Declaration[]",
+        "packageName": "/google.protobuf.ExtensionRangeOptions"
+      },
+      {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "verification",
+        "type": "",
+        "packageName": "/google.protobuf.ExtensionRangeOptions"
       }
     ],
     "FieldDescriptorProto": [
@@ -1632,6 +1763,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1655,9 +1791,15 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "deprecated_legacy_json_field_conflicts",
+      {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
-        "packageName": "/google.protobuf"
       }
     ],
     "FieldOptions": [
@@ -1692,12 +1834,41 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "debug_redact",
+        "type": "bool"
+      },
+      {
+        "name": "retention",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "targets",
+        "type": "[]",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "edition_defaults",
+        "type": "EditionDefault[]",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
       }
     ],
     "OneofOptions": [
+      {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
+      },
       {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
@@ -1714,6 +1885,15 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "deprecated_legacy_json_field_conflicts",
+        "type": "bool"
+      },
+      {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1725,12 +1905,26 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "debug_redact",
+        "type": "bool"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
       }
     ],
     "ServiceOptions": [
+      {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
+      },
       {
         "name": "deprecated",
         "type": "bool"
@@ -1750,6 +1944,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "idempotency_level",
         "type": "",
         "packageName": "/google.protobuf.MethodOptions"
+      },
+      {
+        "name": "features",
+        "type": "FeatureSet",
+        "packageName": "/google.protobuf"
       },
       {
         "name": "uninterpreted_option",
@@ -1786,6 +1985,55 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "aggregate_value",
         "type": "string"
+      }
+    ],
+    "FeatureSet": [
+      {
+        "name": "field_presence",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet"
+      },
+      {
+        "name": "enum_type",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet"
+      },
+      {
+        "name": "repeated_field_encoding",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet"
+      },
+      {
+        "name": "utf8_validation",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet"
+      },
+      {
+        "name": "message_encoding",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet"
+      },
+      {
+        "name": "json_format",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet"
+      }
+    ],
+    "FeatureSetDefaults": [
+      {
+        "name": "defaults",
+        "type": "FeatureSetEditionDefault[]",
+        "packageName": "/google.protobuf.FeatureSetDefaults"
+      },
+      {
+        "name": "minimum_edition",
+        "type": "",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "maximum_edition",
+        "type": "",
+        "packageName": "/google.protobuf"
       }
     ],
     "SourceCodeInfo": [
@@ -1876,6 +2124,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int32"
       }
     ],
+    "Empty": [],
     "Any": [
       {
         "name": "type_url",
@@ -3275,10 +3524,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint8[]"
       },
       {
-        "name": "orders",
-        "type": "string[]"
-      },
-      {
         "name": "pool_route",
         "type": "uint8[]"
       }
@@ -3291,10 +3536,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "quoting_hash",
         "type": "uint8[]"
-      },
-      {
-        "name": "legacy_last_quoted_at",
-        "type": "uint64"
       },
       {
         "name": "markets",
@@ -3310,10 +3551,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "marketId",
         "type": "string"
-      },
-      {
-        "name": "orders",
-        "type": "string[]"
       },
       {
         "name": "last_index_price",
@@ -3458,7 +3695,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "FundingEvent": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -6067,7 +6304,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgCreateRewardSchemeResponse": [],
     "MsgUpdateRewardScheme": [
       {
-        "name": "updator",
+        "name": "updater",
         "type": "string"
       },
       {
@@ -8717,6 +8954,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "block_created_at",
         "type": "string"
+      },
+      {
+        "name": "msg_exec_index",
+        "type": "uint64"
+      },
+      {
+        "name": "granter",
+        "type": "string"
       }
     ],
     "Transaction": [
@@ -10522,7 +10767,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgCreatePoolRouteResponse": [],
     "CreatePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -10548,7 +10793,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgRemovePoolRouteResponse": [],
     "RemovePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -10570,7 +10815,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgUpdatePoolRouteResponse": [],
     "UpdatePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -10902,6 +11147,14 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryClaimableRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAllocatedRewardsRequest": [],
+    "QueryAllocatedRewardsResponse": [
       {
         "name": "rewards",
         "type": "DecCoin[]",
@@ -11550,7 +11803,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketParams": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       },
       {
@@ -11623,7 +11876,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "IncomingDisableSpotMarketNames": [
+    "IncomingSpotMarketsToDisable": [
       {
         "name": "ids",
         "type": "string[]"
@@ -11714,7 +11967,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       },
       {
-        "name": "market_name_sequence",
+        "name": "market_id_sequence",
         "type": "int64"
       },
       {
@@ -11775,7 +12028,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetMarketRequest": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       }
     ],
@@ -11807,7 +12060,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetTradingFeesRequest": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -11828,7 +12081,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -11942,7 +12195,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -11983,7 +12236,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MsgCreateMarketResponse": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       }
     ],
@@ -12687,6 +12940,73 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdateParamsResponse": [],
+    "ValidatorSignature": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validator_index",
+        "type": "int32"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "signed_timestamp",
+        "type": "int64"
+      }
+    ],
+    "VotesForOracle": [
+      {
+        "name": "oracle_index",
+        "type": "int32"
+      },
+      {
+        "name": "votes_for_data",
+        "type": "VotesForData[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "VotesForData": [
+      {
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "name": "votes_for_timestamps",
+        "type": "VotesForTimestamp[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "VotesForTimestamp": [
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "validator_indexes",
+        "type": "int32[]"
+      }
+    ],
+    "MsgCreateResult": [
+      {
+        "name": "proposer",
+        "type": "string"
+      },
+      {
+        "name": "validator_signatures",
+        "type": "ValidatorSignature[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "votes_for_oracles",
+        "type": "VotesForOracle[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgCreateResultResponse": [],
     "CreateOracleProposal": [
       {
         "name": "title",
@@ -12748,6 +13068,25 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryResultsResponse": [
       {
         "name": "results",
+        "type": "Result[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryResultsLatestRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryResultsLatestResponse": [
+      {
+        "name": "latest_results",
         "type": "Result[]",
         "packageName": "/Switcheo.carbon.oracle"
       },
@@ -13539,10 +13878,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "share_token_symbol",
-        "type": "string"
-      },
-      {
         "name": "supply_cap",
         "type": "string"
       },
@@ -14062,6 +14397,13 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.pricing"
       }
     ],
+    "TokenPriceRemoveEvent": [
+      {
+        "name": "price",
+        "type": "TokenPrice",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
     "SetImpactBandEvent": [
       {
         "name": "impact_band",
@@ -14389,7 +14731,23 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgUpdateSettlementPriceResponse": []
+    "MsgUpdateSettlementPriceResponse": [],
+    "MsgRemoveTokenPrice": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveTokenPriceResponse": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ]
   },
   "/Switcheo.carbon.profile": {
     "Profile": [
@@ -14442,10 +14800,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
-        "name": "username",
-        "type": "string"
       }
     ],
     "QueryAllProfileResponse": [
@@ -14892,6 +15246,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "index",
         "type": "string"
+      },
+      {
+        "name": "alliance",
+        "type": "string"
       }
     ],
     "RewardWeightRange": [
@@ -15315,6 +15673,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "reward_change_interval",
         "type": "Duration",
         "packageName": "/google.protobuf"
+      },
+      {
+        "name": "reward_weight_range",
+        "type": "RewardWeightRange",
+        "packageName": "/alliance.alliance"
       }
     ],
     "MsgDeleteAllianceProposal": [
@@ -15342,6 +15705,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "denom",
         "type": "string"
       }
     ],
@@ -15383,12 +15750,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "alliance",
         "type": "AllianceAsset",
         "packageName": "/alliance.alliance"
-      }
-    ],
-    "QueryIBCAllianceRequest": [
-      {
-        "name": "hash",
-        "type": "string"
       }
     ],
     "QueryAllianceValidatorRequest": [
@@ -15480,25 +15841,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryIBCAllianceDelegationRequest": [
-      {
-        "name": "delegator_addr",
-        "type": "string"
-      },
-      {
-        "name": "validator_addr",
-        "type": "string"
-      },
-      {
-        "name": "hash",
-        "type": "string"
-      },
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
     "QueryAllianceDelegationResponse": [
       {
         "name": "delegation",
@@ -15517,25 +15859,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryIBCAllianceDelegationRewardsRequest": [
-      {
-        "name": "delegator_addr",
-        "type": "string"
-      },
-      {
-        "name": "validator_addr",
-        "type": "string"
-      },
-      {
-        "name": "hash",
         "type": "string"
       },
       {
@@ -15582,6 +15905,24 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceUnbondingsByDelegatorRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceUnbondingsByDelegatorResponse": [
+      {
+        "name": "unbondings",
+        "type": "UnbondingDelegation[]",
+        "packageName": "/alliance.alliance"
       }
     ],
     "QueryAllianceUnbondingsByDenomAndDelegatorRequest": [
@@ -15658,6 +15999,29 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryAllianceRedelegationsResponse": [
+      {
+        "name": "redelegations",
+        "type": "RedelegationEntry[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceRedelegationsByDelegatorRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceRedelegationsByDelegatorResponse": [
       {
         "name": "redelegations",
         "type": "RedelegationEntry[]",
@@ -15806,6 +16170,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "reward_change_interval",
         "type": "Duration",
         "packageName": "/google.protobuf"
+      },
+      {
+        "name": "reward_weight_range",
+        "type": "RewardWeightRange",
+        "packageName": "/alliance.alliance"
       }
     ],
     "MsgUpdateAllianceResponse": [],
@@ -15927,6 +16296,18 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "override_store_keys",
         "type": "StoreKeyConfig[]",
         "packageName": "/cosmos.app.runtime.v1alpha1"
+      },
+      {
+        "name": "order_migrations",
+        "type": "string[]"
+      },
+      {
+        "name": "precommiters",
+        "type": "string[]"
+      },
+      {
+        "name": "prepare_check_staters",
+        "type": "string[]"
       }
     ],
     "StoreKeyConfig": [
@@ -16353,12 +16734,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.authz.v1beta1"
       }
     ],
-    "MsgExecResponse": [
-      {
-        "name": "results",
-        "type": "uint8[][]"
-      }
-    ],
+    "MsgGrantResponse": [],
     "MsgExec": [
       {
         "name": "grantee",
@@ -16370,7 +16746,12 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/google.protobuf"
       }
     ],
-    "MsgGrantResponse": [],
+    "MsgExecResponse": [
+      {
+        "name": "results",
+        "type": "uint8[][]"
+      }
+    ],
     "MsgRevoke": [
       {
         "name": "granter",
@@ -16483,10 +16864,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "default_value",
-        "type": "string"
-      },
-      {
-        "name": "no_opt_default_value",
         "type": "string"
       },
       {
@@ -16708,6 +17085,10 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "resolve_denom",
+        "type": "bool"
       }
     ],
     "QueryAllBalancesResponse": [
@@ -16834,6 +17215,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.bank.v1beta1"
       }
     ],
+    "QueryDenomMetadataByQueryStringRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryDenomMetadataByQueryStringResponse": [
+      {
+        "name": "metadata",
+        "type": "Metadata",
+        "packageName": "/cosmos.bank.v1beta1"
+      }
+    ],
     "QueryDenomOwnersRequest": [
       {
         "name": "denom",
@@ -16857,6 +17251,29 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryDenomOwnersResponse": [
+      {
+        "name": "denom_owners",
+        "type": "DenomOwner[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDenomOwnersByQueryRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDenomOwnersByQueryResponse": [
       {
         "name": "denom_owners",
         "type": "DenomOwner[]",
@@ -17025,29 +17442,87 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
-  "/tendermint.version": {
-    "App": [
-      {
-        "name": "protocol",
-        "type": "uint64"
-      },
-      {
-        "name": "software",
-        "type": "string"
-      }
-    ],
-    "Consensus": [
+  "/tendermint.types": {
+    "ConsensusParams": [
       {
         "name": "block",
-        "type": "uint64"
+        "type": "BlockParams",
+        "packageName": "/tendermint.types"
       },
+      {
+        "name": "evidence",
+        "type": "EvidenceParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "validator",
+        "type": "ValidatorParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "version",
+        "type": "VersionParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "abci",
+        "type": "ABCIParams",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "BlockParams": [
+      {
+        "name": "max_bytes",
+        "type": "int64"
+      },
+      {
+        "name": "max_gas",
+        "type": "int64"
+      }
+    ],
+    "EvidenceParams": [
+      {
+        "name": "max_age_num_blocks",
+        "type": "int64"
+      },
+      {
+        "name": "max_age_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "max_bytes",
+        "type": "int64"
+      }
+    ],
+    "ValidatorParams": [
+      {
+        "name": "pub_key_types",
+        "type": "string[]"
+      }
+    ],
+    "VersionParams": [
       {
         "name": "app",
         "type": "uint64"
       }
-    ]
-  },
-  "/tendermint.types": {
+    ],
+    "HashedParams": [
+      {
+        "name": "block_max_bytes",
+        "type": "int64"
+      },
+      {
+        "name": "block_max_gas",
+        "type": "int64"
+      }
+    ],
+    "ABCIParams": [
+      {
+        "name": "vote_extensions_enable_height",
+        "type": "int64"
+      }
+    ],
     "ValidatorSet": [
       {
         "name": "validators",
@@ -17230,6 +17705,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "signature",
         "type": "uint8[]"
+      },
+      {
+        "name": "extension",
+        "type": "uint8[]"
+      },
+      {
+        "name": "extension_signature",
+        "type": "uint8[]"
       }
     ],
     "Commit": [
@@ -17268,6 +17751,53 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "signature",
+        "type": "uint8[]"
+      }
+    ],
+    "ExtendedCommit": [
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "round",
+        "type": "int32"
+      },
+      {
+        "name": "block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "extended_signatures",
+        "type": "ExtendedCommitSig[]",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "ExtendedCommitSig": [
+      {
+        "name": "block_id_flag",
+        "type": "",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "validator_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "extension",
+        "type": "uint8[]"
+      },
+      {
+        "name": "extension_signature",
         "type": "uint8[]"
       }
     ],
@@ -17360,75 +17890,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "proof",
         "type": "Proof",
         "packageName": "/tendermint.crypto"
-      }
-    ],
-    "ConsensusParams": [
-      {
-        "name": "block",
-        "type": "BlockParams",
-        "packageName": "/tendermint.types"
-      },
-      {
-        "name": "evidence",
-        "type": "EvidenceParams",
-        "packageName": "/tendermint.types"
-      },
-      {
-        "name": "validator",
-        "type": "ValidatorParams",
-        "packageName": "/tendermint.types"
-      },
-      {
-        "name": "version",
-        "type": "VersionParams",
-        "packageName": "/tendermint.types"
-      }
-    ],
-    "BlockParams": [
-      {
-        "name": "max_bytes",
-        "type": "int64"
-      },
-      {
-        "name": "max_gas",
-        "type": "int64"
-      }
-    ],
-    "EvidenceParams": [
-      {
-        "name": "max_age_num_blocks",
-        "type": "int64"
-      },
-      {
-        "name": "max_age_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      },
-      {
-        "name": "max_bytes",
-        "type": "int64"
-      }
-    ],
-    "ValidatorParams": [
-      {
-        "name": "pub_key_types",
-        "type": "string[]"
-      }
-    ],
-    "VersionParams": [
-      {
-        "name": "app",
-        "type": "uint64"
-      }
-    ],
-    "HashedParams": [
-      {
-        "name": "block_max_bytes",
-        "type": "int64"
-      },
-      {
-        "name": "block_max_gas",
-        "type": "int64"
       }
     ],
     "Evidence": [
@@ -17549,23 +18010,8 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/tendermint.abci"
       },
       {
-        "name": "begin_block",
-        "type": "RequestBeginBlock",
-        "packageName": "/tendermint.abci"
-      },
-      {
         "name": "check_tx",
         "type": "RequestCheckTx",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "deliver_tx",
-        "type": "RequestDeliverTx",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "end_block",
-        "type": "RequestEndBlock",
         "packageName": "/tendermint.abci"
       },
       {
@@ -17601,6 +18047,21 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "process_proposal",
         "type": "RequestProcessProposal",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "extend_vote",
+        "type": "RequestExtendVote",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "verify_vote_extension",
+        "type": "RequestVerifyVoteExtension",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "finalize_block",
+        "type": "RequestFinalizeBlock",
         "packageName": "/tendermint.abci"
       }
     ],
@@ -17675,27 +18136,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       }
     ],
-    "RequestBeginBlock": [
-      {
-        "name": "hash",
-        "type": "uint8[]"
-      },
-      {
-        "name": "header",
-        "type": "Header",
-        "packageName": "/tendermint.types"
-      },
-      {
-        "name": "last_commit_info",
-        "type": "CommitInfo",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "byzantine_validators",
-        "type": "Misbehavior[]",
-        "packageName": "/tendermint.abci"
-      }
-    ],
     "RequestCheckTx": [
       {
         "name": "tx",
@@ -17705,18 +18145,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "type",
         "type": "",
         "packageName": "/tendermint.abci"
-      }
-    ],
-    "RequestDeliverTx": [
-      {
-        "name": "tx",
-        "type": "uint8[]"
-      }
-    ],
-    "RequestEndBlock": [
-      {
-        "name": "height",
-        "type": "int64"
       }
     ],
     "RequestCommit": [],
@@ -17832,6 +18260,96 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint8[]"
       }
     ],
+    "RequestExtendVote": [
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "txs",
+        "type": "uint8[][]"
+      },
+      {
+        "name": "proposed_last_commit",
+        "type": "CommitInfo",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "misbehavior",
+        "type": "Misbehavior[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "next_validators_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proposer_address",
+        "type": "uint8[]"
+      }
+    ],
+    "RequestVerifyVoteExtension": [
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validator_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "vote_extension",
+        "type": "uint8[]"
+      }
+    ],
+    "RequestFinalizeBlock": [
+      {
+        "name": "txs",
+        "type": "uint8[][]"
+      },
+      {
+        "name": "decided_last_commit",
+        "type": "CommitInfo",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "misbehavior",
+        "type": "Misbehavior[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "next_validators_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proposer_address",
+        "type": "uint8[]"
+      }
+    ],
     "Response": [
       {
         "name": "exception",
@@ -17864,23 +18382,8 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/tendermint.abci"
       },
       {
-        "name": "begin_block",
-        "type": "ResponseBeginBlock",
-        "packageName": "/tendermint.abci"
-      },
-      {
         "name": "check_tx",
         "type": "ResponseCheckTx",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "deliver_tx",
-        "type": "ResponseDeliverTx",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "end_block",
-        "type": "ResponseEndBlock",
         "packageName": "/tendermint.abci"
       },
       {
@@ -17916,6 +18419,21 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "process_proposal",
         "type": "ResponseProcessProposal",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "extend_vote",
+        "type": "ResponseExtendVote",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "verify_vote_extension",
+        "type": "ResponseVerifyVoteExtension",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "finalize_block",
+        "type": "ResponseFinalizeBlock",
         "packageName": "/tendermint.abci"
       }
     ],
@@ -18009,13 +18527,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "ResponseBeginBlock": [
-      {
-        "name": "events",
-        "type": "Event[]",
-        "packageName": "/tendermint.abci"
-      }
-    ],
     "ResponseCheckTx": [
       {
         "name": "code",
@@ -18049,77 +18560,9 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "codespace",
         "type": "string"
-      },
-      {
-        "name": "sender",
-        "type": "string"
-      },
-      {
-        "name": "priority",
-        "type": "int64"
-      },
-      {
-        "name": "mempool_error",
-        "type": "string"
-      }
-    ],
-    "ResponseDeliverTx": [
-      {
-        "name": "code",
-        "type": "uint32"
-      },
-      {
-        "name": "data",
-        "type": "uint8[]"
-      },
-      {
-        "name": "log",
-        "type": "string"
-      },
-      {
-        "name": "info",
-        "type": "string"
-      },
-      {
-        "name": "gas_wanted",
-        "type": "int64"
-      },
-      {
-        "name": "gas_used",
-        "type": "int64"
-      },
-      {
-        "name": "events",
-        "type": "Event[]",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "codespace",
-        "type": "string"
-      }
-    ],
-    "ResponseEndBlock": [
-      {
-        "name": "validator_updates",
-        "type": "ValidatorUpdate[]",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "consensus_param_updates",
-        "type": "ConsensusParams",
-        "packageName": "/tendermint.types"
-      },
-      {
-        "name": "events",
-        "type": "Event[]",
-        "packageName": "/tendermint.abci"
       }
     ],
     "ResponseCommit": [
-      {
-        "name": "data",
-        "type": "uint8[]"
-      },
       {
         "name": "retain_height",
         "type": "int64"
@@ -18173,6 +18616,45 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/tendermint.abci.ResponseProcessProposal"
       }
     ],
+    "ResponseExtendVote": [
+      {
+        "name": "vote_extension",
+        "type": "uint8[]"
+      }
+    ],
+    "ResponseVerifyVoteExtension": [
+      {
+        "name": "status",
+        "type": "",
+        "packageName": "/tendermint.abci.ResponseVerifyVoteExtension"
+      }
+    ],
+    "ResponseFinalizeBlock": [
+      {
+        "name": "events",
+        "type": "Event[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "tx_results",
+        "type": "ExecTxResult[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "validator_updates",
+        "type": "ValidatorUpdate[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "consensus_param_updates",
+        "type": "ConsensusParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "app_hash",
+        "type": "uint8[]"
+      }
+    ],
     "CommitInfo": [
       {
         "name": "round",
@@ -18220,6 +18702,41 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       }
     ],
+    "ExecTxResult": [
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "log",
+        "type": "string"
+      },
+      {
+        "name": "info",
+        "type": "string"
+      },
+      {
+        "name": "gas_wanted",
+        "type": "int64"
+      },
+      {
+        "name": "gas_used",
+        "type": "int64"
+      },
+      {
+        "name": "events",
+        "type": "Event[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "codespace",
+        "type": "string"
+      }
+    ],
     "TxResult": [
       {
         "name": "height",
@@ -18235,7 +18752,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "result",
-        "type": "ResponseDeliverTx",
+        "type": "ExecTxResult",
         "packageName": "/tendermint.abci"
       }
     ],
@@ -18267,8 +18784,9 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/tendermint.abci"
       },
       {
-        "name": "signed_last_block",
-        "type": "bool"
+        "name": "block_id_flag",
+        "type": "",
+        "packageName": "/tendermint.types"
       }
     ],
     "ExtendedVoteInfo": [
@@ -18278,12 +18796,17 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/tendermint.abci"
       },
       {
-        "name": "signed_last_block",
-        "type": "bool"
-      },
-      {
         "name": "vote_extension",
         "type": "uint8[]"
+      },
+      {
+        "name": "extension_signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "block_id_flag",
+        "type": "",
+        "packageName": "/tendermint.types"
       }
     ],
     "Misbehavior": [
@@ -18330,6 +18853,28 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "metadata",
         "type": "uint8[]"
+      }
+    ]
+  },
+  "/tendermint.version": {
+    "App": [
+      {
+        "name": "protocol",
+        "type": "uint64"
+      },
+      {
+        "name": "software",
+        "type": "string"
+      }
+    ],
+    "Consensus": [
+      {
+        "name": "block",
+        "type": "uint64"
+      },
+      {
+        "name": "app",
+        "type": "uint64"
       }
     ]
   },
@@ -18517,24 +19062,32 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "TxResponse[]",
         "packageName": "/cosmos.base.abci.v1beta1"
       }
-    ]
-  },
-  "/cosmos.base.kv.v1beta1": {
-    "Pairs": [
-      {
-        "name": "pairs",
-        "type": "Pair[]",
-        "packageName": "/cosmos.base.kv.v1beta1"
-      }
     ],
-    "Pair": [
+    "SearchBlocksResult": [
       {
-        "name": "key",
-        "type": "uint8[]"
+        "name": "total_count",
+        "type": "int64"
       },
       {
-        "name": "value",
-        "type": "uint8[]"
+        "name": "count",
+        "type": "int64"
+      },
+      {
+        "name": "page_number",
+        "type": "int64"
+      },
+      {
+        "name": "page_total",
+        "type": "int64"
+      },
+      {
+        "name": "limit",
+        "type": "int64"
+      },
+      {
+        "name": "blocks",
+        "type": "Block[]",
+        "packageName": "/tendermint.types"
       }
     ]
   },
@@ -18544,6 +19097,41 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "minimum_gas_price",
         "type": "string"
+      },
+      {
+        "name": "pruning_keep_recent",
+        "type": "string"
+      },
+      {
+        "name": "pruning_interval",
+        "type": "string"
+      },
+      {
+        "name": "halt_height",
+        "type": "uint64"
+      }
+    ],
+    "StatusRequest": [],
+    "StatusResponse": [
+      {
+        "name": "earliest_store_height",
+        "type": "uint64"
+      },
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      },
+      {
+        "name": "app_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validator_hash",
+        "type": "uint8[]"
       }
     ]
   },
@@ -18772,213 +19360,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "full_query_path",
         "type": "string"
-      }
-    ]
-  },
-  "/cosmos.base.snapshots.v1beta1": {
-    "Snapshot": [
-      {
-        "name": "height",
-        "type": "uint64"
-      },
-      {
-        "name": "format",
-        "type": "uint32"
-      },
-      {
-        "name": "chunks",
-        "type": "uint32"
-      },
-      {
-        "name": "hash",
-        "type": "uint8[]"
-      },
-      {
-        "name": "metadata",
-        "type": "Metadata",
-        "packageName": "/cosmos.base.snapshots.v1beta1"
-      }
-    ],
-    "Metadata": [
-      {
-        "name": "chunk_hashes",
-        "type": "uint8[][]"
-      }
-    ],
-    "SnapshotItem": [
-      {
-        "name": "store",
-        "type": "SnapshotStoreItem",
-        "packageName": "/cosmos.base.snapshots.v1beta1"
-      },
-      {
-        "name": "iavl",
-        "type": "SnapshotIAVLItem",
-        "packageName": "/cosmos.base.snapshots.v1beta1"
-      },
-      {
-        "name": "extension",
-        "type": "SnapshotExtensionMeta",
-        "packageName": "/cosmos.base.snapshots.v1beta1"
-      },
-      {
-        "name": "extension_payload",
-        "type": "SnapshotExtensionPayload",
-        "packageName": "/cosmos.base.snapshots.v1beta1"
-      },
-      {
-        "name": "kv",
-        "type": "SnapshotKVItem",
-        "packageName": "/cosmos.base.snapshots.v1beta1"
-      },
-      {
-        "name": "schema",
-        "type": "SnapshotSchema",
-        "packageName": "/cosmos.base.snapshots.v1beta1"
-      }
-    ],
-    "SnapshotStoreItem": [
-      {
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "SnapshotIAVLItem": [
-      {
-        "name": "key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "value",
-        "type": "uint8[]"
-      },
-      {
-        "name": "version",
-        "type": "int64"
-      },
-      {
-        "name": "height",
-        "type": "int32"
-      }
-    ],
-    "SnapshotExtensionMeta": [
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "format",
-        "type": "uint32"
-      }
-    ],
-    "SnapshotExtensionPayload": [
-      {
-        "name": "payload",
-        "type": "uint8[]"
-      }
-    ],
-    "SnapshotKVItem": [
-      {
-        "name": "key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "value",
-        "type": "uint8[]"
-      }
-    ],
-    "SnapshotSchema": [
-      {
-        "name": "keys",
-        "type": "uint8[][]"
-      }
-    ]
-  },
-  "/cosmos.base.store.v1beta1": {
-    "CommitInfo": [
-      {
-        "name": "version",
-        "type": "int64"
-      },
-      {
-        "name": "store_infos",
-        "type": "StoreInfo[]",
-        "packageName": "/cosmos.base.store.v1beta1"
-      },
-      {
-        "name": "timestamp",
-        "type": "string"
-      }
-    ],
-    "StoreInfo": [
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "commit_id",
-        "type": "CommitID",
-        "packageName": "/cosmos.base.store.v1beta1"
-      }
-    ],
-    "CommitID": [
-      {
-        "name": "version",
-        "type": "int64"
-      },
-      {
-        "name": "hash",
-        "type": "uint8[]"
-      }
-    ],
-    "StoreKVPair": [
-      {
-        "name": "store_key",
-        "type": "string"
-      },
-      {
-        "name": "delete",
-        "type": "bool"
-      },
-      {
-        "name": "key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "value",
-        "type": "uint8[]"
-      }
-    ],
-    "BlockMetadata": [
-      {
-        "name": "request_begin_block",
-        "type": "RequestBeginBlock",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "response_begin_block",
-        "type": "ResponseBeginBlock",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "deliver_txs",
-        "type": "DeliverTx[]",
-        "packageName": "/cosmos.base.store.v1beta1.BlockMetadata"
-      },
-      {
-        "name": "request_end_block",
-        "type": "RequestEndBlock",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "response_end_block",
-        "type": "ResponseEndBlock",
-        "packageName": "/tendermint.abci"
-      },
-      {
-        "name": "response_commit",
-        "type": "ResponseCommit",
-        "packageName": "/tendermint.abci"
       }
     ]
   },
@@ -19399,58 +19780,138 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
-  "/cosmos.capability.module.v1": {
+  "/cosmos.circuit.module.v1": {
     "Module": [
       {
-        "name": "seal_keeper",
-        "type": "bool"
+        "name": "authority",
+        "type": "string"
       }
     ]
   },
-  "/cosmos.capability.v1beta1": {
-    "Capability": [
+  "/cosmos.circuit.v1": {
+    "Permissions": [
       {
-        "name": "index",
-        "type": "uint64"
+        "name": "level",
+        "type": "",
+        "packageName": "/cosmos.circuit.v1.Permissions"
+      },
+      {
+        "name": "limit_type_urls",
+        "type": "string[]"
       }
     ],
-    "Owner": [
+    "GenesisAccountPermissions": [
       {
-        "name": "module",
+        "name": "address",
         "type": "string"
       },
       {
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "CapabilityOwners": [
-      {
-        "name": "owners",
-        "type": "Owner[]",
-        "packageName": "/cosmos.capability.v1beta1"
-      }
-    ],
-    "GenesisOwners": [
-      {
-        "name": "index",
-        "type": "uint64"
-      },
-      {
-        "name": "index_owners",
-        "type": "CapabilityOwners",
-        "packageName": "/cosmos.capability.v1beta1"
+        "name": "permissions",
+        "type": "Permissions",
+        "packageName": "/cosmos.circuit.v1"
       }
     ],
     "GenesisState": [
       {
-        "name": "index",
-        "type": "uint64"
+        "name": "account_permissions",
+        "type": "GenesisAccountPermissions[]",
+        "packageName": "/cosmos.circuit.v1"
       },
       {
-        "name": "owners",
-        "type": "GenesisOwners[]",
-        "packageName": "/cosmos.capability.v1beta1"
+        "name": "disabled_type_urls",
+        "type": "string[]"
+      }
+    ],
+    "QueryAccountRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "AccountResponse": [
+      {
+        "name": "permission",
+        "type": "Permissions",
+        "packageName": "/cosmos.circuit.v1"
+      }
+    ],
+    "QueryAccountsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "AccountsResponse": [
+      {
+        "name": "accounts",
+        "type": "GenesisAccountPermissions[]",
+        "packageName": "/cosmos.circuit.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDisabledListRequest": [],
+    "DisabledListResponse": [
+      {
+        "name": "disabled_list",
+        "type": "string[]"
+      }
+    ],
+    "MsgAuthorizeCircuitBreaker": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "permissions",
+        "type": "Permissions",
+        "packageName": "/cosmos.circuit.v1"
+      }
+    ],
+    "MsgAuthorizeCircuitBreakerResponse": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "MsgTripCircuitBreaker": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "msg_type_urls",
+        "type": "string[]"
+      }
+    ],
+    "MsgTripCircuitBreakerResponse": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "MsgResetCircuitBreaker": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "msg_type_urls",
+        "type": "string[]"
+      }
+    ],
+    "MsgResetCircuitBreakerResponse": [
+      {
+        "name": "success",
+        "type": "bool"
       }
     ]
   },
@@ -19489,6 +19950,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "validator",
         "type": "ValidatorParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "abci",
+        "type": "ABCIParams",
         "packageName": "/tendermint.types"
       }
     ],
@@ -20223,7 +20689,23 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
-    "MsgCommunityPoolSpendResponse": []
+    "MsgCommunityPoolSpendResponse": [],
+    "MsgDepositValidatorRewardsPool": [
+      {
+        "name": "depositor",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgDepositValidatorRewardsPoolResponse": []
   },
   "/cosmos.evidence.module.v1": {
     "Module": []
@@ -20471,7 +20953,14 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgRevokeAllowanceResponse": []
+    "MsgRevokeAllowanceResponse": [],
+    "MsgPruneAllowances": [
+      {
+        "name": "pruner",
+        "type": "string"
+      }
+    ],
+    "MsgPruneAllowancesResponse": []
   },
   "/cosmos.genutil.module.v1": {
     "Module": []
@@ -20579,6 +21068,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "proposer",
         "type": "string"
+      },
+      {
+        "name": "expedited",
+        "type": "bool"
+      },
+      {
+        "name": "failed_reason",
+        "type": "string"
       }
     ],
     "TallyResult": [
@@ -20684,6 +21181,28 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
+        "name": "proposal_cancel_ratio",
+        "type": "string"
+      },
+      {
+        "name": "proposal_cancel_dest",
+        "type": "string"
+      },
+      {
+        "name": "expedited_voting_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "expedited_threshold",
+        "type": "string"
+      },
+      {
+        "name": "expedited_min_deposit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
         "name": "burn_vote_quorum",
         "type": "bool"
       },
@@ -20694,6 +21213,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "burn_vote_veto",
         "type": "bool"
+      },
+      {
+        "name": "min_deposit_ratio",
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -20735,6 +21258,17 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "params",
         "type": "Params",
         "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "constitution",
+        "type": "string"
+      }
+    ],
+    "QueryConstitutionRequest": [],
+    "QueryConstitutionResponse": [
+      {
+        "name": "constitution",
+        "type": "string"
       }
     ],
     "QueryProposalRequest": [
@@ -20929,6 +21463,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "summary",
         "type": "string"
+      },
+      {
+        "name": "expedited",
+        "type": "bool"
       }
     ],
     "MsgSubmitProposalResponse": [
@@ -21016,7 +21554,31 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.gov.v1"
       }
     ],
-    "MsgUpdateParamsResponse": []
+    "MsgUpdateParamsResponse": [],
+    "MsgCancelProposal": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "proposer",
+        "type": "string"
+      }
+    ],
+    "MsgCancelProposalResponse": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "canceled_time",
+        "type": "string"
+      },
+      {
+        "name": "canceled_height",
+        "type": "uint64"
+      }
+    ]
   },
   "/cosmos.gov.v1beta1": {
     "WeightedVoteOption": [
@@ -23138,6 +23700,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "authority",
         "type": "string"
+      },
+      {
+        "name": "bech32_prefix_validator",
+        "type": "string"
+      },
+      {
+        "name": "bech32_prefix_consensus",
+        "type": "string"
       }
     ]
   },
@@ -23931,6 +24501,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "completion_time",
         "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
       }
     ],
     "MsgCancelUnbondingDelegation": [
@@ -23965,6 +24540,223 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdateParamsResponse": []
+  },
+  "/cosmos.store.internal.kv.v1beta1": {
+    "Pairs": [
+      {
+        "name": "pairs",
+        "type": "Pair[]",
+        "packageName": "/cosmos.store.internal.kv.v1beta1"
+      }
+    ],
+    "Pair": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.store.snapshots.v1": {
+    "Snapshot": [
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "format",
+        "type": "uint32"
+      },
+      {
+        "name": "chunks",
+        "type": "uint32"
+      },
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "metadata",
+        "type": "Metadata",
+        "packageName": "/cosmos.store.snapshots.v1"
+      }
+    ],
+    "Metadata": [
+      {
+        "name": "chunk_hashes",
+        "type": "uint8[][]"
+      }
+    ],
+    "SnapshotItem": [
+      {
+        "name": "store",
+        "type": "SnapshotStoreItem",
+        "packageName": "/cosmos.store.snapshots.v1"
+      },
+      {
+        "name": "iavl",
+        "type": "SnapshotIAVLItem",
+        "packageName": "/cosmos.store.snapshots.v1"
+      },
+      {
+        "name": "extension",
+        "type": "SnapshotExtensionMeta",
+        "packageName": "/cosmos.store.snapshots.v1"
+      },
+      {
+        "name": "extension_payload",
+        "type": "SnapshotExtensionPayload",
+        "packageName": "/cosmos.store.snapshots.v1"
+      }
+    ],
+    "SnapshotStoreItem": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "SnapshotIAVLItem": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      },
+      {
+        "name": "version",
+        "type": "int64"
+      },
+      {
+        "name": "height",
+        "type": "int32"
+      }
+    ],
+    "SnapshotExtensionMeta": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "format",
+        "type": "uint32"
+      }
+    ],
+    "SnapshotExtensionPayload": [
+      {
+        "name": "payload",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.store.v1beta1": {
+    "StoreKVPair": [
+      {
+        "name": "store_key",
+        "type": "string"
+      },
+      {
+        "name": "delete",
+        "type": "bool"
+      },
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      }
+    ],
+    "BlockMetadata": [
+      {
+        "name": "response_commit",
+        "type": "ResponseCommit",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "request_finalize_block",
+        "type": "RequestFinalizeBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "response_finalize_block",
+        "type": "ResponseFinalizeBlock",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "CommitInfo": [
+      {
+        "name": "version",
+        "type": "int64"
+      },
+      {
+        "name": "store_infos",
+        "type": "StoreInfo[]",
+        "packageName": "/cosmos.store.v1beta1"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      }
+    ],
+    "StoreInfo": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "commit_id",
+        "type": "CommitID",
+        "packageName": "/cosmos.store.v1beta1"
+      }
+    ],
+    "CommitID": [
+      {
+        "name": "version",
+        "type": "int64"
+      },
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.store.streaming.abci": {
+    "ListenFinalizeBlockRequest": [
+      {
+        "name": "req",
+        "type": "RequestFinalizeBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "res",
+        "type": "ResponseFinalizeBlock",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "ListenFinalizeBlockResponse": [],
+    "ListenCommitRequest": [
+      {
+        "name": "block_height",
+        "type": "int64"
+      },
+      {
+        "name": "res",
+        "type": "ResponseCommit",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "change_set",
+        "type": "StoreKVPair[]",
+        "packageName": "/cosmos.store.v1beta1"
+      }
+    ],
+    "ListenCommitResponse": []
   },
   "/cosmos.tx.config.v1": {
     "Config": [
@@ -24222,6 +25014,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "limit",
         "type": "uint64"
+      },
+      {
+        "name": "query",
+        "type": "string"
       }
     ],
     "GetTxsEventResponse": [
@@ -25783,6 +26579,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "incentivized_packets",
         "type": "IdentifiedPacketFees[]",
         "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryIncentivizedPacketRequest": [
@@ -25827,6 +26628,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "incentivized_packets",
         "type": "IdentifiedPacketFees[]",
         "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryTotalRecvFeesRequest": [
@@ -25919,6 +26725,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "fee_enabled_channels",
         "type": "FeeEnabledChannel[]",
         "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryFeeEnabledChannelRequest": [
@@ -26048,6 +26859,22 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/ibc.core.client.v1"
       }
     ],
+    "Height": [
+      {
+        "name": "revision_number",
+        "type": "uint64"
+      },
+      {
+        "name": "revision_height",
+        "type": "uint64"
+      }
+    ],
+    "Params": [
+      {
+        "name": "allowed_clients",
+        "type": "string[]"
+      }
+    ],
     "ClientUpdateProposal": [
       {
         "name": "title",
@@ -26084,22 +26911,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "upgraded_client_state",
         "type": "Any",
         "packageName": "/google.protobuf"
-      }
-    ],
-    "Height": [
-      {
-        "name": "revision_number",
-        "type": "uint64"
-      },
-      {
-        "name": "revision_height",
-        "type": "uint64"
-      }
-    ],
-    "Params": [
-      {
-        "name": "allowed_clients",
-        "type": "string[]"
       }
     ],
     "GenesisState": [
@@ -26387,7 +27198,51 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgSubmitMisbehaviourResponse": []
+    "MsgSubmitMisbehaviourResponse": [],
+    "MsgRecoverClient": [
+      {
+        "name": "subject_client_id",
+        "type": "string"
+      },
+      {
+        "name": "substitute_client_id",
+        "type": "string"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgRecoverClientResponse": [],
+    "MsgIBCSoftwareUpgrade": [
+      {
+        "name": "plan",
+        "type": "Plan",
+        "packageName": "/cosmos.upgrade.v1beta1"
+      },
+      {
+        "name": "upgraded_client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgIBCSoftwareUpgradeResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/ibc.core.channel.v1": {
     "Channel": [
@@ -26413,6 +27268,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "version",
         "type": "string"
+      },
+      {
+        "name": "upgrade_sequence",
+        "type": "uint64"
       }
     ],
     "IdentifiedChannel": [
@@ -26446,6 +27305,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "channel_id",
         "type": "string"
+      },
+      {
+        "name": "upgrade_sequence",
+        "type": "uint64"
       }
     ],
     "Counterparty": [
@@ -26535,6 +27398,24 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "Timeout": [
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "Params": [
+      {
+        "name": "upgrade_timeout",
+        "type": "Timeout",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
     "GenesisState": [
       {
         "name": "channels",
@@ -26574,6 +27455,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "next_channel_sequence",
         "type": "uint64"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.channel.v1"
       }
     ],
     "PacketSequence": [
@@ -26588,6 +27474,47 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "sequence",
         "type": "uint64"
+      }
+    ],
+    "Upgrade": [
+      {
+        "name": "fields",
+        "type": "UpgradeFields",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "timeout",
+        "type": "Timeout",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "next_sequence_send",
+        "type": "uint64"
+      }
+    ],
+    "UpgradeFields": [
+      {
+        "name": "ordering",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "connection_hops",
+        "type": "string[]"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      }
+    ],
+    "ErrorReceipt": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "message",
+        "type": "string"
       }
     ],
     "QueryChannelRequest": [
@@ -26962,6 +27889,91 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/ibc.core.client.v1"
       }
     ],
+    "QueryNextSequenceSendRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryNextSequenceSendResponse": [
+      {
+        "name": "next_sequence_send",
+        "type": "uint64"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryUpgradeErrorRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryUpgradeErrorResponse": [
+      {
+        "name": "error_receipt",
+        "type": "ErrorReceipt",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryUpgradeRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryUpgradeResponse": [
+      {
+        "name": "upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryChannelParamsRequest": [],
+    "QueryChannelParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
     "MsgChannelOpenInit": [
       {
         "name": "port_id",
@@ -27121,6 +28133,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "signer",
         "type": "string"
+      },
+      {
+        "name": "counterparty_upgrade_sequence",
+        "type": "uint64"
       }
     ],
     "MsgChannelCloseConfirmResponse": [],
@@ -27208,6 +28224,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "signer",
         "type": "string"
+      },
+      {
+        "name": "counterparty_upgrade_sequence",
+        "type": "uint64"
       }
     ],
     "MsgTimeoutOnCloseResponse": [
@@ -27246,6 +28266,306 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "result",
         "type": "",
         "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgChannelUpgradeInit": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "fields",
+        "type": "UpgradeFields",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeInitResponse": [
+      {
+        "name": "upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "upgrade_sequence",
+        "type": "uint64"
+      }
+    ],
+    "MsgChannelUpgradeTry": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "proposed_upgrade_connection_hops",
+        "type": "string[]"
+      },
+      {
+        "name": "counterparty_upgrade_fields",
+        "type": "UpgradeFields",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty_upgrade_sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_upgrade",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeTryResponse": [
+      {
+        "name": "upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "upgrade_sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgChannelUpgradeAck": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_upgrade",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeAckResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgChannelUpgradeConfirm": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_channel_state",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty_upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_upgrade",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeConfirmResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgChannelUpgradeOpen": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_channel_state",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty_upgrade_sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeOpenResponse": [],
+    "MsgChannelUpgradeTimeout": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_channel",
+        "type": "Channel",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeTimeoutResponse": [],
+    "MsgChannelUpgradeCancel": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "error_receipt",
+        "type": "ErrorReceipt",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_error_receipt",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeCancelResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "MsgPruneAcknowledgements": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "limit",
+        "type": "uint64"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgPruneAcknowledgementsResponse": [
+      {
+        "name": "total_pruned_sequences",
+        "type": "uint64"
+      },
+      {
+        "name": "total_remaining_sequences",
+        "type": "uint64"
       }
     ]
   },
@@ -27292,6 +28612,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "version",
         "type": "string"
+      },
+      {
+        "name": "ordering",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
       }
     ],
     "MsgRegisterInterchainAccountResponse": [
@@ -27328,7 +28653,19 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "sequence",
         "type": "uint64"
       }
-    ]
+    ],
+    "MsgUpdateParams": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/ibc.applications.interchain_accounts.v1": {
     "InterchainAccountPacketData": [
@@ -27409,7 +28746,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "Params",
         "packageName": "/ibc.applications.interchain_accounts.host.v1"
       }
-    ]
+    ],
+    "MsgUpdateParams": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.host.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/ibc.applications.interchain_accounts.genesis.v1": {
     "GenesisState": [
@@ -27516,6 +28865,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "allow_list",
+        "type": "string[]"
+      },
+      {
+        "name": "allowed_packet_data",
         "type": "string[]"
       }
     ],
@@ -27689,7 +29042,19 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "sequence",
         "type": "uint64"
       }
-    ]
+    ],
+    "MsgUpdateParams": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/ibc.applications.transfer.v2": {
     "FungibleTokenPacketData": [
@@ -28381,7 +29746,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgConnectionOpenConfirmResponse": []
+    "MsgConnectionOpenConfirmResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.connection.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/ibc.core.types.v1": {
     "GenesisState": [
@@ -28876,6 +30253,259 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "denominator",
         "type": "uint64"
+      }
+    ]
+  },
+  "/ibc.lightclients.wasm.v1": {
+    "GenesisState": [
+      {
+        "name": "contracts",
+        "type": "Contract[]",
+        "packageName": "/ibc.lightclients.wasm.v1"
+      }
+    ],
+    "Contract": [
+      {
+        "name": "code_bytes",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryChecksumsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryChecksumsResponse": [
+      {
+        "name": "checksums",
+        "type": "string[]"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryCodeRequest": [
+      {
+        "name": "checksum",
+        "type": "string"
+      }
+    ],
+    "QueryCodeResponse": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgStoreCode": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "wasm_byte_code",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgStoreCodeResponse": [
+      {
+        "name": "checksum",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgRemoveChecksum": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "checksum",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgRemoveChecksumResponse": [],
+    "MsgMigrateContract": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "checksum",
+        "type": "uint8[]"
+      },
+      {
+        "name": "msg",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgMigrateContractResponse": [],
+    "ClientState": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "checksum",
+        "type": "uint8[]"
+      },
+      {
+        "name": "latest_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "ConsensusState": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "ClientMessage": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "Checksums": [
+      {
+        "name": "checksums",
+        "type": "uint8[][]"
+      }
+    ]
+  },
+  "/tendermint.oracle": {
+    "Vote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "GossipVote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "public_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "sign_type",
+        "type": "string"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/tendermint.oracle"
+      },
+      {
+        "name": "signed_timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      }
+    ],
+    "CanonicalGossipVote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "public_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "sign_type",
+        "type": "string"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/tendermint.oracle"
+      }
+    ],
+    "Oracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "min_turnout_percentage",
+        "type": "string"
+      },
+      {
+        "name": "max_result_age",
+        "type": "string"
+      },
+      {
+        "name": "security_type",
+        "type": "string"
+      },
+      {
+        "name": "result_strategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "string"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "Result": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "GossipVotes": [
+      {
+        "name": "GossipVotes",
+        "type": "GossipVote[]",
+        "packageName": "/tendermint.oracle"
       }
     ]
   },

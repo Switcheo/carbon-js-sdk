@@ -10,11 +10,6 @@ export interface SpotAmm {
   poolId: Long;
   marketId: string;
   reservesHash: Uint8Array;
-  /**
-   * TODO: change to reserved after being used for migration
-   * reserved 4; // used to be orders, but deprecated
-   */
-  orders: string[];
   poolRoute: Uint8Array;
 }
 
@@ -22,24 +17,17 @@ export interface SpotAmm {
 export interface PerpsAmm {
   poolId: Long;
   quotingHash: Uint8Array;
-  /** TODO: depreceate uint64 var */
-  legacyLastQuotedAt: Long;
   markets: PerpsMarketAmm[];
   lastQuotedAt?: Date;
 }
 
-/** PerpsMarketAmm exists when it is active or when there's orders or open position */
+/** PerpsMarketAmm exists when it is active/close-only */
 export interface PerpsMarketAmm {
   marketId: string;
-  /**
-   * TODO: change to reserved after being used for migration
-   * reserved 2; // used to be orders, but deprecated
-   */
-  orders: string[];
   lastIndexPrice: string;
 }
 
-const baseSpotAmm: object = { poolId: Long.UZERO, marketId: "", orders: "" };
+const baseSpotAmm: object = { poolId: Long.UZERO, marketId: "" };
 
 export const SpotAmm = {
   encode(
@@ -55,9 +43,6 @@ export const SpotAmm = {
     if (message.reservesHash.length !== 0) {
       writer.uint32(26).bytes(message.reservesHash);
     }
-    for (const v of message.orders) {
-      writer.uint32(34).string(v!);
-    }
     if (message.poolRoute.length !== 0) {
       writer.uint32(42).bytes(message.poolRoute);
     }
@@ -68,7 +53,6 @@ export const SpotAmm = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseSpotAmm } as SpotAmm;
-    message.orders = [];
     message.reservesHash = new Uint8Array();
     message.poolRoute = new Uint8Array();
     while (reader.pos < end) {
@@ -82,9 +66,6 @@ export const SpotAmm = {
           break;
         case 3:
           message.reservesHash = reader.bytes();
-          break;
-        case 4:
-          message.orders.push(reader.string());
           break;
         case 5:
           message.poolRoute = reader.bytes();
@@ -111,7 +92,6 @@ export const SpotAmm = {
       object.reservesHash !== undefined && object.reservesHash !== null
         ? bytesFromBase64(object.reservesHash)
         : new Uint8Array();
-    message.orders = (object.orders ?? []).map((e: any) => String(e));
     message.poolRoute =
       object.poolRoute !== undefined && object.poolRoute !== null
         ? bytesFromBase64(object.poolRoute)
@@ -130,11 +110,6 @@ export const SpotAmm = {
           ? message.reservesHash
           : new Uint8Array()
       ));
-    if (message.orders) {
-      obj.orders = message.orders.map((e) => e);
-    } else {
-      obj.orders = [];
-    }
     message.poolRoute !== undefined &&
       (obj.poolRoute = base64FromBytes(
         message.poolRoute !== undefined ? message.poolRoute : new Uint8Array()
@@ -150,16 +125,12 @@ export const SpotAmm = {
         : Long.UZERO;
     message.marketId = object.marketId ?? "";
     message.reservesHash = object.reservesHash ?? new Uint8Array();
-    message.orders = (object.orders ?? []).map((e) => e);
     message.poolRoute = object.poolRoute ?? new Uint8Array();
     return message;
   },
 };
 
-const basePerpsAmm: object = {
-  poolId: Long.UZERO,
-  legacyLastQuotedAt: Long.UZERO,
-};
+const basePerpsAmm: object = { poolId: Long.UZERO };
 
 export const PerpsAmm = {
   encode(
@@ -171,9 +142,6 @@ export const PerpsAmm = {
     }
     if (message.quotingHash.length !== 0) {
       writer.uint32(18).bytes(message.quotingHash);
-    }
-    if (!message.legacyLastQuotedAt.isZero()) {
-      writer.uint32(24).uint64(message.legacyLastQuotedAt);
     }
     for (const v of message.markets) {
       PerpsMarketAmm.encode(v!, writer.uint32(34).fork()).ldelim();
@@ -202,9 +170,6 @@ export const PerpsAmm = {
         case 2:
           message.quotingHash = reader.bytes();
           break;
-        case 3:
-          message.legacyLastQuotedAt = reader.uint64() as Long;
-          break;
         case 4:
           message.markets.push(PerpsMarketAmm.decode(reader, reader.uint32()));
           break;
@@ -231,11 +196,6 @@ export const PerpsAmm = {
       object.quotingHash !== undefined && object.quotingHash !== null
         ? bytesFromBase64(object.quotingHash)
         : new Uint8Array();
-    message.legacyLastQuotedAt =
-      object.legacyLastQuotedAt !== undefined &&
-      object.legacyLastQuotedAt !== null
-        ? Long.fromString(object.legacyLastQuotedAt)
-        : Long.UZERO;
     message.markets = (object.markets ?? []).map((e: any) =>
       PerpsMarketAmm.fromJSON(e)
     );
@@ -256,10 +216,6 @@ export const PerpsAmm = {
           ? message.quotingHash
           : new Uint8Array()
       ));
-    message.legacyLastQuotedAt !== undefined &&
-      (obj.legacyLastQuotedAt = (
-        message.legacyLastQuotedAt || Long.UZERO
-      ).toString());
     if (message.markets) {
       obj.markets = message.markets.map((e) =>
         e ? PerpsMarketAmm.toJSON(e) : undefined
@@ -279,11 +235,6 @@ export const PerpsAmm = {
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.quotingHash = object.quotingHash ?? new Uint8Array();
-    message.legacyLastQuotedAt =
-      object.legacyLastQuotedAt !== undefined &&
-      object.legacyLastQuotedAt !== null
-        ? Long.fromValue(object.legacyLastQuotedAt)
-        : Long.UZERO;
     message.markets = (object.markets ?? []).map((e) =>
       PerpsMarketAmm.fromPartial(e)
     );
@@ -292,11 +243,7 @@ export const PerpsAmm = {
   },
 };
 
-const basePerpsMarketAmm: object = {
-  marketId: "",
-  orders: "",
-  lastIndexPrice: "",
-};
+const basePerpsMarketAmm: object = { marketId: "", lastIndexPrice: "" };
 
 export const PerpsMarketAmm = {
   encode(
@@ -305,9 +252,6 @@ export const PerpsMarketAmm = {
   ): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
-    }
-    for (const v of message.orders) {
-      writer.uint32(18).string(v!);
     }
     if (message.lastIndexPrice !== "") {
       writer.uint32(26).string(message.lastIndexPrice);
@@ -319,15 +263,11 @@ export const PerpsMarketAmm = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...basePerpsMarketAmm } as PerpsMarketAmm;
-    message.orders = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.marketId = reader.string();
-          break;
-        case 2:
-          message.orders.push(reader.string());
           break;
         case 3:
           message.lastIndexPrice = reader.string();
@@ -346,7 +286,6 @@ export const PerpsMarketAmm = {
       object.marketId !== undefined && object.marketId !== null
         ? String(object.marketId)
         : "";
-    message.orders = (object.orders ?? []).map((e: any) => String(e));
     message.lastIndexPrice =
       object.lastIndexPrice !== undefined && object.lastIndexPrice !== null
         ? String(object.lastIndexPrice)
@@ -357,11 +296,6 @@ export const PerpsMarketAmm = {
   toJSON(message: PerpsMarketAmm): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
-    if (message.orders) {
-      obj.orders = message.orders.map((e) => e);
-    } else {
-      obj.orders = [];
-    }
     message.lastIndexPrice !== undefined &&
       (obj.lastIndexPrice = message.lastIndexPrice);
     return obj;
@@ -370,7 +304,6 @@ export const PerpsMarketAmm = {
   fromPartial(object: DeepPartial<PerpsMarketAmm>): PerpsMarketAmm {
     const message = { ...basePerpsMarketAmm } as PerpsMarketAmm;
     message.marketId = object.marketId ?? "";
-    message.orders = (object.orders ?? []).map((e) => e);
     message.lastIndexPrice = object.lastIndexPrice ?? "";
     return message;
   },

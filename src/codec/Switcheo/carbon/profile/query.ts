@@ -20,7 +20,6 @@ export interface QueryGetProfileResponse {
 
 export interface QueryAllProfileRequest {
   pagination?: PageRequest;
-  username: string;
 }
 
 export interface QueryAllProfileResponse {
@@ -164,7 +163,7 @@ export const QueryGetProfileResponse = {
   },
 };
 
-const baseQueryAllProfileRequest: object = { username: "" };
+const baseQueryAllProfileRequest: object = {};
 
 export const QueryAllProfileRequest = {
   encode(
@@ -173,9 +172,6 @@ export const QueryAllProfileRequest = {
   ): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.username !== "") {
-      writer.uint32(18).string(message.username);
     }
     return writer;
   },
@@ -193,9 +189,6 @@ export const QueryAllProfileRequest = {
         case 1:
           message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
-        case 2:
-          message.username = reader.string();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -210,10 +203,6 @@ export const QueryAllProfileRequest = {
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
         : undefined;
-    message.username =
-      object.username !== undefined && object.username !== null
-        ? String(object.username)
-        : "";
     return message;
   },
 
@@ -223,7 +212,6 @@ export const QueryAllProfileRequest = {
       (obj.pagination = message.pagination
         ? PageRequest.toJSON(message.pagination)
         : undefined);
-    message.username !== undefined && (obj.username = message.username);
     return obj;
   },
 
@@ -235,7 +223,6 @@ export const QueryAllProfileRequest = {
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
         : undefined;
-    message.username = object.username ?? "";
     return message;
   },
 };

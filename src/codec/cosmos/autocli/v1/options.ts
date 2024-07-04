@@ -6,9 +6,9 @@ export const protobufPackage = "cosmos.autocli.v1";
 
 /** ModuleOptions describes the CLI options for a Cosmos SDK module. */
 export interface ModuleOptions {
-  /** tx describes the tx command for the module. */
+  /** tx describes the tx commands for the module. */
   tx?: ServiceCommandDescriptor;
-  /** query describes the tx command for the module. */
+  /** query describes the queries commands for the module. */
   query?: ServiceCommandDescriptor;
 }
 
@@ -111,8 +111,6 @@ export interface FlagOptions {
   usage: string;
   /** default_value is the default value as text. */
   defaultValue: string;
-  /** default value is the default value as text if the flag is used without any value. */
-  noOptDefaultValue: string;
   /** deprecated is the usage text to show if this flag is deprecated. */
   deprecated: string;
   /** shorthand_deprecated is the usage text to show if the shorthand of this flag is deprecated. */
@@ -747,7 +745,6 @@ const baseFlagOptions: object = {
   shorthand: "",
   usage: "",
   defaultValue: "",
-  noOptDefaultValue: "",
   deprecated: "",
   shorthandDeprecated: "",
   hidden: false,
@@ -769,9 +766,6 @@ export const FlagOptions = {
     }
     if (message.defaultValue !== "") {
       writer.uint32(34).string(message.defaultValue);
-    }
-    if (message.noOptDefaultValue !== "") {
-      writer.uint32(42).string(message.noOptDefaultValue);
     }
     if (message.deprecated !== "") {
       writer.uint32(50).string(message.deprecated);
@@ -803,9 +797,6 @@ export const FlagOptions = {
           break;
         case 4:
           message.defaultValue = reader.string();
-          break;
-        case 5:
-          message.noOptDefaultValue = reader.string();
           break;
         case 6:
           message.deprecated = reader.string();
@@ -842,11 +833,6 @@ export const FlagOptions = {
       object.defaultValue !== undefined && object.defaultValue !== null
         ? String(object.defaultValue)
         : "";
-    message.noOptDefaultValue =
-      object.noOptDefaultValue !== undefined &&
-      object.noOptDefaultValue !== null
-        ? String(object.noOptDefaultValue)
-        : "";
     message.deprecated =
       object.deprecated !== undefined && object.deprecated !== null
         ? String(object.deprecated)
@@ -870,8 +856,6 @@ export const FlagOptions = {
     message.usage !== undefined && (obj.usage = message.usage);
     message.defaultValue !== undefined &&
       (obj.defaultValue = message.defaultValue);
-    message.noOptDefaultValue !== undefined &&
-      (obj.noOptDefaultValue = message.noOptDefaultValue);
     message.deprecated !== undefined && (obj.deprecated = message.deprecated);
     message.shorthandDeprecated !== undefined &&
       (obj.shorthandDeprecated = message.shorthandDeprecated);
@@ -885,7 +869,6 @@ export const FlagOptions = {
     message.shorthand = object.shorthand ?? "";
     message.usage = object.usage ?? "";
     message.defaultValue = object.defaultValue ?? "";
-    message.noOptDefaultValue = object.noOptDefaultValue ?? "";
     message.deprecated = object.deprecated ?? "";
     message.shorthandDeprecated = object.shorthandDeprecated ?? "";
     message.hidden = object.hidden ?? false;
