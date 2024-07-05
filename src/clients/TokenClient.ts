@@ -4,8 +4,8 @@ import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/que
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
 import { QueryConnectionsResponse } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
 import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint';
-import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
-import { cibtIbcTokenRegex, cosmBridgeRegex, ibcTokenRegex, ibcWhitelist, swthChannels } from "@carbon-sdk/constant/ibc";
+import { CoinGeckoTokenNames, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
+import { cibtIbcTokenRegex, cosmBridgeRegex, ibcTokenRegex, ibcWhitelist } from "@carbon-sdk/constant/ibc";
 import { GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BRIDGE_IDS, BlockchainV2, BridgeMap, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
@@ -51,7 +51,6 @@ class TokenClient {
   public readonly bridges: BridgeMap = { polynetwork: [], ibc: [] };
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
-  public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
 
   public initialUsdValuesLoaded: boolean = false;
@@ -64,7 +63,7 @@ class TokenClient {
   }
 
   public async initialize(): Promise<void> {
-    this.setCommonAssetConfig();
+    this.setGeckoTokenNames();
 
     try {
       await Promise.all([
@@ -85,10 +84,6 @@ class TokenClient {
       ...this.additionalGeckoDenoms,
       ...map,
     };
-  }
-
-  public getCommonDenom(denom: string): string {
-    return this.commonAssetNames[denom] ?? denom;
   }
 
   public getDecimals(denom: string): number | undefined {
@@ -126,12 +121,12 @@ class TokenClient {
     return bridge?.chainName;
   }
 
+  /**
+   * use getTokenName directly instead
+   * @deprecated
+   */
   public getSymbol(denom: string): string {
-    if (TokenClient.isCdpToken(denom)) {
-      return this.symbols[denom] ?? denom;
-    }
-    const commonDenom = this.getCommonDenom(denom);
-    return this.symbols[commonDenom] ?? commonDenom.toUpperCase();
+    return this.symbols[denom] ?? denom;
   }
 
   public getUSDValue(denom: string): BigNumber | undefined {
@@ -183,7 +178,7 @@ class TokenClient {
       denom = denom.toLowerCase();
     }
 
-    const symbol = this.getSymbol(denom);
+    const symbol = this.symbols[denom] ?? denom;
     if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = symbol.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
@@ -538,8 +533,12 @@ class TokenClient {
     return this.bridges.ibc.map(bridge => bridge.chainName)
   }
 
+  public getIbcBridgeFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): IbcBridge | undefined => {
+    return this.bridges.ibc.find(bridge => (bridge.chainName === blockchain || bridge.chainName.toLowerCase() === blockchain));
+  };
+
   public getIbcChainFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): string | undefined => {
-    const ibcBridge = this.bridges.ibc.find(bridge => (bridge.chainName === blockchain || bridge.chainName.toLowerCase() === blockchain));
+    const ibcBridge = this.getIbcBridgeFromBlockchainV2(blockchain);
     return ibcBridge?.chain_id_name;
   };
 
@@ -721,19 +720,12 @@ class TokenClient {
     return tokens;
   }
 
-  public setCommonAssetConfig() {
+  public setGeckoTokenNames() {
     // whitelisted ibc tokens
     ibcWhitelist.forEach((chainId: string) => {
       const currencies = IBCUtils.EmbedChainInfos[chainId].currencies;
-      const channelObj = swthChannels[chainId]?.ibc;
       currencies.forEach((asset: AppCurrency) => {
-        const channel =
-          asset.coinMinimalDenom !== "swth" ? channelObj?.sourceChannel ?? "channel-0" : channelObj?.dstChannel ?? "channel-0";
-        const assetDenom = TokenClient.isIBCDenom(asset.coinMinimalDenom)
-          ? asset.coinMinimalDenom
-          : IBCUtils.makeIBCMinimalDenom(channel, asset.coinMinimalDenom);
         const symbolSmall = asset.coinDenom.toLowerCase();
-        if (!this.commonAssetNames[assetDenom]) this.commonAssetNames[assetDenom] = symbolSmall;
         if (asset.coinGeckoId && !this.geckoTokenNames[symbolSmall]) this.geckoTokenNames[symbolSmall] = asset.coinGeckoId;
       });
     });

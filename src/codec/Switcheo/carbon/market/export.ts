@@ -1,6 +1,6 @@
 export { MarketEvent } from "./event"
 export { FeeStructure, FeeCategory, FeeTier, TradingFees, StakeEquivalence } from "./fee"
-export { ControlledParams, Market, MarketParams, IncomingDisableSpotMarketNames } from "./market"
+export { ControlledParams, Market, MarketParams, IncomingSpotMarketsToDisable } from "./market"
 export { Params, ParamsToUpdate } from "./params"
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./proposal"
 export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryGetTradingFeesRequest, QueryGetTradingFeesResponse, QueryGetFeeTiersRequest, QueryGetFeeTiersResponse, QueryAllStakeEquivalenceRequest, QueryAllStakeEquivalenceResponse, QueryAllFeeStructuresRequest, QueryAllFeeStructuresResponse, QueryUserFeeStructuresRequest, QueryUserFeeStructuresResponse, QueryParamsRequest, QueryParamsResponse, QueryControlledParamsRequest, QueryControlledParamsResponse, QueryEVMMarketRequest, QueryEVMMarketResponse } from "./query"

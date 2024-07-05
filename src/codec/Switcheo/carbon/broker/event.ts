@@ -32,7 +32,7 @@ export interface TradeEvent {
 }
 
 export interface FundingEvent {
-  marketName: string;
+  marketId: string;
   fundingRate: string;
   premiumRate: string;
   borrowRate: string;
@@ -410,7 +410,7 @@ export const TradeEvent = {
 };
 
 const baseFundingEvent: object = {
-  marketName: "",
+  marketId: "",
   fundingRate: "",
   premiumRate: "",
   borrowRate: "",
@@ -421,8 +421,8 @@ export const FundingEvent = {
     message: FundingEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.marketName !== "") {
-      writer.uint32(10).string(message.marketName);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.fundingRate !== "") {
       writer.uint32(18).string(message.fundingRate);
@@ -444,7 +444,7 @@ export const FundingEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketName = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.fundingRate = reader.string();
@@ -465,9 +465,9 @@ export const FundingEvent = {
 
   fromJSON(object: any): FundingEvent {
     const message = { ...baseFundingEvent } as FundingEvent;
-    message.marketName =
-      object.marketName !== undefined && object.marketName !== null
-        ? String(object.marketName)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.fundingRate =
       object.fundingRate !== undefined && object.fundingRate !== null
@@ -486,7 +486,7 @@ export const FundingEvent = {
 
   toJSON(message: FundingEvent): unknown {
     const obj: any = {};
-    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.fundingRate !== undefined &&
       (obj.fundingRate = message.fundingRate);
     message.premiumRate !== undefined &&
@@ -497,7 +497,7 @@ export const FundingEvent = {
 
   fromPartial(object: DeepPartial<FundingEvent>): FundingEvent {
     const message = { ...baseFundingEvent } as FundingEvent;
-    message.marketName = object.marketName ?? "";
+    message.marketId = object.marketId ?? "";
     message.fundingRate = object.fundingRate ?? "";
     message.premiumRate = object.premiumRate ?? "";
     message.borrowRate = object.borrowRate ?? "";

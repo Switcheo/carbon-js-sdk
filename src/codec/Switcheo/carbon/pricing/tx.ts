@@ -71,6 +71,16 @@ export interface MsgUpdateSettlementPrice {
 
 export interface MsgUpdateSettlementPriceResponse {}
 
+export interface MsgRemoveTokenPrice {
+  /** authority is the address of the governance account. */
+  authority: string;
+  denom: string;
+}
+
+export interface MsgRemoveTokenPriceResponse {
+  denom: string;
+}
+
 const baseMsgSetBackfillTimeInterval: object = { creator: "" };
 
 export const MsgSetBackfillTimeInterval = {
@@ -1002,6 +1012,135 @@ export const MsgUpdateSettlementPriceResponse = {
   },
 };
 
+const baseMsgRemoveTokenPrice: object = { authority: "", denom: "" };
+
+export const MsgRemoveTokenPrice = {
+  encode(
+    message: MsgRemoveTokenPrice,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveTokenPrice {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRemoveTokenPrice } as MsgRemoveTokenPrice;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveTokenPrice {
+    const message = { ...baseMsgRemoveTokenPrice } as MsgRemoveTokenPrice;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveTokenPrice): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgRemoveTokenPrice>): MsgRemoveTokenPrice {
+    const message = { ...baseMsgRemoveTokenPrice } as MsgRemoveTokenPrice;
+    message.authority = object.authority ?? "";
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveTokenPriceResponse: object = { denom: "" };
+
+export const MsgRemoveTokenPriceResponse = {
+  encode(
+    message: MsgRemoveTokenPriceResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveTokenPriceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveTokenPriceResponse,
+    } as MsgRemoveTokenPriceResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveTokenPriceResponse {
+    const message = {
+      ...baseMsgRemoveTokenPriceResponse,
+    } as MsgRemoveTokenPriceResponse;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveTokenPriceResponse): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveTokenPriceResponse>
+  ): MsgRemoveTokenPriceResponse {
+    const message = {
+      ...baseMsgRemoveTokenPriceResponse,
+    } as MsgRemoveTokenPriceResponse;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -1018,16 +1157,18 @@ export interface Msg {
   UpdateTokenPriceOracle(
     request: MsgUpdateTokenPriceOracle
   ): Promise<MsgUpdateTokenPriceOracleResponse>;
-  /**
-   * UpdateParams defines a governance operation for updating the module
-   * parameters. The authority is hard-coded to the x/gov module account.
-   *
-   * Since: cosmos-sdk 0.47
-   */
-  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
   UpdateSettlementPrice(
     request: MsgUpdateSettlementPrice
   ): Promise<MsgUpdateSettlementPriceResponse>;
+  RemoveTokenPrice(
+    request: MsgRemoveTokenPrice
+  ): Promise<MsgRemoveTokenPriceResponse>;
+  /**
+   * UpdateParams defines a governance operation for updating the module
+   * parameters. The authority is hard-coded to the x/gov module account.
+   * Since: cosmos-sdk 0.47
+   */
+  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1039,8 +1180,9 @@ export class MsgClientImpl implements Msg {
     this.SetImpactBand = this.SetImpactBand.bind(this);
     this.SetStaleIndexAllowance = this.SetStaleIndexAllowance.bind(this);
     this.UpdateTokenPriceOracle = this.UpdateTokenPriceOracle.bind(this);
-    this.UpdateParams = this.UpdateParams.bind(this);
     this.UpdateSettlementPrice = this.UpdateSettlementPrice.bind(this);
+    this.RemoveTokenPrice = this.RemoveTokenPrice.bind(this);
+    this.UpdateParams = this.UpdateParams.bind(this);
   }
   SetBackfillTimeInterval(
     request: MsgSetBackfillTimeInterval
@@ -1110,18 +1252,6 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
-    const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.pricing.Msg",
-      "UpdateParams",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   UpdateSettlementPrice(
     request: MsgUpdateSettlementPrice
   ): Promise<MsgUpdateSettlementPriceResponse> {
@@ -1133,6 +1263,32 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateSettlementPriceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveTokenPrice(
+    request: MsgRemoveTokenPrice
+  ): Promise<MsgRemoveTokenPriceResponse> {
+    const data = MsgRemoveTokenPrice.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Msg",
+      "RemoveTokenPrice",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveTokenPriceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
+    const data = MsgUpdateParams.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Msg",
+      "UpdateParams",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }
