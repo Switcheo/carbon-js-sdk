@@ -3,6 +3,7 @@ import { PageMeta, TimeMeta } from "./common";
 export interface CompetitionItem {
   id: string;
   competitionId: string;
+  subCompetitionId: string;
   market: string;
   start: string; // string representation of timestamp
   end: string; // string representation of timestamp
@@ -109,6 +110,20 @@ export interface LeaderboardLeagueEntry {
   derPoints: string;
   freqFactor: string;
 }
+export interface LeaderboardCosmosEntry {
+  rank: string;
+  totalPoints: string;
+  subCompetitionId: string;
+  participantsCount: string;
+  spotsPoint: string;
+  derPoints: string;
+  promoPoints: string;
+  volume: string;
+  spotsVolume: string;
+  derVolume: string;
+  promoVolume: string;
+}
+
 export interface PersistenceTraders {
   address: string;
   points: string;
@@ -142,11 +157,19 @@ export interface QueryGetLeagueCompetitionLeaderboardResponse {
   entries: LeaderboardLeagueEntry[];
 }
 
+export interface QueryGetCosmosCompetitionLeaderboardResponse {
+  entries: LeaderboardCosmosEntry[];
+}
+
 export interface QueryGetLotteryCompetitionLeaderboardRequest {
   competitionId: string;
   market?: string;
 }
 export interface QueryGetLeagueCompetitionLeaderboardRequest {
+  competitionId: string;
+}
+
+export interface QueryGetCosmosCompetitionLeaderboardRequest {
   competitionId: string;
 }
 
