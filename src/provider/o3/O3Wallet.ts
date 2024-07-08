@@ -59,6 +59,9 @@ export class O3Wallet {
       sendEvmTransaction: async () => {
         throw new Error("signing not available");
       },
+      signMessage() {
+        throw new Error("signing not available");
+      },
     };
   }
 
