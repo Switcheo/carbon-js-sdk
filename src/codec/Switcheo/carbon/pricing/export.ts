@@ -2,6 +2,5 @@ export { PriceUpdateEvent, TokenPriceUpdateEvent, TokenPriceRemoveEvent, SetImpa
 export { ParamsV2130 } from "./legacy"
 export { Params, ParamsToUpdate } from "./params"
 export { PriceSet, TokenPrice } from "./pricing"
-export { SettlementPriceProposal, SettlementPriceParams } from "./proposal"
 export { QueryPriceTokenRequest, QueryPriceTokenResponse, QueryPriceSetRequest, QueryPriceSetResponse, QueryAllPriceSetRequest, QueryAllPriceSetResponse, QueryRateRequest, QueryRateResponse, QueryParamsRequest, QueryParamsResponse, QueryTokenPriceRequest, QueryTokenPriceResponse, QueryTokenPriceAllRequest, QueryTokenPriceAllResponse } from "./query"
 export { MsgSetBackfillTimeInterval, MsgSetBackfillTimeIntervalResponse, MsgSetSmoothenBand, MsgSetSmoothenBandResponse, MsgSetImpactBand, MsgSetImpactBandResponse, MsgSetStaleIndexAllowance, MsgSetStaleIndexAllowanceResponse, MsgUpdateTokenPriceOracle, MsgUpdateTokenPriceOracleResponse, MsgUpdateParams, MsgUpdateParamsResponse, MsgUpdateSettlementPrice, MsgUpdateSettlementPriceResponse, MsgRemoveTokenPrice, MsgRemoveTokenPriceResponse } from "./tx"

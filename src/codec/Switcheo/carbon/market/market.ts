@@ -44,6 +44,7 @@ export interface Market {
   isSettled: boolean;
   closedBlockHeight: Long;
   tradingBandwidth: number;
+  maxOpenInterest: string;
 }
 
 export interface MarketParams {
@@ -66,6 +67,7 @@ export interface MarketParams {
   isActive?: boolean;
   tradingBandwidth?: number;
   expiryTime?: Date;
+  maxOpenInterest: string;
 }
 
 export interface IncomingSpotMarketsToDisable {
@@ -165,6 +167,7 @@ const baseMarket: object = {
   isSettled: false,
   closedBlockHeight: Long.UZERO,
   tradingBandwidth: 0,
+  maxOpenInterest: "",
 };
 
 export const Market = {
@@ -258,6 +261,9 @@ export const Market = {
     }
     if (message.tradingBandwidth !== 0) {
       writer.uint32(912).uint32(message.tradingBandwidth);
+    }
+    if (message.maxOpenInterest !== "") {
+      writer.uint32(922).string(message.maxOpenInterest);
     }
     return writer;
   },
@@ -354,6 +360,9 @@ export const Market = {
           break;
         case 114:
           message.tradingBandwidth = reader.uint32();
+          break;
+        case 115:
+          message.maxOpenInterest = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -479,6 +488,10 @@ export const Market = {
       object.tradingBandwidth !== undefined && object.tradingBandwidth !== null
         ? Number(object.tradingBandwidth)
         : 0;
+    message.maxOpenInterest =
+      object.maxOpenInterest !== undefined && object.maxOpenInterest !== null
+        ? String(object.maxOpenInterest)
+        : "";
     return message;
   },
 
@@ -535,6 +548,8 @@ export const Market = {
       ).toString());
     message.tradingBandwidth !== undefined &&
       (obj.tradingBandwidth = message.tradingBandwidth);
+    message.maxOpenInterest !== undefined &&
+      (obj.maxOpenInterest = message.maxOpenInterest);
     return obj;
   },
 
@@ -585,6 +600,7 @@ export const Market = {
         ? Long.fromValue(object.closedBlockHeight)
         : Long.UZERO;
     message.tradingBandwidth = object.tradingBandwidth ?? 0;
+    message.maxOpenInterest = object.maxOpenInterest ?? "";
     return message;
   },
 };
@@ -600,6 +616,7 @@ const baseMarketParams: object = {
   maintenanceMarginRatio: "",
   maxLiquidationOrderTicket: "",
   impactSize: "",
+  maxOpenInterest: "",
 };
 
 export const MarketParams = {
@@ -685,6 +702,9 @@ export const MarketParams = {
         writer.uint32(922).fork()
       ).ldelim();
     }
+    if (message.maxOpenInterest !== "") {
+      writer.uint32(930).string(message.maxOpenInterest);
+    }
     return writer;
   },
 
@@ -768,6 +788,9 @@ export const MarketParams = {
           message.expiryTime = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 116:
+          message.maxOpenInterest = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -855,6 +878,10 @@ export const MarketParams = {
       object.expiryTime !== undefined && object.expiryTime !== null
         ? fromJsonTimestamp(object.expiryTime)
         : undefined;
+    message.maxOpenInterest =
+      object.maxOpenInterest !== undefined && object.maxOpenInterest !== null
+        ? String(object.maxOpenInterest)
+        : "";
     return message;
   },
 
@@ -893,6 +920,8 @@ export const MarketParams = {
       (obj.tradingBandwidth = message.tradingBandwidth);
     message.expiryTime !== undefined &&
       (obj.expiryTime = message.expiryTime.toISOString());
+    message.maxOpenInterest !== undefined &&
+      (obj.maxOpenInterest = message.maxOpenInterest);
     return obj;
   },
 
@@ -920,6 +949,7 @@ export const MarketParams = {
     message.isActive = object.isActive ?? undefined;
     message.tradingBandwidth = object.tradingBandwidth ?? undefined;
     message.expiryTime = object.expiryTime ?? undefined;
+    message.maxOpenInterest = object.maxOpenInterest ?? "";
     return message;
   },
 };
