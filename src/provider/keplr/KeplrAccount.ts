@@ -71,6 +71,11 @@ class KeplrAccount {
         throw (parseEvmError(error as Error))
       }
     }
+    const signMessage = async (address: string, message: string): Promise<string> => { 
+      const chainId = chainInfo.chainId
+      const { signature } = await keplr.signArbitrary(chainId, address, message)
+      return Buffer.from(signature, 'base64').toString('hex')
+    }
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
@@ -78,6 +83,7 @@ class KeplrAccount {
       signAmino,
       getAccounts,
       sendEvmTransaction,
+      signMessage,
     };
   }
 
@@ -117,11 +123,19 @@ class KeplrAccount {
       }
     }
 
+    const signMessage = async (address: string, message: string): Promise<string> => { 
+      const chainId = chainInfo.chainId
+      const { signature } = await keplr.signArbitrary(chainId, address, message)
+      return Buffer.from(signature, 'base64').toString('hex')
+    }
+
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signAmino,
       getAccounts,
       sendEvmTransaction,
+      signMessage,
     };
   }
 
