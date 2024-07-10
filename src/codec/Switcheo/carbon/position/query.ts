@@ -1,7 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Position, APIPosition, PositionAllocatedMargin } from "./position";
+import {
+  Position,
+  OpenInterest,
+  APIPosition,
+  PositionAllocatedMargin,
+} from "./position";
 import {
   PageRequest,
   PageResponse,
@@ -36,6 +41,20 @@ export interface QueryPositionAllocatedMarginRequest {
 
 export interface QueryPositionAllocatedMarginResponse {
   positions: PositionAllocatedMargin[];
+}
+
+export interface QueryGetOpenInterestRequest {
+  marketId: string;
+}
+
+export interface QueryGetOpenInterestResponse {
+  openInterest?: OpenInterest;
+}
+
+export interface QueryAllOpenInterestsRequest {}
+
+export interface QueryAllOpenInterestsResponse {
+  openInterests: OpenInterest[];
 }
 
 const baseQueryGetPositionRequest: object = { address: "", marketId: "" };
@@ -526,6 +545,269 @@ export const QueryPositionAllocatedMarginResponse = {
   },
 };
 
+const baseQueryGetOpenInterestRequest: object = { marketId: "" };
+
+export const QueryGetOpenInterestRequest = {
+  encode(
+    message: QueryGetOpenInterestRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetOpenInterestRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetOpenInterestRequest,
+    } as QueryGetOpenInterestRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetOpenInterestRequest {
+    const message = {
+      ...baseQueryGetOpenInterestRequest,
+    } as QueryGetOpenInterestRequest;
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryGetOpenInterestRequest): unknown {
+    const obj: any = {};
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetOpenInterestRequest>
+  ): QueryGetOpenInterestRequest {
+    const message = {
+      ...baseQueryGetOpenInterestRequest,
+    } as QueryGetOpenInterestRequest;
+    message.marketId = object.marketId ?? "";
+    return message;
+  },
+};
+
+const baseQueryGetOpenInterestResponse: object = {};
+
+export const QueryGetOpenInterestResponse = {
+  encode(
+    message: QueryGetOpenInterestResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.openInterest !== undefined) {
+      OpenInterest.encode(
+        message.openInterest,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetOpenInterestResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetOpenInterestResponse,
+    } as QueryGetOpenInterestResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.openInterest = OpenInterest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetOpenInterestResponse {
+    const message = {
+      ...baseQueryGetOpenInterestResponse,
+    } as QueryGetOpenInterestResponse;
+    message.openInterest =
+      object.openInterest !== undefined && object.openInterest !== null
+        ? OpenInterest.fromJSON(object.openInterest)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryGetOpenInterestResponse): unknown {
+    const obj: any = {};
+    message.openInterest !== undefined &&
+      (obj.openInterest = message.openInterest
+        ? OpenInterest.toJSON(message.openInterest)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetOpenInterestResponse>
+  ): QueryGetOpenInterestResponse {
+    const message = {
+      ...baseQueryGetOpenInterestResponse,
+    } as QueryGetOpenInterestResponse;
+    message.openInterest =
+      object.openInterest !== undefined && object.openInterest !== null
+        ? OpenInterest.fromPartial(object.openInterest)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllOpenInterestsRequest: object = {};
+
+export const QueryAllOpenInterestsRequest = {
+  encode(
+    _: QueryAllOpenInterestsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllOpenInterestsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllOpenInterestsRequest,
+    } as QueryAllOpenInterestsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAllOpenInterestsRequest {
+    const message = {
+      ...baseQueryAllOpenInterestsRequest,
+    } as QueryAllOpenInterestsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryAllOpenInterestsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryAllOpenInterestsRequest>
+  ): QueryAllOpenInterestsRequest {
+    const message = {
+      ...baseQueryAllOpenInterestsRequest,
+    } as QueryAllOpenInterestsRequest;
+    return message;
+  },
+};
+
+const baseQueryAllOpenInterestsResponse: object = {};
+
+export const QueryAllOpenInterestsResponse = {
+  encode(
+    message: QueryAllOpenInterestsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.openInterests) {
+      OpenInterest.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllOpenInterestsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllOpenInterestsResponse,
+    } as QueryAllOpenInterestsResponse;
+    message.openInterests = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.openInterests.push(
+            OpenInterest.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllOpenInterestsResponse {
+    const message = {
+      ...baseQueryAllOpenInterestsResponse,
+    } as QueryAllOpenInterestsResponse;
+    message.openInterests = (object.openInterests ?? []).map((e: any) =>
+      OpenInterest.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryAllOpenInterestsResponse): unknown {
+    const obj: any = {};
+    if (message.openInterests) {
+      obj.openInterests = message.openInterests.map((e) =>
+        e ? OpenInterest.toJSON(e) : undefined
+      );
+    } else {
+      obj.openInterests = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllOpenInterestsResponse>
+  ): QueryAllOpenInterestsResponse {
+    const message = {
+      ...baseQueryAllOpenInterestsResponse,
+    } as QueryAllOpenInterestsResponse;
+    message.openInterests = (object.openInterests ?? []).map((e) =>
+      OpenInterest.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
@@ -536,6 +818,12 @@ export interface Query {
   PositionAllocatedMargin(
     request: QueryPositionAllocatedMarginRequest
   ): Promise<QueryPositionAllocatedMarginResponse>;
+  OpenInterest(
+    request: QueryGetOpenInterestRequest
+  ): Promise<QueryGetOpenInterestResponse>;
+  OpenInterestAll(
+    request: QueryAllOpenInterestsRequest
+  ): Promise<QueryAllOpenInterestsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -545,6 +833,8 @@ export class QueryClientImpl implements Query {
     this.Position = this.Position.bind(this);
     this.PositionAll = this.PositionAll.bind(this);
     this.PositionAllocatedMargin = this.PositionAllocatedMargin.bind(this);
+    this.OpenInterest = this.OpenInterest.bind(this);
+    this.OpenInterestAll = this.OpenInterestAll.bind(this);
   }
   Position(
     request: QueryGetPositionRequest
@@ -585,6 +875,34 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryPositionAllocatedMarginResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  OpenInterest(
+    request: QueryGetOpenInterestRequest
+  ): Promise<QueryGetOpenInterestResponse> {
+    const data = QueryGetOpenInterestRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.position.Query",
+      "OpenInterest",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetOpenInterestResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  OpenInterestAll(
+    request: QueryAllOpenInterestsRequest
+  ): Promise<QueryAllOpenInterestsResponse> {
+    const data = QueryAllOpenInterestsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.position.Query",
+      "OpenInterestAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllOpenInterestsResponse.decode(new _m0.Reader(data))
     );
   }
 }

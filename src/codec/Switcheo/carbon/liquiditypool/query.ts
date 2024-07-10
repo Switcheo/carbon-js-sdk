@@ -14,6 +14,7 @@ import {
   TotalCommitmentRecord,
 } from "./reward";
 import { Params } from "./params";
+import { MultiSwapResultantDB } from "./swap_router";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 import { DecCoin } from "../../../cosmos/base/v1beta1/coin";
 
@@ -152,6 +153,26 @@ export interface QueryAllPoolRouteAddressResponse {
 export interface QueryAllPoolRouteAddressResponse_AddressesEntry {
   key: string;
   value: string;
+}
+
+export interface QueryMultiSwapResultantRequest {
+  id: string;
+}
+
+export interface QueryMultiSwapResultantResponse {
+  swap?: MultiSwapResultantDB;
+}
+
+export interface QueryMultiSwapResultantAllRequest {
+  address: string;
+  beforeBlock: Long;
+  afterBlock: Long;
+  pagination?: PageRequest;
+}
+
+export interface QueryMultiSwapResultantAllResponse {
+  swaps: MultiSwapResultantDB[];
+  pagination?: PageResponse;
 }
 
 const baseQueryGetPoolRequest: object = { id: Long.UZERO };
@@ -2458,6 +2479,354 @@ export const QueryAllPoolRouteAddressResponse_AddressesEntry = {
   },
 };
 
+const baseQueryMultiSwapResultantRequest: object = { id: "" };
+
+export const QueryMultiSwapResultantRequest = {
+  encode(
+    message: QueryMultiSwapResultantRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryMultiSwapResultantRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryMultiSwapResultantRequest,
+    } as QueryMultiSwapResultantRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryMultiSwapResultantRequest {
+    const message = {
+      ...baseQueryMultiSwapResultantRequest,
+    } as QueryMultiSwapResultantRequest;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    return message;
+  },
+
+  toJSON(message: QueryMultiSwapResultantRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryMultiSwapResultantRequest>
+  ): QueryMultiSwapResultantRequest {
+    const message = {
+      ...baseQueryMultiSwapResultantRequest,
+    } as QueryMultiSwapResultantRequest;
+    message.id = object.id ?? "";
+    return message;
+  },
+};
+
+const baseQueryMultiSwapResultantResponse: object = {};
+
+export const QueryMultiSwapResultantResponse = {
+  encode(
+    message: QueryMultiSwapResultantResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.swap !== undefined) {
+      MultiSwapResultantDB.encode(
+        message.swap,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryMultiSwapResultantResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryMultiSwapResultantResponse,
+    } as QueryMultiSwapResultantResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.swap = MultiSwapResultantDB.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryMultiSwapResultantResponse {
+    const message = {
+      ...baseQueryMultiSwapResultantResponse,
+    } as QueryMultiSwapResultantResponse;
+    message.swap =
+      object.swap !== undefined && object.swap !== null
+        ? MultiSwapResultantDB.fromJSON(object.swap)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryMultiSwapResultantResponse): unknown {
+    const obj: any = {};
+    message.swap !== undefined &&
+      (obj.swap = message.swap
+        ? MultiSwapResultantDB.toJSON(message.swap)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryMultiSwapResultantResponse>
+  ): QueryMultiSwapResultantResponse {
+    const message = {
+      ...baseQueryMultiSwapResultantResponse,
+    } as QueryMultiSwapResultantResponse;
+    message.swap =
+      object.swap !== undefined && object.swap !== null
+        ? MultiSwapResultantDB.fromPartial(object.swap)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryMultiSwapResultantAllRequest: object = {
+  address: "",
+  beforeBlock: Long.UZERO,
+  afterBlock: Long.UZERO,
+};
+
+export const QueryMultiSwapResultantAllRequest = {
+  encode(
+    message: QueryMultiSwapResultantAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (!message.beforeBlock.isZero()) {
+      writer.uint32(16).uint64(message.beforeBlock);
+    }
+    if (!message.afterBlock.isZero()) {
+      writer.uint32(24).uint64(message.afterBlock);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryMultiSwapResultantAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryMultiSwapResultantAllRequest,
+    } as QueryMultiSwapResultantAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.beforeBlock = reader.uint64() as Long;
+          break;
+        case 3:
+          message.afterBlock = reader.uint64() as Long;
+          break;
+        case 4:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryMultiSwapResultantAllRequest {
+    const message = {
+      ...baseQueryMultiSwapResultantAllRequest,
+    } as QueryMultiSwapResultantAllRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.beforeBlock =
+      object.beforeBlock !== undefined && object.beforeBlock !== null
+        ? Long.fromString(object.beforeBlock)
+        : Long.UZERO;
+    message.afterBlock =
+      object.afterBlock !== undefined && object.afterBlock !== null
+        ? Long.fromString(object.afterBlock)
+        : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryMultiSwapResultantAllRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.beforeBlock !== undefined &&
+      (obj.beforeBlock = (message.beforeBlock || Long.UZERO).toString());
+    message.afterBlock !== undefined &&
+      (obj.afterBlock = (message.afterBlock || Long.UZERO).toString());
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryMultiSwapResultantAllRequest>
+  ): QueryMultiSwapResultantAllRequest {
+    const message = {
+      ...baseQueryMultiSwapResultantAllRequest,
+    } as QueryMultiSwapResultantAllRequest;
+    message.address = object.address ?? "";
+    message.beforeBlock =
+      object.beforeBlock !== undefined && object.beforeBlock !== null
+        ? Long.fromValue(object.beforeBlock)
+        : Long.UZERO;
+    message.afterBlock =
+      object.afterBlock !== undefined && object.afterBlock !== null
+        ? Long.fromValue(object.afterBlock)
+        : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryMultiSwapResultantAllResponse: object = {};
+
+export const QueryMultiSwapResultantAllResponse = {
+  encode(
+    message: QueryMultiSwapResultantAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.swaps) {
+      MultiSwapResultantDB.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryMultiSwapResultantAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryMultiSwapResultantAllResponse,
+    } as QueryMultiSwapResultantAllResponse;
+    message.swaps = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.swaps.push(
+            MultiSwapResultantDB.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryMultiSwapResultantAllResponse {
+    const message = {
+      ...baseQueryMultiSwapResultantAllResponse,
+    } as QueryMultiSwapResultantAllResponse;
+    message.swaps = (object.swaps ?? []).map((e: any) =>
+      MultiSwapResultantDB.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryMultiSwapResultantAllResponse): unknown {
+    const obj: any = {};
+    if (message.swaps) {
+      obj.swaps = message.swaps.map((e) =>
+        e ? MultiSwapResultantDB.toJSON(e) : undefined
+      );
+    } else {
+      obj.swaps = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryMultiSwapResultantAllResponse>
+  ): QueryMultiSwapResultantAllResponse {
+    const message = {
+      ...baseQueryMultiSwapResultantAllResponse,
+    } as QueryMultiSwapResultantAllResponse;
+    message.swaps = (object.swaps ?? []).map((e) =>
+      MultiSwapResultantDB.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get addresses for all pools */
@@ -2507,6 +2876,14 @@ export interface Query {
   PoolRouteAddressAll(
     request: QueryAllPoolRouteAddressRequest
   ): Promise<QueryAllPoolRouteAddressResponse>;
+  /** Gets all resultant swap for given id */
+  MultiSwapResultant(
+    request: QueryMultiSwapResultantRequest
+  ): Promise<QueryMultiSwapResultantResponse>;
+  /** // Get all resultant multiswap for given address, beforeBlock, afterBlock */
+  MultiSwapResultantAll(
+    request: QueryMultiSwapResultantAllRequest
+  ): Promise<QueryMultiSwapResultantAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2527,6 +2904,8 @@ export class QueryClientImpl implements Query {
     this.Params = this.Params.bind(this);
     this.PoolRouteAll = this.PoolRouteAll.bind(this);
     this.PoolRouteAddressAll = this.PoolRouteAddressAll.bind(this);
+    this.MultiSwapResultant = this.MultiSwapResultant.bind(this);
+    this.MultiSwapResultantAll = this.MultiSwapResultantAll.bind(this);
   }
   PoolAddressAll(
     request: QueryAllPoolAddressRequest
@@ -2715,6 +3094,34 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllPoolRouteAddressResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  MultiSwapResultant(
+    request: QueryMultiSwapResultantRequest
+  ): Promise<QueryMultiSwapResultantResponse> {
+    const data = QueryMultiSwapResultantRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Query",
+      "MultiSwapResultant",
+      data
+    );
+    return promise.then((data) =>
+      QueryMultiSwapResultantResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  MultiSwapResultantAll(
+    request: QueryMultiSwapResultantAllRequest
+  ): Promise<QueryMultiSwapResultantAllResponse> {
+    const data = QueryMultiSwapResultantAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Query",
+      "MultiSwapResultantAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryMultiSwapResultantAllResponse.decode(new _m0.Reader(data))
     );
   }
 }

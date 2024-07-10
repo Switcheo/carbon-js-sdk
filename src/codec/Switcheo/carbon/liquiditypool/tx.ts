@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { ParamsToUpdate } from "./params";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 import { RewardWeight } from "./reward";
@@ -175,6 +176,28 @@ export interface UpdatePoolRouteParams {
   marketId: string;
   poolIds: Long[];
   numQuotes: Long;
+}
+
+export interface MsgSwapExactInput {
+  creator: string;
+  inputCoin?: Coin;
+  minOutputCoin?: Coin;
+  poolRoute: Long[];
+}
+
+export interface MsgSwapExactInputResponse {
+  id: Long;
+}
+
+export interface MsgSwapExactOutput {
+  creator: string;
+  maxInputCoin?: Coin;
+  outputCoin?: Coin;
+  poolRoute: Long[];
+}
+
+export interface MsgSwapExactOutputResponse {
+  id: Long;
 }
 
 /**
@@ -3046,6 +3069,374 @@ export const UpdatePoolRouteParams = {
   },
 };
 
+const baseMsgSwapExactInput: object = { creator: "", poolRoute: Long.UZERO };
+
+export const MsgSwapExactInput = {
+  encode(
+    message: MsgSwapExactInput,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.inputCoin !== undefined) {
+      Coin.encode(message.inputCoin, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.minOutputCoin !== undefined) {
+      Coin.encode(message.minOutputCoin, writer.uint32(26).fork()).ldelim();
+    }
+    writer.uint32(34).fork();
+    for (const v of message.poolRoute) {
+      writer.uint64(v);
+    }
+    writer.ldelim();
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSwapExactInput {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSwapExactInput } as MsgSwapExactInput;
+    message.poolRoute = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.inputCoin = Coin.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.minOutputCoin = Coin.decode(reader, reader.uint32());
+          break;
+        case 4:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.poolRoute.push(reader.uint64() as Long);
+            }
+          } else {
+            message.poolRoute.push(reader.uint64() as Long);
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSwapExactInput {
+    const message = { ...baseMsgSwapExactInput } as MsgSwapExactInput;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.inputCoin =
+      object.inputCoin !== undefined && object.inputCoin !== null
+        ? Coin.fromJSON(object.inputCoin)
+        : undefined;
+    message.minOutputCoin =
+      object.minOutputCoin !== undefined && object.minOutputCoin !== null
+        ? Coin.fromJSON(object.minOutputCoin)
+        : undefined;
+    message.poolRoute = (object.poolRoute ?? []).map((e: any) =>
+      Long.fromString(e)
+    );
+    return message;
+  },
+
+  toJSON(message: MsgSwapExactInput): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.inputCoin !== undefined &&
+      (obj.inputCoin = message.inputCoin
+        ? Coin.toJSON(message.inputCoin)
+        : undefined);
+    message.minOutputCoin !== undefined &&
+      (obj.minOutputCoin = message.minOutputCoin
+        ? Coin.toJSON(message.minOutputCoin)
+        : undefined);
+    if (message.poolRoute) {
+      obj.poolRoute = message.poolRoute.map((e) =>
+        (e || Long.UZERO).toString()
+      );
+    } else {
+      obj.poolRoute = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSwapExactInput>): MsgSwapExactInput {
+    const message = { ...baseMsgSwapExactInput } as MsgSwapExactInput;
+    message.creator = object.creator ?? "";
+    message.inputCoin =
+      object.inputCoin !== undefined && object.inputCoin !== null
+        ? Coin.fromPartial(object.inputCoin)
+        : undefined;
+    message.minOutputCoin =
+      object.minOutputCoin !== undefined && object.minOutputCoin !== null
+        ? Coin.fromPartial(object.minOutputCoin)
+        : undefined;
+    message.poolRoute = (object.poolRoute ?? []).map((e) => Long.fromValue(e));
+    return message;
+  },
+};
+
+const baseMsgSwapExactInputResponse: object = { id: Long.UZERO };
+
+export const MsgSwapExactInputResponse = {
+  encode(
+    message: MsgSwapExactInputResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.id.isZero()) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSwapExactInputResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSwapExactInputResponse,
+    } as MsgSwapExactInputResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSwapExactInputResponse {
+    const message = {
+      ...baseMsgSwapExactInputResponse,
+    } as MsgSwapExactInputResponse;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgSwapExactInputResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSwapExactInputResponse>
+  ): MsgSwapExactInputResponse {
+    const message = {
+      ...baseMsgSwapExactInputResponse,
+    } as MsgSwapExactInputResponse;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgSwapExactOutput: object = { creator: "", poolRoute: Long.UZERO };
+
+export const MsgSwapExactOutput = {
+  encode(
+    message: MsgSwapExactOutput,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.maxInputCoin !== undefined) {
+      Coin.encode(message.maxInputCoin, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.outputCoin !== undefined) {
+      Coin.encode(message.outputCoin, writer.uint32(26).fork()).ldelim();
+    }
+    writer.uint32(34).fork();
+    for (const v of message.poolRoute) {
+      writer.uint64(v);
+    }
+    writer.ldelim();
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSwapExactOutput {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSwapExactOutput } as MsgSwapExactOutput;
+    message.poolRoute = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.maxInputCoin = Coin.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.outputCoin = Coin.decode(reader, reader.uint32());
+          break;
+        case 4:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.poolRoute.push(reader.uint64() as Long);
+            }
+          } else {
+            message.poolRoute.push(reader.uint64() as Long);
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSwapExactOutput {
+    const message = { ...baseMsgSwapExactOutput } as MsgSwapExactOutput;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.maxInputCoin =
+      object.maxInputCoin !== undefined && object.maxInputCoin !== null
+        ? Coin.fromJSON(object.maxInputCoin)
+        : undefined;
+    message.outputCoin =
+      object.outputCoin !== undefined && object.outputCoin !== null
+        ? Coin.fromJSON(object.outputCoin)
+        : undefined;
+    message.poolRoute = (object.poolRoute ?? []).map((e: any) =>
+      Long.fromString(e)
+    );
+    return message;
+  },
+
+  toJSON(message: MsgSwapExactOutput): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.maxInputCoin !== undefined &&
+      (obj.maxInputCoin = message.maxInputCoin
+        ? Coin.toJSON(message.maxInputCoin)
+        : undefined);
+    message.outputCoin !== undefined &&
+      (obj.outputCoin = message.outputCoin
+        ? Coin.toJSON(message.outputCoin)
+        : undefined);
+    if (message.poolRoute) {
+      obj.poolRoute = message.poolRoute.map((e) =>
+        (e || Long.UZERO).toString()
+      );
+    } else {
+      obj.poolRoute = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSwapExactOutput>): MsgSwapExactOutput {
+    const message = { ...baseMsgSwapExactOutput } as MsgSwapExactOutput;
+    message.creator = object.creator ?? "";
+    message.maxInputCoin =
+      object.maxInputCoin !== undefined && object.maxInputCoin !== null
+        ? Coin.fromPartial(object.maxInputCoin)
+        : undefined;
+    message.outputCoin =
+      object.outputCoin !== undefined && object.outputCoin !== null
+        ? Coin.fromPartial(object.outputCoin)
+        : undefined;
+    message.poolRoute = (object.poolRoute ?? []).map((e) => Long.fromValue(e));
+    return message;
+  },
+};
+
+const baseMsgSwapExactOutputResponse: object = { id: Long.UZERO };
+
+export const MsgSwapExactOutputResponse = {
+  encode(
+    message: MsgSwapExactOutputResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.id.isZero()) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSwapExactOutputResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSwapExactOutputResponse,
+    } as MsgSwapExactOutputResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSwapExactOutputResponse {
+    const message = {
+      ...baseMsgSwapExactOutputResponse,
+    } as MsgSwapExactOutputResponse;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgSwapExactOutputResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSwapExactOutputResponse>
+  ): MsgSwapExactOutputResponse {
+    const message = {
+      ...baseMsgSwapExactOutputResponse,
+    } as MsgSwapExactOutputResponse;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    return message;
+  },
+};
+
 const baseMsgUpdateParams: object = { authority: "" };
 
 export const MsgUpdateParams = {
@@ -3210,6 +3601,12 @@ export interface Msg {
   HandleUpdatePoolRoute(
     request: MsgUpdatePoolRoute
   ): Promise<MsgUpdatePoolRouteResponse>;
+  SwapExactInput(
+    request: MsgSwapExactInput
+  ): Promise<MsgSwapExactInputResponse>;
+  SwapExactOutput(
+    request: MsgSwapExactOutput
+  ): Promise<MsgSwapExactOutputResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -3238,6 +3635,8 @@ export class MsgClientImpl implements Msg {
     this.HandleCreatePoolRoute = this.HandleCreatePoolRoute.bind(this);
     this.HandleRemovePoolRoute = this.HandleRemovePoolRoute.bind(this);
     this.HandleUpdatePoolRoute = this.HandleUpdatePoolRoute.bind(this);
+    this.SwapExactInput = this.SwapExactInput.bind(this);
+    this.SwapExactOutput = this.SwapExactOutput.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
   }
   HandleCreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
@@ -3429,6 +3828,34 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdatePoolRouteResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SwapExactInput(
+    request: MsgSwapExactInput
+  ): Promise<MsgSwapExactInputResponse> {
+    const data = MsgSwapExactInput.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Msg",
+      "SwapExactInput",
+      data
+    );
+    return promise.then((data) =>
+      MsgSwapExactInputResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SwapExactOutput(
+    request: MsgSwapExactOutput
+  ): Promise<MsgSwapExactOutputResponse> {
+    const data = MsgSwapExactOutput.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Msg",
+      "SwapExactOutput",
+      data
+    );
+    return promise.then((data) =>
+      MsgSwapExactOutputResponse.decode(new _m0.Reader(data))
     );
   }
 

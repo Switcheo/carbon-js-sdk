@@ -200,8 +200,6 @@ registry.register("/Switcheo.carbon.position.MsgSetMarginResponse", Carbon.Posit
 
 registry.register("/Switcheo.carbon.oracle.MsgCreateOracle", Carbon.Oracle.MsgCreateOracle);
 registry.register("/Switcheo.carbon.oracle.MsgCreateOracleResponse", Carbon.Oracle.MsgCreateOracleResponse);
-registry.register("/Switcheo.carbon.oracle.MsgCreateVote", Carbon.Oracle.MsgCreateVote);
-registry.register("/Switcheo.carbon.oracle.MsgCreateVoteResponse", Carbon.Oracle.MsgCreateVoteResponse);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateOracle", Carbon.Oracle.MsgUpdateOracle);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleResponse", Carbon.Oracle.MsgUpdateOracleResponse);
 registry.register("/Switcheo.carbon.oracle.MsgRemoveOracle", Carbon.Oracle.MsgRemoveOracle);
@@ -370,6 +368,10 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute", Carbon.Li
 registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRouteResponse", Carbon.Liquiditypool.MsgRemovePoolRouteResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolRoute", Carbon.Liquiditypool.MsgUpdatePoolRoute);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolRouteResponse", Carbon.Liquiditypool.MsgUpdatePoolRouteResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSwapExactInput", Carbon.Liquiditypool.MsgSwapExactInput);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSwapExactInputResponse", Carbon.Liquiditypool.MsgSwapExactInputResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSwapExactOutput", Carbon.Liquiditypool.MsgSwapExactOutput);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSwapExactOutputResponse", Carbon.Liquiditypool.MsgSwapExactOutputResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdateParams", Carbon.Liquiditypool.MsgUpdateParams);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdateParamsResponse", Carbon.Liquiditypool.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.liquiditypool.LinkPoolProposal", Carbon.Liquiditypool.LinkPoolProposal);
@@ -842,8 +844,6 @@ export const TxTypes = {
   "MsgSetMarginResponse": "/Switcheo.carbon.position.MsgSetMarginResponse",
   "MsgCreateOracle": "/Switcheo.carbon.oracle.MsgCreateOracle",
   "MsgCreateOracleResponse": "/Switcheo.carbon.oracle.MsgCreateOracleResponse",
-  "MsgCreateVote": "/Switcheo.carbon.oracle.MsgCreateVote",
-  "MsgCreateVoteResponse": "/Switcheo.carbon.oracle.MsgCreateVoteResponse",
   "MsgUpdateOracle": "/Switcheo.carbon.oracle.MsgUpdateOracle",
   "MsgUpdateOracleResponse": "/Switcheo.carbon.oracle.MsgUpdateOracleResponse",
   "MsgRemoveOracle": "/Switcheo.carbon.oracle.MsgRemoveOracle",
@@ -1001,6 +1001,10 @@ export const TxTypes = {
   "MsgRemovePoolRouteResponse": "/Switcheo.carbon.liquiditypool.MsgRemovePoolRouteResponse",
   "MsgUpdatePoolRoute": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolRoute",
   "MsgUpdatePoolRouteResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolRouteResponse",
+  "MsgSwapExactInput": "/Switcheo.carbon.liquiditypool.MsgSwapExactInput",
+  "MsgSwapExactInputResponse": "/Switcheo.carbon.liquiditypool.MsgSwapExactInputResponse",
+  "MsgSwapExactOutput": "/Switcheo.carbon.liquiditypool.MsgSwapExactOutput",
+  "MsgSwapExactOutputResponse": "/Switcheo.carbon.liquiditypool.MsgSwapExactOutputResponse",
   "MsgLiquiditypoolUpdateParams": "/Switcheo.carbon.liquiditypool.MsgUpdateParams",
   "MsgLiquiditypoolUpdateParamsResponse": "/Switcheo.carbon.liquiditypool.MsgUpdateParamsResponse",
   "LinkPoolProposal": "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
@@ -9268,6 +9272,140 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
+    "MultiSwap": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "input_coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "output_coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "swap_type",
+        "type": "string"
+      },
+      {
+        "name": "swap_route",
+        "type": "uint64[]"
+      },
+      {
+        "name": "cancel_reason",
+        "type": "uint32"
+      }
+    ],
+    "MultiSwapResultantDB": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "input_denom",
+        "type": "string"
+      },
+      {
+        "name": "input_amount",
+        "type": "string"
+      },
+      {
+        "name": "output_denom",
+        "type": "string"
+      },
+      {
+        "name": "output_amount",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "swap_type",
+        "type": "string"
+      },
+      {
+        "name": "swap_route",
+        "type": "uint64[]"
+      },
+      {
+        "name": "cancel_reason",
+        "type": "uint32"
+      }
+    ],
+    "MultiSwapStepDB": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "input_denom",
+        "type": "string"
+      },
+      {
+        "name": "input_amount",
+        "type": "string"
+      },
+      {
+        "name": "output_denom",
+        "type": "string"
+      },
+      {
+        "name": "output_amount",
+        "type": "string"
+      },
+      {
+        "name": "swap_type",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "step_number",
+        "type": "uint64"
+      }
+    ],
+    "MultiSwapIDs": [
+      {
+        "name": "ids",
+        "type": "uint64[]"
+      }
+    ],
     "PoolEvent": [
       {
         "name": "creator",
@@ -9513,6 +9651,20 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "rewards",
         "type": "Coin[]",
         "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MultiSwapStepEvent": [
+      {
+        "name": "swap",
+        "type": "MultiSwapStepDB",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "MultiSwapResultantEvent": [
+      {
+        "name": "swap",
+        "type": "MultiSwap",
+        "packageName": "/Switcheo.carbon.liquiditypool"
       }
     ],
     "Params": [
@@ -9945,6 +10097,58 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
+    "MsgSwapExactInput": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "input_coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "min_output_coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "pool_route",
+        "type": "uint64[]"
+      }
+    ],
+    "MsgSwapExactInputResponse": [
+      {
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
+    "MsgSwapExactOutput": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "max_input_coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "output_coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "pool_route",
+        "type": "uint64[]"
+      }
+    ],
+    "MsgSwapExactOutputResponse": [
+      {
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
     "MsgUpdateParams": [
       {
         "name": "authority",
@@ -10318,6 +10522,50 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "addresses",
         "type": "AddressesEntry[]",
         "packageName": "/Switcheo.carbon.liquiditypool.QueryAllPoolRouteAddressResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryMultiSwapResultantRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryMultiSwapResultantResponse": [
+      {
+        "name": "swap",
+        "type": "MultiSwapResultantDB",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "QueryMultiSwapResultantAllRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "before_block",
+        "type": "uint64"
+      },
+      {
+        "name": "after_block",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryMultiSwapResultantAllResponse": [
+      {
+        "name": "swaps",
+        "type": "MultiSwapResultantDB[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
         "name": "pagination",
@@ -10704,6 +10952,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "default_lp_futures_maker_fee",
         "type": "string"
+      },
+      {
+        "name": "default_max_open_interest_usd",
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -10798,6 +11050,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "default_lp_futures_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_max_open_interest_usd",
         "type": "string"
       }
     ],
@@ -10917,6 +11173,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "trading_bandwidth",
         "type": "uint32"
+      },
+      {
+        "name": "max_open_interest",
+        "type": "string"
       }
     ],
     "MarketParams": [
@@ -10991,6 +11251,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_time",
+        "type": "string"
+      },
+      {
+        "name": "max_open_interest",
         "type": "string"
       }
     ],
@@ -11955,25 +12219,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgCreateVote": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "timestamp",
-        "type": "int64"
-      },
-      {
-        "name": "data",
-        "type": "string"
-      }
-    ],
-    "MsgCreateVoteResponse": [],
     "MsgUpdateOracle": [
       {
         "name": "updater",
@@ -13184,6 +13429,16 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.position"
       }
     ],
+    "OpenInterest": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "open_interest",
+        "type": "string"
+      }
+    ],
     "APIPosition": [
       {
         "name": "market_id",
@@ -13307,6 +13562,13 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
+    "OpenInterestEvent": [
+      {
+        "name": "open_interest",
+        "type": "OpenInterest",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
     "QueryEVMPositionRequest": [
       {
         "name": "evm_address",
@@ -13401,6 +13663,27 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "positions",
         "type": "PositionAllocatedMargin[]",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "QueryGetOpenInterestRequest": [
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "QueryGetOpenInterestResponse": [
+      {
+        "name": "open_interest",
+        "type": "OpenInterest",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "QueryAllOpenInterestsRequest": [],
+    "QueryAllOpenInterestsResponse": [
+      {
+        "name": "open_interests",
+        "type": "OpenInterest[]",
         "packageName": "/Switcheo.carbon.position"
       }
     ],
