@@ -306,6 +306,7 @@ class InsightsQueryClient {
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLeagueCompetitionLeaderboardResponse>> {
     const queryParams = {
       competitionId: req.competitionId,
+      subCompetitionId: req.subCompetitionId,
     };
     const request = this.apiManager.path("competition/leaderboardleague", {}, queryParams);
     const response = await request.get();

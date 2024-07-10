@@ -185,6 +185,7 @@ export interface QueryGetLotteryCompetitionLeaderboardRequest {
 }
 export interface QueryGetLeagueCompetitionLeaderboardRequest {
   competitionId: string;
+  subCompetitionId?: string;
 }
 
 export interface QueryGetCosmosCompetitionLeaderboardRequest {
