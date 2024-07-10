@@ -4,13 +4,13 @@ export interface CompetitionItem {
   id: string;
   competitionId: string;
   subCompetitionId: string;
-  market: string;
+  market: string | null;
   start: string; // string representation of timestamp
   end: string; // string representation of timestamp
-  enablePNL: boolean;
-  minBalance: number;
-  enableVolume: boolean;
-  makerIncentive: boolean;
+  enablePNL: boolean | null;
+  minBalance: number | null;
+  enableVolume: boolean | null;
+  makerIncentive: boolean | null;
   config: CompetitionItemConfig;
 }
 
@@ -21,10 +21,10 @@ export interface CompetitionItemConfig {
   promoMarkets: string[];
   preTradeMarket: string[];
   minBalance: number;
-  volPerPoint: number;
+  volPerPoint: string;
   allowDecimals: boolean;
-  derMultiplier: number;
-  lendingQuantity: number;
+  derMultiplier: string;
+  lendingQuantity: string;
   promoMultiplier: number;
   spotsMultiplier: number;
   preTradeMarketCount: number;
