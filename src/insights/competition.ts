@@ -11,6 +11,24 @@ export interface CompetitionItem {
   minBalance: number;
   enableVolume: boolean;
   makerIncentive: boolean;
+  config: CompetitionItemConfig;
+}
+
+export interface CompetitionItemConfig {
+  type: string;
+  lending: string[];
+  markets: string[];
+  promoMarkets: string[];
+  preTradeMarket: string[];
+  minBalance: number;
+  volPerPoint: number;
+  allowDecimals: boolean;
+  derMultiplier: number;
+  lendingQuantity: number;
+  promoMultiplier: number;
+  spotsMultiplier: number;
+  preTradeMarketCount: number;
+  preTradeMarketVolume: number;
 }
 
 export interface QueryGetCompetitionListResponse {
