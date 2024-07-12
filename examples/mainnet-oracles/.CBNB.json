@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "bybit_bnb_usdt",
-      "output_id": "bybit_bnb_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_bnb_usdt\", \"binance_bnb_usdt\", \"okx_bnb_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_bnb_usdt",
-      "output_id": "binance_bnb_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_bnb_usdt\", \"binance_bnb_usdt\", \"okx_bnb_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_bnb_usdt",
-      "output_id": "okx_bnb_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

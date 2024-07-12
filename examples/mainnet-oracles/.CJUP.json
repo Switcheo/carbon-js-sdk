@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "bybit_jup_usdt",
-      "output_id": "bybit_jup_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_jup_usdt\", \"binance_jup_usdt\", \"okx_jup_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_jup_usdt",
-      "output_id": "binance_jup_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_jup_usdt\", \"binance_jup_usdt\", \"okx_jup_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_jup_usdt",
-      "output_id": "okx_jup_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

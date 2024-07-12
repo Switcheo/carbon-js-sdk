@@ -105,28 +105,6 @@
       ]
     },
     {
-      "input_id": "bybit_axl_usd",
-      "output_id": "bybit_axl_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_axl_usd\", \"binance_axl_usd\", \"coinbase_axl_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_axl_usd",
-      "output_id": "binance_axl_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_axl_usd\", \"binance_axl_usd\", \"coinbase_axl_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "coinbase_axl_usd",
-      "output_id": "coinbase_axl_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

@@ -97,28 +97,6 @@
       ]
     },
     {
-      "input_id": "coinbase_aave_usd",
-      "output_id": "coinbase_aave_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_aave_usd\", \"kraken_aave_usd\",\"coinbase_aave_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_aave_usd",
-      "output_id": "binance_aave_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_aave_usd\", \"kraken_aave_usd\",\"coinbase_aave_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kraken_aave_usd",
-      "output_id": "kraken_aave_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

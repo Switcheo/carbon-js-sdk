@@ -89,28 +89,6 @@
       ]
     },
     {
-      "input_id": "binance_luna_usdt",
-      "output_id": "binance_luna_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_luna_usdt\", \"okx_luna_usdt\", \"kucoin_luna_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_luna_usdt",
-      "output_id": "okx_luna_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_luna_usdt\", \"okx_luna_usdt\", \"kucoin_luna_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kucoin_luna_usdt",
-      "output_id": "kucoin_luna_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

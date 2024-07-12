@@ -105,28 +105,6 @@
       ]
     },
     {
-      "input_id": "coinbase_metis_usd",
-      "output_id": "coinbase_metis_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_metis_usd\", \"okx_metis_usd\",\"coinbase_metis_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_metis_usd",
-      "output_id": "binance_metis_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_metis_usd\", \"okx_metis_usd\",\"coinbase_metis_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_metis_usd",
-      "output_id": "okx_metis_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

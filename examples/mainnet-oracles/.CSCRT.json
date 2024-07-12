@@ -137,28 +137,6 @@
       }
     },
     {
-      "input_id": "binance_scrt_usd",
-      "output_id": "binance_scrt_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"bybit_scrt_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_btc_scrt_usd",
-      "output_id": "binance_btc_scrt_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"bybit_scrt_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "bybit_scrt_usd",
-      "output_id": "bybit_scrt_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

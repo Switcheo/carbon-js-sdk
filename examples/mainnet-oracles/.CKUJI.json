@@ -80,18 +80,6 @@
       ]
     },
     {
-      "input_id": "osmosis_kuji_usdc",
-      "output_id": "osmosis_kuji_usdc",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"osmosis_kuji_usdc\", \"kujira_kuji_usdc\"]",
-        "tolerance_percentage": "1.5"
-      }
-    },
-    {
-      "input_id": "kujira_kuji_usdc",
-      "output_id": "kujira_kuji_usdc",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

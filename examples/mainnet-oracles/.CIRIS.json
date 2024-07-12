@@ -119,18 +119,6 @@
       }
     },
     {
-      "input_id": "binance_iris_usd",
-      "output_id": "binance_iris_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_iris_usd\", \"osmosis_iris_usd\"]",
-        "tolerance_percentage": "1.5"
-      }
-    },
-    {
-      "input_id": "osmosis_iris_usd",
-      "output_id": "osmosis_iris_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

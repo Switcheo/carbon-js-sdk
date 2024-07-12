@@ -106,28 +106,6 @@
       }
     },
     {
-      "input_id": "pyth_osmo_usd",
-      "output_id": "pyth_osmo_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"pyth_osmo_usd\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "coinbase_osmo_usd",
-      "output_id": "coinbase_osmo_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"pyth_osmo_usd\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_osmo_usd",
-      "output_id": "binance_osmo_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

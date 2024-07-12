@@ -117,28 +117,6 @@
       ]
     },
     {
-      "input_id": "binance_neo_usd",
-      "output_id": "binance_neo_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_neo_usd\", \"okx_neo_usd\",\"bitfinex_neo_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_neo_usd",
-      "output_id": "okx_neo_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_neo_usd\", \"okx_neo_usd\",\"bitfinex_neo_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "bitfinex_neo_usd",
-      "output_id": "bitfinex_neo_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

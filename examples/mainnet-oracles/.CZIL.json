@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "bybit_zil_usdt",
-      "output_id": "bybit_zil_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_zil_usdt\", \"binance_zil_usdt\", \"okx_zil_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_zil_usdt",
-      "output_id": "binance_zil_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_zil_usdt\", \"binance_zil_usdt\", \"okx_zil_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_zil_usdt",
-      "output_id": "okx_zil_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

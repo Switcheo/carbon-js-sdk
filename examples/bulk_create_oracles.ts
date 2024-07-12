@@ -65,7 +65,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   const mainnetOraclesMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
   const mainnetOracles = Object.entries(mainnetOraclesMap)
 
-  const TESTNET_ORACLE_URL = "https://dev-api.carbon.network/carbon/oracle/v1/oracles"
+  const TESTNET_ORACLE_URL = "https://dev-api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=1000"
   const testnetOracles = await fetch(TESTNET_ORACLE_URL).then((res) => res.json());
 
   const testnetMap: SimpleMap<Boolean> = {}

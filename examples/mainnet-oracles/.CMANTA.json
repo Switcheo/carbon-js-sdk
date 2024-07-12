@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "bybit_manta_usdt",
-      "output_id": "bybit_manta_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_manta_usdt\", \"binance_manta_usdt\", \"kucoin_manta_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_manta_usdt",
-      "output_id": "binance_manta_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_manta_usdt\", \"binance_manta_usdt\", \"kucoin_manta_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kucoin_manta_usdt",
-      "output_id": "kucoin_manta_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

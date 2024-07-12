@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "bybit_saga_usdt",
-      "output_id": "bybit_saga_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_saga_usdt\", \"binance_saga_usdt\", \"htx_saga_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_saga_usdt",
-      "output_id": "binance_saga_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_saga_usdt\", \"binance_saga_usdt\", \"htx_saga_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "htx_saga_usdt",
-      "output_id": "htx_saga_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

@@ -89,28 +89,6 @@
       ]
     },
     {
-      "input_id": "bybit_ton_usdt",
-      "output_id": "bybit_ton_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"kucoin_ton_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_ton_usdt",
-      "output_id": "okx_ton_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"kucoin_ton_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kucoin_ton_usdt",
-      "output_id": "kucoin_ton_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

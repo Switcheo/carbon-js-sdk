@@ -1,25 +1,6 @@
 {
-  "output_id": "stride_usd",
+  "output_id": "lvn_usd",
   "templates": [
-    {
-      "template_id": "unchanged_response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "120"
-          }
-        },
-        {
-          "adapter": "unchanged_handler",
-          "config": {
-            "strategy": "nullify",
-            "threshold_duration": "3600"
-          }
-        }
-      ]
-    },
     {
       "template_id": "rpc_response_handler",
       "adapters": [
@@ -35,20 +16,20 @@
   ],
   "jobs": [
     {
-      "output_id": "osmosis_806_stride_osmo",
+      "output_id": "osmosis_1325_lvn_osmo",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_806_4",
+            "custom_node_url_key": "osmosis_1325",
             "default_node_host": "https://api-osmosis.carbon.network",
-            "default_node_path": "/osmosis/poolmanager/pools/806/prices?base_asset_denom=ibc/A8CA5EE328FA10C9519DF6057DA1F69682D28F7D0F5CCC7ECB72E3DCA2D157A4&quote_asset_denom=uosmo",
+            "default_node_path": "/osmosis/poolmanager/pools/1325/prices?base_asset_denom=factory/osmo1mlng7pz4pnyxtpq0akfwall37czyk9lukaucsrn30ameplhhshtqdvfm5c/ulvn&quote_asset_denom=uosmo",
             "paths": "[\"spot_price\"]",
             "timeout": "10"
           }
         },
         {
-          "template": "unchanged_response_handler"
+          "template": "rpc_response_handler"
         }
       ]
     },
@@ -65,48 +46,22 @@
       ]
     },
     {
-      "output_id": "osmosis_806_stride_usd",
+      "output_id": "osmosis_1325_lvn_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"osmosis_806_stride_osmo\",\"osmo_usd\"]"
+        "input_ids": "[\"osmosis_1325_lvn_osmo\",\"osmo_usd\"]"
       }
     },
     {
-      "output_id": "osmosis_1098_stride_osmo",
+      "output_id": "osmosis_1337_lvn_usdc",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_1098",
+            "custom_node_url_key": "osmosis_1337",
             "default_node_host": "https://api-osmosis.carbon.network",
-            "default_node_path": "/osmosis/poolmanager/pools/1098/prices?base_asset_denom=ibc/A8CA5EE328FA10C9519DF6057DA1F69682D28F7D0F5CCC7ECB72E3DCA2D157A4&quote_asset_denom=uosmo",
-            "paths": "[\"spot_price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "unchanged_response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "osmosis_1098_stride_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"osmosis_1098_stride_osmo\",\"osmo_usd\"]"
-      }
-    },
-    {
-      "output_id": "osmosis_1243_stride_usdc",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "osmosis_1243",
-            "default_node_host": "https://api-osmosis.carbon.network",
-            "default_node_path": "/osmosis/poolmanager/pools/1243/prices?base_asset_denom=ibc/A8CA5EE328FA10C9519DF6057DA1F69682D28F7D0F5CCC7ECB72E3DCA2D157A4&quote_asset_denom=ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+            "default_node_path": "/osmosis/poolmanager/pools/1337/prices?base_asset_denom=factory/osmo1mlng7pz4pnyxtpq0akfwall37czyk9lukaucsrn30ameplhhshtqdvfm5c/ulvn&quote_asset_denom=ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
             "paths": "[\"spot_price\"]",
             "timeout": "10"
           }
@@ -129,36 +84,83 @@
       ]
     },
     {
-      "output_id": "osmosis_1243_stride_usd",
+      "output_id": "osmosis_1337_lvn_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"osmosis_1243_stride_usdc\",\"usdc_usd\"]"
+        "input_ids": "[\"osmosis_1337_lvn_usdc\",\"usdc_usd\"]"
+      }
+    },
+    {
+      "output_id": "osmosis_1389_lvn_atom",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_1389",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/poolmanager/pools/1389/prices?base_asset_denom=factory/osmo1mlng7pz4pnyxtpq0akfwall37czyk9lukaucsrn30ameplhhshtqdvfm5c/ulvn&quote_asset_denom=ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+            "paths": "[\"spot_price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "atom_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CATOM",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_1389_lvn_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"osmosis_1389_lvn_atom\",\"atom_usd\"]"
       }
     },
     {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"osmosis_806_stride_usd\", \"osmosis_1098_stride_usd\",\"osmosis_1243_stride_usd\"]",
+        "value_ids": "[\"osmosis_1325_lvn_usd\", \"osmosis_1337_lvn_usd\",\"osmosis_1389_lvn_usd\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "stride_usd",
+      "output_id": "lvn_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"osmosis_806_stride_usd\", \"osmosis_1098_stride_usd\",\"osmosis_1243_stride_usd\"]",
-        "weights": "[0.5, 0.4, 0.1]"
+        "value_ids": "[\"osmosis_1325_lvn_usd\", \"osmosis_1337_lvn_usd\",\"osmosis_1389_lvn_usd\"]",
+        "weights": "[0.7, 0.1, 0.2]"
       }
     },
     {
-      "output_id": "stride_usd",
-      "input_id": "stride_usd",
+      "output_id": "lvn_usd",
+      "input_id": "lvn_usd",
       "adapter": "float_handler",
       "config": {
         "operation": "round",
         "precision": "6"
+      }
+    },
+    {
+      "output_id": "lvn_usd",
+      "input_id": "lvn_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
       }
     }
   ]

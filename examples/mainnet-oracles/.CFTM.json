@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "bybit_ftm_usdt",
-      "output_id": "bybit_ftm_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_ftm_usdt\", \"binance_ftm_usdt\", \"okx_ftm_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_ftm_usdt",
-      "output_id": "binance_ftm_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_ftm_usdt\", \"binance_ftm_usdt\", \"okx_ftm_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_ftm_usdt",
-      "output_id": "okx_ftm_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

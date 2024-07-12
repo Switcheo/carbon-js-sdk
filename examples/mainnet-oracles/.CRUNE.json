@@ -117,28 +117,6 @@
       ]
     },
     {
-      "input_id": "binance_rune_usd",
-      "output_id": "binance_rune_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_rune_usd\", \"kucoin_rune_usd\", \"kraken_rune_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kucoin_rune_usd",
-      "output_id": "kucoin_rune_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_rune_usd\", \"kucoin_rune_usd\", \"kraken_rune_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kraken_rune_usd",
-      "output_id": "kraken_rune_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

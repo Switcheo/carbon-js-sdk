@@ -105,28 +105,6 @@
       ]
     },
     {
-      "input_id": "coinbase_eth_usd",
-      "output_id": "coinbase_eth_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_eth_usd\", \"okx_eth_usd\",\"coinbase_eth_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_eth_usd",
-      "output_id": "binance_eth_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_eth_usd\", \"okx_eth_usd\",\"coinbase_eth_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_eth_usd",
-      "output_id": "okx_eth_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

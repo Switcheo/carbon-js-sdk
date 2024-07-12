@@ -104,28 +104,6 @@
       }
     },
     {
-      "input_id": "bybit_pepe_usdt",
-      "output_id": "bybit_pepe_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_pepe_usdt\", \"binance_pepe_usdt\", \"okx_pepe_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_pepe_usdt",
-      "output_id": "binance_pepe_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_pepe_usdt\", \"binance_pepe_usdt\", \"okx_pepe_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_pepe_usdt",
-      "output_id": "okx_pepe_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

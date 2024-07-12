@@ -1,5 +1,5 @@
 {
-  "output_id": "dym_usd",
+  "output_id": "om_usd",
   "templates": [
     {
       "template_id": "full_response_handler",
@@ -23,32 +23,14 @@
   ],
   "jobs": [
     {
-      "output_id": "bybit_dym_usdt",
+      "output_id": "binance_om_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bybit_dym_usdt",
-            "default_node_host": "https://api.bybit.com",
-            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=DYMUSDT",
-            "paths": "[\"result.price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "full_response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "binance_dym_usdt",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "binance_dym_usdt",
+            "custom_node_url_key": "binance_om_usdt",
             "default_node_host": "https://api-binance-proxy.carbon.network",
-            "default_node_path": "/api/v3/ticker/price?symbol=DYMUSDT",
+            "default_node_path": "/api/v3/ticker/price?symbol=OMUSDT",
             "paths": "[\"price\"]",
             "timeout": "10"
           }
@@ -59,14 +41,32 @@
       ]
     },
     {
-      "output_id": "kucoin_dym_usdt",
+      "output_id": "okx_om_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kucoin_dym_usdt",
+            "custom_node_url_key": "okx_om_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=OM-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "kucoin_om_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kucoin_om_usdt",
             "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=DYM-USDT",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=OM-USDT",
             "paths": "[\"data.price\"]",
             "timeout": "10"
           }
@@ -80,16 +80,16 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_dym_usdt\", \"binance_dym_usdt\", \"kucoin_dym_usdt\"]",
+        "value_ids": "[\"binance_om_usdt\", \"okx_om_usdt\", \"kucoin_om_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "dym_usdt",
+      "output_id": "om_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_dym_usdt\", \"binance_dym_usdt\", \"kucoin_dym_usdt\"]",
-        "weights": "[0.4, 0.4, 0.2]"
+        "value_ids": "[\"binance_om_usdt\", \"okx_om_usdt\", \"kucoin_om_usdt\"]",
+        "weights": "[0.4, 0.3, 0.3]"
       }
     },
     {
@@ -105,16 +105,16 @@
       ]
     },
     {
-      "output_id": "dym_usd",
+      "output_id": "om_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"dym_usdt\",\"usdt_usd\"]"
+        "input_ids": "[\"om_usdt\",\"usdt_usd\"]"
       }
     },
     {
-      "output_id": "dym_usd",
-      "input_id": "dym_usd",
+      "output_id": "om_usd",
+      "input_id": "om_usd",
       "adapter": "float_handler",
       "config": {
         "operation": "round",

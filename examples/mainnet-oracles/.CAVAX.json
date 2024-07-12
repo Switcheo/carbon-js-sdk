@@ -105,28 +105,6 @@
       ]
     },
     {
-      "input_id": "coinbase_avax_usd",
-      "output_id": "coinbase_avax_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_avax_usd\", \"okx_avax_usd\",\"coinbase_avax_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_avax_usd",
-      "output_id": "binance_avax_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_avax_usd\", \"okx_avax_usd\",\"coinbase_avax_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_avax_usd",
-      "output_id": "okx_avax_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

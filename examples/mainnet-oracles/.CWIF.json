@@ -105,28 +105,6 @@
       }
     },
     {
-      "input_id": "kucoin_wif_usd",
-      "output_id": "kucoin_wif_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"kucoin_wif_usd\", \"kraken_wif_usd\",\"binance_wif_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kraken_wif_usd",
-      "output_id": "kraken_wif_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"kucoin_wif_usd\", \"kraken_wif_usd\",\"binance_wif_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_wif_usd",
-      "output_id": "binance_wif_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

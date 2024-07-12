@@ -77,28 +77,6 @@
       ]
     },
     {
-      "output_id": "kraken_usdt_usd",
-      "input_id": "kraken_usdt_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"kraken_usdt_usd\", \"coinbase_usdt_usd\", \"bitfinex_usdt_usd\"]",
-        "tolerance_percentage": "1"
-      }
-    },
-    {
-      "output_id": "coinbase_usdt_usd",
-      "input_id": "coinbase_usdt_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"kraken_usdt_usd\", \"coinbase_usdt_usd\", \"bitfinex_usdt_usd\"]",
-        "tolerance_percentage": "1"
-      }
-    },
-    {
-      "output_id": "bitfinex_usdt_usd",
-      "input_id": "bitfinex_usdt_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

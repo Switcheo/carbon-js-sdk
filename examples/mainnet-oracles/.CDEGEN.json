@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "bybit_degen_usdt",
-      "output_id": "bybit_degen_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_degen_usdt\", \"kucoin_degen_usdt\", \"htx_degen_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kucoin_degen_usdt",
-      "output_id": "kucoin_degen_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_degen_usdt\", \"kucoin_degen_usdt\", \"htx_degen_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "htx_degen_usdt",
-      "output_id": "htx_degen_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

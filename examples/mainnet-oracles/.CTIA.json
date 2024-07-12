@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "bybit_tia_usdt",
-      "output_id": "bybit_tia_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"kucoin_tia_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "binance_tia_usdt",
-      "output_id": "binance_tia_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"kucoin_tia_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kucoin_tia_usdt",
-      "output_id": "kucoin_tia_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

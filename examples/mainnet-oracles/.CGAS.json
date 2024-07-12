@@ -77,28 +77,6 @@
       ]
     },
     {
-      "input_id": "binance_gas_usdt",
-      "output_id": "binance_gas_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_gas_usdt\", \"okx_gas_usdt\", \"kucoin_gas_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_gas_usdt",
-      "output_id": "okx_gas_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_gas_usdt\", \"okx_gas_usdt\", \"kucoin_gas_usdt\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kucoin_gas_usdt",
-      "output_id": "kucoin_gas_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

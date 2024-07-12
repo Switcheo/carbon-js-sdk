@@ -97,28 +97,6 @@
       ]
     },
     {
-      "input_id": "binance_sol_usd",
-      "output_id": "binance_sol_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_sol_usd\", \"kraken_sol_usd\",\"coinbase_sol_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kraken_sol_usd",
-      "output_id": "kraken_sol_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_sol_usd\", \"kraken_sol_usd\",\"coinbase_sol_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "coinbase_sol_usd",
-      "output_id": "coinbase_sol_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

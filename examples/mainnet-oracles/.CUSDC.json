@@ -97,28 +97,6 @@
       }
     },
     {
-      "input_id": "bitstamp_usdc_usd",
-      "output_id": "bitstamp_usdc_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bitstamp_usdc_usd\", \"kraken_usdc_usd\", \"binance_usdc_usd\"]",
-        "tolerance_percentage": "1"
-      }
-    },
-    {
-      "input_id": "kraken_usdc_usd",
-      "output_id": "kraken_usdc_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bitstamp_usdc_usd\", \"kraken_usdc_usd\", \"binance_usdc_usd\"]",
-        "tolerance_percentage": "1"
-      }
-    },
-    {
-      "input_id": "binance_usdc_usd",
-      "output_id": "binance_usdc_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

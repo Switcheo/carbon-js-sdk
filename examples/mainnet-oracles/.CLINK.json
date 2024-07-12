@@ -117,28 +117,6 @@
       ]
     },
     {
-      "input_id": "binance_link_usd",
-      "output_id": "binance_link_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_link_usd\", \"okx_link_usd\",\"coinbase_link_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "okx_link_usd",
-      "output_id": "okx_link_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_link_usd\", \"okx_link_usd\",\"coinbase_link_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "coinbase_link_usd",
-      "output_id": "coinbase_link_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

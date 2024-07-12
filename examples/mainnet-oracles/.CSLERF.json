@@ -59,18 +59,6 @@
       ]
     },
     {
-      "input_id": "bybit_slerf_usdt",
-      "output_id": "bybit_slerf_usdt",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"bybit_slerf_usdt\", \"htx_slerf_usdt\"]",
-        "tolerance_percentage": "0.5"
-      }
-    },
-    {
-      "input_id": "htx_slerf_usdt",
-      "output_id": "htx_slerf_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",

@@ -97,28 +97,6 @@
       ]
     },
     {
-      "input_id": "binance_atom_usd",
-      "output_id": "binance_atom_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_atom_usd\", \"kraken_atom_usd\",\"coinbase_atom_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "kraken_atom_usd",
-      "output_id": "kraken_atom_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_atom_usd\", \"kraken_atom_usd\",\"coinbase_atom_usd\"]",
-        "tolerance_percentage": "3"
-      }
-    },
-    {
-      "input_id": "coinbase_atom_usd",
-      "output_id": "coinbase_atom_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
