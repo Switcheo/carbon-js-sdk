@@ -185,12 +185,12 @@ export const MsgCreateAllianceProposal = {
         : "";
     message.rewardChangeInterval =
       object.rewardChangeInterval !== undefined &&
-      object.rewardChangeInterval !== null
+        object.rewardChangeInterval !== null
         ? Duration.fromJSON(object.rewardChangeInterval)
         : undefined;
     message.rewardWeightRange =
       object.rewardWeightRange !== undefined &&
-      object.rewardWeightRange !== null
+        object.rewardWeightRange !== null
         ? RewardWeightRange.fromJSON(object.rewardWeightRange)
         : undefined;
     return message;
@@ -232,12 +232,12 @@ export const MsgCreateAllianceProposal = {
     message.rewardChangeRate = object.rewardChangeRate ?? "";
     message.rewardChangeInterval =
       object.rewardChangeInterval !== undefined &&
-      object.rewardChangeInterval !== null
+        object.rewardChangeInterval !== null
         ? Duration.fromPartial(object.rewardChangeInterval)
         : undefined;
     message.rewardWeightRange =
       object.rewardWeightRange !== undefined &&
-      object.rewardWeightRange !== null
+        object.rewardWeightRange !== null
         ? RewardWeightRange.fromPartial(object.rewardWeightRange)
         : undefined;
     return message;
@@ -371,12 +371,12 @@ export const MsgUpdateAllianceProposal = {
         : "";
     message.rewardChangeInterval =
       object.rewardChangeInterval !== undefined &&
-      object.rewardChangeInterval !== null
+        object.rewardChangeInterval !== null
         ? Duration.fromJSON(object.rewardChangeInterval)
         : undefined;
     message.rewardWeightRange =
       object.rewardWeightRange !== undefined &&
-      object.rewardWeightRange !== null
+        object.rewardWeightRange !== null
         ? RewardWeightRange.fromJSON(object.rewardWeightRange)
         : undefined;
     return message;
@@ -418,12 +418,12 @@ export const MsgUpdateAllianceProposal = {
     message.rewardChangeRate = object.rewardChangeRate ?? "";
     message.rewardChangeInterval =
       object.rewardChangeInterval !== undefined &&
-      object.rewardChangeInterval !== null
+        object.rewardChangeInterval !== null
         ? Duration.fromPartial(object.rewardChangeInterval)
         : undefined;
     message.rewardWeightRange =
       object.rewardWeightRange !== undefined &&
-      object.rewardWeightRange !== null
+        object.rewardWeightRange !== null
         ? RewardWeightRange.fromPartial(object.rewardWeightRange)
         : undefined;
     return message;

@@ -48,16 +48,22 @@ export interface QueryGetFeeTiersResponse {
   feeTiers: FeeTier[];
 }
 
-export interface QueryAllStakeEquivalenceRequest {}
+export interface QueryAllStakeEquivalenceRequest {
+  pagination?: PageRequest;
+}
 
 export interface QueryAllStakeEquivalenceResponse {
   stakeEquivalence: StakeEquivalence[];
+  pagination?: PageResponse;
 }
 
-export interface QueryAllFeeStructuresRequest {}
+export interface QueryAllFeeStructuresRequest {
+  pagination?: PageRequest;
+}
 
 export interface QueryAllFeeStructuresResponse {
   feeStructures: FeeStructure[];
+  pagination?: PageResponse;
 }
 
 export interface QueryUserFeeStructuresRequest {
@@ -695,9 +701,12 @@ const baseQueryAllStakeEquivalenceRequest: object = {};
 
 export const QueryAllStakeEquivalenceRequest = {
   encode(
-    _: QueryAllStakeEquivalenceRequest,
+    message: QueryAllStakeEquivalenceRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -713,6 +722,9 @@ export const QueryAllStakeEquivalenceRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -721,24 +733,36 @@ export const QueryAllStakeEquivalenceRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryAllStakeEquivalenceRequest {
+  fromJSON(object: any): QueryAllStakeEquivalenceRequest {
     const message = {
       ...baseQueryAllStakeEquivalenceRequest,
     } as QueryAllStakeEquivalenceRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
-  toJSON(_: QueryAllStakeEquivalenceRequest): unknown {
+  toJSON(message: QueryAllStakeEquivalenceRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryAllStakeEquivalenceRequest>
+    object: DeepPartial<QueryAllStakeEquivalenceRequest>
   ): QueryAllStakeEquivalenceRequest {
     const message = {
       ...baseQueryAllStakeEquivalenceRequest,
     } as QueryAllStakeEquivalenceRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -752,6 +776,12 @@ export const QueryAllStakeEquivalenceResponse = {
   ): _m0.Writer {
     for (const v of message.stakeEquivalence) {
       StakeEquivalence.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -774,6 +804,9 @@ export const QueryAllStakeEquivalenceResponse = {
             StakeEquivalence.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -789,6 +822,10 @@ export const QueryAllStakeEquivalenceResponse = {
     message.stakeEquivalence = (object.stakeEquivalence ?? []).map((e: any) =>
       StakeEquivalence.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -801,6 +838,10 @@ export const QueryAllStakeEquivalenceResponse = {
     } else {
       obj.stakeEquivalence = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -813,6 +854,10 @@ export const QueryAllStakeEquivalenceResponse = {
     message.stakeEquivalence = (object.stakeEquivalence ?? []).map((e) =>
       StakeEquivalence.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -821,9 +866,12 @@ const baseQueryAllFeeStructuresRequest: object = {};
 
 export const QueryAllFeeStructuresRequest = {
   encode(
-    _: QueryAllFeeStructuresRequest,
+    message: QueryAllFeeStructuresRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -839,6 +887,9 @@ export const QueryAllFeeStructuresRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -847,24 +898,36 @@ export const QueryAllFeeStructuresRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryAllFeeStructuresRequest {
+  fromJSON(object: any): QueryAllFeeStructuresRequest {
     const message = {
       ...baseQueryAllFeeStructuresRequest,
     } as QueryAllFeeStructuresRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
-  toJSON(_: QueryAllFeeStructuresRequest): unknown {
+  toJSON(message: QueryAllFeeStructuresRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryAllFeeStructuresRequest>
+    object: DeepPartial<QueryAllFeeStructuresRequest>
   ): QueryAllFeeStructuresRequest {
     const message = {
       ...baseQueryAllFeeStructuresRequest,
     } as QueryAllFeeStructuresRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -878,6 +941,12 @@ export const QueryAllFeeStructuresResponse = {
   ): _m0.Writer {
     for (const v of message.feeStructures) {
       FeeStructure.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -900,6 +969,9 @@ export const QueryAllFeeStructuresResponse = {
             FeeStructure.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -915,6 +987,10 @@ export const QueryAllFeeStructuresResponse = {
     message.feeStructures = (object.feeStructures ?? []).map((e: any) =>
       FeeStructure.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -927,6 +1003,10 @@ export const QueryAllFeeStructuresResponse = {
     } else {
       obj.feeStructures = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -939,6 +1019,10 @@ export const QueryAllFeeStructuresResponse = {
     message.feeStructures = (object.feeStructures ?? []).map((e) =>
       FeeStructure.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
