@@ -147,7 +147,7 @@ export class IBCModule extends BaseModule {
     return chainInfoMap;
   }
 
-  getAppCurrency(coinMinimalDenom: string, coinGeckoId: string, tokenInfo?: Token, cw20RegexArr?: RegExpMatchArray | null): AppCurrency {
+  getAppCurrency(coinMinimalDenom: string, coinGeckoId?: string, tokenInfo?: Token, cw20RegexArr?: RegExpMatchArray | null): AppCurrency {
     const appCurrency = {
       coinDenom: tokenInfo?.symbol ?? "",
       coinMinimalDenom: coinMinimalDenom,
