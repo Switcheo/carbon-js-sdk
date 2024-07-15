@@ -134,13 +134,13 @@ export class IBCModule extends BaseModule {
         const coinGeckoId = tokenClient.geckoTokenNames?.[denom] ?? tokenClient.geckoTokenNames?.[denomTrace.baseDenom];
         const dstDenom = isChainNativeToken ? denomTrace.baseDenom.replace(/:/g, '/') : IBCUtils.makeIBCMinimalDenom(denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, ''), denomTrace.baseDenom);
         const chainInfo = chainInfoMap[chainId];
+        chainInfo.minimalDenomMap[token.denom] = dstDenom;
         const existingCurrencyIndex = chainInfo.currencies.findIndex(c => c.coinMinimalDenom === dstDenom);
         if (existingCurrencyIndex !== -1) {
           continue;
         }
         const currency = this.getAppCurrency(dstDenom, coinGeckoId, token, cw20RegexArr);
         chainInfo.currencies.push(currency);
-        chainInfo.minimalDenomMap[token.denom] = dstDenom;
       }
     }
 
