@@ -1,0 +1,134 @@
+{
+  "output_id": "popcat_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "pyth_popcat_usd_8",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "pyth_popcat_usd",
+            "default_node_host": "https://hermes.pyth.network",
+            "default_node_path": "/api/latest_price_feeds?ids[]=0xb9312a7ee50e189ef045aa3c7842e099b061bd9bdc99ac645956c3b660dc8cce",
+            "paths": "[\"0.price.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "pyth_popcat_usd",
+      "input_id": "pyth_popcat_usd_8",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "8"
+      }
+    },
+    {
+      "output_id": "cryptodotcom_popcat_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "cryptodotcom_popcat_usd",
+            "default_node_host": "https://api.crypto.com",
+            "default_node_path": "/exchange/v1/public/get-tickers?instrument_name=POPCAT_USD",
+            "paths": "[\"result.data.0.a\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "bybit_popcat_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_popcat_usdt",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=POPCATUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "bybit_popcat_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_popcat_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"pyth_popcat_usd\", \"coinbase_popcat_usd\", \"bybit_popcat_usd\"]",
+        "tolerance_percentage": "1.5"
+      }
+    },
+    {
+      "output_id": "popcat_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"pyth_popcat_usd\", \"coinbase_popcat_usd\", \"bybit_popcat_usd\"]",
+        "weights": "[0.3, 0.3, 0.4]"
+      }
+    },
+    {
+      "output_id": "popcat_usd",
+      "input_id": "popcat_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

@@ -175,7 +175,7 @@ export const NetworkConfigs: {
 
   [Network.TestNet]: {
     network: Network.TestNet,
-    chainId: "carbon-testnet-42069",
+    chainId: "carbon-testnet-42070",
 
     tmRpcUrl: "https://test-tm-api.carbon.network",
     tmWsUrl: "wss://test-tm-api.carbon.network",

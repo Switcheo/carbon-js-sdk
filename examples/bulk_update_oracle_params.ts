@@ -29,12 +29,12 @@ interface SimpleMap<OracleParams> {
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.TestNet,
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const TESTNET_ORACLE_URL = "https://dev-api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=1000"
+  const TESTNET_ORACLE_URL = "https://test-api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=1000"
   const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=1000"
 
   const testnetOracles = await fetch(TESTNET_ORACLE_URL).then((res) => res.json());
