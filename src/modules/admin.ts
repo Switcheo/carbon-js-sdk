@@ -1143,13 +1143,6 @@ export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPricePar
   };
 }
 
-export function transformSetSettlementPriceParams(msg: Carbon.Pricing.SettlementPriceParams) {
-  return {
-    marketId: msg.marketId,
-    settlementPrice: new BigNumber(msg.settlementPrice).shiftedBy(18).toString(10),
-  };
-}
-
 export function transformCommunityPoolSpendAmount(amount: Coin[]) {
   const amounts = amount.map((param) => {
     return {

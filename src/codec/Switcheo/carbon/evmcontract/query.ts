@@ -2,11 +2,16 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { EVMContract, ModuleEVMAddress } from "./evm_hooks";
+import {
+  PageRequest,
+  PageResponse,
+} from "../../../cosmos/base/query/v1beta1/pagination";
 
 export const protobufPackage = "Switcheo.carbon.evmcontract";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryContractRequest {
+  moduleName: string;
   contractAddress: string;
 }
 
@@ -14,16 +19,30 @@ export interface QueryContractResponse {
   contract?: EVMContract;
 }
 
-export interface QueryContractAllRequest {}
+export interface QueryContractAllByModuleRequest {
+  moduleName: string;
+}
 
-export interface QueryContractAllResponse {
+export interface QueryContractAllByModuleResponse {
   contracts: EVMContract[];
 }
 
-export interface QueryAllAddressEVMRequest {}
+export interface QueryContractAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryContractAllResponse {
+  contracts: EVMContract[];
+  pagination?: PageResponse;
+}
+
+export interface QueryAllAddressEVMRequest {
+  pagination?: PageRequest;
+}
 
 export interface QueryAllAddressEVMResponse {
   modules: ModuleEVMAddress[];
+  pagination?: PageResponse;
 }
 
 export interface QueryAddressEVMRequest {
@@ -34,15 +53,21 @@ export interface QueryAddressEVMResponse {
   address: string;
 }
 
-const baseQueryContractRequest: object = { contractAddress: "" };
+const baseQueryContractRequest: object = {
+  moduleName: "",
+  contractAddress: "",
+};
 
 export const QueryContractRequest = {
   encode(
     message: QueryContractRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.moduleName !== "") {
+      writer.uint32(10).string(message.moduleName);
+    }
     if (message.contractAddress !== "") {
-      writer.uint32(10).string(message.contractAddress);
+      writer.uint32(18).string(message.contractAddress);
     }
     return writer;
   },
@@ -58,6 +83,9 @@ export const QueryContractRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.moduleName = reader.string();
+          break;
+        case 2:
           message.contractAddress = reader.string();
           break;
         default:
@@ -70,6 +98,10 @@ export const QueryContractRequest = {
 
   fromJSON(object: any): QueryContractRequest {
     const message = { ...baseQueryContractRequest } as QueryContractRequest;
+    message.moduleName =
+      object.moduleName !== undefined && object.moduleName !== null
+        ? String(object.moduleName)
+        : "";
     message.contractAddress =
       object.contractAddress !== undefined && object.contractAddress !== null
         ? String(object.contractAddress)
@@ -79,6 +111,7 @@ export const QueryContractRequest = {
 
   toJSON(message: QueryContractRequest): unknown {
     const obj: any = {};
+    message.moduleName !== undefined && (obj.moduleName = message.moduleName);
     message.contractAddress !== undefined &&
       (obj.contractAddress = message.contractAddress);
     return obj;
@@ -86,6 +119,7 @@ export const QueryContractRequest = {
 
   fromPartial(object: DeepPartial<QueryContractRequest>): QueryContractRequest {
     const message = { ...baseQueryContractRequest } as QueryContractRequest;
+    message.moduleName = object.moduleName ?? "";
     message.contractAddress = object.contractAddress ?? "";
     return message;
   },
@@ -155,13 +189,152 @@ export const QueryContractResponse = {
   },
 };
 
+const baseQueryContractAllByModuleRequest: object = { moduleName: "" };
+
+export const QueryContractAllByModuleRequest = {
+  encode(
+    message: QueryContractAllByModuleRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.moduleName !== "") {
+      writer.uint32(10).string(message.moduleName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryContractAllByModuleRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractAllByModuleRequest,
+    } as QueryContractAllByModuleRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.moduleName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractAllByModuleRequest {
+    const message = {
+      ...baseQueryContractAllByModuleRequest,
+    } as QueryContractAllByModuleRequest;
+    message.moduleName =
+      object.moduleName !== undefined && object.moduleName !== null
+        ? String(object.moduleName)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryContractAllByModuleRequest): unknown {
+    const obj: any = {};
+    message.moduleName !== undefined && (obj.moduleName = message.moduleName);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractAllByModuleRequest>
+  ): QueryContractAllByModuleRequest {
+    const message = {
+      ...baseQueryContractAllByModuleRequest,
+    } as QueryContractAllByModuleRequest;
+    message.moduleName = object.moduleName ?? "";
+    return message;
+  },
+};
+
+const baseQueryContractAllByModuleResponse: object = {};
+
+export const QueryContractAllByModuleResponse = {
+  encode(
+    message: QueryContractAllByModuleResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.contracts) {
+      EVMContract.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryContractAllByModuleResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractAllByModuleResponse,
+    } as QueryContractAllByModuleResponse;
+    message.contracts = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.contracts.push(EVMContract.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractAllByModuleResponse {
+    const message = {
+      ...baseQueryContractAllByModuleResponse,
+    } as QueryContractAllByModuleResponse;
+    message.contracts = (object.contracts ?? []).map((e: any) =>
+      EVMContract.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryContractAllByModuleResponse): unknown {
+    const obj: any = {};
+    if (message.contracts) {
+      obj.contracts = message.contracts.map((e) =>
+        e ? EVMContract.toJSON(e) : undefined
+      );
+    } else {
+      obj.contracts = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractAllByModuleResponse>
+  ): QueryContractAllByModuleResponse {
+    const message = {
+      ...baseQueryContractAllByModuleResponse,
+    } as QueryContractAllByModuleResponse;
+    message.contracts = (object.contracts ?? []).map((e) =>
+      EVMContract.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 const baseQueryContractAllRequest: object = {};
 
 export const QueryContractAllRequest = {
   encode(
-    _: QueryContractAllRequest,
+    message: QueryContractAllRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -177,6 +350,9 @@ export const QueryContractAllRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -185,24 +361,36 @@ export const QueryContractAllRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryContractAllRequest {
+  fromJSON(object: any): QueryContractAllRequest {
     const message = {
       ...baseQueryContractAllRequest,
     } as QueryContractAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
-  toJSON(_: QueryContractAllRequest): unknown {
+  toJSON(message: QueryContractAllRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryContractAllRequest>
+    object: DeepPartial<QueryContractAllRequest>
   ): QueryContractAllRequest {
     const message = {
       ...baseQueryContractAllRequest,
     } as QueryContractAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -216,6 +404,12 @@ export const QueryContractAllResponse = {
   ): _m0.Writer {
     for (const v of message.contracts) {
       EVMContract.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -236,6 +430,9 @@ export const QueryContractAllResponse = {
         case 1:
           message.contracts.push(EVMContract.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -251,6 +448,10 @@ export const QueryContractAllResponse = {
     message.contracts = (object.contracts ?? []).map((e: any) =>
       EVMContract.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -263,6 +464,10 @@ export const QueryContractAllResponse = {
     } else {
       obj.contracts = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -275,6 +480,10 @@ export const QueryContractAllResponse = {
     message.contracts = (object.contracts ?? []).map((e) =>
       EVMContract.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -283,9 +492,12 @@ const baseQueryAllAddressEVMRequest: object = {};
 
 export const QueryAllAddressEVMRequest = {
   encode(
-    _: QueryAllAddressEVMRequest,
+    message: QueryAllAddressEVMRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -301,6 +513,9 @@ export const QueryAllAddressEVMRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -309,24 +524,36 @@ export const QueryAllAddressEVMRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryAllAddressEVMRequest {
+  fromJSON(object: any): QueryAllAddressEVMRequest {
     const message = {
       ...baseQueryAllAddressEVMRequest,
     } as QueryAllAddressEVMRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
-  toJSON(_: QueryAllAddressEVMRequest): unknown {
+  toJSON(message: QueryAllAddressEVMRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryAllAddressEVMRequest>
+    object: DeepPartial<QueryAllAddressEVMRequest>
   ): QueryAllAddressEVMRequest {
     const message = {
       ...baseQueryAllAddressEVMRequest,
     } as QueryAllAddressEVMRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -340,6 +567,12 @@ export const QueryAllAddressEVMResponse = {
   ): _m0.Writer {
     for (const v of message.modules) {
       ModuleEVMAddress.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -362,6 +595,9 @@ export const QueryAllAddressEVMResponse = {
             ModuleEVMAddress.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -377,6 +613,10 @@ export const QueryAllAddressEVMResponse = {
     message.modules = (object.modules ?? []).map((e: any) =>
       ModuleEVMAddress.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -389,6 +629,10 @@ export const QueryAllAddressEVMResponse = {
     } else {
       obj.modules = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -401,6 +645,10 @@ export const QueryAllAddressEVMResponse = {
     message.modules = (object.modules ?? []).map((e) =>
       ModuleEVMAddress.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -531,6 +779,10 @@ export const QueryAddressEVMResponse = {
 export interface Query {
   /** Get contract version and isActive from contract address */
   Contract(request: QueryContractRequest): Promise<QueryContractResponse>;
+  /** Get contract version and isActive all deployed contracts in a module */
+  ContractAllByModule(
+    request: QueryContractAllByModuleRequest
+  ): Promise<QueryContractAllByModuleResponse>;
   /** Get version and isActive from all deployed contracts */
   ContractAll(
     request: QueryContractAllRequest
@@ -550,6 +802,7 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Contract = this.Contract.bind(this);
+    this.ContractAllByModule = this.ContractAllByModule.bind(this);
     this.ContractAll = this.ContractAll.bind(this);
     this.ModuleEVMAddress = this.ModuleEVMAddress.bind(this);
     this.AllModuleEVMAddress = this.AllModuleEVMAddress.bind(this);
@@ -563,6 +816,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryContractResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ContractAllByModule(
+    request: QueryContractAllByModuleRequest
+  ): Promise<QueryContractAllByModuleResponse> {
+    const data = QueryContractAllByModuleRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.evmcontract.Query",
+      "ContractAllByModule",
+      data
+    );
+    return promise.then((data) =>
+      QueryContractAllByModuleResponse.decode(new _m0.Reader(data))
     );
   }
 

@@ -170,7 +170,6 @@ export const TxGasCostTypeDefaultKey = "default_fee";
 export const TxMinGasPriceTypeDefaultKey = "swth";
 export const TxGasCostTypeMap = {
   [TxTypes.MsgClaimPoolRewards]: "claim_pool_rewards",
-  [TxTypes.MsgCreateVote]: "create_oracle_vote",
   [TxTypes.MsgCreateOrder]: "create_order",
   [TxTypes.MsgCreatePool]: "create_pool",
   [TxTypes.MsgCreatePoolWithLiquidity]: "create_pool",

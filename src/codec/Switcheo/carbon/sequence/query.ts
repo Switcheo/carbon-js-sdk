@@ -1,6 +1,10 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import {
+  PageRequest,
+  PageResponse,
+} from "../../../cosmos/base/query/v1beta1/pagination";
 import { Sequence } from "./genesis";
 
 export const protobufPackage = "Switcheo.carbon.sequence";
@@ -13,10 +17,13 @@ export interface QuerySequenceResponse {
   sequences: Sequence[];
 }
 
-export interface QuerySequenceAllRequest {}
+export interface QuerySequenceAllRequest {
+  pagination?: PageRequest;
+}
 
 export interface QuerySequenceAllResponse {
   sequences: Sequence[];
+  pagination?: PageResponse;
 }
 
 const baseQuerySequenceRequest: object = { module: "" };
@@ -145,9 +152,12 @@ const baseQuerySequenceAllRequest: object = {};
 
 export const QuerySequenceAllRequest = {
   encode(
-    _: QuerySequenceAllRequest,
+    message: QuerySequenceAllRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -163,6 +173,9 @@ export const QuerySequenceAllRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -171,24 +184,36 @@ export const QuerySequenceAllRequest = {
     return message;
   },
 
-  fromJSON(_: any): QuerySequenceAllRequest {
+  fromJSON(object: any): QuerySequenceAllRequest {
     const message = {
       ...baseQuerySequenceAllRequest,
     } as QuerySequenceAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
-  toJSON(_: QuerySequenceAllRequest): unknown {
+  toJSON(message: QuerySequenceAllRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QuerySequenceAllRequest>
+    object: DeepPartial<QuerySequenceAllRequest>
   ): QuerySequenceAllRequest {
     const message = {
       ...baseQuerySequenceAllRequest,
     } as QuerySequenceAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -202,6 +227,12 @@ export const QuerySequenceAllResponse = {
   ): _m0.Writer {
     for (const v of message.sequences) {
       Sequence.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -222,6 +253,9 @@ export const QuerySequenceAllResponse = {
         case 1:
           message.sequences.push(Sequence.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -237,6 +271,10 @@ export const QuerySequenceAllResponse = {
     message.sequences = (object.sequences ?? []).map((e: any) =>
       Sequence.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -249,6 +287,10 @@ export const QuerySequenceAllResponse = {
     } else {
       obj.sequences = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -261,6 +303,10 @@ export const QuerySequenceAllResponse = {
     message.sequences = (object.sequences ?? []).map((e) =>
       Sequence.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
