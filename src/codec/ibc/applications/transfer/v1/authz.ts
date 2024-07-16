@@ -15,6 +15,11 @@ export interface Allocation {
   spendLimit: Coin[];
   /** allow list of receivers, an empty allow list permits any receiver address */
   allowList: string[];
+  /**
+   * allow list of packet data keys, an empty list prohibits all packet data keys;
+   * a list only with "*" permits any packet data key
+   */
+  allowedPacketData: string[];
 }
 
 /**
@@ -30,6 +35,7 @@ const baseAllocation: object = {
   sourcePort: "",
   sourceChannel: "",
   allowList: "",
+  allowedPacketData: "",
 };
 
 export const Allocation = {
@@ -49,6 +55,9 @@ export const Allocation = {
     for (const v of message.allowList) {
       writer.uint32(34).string(v!);
     }
+    for (const v of message.allowedPacketData) {
+      writer.uint32(42).string(v!);
+    }
     return writer;
   },
 
@@ -58,6 +67,7 @@ export const Allocation = {
     const message = { ...baseAllocation } as Allocation;
     message.spendLimit = [];
     message.allowList = [];
+    message.allowedPacketData = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -72,6 +82,9 @@ export const Allocation = {
           break;
         case 4:
           message.allowList.push(reader.string());
+          break;
+        case 5:
+          message.allowedPacketData.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -95,6 +108,9 @@ export const Allocation = {
       Coin.fromJSON(e)
     );
     message.allowList = (object.allowList ?? []).map((e: any) => String(e));
+    message.allowedPacketData = (object.allowedPacketData ?? []).map((e: any) =>
+      String(e)
+    );
     return message;
   },
 
@@ -115,6 +131,11 @@ export const Allocation = {
     } else {
       obj.allowList = [];
     }
+    if (message.allowedPacketData) {
+      obj.allowedPacketData = message.allowedPacketData.map((e) => e);
+    } else {
+      obj.allowedPacketData = [];
+    }
     return obj;
   },
 
@@ -126,6 +147,7 @@ export const Allocation = {
       Coin.fromPartial(e)
     );
     message.allowList = (object.allowList ?? []).map((e) => e);
+    message.allowedPacketData = (object.allowedPacketData ?? []).map((e) => e);
     return message;
   },
 };

@@ -13,8 +13,8 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgCreateOrder: AminoInit = {
   aminoType: TxTypes.CreateOrder,
   valueMap: {
-    price: ConvertEncType.DecOrZero,
-    stopPrice: ConvertEncType.DecOrZero,
+    price: ConvertEncType.Dec,
+    stopPrice: ConvertEncType.Dec,
   },
 };
 

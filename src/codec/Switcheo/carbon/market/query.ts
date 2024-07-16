@@ -13,7 +13,7 @@ export const protobufPackage = "Switcheo.carbon.market";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetMarketRequest {
-  name: string;
+  id: string;
 }
 
 export interface QueryGetMarketResponse {
@@ -30,7 +30,7 @@ export interface QueryAllMarketResponse {
 }
 
 export interface QueryGetTradingFeesRequest {
-  marketName: string;
+  marketId: string;
   userAddress: string;
 }
 
@@ -40,7 +40,7 @@ export interface QueryGetTradingFeesResponse {
 
 export interface QueryGetFeeTiersRequest {
   marketType: string;
-  marketName: string;
+  marketId: string;
   userAddress: string;
 }
 
@@ -48,16 +48,22 @@ export interface QueryGetFeeTiersResponse {
   feeTiers: FeeTier[];
 }
 
-export interface QueryAllStakeEquivalenceRequest {}
+export interface QueryAllStakeEquivalenceRequest {
+  pagination?: PageRequest;
+}
 
 export interface QueryAllStakeEquivalenceResponse {
   stakeEquivalence: StakeEquivalence[];
+  pagination?: PageResponse;
 }
 
-export interface QueryAllFeeStructuresRequest {}
+export interface QueryAllFeeStructuresRequest {
+  pagination?: PageRequest;
+}
 
 export interface QueryAllFeeStructuresResponse {
   feeStructures: FeeStructure[];
+  pagination?: PageResponse;
 }
 
 export interface QueryUserFeeStructuresRequest {
@@ -109,15 +115,15 @@ export interface QueryEVMMarketResponse {
   isActive: boolean;
 }
 
-const baseQueryGetMarketRequest: object = { name: "" };
+const baseQueryGetMarketRequest: object = { id: "" };
 
 export const QueryGetMarketRequest = {
   encode(
     message: QueryGetMarketRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
     return writer;
   },
@@ -133,7 +139,7 @@ export const QueryGetMarketRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.name = reader.string();
+          message.id = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -145,16 +151,14 @@ export const QueryGetMarketRequest = {
 
   fromJSON(object: any): QueryGetMarketRequest {
     const message = { ...baseQueryGetMarketRequest } as QueryGetMarketRequest;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
     return message;
   },
 
   toJSON(message: QueryGetMarketRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
+    message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
@@ -162,7 +166,7 @@ export const QueryGetMarketRequest = {
     object: DeepPartial<QueryGetMarketRequest>
   ): QueryGetMarketRequest {
     const message = { ...baseQueryGetMarketRequest } as QueryGetMarketRequest;
-    message.name = object.name ?? "";
+    message.id = object.id ?? "";
     return message;
   },
 };
@@ -381,7 +385,7 @@ export const QueryAllMarketResponse = {
 };
 
 const baseQueryGetTradingFeesRequest: object = {
-  marketName: "",
+  marketId: "",
   userAddress: "",
 };
 
@@ -390,8 +394,8 @@ export const QueryGetTradingFeesRequest = {
     message: QueryGetTradingFeesRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.marketName !== "") {
-      writer.uint32(10).string(message.marketName);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.userAddress !== "") {
       writer.uint32(18).string(message.userAddress);
@@ -412,7 +416,7 @@ export const QueryGetTradingFeesRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketName = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.userAddress = reader.string();
@@ -429,9 +433,9 @@ export const QueryGetTradingFeesRequest = {
     const message = {
       ...baseQueryGetTradingFeesRequest,
     } as QueryGetTradingFeesRequest;
-    message.marketName =
-      object.marketName !== undefined && object.marketName !== null
-        ? String(object.marketName)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.userAddress =
       object.userAddress !== undefined && object.userAddress !== null
@@ -442,7 +446,7 @@ export const QueryGetTradingFeesRequest = {
 
   toJSON(message: QueryGetTradingFeesRequest): unknown {
     const obj: any = {};
-    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.userAddress !== undefined &&
       (obj.userAddress = message.userAddress);
     return obj;
@@ -454,7 +458,7 @@ export const QueryGetTradingFeesRequest = {
     const message = {
       ...baseQueryGetTradingFeesRequest,
     } as QueryGetTradingFeesRequest;
-    message.marketName = object.marketName ?? "";
+    message.marketId = object.marketId ?? "";
     message.userAddress = object.userAddress ?? "";
     return message;
   },
@@ -530,7 +534,7 @@ export const QueryGetTradingFeesResponse = {
 
 const baseQueryGetFeeTiersRequest: object = {
   marketType: "",
-  marketName: "",
+  marketId: "",
   userAddress: "",
 };
 
@@ -542,8 +546,8 @@ export const QueryGetFeeTiersRequest = {
     if (message.marketType !== "") {
       writer.uint32(10).string(message.marketType);
     }
-    if (message.marketName !== "") {
-      writer.uint32(18).string(message.marketName);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.userAddress !== "") {
       writer.uint32(26).string(message.userAddress);
@@ -567,7 +571,7 @@ export const QueryGetFeeTiersRequest = {
           message.marketType = reader.string();
           break;
         case 2:
-          message.marketName = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.userAddress = reader.string();
@@ -588,9 +592,9 @@ export const QueryGetFeeTiersRequest = {
       object.marketType !== undefined && object.marketType !== null
         ? String(object.marketType)
         : "";
-    message.marketName =
-      object.marketName !== undefined && object.marketName !== null
-        ? String(object.marketName)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.userAddress =
       object.userAddress !== undefined && object.userAddress !== null
@@ -602,7 +606,7 @@ export const QueryGetFeeTiersRequest = {
   toJSON(message: QueryGetFeeTiersRequest): unknown {
     const obj: any = {};
     message.marketType !== undefined && (obj.marketType = message.marketType);
-    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.userAddress !== undefined &&
       (obj.userAddress = message.userAddress);
     return obj;
@@ -615,7 +619,7 @@ export const QueryGetFeeTiersRequest = {
       ...baseQueryGetFeeTiersRequest,
     } as QueryGetFeeTiersRequest;
     message.marketType = object.marketType ?? "";
-    message.marketName = object.marketName ?? "";
+    message.marketId = object.marketId ?? "";
     message.userAddress = object.userAddress ?? "";
     return message;
   },
@@ -697,9 +701,12 @@ const baseQueryAllStakeEquivalenceRequest: object = {};
 
 export const QueryAllStakeEquivalenceRequest = {
   encode(
-    _: QueryAllStakeEquivalenceRequest,
+    message: QueryAllStakeEquivalenceRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -715,6 +722,9 @@ export const QueryAllStakeEquivalenceRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -723,24 +733,36 @@ export const QueryAllStakeEquivalenceRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryAllStakeEquivalenceRequest {
+  fromJSON(object: any): QueryAllStakeEquivalenceRequest {
     const message = {
       ...baseQueryAllStakeEquivalenceRequest,
     } as QueryAllStakeEquivalenceRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
-  toJSON(_: QueryAllStakeEquivalenceRequest): unknown {
+  toJSON(message: QueryAllStakeEquivalenceRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryAllStakeEquivalenceRequest>
+    object: DeepPartial<QueryAllStakeEquivalenceRequest>
   ): QueryAllStakeEquivalenceRequest {
     const message = {
       ...baseQueryAllStakeEquivalenceRequest,
     } as QueryAllStakeEquivalenceRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -754,6 +776,12 @@ export const QueryAllStakeEquivalenceResponse = {
   ): _m0.Writer {
     for (const v of message.stakeEquivalence) {
       StakeEquivalence.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -776,6 +804,9 @@ export const QueryAllStakeEquivalenceResponse = {
             StakeEquivalence.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -791,6 +822,10 @@ export const QueryAllStakeEquivalenceResponse = {
     message.stakeEquivalence = (object.stakeEquivalence ?? []).map((e: any) =>
       StakeEquivalence.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -803,6 +838,10 @@ export const QueryAllStakeEquivalenceResponse = {
     } else {
       obj.stakeEquivalence = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -815,6 +854,10 @@ export const QueryAllStakeEquivalenceResponse = {
     message.stakeEquivalence = (object.stakeEquivalence ?? []).map((e) =>
       StakeEquivalence.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -823,9 +866,12 @@ const baseQueryAllFeeStructuresRequest: object = {};
 
 export const QueryAllFeeStructuresRequest = {
   encode(
-    _: QueryAllFeeStructuresRequest,
+    message: QueryAllFeeStructuresRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -841,6 +887,9 @@ export const QueryAllFeeStructuresRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -849,24 +898,36 @@ export const QueryAllFeeStructuresRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryAllFeeStructuresRequest {
+  fromJSON(object: any): QueryAllFeeStructuresRequest {
     const message = {
       ...baseQueryAllFeeStructuresRequest,
     } as QueryAllFeeStructuresRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
-  toJSON(_: QueryAllFeeStructuresRequest): unknown {
+  toJSON(message: QueryAllFeeStructuresRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryAllFeeStructuresRequest>
+    object: DeepPartial<QueryAllFeeStructuresRequest>
   ): QueryAllFeeStructuresRequest {
     const message = {
       ...baseQueryAllFeeStructuresRequest,
     } as QueryAllFeeStructuresRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -880,6 +941,12 @@ export const QueryAllFeeStructuresResponse = {
   ): _m0.Writer {
     for (const v of message.feeStructures) {
       FeeStructure.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -902,6 +969,9 @@ export const QueryAllFeeStructuresResponse = {
             FeeStructure.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -917,6 +987,10 @@ export const QueryAllFeeStructuresResponse = {
     message.feeStructures = (object.feeStructures ?? []).map((e: any) =>
       FeeStructure.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -929,6 +1003,10 @@ export const QueryAllFeeStructuresResponse = {
     } else {
       obj.feeStructures = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -941,6 +1019,10 @@ export const QueryAllFeeStructuresResponse = {
     message.feeStructures = (object.feeStructures ?? []).map((e) =>
       FeeStructure.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };

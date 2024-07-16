@@ -10,7 +10,6 @@ export class PerpspoolModule extends BaseModule {
       creator: wallet.bech32Address,
       name: params.name,
       depositDenom: params.depositDenom,
-      shareTokenSymbol: params.shareTokenSymbol,
       supplyCap: params.supplyCap,
       depositFee: params.depositFee,
       withdrawalFee: params.withdrawalFee,

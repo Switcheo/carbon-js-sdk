@@ -184,9 +184,9 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPerpPoolHistoryResponse>;
   }
 
-  async PerpPool7DApy(
-    query: Insights.QueryPerpPool7DaysAPY
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPerpPool7DaysAPYResponse>> {
+  async PerpPoolApy(
+    query: Insights.QueryPerpPoolAPY
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>> {
     const routeParams = { id: query.id };
     const request = this.apiManager.path(
       "pool/perp/apy",
@@ -197,7 +197,7 @@ class InsightsQueryClient {
       }
     );
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryPerpPool7DaysAPYResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>;
   }
 
   async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {

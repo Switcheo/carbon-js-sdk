@@ -23,8 +23,9 @@ import { MsgUnjail, MsgUnjailResponse, MsgUpdateParams as MsgSlashingUpdateParam
 import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent as MsgGovExecLegacyContent, MsgExecLegacyContentResponse as MsgGovExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted as MsgGovVoteWeighted, MsgVoteWeightedResponse as MsgGovVoteWeightedResponse, MsgDeposit as MsgGovDeposit, MsgDepositResponse as MsgGovDepositResponse, MsgUpdateParams as MsgGovUpdateParams, MsgUpdateParamsResponse as MsgGovUpdateParamsResponse, MsgCancelProposal as MsgGovCancelProposal, MsgCancelProposalResponse as MsgGovCancelProposalResponse } from "./cosmos/gov/v1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse, MsgUpdateParams as MsgConnectionUpdateParams, MsgUpdateParamsResponse as MsgConnectionUpdateParamsResponse } from "./ibc/core/connection/v1/tx";
-import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
+import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse, MsgChannelUpgradeInit, MsgChannelUpgradeInitResponse, MsgChannelUpgradeTry, MsgChannelUpgradeTryResponse, MsgChannelUpgradeAck, MsgChannelUpgradeAckResponse, MsgChannelUpgradeConfirm, MsgChannelUpgradeConfirmResponse, MsgChannelUpgradeOpen, MsgChannelUpgradeOpenResponse, MsgChannelUpgradeTimeout, MsgChannelUpgradeTimeoutResponse, MsgChannelUpgradeCancel, MsgChannelUpgradeCancelResponse, MsgUpdateParams, MsgUpdateParamsResponse, MsgPruneAcknowledgements, MsgPruneAcknowledgementsResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse, MsgRecoverClient, MsgRecoverClientResponse, MsgIBCSoftwareUpgrade, MsgIBCSoftwareUpgradeResponse, MsgUpdateParams as MsgClientUpdateParams, MsgUpdateParamsResponse as MsgClientUpdateParamsResponse } from "./ibc/core/client/v1/tx";
+import { MsgStoreCode, MsgStoreCodeResponse, MsgRemoveChecksum, MsgRemoveChecksumResponse, MsgMigrateContract, MsgMigrateContractResponse } from "./ibc/lightclients/wasm/v1/tx";
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
 import { MsgRegisterPayee, MsgRegisterPayeeResponse, MsgRegisterCounterpartyPayee, MsgRegisterCounterpartyPayeeResponse, MsgPayPacketFee, MsgPayPacketFeeResponse, MsgPayPacketFeeAsync, MsgPayPacketFeeAsyncResponse } from "./ibc/applications/fee/v1/tx";
 import { MsgTransfer, MsgTransferResponse, MsgUpdateParams as MsgTransferUpdateParams, MsgUpdateParamsResponse as MsgTransferUpdateParamsResponse } from "./ibc/applications/transfer/v1/tx";
@@ -32,7 +33,7 @@ import { MsgUpdateParams as MsgInterchainAccHostUpdateParams, MsgUpdateParamsRes
 import { MsgRegisterInterchainAccount, MsgRegisterInterchainAccountResponse, MsgSendTx, MsgSendTxResponse, MsgUpdateParams as MsgInterchainAccControllerUpdateParams, MsgUpdateParamsResponse as MsgInterchainAccControllerUpdateParamsResponse } from "./ibc/applications/interchain_accounts/controller/v1/tx";
 import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as MsgFeemarketUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
 import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
-import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
+import { Proposal } from "./cosmos/gov/v1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
 
 export * from './cosmos-models';
@@ -164,10 +165,6 @@ registry.register("/Switcheo.carbon.fee.MsgRemoveGasCost", Carbon.Fee.MsgRemoveG
 registry.register("/Switcheo.carbon.fee.MsgRemoveGasCostResponse", Carbon.Fee.MsgRemoveGasCostResponse);
 registry.register("/Switcheo.carbon.fee.MsgRemoveMinGasPrice", Carbon.Fee.MsgRemoveMinGasPrice);
 registry.register("/Switcheo.carbon.fee.MsgRemoveMinGasPriceResponse", Carbon.Fee.MsgRemoveMinGasPriceResponse);
-registry.register("/Switcheo.carbon.fee.SetMsgGasCostProposal", Carbon.Fee.SetMsgGasCostProposal);
-registry.register("/Switcheo.carbon.fee.SetMinGasPriceProposal", Carbon.Fee.SetMinGasPriceProposal);
-registry.register("/Switcheo.carbon.fee.RemoveMsgGasCostProposal", Carbon.Fee.RemoveMsgGasCostProposal);
-registry.register("/Switcheo.carbon.fee.RemoveMinGasPriceProposal", Carbon.Fee.RemoveMinGasPriceProposal);
 
 registry.register("/Switcheo.carbon.erc20.MsgConvertCoin", Carbon.Erc20.MsgConvertCoin);
 registry.register("/Switcheo.carbon.erc20.MsgConvertCoinResponse", Carbon.Erc20.MsgConvertCoinResponse);
@@ -187,6 +184,11 @@ registry.register("/Switcheo.carbon.erc20.MsgUpdateEVMHookEnabledResponse", Carb
 registry.register("/Switcheo.carbon.evmmerge.MsgMergeAccount", Carbon.Evmmerge.MsgMergeAccount);
 registry.register("/Switcheo.carbon.evmmerge.MsgMergeAccountResponse", Carbon.Evmmerge.MsgMergeAccountResponse);
 
+registry.register("/Switcheo.carbon.bank.MsgBlacklistAddress", Carbon.Bank.MsgBlacklistAddress);
+registry.register("/Switcheo.carbon.bank.MsgBlacklistAddressResponse", Carbon.Bank.MsgBlacklistAddressResponse);
+registry.register("/Switcheo.carbon.bank.MsgUnblacklistAddress", Carbon.Bank.MsgUnblacklistAddress);
+registry.register("/Switcheo.carbon.bank.MsgUnblacklistAddressResponse", Carbon.Bank.MsgUnblacklistAddressResponse);
+
 registry.register("/Switcheo.carbon.btcx.MsgCreate", PolyNetwork.Btcx.MsgCreate);
 registry.register("/Switcheo.carbon.btcx.MsgCreateResponse", PolyNetwork.Btcx.MsgCreateResponse);
 registry.register("/Switcheo.carbon.btcx.MsgBind", PolyNetwork.Btcx.MsgBind);
@@ -199,8 +201,6 @@ registry.register("/Switcheo.carbon.position.MsgSetMarginResponse", Carbon.Posit
 
 registry.register("/Switcheo.carbon.oracle.MsgCreateOracle", Carbon.Oracle.MsgCreateOracle);
 registry.register("/Switcheo.carbon.oracle.MsgCreateOracleResponse", Carbon.Oracle.MsgCreateOracleResponse);
-registry.register("/Switcheo.carbon.oracle.MsgCreateVote", Carbon.Oracle.MsgCreateVote);
-registry.register("/Switcheo.carbon.oracle.MsgCreateVoteResponse", Carbon.Oracle.MsgCreateVoteResponse);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateOracle", Carbon.Oracle.MsgUpdateOracle);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleResponse", Carbon.Oracle.MsgUpdateOracleResponse);
 registry.register("/Switcheo.carbon.oracle.MsgRemoveOracle", Carbon.Oracle.MsgRemoveOracle);
@@ -209,7 +209,10 @@ registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled", Carbon.Ora
 registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse", Carbon.Oracle.MsgSetOracleSlashEnabledResponse);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateParams", Carbon.Oracle.MsgUpdateParams);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateParamsResponse", Carbon.Oracle.MsgUpdateParamsResponse);
-registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", Carbon.Oracle.CreateOracleProposal);
+registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleContract", Carbon.Oracle.MsgUpdateOracleContract);
+registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleContractResponse", Carbon.Oracle.MsgUpdateOracleContractResponse);
+registry.register("/Switcheo.carbon.oracle.MsgCreateResult", Carbon.Oracle.MsgCreateResult);
+registry.register("/Switcheo.carbon.oracle.MsgCreateResultResponse", Carbon.Oracle.MsgCreateResultResponse);
 
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", Carbon.Evmcontract.MsgDeactivateContract);
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse", Carbon.Evmcontract.MsgDeactivateContractResponse);
@@ -396,7 +399,8 @@ registry.register("/Switcheo.carbon.pricing.MsgUpdateParams", Carbon.Pricing.Msg
 registry.register("/Switcheo.carbon.pricing.MsgUpdateParamsResponse", Carbon.Pricing.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPrice", Carbon.Pricing.MsgUpdateSettlementPrice);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse", Carbon.Pricing.MsgUpdateSettlementPriceResponse);
-registry.register("/Switcheo.carbon.pricing.SettlementPriceProposal", Carbon.Pricing.SettlementPriceProposal);
+registry.register("/Switcheo.carbon.pricing.MsgRemoveTokenPrice", Carbon.Pricing.MsgRemoveTokenPrice);
+registry.register("/Switcheo.carbon.pricing.MsgRemoveTokenPriceResponse", Carbon.Pricing.MsgRemoveTokenPriceResponse);
 
 registry.register("/Switcheo.carbon.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
 registry.register("/Switcheo.carbon.lockproxy.MsgCreateResponse", PolyNetwork.Lockproxy.MsgCreateResponse);
@@ -571,6 +575,7 @@ registry.register("/cosmos.gov.v1.MsgUpdateParams", MsgGovUpdateParams);
 registry.register("/cosmos.gov.v1.MsgUpdateParamsResponse", MsgGovUpdateParamsResponse);
 registry.register("/cosmos.gov.v1.MsgCancelProposal", MsgGovCancelProposal);
 registry.register("/cosmos.gov.v1.MsgCancelProposalResponse", MsgGovCancelProposalResponse);
+registry.register("/cosmos.gov.v1.Proposal", Proposal);
 
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal);
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
@@ -580,8 +585,6 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
 registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
-registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
-registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
@@ -614,6 +617,24 @@ registry.register("/ibc.core.channel.v1.MsgTimeoutOnClose", MsgTimeoutOnClose);
 registry.register("/ibc.core.channel.v1.MsgTimeoutOnCloseResponse", MsgTimeoutOnCloseResponse);
 registry.register("/ibc.core.channel.v1.MsgAcknowledgement", MsgAcknowledgement);
 registry.register("/ibc.core.channel.v1.MsgAcknowledgementResponse", MsgAcknowledgementResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeInit", MsgChannelUpgradeInit);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeInitResponse", MsgChannelUpgradeInitResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeTry", MsgChannelUpgradeTry);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeTryResponse", MsgChannelUpgradeTryResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeAck", MsgChannelUpgradeAck);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeAckResponse", MsgChannelUpgradeAckResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeConfirm", MsgChannelUpgradeConfirm);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeConfirmResponse", MsgChannelUpgradeConfirmResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeOpen", MsgChannelUpgradeOpen);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeOpenResponse", MsgChannelUpgradeOpenResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeTimeout", MsgChannelUpgradeTimeout);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeTimeoutResponse", MsgChannelUpgradeTimeoutResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeCancel", MsgChannelUpgradeCancel);
+registry.register("/ibc.core.channel.v1.MsgChannelUpgradeCancelResponse", MsgChannelUpgradeCancelResponse);
+registry.register("/ibc.core.channel.v1.MsgUpdateParams", MsgUpdateParams);
+registry.register("/ibc.core.channel.v1.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
+registry.register("/ibc.core.channel.v1.MsgPruneAcknowledgements", MsgPruneAcknowledgements);
+registry.register("/ibc.core.channel.v1.MsgPruneAcknowledgementsResponse", MsgPruneAcknowledgementsResponse);
 
 registry.register("/ibc.core.client.v1.MsgCreateClient", MsgCreateClient);
 registry.register("/ibc.core.client.v1.MsgCreateClientResponse", MsgCreateClientResponse);
@@ -631,6 +652,13 @@ registry.register("/ibc.core.client.v1.MsgUpdateParams", MsgClientUpdateParams);
 registry.register("/ibc.core.client.v1.MsgUpdateParamsResponse", MsgClientUpdateParamsResponse);
 registry.register("/ibc.core.client.v1.ClientUpdateProposal", ClientUpdateProposal);
 registry.register("/ibc.core.client.v1.UpgradeProposal", UpgradeProposal);
+
+registry.register("/ibc.lightclients.wasm.v1.MsgStoreCode", MsgStoreCode);
+registry.register("/ibc.lightclients.wasm.v1.MsgStoreCodeResponse", MsgStoreCodeResponse);
+registry.register("/ibc.lightclients.wasm.v1.MsgRemoveChecksum", MsgRemoveChecksum);
+registry.register("/ibc.lightclients.wasm.v1.MsgRemoveChecksumResponse", MsgRemoveChecksumResponse);
+registry.register("/ibc.lightclients.wasm.v1.MsgMigrateContract", MsgMigrateContract);
+registry.register("/ibc.lightclients.wasm.v1.MsgMigrateContractResponse", MsgMigrateContractResponse);
 
 registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
 
@@ -681,8 +709,8 @@ export const TxTypes = {
   "MsgCancelOrderResponse": "/Switcheo.carbon.order.MsgCancelOrderResponse",
   "MsgCancelAll": "/Switcheo.carbon.order.MsgCancelAll",
   "MsgCancelAllResponse": "/Switcheo.carbon.order.MsgCancelAllResponse",
-  "MsgUpdateParams": "/Switcheo.carbon.order.MsgUpdateParams",
-  "MsgUpdateParamsResponse": "/Switcheo.carbon.order.MsgUpdateParamsResponse",
+  "MsgUpdateParams": "/ibc.core.channel.v1.MsgUpdateParams",
+  "MsgUpdateParamsResponse": "/ibc.core.channel.v1.MsgUpdateParamsResponse",
   "MsgAddRateStrategy": "/Switcheo.carbon.cdp.MsgAddRateStrategy",
   "MsgAddRateStrategyResponse": "/Switcheo.carbon.cdp.MsgAddRateStrategyResponse",
   "MsgUpdateRateStrategy": "/Switcheo.carbon.cdp.MsgUpdateRateStrategy",
@@ -783,10 +811,6 @@ export const TxTypes = {
   "MsgRemoveGasCostResponse": "/Switcheo.carbon.fee.MsgRemoveGasCostResponse",
   "MsgRemoveMinGasPrice": "/Switcheo.carbon.fee.MsgRemoveMinGasPrice",
   "MsgRemoveMinGasPriceResponse": "/Switcheo.carbon.fee.MsgRemoveMinGasPriceResponse",
-  "SetMsgGasCostProposal": "/Switcheo.carbon.fee.SetMsgGasCostProposal",
-  "SetMinGasPriceProposal": "/Switcheo.carbon.fee.SetMinGasPriceProposal",
-  "RemoveMsgGasCostProposal": "/Switcheo.carbon.fee.RemoveMsgGasCostProposal",
-  "RemoveMinGasPriceProposal": "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
   "MsgConvertCoin": "/Switcheo.carbon.erc20.MsgConvertCoin",
   "MsgConvertCoinResponse": "/Switcheo.carbon.erc20.MsgConvertCoinResponse",
   "MsgConvertERC20": "/Switcheo.carbon.erc20.MsgConvertERC20",
@@ -803,6 +827,10 @@ export const TxTypes = {
   "MsgUpdateEVMHookEnabledResponse": "/Switcheo.carbon.erc20.MsgUpdateEVMHookEnabledResponse",
   "MsgMergeAccount": "/Switcheo.carbon.evmmerge.MsgMergeAccount",
   "MsgMergeAccountResponse": "/Switcheo.carbon.evmmerge.MsgMergeAccountResponse",
+  "MsgBlacklistAddress": "/Switcheo.carbon.bank.MsgBlacklistAddress",
+  "MsgBlacklistAddressResponse": "/Switcheo.carbon.bank.MsgBlacklistAddressResponse",
+  "MsgUnblacklistAddress": "/Switcheo.carbon.bank.MsgUnblacklistAddress",
+  "MsgUnblacklistAddressResponse": "/Switcheo.carbon.bank.MsgUnblacklistAddressResponse",
   "MsgCreate": "/Switcheo.carbon.btcx.MsgCreate",
   "MsgCreateResponse": "/Switcheo.carbon.btcx.MsgCreateResponse",
   "MsgBind": "/Switcheo.carbon.btcx.MsgBind",
@@ -813,8 +841,6 @@ export const TxTypes = {
   "MsgSetMarginResponse": "/Switcheo.carbon.position.MsgSetMarginResponse",
   "MsgCreateOracle": "/Switcheo.carbon.oracle.MsgCreateOracle",
   "MsgCreateOracleResponse": "/Switcheo.carbon.oracle.MsgCreateOracleResponse",
-  "MsgCreateVote": "/Switcheo.carbon.oracle.MsgCreateVote",
-  "MsgCreateVoteResponse": "/Switcheo.carbon.oracle.MsgCreateVoteResponse",
   "MsgUpdateOracle": "/Switcheo.carbon.oracle.MsgUpdateOracle",
   "MsgUpdateOracleResponse": "/Switcheo.carbon.oracle.MsgUpdateOracleResponse",
   "MsgRemoveOracle": "/Switcheo.carbon.oracle.MsgRemoveOracle",
@@ -823,7 +849,10 @@ export const TxTypes = {
   "MsgSetOracleSlashEnabledResponse": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse",
   "MsgOracleUpdateParams": "/Switcheo.carbon.oracle.MsgUpdateParams",
   "MsgOracleUpdateParamsResponse": "/Switcheo.carbon.oracle.MsgUpdateParamsResponse",
-  "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
+  "MsgUpdateOracleContract": "/Switcheo.carbon.oracle.MsgUpdateOracleContract",
+  "MsgUpdateOracleContractResponse": "/Switcheo.carbon.oracle.MsgUpdateOracleContractResponse",
+  "MsgCreateResult": "/Switcheo.carbon.oracle.MsgCreateResult",
+  "MsgCreateResultResponse": "/Switcheo.carbon.oracle.MsgCreateResultResponse",
   "MsgDeactivateContract": "/Switcheo.carbon.evmcontract.MsgDeactivateContract",
   "MsgDeactivateContractResponse": "/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse",
   "MsgActivateContract": "/Switcheo.carbon.evmcontract.MsgActivateContract",
@@ -997,7 +1026,8 @@ export const TxTypes = {
   "MsgPricingUpdateParamsResponse": "/Switcheo.carbon.pricing.MsgUpdateParamsResponse",
   "MsgUpdateSettlementPrice": "/Switcheo.carbon.pricing.MsgUpdateSettlementPrice",
   "MsgUpdateSettlementPriceResponse": "/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse",
-  "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal",
+  "MsgRemoveTokenPrice": "/Switcheo.carbon.pricing.MsgRemoveTokenPrice",
+  "MsgRemoveTokenPriceResponse": "/Switcheo.carbon.pricing.MsgRemoveTokenPriceResponse",
   "MsgLockproxyCreate": "/Switcheo.carbon.lockproxy.MsgCreate",
   "MsgLockproxyCreateResponse": "/Switcheo.carbon.lockproxy.MsgCreateResponse",
   "MsgLockproxyBind": "/Switcheo.carbon.lockproxy.MsgBind",
@@ -1152,6 +1182,7 @@ export const TxTypes = {
   "MsgGovUpdateParamsResponse": "/cosmos.gov.v1.MsgUpdateParamsResponse",
   "MsgGovCancelProposal": "/cosmos.gov.v1.MsgCancelProposal",
   "MsgGovCancelProposalResponse": "/cosmos.gov.v1.MsgCancelProposalResponse",
+  "Proposal": "/cosmos.gov.v1.Proposal",
   "MsgSubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
   "MsgSubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
   "MsgVote": "/cosmos.gov.v1beta1.MsgVote",
@@ -1160,8 +1191,6 @@ export const TxTypes = {
   "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
-  "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
-  "Proposal": "/cosmos.gov.v1beta1.Proposal",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
@@ -1192,6 +1221,22 @@ export const TxTypes = {
   "MsgTimeoutOnCloseResponse": "/ibc.core.channel.v1.MsgTimeoutOnCloseResponse",
   "MsgAcknowledgement": "/ibc.core.channel.v1.MsgAcknowledgement",
   "MsgAcknowledgementResponse": "/ibc.core.channel.v1.MsgAcknowledgementResponse",
+  "MsgChannelUpgradeInit": "/ibc.core.channel.v1.MsgChannelUpgradeInit",
+  "MsgChannelUpgradeInitResponse": "/ibc.core.channel.v1.MsgChannelUpgradeInitResponse",
+  "MsgChannelUpgradeTry": "/ibc.core.channel.v1.MsgChannelUpgradeTry",
+  "MsgChannelUpgradeTryResponse": "/ibc.core.channel.v1.MsgChannelUpgradeTryResponse",
+  "MsgChannelUpgradeAck": "/ibc.core.channel.v1.MsgChannelUpgradeAck",
+  "MsgChannelUpgradeAckResponse": "/ibc.core.channel.v1.MsgChannelUpgradeAckResponse",
+  "MsgChannelUpgradeConfirm": "/ibc.core.channel.v1.MsgChannelUpgradeConfirm",
+  "MsgChannelUpgradeConfirmResponse": "/ibc.core.channel.v1.MsgChannelUpgradeConfirmResponse",
+  "MsgChannelUpgradeOpen": "/ibc.core.channel.v1.MsgChannelUpgradeOpen",
+  "MsgChannelUpgradeOpenResponse": "/ibc.core.channel.v1.MsgChannelUpgradeOpenResponse",
+  "MsgChannelUpgradeTimeout": "/ibc.core.channel.v1.MsgChannelUpgradeTimeout",
+  "MsgChannelUpgradeTimeoutResponse": "/ibc.core.channel.v1.MsgChannelUpgradeTimeoutResponse",
+  "MsgChannelUpgradeCancel": "/ibc.core.channel.v1.MsgChannelUpgradeCancel",
+  "MsgChannelUpgradeCancelResponse": "/ibc.core.channel.v1.MsgChannelUpgradeCancelResponse",
+  "MsgPruneAcknowledgements": "/ibc.core.channel.v1.MsgPruneAcknowledgements",
+  "MsgPruneAcknowledgementsResponse": "/ibc.core.channel.v1.MsgPruneAcknowledgementsResponse",
   "MsgCreateClient": "/ibc.core.client.v1.MsgCreateClient",
   "MsgCreateClientResponse": "/ibc.core.client.v1.MsgCreateClientResponse",
   "MsgUpdateClient": "/ibc.core.client.v1.MsgUpdateClient",
@@ -1208,6 +1253,12 @@ export const TxTypes = {
   "MsgClientUpdateParamsResponse": "/ibc.core.client.v1.MsgUpdateParamsResponse",
   "ClientUpdateProposal": "/ibc.core.client.v1.ClientUpdateProposal",
   "UpgradeProposal": "/ibc.core.client.v1.UpgradeProposal",
+  "MsgStoreCode": "/ibc.lightclients.wasm.v1.MsgStoreCode",
+  "MsgStoreCodeResponse": "/ibc.lightclients.wasm.v1.MsgStoreCodeResponse",
+  "MsgRemoveChecksum": "/ibc.lightclients.wasm.v1.MsgRemoveChecksum",
+  "MsgRemoveChecksumResponse": "/ibc.lightclients.wasm.v1.MsgRemoveChecksumResponse",
+  "MsgMigrateContract": "/ibc.lightclients.wasm.v1.MsgMigrateContract",
+  "MsgMigrateContractResponse": "/ibc.lightclients.wasm.v1.MsgMigrateContractResponse",
   "Header": "/ibc.lightclients.tendermint.v1.Header",
   "MsgRegisterPayee": "/ibc.applications.fee.v1.MsgRegisterPayee",
   "MsgRegisterPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterPayeeResponse",
@@ -1244,6 +1295,7 @@ export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
+export { Empty } from "./google/protobuf/empty";
 export { Edition, editionFromJSON, editionToJSON, ExtensionRangeOptions_VerificationState, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FeatureSet_FieldPresence, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, FeatureSet_EnumType, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, FeatureSet_RepeatedFieldEncoding, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, FeatureSet_Utf8Validation, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, FeatureSet_MessageEncoding, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, FeatureSet_JsonFormat, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/alliance/gov";
@@ -1991,6 +2043,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int32"
       }
     ],
+    "Empty": [],
     "Any": [
       {
         "name": "type_url",
@@ -2228,7 +2281,12 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
-    "GenesisState": [],
+    "GenesisState": [
+      {
+        "name": "blacklisted_addresses",
+        "type": "string[]"
+      }
+    ],
     "InternalTransfer": [
       {
         "name": "sender",
@@ -2307,7 +2365,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryInternalTransfersResponse": [
       {
-        "name": "internalTransfers",
+        "name": "internal_transfers",
         "type": "InternalTransfer[]",
         "packageName": "/Switcheo.carbon.bank"
       },
@@ -2316,7 +2374,48 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
       }
-    ]
+    ],
+    "QueryBlacklistRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryBlacklistResponse": [
+      {
+        "name": "is_blacklisted",
+        "type": "bool"
+      }
+    ],
+    "QueryBlacklistAllRequest": [],
+    "QueryBlacklistAllResponse": [
+      {
+        "name": "address",
+        "type": "string[]"
+      }
+    ],
+    "MsgBlacklistAddress": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgBlacklistAddressResponse": [],
+    "MsgUnblacklistAddress": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgUnblacklistAddressResponse": []
   },
   "/cosmos.base.query.v1beta1": {
     "PageRequest": [
@@ -2586,10 +2685,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint8[]"
       },
       {
-        "name": "orders",
-        "type": "string[]"
-      },
-      {
         "name": "pool_route",
         "type": "uint8[]"
       }
@@ -2602,10 +2697,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "quoting_hash",
         "type": "uint8[]"
-      },
-      {
-        "name": "legacy_last_quoted_at",
-        "type": "uint64"
       },
       {
         "name": "markets",
@@ -2621,10 +2712,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "market_id",
         "type": "string"
-      },
-      {
-        "name": "orders",
-        "type": "string[]"
       },
       {
         "name": "last_index_price",
@@ -2769,7 +2856,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "FundingEvent": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -4774,6 +4861,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "address",
         "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryRewardDebtsResponse": [
@@ -4781,9 +4873,20 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "reward_debts",
         "type": "RewardDebt[]",
         "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryRewardDebtsAllRequest": [],
+    "QueryRewardDebtsAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
     "QueryEModeAllRequest": [
       {
         "name": "pagination",
@@ -7104,6 +7207,10 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryContractRequest": [
       {
+        "name": "module_name",
+        "type": "string"
+      },
+      {
         "name": "contract_address",
         "type": "string"
       }
@@ -7115,20 +7222,55 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.evmcontract"
       }
     ],
-    "QueryContractAllRequest": [],
-    "QueryContractAllResponse": [
+    "QueryContractAllByModuleRequest": [
+      {
+        "name": "module_name",
+        "type": "string"
+      }
+    ],
+    "QueryContractAllByModuleResponse": [
       {
         "name": "contracts",
         "type": "EVMContract[]",
         "packageName": "/Switcheo.carbon.evmcontract"
       }
     ],
-    "QueryAllAddressEVMRequest": [],
+    "QueryContractAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryContractAllResponse": [
+      {
+        "name": "contracts",
+        "type": "EVMContract[]",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllAddressEVMRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
     "QueryAllAddressEVMResponse": [
       {
         "name": "modules",
         "type": "ModuleEVMAddress[]",
         "packageName": "/Switcheo.carbon.evmcontract"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAddressEVMRequest": [
@@ -7335,64 +7477,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "min_gas_prices",
         "type": "MinGasPrice[]",
         "packageName": "/Switcheo.carbon.fee"
-      }
-    ],
-    "SetMsgGasCostProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msg",
-        "type": "MsgGasCost",
-        "packageName": "/Switcheo.carbon.fee"
-      }
-    ],
-    "SetMinGasPriceProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msg",
-        "type": "MinGasPrice",
-        "packageName": "/Switcheo.carbon.fee"
-      }
-    ],
-    "RemoveMsgGasCostProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msgType",
-        "type": "string"
-      }
-    ],
-    "RemoveMinGasPriceProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
       }
     ],
     "QueryGetMsgGasCostRequest": [
@@ -8027,6 +8111,14 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
+        "type": "string"
+      },
+      {
+        "name": "msg_exec_index",
+        "type": "uint64"
+      },
+      {
+        "name": "granter",
         "type": "string"
       }
     ],
@@ -9833,7 +9925,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgCreatePoolRouteResponse": [],
     "CreatePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -9859,7 +9951,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgRemovePoolRouteResponse": [],
     "RemovePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -9881,7 +9973,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgUpdatePoolRouteResponse": [],
     "UpdatePoolRouteParams": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -10652,6 +10744,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "default_lp_futures_maker_fee",
         "type": "string"
+      },
+      {
+        "name": "default_max_open_interest_usd",
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -10746,6 +10842,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "default_lp_futures_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_max_open_interest_usd",
         "type": "string"
       }
     ],
@@ -10865,11 +10965,15 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "trading_bandwidth",
         "type": "uint32"
+      },
+      {
+        "name": "max_open_interest",
+        "type": "string"
       }
     ],
     "MarketParams": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       },
       {
@@ -10940,9 +11044,13 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "expiry_time",
         "type": "string"
+      },
+      {
+        "name": "max_open_interest",
+        "type": "string"
       }
     ],
-    "IncomingDisableSpotMarketNames": [
+    "IncomingSpotMarketsToDisable": [
       {
         "name": "ids",
         "type": "string[]"
@@ -11033,7 +11141,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       },
       {
-        "name": "market_name_sequence",
+        "name": "market_id_sequence",
         "type": "int64"
       },
       {
@@ -11094,7 +11202,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetMarketRequest": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       }
     ],
@@ -11126,7 +11234,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetTradingFeesRequest": [
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -11147,7 +11255,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -11162,20 +11270,42 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       }
     ],
-    "QueryAllStakeEquivalenceRequest": [],
+    "QueryAllStakeEquivalenceRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
     "QueryAllStakeEquivalenceResponse": [
       {
         "name": "stake_equivalence",
         "type": "StakeEquivalence[]",
         "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllFeeStructuresRequest": [],
+    "QueryAllFeeStructuresRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
     "QueryAllFeeStructuresResponse": [
       {
         "name": "fee_structures",
         "type": "FeeStructure[]",
         "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryUserFeeStructuresRequest": [
@@ -11261,7 +11391,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_name",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -11302,7 +11432,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MsgCreateMarketResponse": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       }
     ],
@@ -11848,179 +11978,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.oracle"
       }
     ],
-    "MsgCreateOracle": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "create_oracle_params",
-        "type": "CreateOracleParams",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "CreateOracleParams": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "id",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "min_turnout_percentage",
-        "type": "int64"
-      },
-      {
-        "name": "max_result_age",
-        "type": "int64"
-      },
-      {
-        "name": "security_type",
-        "type": "string"
-      },
-      {
-        "name": "result_strategy",
-        "type": "string"
-      },
-      {
-        "name": "resolution",
-        "type": "int64"
-      },
-      {
-        "name": "spec",
-        "type": "string"
-      }
-    ],
-    "MsgCreateOracleResponse": [
-      {
-        "name": "id",
-        "type": "string"
-      }
-    ],
-    "MsgCreateVote": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "timestamp",
-        "type": "int64"
-      },
-      {
-        "name": "data",
-        "type": "string"
-      }
-    ],
-    "MsgCreateVoteResponse": [],
-    "MsgUpdateOracle": [
-      {
-        "name": "updater",
-        "type": "string"
-      },
-      {
-        "name": "update_oracle_params",
-        "type": "UpdateOracleParams",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "UpdateOracleParams": [
-      {
-        "name": "id",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "status",
-        "type": "string"
-      },
-      {
-        "name": "minTurnoutPercentage",
-        "type": "int64"
-      },
-      {
-        "name": "maxResultAge",
-        "type": "int64"
-      },
-      {
-        "name": "securityType",
-        "type": "string"
-      },
-      {
-        "name": "resultStrategy",
-        "type": "string"
-      },
-      {
-        "name": "resolution",
-        "type": "int64"
-      },
-      {
-        "name": "spec",
-        "type": "string"
-      }
-    ],
-    "MsgUpdateOracleResponse": [],
-    "MsgRemoveOracle": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      }
-    ],
-    "MsgRemoveOracleResponse": [],
-    "MsgSetOracleSlashEnabled": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "enabled",
-        "type": "bool"
-      }
-    ],
-    "MsgSetOracleSlashEnabledResponse": [],
-    "MsgUpdateParams": [
-      {
-        "name": "authority",
-        "type": "string"
-      },
-      {
-        "name": "params",
-        "type": "ParamsToUpdate",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "MsgUpdateParamsResponse": [],
-    "CreateOracleProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msg",
-        "type": "CreateOracleParams",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
     "QueryOracleRequest": [
       {
         "name": "id",
@@ -12267,7 +12224,228 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "data",
         "type": "string"
       }
-    ]
+    ],
+    "MsgCreateOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "create_oracle_params",
+        "type": "CreateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "CreateOracleParams": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "min_turnout_percentage",
+        "type": "int64"
+      },
+      {
+        "name": "max_result_age",
+        "type": "int64"
+      },
+      {
+        "name": "security_type",
+        "type": "string"
+      },
+      {
+        "name": "result_strategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "MsgCreateOracleResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracle": [
+      {
+        "name": "updater",
+        "type": "string"
+      },
+      {
+        "name": "update_oracle_params",
+        "type": "UpdateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "UpdateOracleParams": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "minTurnoutPercentage",
+        "type": "int64"
+      },
+      {
+        "name": "maxResultAge",
+        "type": "int64"
+      },
+      {
+        "name": "securityType",
+        "type": "string"
+      },
+      {
+        "name": "resultStrategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracleResponse": [],
+    "MsgRemoveOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveOracleResponse": [],
+    "MsgSetOracleSlashEnabled": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgSetOracleSlashEnabledResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "MsgUpdateOracleContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracleContractResponse": [],
+    "ValidatorSignature": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validator_index",
+        "type": "int32"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "signed_timestamp",
+        "type": "int64"
+      }
+    ],
+    "VotesForOracle": [
+      {
+        "name": "oracle_index",
+        "type": "int32"
+      },
+      {
+        "name": "votes_for_data",
+        "type": "VotesForData[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "VotesForData": [
+      {
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "name": "votes_for_timestamps",
+        "type": "VotesForTimestamp[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "VotesForTimestamp": [
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "validator_indexes",
+        "type": "int32[]"
+      }
+    ],
+    "MsgCreateResult": [
+      {
+        "name": "proposer",
+        "type": "string"
+      },
+      {
+        "name": "validator_signatures",
+        "type": "ValidatorSignature[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "votes_for_oracles",
+        "type": "VotesForOracle[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgCreateResultResponse": []
   },
   "/Switcheo.carbon.perpspool": {
     "Quote": [
@@ -12877,10 +13055,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "share_token_symbol",
-        "type": "string"
-      },
-      {
         "name": "supply_cap",
         "type": "string"
       },
@@ -13069,6 +13243,16 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.position"
       }
     ],
+    "OpenInterest": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "open_interest",
+        "type": "string"
+      }
+    ],
     "APIPosition": [
       {
         "name": "market_id",
@@ -13192,6 +13376,13 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
+    "OpenInterestEvent": [
+      {
+        "name": "open_interest",
+        "type": "OpenInterest",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
     "QueryEVMPositionRequest": [
       {
         "name": "evm_address",
@@ -13286,6 +13477,27 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "positions",
         "type": "PositionAllocatedMargin[]",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "QueryGetOpenInterestRequest": [
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "QueryGetOpenInterestResponse": [
+      {
+        "name": "open_interest",
+        "type": "OpenInterest",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "QueryAllOpenInterestsRequest": [],
+    "QueryAllOpenInterestsResponse": [
+      {
+        "name": "open_interests",
+        "type": "OpenInterest[]",
         "packageName": "/Switcheo.carbon.position"
       }
     ],
@@ -13394,6 +13606,13 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "TokenPriceUpdateEvent": [
+      {
+        "name": "price",
+        "type": "TokenPrice",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "TokenPriceRemoveEvent": [
       {
         "name": "price",
         "type": "TokenPrice",
@@ -13512,31 +13731,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "stale_index_allowance",
         "type": "Duration",
         "packageName": "/google.protobuf"
-      }
-    ],
-    "SettlementPriceProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msg",
-        "type": "SettlementPriceParams",
-        "packageName": "/Switcheo.carbon.pricing"
-      }
-    ],
-    "SettlementPriceParams": [
-      {
-        "name": "market_id",
-        "type": "string"
-      },
-      {
-        "name": "settlement_price",
-        "type": "string"
       }
     ],
     "QueryPriceTokenRequest": [
@@ -13727,7 +13921,23 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgUpdateSettlementPriceResponse": []
+    "MsgUpdateSettlementPriceResponse": [],
+    "MsgRemoveTokenPrice": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveTokenPriceResponse": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ]
   },
   "/Switcheo.carbon.profile": {
     "Profile": [
@@ -13780,10 +13990,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
-        "name": "username",
-        "type": "string"
       }
     ],
     "QueryAllProfileResponse": [
@@ -13858,12 +14064,23 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.sequence"
       }
     ],
-    "QuerySequenceAllRequest": [],
+    "QuerySequenceAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
     "QuerySequenceAllResponse": [
       {
         "name": "sequences",
         "type": "Sequence[]",
         "packageName": "/Switcheo.carbon.sequence"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "MsgSetSequence": [
@@ -26252,6 +26469,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "version",
         "type": "string"
+      },
+      {
+        "name": "upgrade_sequence",
+        "type": "uint64"
       }
     ],
     "IdentifiedChannel": [
@@ -26285,6 +26506,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "channel_id",
         "type": "string"
+      },
+      {
+        "name": "upgrade_sequence",
+        "type": "uint64"
       }
     ],
     "Counterparty": [
@@ -26385,6 +26610,13 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
+    "Params": [
+      {
+        "name": "upgrade_timeout",
+        "type": "Timeout",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
     "GenesisState": [
       {
         "name": "channels",
@@ -26424,6 +26656,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "next_channel_sequence",
         "type": "uint64"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.channel.v1"
       }
     ],
     "PacketSequence": [
@@ -26438,6 +26675,47 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "sequence",
         "type": "uint64"
+      }
+    ],
+    "Upgrade": [
+      {
+        "name": "fields",
+        "type": "UpgradeFields",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "timeout",
+        "type": "Timeout",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "next_sequence_send",
+        "type": "uint64"
+      }
+    ],
+    "UpgradeFields": [
+      {
+        "name": "ordering",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "connection_hops",
+        "type": "string[]"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      }
+    ],
+    "ErrorReceipt": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "message",
+        "type": "string"
       }
     ],
     "QueryChannelRequest": [
@@ -26837,6 +27115,66 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/ibc.core.client.v1"
       }
     ],
+    "QueryUpgradeErrorRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryUpgradeErrorResponse": [
+      {
+        "name": "error_receipt",
+        "type": "ErrorReceipt",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryUpgradeRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryUpgradeResponse": [
+      {
+        "name": "upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryChannelParamsRequest": [],
+    "QueryChannelParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
     "MsgChannelOpenInit": [
       {
         "name": "port_id",
@@ -26996,6 +27334,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "signer",
         "type": "string"
+      },
+      {
+        "name": "counterparty_upgrade_sequence",
+        "type": "uint64"
       }
     ],
     "MsgChannelCloseConfirmResponse": [],
@@ -27083,6 +27425,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "signer",
         "type": "string"
+      },
+      {
+        "name": "counterparty_upgrade_sequence",
+        "type": "uint64"
       }
     ],
     "MsgTimeoutOnCloseResponse": [
@@ -27121,6 +27467,306 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "result",
         "type": "",
         "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgChannelUpgradeInit": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "fields",
+        "type": "UpgradeFields",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeInitResponse": [
+      {
+        "name": "upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "upgrade_sequence",
+        "type": "uint64"
+      }
+    ],
+    "MsgChannelUpgradeTry": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "proposed_upgrade_connection_hops",
+        "type": "string[]"
+      },
+      {
+        "name": "counterparty_upgrade_fields",
+        "type": "UpgradeFields",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty_upgrade_sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_upgrade",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeTryResponse": [
+      {
+        "name": "upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "upgrade_sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgChannelUpgradeAck": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_upgrade",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeAckResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgChannelUpgradeConfirm": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_channel_state",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty_upgrade",
+        "type": "Upgrade",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_upgrade",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeConfirmResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgChannelUpgradeOpen": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_channel_state",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty_upgrade_sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeOpenResponse": [],
+    "MsgChannelUpgradeTimeout": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_channel",
+        "type": "Channel",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_channel",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeTimeoutResponse": [],
+    "MsgChannelUpgradeCancel": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "error_receipt",
+        "type": "ErrorReceipt",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_error_receipt",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelUpgradeCancelResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "MsgPruneAcknowledgements": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "limit",
+        "type": "uint64"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgPruneAcknowledgementsResponse": [
+      {
+        "name": "total_pruned_sequences",
+        "type": "uint64"
+      },
+      {
+        "name": "total_remaining_sequences",
+        "type": "uint64"
       }
     ]
   },
@@ -27167,6 +27813,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "version",
         "type": "string"
+      },
+      {
+        "name": "ordering",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
       }
     ],
     "MsgRegisterInterchainAccountResponse": [
@@ -27415,6 +28066,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "allow_list",
+        "type": "string[]"
+      },
+      {
+        "name": "allowed_packet_data",
         "type": "string[]"
       }
     ],
@@ -28799,6 +29454,259 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "denominator",
         "type": "uint64"
+      }
+    ]
+  },
+  "/ibc.lightclients.wasm.v1": {
+    "GenesisState": [
+      {
+        "name": "contracts",
+        "type": "Contract[]",
+        "packageName": "/ibc.lightclients.wasm.v1"
+      }
+    ],
+    "Contract": [
+      {
+        "name": "code_bytes",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryChecksumsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryChecksumsResponse": [
+      {
+        "name": "checksums",
+        "type": "string[]"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryCodeRequest": [
+      {
+        "name": "checksum",
+        "type": "string"
+      }
+    ],
+    "QueryCodeResponse": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgStoreCode": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "wasm_byte_code",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgStoreCodeResponse": [
+      {
+        "name": "checksum",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgRemoveChecksum": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "checksum",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgRemoveChecksumResponse": [],
+    "MsgMigrateContract": [
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "checksum",
+        "type": "uint8[]"
+      },
+      {
+        "name": "msg",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgMigrateContractResponse": [],
+    "ClientState": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "checksum",
+        "type": "uint8[]"
+      },
+      {
+        "name": "latest_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "ConsensusState": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "ClientMessage": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "Checksums": [
+      {
+        "name": "checksums",
+        "type": "uint8[][]"
+      }
+    ]
+  },
+  "/tendermint.oracle": {
+    "Vote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "GossipVote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "public_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "sign_type",
+        "type": "string"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/tendermint.oracle"
+      },
+      {
+        "name": "signed_timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      }
+    ],
+    "CanonicalGossipVote": [
+      {
+        "name": "validator",
+        "type": "uint8[]"
+      },
+      {
+        "name": "public_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "sign_type",
+        "type": "string"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/tendermint.oracle"
+      }
+    ],
+    "Oracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "min_turnout_percentage",
+        "type": "string"
+      },
+      {
+        "name": "max_result_age",
+        "type": "string"
+      },
+      {
+        "name": "security_type",
+        "type": "string"
+      },
+      {
+        "name": "result_strategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "string"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "Result": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "GossipVotes": [
+      {
+        "name": "GossipVotes",
+        "type": "GossipVote[]",
+        "packageName": "/tendermint.oracle"
       }
     ]
   },

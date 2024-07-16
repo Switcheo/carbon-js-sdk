@@ -44,10 +44,11 @@ export interface Market {
   isSettled: boolean;
   closedBlockHeight: Long;
   tradingBandwidth: number;
+  maxOpenInterest: string;
 }
 
 export interface MarketParams {
-  name: string;
+  id: string;
   displayName?: string;
   description?: string;
   lotSize: string;
@@ -66,9 +67,10 @@ export interface MarketParams {
   isActive?: boolean;
   tradingBandwidth?: number;
   expiryTime?: Date;
+  maxOpenInterest: string;
 }
 
-export interface IncomingDisableSpotMarketNames {
+export interface IncomingSpotMarketsToDisable {
   ids: string[];
 }
 
@@ -165,6 +167,7 @@ const baseMarket: object = {
   isSettled: false,
   closedBlockHeight: Long.UZERO,
   tradingBandwidth: 0,
+  maxOpenInterest: "",
 };
 
 export const Market = {
@@ -258,6 +261,9 @@ export const Market = {
     }
     if (message.tradingBandwidth !== 0) {
       writer.uint32(912).uint32(message.tradingBandwidth);
+    }
+    if (message.maxOpenInterest !== "") {
+      writer.uint32(922).string(message.maxOpenInterest);
     }
     return writer;
   },
@@ -354,6 +360,9 @@ export const Market = {
           break;
         case 114:
           message.tradingBandwidth = reader.uint32();
+          break;
+        case 115:
+          message.maxOpenInterest = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -479,6 +488,10 @@ export const Market = {
       object.tradingBandwidth !== undefined && object.tradingBandwidth !== null
         ? Number(object.tradingBandwidth)
         : 0;
+    message.maxOpenInterest =
+      object.maxOpenInterest !== undefined && object.maxOpenInterest !== null
+        ? String(object.maxOpenInterest)
+        : "";
     return message;
   },
 
@@ -535,6 +548,8 @@ export const Market = {
       ).toString());
     message.tradingBandwidth !== undefined &&
       (obj.tradingBandwidth = message.tradingBandwidth);
+    message.maxOpenInterest !== undefined &&
+      (obj.maxOpenInterest = message.maxOpenInterest);
     return obj;
   },
 
@@ -585,12 +600,13 @@ export const Market = {
         ? Long.fromValue(object.closedBlockHeight)
         : Long.UZERO;
     message.tradingBandwidth = object.tradingBandwidth ?? 0;
+    message.maxOpenInterest = object.maxOpenInterest ?? "";
     return message;
   },
 };
 
 const baseMarketParams: object = {
-  name: "",
+  id: "",
   lotSize: "",
   tickSize: "",
   minQuantity: "",
@@ -600,6 +616,7 @@ const baseMarketParams: object = {
   maintenanceMarginRatio: "",
   maxLiquidationOrderTicket: "",
   impactSize: "",
+  maxOpenInterest: "",
 };
 
 export const MarketParams = {
@@ -607,8 +624,8 @@ export const MarketParams = {
     message: MarketParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
     if (message.displayName !== undefined) {
       StringValue.encode(
@@ -685,6 +702,9 @@ export const MarketParams = {
         writer.uint32(922).fork()
       ).ldelim();
     }
+    if (message.maxOpenInterest !== "") {
+      writer.uint32(930).string(message.maxOpenInterest);
+    }
     return writer;
   },
 
@@ -696,7 +716,7 @@ export const MarketParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.name = reader.string();
+          message.id = reader.string();
           break;
         case 2:
           message.displayName = StringValue.decode(
@@ -769,6 +789,9 @@ export const MarketParams = {
             Timestamp.decode(reader, reader.uint32())
           );
           break;
+        case 116:
+          message.maxOpenInterest = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -779,10 +802,8 @@ export const MarketParams = {
 
   fromJSON(object: any): MarketParams {
     const message = { ...baseMarketParams } as MarketParams;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
     message.displayName =
       object.displayName !== undefined && object.displayName !== null
         ? String(object.displayName)
@@ -857,12 +878,16 @@ export const MarketParams = {
       object.expiryTime !== undefined && object.expiryTime !== null
         ? fromJsonTimestamp(object.expiryTime)
         : undefined;
+    message.maxOpenInterest =
+      object.maxOpenInterest !== undefined && object.maxOpenInterest !== null
+        ? String(object.maxOpenInterest)
+        : "";
     return message;
   },
 
   toJSON(message: MarketParams): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
+    message.id !== undefined && (obj.id = message.id);
     message.displayName !== undefined &&
       (obj.displayName = message.displayName);
     message.description !== undefined &&
@@ -895,12 +920,14 @@ export const MarketParams = {
       (obj.tradingBandwidth = message.tradingBandwidth);
     message.expiryTime !== undefined &&
       (obj.expiryTime = message.expiryTime.toISOString());
+    message.maxOpenInterest !== undefined &&
+      (obj.maxOpenInterest = message.maxOpenInterest);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MarketParams>): MarketParams {
     const message = { ...baseMarketParams } as MarketParams;
-    message.name = object.name ?? "";
+    message.id = object.id ?? "";
     message.displayName = object.displayName ?? undefined;
     message.description = object.description ?? undefined;
     message.lotSize = object.lotSize ?? "";
@@ -922,15 +949,16 @@ export const MarketParams = {
     message.isActive = object.isActive ?? undefined;
     message.tradingBandwidth = object.tradingBandwidth ?? undefined;
     message.expiryTime = object.expiryTime ?? undefined;
+    message.maxOpenInterest = object.maxOpenInterest ?? "";
     return message;
   },
 };
 
-const baseIncomingDisableSpotMarketNames: object = { ids: "" };
+const baseIncomingSpotMarketsToDisable: object = { ids: "" };
 
-export const IncomingDisableSpotMarketNames = {
+export const IncomingSpotMarketsToDisable = {
   encode(
-    message: IncomingDisableSpotMarketNames,
+    message: IncomingSpotMarketsToDisable,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.ids) {
@@ -942,12 +970,12 @@ export const IncomingDisableSpotMarketNames = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): IncomingDisableSpotMarketNames {
+  ): IncomingSpotMarketsToDisable {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseIncomingDisableSpotMarketNames,
-    } as IncomingDisableSpotMarketNames;
+      ...baseIncomingSpotMarketsToDisable,
+    } as IncomingSpotMarketsToDisable;
     message.ids = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -963,15 +991,15 @@ export const IncomingDisableSpotMarketNames = {
     return message;
   },
 
-  fromJSON(object: any): IncomingDisableSpotMarketNames {
+  fromJSON(object: any): IncomingSpotMarketsToDisable {
     const message = {
-      ...baseIncomingDisableSpotMarketNames,
-    } as IncomingDisableSpotMarketNames;
+      ...baseIncomingSpotMarketsToDisable,
+    } as IncomingSpotMarketsToDisable;
     message.ids = (object.ids ?? []).map((e: any) => String(e));
     return message;
   },
 
-  toJSON(message: IncomingDisableSpotMarketNames): unknown {
+  toJSON(message: IncomingSpotMarketsToDisable): unknown {
     const obj: any = {};
     if (message.ids) {
       obj.ids = message.ids.map((e) => e);
@@ -982,11 +1010,11 @@ export const IncomingDisableSpotMarketNames = {
   },
 
   fromPartial(
-    object: DeepPartial<IncomingDisableSpotMarketNames>
-  ): IncomingDisableSpotMarketNames {
+    object: DeepPartial<IncomingSpotMarketsToDisable>
+  ): IncomingSpotMarketsToDisable {
     const message = {
-      ...baseIncomingDisableSpotMarketNames,
-    } as IncomingDisableSpotMarketNames;
+      ...baseIncomingSpotMarketsToDisable,
+    } as IncomingSpotMarketsToDisable;
     message.ids = (object.ids ?? []).map((e) => e);
     return message;
   },

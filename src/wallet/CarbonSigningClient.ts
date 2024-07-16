@@ -2,7 +2,7 @@ import { registry as TypesRegistry } from "@carbon-sdk/codec";
 import { TxRaw } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { encodeAnyEthSecp256k1PubKey, parseChainId } from "@carbon-sdk/util/ethermint";
-import { CarbonSignerData } from "@carbon-sdk/util/tx";
+import { CarbonSignerData, useSignDirectForMetamask } from "@carbon-sdk/util/tx";
 import { AminoMsg, encodeSecp256k1Pubkey, OfflineAminoSigner } from "@cosmjs/amino";
 import { fromBase64 } from "@cosmjs/encoding";
 import { Int53, Uint53 } from "@cosmjs/math";
@@ -121,9 +121,19 @@ export class CarbonSigningClient extends StargateClient {
     signerData: CarbonSignerData,
     granterAddress?: string
   ): Promise<TxRaw> {
-    if (isCarbonEIP712Signer(this.signer) && (this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
-      return this.signLegacyEip712(signerAddress, messages, fee, memo, signerData)
+    if (isCarbonEIP712Signer(this.signer)) {
+      if ((this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
+        return this.signLegacyEip712(signerAddress, messages, fee, memo, signerData)
+      }
+      // workaround to use signDirect
+
+      if (useSignDirectForMetamask(messages)) return this.signDirect(signerAddress, messages, fee, memo, signerData, granterAddress);
+      // Use amino sigining for metamask as there is a bug with signDirect signature verification
+      // ethermint verifies sign direct legacyDec type as shifted by 18dp when it should be unshifted (verified with keplr)
+      // therefore the alternative which works here would be to use signamino where the verification is not broken on ethermint.
+      return this.signAmino(signerAddress, messages, fee, memo, signerData, granterAddress);
     }
+
     return isOfflineDirectSigner(this.signer)
       ? this.signDirect(signerAddress, messages, fee, memo, signerData, granterAddress)
       : this.signAmino(signerAddress, messages, fee, memo, signerData, granterAddress);

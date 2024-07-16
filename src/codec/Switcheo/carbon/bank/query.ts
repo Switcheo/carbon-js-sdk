@@ -40,6 +40,20 @@ export interface QueryInternalTransfersResponse {
   pagination?: PageResponse;
 }
 
+export interface QueryBlacklistRequest {
+  address: string;
+}
+
+export interface QueryBlacklistResponse {
+  isBlacklisted: boolean;
+}
+
+export interface QueryBlacklistAllRequest {}
+
+export interface QueryBlacklistAllResponse {
+  address: string[];
+}
+
 const baseInternalTransfer: object = {
   sender: "",
   receiver: "",
@@ -512,12 +526,253 @@ export const QueryInternalTransfersResponse = {
   },
 };
 
+const baseQueryBlacklistRequest: object = { address: "" };
+
+export const QueryBlacklistRequest = {
+  encode(
+    message: QueryBlacklistRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryBlacklistRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryBlacklistRequest } as QueryBlacklistRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBlacklistRequest {
+    const message = { ...baseQueryBlacklistRequest } as QueryBlacklistRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryBlacklistRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryBlacklistRequest>
+  ): QueryBlacklistRequest {
+    const message = { ...baseQueryBlacklistRequest } as QueryBlacklistRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryBlacklistResponse: object = { isBlacklisted: false };
+
+export const QueryBlacklistResponse = {
+  encode(
+    message: QueryBlacklistResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isBlacklisted === true) {
+      writer.uint32(8).bool(message.isBlacklisted);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryBlacklistResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryBlacklistResponse } as QueryBlacklistResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isBlacklisted = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBlacklistResponse {
+    const message = { ...baseQueryBlacklistResponse } as QueryBlacklistResponse;
+    message.isBlacklisted =
+      object.isBlacklisted !== undefined && object.isBlacklisted !== null
+        ? Boolean(object.isBlacklisted)
+        : false;
+    return message;
+  },
+
+  toJSON(message: QueryBlacklistResponse): unknown {
+    const obj: any = {};
+    message.isBlacklisted !== undefined &&
+      (obj.isBlacklisted = message.isBlacklisted);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryBlacklistResponse>
+  ): QueryBlacklistResponse {
+    const message = { ...baseQueryBlacklistResponse } as QueryBlacklistResponse;
+    message.isBlacklisted = object.isBlacklisted ?? false;
+    return message;
+  },
+};
+
+const baseQueryBlacklistAllRequest: object = {};
+
+export const QueryBlacklistAllRequest = {
+  encode(
+    _: QueryBlacklistAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryBlacklistAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryBlacklistAllRequest,
+    } as QueryBlacklistAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryBlacklistAllRequest {
+    const message = {
+      ...baseQueryBlacklistAllRequest,
+    } as QueryBlacklistAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryBlacklistAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryBlacklistAllRequest>
+  ): QueryBlacklistAllRequest {
+    const message = {
+      ...baseQueryBlacklistAllRequest,
+    } as QueryBlacklistAllRequest;
+    return message;
+  },
+};
+
+const baseQueryBlacklistAllResponse: object = { address: "" };
+
+export const QueryBlacklistAllResponse = {
+  encode(
+    message: QueryBlacklistAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.address) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryBlacklistAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryBlacklistAllResponse,
+    } as QueryBlacklistAllResponse;
+    message.address = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBlacklistAllResponse {
+    const message = {
+      ...baseQueryBlacklistAllResponse,
+    } as QueryBlacklistAllResponse;
+    message.address = (object.address ?? []).map((e: any) => String(e));
+    return message;
+  },
+
+  toJSON(message: QueryBlacklistAllResponse): unknown {
+    const obj: any = {};
+    if (message.address) {
+      obj.address = message.address.map((e) => e);
+    } else {
+      obj.address = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryBlacklistAllResponse>
+  ): QueryBlacklistAllResponse {
+    const message = {
+      ...baseQueryBlacklistAllResponse,
+    } as QueryBlacklistAllResponse;
+    message.address = (object.address ?? []).map((e) => e);
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
   InternalTransfers(
     request: QueryInternalTransfersRequest
   ): Promise<QueryInternalTransfersResponse>;
+  /** Get whether a specific address is blacklisted. */
+  Blacklist(request: QueryBlacklistRequest): Promise<QueryBlacklistResponse>;
+  /** Queries a list of blacklist items. */
+  BlacklistAll(
+    request: QueryBlacklistAllRequest
+  ): Promise<QueryBlacklistAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -525,6 +780,8 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.InternalTransfers = this.InternalTransfers.bind(this);
+    this.Blacklist = this.Blacklist.bind(this);
+    this.BlacklistAll = this.BlacklistAll.bind(this);
   }
   InternalTransfers(
     request: QueryInternalTransfersRequest
@@ -537,6 +794,32 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryInternalTransfersResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Blacklist(request: QueryBlacklistRequest): Promise<QueryBlacklistResponse> {
+    const data = QueryBlacklistRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bank.Query",
+      "Blacklist",
+      data
+    );
+    return promise.then((data) =>
+      QueryBlacklistResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  BlacklistAll(
+    request: QueryBlacklistAllRequest
+  ): Promise<QueryBlacklistAllResponse> {
+    const data = QueryBlacklistAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bank.Query",
+      "BlacklistAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryBlacklistAllResponse.decode(new _m0.Reader(data))
     );
   }
 }

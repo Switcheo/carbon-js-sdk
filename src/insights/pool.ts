@@ -108,20 +108,21 @@ export interface QueryGetPerpPoolHistoryRequest extends QueryByPageRequest {
   address: string
 }
 
-export interface QueryPerpPool7DaysAPY extends QueryByPageRequest {
-  id: number
+export interface QueryPerpPoolAPY extends QueryByPageRequest {
+  id: number;
 }
 
-export interface PerpPool7DaysAPYEntry {
-  latestPrice: number;
-  previousPrice: number;
-  apy: number;
-  from: string;
-  to: string;
+export interface PerpPoolAPYEntry {
+  denom: string;
+  annualizedApy1day: number | null;
+  annualizedApy7days: number | null;
+  annualizedApy14days: number | null;
+  annualizedApy30days: number | null;
+  annualizedApy90days: number | null;
 }
 
-export interface QueryPerpPool7DaysAPYResponse {
-  entries: PerpPool7DaysAPYEntry[];
+export interface QueryPerpPoolAPYResponse {
+  entries: PerpPoolAPYEntry[];
   meta: PageMeta;
 }
 

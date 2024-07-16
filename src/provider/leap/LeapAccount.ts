@@ -4,7 +4,8 @@ import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
-import { Leap } from "@cosmos-kit/leap";
+import { Leap } from "@cosmos-kit/leap-extension";
+
 import { AppCurrency, ChainInfo, FeeCurrency } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 import { ethers } from "ethers";
@@ -56,12 +57,18 @@ class LeapAccount {
       throw new Error("signing not available");
     }
 
+    const signMessage = async (address: string, message: string): Promise<string> => {
+      const { signature } = await leap.signArbitrary(chainId, address, message)
+      return Buffer.from(signature, 'base64').toString('hex')
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signDirect,
       signAmino,
       getAccounts,
       sendEvmTransaction,
+      signMessage,
     };
   }
 
@@ -88,11 +95,17 @@ class LeapAccount {
       throw new Error("signing not available");
     }
 
+    const signMessage = async (address: string, message: string): Promise<string> => {
+      const { signature } = await leap.signArbitrary(chainId, address, message)
+      return Buffer.from(signature, 'base64').toString('hex')
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signAmino,
       getAccounts,
       sendEvmTransaction,
+      signMessage,
     };
   }
 
