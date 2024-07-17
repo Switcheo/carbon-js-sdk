@@ -324,10 +324,22 @@ class InsightsQueryClient {
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLeagueCompetitionLeaderboardResponse>> {
     const queryParams = {
       competitionId: req.competitionId,
+      subCompetitionId: req.subCompetitionId,
     };
     const request = this.apiManager.path("competition/leaderboardleague", {}, queryParams);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLeagueCompetitionLeaderboardResponse>;
+  }
+
+  async CosmosCompetitionLeaderboard(
+    req: Insights.QueryGetCosmosCompetitionLeaderboardRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetCosmosCompetitionLeaderboardResponse>> {
+    const queryParams = {
+      competitionId: req.competitionId,
+    };
+    const request = this.apiManager.path("competition/leaderboardcosmos", {}, queryParams);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetCosmosCompetitionLeaderboardResponse>;
   }
 
   async PoolsLiquidity(
