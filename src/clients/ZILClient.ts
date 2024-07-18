@@ -128,7 +128,7 @@ export class ZILClient {
 
   private walletProvider?: WalletProvider; // zilpay
 
-  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) {}
+  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) { }
 
   public static instance(opts: ZILClientOpts) {
     const { configProvider, blockchain } = opts;
@@ -143,11 +143,11 @@ export class ZILClient {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const tokens = tokenQueryResults.filter(
       (token) => {
-        const isCorrectBlockchain = 
-          version === "V2" 
-            ? 
+        const isCorrectBlockchain =
+          version === "V2"
+            ?
             !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain)
-            : 
+            :
             blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain
         return isCorrectBlockchain && token.tokenAddress.length == 40 && (!whitelistDenoms || whitelistDenoms.includes(token.denom))
       }
@@ -398,12 +398,12 @@ export class ZILClient {
       {
         vname: "amount",
         type: "Uint256",
-        value: amount.toString(),
+        value: amount.toString(10),
       },
       {
         vname: "withdrawFeeAmount",
         type: "Uint256",
-        value: feeAmount.toString(),
+        value: feeAmount.toString(10),
       },
     ];
 

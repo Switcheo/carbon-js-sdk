@@ -204,13 +204,17 @@ export interface QueryRewardSchemesAllResponse {
 
 export interface QueryRewardDebtsRequest {
   address: string;
+  pagination?: PageRequest;
 }
 
 export interface QueryRewardDebtsResponse {
   rewardDebts: RewardDebt[];
+  pagination?: PageResponse;
 }
 
-export interface QueryRewardDebtsAllRequest {}
+export interface QueryRewardDebtsAllRequest {
+  pagination?: PageRequest;
+}
 
 export interface QueryEModeAllRequest {
   pagination?: PageRequest;
@@ -3239,6 +3243,9 @@ export const QueryRewardDebtsRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -3257,6 +3264,9 @@ export const QueryRewardDebtsRequest = {
         case 1:
           message.address = reader.string();
           break;
+        case 2:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -3273,12 +3283,20 @@ export const QueryRewardDebtsRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
   toJSON(message: QueryRewardDebtsRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -3289,6 +3307,10 @@ export const QueryRewardDebtsRequest = {
       ...baseQueryRewardDebtsRequest,
     } as QueryRewardDebtsRequest;
     message.address = object.address ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -3302,6 +3324,12 @@ export const QueryRewardDebtsResponse = {
   ): _m0.Writer {
     for (const v of message.rewardDebts) {
       RewardDebt.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -3322,6 +3350,9 @@ export const QueryRewardDebtsResponse = {
         case 1:
           message.rewardDebts.push(RewardDebt.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -3337,6 +3368,10 @@ export const QueryRewardDebtsResponse = {
     message.rewardDebts = (object.rewardDebts ?? []).map((e: any) =>
       RewardDebt.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -3349,6 +3384,10 @@ export const QueryRewardDebtsResponse = {
     } else {
       obj.rewardDebts = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -3361,6 +3400,10 @@ export const QueryRewardDebtsResponse = {
     message.rewardDebts = (object.rewardDebts ?? []).map((e) =>
       RewardDebt.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -3369,9 +3412,12 @@ const baseQueryRewardDebtsAllRequest: object = {};
 
 export const QueryRewardDebtsAllRequest = {
   encode(
-    _: QueryRewardDebtsAllRequest,
+    message: QueryRewardDebtsAllRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -3387,6 +3433,9 @@ export const QueryRewardDebtsAllRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -3395,24 +3444,36 @@ export const QueryRewardDebtsAllRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryRewardDebtsAllRequest {
+  fromJSON(object: any): QueryRewardDebtsAllRequest {
     const message = {
       ...baseQueryRewardDebtsAllRequest,
     } as QueryRewardDebtsAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
-  toJSON(_: QueryRewardDebtsAllRequest): unknown {
+  toJSON(message: QueryRewardDebtsAllRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryRewardDebtsAllRequest>
+    object: DeepPartial<QueryRewardDebtsAllRequest>
   ): QueryRewardDebtsAllRequest {
     const message = {
       ...baseQueryRewardDebtsAllRequest,
     } as QueryRewardDebtsAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
