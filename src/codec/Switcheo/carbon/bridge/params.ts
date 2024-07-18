@@ -1,21 +1,38 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Duration } from "../../../google/protobuf/duration";
 
 export const protobufPackage = "Switcheo.carbon.bridge";
 
 /** Params defines the parameters for the module. */
 export interface Params {
-  /** axelar_ibc_channel the IBC channel that currently connects to axelar blockchain */
+  /**
+   * axelar_ibc_channel the IBC channel that currently connects to axelar
+   * blockchain
+   */
   axelarIbcChannel: string;
   /**
-   * ibc_timeout_height_offset specifies the number of blocks to be added to the current block height
-   * of the destination chain to determine the timeout height for IBC messages. This offset is used
-   * to calculate the block height on the destination chain at which the message will timeout if not
-   * processed. For example, an offset of 200 means that the message will timeout if it is not
-   * relayed and processed within 200 blocks from the current height of the destination chain.
+   * ibc_timeout_height_offset specifies the number of blocks to be added to the
+   * current block height of the destination chain to determine the timeout
+   * height for IBC messages. This offset is used to calculate the block height
+   * on the destination chain at which the message will timeout if not
+   * processed. For example, an offset of 200 means that the message will
+   * timeout if it is not relayed and processed within 200 blocks from the
+   * current height of the destination chain.
    */
   ibcTimeoutHeightOffset: Long;
+  /**
+   * relay_whitelist_duration specifies the number of blocks before a relay can
+   * be started by any relayer. Prior to this duration, only the whitelisted
+   * relayers can start the relay.
+   */
+  relayWhitelistDuration?: Duration;
+  /**
+   * max_relay_expiry_duration specifies the number of blocks after which a
+   * relay that has not been started will be pruned from the store
+   */
+  maxRelayExpiryDuration?: Duration;
 }
 
 const baseParams: object = {
@@ -34,6 +51,18 @@ export const Params = {
     if (!message.ibcTimeoutHeightOffset.isZero()) {
       writer.uint32(16).uint64(message.ibcTimeoutHeightOffset);
     }
+    if (message.relayWhitelistDuration !== undefined) {
+      Duration.encode(
+        message.relayWhitelistDuration,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.maxRelayExpiryDuration !== undefined) {
+      Duration.encode(
+        message.maxRelayExpiryDuration,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -49,6 +78,18 @@ export const Params = {
           break;
         case 2:
           message.ibcTimeoutHeightOffset = reader.uint64() as Long;
+          break;
+        case 3:
+          message.relayWhitelistDuration = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.maxRelayExpiryDuration = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -69,6 +110,16 @@ export const Params = {
       object.ibcTimeoutHeightOffset !== null
         ? Long.fromString(object.ibcTimeoutHeightOffset)
         : Long.UZERO;
+    message.relayWhitelistDuration =
+      object.relayWhitelistDuration !== undefined &&
+      object.relayWhitelistDuration !== null
+        ? Duration.fromJSON(object.relayWhitelistDuration)
+        : undefined;
+    message.maxRelayExpiryDuration =
+      object.maxRelayExpiryDuration !== undefined &&
+      object.maxRelayExpiryDuration !== null
+        ? Duration.fromJSON(object.maxRelayExpiryDuration)
+        : undefined;
     return message;
   },
 
@@ -80,6 +131,14 @@ export const Params = {
       (obj.ibcTimeoutHeightOffset = (
         message.ibcTimeoutHeightOffset || Long.UZERO
       ).toString());
+    message.relayWhitelistDuration !== undefined &&
+      (obj.relayWhitelistDuration = message.relayWhitelistDuration
+        ? Duration.toJSON(message.relayWhitelistDuration)
+        : undefined);
+    message.maxRelayExpiryDuration !== undefined &&
+      (obj.maxRelayExpiryDuration = message.maxRelayExpiryDuration
+        ? Duration.toJSON(message.maxRelayExpiryDuration)
+        : undefined);
     return obj;
   },
 
@@ -91,6 +150,16 @@ export const Params = {
       object.ibcTimeoutHeightOffset !== null
         ? Long.fromValue(object.ibcTimeoutHeightOffset)
         : Long.UZERO;
+    message.relayWhitelistDuration =
+      object.relayWhitelistDuration !== undefined &&
+      object.relayWhitelistDuration !== null
+        ? Duration.fromPartial(object.relayWhitelistDuration)
+        : undefined;
+    message.maxRelayExpiryDuration =
+      object.maxRelayExpiryDuration !== undefined &&
+      object.maxRelayExpiryDuration !== null
+        ? Duration.fromPartial(object.maxRelayExpiryDuration)
+        : undefined;
     return message;
   },
 };

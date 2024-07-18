@@ -150,7 +150,7 @@ class CarbonSDK {
   arbitrum: ETHClient;
   polygon: ETHClient;
   okc: ETHClient;
-  axelarBridgeClient: AxelarBridgeClient;
+  axelarBridgeClient: clients.AxelarBridgeClient;
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
@@ -259,7 +259,7 @@ class CarbonSDK {
       tokenClient: this.token,
     });
 
-    this.axelarBridgeClient = AxelarBridgeClient.instance({
+    this.axelarBridgeClient = clients.AxelarBridgeClient.instance({
       configProvider: this,
     })
   }

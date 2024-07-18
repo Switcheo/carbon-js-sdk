@@ -1,9 +1,10 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Duration } from "../../../google/protobuf/duration";
 import { Params } from "./params";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
-import { RelayFee } from "./bridge";
+import { ControllerContracts, ControllersToUpdate } from "./bridge";
 import {
   StringValue,
   BoolValue,
@@ -14,7 +15,7 @@ export const protobufPackage = "Switcheo.carbon.bridge";
 
 export interface MsgSetBridgeEnabled {
   creator: string;
-  bridgeId: string;
+  bridgeId: Long;
   isEnabled: boolean;
 }
 
@@ -34,6 +35,20 @@ export interface MsgUpdateIbcTimeoutHeightOffset {
 
 export interface MsgUpdateIbcTimeoutHeightOffsetResponse {}
 
+export interface MsgUpdateMaxRelayExpiry {
+  creator: string;
+  expiry?: Duration;
+}
+
+export interface MsgUpdateMaxRelayExpiryResponse {}
+
+export interface MsgUpdateRelayWhitelistDuration {
+  creator: string;
+  whitelistDuration?: Duration;
+}
+
+export interface MsgUpdateRelayWhitelistDurationResponse {}
+
 export interface MsgUpdateParams {
   authority: string;
   params?: Params;
@@ -41,15 +56,24 @@ export interface MsgUpdateParams {
 
 export interface MsgUpdateParamsResponse {}
 
-/** MsgAxelarSendToken is a convenience method to send a *Axelar Supported* token via axelar. */
+/**
+ * MsgAxelarSendToken is a convenience method to send a *Axelar Supported* token
+ * via axelar.
+ */
 export interface MsgAxelarSendToken {
   /** for this message, the message creator will be the sender of the token */
   creator: string;
-  /** the destination chain. see axelar for list of supported chain names: https://docs.axelar.dev/dev/reference/mainnet-chain-names */
+  /**
+   * the destination chain. see axelar for list of supported chain names:
+   * https://docs.axelar.dev/dev/reference/mainnet-chain-names
+   */
   destinationChain: string;
   /** the address on destination chain */
   destinationAddress: string;
-  /** see supported tokens: https://docs.axelar.dev/resources/mainnet#assets, convert them to ibc equivalent on carbon */
+  /**
+   * see supported tokens: https://docs.axelar.dev/resources/mainnet#assets,
+   * convert them to ibc equivalent on carbon
+   */
   tokens?: Coin;
 }
 
@@ -57,12 +81,16 @@ export interface MsgAxelarSendTokenResponse {}
 
 /**
  * MsgAxelarCallContract is a convenience method to do a GMP call to axelar.
- * This method will allow you do a `callContract` without having to specify the following: TypeGeneralMessageWithToken, IBC channel, IBC port, AxelarGMPAcc
+ * This method will allow you do a `callContract` without having to specify the
+ * following: TypeGeneralMessageWithToken, IBC channel, IBC port, AxelarGMPAcc
  */
 export interface MsgAxelarCallContract {
   /** for this message, the message creator will be the sender */
   creator: string;
-  /** the destination chain. see axelar for list of supported chain names: https://docs.axelar.dev/dev/reference/mainnet-chain-names */
+  /**
+   * the destination chain. see axelar for list of supported chain names:
+   * https://docs.axelar.dev/dev/reference/mainnet-chain-names
+   */
   destinationChain: string;
   /** the address on destination chain */
   destinationAddress: string;
@@ -73,17 +101,25 @@ export interface MsgAxelarCallContract {
 export interface MsgAxelarCallContractResponse {}
 
 /**
- * MsgAxelarCallContractWithToken is a convenience method to do a GMP call to axelar and attach some *Axelar Supported* tokens
- * This method will allow you do a `callContractWithToken` without having to specify the following: TypeGeneralMessageWithToken, IBC channel, IBC port, AxelarGMPAcc
+ * MsgAxelarCallContractWithToken is a convenience method to do a GMP call to
+ * axelar and attach some *Axelar Supported* tokens This method will allow you
+ * do a `callContractWithToken` without having to specify the following:
+ * TypeGeneralMessageWithToken, IBC channel, IBC port, AxelarGMPAcc
  */
 export interface MsgAxelarCallContractWithToken {
   /** for this message, the message creator will be the sender */
   creator: string;
-  /** the destination chain. see axelar for list of supported chain names: https://docs.axelar.dev/dev/reference/mainnet-chain-names */
+  /**
+   * the destination chain. see axelar for list of supported chain names:
+   * https://docs.axelar.dev/dev/reference/mainnet-chain-names
+   */
   destinationChain: string;
   /** the address on destination chain */
   destinationAddress: string;
-  /** see supported tokens: https://docs.axelar.dev/resources/mainnet#assets, convert them to ibc equivalent on carbon */
+  /**
+   * see supported tokens: https://docs.axelar.dev/resources/mainnet#assets,
+   * convert them to ibc equivalent on carbon
+   */
   tokens?: Coin;
   /** abi encoded bytes TODO: give abi encoding example? */
   payload: Uint8Array;
@@ -93,12 +129,13 @@ export interface MsgAxelarCallContractWithTokenResponse {}
 
 export interface MsgCreateConnection {
   creator: string;
-  bridgeId: string;
+  bridgeId: Long;
   chainId: string;
   chainDisplayName: string;
   tokenGatewayAddress: string;
   encoding: string;
   isEnabled: boolean;
+  isOptimisticConfirm: boolean;
 }
 
 export interface MsgCreateConnectionResponse {}
@@ -112,6 +149,7 @@ export interface MsgUpdateConnection {
 export interface UpdateConnectionParams {
   chainDisplayName?: string;
   isEnabled?: boolean;
+  isOptimisticConfirm?: boolean;
 }
 
 export interface MsgUpdateConnectionResponse {}
@@ -123,12 +161,44 @@ export interface MsgRemoveConnection {
 
 export interface MsgRemoveConnectionResponse {}
 
+export interface MsgAddControllersForConnection {
+  creator: string;
+  controllers?: ControllerContracts;
+}
+
+export interface MsgAddControllersForConnectionResponse {}
+
+export interface MsgUpdateControllersForConnection {
+  creator: string;
+  connectionId: string;
+  controllers?: ControllersToUpdate;
+}
+
+export interface MsgUpdateControllersForConnectionResponse {}
+
+export interface MsgRemoveControllersForConnection {
+  creator: string;
+  connectionId: string;
+}
+
+export interface MsgRemoveControllersForConnectionResponse {}
+
+export interface MsgRemoveNonceMapForConnection {
+  creator: string;
+  connectionId: string;
+  gatewayAddress: string;
+}
+
+export interface MsgRemoveNonceMapForConnectionResponse {}
+
 export interface MsgRegisterExternalToken {
   creator: string;
   connectionId: string;
   assetAddress: string;
   decimals?: Long;
   carbonTokenName: string;
+  relayFee?: Coin;
+  expiryDuration?: Duration;
 }
 
 export interface MsgRegisterExternalTokenResponse {}
@@ -137,6 +207,8 @@ export interface MsgDeregisterExternalToken {
   creator: string;
   connectionId: string;
   denom: string;
+  relayFee?: Coin;
+  expiryDuration?: Duration;
 }
 
 export interface MsgDeregisterExternalTokenResponse {}
@@ -145,6 +217,8 @@ export interface MsgDeployNativeToken {
   creator: string;
   connectionId: string;
   denom: string;
+  relayFee?: Coin;
+  expiryDuration?: Duration;
 }
 
 export interface MsgDeployNativeTokenResponse {}
@@ -163,57 +237,93 @@ export interface MsgWithdrawToken {
   connectionId: string;
   receiver: string;
   tokens?: Coin;
-  relayFee?: RelayFee;
+  relayFee?: Coin;
+  expiryDuration?: Duration;
 }
 
 export interface MsgWithdrawTokenResponse {}
 
-export interface MsgRegisterExecutable {
+export interface MsgUpdateExternalToken {
   creator: string;
   connectionId: string;
-  executableAddress: string;
+  assetAddress: string;
+  tokenName: string;
+  decimals: Long;
+  isCarbonOwned: boolean;
 }
 
-export interface MsgRegisterExecutableResponse {}
+export interface MsgUpdateExternalTokenResponse {}
 
-export interface MsgDeregisterExecutable {
+export interface MsgDeleteExternalToken {
   creator: string;
   connectionId: string;
-  executableAddress: string;
+  denom: string;
 }
 
-export interface MsgDeregisterExecutableResponse {}
+export interface MsgDeleteExternalTokenResponse {}
 
-export interface MsgExecuteOnExecutableContract {
+export interface MsgExecuteFromCarbon {
   creator: string;
   connectionId: string;
-  executableAddress: string;
+  executionContract: string;
+  method: string;
   executionBytes: Uint8Array;
   tokens?: Coin;
-  relayFee?: RelayFee;
+  relayFee?: Coin;
+  expiryDuration?: Duration;
 }
 
-export interface MsgExecuteOnExecutableContractResponse {}
+export interface MsgExecuteFromCarbonResponse {}
 
-export interface MsgAllowExternalExecutor {
+export interface MsgStartRelay {
+  relayer: string;
+  nonce: Long;
+}
+
+export interface MsgStartRelayResponse {}
+
+export interface MsgPruneExpiredPendingActions {
   creator: string;
-  connectionId: string;
-  executorAddress: string;
+  nonces: Long[];
 }
 
-export interface MsgAllowExternalExecutorResponse {}
+export interface MsgPruneExpiredPendingActionsResponse {}
 
-export interface MsgRemoveExternalExecutor {
-  creator: string;
+export interface MsgRevertPendingAction {
+  authority: string;
   connectionId: string;
-  executorAddress: string;
+  nonce: Long;
+  actionType: Long;
 }
 
-export interface MsgRemoveExternalExecutorResponse {}
+export interface MsgRevertPendingActionResponse {}
+
+export interface MsgConfirmPendingAction {
+  authority: string;
+  connectionId: string;
+  nonce: Long;
+  actionType: Long;
+}
+
+export interface MsgConfirmPendingActionResponse {}
+
+export interface MsgAddRelayer {
+  authority: string;
+  relayer: string;
+}
+
+export interface MsgAddRelayerResponse {}
+
+export interface MsgRemoveRelayer {
+  authority: string;
+  relayer: string;
+}
+
+export interface MsgRemoveRelayerResponse {}
 
 const baseMsgSetBridgeEnabled: object = {
   creator: "",
-  bridgeId: "",
+  bridgeId: Long.UZERO,
   isEnabled: false,
 };
 
@@ -225,8 +335,8 @@ export const MsgSetBridgeEnabled = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.bridgeId !== "") {
-      writer.uint32(18).string(message.bridgeId);
+    if (!message.bridgeId.isZero()) {
+      writer.uint32(16).uint64(message.bridgeId);
     }
     if (message.isEnabled === true) {
       writer.uint32(24).bool(message.isEnabled);
@@ -245,7 +355,7 @@ export const MsgSetBridgeEnabled = {
           message.creator = reader.string();
           break;
         case 2:
-          message.bridgeId = reader.string();
+          message.bridgeId = reader.uint64() as Long;
           break;
         case 3:
           message.isEnabled = reader.bool();
@@ -266,8 +376,8 @@ export const MsgSetBridgeEnabled = {
         : "";
     message.bridgeId =
       object.bridgeId !== undefined && object.bridgeId !== null
-        ? String(object.bridgeId)
-        : "";
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
     message.isEnabled =
       object.isEnabled !== undefined && object.isEnabled !== null
         ? Boolean(object.isEnabled)
@@ -278,7 +388,8 @@ export const MsgSetBridgeEnabled = {
   toJSON(message: MsgSetBridgeEnabled): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.bridgeId !== undefined && (obj.bridgeId = message.bridgeId);
+    message.bridgeId !== undefined &&
+      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
     message.isEnabled !== undefined && (obj.isEnabled = message.isEnabled);
     return obj;
   },
@@ -286,7 +397,10 @@ export const MsgSetBridgeEnabled = {
   fromPartial(object: DeepPartial<MsgSetBridgeEnabled>): MsgSetBridgeEnabled {
     const message = { ...baseMsgSetBridgeEnabled } as MsgSetBridgeEnabled;
     message.creator = object.creator ?? "";
-    message.bridgeId = object.bridgeId ?? "";
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
     message.isEnabled = object.isEnabled ?? false;
     return message;
   },
@@ -603,6 +717,279 @@ export const MsgUpdateIbcTimeoutHeightOffsetResponse = {
     const message = {
       ...baseMsgUpdateIbcTimeoutHeightOffsetResponse,
     } as MsgUpdateIbcTimeoutHeightOffsetResponse;
+    return message;
+  },
+};
+
+const baseMsgUpdateMaxRelayExpiry: object = { creator: "" };
+
+export const MsgUpdateMaxRelayExpiry = {
+  encode(
+    message: MsgUpdateMaxRelayExpiry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.expiry !== undefined) {
+      Duration.encode(message.expiry, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateMaxRelayExpiry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateMaxRelayExpiry,
+    } as MsgUpdateMaxRelayExpiry;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.expiry = Duration.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateMaxRelayExpiry {
+    const message = {
+      ...baseMsgUpdateMaxRelayExpiry,
+    } as MsgUpdateMaxRelayExpiry;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.expiry =
+      object.expiry !== undefined && object.expiry !== null
+        ? Duration.fromJSON(object.expiry)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateMaxRelayExpiry): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.expiry !== undefined &&
+      (obj.expiry = message.expiry
+        ? Duration.toJSON(message.expiry)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateMaxRelayExpiry>
+  ): MsgUpdateMaxRelayExpiry {
+    const message = {
+      ...baseMsgUpdateMaxRelayExpiry,
+    } as MsgUpdateMaxRelayExpiry;
+    message.creator = object.creator ?? "";
+    message.expiry =
+      object.expiry !== undefined && object.expiry !== null
+        ? Duration.fromPartial(object.expiry)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateMaxRelayExpiryResponse: object = {};
+
+export const MsgUpdateMaxRelayExpiryResponse = {
+  encode(
+    _: MsgUpdateMaxRelayExpiryResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateMaxRelayExpiryResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateMaxRelayExpiryResponse,
+    } as MsgUpdateMaxRelayExpiryResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateMaxRelayExpiryResponse {
+    const message = {
+      ...baseMsgUpdateMaxRelayExpiryResponse,
+    } as MsgUpdateMaxRelayExpiryResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateMaxRelayExpiryResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateMaxRelayExpiryResponse>
+  ): MsgUpdateMaxRelayExpiryResponse {
+    const message = {
+      ...baseMsgUpdateMaxRelayExpiryResponse,
+    } as MsgUpdateMaxRelayExpiryResponse;
+    return message;
+  },
+};
+
+const baseMsgUpdateRelayWhitelistDuration: object = { creator: "" };
+
+export const MsgUpdateRelayWhitelistDuration = {
+  encode(
+    message: MsgUpdateRelayWhitelistDuration,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.whitelistDuration !== undefined) {
+      Duration.encode(
+        message.whitelistDuration,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateRelayWhitelistDuration {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateRelayWhitelistDuration,
+    } as MsgUpdateRelayWhitelistDuration;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.whitelistDuration = Duration.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateRelayWhitelistDuration {
+    const message = {
+      ...baseMsgUpdateRelayWhitelistDuration,
+    } as MsgUpdateRelayWhitelistDuration;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.whitelistDuration =
+      object.whitelistDuration !== undefined &&
+      object.whitelistDuration !== null
+        ? Duration.fromJSON(object.whitelistDuration)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateRelayWhitelistDuration): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.whitelistDuration !== undefined &&
+      (obj.whitelistDuration = message.whitelistDuration
+        ? Duration.toJSON(message.whitelistDuration)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateRelayWhitelistDuration>
+  ): MsgUpdateRelayWhitelistDuration {
+    const message = {
+      ...baseMsgUpdateRelayWhitelistDuration,
+    } as MsgUpdateRelayWhitelistDuration;
+    message.creator = object.creator ?? "";
+    message.whitelistDuration =
+      object.whitelistDuration !== undefined &&
+      object.whitelistDuration !== null
+        ? Duration.fromPartial(object.whitelistDuration)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateRelayWhitelistDurationResponse: object = {};
+
+export const MsgUpdateRelayWhitelistDurationResponse = {
+  encode(
+    _: MsgUpdateRelayWhitelistDurationResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateRelayWhitelistDurationResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateRelayWhitelistDurationResponse,
+    } as MsgUpdateRelayWhitelistDurationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateRelayWhitelistDurationResponse {
+    const message = {
+      ...baseMsgUpdateRelayWhitelistDurationResponse,
+    } as MsgUpdateRelayWhitelistDurationResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateRelayWhitelistDurationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateRelayWhitelistDurationResponse>
+  ): MsgUpdateRelayWhitelistDurationResponse {
+    const message = {
+      ...baseMsgUpdateRelayWhitelistDurationResponse,
+    } as MsgUpdateRelayWhitelistDurationResponse;
     return message;
   },
 };
@@ -1218,12 +1605,13 @@ export const MsgAxelarCallContractWithTokenResponse = {
 
 const baseMsgCreateConnection: object = {
   creator: "",
-  bridgeId: "",
+  bridgeId: Long.UZERO,
   chainId: "",
   chainDisplayName: "",
   tokenGatewayAddress: "",
   encoding: "",
   isEnabled: false,
+  isOptimisticConfirm: false,
 };
 
 export const MsgCreateConnection = {
@@ -1234,8 +1622,8 @@ export const MsgCreateConnection = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.bridgeId !== "") {
-      writer.uint32(18).string(message.bridgeId);
+    if (!message.bridgeId.isZero()) {
+      writer.uint32(16).uint64(message.bridgeId);
     }
     if (message.chainId !== "") {
       writer.uint32(26).string(message.chainId);
@@ -1252,6 +1640,9 @@ export const MsgCreateConnection = {
     if (message.isEnabled === true) {
       writer.uint32(56).bool(message.isEnabled);
     }
+    if (message.isOptimisticConfirm === true) {
+      writer.uint32(64).bool(message.isOptimisticConfirm);
+    }
     return writer;
   },
 
@@ -1266,7 +1657,7 @@ export const MsgCreateConnection = {
           message.creator = reader.string();
           break;
         case 2:
-          message.bridgeId = reader.string();
+          message.bridgeId = reader.uint64() as Long;
           break;
         case 3:
           message.chainId = reader.string();
@@ -1282,6 +1673,9 @@ export const MsgCreateConnection = {
           break;
         case 7:
           message.isEnabled = reader.bool();
+          break;
+        case 8:
+          message.isOptimisticConfirm = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1299,8 +1693,8 @@ export const MsgCreateConnection = {
         : "";
     message.bridgeId =
       object.bridgeId !== undefined && object.bridgeId !== null
-        ? String(object.bridgeId)
-        : "";
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
     message.chainId =
       object.chainId !== undefined && object.chainId !== null
         ? String(object.chainId)
@@ -1322,13 +1716,19 @@ export const MsgCreateConnection = {
       object.isEnabled !== undefined && object.isEnabled !== null
         ? Boolean(object.isEnabled)
         : false;
+    message.isOptimisticConfirm =
+      object.isOptimisticConfirm !== undefined &&
+      object.isOptimisticConfirm !== null
+        ? Boolean(object.isOptimisticConfirm)
+        : false;
     return message;
   },
 
   toJSON(message: MsgCreateConnection): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.bridgeId !== undefined && (obj.bridgeId = message.bridgeId);
+    message.bridgeId !== undefined &&
+      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
     message.chainId !== undefined && (obj.chainId = message.chainId);
     message.chainDisplayName !== undefined &&
       (obj.chainDisplayName = message.chainDisplayName);
@@ -1336,18 +1736,24 @@ export const MsgCreateConnection = {
       (obj.tokenGatewayAddress = message.tokenGatewayAddress);
     message.encoding !== undefined && (obj.encoding = message.encoding);
     message.isEnabled !== undefined && (obj.isEnabled = message.isEnabled);
+    message.isOptimisticConfirm !== undefined &&
+      (obj.isOptimisticConfirm = message.isOptimisticConfirm);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgCreateConnection>): MsgCreateConnection {
     const message = { ...baseMsgCreateConnection } as MsgCreateConnection;
     message.creator = object.creator ?? "";
-    message.bridgeId = object.bridgeId ?? "";
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
     message.chainId = object.chainId ?? "";
     message.chainDisplayName = object.chainDisplayName ?? "";
     message.tokenGatewayAddress = object.tokenGatewayAddress ?? "";
     message.encoding = object.encoding ?? "";
     message.isEnabled = object.isEnabled ?? false;
+    message.isOptimisticConfirm = object.isOptimisticConfirm ?? false;
     return message;
   },
 };
@@ -1515,6 +1921,12 @@ export const UpdateConnectionParams = {
         writer.uint32(18).fork()
       ).ldelim();
     }
+    if (message.isOptimisticConfirm !== undefined) {
+      BoolValue.encode(
+        { value: message.isOptimisticConfirm! },
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -1537,6 +1949,12 @@ export const UpdateConnectionParams = {
         case 2:
           message.isEnabled = BoolValue.decode(reader, reader.uint32()).value;
           break;
+        case 3:
+          message.isOptimisticConfirm = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1555,6 +1973,11 @@ export const UpdateConnectionParams = {
       object.isEnabled !== undefined && object.isEnabled !== null
         ? Boolean(object.isEnabled)
         : undefined;
+    message.isOptimisticConfirm =
+      object.isOptimisticConfirm !== undefined &&
+      object.isOptimisticConfirm !== null
+        ? Boolean(object.isOptimisticConfirm)
+        : undefined;
     return message;
   },
 
@@ -1563,6 +1986,8 @@ export const UpdateConnectionParams = {
     message.chainDisplayName !== undefined &&
       (obj.chainDisplayName = message.chainDisplayName);
     message.isEnabled !== undefined && (obj.isEnabled = message.isEnabled);
+    message.isOptimisticConfirm !== undefined &&
+      (obj.isOptimisticConfirm = message.isOptimisticConfirm);
     return obj;
   },
 
@@ -1572,6 +1997,7 @@ export const UpdateConnectionParams = {
     const message = { ...baseUpdateConnectionParams } as UpdateConnectionParams;
     message.chainDisplayName = object.chainDisplayName ?? undefined;
     message.isEnabled = object.isEnabled ?? undefined;
+    message.isOptimisticConfirm = object.isOptimisticConfirm ?? undefined;
     return message;
   },
 };
@@ -1746,6 +2172,580 @@ export const MsgRemoveConnectionResponse = {
   },
 };
 
+const baseMsgAddControllersForConnection: object = { creator: "" };
+
+export const MsgAddControllersForConnection = {
+  encode(
+    message: MsgAddControllersForConnection,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.controllers !== undefined) {
+      ControllerContracts.encode(
+        message.controllers,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddControllersForConnection {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddControllersForConnection,
+    } as MsgAddControllersForConnection;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.controllers = ControllerContracts.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddControllersForConnection {
+    const message = {
+      ...baseMsgAddControllersForConnection,
+    } as MsgAddControllersForConnection;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.controllers =
+      object.controllers !== undefined && object.controllers !== null
+        ? ControllerContracts.fromJSON(object.controllers)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgAddControllersForConnection): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.controllers !== undefined &&
+      (obj.controllers = message.controllers
+        ? ControllerContracts.toJSON(message.controllers)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgAddControllersForConnection>
+  ): MsgAddControllersForConnection {
+    const message = {
+      ...baseMsgAddControllersForConnection,
+    } as MsgAddControllersForConnection;
+    message.creator = object.creator ?? "";
+    message.controllers =
+      object.controllers !== undefined && object.controllers !== null
+        ? ControllerContracts.fromPartial(object.controllers)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgAddControllersForConnectionResponse: object = {};
+
+export const MsgAddControllersForConnectionResponse = {
+  encode(
+    _: MsgAddControllersForConnectionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddControllersForConnectionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddControllersForConnectionResponse,
+    } as MsgAddControllersForConnectionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAddControllersForConnectionResponse {
+    const message = {
+      ...baseMsgAddControllersForConnectionResponse,
+    } as MsgAddControllersForConnectionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAddControllersForConnectionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgAddControllersForConnectionResponse>
+  ): MsgAddControllersForConnectionResponse {
+    const message = {
+      ...baseMsgAddControllersForConnectionResponse,
+    } as MsgAddControllersForConnectionResponse;
+    return message;
+  },
+};
+
+const baseMsgUpdateControllersForConnection: object = {
+  creator: "",
+  connectionId: "",
+};
+
+export const MsgUpdateControllersForConnection = {
+  encode(
+    message: MsgUpdateControllersForConnection,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.connectionId !== "") {
+      writer.uint32(18).string(message.connectionId);
+    }
+    if (message.controllers !== undefined) {
+      ControllersToUpdate.encode(
+        message.controllers,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateControllersForConnection {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateControllersForConnection,
+    } as MsgUpdateControllersForConnection;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.connectionId = reader.string();
+          break;
+        case 3:
+          message.controllers = ControllersToUpdate.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateControllersForConnection {
+    const message = {
+      ...baseMsgUpdateControllersForConnection,
+    } as MsgUpdateControllersForConnection;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.connectionId =
+      object.connectionId !== undefined && object.connectionId !== null
+        ? String(object.connectionId)
+        : "";
+    message.controllers =
+      object.controllers !== undefined && object.controllers !== null
+        ? ControllersToUpdate.fromJSON(object.controllers)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateControllersForConnection): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.connectionId !== undefined &&
+      (obj.connectionId = message.connectionId);
+    message.controllers !== undefined &&
+      (obj.controllers = message.controllers
+        ? ControllersToUpdate.toJSON(message.controllers)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateControllersForConnection>
+  ): MsgUpdateControllersForConnection {
+    const message = {
+      ...baseMsgUpdateControllersForConnection,
+    } as MsgUpdateControllersForConnection;
+    message.creator = object.creator ?? "";
+    message.connectionId = object.connectionId ?? "";
+    message.controllers =
+      object.controllers !== undefined && object.controllers !== null
+        ? ControllersToUpdate.fromPartial(object.controllers)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateControllersForConnectionResponse: object = {};
+
+export const MsgUpdateControllersForConnectionResponse = {
+  encode(
+    _: MsgUpdateControllersForConnectionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateControllersForConnectionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateControllersForConnectionResponse,
+    } as MsgUpdateControllersForConnectionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateControllersForConnectionResponse {
+    const message = {
+      ...baseMsgUpdateControllersForConnectionResponse,
+    } as MsgUpdateControllersForConnectionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateControllersForConnectionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateControllersForConnectionResponse>
+  ): MsgUpdateControllersForConnectionResponse {
+    const message = {
+      ...baseMsgUpdateControllersForConnectionResponse,
+    } as MsgUpdateControllersForConnectionResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveControllersForConnection: object = {
+  creator: "",
+  connectionId: "",
+};
+
+export const MsgRemoveControllersForConnection = {
+  encode(
+    message: MsgRemoveControllersForConnection,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.connectionId !== "") {
+      writer.uint32(18).string(message.connectionId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveControllersForConnection {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveControllersForConnection,
+    } as MsgRemoveControllersForConnection;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.connectionId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveControllersForConnection {
+    const message = {
+      ...baseMsgRemoveControllersForConnection,
+    } as MsgRemoveControllersForConnection;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.connectionId =
+      object.connectionId !== undefined && object.connectionId !== null
+        ? String(object.connectionId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveControllersForConnection): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.connectionId !== undefined &&
+      (obj.connectionId = message.connectionId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveControllersForConnection>
+  ): MsgRemoveControllersForConnection {
+    const message = {
+      ...baseMsgRemoveControllersForConnection,
+    } as MsgRemoveControllersForConnection;
+    message.creator = object.creator ?? "";
+    message.connectionId = object.connectionId ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveControllersForConnectionResponse: object = {};
+
+export const MsgRemoveControllersForConnectionResponse = {
+  encode(
+    _: MsgRemoveControllersForConnectionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveControllersForConnectionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveControllersForConnectionResponse,
+    } as MsgRemoveControllersForConnectionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveControllersForConnectionResponse {
+    const message = {
+      ...baseMsgRemoveControllersForConnectionResponse,
+    } as MsgRemoveControllersForConnectionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveControllersForConnectionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveControllersForConnectionResponse>
+  ): MsgRemoveControllersForConnectionResponse {
+    const message = {
+      ...baseMsgRemoveControllersForConnectionResponse,
+    } as MsgRemoveControllersForConnectionResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveNonceMapForConnection: object = {
+  creator: "",
+  connectionId: "",
+  gatewayAddress: "",
+};
+
+export const MsgRemoveNonceMapForConnection = {
+  encode(
+    message: MsgRemoveNonceMapForConnection,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.connectionId !== "") {
+      writer.uint32(18).string(message.connectionId);
+    }
+    if (message.gatewayAddress !== "") {
+      writer.uint32(26).string(message.gatewayAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveNonceMapForConnection {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveNonceMapForConnection,
+    } as MsgRemoveNonceMapForConnection;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.connectionId = reader.string();
+          break;
+        case 3:
+          message.gatewayAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveNonceMapForConnection {
+    const message = {
+      ...baseMsgRemoveNonceMapForConnection,
+    } as MsgRemoveNonceMapForConnection;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.connectionId =
+      object.connectionId !== undefined && object.connectionId !== null
+        ? String(object.connectionId)
+        : "";
+    message.gatewayAddress =
+      object.gatewayAddress !== undefined && object.gatewayAddress !== null
+        ? String(object.gatewayAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveNonceMapForConnection): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.connectionId !== undefined &&
+      (obj.connectionId = message.connectionId);
+    message.gatewayAddress !== undefined &&
+      (obj.gatewayAddress = message.gatewayAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveNonceMapForConnection>
+  ): MsgRemoveNonceMapForConnection {
+    const message = {
+      ...baseMsgRemoveNonceMapForConnection,
+    } as MsgRemoveNonceMapForConnection;
+    message.creator = object.creator ?? "";
+    message.connectionId = object.connectionId ?? "";
+    message.gatewayAddress = object.gatewayAddress ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveNonceMapForConnectionResponse: object = {};
+
+export const MsgRemoveNonceMapForConnectionResponse = {
+  encode(
+    _: MsgRemoveNonceMapForConnectionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveNonceMapForConnectionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveNonceMapForConnectionResponse,
+    } as MsgRemoveNonceMapForConnectionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveNonceMapForConnectionResponse {
+    const message = {
+      ...baseMsgRemoveNonceMapForConnectionResponse,
+    } as MsgRemoveNonceMapForConnectionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveNonceMapForConnectionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveNonceMapForConnectionResponse>
+  ): MsgRemoveNonceMapForConnectionResponse {
+    const message = {
+      ...baseMsgRemoveNonceMapForConnectionResponse,
+    } as MsgRemoveNonceMapForConnectionResponse;
+    return message;
+  },
+};
+
 const baseMsgRegisterExternalToken: object = {
   creator: "",
   connectionId: "",
@@ -1776,6 +2776,15 @@ export const MsgRegisterExternalToken = {
     if (message.carbonTokenName !== "") {
       writer.uint32(42).string(message.carbonTokenName);
     }
+    if (message.relayFee !== undefined) {
+      Coin.encode(message.relayFee, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.expiryDuration !== undefined) {
+      Duration.encode(
+        message.expiryDuration,
+        writer.uint32(58).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -1805,6 +2814,12 @@ export const MsgRegisterExternalToken = {
           break;
         case 5:
           message.carbonTokenName = reader.string();
+          break;
+        case 6:
+          message.relayFee = Coin.decode(reader, reader.uint32());
+          break;
+        case 7:
+          message.expiryDuration = Duration.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1838,6 +2853,14 @@ export const MsgRegisterExternalToken = {
       object.carbonTokenName !== undefined && object.carbonTokenName !== null
         ? String(object.carbonTokenName)
         : "";
+    message.relayFee =
+      object.relayFee !== undefined && object.relayFee !== null
+        ? Coin.fromJSON(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromJSON(object.expiryDuration)
+        : undefined;
     return message;
   },
 
@@ -1851,6 +2874,14 @@ export const MsgRegisterExternalToken = {
     message.decimals !== undefined && (obj.decimals = message.decimals);
     message.carbonTokenName !== undefined &&
       (obj.carbonTokenName = message.carbonTokenName);
+    message.relayFee !== undefined &&
+      (obj.relayFee = message.relayFee
+        ? Coin.toJSON(message.relayFee)
+        : undefined);
+    message.expiryDuration !== undefined &&
+      (obj.expiryDuration = message.expiryDuration
+        ? Duration.toJSON(message.expiryDuration)
+        : undefined);
     return obj;
   },
 
@@ -1868,6 +2899,14 @@ export const MsgRegisterExternalToken = {
         ? Long.fromValue(object.decimals)
         : undefined;
     message.carbonTokenName = object.carbonTokenName ?? "";
+    message.relayFee =
+      object.relayFee !== undefined && object.relayFee !== null
+        ? Coin.fromPartial(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromPartial(object.expiryDuration)
+        : undefined;
     return message;
   },
 };
@@ -1944,6 +2983,15 @@ export const MsgDeregisterExternalToken = {
     if (message.denom !== "") {
       writer.uint32(26).string(message.denom);
     }
+    if (message.relayFee !== undefined) {
+      Coin.encode(message.relayFee, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.expiryDuration !== undefined) {
+      Duration.encode(
+        message.expiryDuration,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -1967,6 +3015,12 @@ export const MsgDeregisterExternalToken = {
           break;
         case 3:
           message.denom = reader.string();
+          break;
+        case 4:
+          message.relayFee = Coin.decode(reader, reader.uint32());
+          break;
+        case 5:
+          message.expiryDuration = Duration.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1992,6 +3046,14 @@ export const MsgDeregisterExternalToken = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
+    message.relayFee =
+      object.relayFee !== undefined && object.relayFee !== null
+        ? Coin.fromJSON(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromJSON(object.expiryDuration)
+        : undefined;
     return message;
   },
 
@@ -2001,6 +3063,14 @@ export const MsgDeregisterExternalToken = {
     message.connectionId !== undefined &&
       (obj.connectionId = message.connectionId);
     message.denom !== undefined && (obj.denom = message.denom);
+    message.relayFee !== undefined &&
+      (obj.relayFee = message.relayFee
+        ? Coin.toJSON(message.relayFee)
+        : undefined);
+    message.expiryDuration !== undefined &&
+      (obj.expiryDuration = message.expiryDuration
+        ? Duration.toJSON(message.expiryDuration)
+        : undefined);
     return obj;
   },
 
@@ -2013,6 +3083,14 @@ export const MsgDeregisterExternalToken = {
     message.creator = object.creator ?? "";
     message.connectionId = object.connectionId ?? "";
     message.denom = object.denom ?? "";
+    message.relayFee =
+      object.relayFee !== undefined && object.relayFee !== null
+        ? Coin.fromPartial(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromPartial(object.expiryDuration)
+        : undefined;
     return message;
   },
 };
@@ -2089,6 +3167,15 @@ export const MsgDeployNativeToken = {
     if (message.denom !== "") {
       writer.uint32(26).string(message.denom);
     }
+    if (message.relayFee !== undefined) {
+      Coin.encode(message.relayFee, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.expiryDuration !== undefined) {
+      Duration.encode(
+        message.expiryDuration,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -2110,6 +3197,12 @@ export const MsgDeployNativeToken = {
           break;
         case 3:
           message.denom = reader.string();
+          break;
+        case 4:
+          message.relayFee = Coin.decode(reader, reader.uint32());
+          break;
+        case 5:
+          message.expiryDuration = Duration.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2133,6 +3226,14 @@ export const MsgDeployNativeToken = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
+    message.relayFee =
+      object.relayFee !== undefined && object.relayFee !== null
+        ? Coin.fromJSON(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromJSON(object.expiryDuration)
+        : undefined;
     return message;
   },
 
@@ -2142,6 +3243,14 @@ export const MsgDeployNativeToken = {
     message.connectionId !== undefined &&
       (obj.connectionId = message.connectionId);
     message.denom !== undefined && (obj.denom = message.denom);
+    message.relayFee !== undefined &&
+      (obj.relayFee = message.relayFee
+        ? Coin.toJSON(message.relayFee)
+        : undefined);
+    message.expiryDuration !== undefined &&
+      (obj.expiryDuration = message.expiryDuration
+        ? Duration.toJSON(message.expiryDuration)
+        : undefined);
     return obj;
   },
 
@@ -2150,6 +3259,14 @@ export const MsgDeployNativeToken = {
     message.creator = object.creator ?? "";
     message.connectionId = object.connectionId ?? "";
     message.denom = object.denom ?? "";
+    message.relayFee =
+      object.relayFee !== undefined && object.relayFee !== null
+        ? Coin.fromPartial(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromPartial(object.expiryDuration)
+        : undefined;
     return message;
   },
 };
@@ -2389,7 +3506,13 @@ export const MsgWithdrawToken = {
       Coin.encode(message.tokens, writer.uint32(34).fork()).ldelim();
     }
     if (message.relayFee !== undefined) {
-      RelayFee.encode(message.relayFee, writer.uint32(42).fork()).ldelim();
+      Coin.encode(message.relayFee, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.expiryDuration !== undefined) {
+      Duration.encode(
+        message.expiryDuration,
+        writer.uint32(50).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -2414,7 +3537,10 @@ export const MsgWithdrawToken = {
           message.tokens = Coin.decode(reader, reader.uint32());
           break;
         case 5:
-          message.relayFee = RelayFee.decode(reader, reader.uint32());
+          message.relayFee = Coin.decode(reader, reader.uint32());
+          break;
+        case 6:
+          message.expiryDuration = Duration.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2444,7 +3570,11 @@ export const MsgWithdrawToken = {
         : undefined;
     message.relayFee =
       object.relayFee !== undefined && object.relayFee !== null
-        ? RelayFee.fromJSON(object.relayFee)
+        ? Coin.fromJSON(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromJSON(object.expiryDuration)
         : undefined;
     return message;
   },
@@ -2459,7 +3589,11 @@ export const MsgWithdrawToken = {
       (obj.tokens = message.tokens ? Coin.toJSON(message.tokens) : undefined);
     message.relayFee !== undefined &&
       (obj.relayFee = message.relayFee
-        ? RelayFee.toJSON(message.relayFee)
+        ? Coin.toJSON(message.relayFee)
+        : undefined);
+    message.expiryDuration !== undefined &&
+      (obj.expiryDuration = message.expiryDuration
+        ? Duration.toJSON(message.expiryDuration)
         : undefined);
     return obj;
   },
@@ -2475,7 +3609,11 @@ export const MsgWithdrawToken = {
         : undefined;
     message.relayFee =
       object.relayFee !== undefined && object.relayFee !== null
-        ? RelayFee.fromPartial(object.relayFee)
+        ? Coin.fromPartial(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromPartial(object.expiryDuration)
         : undefined;
     return message;
   },
@@ -2533,15 +3671,18 @@ export const MsgWithdrawTokenResponse = {
   },
 };
 
-const baseMsgRegisterExecutable: object = {
+const baseMsgUpdateExternalToken: object = {
   creator: "",
   connectionId: "",
-  executableAddress: "",
+  assetAddress: "",
+  tokenName: "",
+  decimals: Long.ZERO,
+  isCarbonOwned: false,
 };
 
-export const MsgRegisterExecutable = {
+export const MsgUpdateExternalToken = {
   encode(
-    message: MsgRegisterExecutable,
+    message: MsgUpdateExternalToken,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -2550,8 +3691,17 @@ export const MsgRegisterExecutable = {
     if (message.connectionId !== "") {
       writer.uint32(18).string(message.connectionId);
     }
-    if (message.executableAddress !== "") {
-      writer.uint32(26).string(message.executableAddress);
+    if (message.assetAddress !== "") {
+      writer.uint32(26).string(message.assetAddress);
+    }
+    if (message.tokenName !== "") {
+      writer.uint32(34).string(message.tokenName);
+    }
+    if (!message.decimals.isZero()) {
+      writer.uint32(40).int64(message.decimals);
+    }
+    if (message.isCarbonOwned === true) {
+      writer.uint32(48).bool(message.isCarbonOwned);
     }
     return writer;
   },
@@ -2559,10 +3709,10 @@ export const MsgRegisterExecutable = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgRegisterExecutable {
+  ): MsgUpdateExternalToken {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRegisterExecutable } as MsgRegisterExecutable;
+    const message = { ...baseMsgUpdateExternalToken } as MsgUpdateExternalToken;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2573,7 +3723,16 @@ export const MsgRegisterExecutable = {
           message.connectionId = reader.string();
           break;
         case 3:
-          message.executableAddress = reader.string();
+          message.assetAddress = reader.string();
+          break;
+        case 4:
+          message.tokenName = reader.string();
+          break;
+        case 5:
+          message.decimals = reader.int64() as Long;
+          break;
+        case 6:
+          message.isCarbonOwned = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2583,8 +3742,8 @@ export const MsgRegisterExecutable = {
     return message;
   },
 
-  fromJSON(object: any): MsgRegisterExecutable {
-    const message = { ...baseMsgRegisterExecutable } as MsgRegisterExecutable;
+  fromJSON(object: any): MsgUpdateExternalToken {
+    const message = { ...baseMsgUpdateExternalToken } as MsgUpdateExternalToken;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -2593,40 +3752,62 @@ export const MsgRegisterExecutable = {
       object.connectionId !== undefined && object.connectionId !== null
         ? String(object.connectionId)
         : "";
-    message.executableAddress =
-      object.executableAddress !== undefined &&
-      object.executableAddress !== null
-        ? String(object.executableAddress)
+    message.assetAddress =
+      object.assetAddress !== undefined && object.assetAddress !== null
+        ? String(object.assetAddress)
         : "";
+    message.tokenName =
+      object.tokenName !== undefined && object.tokenName !== null
+        ? String(object.tokenName)
+        : "";
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromString(object.decimals)
+        : Long.ZERO;
+    message.isCarbonOwned =
+      object.isCarbonOwned !== undefined && object.isCarbonOwned !== null
+        ? Boolean(object.isCarbonOwned)
+        : false;
     return message;
   },
 
-  toJSON(message: MsgRegisterExecutable): unknown {
+  toJSON(message: MsgUpdateExternalToken): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.connectionId !== undefined &&
       (obj.connectionId = message.connectionId);
-    message.executableAddress !== undefined &&
-      (obj.executableAddress = message.executableAddress);
+    message.assetAddress !== undefined &&
+      (obj.assetAddress = message.assetAddress);
+    message.tokenName !== undefined && (obj.tokenName = message.tokenName);
+    message.decimals !== undefined &&
+      (obj.decimals = (message.decimals || Long.ZERO).toString());
+    message.isCarbonOwned !== undefined &&
+      (obj.isCarbonOwned = message.isCarbonOwned);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgRegisterExecutable>
-  ): MsgRegisterExecutable {
-    const message = { ...baseMsgRegisterExecutable } as MsgRegisterExecutable;
+    object: DeepPartial<MsgUpdateExternalToken>
+  ): MsgUpdateExternalToken {
+    const message = { ...baseMsgUpdateExternalToken } as MsgUpdateExternalToken;
     message.creator = object.creator ?? "";
     message.connectionId = object.connectionId ?? "";
-    message.executableAddress = object.executableAddress ?? "";
+    message.assetAddress = object.assetAddress ?? "";
+    message.tokenName = object.tokenName ?? "";
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromValue(object.decimals)
+        : Long.ZERO;
+    message.isCarbonOwned = object.isCarbonOwned ?? false;
     return message;
   },
 };
 
-const baseMsgRegisterExecutableResponse: object = {};
+const baseMsgUpdateExternalTokenResponse: object = {};
 
-export const MsgRegisterExecutableResponse = {
+export const MsgUpdateExternalTokenResponse = {
   encode(
-    _: MsgRegisterExecutableResponse,
+    _: MsgUpdateExternalTokenResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -2635,12 +3816,12 @@ export const MsgRegisterExecutableResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgRegisterExecutableResponse {
+  ): MsgUpdateExternalTokenResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgRegisterExecutableResponse,
-    } as MsgRegisterExecutableResponse;
+      ...baseMsgUpdateExternalTokenResponse,
+    } as MsgUpdateExternalTokenResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2652,37 +3833,37 @@ export const MsgRegisterExecutableResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRegisterExecutableResponse {
+  fromJSON(_: any): MsgUpdateExternalTokenResponse {
     const message = {
-      ...baseMsgRegisterExecutableResponse,
-    } as MsgRegisterExecutableResponse;
+      ...baseMsgUpdateExternalTokenResponse,
+    } as MsgUpdateExternalTokenResponse;
     return message;
   },
 
-  toJSON(_: MsgRegisterExecutableResponse): unknown {
+  toJSON(_: MsgUpdateExternalTokenResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgRegisterExecutableResponse>
-  ): MsgRegisterExecutableResponse {
+    _: DeepPartial<MsgUpdateExternalTokenResponse>
+  ): MsgUpdateExternalTokenResponse {
     const message = {
-      ...baseMsgRegisterExecutableResponse,
-    } as MsgRegisterExecutableResponse;
+      ...baseMsgUpdateExternalTokenResponse,
+    } as MsgUpdateExternalTokenResponse;
     return message;
   },
 };
 
-const baseMsgDeregisterExecutable: object = {
+const baseMsgDeleteExternalToken: object = {
   creator: "",
   connectionId: "",
-  executableAddress: "",
+  denom: "",
 };
 
-export const MsgDeregisterExecutable = {
+export const MsgDeleteExternalToken = {
   encode(
-    message: MsgDeregisterExecutable,
+    message: MsgDeleteExternalToken,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -2691,8 +3872,8 @@ export const MsgDeregisterExecutable = {
     if (message.connectionId !== "") {
       writer.uint32(18).string(message.connectionId);
     }
-    if (message.executableAddress !== "") {
-      writer.uint32(26).string(message.executableAddress);
+    if (message.denom !== "") {
+      writer.uint32(26).string(message.denom);
     }
     return writer;
   },
@@ -2700,12 +3881,10 @@ export const MsgDeregisterExecutable = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDeregisterExecutable {
+  ): MsgDeleteExternalToken {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDeregisterExecutable,
-    } as MsgDeregisterExecutable;
+    const message = { ...baseMsgDeleteExternalToken } as MsgDeleteExternalToken;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2716,7 +3895,7 @@ export const MsgDeregisterExecutable = {
           message.connectionId = reader.string();
           break;
         case 3:
-          message.executableAddress = reader.string();
+          message.denom = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2726,10 +3905,8 @@ export const MsgDeregisterExecutable = {
     return message;
   },
 
-  fromJSON(object: any): MsgDeregisterExecutable {
-    const message = {
-      ...baseMsgDeregisterExecutable,
-    } as MsgDeregisterExecutable;
+  fromJSON(object: any): MsgDeleteExternalToken {
+    const message = { ...baseMsgDeleteExternalToken } as MsgDeleteExternalToken;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -2738,42 +3915,38 @@ export const MsgDeregisterExecutable = {
       object.connectionId !== undefined && object.connectionId !== null
         ? String(object.connectionId)
         : "";
-    message.executableAddress =
-      object.executableAddress !== undefined &&
-      object.executableAddress !== null
-        ? String(object.executableAddress)
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
         : "";
     return message;
   },
 
-  toJSON(message: MsgDeregisterExecutable): unknown {
+  toJSON(message: MsgDeleteExternalToken): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.connectionId !== undefined &&
       (obj.connectionId = message.connectionId);
-    message.executableAddress !== undefined &&
-      (obj.executableAddress = message.executableAddress);
+    message.denom !== undefined && (obj.denom = message.denom);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgDeregisterExecutable>
-  ): MsgDeregisterExecutable {
-    const message = {
-      ...baseMsgDeregisterExecutable,
-    } as MsgDeregisterExecutable;
+    object: DeepPartial<MsgDeleteExternalToken>
+  ): MsgDeleteExternalToken {
+    const message = { ...baseMsgDeleteExternalToken } as MsgDeleteExternalToken;
     message.creator = object.creator ?? "";
     message.connectionId = object.connectionId ?? "";
-    message.executableAddress = object.executableAddress ?? "";
+    message.denom = object.denom ?? "";
     return message;
   },
 };
 
-const baseMsgDeregisterExecutableResponse: object = {};
+const baseMsgDeleteExternalTokenResponse: object = {};
 
-export const MsgDeregisterExecutableResponse = {
+export const MsgDeleteExternalTokenResponse = {
   encode(
-    _: MsgDeregisterExecutableResponse,
+    _: MsgDeleteExternalTokenResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -2782,12 +3955,12 @@ export const MsgDeregisterExecutableResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDeregisterExecutableResponse {
+  ): MsgDeleteExternalTokenResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgDeregisterExecutableResponse,
-    } as MsgDeregisterExecutableResponse;
+      ...baseMsgDeleteExternalTokenResponse,
+    } as MsgDeleteExternalTokenResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2799,37 +3972,38 @@ export const MsgDeregisterExecutableResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgDeregisterExecutableResponse {
+  fromJSON(_: any): MsgDeleteExternalTokenResponse {
     const message = {
-      ...baseMsgDeregisterExecutableResponse,
-    } as MsgDeregisterExecutableResponse;
+      ...baseMsgDeleteExternalTokenResponse,
+    } as MsgDeleteExternalTokenResponse;
     return message;
   },
 
-  toJSON(_: MsgDeregisterExecutableResponse): unknown {
+  toJSON(_: MsgDeleteExternalTokenResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgDeregisterExecutableResponse>
-  ): MsgDeregisterExecutableResponse {
+    _: DeepPartial<MsgDeleteExternalTokenResponse>
+  ): MsgDeleteExternalTokenResponse {
     const message = {
-      ...baseMsgDeregisterExecutableResponse,
-    } as MsgDeregisterExecutableResponse;
+      ...baseMsgDeleteExternalTokenResponse,
+    } as MsgDeleteExternalTokenResponse;
     return message;
   },
 };
 
-const baseMsgExecuteOnExecutableContract: object = {
+const baseMsgExecuteFromCarbon: object = {
   creator: "",
   connectionId: "",
-  executableAddress: "",
+  executionContract: "",
+  method: "",
 };
 
-export const MsgExecuteOnExecutableContract = {
+export const MsgExecuteFromCarbon = {
   encode(
-    message: MsgExecuteOnExecutableContract,
+    message: MsgExecuteFromCarbon,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -2838,17 +4012,26 @@ export const MsgExecuteOnExecutableContract = {
     if (message.connectionId !== "") {
       writer.uint32(18).string(message.connectionId);
     }
-    if (message.executableAddress !== "") {
-      writer.uint32(26).string(message.executableAddress);
+    if (message.executionContract !== "") {
+      writer.uint32(26).string(message.executionContract);
+    }
+    if (message.method !== "") {
+      writer.uint32(34).string(message.method);
     }
     if (message.executionBytes.length !== 0) {
-      writer.uint32(34).bytes(message.executionBytes);
+      writer.uint32(42).bytes(message.executionBytes);
     }
     if (message.tokens !== undefined) {
-      Coin.encode(message.tokens, writer.uint32(42).fork()).ldelim();
+      Coin.encode(message.tokens, writer.uint32(50).fork()).ldelim();
     }
     if (message.relayFee !== undefined) {
-      RelayFee.encode(message.relayFee, writer.uint32(50).fork()).ldelim();
+      Coin.encode(message.relayFee, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.expiryDuration !== undefined) {
+      Duration.encode(
+        message.expiryDuration,
+        writer.uint32(66).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -2856,12 +4039,10 @@ export const MsgExecuteOnExecutableContract = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgExecuteOnExecutableContract {
+  ): MsgExecuteFromCarbon {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgExecuteOnExecutableContract,
-    } as MsgExecuteOnExecutableContract;
+    const message = { ...baseMsgExecuteFromCarbon } as MsgExecuteFromCarbon;
     message.executionBytes = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -2873,16 +4054,22 @@ export const MsgExecuteOnExecutableContract = {
           message.connectionId = reader.string();
           break;
         case 3:
-          message.executableAddress = reader.string();
+          message.executionContract = reader.string();
           break;
         case 4:
-          message.executionBytes = reader.bytes();
+          message.method = reader.string();
           break;
         case 5:
-          message.tokens = Coin.decode(reader, reader.uint32());
+          message.executionBytes = reader.bytes();
           break;
         case 6:
-          message.relayFee = RelayFee.decode(reader, reader.uint32());
+          message.tokens = Coin.decode(reader, reader.uint32());
+          break;
+        case 7:
+          message.relayFee = Coin.decode(reader, reader.uint32());
+          break;
+        case 8:
+          message.expiryDuration = Duration.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2892,10 +4079,8 @@ export const MsgExecuteOnExecutableContract = {
     return message;
   },
 
-  fromJSON(object: any): MsgExecuteOnExecutableContract {
-    const message = {
-      ...baseMsgExecuteOnExecutableContract,
-    } as MsgExecuteOnExecutableContract;
+  fromJSON(object: any): MsgExecuteFromCarbon {
+    const message = { ...baseMsgExecuteFromCarbon } as MsgExecuteFromCarbon;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -2904,10 +4089,14 @@ export const MsgExecuteOnExecutableContract = {
       object.connectionId !== undefined && object.connectionId !== null
         ? String(object.connectionId)
         : "";
-    message.executableAddress =
-      object.executableAddress !== undefined &&
-      object.executableAddress !== null
-        ? String(object.executableAddress)
+    message.executionContract =
+      object.executionContract !== undefined &&
+      object.executionContract !== null
+        ? String(object.executionContract)
+        : "";
+    message.method =
+      object.method !== undefined && object.method !== null
+        ? String(object.method)
         : "";
     message.executionBytes =
       object.executionBytes !== undefined && object.executionBytes !== null
@@ -2919,18 +4108,23 @@ export const MsgExecuteOnExecutableContract = {
         : undefined;
     message.relayFee =
       object.relayFee !== undefined && object.relayFee !== null
-        ? RelayFee.fromJSON(object.relayFee)
+        ? Coin.fromJSON(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromJSON(object.expiryDuration)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgExecuteOnExecutableContract): unknown {
+  toJSON(message: MsgExecuteFromCarbon): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.connectionId !== undefined &&
       (obj.connectionId = message.connectionId);
-    message.executableAddress !== undefined &&
-      (obj.executableAddress = message.executableAddress);
+    message.executionContract !== undefined &&
+      (obj.executionContract = message.executionContract);
+    message.method !== undefined && (obj.method = message.method);
     message.executionBytes !== undefined &&
       (obj.executionBytes = base64FromBytes(
         message.executionBytes !== undefined
@@ -2941,20 +4135,21 @@ export const MsgExecuteOnExecutableContract = {
       (obj.tokens = message.tokens ? Coin.toJSON(message.tokens) : undefined);
     message.relayFee !== undefined &&
       (obj.relayFee = message.relayFee
-        ? RelayFee.toJSON(message.relayFee)
+        ? Coin.toJSON(message.relayFee)
+        : undefined);
+    message.expiryDuration !== undefined &&
+      (obj.expiryDuration = message.expiryDuration
+        ? Duration.toJSON(message.expiryDuration)
         : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgExecuteOnExecutableContract>
-  ): MsgExecuteOnExecutableContract {
-    const message = {
-      ...baseMsgExecuteOnExecutableContract,
-    } as MsgExecuteOnExecutableContract;
+  fromPartial(object: DeepPartial<MsgExecuteFromCarbon>): MsgExecuteFromCarbon {
+    const message = { ...baseMsgExecuteFromCarbon } as MsgExecuteFromCarbon;
     message.creator = object.creator ?? "";
     message.connectionId = object.connectionId ?? "";
-    message.executableAddress = object.executableAddress ?? "";
+    message.executionContract = object.executionContract ?? "";
+    message.method = object.method ?? "";
     message.executionBytes = object.executionBytes ?? new Uint8Array();
     message.tokens =
       object.tokens !== undefined && object.tokens !== null
@@ -2962,17 +4157,21 @@ export const MsgExecuteOnExecutableContract = {
         : undefined;
     message.relayFee =
       object.relayFee !== undefined && object.relayFee !== null
-        ? RelayFee.fromPartial(object.relayFee)
+        ? Coin.fromPartial(object.relayFee)
+        : undefined;
+    message.expiryDuration =
+      object.expiryDuration !== undefined && object.expiryDuration !== null
+        ? Duration.fromPartial(object.expiryDuration)
         : undefined;
     return message;
   },
 };
 
-const baseMsgExecuteOnExecutableContractResponse: object = {};
+const baseMsgExecuteFromCarbonResponse: object = {};
 
-export const MsgExecuteOnExecutableContractResponse = {
+export const MsgExecuteFromCarbonResponse = {
   encode(
-    _: MsgExecuteOnExecutableContractResponse,
+    _: MsgExecuteFromCarbonResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -2981,12 +4180,12 @@ export const MsgExecuteOnExecutableContractResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgExecuteOnExecutableContractResponse {
+  ): MsgExecuteFromCarbonResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgExecuteOnExecutableContractResponse,
-    } as MsgExecuteOnExecutableContractResponse;
+      ...baseMsgExecuteFromCarbonResponse,
+    } as MsgExecuteFromCarbonResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2998,60 +4197,172 @@ export const MsgExecuteOnExecutableContractResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgExecuteOnExecutableContractResponse {
+  fromJSON(_: any): MsgExecuteFromCarbonResponse {
     const message = {
-      ...baseMsgExecuteOnExecutableContractResponse,
-    } as MsgExecuteOnExecutableContractResponse;
+      ...baseMsgExecuteFromCarbonResponse,
+    } as MsgExecuteFromCarbonResponse;
     return message;
   },
 
-  toJSON(_: MsgExecuteOnExecutableContractResponse): unknown {
+  toJSON(_: MsgExecuteFromCarbonResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgExecuteOnExecutableContractResponse>
-  ): MsgExecuteOnExecutableContractResponse {
+    _: DeepPartial<MsgExecuteFromCarbonResponse>
+  ): MsgExecuteFromCarbonResponse {
     const message = {
-      ...baseMsgExecuteOnExecutableContractResponse,
-    } as MsgExecuteOnExecutableContractResponse;
+      ...baseMsgExecuteFromCarbonResponse,
+    } as MsgExecuteFromCarbonResponse;
     return message;
   },
 };
 
-const baseMsgAllowExternalExecutor: object = {
-  creator: "",
-  connectionId: "",
-  executorAddress: "",
-};
+const baseMsgStartRelay: object = { relayer: "", nonce: Long.UZERO };
 
-export const MsgAllowExternalExecutor = {
+export const MsgStartRelay = {
   encode(
-    message: MsgAllowExternalExecutor,
+    message: MsgStartRelay,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
+    if (message.relayer !== "") {
+      writer.uint32(10).string(message.relayer);
     }
-    if (message.connectionId !== "") {
-      writer.uint32(18).string(message.connectionId);
+    if (!message.nonce.isZero()) {
+      writer.uint32(16).uint64(message.nonce);
     }
-    if (message.executorAddress !== "") {
-      writer.uint32(26).string(message.executorAddress);
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgStartRelay {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgStartRelay } as MsgStartRelay;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.relayer = reader.string();
+          break;
+        case 2:
+          message.nonce = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
     }
+    return message;
+  },
+
+  fromJSON(object: any): MsgStartRelay {
+    const message = { ...baseMsgStartRelay } as MsgStartRelay;
+    message.relayer =
+      object.relayer !== undefined && object.relayer !== null
+        ? String(object.relayer)
+        : "";
+    message.nonce =
+      object.nonce !== undefined && object.nonce !== null
+        ? Long.fromString(object.nonce)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgStartRelay): unknown {
+    const obj: any = {};
+    message.relayer !== undefined && (obj.relayer = message.relayer);
+    message.nonce !== undefined &&
+      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgStartRelay>): MsgStartRelay {
+    const message = { ...baseMsgStartRelay } as MsgStartRelay;
+    message.relayer = object.relayer ?? "";
+    message.nonce =
+      object.nonce !== undefined && object.nonce !== null
+        ? Long.fromValue(object.nonce)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgStartRelayResponse: object = {};
+
+export const MsgStartRelayResponse = {
+  encode(
+    _: MsgStartRelayResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgAllowExternalExecutor {
+  ): MsgStartRelayResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgStartRelayResponse } as MsgStartRelayResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgStartRelayResponse {
+    const message = { ...baseMsgStartRelayResponse } as MsgStartRelayResponse;
+    return message;
+  },
+
+  toJSON(_: MsgStartRelayResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgStartRelayResponse>): MsgStartRelayResponse {
+    const message = { ...baseMsgStartRelayResponse } as MsgStartRelayResponse;
+    return message;
+  },
+};
+
+const baseMsgPruneExpiredPendingActions: object = {
+  creator: "",
+  nonces: Long.UZERO,
+};
+
+export const MsgPruneExpiredPendingActions = {
+  encode(
+    message: MsgPruneExpiredPendingActions,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    writer.uint32(18).fork();
+    for (const v of message.nonces) {
+      writer.uint64(v);
+    }
+    writer.ldelim();
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgPruneExpiredPendingActions {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgAllowExternalExecutor,
-    } as MsgAllowExternalExecutor;
+      ...baseMsgPruneExpiredPendingActions,
+    } as MsgPruneExpiredPendingActions;
+    message.nonces = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3059,10 +4370,14 @@ export const MsgAllowExternalExecutor = {
           message.creator = reader.string();
           break;
         case 2:
-          message.connectionId = reader.string();
-          break;
-        case 3:
-          message.executorAddress = reader.string();
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.nonces.push(reader.uint64() as Long);
+            }
+          } else {
+            message.nonces.push(reader.uint64() as Long);
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -3072,53 +4387,46 @@ export const MsgAllowExternalExecutor = {
     return message;
   },
 
-  fromJSON(object: any): MsgAllowExternalExecutor {
+  fromJSON(object: any): MsgPruneExpiredPendingActions {
     const message = {
-      ...baseMsgAllowExternalExecutor,
-    } as MsgAllowExternalExecutor;
+      ...baseMsgPruneExpiredPendingActions,
+    } as MsgPruneExpiredPendingActions;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.executorAddress =
-      object.executorAddress !== undefined && object.executorAddress !== null
-        ? String(object.executorAddress)
-        : "";
+    message.nonces = (object.nonces ?? []).map((e: any) => Long.fromString(e));
     return message;
   },
 
-  toJSON(message: MsgAllowExternalExecutor): unknown {
+  toJSON(message: MsgPruneExpiredPendingActions): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
-    message.executorAddress !== undefined &&
-      (obj.executorAddress = message.executorAddress);
+    if (message.nonces) {
+      obj.nonces = message.nonces.map((e) => (e || Long.UZERO).toString());
+    } else {
+      obj.nonces = [];
+    }
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgAllowExternalExecutor>
-  ): MsgAllowExternalExecutor {
+    object: DeepPartial<MsgPruneExpiredPendingActions>
+  ): MsgPruneExpiredPendingActions {
     const message = {
-      ...baseMsgAllowExternalExecutor,
-    } as MsgAllowExternalExecutor;
+      ...baseMsgPruneExpiredPendingActions,
+    } as MsgPruneExpiredPendingActions;
     message.creator = object.creator ?? "";
-    message.connectionId = object.connectionId ?? "";
-    message.executorAddress = object.executorAddress ?? "";
+    message.nonces = (object.nonces ?? []).map((e) => Long.fromValue(e));
     return message;
   },
 };
 
-const baseMsgAllowExternalExecutorResponse: object = {};
+const baseMsgPruneExpiredPendingActionsResponse: object = {};
 
-export const MsgAllowExternalExecutorResponse = {
+export const MsgPruneExpiredPendingActionsResponse = {
   encode(
-    _: MsgAllowExternalExecutorResponse,
+    _: MsgPruneExpiredPendingActionsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -3127,12 +4435,12 @@ export const MsgAllowExternalExecutorResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgAllowExternalExecutorResponse {
+  ): MsgPruneExpiredPendingActionsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgAllowExternalExecutorResponse,
-    } as MsgAllowExternalExecutorResponse;
+      ...baseMsgPruneExpiredPendingActionsResponse,
+    } as MsgPruneExpiredPendingActionsResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3144,47 +4452,51 @@ export const MsgAllowExternalExecutorResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgAllowExternalExecutorResponse {
+  fromJSON(_: any): MsgPruneExpiredPendingActionsResponse {
     const message = {
-      ...baseMsgAllowExternalExecutorResponse,
-    } as MsgAllowExternalExecutorResponse;
+      ...baseMsgPruneExpiredPendingActionsResponse,
+    } as MsgPruneExpiredPendingActionsResponse;
     return message;
   },
 
-  toJSON(_: MsgAllowExternalExecutorResponse): unknown {
+  toJSON(_: MsgPruneExpiredPendingActionsResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgAllowExternalExecutorResponse>
-  ): MsgAllowExternalExecutorResponse {
+    _: DeepPartial<MsgPruneExpiredPendingActionsResponse>
+  ): MsgPruneExpiredPendingActionsResponse {
     const message = {
-      ...baseMsgAllowExternalExecutorResponse,
-    } as MsgAllowExternalExecutorResponse;
+      ...baseMsgPruneExpiredPendingActionsResponse,
+    } as MsgPruneExpiredPendingActionsResponse;
     return message;
   },
 };
 
-const baseMsgRemoveExternalExecutor: object = {
-  creator: "",
+const baseMsgRevertPendingAction: object = {
+  authority: "",
   connectionId: "",
-  executorAddress: "",
+  nonce: Long.UZERO,
+  actionType: Long.UZERO,
 };
 
-export const MsgRemoveExternalExecutor = {
+export const MsgRevertPendingAction = {
   encode(
-    message: MsgRemoveExternalExecutor,
+    message: MsgRevertPendingAction,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
     }
     if (message.connectionId !== "") {
       writer.uint32(18).string(message.connectionId);
     }
-    if (message.executorAddress !== "") {
-      writer.uint32(26).string(message.executorAddress);
+    if (!message.nonce.isZero()) {
+      writer.uint32(24).uint64(message.nonce);
+    }
+    if (!message.actionType.isZero()) {
+      writer.uint32(32).uint64(message.actionType);
     }
     return writer;
   },
@@ -3192,23 +4504,24 @@ export const MsgRemoveExternalExecutor = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgRemoveExternalExecutor {
+  ): MsgRevertPendingAction {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRemoveExternalExecutor,
-    } as MsgRemoveExternalExecutor;
+    const message = { ...baseMsgRevertPendingAction } as MsgRevertPendingAction;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
+          message.authority = reader.string();
           break;
         case 2:
           message.connectionId = reader.string();
           break;
         case 3:
-          message.executorAddress = reader.string();
+          message.nonce = reader.uint64() as Long;
+          break;
+        case 4:
+          message.actionType = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -3218,53 +4531,62 @@ export const MsgRemoveExternalExecutor = {
     return message;
   },
 
-  fromJSON(object: any): MsgRemoveExternalExecutor {
-    const message = {
-      ...baseMsgRemoveExternalExecutor,
-    } as MsgRemoveExternalExecutor;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
+  fromJSON(object: any): MsgRevertPendingAction {
+    const message = { ...baseMsgRevertPendingAction } as MsgRevertPendingAction;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
         : "";
     message.connectionId =
       object.connectionId !== undefined && object.connectionId !== null
         ? String(object.connectionId)
         : "";
-    message.executorAddress =
-      object.executorAddress !== undefined && object.executorAddress !== null
-        ? String(object.executorAddress)
-        : "";
+    message.nonce =
+      object.nonce !== undefined && object.nonce !== null
+        ? Long.fromString(object.nonce)
+        : Long.UZERO;
+    message.actionType =
+      object.actionType !== undefined && object.actionType !== null
+        ? Long.fromString(object.actionType)
+        : Long.UZERO;
     return message;
   },
 
-  toJSON(message: MsgRemoveExternalExecutor): unknown {
+  toJSON(message: MsgRevertPendingAction): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
+    message.authority !== undefined && (obj.authority = message.authority);
     message.connectionId !== undefined &&
       (obj.connectionId = message.connectionId);
-    message.executorAddress !== undefined &&
-      (obj.executorAddress = message.executorAddress);
+    message.nonce !== undefined &&
+      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.actionType !== undefined &&
+      (obj.actionType = (message.actionType || Long.UZERO).toString());
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgRemoveExternalExecutor>
-  ): MsgRemoveExternalExecutor {
-    const message = {
-      ...baseMsgRemoveExternalExecutor,
-    } as MsgRemoveExternalExecutor;
-    message.creator = object.creator ?? "";
+    object: DeepPartial<MsgRevertPendingAction>
+  ): MsgRevertPendingAction {
+    const message = { ...baseMsgRevertPendingAction } as MsgRevertPendingAction;
+    message.authority = object.authority ?? "";
     message.connectionId = object.connectionId ?? "";
-    message.executorAddress = object.executorAddress ?? "";
+    message.nonce =
+      object.nonce !== undefined && object.nonce !== null
+        ? Long.fromValue(object.nonce)
+        : Long.UZERO;
+    message.actionType =
+      object.actionType !== undefined && object.actionType !== null
+        ? Long.fromValue(object.actionType)
+        : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgRemoveExternalExecutorResponse: object = {};
+const baseMsgRevertPendingActionResponse: object = {};
 
-export const MsgRemoveExternalExecutorResponse = {
+export const MsgRevertPendingActionResponse = {
   encode(
-    _: MsgRemoveExternalExecutorResponse,
+    _: MsgRevertPendingActionResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -3273,12 +4595,12 @@ export const MsgRemoveExternalExecutorResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgRemoveExternalExecutorResponse {
+  ): MsgRevertPendingActionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgRemoveExternalExecutorResponse,
-    } as MsgRemoveExternalExecutorResponse;
+      ...baseMsgRevertPendingActionResponse,
+    } as MsgRevertPendingActionResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3290,24 +4612,416 @@ export const MsgRemoveExternalExecutorResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRemoveExternalExecutorResponse {
+  fromJSON(_: any): MsgRevertPendingActionResponse {
     const message = {
-      ...baseMsgRemoveExternalExecutorResponse,
-    } as MsgRemoveExternalExecutorResponse;
+      ...baseMsgRevertPendingActionResponse,
+    } as MsgRevertPendingActionResponse;
     return message;
   },
 
-  toJSON(_: MsgRemoveExternalExecutorResponse): unknown {
+  toJSON(_: MsgRevertPendingActionResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgRemoveExternalExecutorResponse>
-  ): MsgRemoveExternalExecutorResponse {
+    _: DeepPartial<MsgRevertPendingActionResponse>
+  ): MsgRevertPendingActionResponse {
     const message = {
-      ...baseMsgRemoveExternalExecutorResponse,
-    } as MsgRemoveExternalExecutorResponse;
+      ...baseMsgRevertPendingActionResponse,
+    } as MsgRevertPendingActionResponse;
+    return message;
+  },
+};
+
+const baseMsgConfirmPendingAction: object = {
+  authority: "",
+  connectionId: "",
+  nonce: Long.UZERO,
+  actionType: Long.UZERO,
+};
+
+export const MsgConfirmPendingAction = {
+  encode(
+    message: MsgConfirmPendingAction,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.connectionId !== "") {
+      writer.uint32(18).string(message.connectionId);
+    }
+    if (!message.nonce.isZero()) {
+      writer.uint32(24).uint64(message.nonce);
+    }
+    if (!message.actionType.isZero()) {
+      writer.uint32(32).uint64(message.actionType);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgConfirmPendingAction {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgConfirmPendingAction,
+    } as MsgConfirmPendingAction;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.connectionId = reader.string();
+          break;
+        case 3:
+          message.nonce = reader.uint64() as Long;
+          break;
+        case 4:
+          message.actionType = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgConfirmPendingAction {
+    const message = {
+      ...baseMsgConfirmPendingAction,
+    } as MsgConfirmPendingAction;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.connectionId =
+      object.connectionId !== undefined && object.connectionId !== null
+        ? String(object.connectionId)
+        : "";
+    message.nonce =
+      object.nonce !== undefined && object.nonce !== null
+        ? Long.fromString(object.nonce)
+        : Long.UZERO;
+    message.actionType =
+      object.actionType !== undefined && object.actionType !== null
+        ? Long.fromString(object.actionType)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgConfirmPendingAction): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.connectionId !== undefined &&
+      (obj.connectionId = message.connectionId);
+    message.nonce !== undefined &&
+      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.actionType !== undefined &&
+      (obj.actionType = (message.actionType || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgConfirmPendingAction>
+  ): MsgConfirmPendingAction {
+    const message = {
+      ...baseMsgConfirmPendingAction,
+    } as MsgConfirmPendingAction;
+    message.authority = object.authority ?? "";
+    message.connectionId = object.connectionId ?? "";
+    message.nonce =
+      object.nonce !== undefined && object.nonce !== null
+        ? Long.fromValue(object.nonce)
+        : Long.UZERO;
+    message.actionType =
+      object.actionType !== undefined && object.actionType !== null
+        ? Long.fromValue(object.actionType)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgConfirmPendingActionResponse: object = {};
+
+export const MsgConfirmPendingActionResponse = {
+  encode(
+    _: MsgConfirmPendingActionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgConfirmPendingActionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgConfirmPendingActionResponse,
+    } as MsgConfirmPendingActionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgConfirmPendingActionResponse {
+    const message = {
+      ...baseMsgConfirmPendingActionResponse,
+    } as MsgConfirmPendingActionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgConfirmPendingActionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgConfirmPendingActionResponse>
+  ): MsgConfirmPendingActionResponse {
+    const message = {
+      ...baseMsgConfirmPendingActionResponse,
+    } as MsgConfirmPendingActionResponse;
+    return message;
+  },
+};
+
+const baseMsgAddRelayer: object = { authority: "", relayer: "" };
+
+export const MsgAddRelayer = {
+  encode(
+    message: MsgAddRelayer,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.relayer !== "") {
+      writer.uint32(18).string(message.relayer);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddRelayer {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAddRelayer } as MsgAddRelayer;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.relayer = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddRelayer {
+    const message = { ...baseMsgAddRelayer } as MsgAddRelayer;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.relayer =
+      object.relayer !== undefined && object.relayer !== null
+        ? String(object.relayer)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgAddRelayer): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.relayer !== undefined && (obj.relayer = message.relayer);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAddRelayer>): MsgAddRelayer {
+    const message = { ...baseMsgAddRelayer } as MsgAddRelayer;
+    message.authority = object.authority ?? "";
+    message.relayer = object.relayer ?? "";
+    return message;
+  },
+};
+
+const baseMsgAddRelayerResponse: object = {};
+
+export const MsgAddRelayerResponse = {
+  encode(
+    _: MsgAddRelayerResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddRelayerResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAddRelayerResponse } as MsgAddRelayerResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAddRelayerResponse {
+    const message = { ...baseMsgAddRelayerResponse } as MsgAddRelayerResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAddRelayerResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgAddRelayerResponse>): MsgAddRelayerResponse {
+    const message = { ...baseMsgAddRelayerResponse } as MsgAddRelayerResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveRelayer: object = { authority: "", relayer: "" };
+
+export const MsgRemoveRelayer = {
+  encode(
+    message: MsgRemoveRelayer,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.relayer !== "") {
+      writer.uint32(18).string(message.relayer);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveRelayer {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRemoveRelayer } as MsgRemoveRelayer;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.relayer = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveRelayer {
+    const message = { ...baseMsgRemoveRelayer } as MsgRemoveRelayer;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.relayer =
+      object.relayer !== undefined && object.relayer !== null
+        ? String(object.relayer)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveRelayer): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.relayer !== undefined && (obj.relayer = message.relayer);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgRemoveRelayer>): MsgRemoveRelayer {
+    const message = { ...baseMsgRemoveRelayer } as MsgRemoveRelayer;
+    message.authority = object.authority ?? "";
+    message.relayer = object.relayer ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveRelayerResponse: object = {};
+
+export const MsgRemoveRelayerResponse = {
+  encode(
+    _: MsgRemoveRelayerResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveRelayerResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveRelayerResponse,
+    } as MsgRemoveRelayerResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveRelayerResponse {
+    const message = {
+      ...baseMsgRemoveRelayerResponse,
+    } as MsgRemoveRelayerResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveRelayerResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveRelayerResponse>
+  ): MsgRemoveRelayerResponse {
+    const message = {
+      ...baseMsgRemoveRelayerResponse,
+    } as MsgRemoveRelayerResponse;
     return message;
   },
 };
@@ -3324,6 +5038,12 @@ export interface Msg {
   UpdateIbcTimeoutHeightOffset(
     request: MsgUpdateIbcTimeoutHeightOffset
   ): Promise<MsgUpdateIbcTimeoutHeightOffsetResponse>;
+  UpdateMaxRelayExpiry(
+    request: MsgUpdateMaxRelayExpiry
+  ): Promise<MsgUpdateMaxRelayExpiryResponse>;
+  UpdateRelayWhitelistDuration(
+    request: MsgUpdateRelayWhitelistDuration
+  ): Promise<MsgUpdateRelayWhitelistDurationResponse>;
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
   CreateConnection(
     request: MsgCreateConnection
@@ -3334,6 +5054,18 @@ export interface Msg {
   RemoveConnection(
     request: MsgRemoveConnection
   ): Promise<MsgRemoveConnectionResponse>;
+  AddControllersForConnection(
+    request: MsgAddControllersForConnection
+  ): Promise<MsgAddControllersForConnectionResponse>;
+  UpdateControllersForConnection(
+    request: MsgUpdateControllersForConnection
+  ): Promise<MsgUpdateControllersForConnectionResponse>;
+  RemoveControllersForConnection(
+    request: MsgRemoveControllersForConnection
+  ): Promise<MsgRemoveControllersForConnectionResponse>;
+  RemoveNonceMapForConnection(
+    request: MsgRemoveNonceMapForConnection
+  ): Promise<MsgRemoveNonceMapForConnectionResponse>;
   RegisterExternalToken(
     request: MsgRegisterExternalToken
   ): Promise<MsgRegisterExternalTokenResponse>;
@@ -3347,21 +5079,27 @@ export interface Msg {
     request: MsgRegisterDeployedToken
   ): Promise<MsgRegisterDeployedTokenResponse>;
   WithdrawToken(request: MsgWithdrawToken): Promise<MsgWithdrawTokenResponse>;
-  RegisterExecutable(
-    request: MsgRegisterExecutable
-  ): Promise<MsgRegisterExecutableResponse>;
-  DeregisterExecutable(
-    request: MsgDeregisterExecutable
-  ): Promise<MsgDeregisterExecutableResponse>;
-  ExecuteOnExecutableContract(
-    request: MsgExecuteOnExecutableContract
-  ): Promise<MsgExecuteOnExecutableContractResponse>;
-  AllowExternalExecutor(
-    request: MsgAllowExternalExecutor
-  ): Promise<MsgAllowExternalExecutorResponse>;
-  RemoveExternalExecutor(
-    request: MsgRemoveExternalExecutor
-  ): Promise<MsgRemoveExternalExecutorResponse>;
+  UpdateExternalToken(
+    request: MsgUpdateExternalToken
+  ): Promise<MsgUpdateExternalTokenResponse>;
+  DeleteExternalToken(
+    request: MsgDeleteExternalToken
+  ): Promise<MsgDeleteExternalTokenResponse>;
+  ExecuteFromCarbon(
+    request: MsgExecuteFromCarbon
+  ): Promise<MsgExecuteFromCarbonResponse>;
+  StartRelay(request: MsgStartRelay): Promise<MsgStartRelayResponse>;
+  PruneExpiredPendingActions(
+    request: MsgPruneExpiredPendingActions
+  ): Promise<MsgPruneExpiredPendingActionsResponse>;
+  RevertPendingAction(
+    request: MsgRevertPendingAction
+  ): Promise<MsgRevertPendingActionResponse>;
+  ConfirmPendingAction(
+    request: MsgConfirmPendingAction
+  ): Promise<MsgConfirmPendingActionResponse>;
+  AddRelayer(request: MsgAddRelayer): Promise<MsgAddRelayerResponse>;
+  RemoveRelayer(request: MsgRemoveRelayer): Promise<MsgRemoveRelayerResponse>;
   /** * axelar convenience functions ** */
   AxelarSendToken(
     request: MsgAxelarSendToken
@@ -3382,21 +5120,36 @@ export class MsgClientImpl implements Msg {
     this.UpdateAxelarIbcChannel = this.UpdateAxelarIbcChannel.bind(this);
     this.UpdateIbcTimeoutHeightOffset =
       this.UpdateIbcTimeoutHeightOffset.bind(this);
+    this.UpdateMaxRelayExpiry = this.UpdateMaxRelayExpiry.bind(this);
+    this.UpdateRelayWhitelistDuration =
+      this.UpdateRelayWhitelistDuration.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.CreateConnection = this.CreateConnection.bind(this);
     this.UpdateConnection = this.UpdateConnection.bind(this);
     this.RemoveConnection = this.RemoveConnection.bind(this);
+    this.AddControllersForConnection =
+      this.AddControllersForConnection.bind(this);
+    this.UpdateControllersForConnection =
+      this.UpdateControllersForConnection.bind(this);
+    this.RemoveControllersForConnection =
+      this.RemoveControllersForConnection.bind(this);
+    this.RemoveNonceMapForConnection =
+      this.RemoveNonceMapForConnection.bind(this);
     this.RegisterExternalToken = this.RegisterExternalToken.bind(this);
     this.DeregisterExternalToken = this.DeregisterExternalToken.bind(this);
     this.DeployNativeToken = this.DeployNativeToken.bind(this);
     this.RegisterDeployedToken = this.RegisterDeployedToken.bind(this);
     this.WithdrawToken = this.WithdrawToken.bind(this);
-    this.RegisterExecutable = this.RegisterExecutable.bind(this);
-    this.DeregisterExecutable = this.DeregisterExecutable.bind(this);
-    this.ExecuteOnExecutableContract =
-      this.ExecuteOnExecutableContract.bind(this);
-    this.AllowExternalExecutor = this.AllowExternalExecutor.bind(this);
-    this.RemoveExternalExecutor = this.RemoveExternalExecutor.bind(this);
+    this.UpdateExternalToken = this.UpdateExternalToken.bind(this);
+    this.DeleteExternalToken = this.DeleteExternalToken.bind(this);
+    this.ExecuteFromCarbon = this.ExecuteFromCarbon.bind(this);
+    this.StartRelay = this.StartRelay.bind(this);
+    this.PruneExpiredPendingActions =
+      this.PruneExpiredPendingActions.bind(this);
+    this.RevertPendingAction = this.RevertPendingAction.bind(this);
+    this.ConfirmPendingAction = this.ConfirmPendingAction.bind(this);
+    this.AddRelayer = this.AddRelayer.bind(this);
+    this.RemoveRelayer = this.RemoveRelayer.bind(this);
     this.AxelarSendToken = this.AxelarSendToken.bind(this);
     this.AxelarCallContract = this.AxelarCallContract.bind(this);
     this.AxelarCallContractWithToken =
@@ -3441,6 +5194,34 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateIbcTimeoutHeightOffsetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateMaxRelayExpiry(
+    request: MsgUpdateMaxRelayExpiry
+  ): Promise<MsgUpdateMaxRelayExpiryResponse> {
+    const data = MsgUpdateMaxRelayExpiry.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "UpdateMaxRelayExpiry",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateMaxRelayExpiryResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateRelayWhitelistDuration(
+    request: MsgUpdateRelayWhitelistDuration
+  ): Promise<MsgUpdateRelayWhitelistDurationResponse> {
+    const data = MsgUpdateRelayWhitelistDuration.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "UpdateRelayWhitelistDuration",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateRelayWhitelistDurationResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -3495,6 +5276,62 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRemoveConnectionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AddControllersForConnection(
+    request: MsgAddControllersForConnection
+  ): Promise<MsgAddControllersForConnectionResponse> {
+    const data = MsgAddControllersForConnection.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "AddControllersForConnection",
+      data
+    );
+    return promise.then((data) =>
+      MsgAddControllersForConnectionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateControllersForConnection(
+    request: MsgUpdateControllersForConnection
+  ): Promise<MsgUpdateControllersForConnectionResponse> {
+    const data = MsgUpdateControllersForConnection.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "UpdateControllersForConnection",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateControllersForConnectionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveControllersForConnection(
+    request: MsgRemoveControllersForConnection
+  ): Promise<MsgRemoveControllersForConnectionResponse> {
+    const data = MsgRemoveControllersForConnection.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "RemoveControllersForConnection",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveControllersForConnectionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveNonceMapForConnection(
+    request: MsgRemoveNonceMapForConnection
+  ): Promise<MsgRemoveNonceMapForConnectionResponse> {
+    const data = MsgRemoveNonceMapForConnection.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "RemoveNonceMapForConnection",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveNonceMapForConnectionResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -3566,73 +5403,123 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  RegisterExecutable(
-    request: MsgRegisterExecutable
-  ): Promise<MsgRegisterExecutableResponse> {
-    const data = MsgRegisterExecutable.encode(request).finish();
+  UpdateExternalToken(
+    request: MsgUpdateExternalToken
+  ): Promise<MsgUpdateExternalTokenResponse> {
+    const data = MsgUpdateExternalToken.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.bridge.Msg",
-      "RegisterExecutable",
+      "UpdateExternalToken",
       data
     );
     return promise.then((data) =>
-      MsgRegisterExecutableResponse.decode(new _m0.Reader(data))
+      MsgUpdateExternalTokenResponse.decode(new _m0.Reader(data))
     );
   }
 
-  DeregisterExecutable(
-    request: MsgDeregisterExecutable
-  ): Promise<MsgDeregisterExecutableResponse> {
-    const data = MsgDeregisterExecutable.encode(request).finish();
+  DeleteExternalToken(
+    request: MsgDeleteExternalToken
+  ): Promise<MsgDeleteExternalTokenResponse> {
+    const data = MsgDeleteExternalToken.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.bridge.Msg",
-      "DeregisterExecutable",
+      "DeleteExternalToken",
       data
     );
     return promise.then((data) =>
-      MsgDeregisterExecutableResponse.decode(new _m0.Reader(data))
+      MsgDeleteExternalTokenResponse.decode(new _m0.Reader(data))
     );
   }
 
-  ExecuteOnExecutableContract(
-    request: MsgExecuteOnExecutableContract
-  ): Promise<MsgExecuteOnExecutableContractResponse> {
-    const data = MsgExecuteOnExecutableContract.encode(request).finish();
+  ExecuteFromCarbon(
+    request: MsgExecuteFromCarbon
+  ): Promise<MsgExecuteFromCarbonResponse> {
+    const data = MsgExecuteFromCarbon.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.bridge.Msg",
-      "ExecuteOnExecutableContract",
+      "ExecuteFromCarbon",
       data
     );
     return promise.then((data) =>
-      MsgExecuteOnExecutableContractResponse.decode(new _m0.Reader(data))
+      MsgExecuteFromCarbonResponse.decode(new _m0.Reader(data))
     );
   }
 
-  AllowExternalExecutor(
-    request: MsgAllowExternalExecutor
-  ): Promise<MsgAllowExternalExecutorResponse> {
-    const data = MsgAllowExternalExecutor.encode(request).finish();
+  StartRelay(request: MsgStartRelay): Promise<MsgStartRelayResponse> {
+    const data = MsgStartRelay.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.bridge.Msg",
-      "AllowExternalExecutor",
+      "StartRelay",
       data
     );
     return promise.then((data) =>
-      MsgAllowExternalExecutorResponse.decode(new _m0.Reader(data))
+      MsgStartRelayResponse.decode(new _m0.Reader(data))
     );
   }
 
-  RemoveExternalExecutor(
-    request: MsgRemoveExternalExecutor
-  ): Promise<MsgRemoveExternalExecutorResponse> {
-    const data = MsgRemoveExternalExecutor.encode(request).finish();
+  PruneExpiredPendingActions(
+    request: MsgPruneExpiredPendingActions
+  ): Promise<MsgPruneExpiredPendingActionsResponse> {
+    const data = MsgPruneExpiredPendingActions.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.bridge.Msg",
-      "RemoveExternalExecutor",
+      "PruneExpiredPendingActions",
       data
     );
     return promise.then((data) =>
-      MsgRemoveExternalExecutorResponse.decode(new _m0.Reader(data))
+      MsgPruneExpiredPendingActionsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RevertPendingAction(
+    request: MsgRevertPendingAction
+  ): Promise<MsgRevertPendingActionResponse> {
+    const data = MsgRevertPendingAction.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "RevertPendingAction",
+      data
+    );
+    return promise.then((data) =>
+      MsgRevertPendingActionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ConfirmPendingAction(
+    request: MsgConfirmPendingAction
+  ): Promise<MsgConfirmPendingActionResponse> {
+    const data = MsgConfirmPendingAction.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "ConfirmPendingAction",
+      data
+    );
+    return promise.then((data) =>
+      MsgConfirmPendingActionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AddRelayer(request: MsgAddRelayer): Promise<MsgAddRelayerResponse> {
+    const data = MsgAddRelayer.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "AddRelayer",
+      data
+    );
+    return promise.then((data) =>
+      MsgAddRelayerResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveRelayer(request: MsgRemoveRelayer): Promise<MsgRemoveRelayerResponse> {
+    const data = MsgRemoveRelayer.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "RemoveRelayer",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveRelayerResponse.decode(new _m0.Reader(data))
     );
   }
 

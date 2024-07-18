@@ -3,13 +3,32 @@ import { PageMeta, TimeMeta } from "./common";
 export interface CompetitionItem {
   id: string;
   competitionId: string;
-  market: string;
+  subCompetitionId: string;
+  market: string | null;
   start: string; // string representation of timestamp
   end: string; // string representation of timestamp
-  enablePNL: boolean;
+  enablePNL: boolean | null;
+  minBalance: number | null;
+  enableVolume: boolean | null;
+  makerIncentive: boolean | null;
+  config: CompetitionItemConfig;
+}
+
+export interface CompetitionItemConfig {
+  type: string;
+  lending: string[];
+  markets: string[];
+  promoMarkets: string[];
+  preTradeMarket: string[];
   minBalance: number;
-  enableVolume: boolean;
-  makerIncentive: boolean;
+  volPerPoint: string;
+  allowDecimals: boolean;
+  derMultiplier: string;
+  lendingQuantity: string;
+  promoMultiplier: number;
+  spotsMultiplier: number;
+  preTradeMarketCount: number;
+  preTradeMarketVolume: number;
 }
 
 export interface QueryGetCompetitionListResponse {
@@ -109,6 +128,20 @@ export interface LeaderboardLeagueEntry {
   derPoints: string;
   freqFactor: string;
 }
+export interface LeaderboardCosmosEntry {
+  rank: string;
+  totalPoints: string;
+  subCompetitionId: string;
+  participantsCount: string;
+  spotsPoint: string;
+  derPoints: string;
+  promoPoints: string;
+  volume: string;
+  spotsVolume: string;
+  derVolume: string;
+  promoVolume: string;
+}
+
 export interface PersistenceTraders {
   address: string;
   points: string;
@@ -142,11 +175,20 @@ export interface QueryGetLeagueCompetitionLeaderboardResponse {
   entries: LeaderboardLeagueEntry[];
 }
 
+export interface QueryGetCosmosCompetitionLeaderboardResponse {
+  entries: LeaderboardCosmosEntry[];
+}
+
 export interface QueryGetLotteryCompetitionLeaderboardRequest {
   competitionId: string;
   market?: string;
 }
 export interface QueryGetLeagueCompetitionLeaderboardRequest {
+  competitionId: string;
+  subCompetitionId?: string;
+}
+
+export interface QueryGetCosmosCompetitionLeaderboardRequest {
   competitionId: string;
 }
 
