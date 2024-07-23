@@ -34,98 +34,56 @@ interface SimpleMap<OracleParams> {
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  // const TESTNET_ORACLE_URL = "https://test-api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=1000"
-  // const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=1000"
+  const TESTNET_ORACLE_URL = "http://localhost:1317/carbon/oracle/v1/oracles?pagination.limit=1000"
+  const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=1000"
 
-  // const testnetOracles = await fetch(TESTNET_ORACLE_URL).then((res) => res.json());
-  // const mainnetOracles = await fetch(MAINNET_ORACLE_URL).then((res) => res.json());
+  const testnetOracles = await fetch(TESTNET_ORACLE_URL).then((res) => res.json());
+  const mainnetOracles = await fetch(MAINNET_ORACLE_URL).then((res) => res.json());
 
-  // // convert testnet oracles to map and compare
-  // const mainnetMap: SimpleMap<OracleParams> = {}
+  // convert testnet oracles to map and compare
+  const mainnetMap: SimpleMap<OracleParams> = {}
 
-  // for (const oracle of mainnetOracles.oracles) {
-  //   const id: string = oracle.id
-  //   const { min_turnout_percentage, max_result_age, security_type, result_strategy, resolution } = oracle
-  //   const oracleParam: OracleParams = {
-  //     minTurnOutPercentage: min_turnout_percentage,
-  //     maxResultAge: max_result_age,
-  //     securityType: security_type,
-  //     resultStrategy: result_strategy,
-  //     resolution
-  //   }
-  //   mainnetMap[id] = oracleParam
-  // }
-
-  // const txs: any[] = []
-  // for (const oracle of testnetOracles.oracles) {
-  //   const id: string = oracle.id
-  //   const mainnetParams = mainnetMap[id]
-  //   if (!mainnetParams) {
-  //     console.log(`testnet oracle ${oracle.id} not found on mainnet, skipping`)
-  //     continue
-  //   }
-
-  //   let maxResultAge = mainnetParams.maxResultAge
-  //   if (parseInt(maxResultAge) < 300) {
-  //     maxResultAge = "300"
-  //   }
-
-  //   const txUpdateOracle = {
-  //     typeUrl: CarbonTx.Types.MsgUpdateOracle,
-  //     value: MsgUpdateOracle.fromPartial({
-  //       updater: connectedSDK.wallet.bech32Address,
-  //       updateOracleParams: {
-  //         id,
-  //         maxResultAge,
-  //         resolution: mainnetParams.resolution,
-  //       },
-  //     }),
-  //   }
-  //   console.log(`updating oracle ${id}`)
-  //   txs.push(txUpdateOracle)
-  // }
-  // const result = await connectedSDK.wallet.sendTxs(txs);
-  // console.log(result);
-
-  const oraclesToUpdate = [
-    ".CARB",
-    ".CATOM",
-    ".CBIT",
-    ".CBNB",
-    ".CETHBTC",
-    ".CJUP",
-    ".CMANTA",
-    ".CNEO",
-    ".COP",
-    ".COSMO",
-    ".CPYTH",
-    ".CSAGA",
-    ".CSCRT",
-    ".CSOL",
-    ".CSTRK",
-    ".CTIA",
-    ".CZIL",
-    "SIDXBTC",
-    "SIDXETH"
-  ]
+  for (const oracle of mainnetOracles.oracles) {
+    const id: string = oracle.id
+    const { min_turnout_percentage, max_result_age, security_type, result_strategy, resolution } = oracle
+    const oracleParam: OracleParams = {
+      minTurnOutPercentage: min_turnout_percentage,
+      maxResultAge: max_result_age,
+      securityType: security_type,
+      resultStrategy: result_strategy,
+      resolution
+    }
+    mainnetMap[id] = oracleParam
+  }
 
   const txs: any[] = []
-  for (const id of oraclesToUpdate) {
+  for (const oracle of testnetOracles.oracles) {
+    const id: string = oracle.id
+    const mainnetParams = mainnetMap[id]
+    if (!mainnetParams) {
+      console.log(`testnet oracle ${oracle.id} not found on mainnet, skipping`)
+      continue
+    }
+
+    let maxResultAge = mainnetParams.maxResultAge
+    if (parseInt(maxResultAge) < 300) {
+      maxResultAge = "300"
+    }
+
     const txUpdateOracle = {
       typeUrl: CarbonTx.Types.MsgUpdateOracle,
       value: MsgUpdateOracle.fromPartial({
         updater: connectedSDK.wallet.bech32Address,
         updateOracleParams: {
           id,
-          resolution: 2,
+          maxResultAge,
+          resolution: mainnetParams.resolution,
         },
       }),
     }
     console.log(`updating oracle ${id}`)
     txs.push(txUpdateOracle)
   }
-
   const result = await connectedSDK.wallet.sendTxs(txs);
   console.log(result);
-
 })().catch(console.error).finally(() => process.exit(0));
