@@ -90,7 +90,9 @@ export interface MsgUpdateOracleContract {
 export interface MsgUpdateOracleContractResponse {}
 
 export interface ValidatorSignature {
-  validator: Uint8Array;
+  /** used to be named "validator", changed to "pub_key" */
+  pubKey: Uint8Array;
+  /** from 2.46.0 onwards */
   validatorIndex: number;
   signature: Uint8Array;
   signedTimestamp: Long;
@@ -1295,8 +1297,8 @@ export const ValidatorSignature = {
     message: ValidatorSignature,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.validator.length !== 0) {
-      writer.uint32(10).bytes(message.validator);
+    if (message.pubKey.length !== 0) {
+      writer.uint32(10).bytes(message.pubKey);
     }
     if (message.validatorIndex !== 0) {
       writer.uint32(16).int32(message.validatorIndex);
@@ -1314,13 +1316,13 @@ export const ValidatorSignature = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseValidatorSignature } as ValidatorSignature;
-    message.validator = new Uint8Array();
+    message.pubKey = new Uint8Array();
     message.signature = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.validator = reader.bytes();
+          message.pubKey = reader.bytes();
           break;
         case 2:
           message.validatorIndex = reader.int32();
@@ -1341,9 +1343,9 @@ export const ValidatorSignature = {
 
   fromJSON(object: any): ValidatorSignature {
     const message = { ...baseValidatorSignature } as ValidatorSignature;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? bytesFromBase64(object.validator)
+    message.pubKey =
+      object.pubKey !== undefined && object.pubKey !== null
+        ? bytesFromBase64(object.pubKey)
         : new Uint8Array();
     message.validatorIndex =
       object.validatorIndex !== undefined && object.validatorIndex !== null
@@ -1362,9 +1364,9 @@ export const ValidatorSignature = {
 
   toJSON(message: ValidatorSignature): unknown {
     const obj: any = {};
-    message.validator !== undefined &&
-      (obj.validator = base64FromBytes(
-        message.validator !== undefined ? message.validator : new Uint8Array()
+    message.pubKey !== undefined &&
+      (obj.pubKey = base64FromBytes(
+        message.pubKey !== undefined ? message.pubKey : new Uint8Array()
       ));
     message.validatorIndex !== undefined &&
       (obj.validatorIndex = message.validatorIndex);
@@ -1379,7 +1381,7 @@ export const ValidatorSignature = {
 
   fromPartial(object: DeepPartial<ValidatorSignature>): ValidatorSignature {
     const message = { ...baseValidatorSignature } as ValidatorSignature;
-    message.validator = object.validator ?? new Uint8Array();
+    message.pubKey = object.pubKey ?? new Uint8Array();
     message.validatorIndex = object.validatorIndex ?? 0;
     message.signature = object.signature ?? new Uint8Array();
     message.signedTimestamp =
