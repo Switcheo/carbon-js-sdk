@@ -1,19 +1,28 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 
-export const protobufPackage = "Switcheo.carbon.ccm";
+export const protobufPackage = "Switcheo.carbon.insurance";
 
-/** Params defines the parameters for the ccm module. */
-export interface Params {}
+export interface Params {
+  minMarketLiquidity: Coin[];
+}
 
-/** ParamsToUpdate allows optional fields for Params. */
-export interface ParamsToUpdate {}
+export interface ParamsToUpdate {
+  minMarketLiquidity: Coin[];
+}
 
 const baseParams: object = {};
 
 export const Params = {
-  encode(_: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: Params,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.minMarketLiquidity) {
+      Coin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -21,9 +30,13 @@ export const Params = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseParams } as Params;
+    message.minMarketLiquidity = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.minMarketLiquidity.push(Coin.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -32,18 +45,31 @@ export const Params = {
     return message;
   },
 
-  fromJSON(_: any): Params {
+  fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
+    message.minMarketLiquidity = (object.minMarketLiquidity ?? []).map(
+      (e: any) => Coin.fromJSON(e)
+    );
     return message;
   },
 
-  toJSON(_: Params): unknown {
+  toJSON(message: Params): unknown {
     const obj: any = {};
+    if (message.minMarketLiquidity) {
+      obj.minMarketLiquidity = message.minMarketLiquidity.map((e) =>
+        e ? Coin.toJSON(e) : undefined
+      );
+    } else {
+      obj.minMarketLiquidity = [];
+    }
     return obj;
   },
 
-  fromPartial(_: DeepPartial<Params>): Params {
+  fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
+    message.minMarketLiquidity = (object.minMarketLiquidity ?? []).map((e) =>
+      Coin.fromPartial(e)
+    );
     return message;
   },
 };
@@ -52,9 +78,12 @@ const baseParamsToUpdate: object = {};
 
 export const ParamsToUpdate = {
   encode(
-    _: ParamsToUpdate,
+    message: ParamsToUpdate,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    for (const v of message.minMarketLiquidity) {
+      Coin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -62,9 +91,13 @@ export const ParamsToUpdate = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    message.minMarketLiquidity = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.minMarketLiquidity.push(Coin.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -73,18 +106,31 @@ export const ParamsToUpdate = {
     return message;
   },
 
-  fromJSON(_: any): ParamsToUpdate {
+  fromJSON(object: any): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    message.minMarketLiquidity = (object.minMarketLiquidity ?? []).map(
+      (e: any) => Coin.fromJSON(e)
+    );
     return message;
   },
 
-  toJSON(_: ParamsToUpdate): unknown {
+  toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
+    if (message.minMarketLiquidity) {
+      obj.minMarketLiquidity = message.minMarketLiquidity.map((e) =>
+        e ? Coin.toJSON(e) : undefined
+      );
+    } else {
+      obj.minMarketLiquidity = [];
+    }
     return obj;
   },
 
-  fromPartial(_: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
+  fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    message.minMarketLiquidity = (object.minMarketLiquidity ?? []).map((e) =>
+      Coin.fromPartial(e)
+    );
     return message;
   },
 };
