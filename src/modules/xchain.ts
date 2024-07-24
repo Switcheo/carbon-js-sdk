@@ -1,4 +1,4 @@
-import { MsgProcessCrossChainTx, MsgProcessZionCrossChainTx } from "@carbon-sdk/codec/Switcheo/carbon/ccm/tx";
+import { MsgProcessCrossChainTx } from "@carbon-sdk/codec/Switcheo/carbon/ccm/tx";
 import { MsgSyncHeaders } from "@carbon-sdk/codec/Switcheo/carbon/headersync/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { CHAIN_IDS } from "@carbon-sdk/util/blockchain";
@@ -37,26 +37,6 @@ export class XChainModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgProcessCrossChainTx,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async processZionCrossChainTx(params: XChainModule.ProcessZionCrossChainTxParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = MsgProcessZionCrossChainTx.fromPartial({
-      submitter: wallet.bech32Address,
-      fromChainId: CHAIN_IDS.polynetwork,
-      proof: params.proof,
-      header: params.header,
-      rawCrossTx: params.rawCrossTx,
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgProcessZionCrossChainTx,
         value,
       },
       opts
