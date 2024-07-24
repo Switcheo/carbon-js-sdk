@@ -1,5 +1,5 @@
 {
-  "output_id": "dot_usd",
+  "output_id": "etc_usd",
   "templates": [
     {
       "template_id": "response_handler",
@@ -23,15 +23,15 @@
   ],
   "jobs": [
     {
-      "output_id": "okx_dot_usdt",
+      "output_id": "binance_etc_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "okx_dot_usdt",
-            "default_node_host": "https://www.okx.com",
-            "default_node_path": "/api/v5/market/index-tickers?instId=DOT-USDT",
-            "paths": "[\"data.price\"]",
+            "custom_node_url_key": "binance_etc_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=ETCUSDT",
+            "paths": "[\"price\"]",
             "timeout": "10"
           }
         },
@@ -53,23 +53,23 @@
       ]
     },
     {
-      "output_id": "okx_dot_usd",
+      "output_id": "binance_etc_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"okx_dot_usdt\",\"usdt_usd\"]"
+        "input_ids": "[\"binance_etc_usdt\",\"usdt_usd\"]"
       }
     },
     {
-      "output_id": "kraken_dot_usd",
+      "output_id": "kraken_etc_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kraken_dot_usd",
+            "custom_node_url_key": "kraken_etc_usd",
             "default_node_host": "https://api.kraken.com",
-            "default_node_path": "/0/public/Ticker?pair=DOTUSD",
-            "paths": "[\"result.DOTUSD.c.0\"]",
+            "default_node_path": "/0/public/Ticker?pair=ETCUSD",
+            "paths": "[\"result.XETCZUSD.c.0\"]",
             "timeout": "10"
           }
         },
@@ -79,14 +79,14 @@
       ]
     },
     {
-      "output_id": "binance_dot_usdt",
+      "output_id": "coinbase_etc_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "binance_dot_usdt",
-            "default_node_host": "https://api-binance-proxy.carbon.network",
-            "default_node_path": "/api/v3/ticker/price?symbol=DOTUSDT",
+            "custom_node_url_key": "coinbase_etc_usd",
+            "default_node_host": "https://api.exchange.coinbase.com",
+            "default_node_path": "/products/ETC-USD/ticker",
             "paths": "[\"price\"]",
             "timeout": "10"
           }
@@ -97,32 +97,24 @@
       ]
     },
     {
-      "output_id": "binance_dot_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"binance_dot_usdt\",\"usdt_usd\"]"
-      }
-    },
-    {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"okx_dot_usd\", \"kraken_dot_usd\",\"binance_dot_usd\"]",
+        "value_ids": "[\"binance_etc_usd\", \"kraken_etc_usd\",\"coinbase_etc_usd\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "dot_usd",
+      "output_id": "etc_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"okx_dot_usd\",\"kraken_dot_usd\",\"binance_dot_usd\"]",
-        "weights": "[0.3, 0.3, 0.4]"
+        "value_ids": "[\"binance_etc_usd\",\"kraken_etc_usd\",\"coinbase_etc_usd\"]",
+        "weights": "[0.4, 0.3, 0.3]"
       }
     },
     {
-      "output_id": "dot_usd",
-      "input_id": "dot_usd",
+      "output_id": "etc_usd",
+      "input_id": "etc_usd",
       "adapter": "float_handler",
       "config": {
         "operation": "round",

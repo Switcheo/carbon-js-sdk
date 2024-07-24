@@ -1,5 +1,5 @@
 {
-  "output_id": "dot_usd",
+  "output_id": "icp_usd",
   "templates": [
     {
       "template_id": "response_handler",
@@ -23,14 +23,14 @@
   ],
   "jobs": [
     {
-      "output_id": "okx_dot_usdt",
+      "output_id": "okx_icp_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "okx_dot_usdt",
+            "custom_node_url_key": "okx_icp_usdt",
             "default_node_host": "https://www.okx.com",
-            "default_node_path": "/api/v5/market/index-tickers?instId=DOT-USDT",
+            "default_node_path": "/api/v5/market/index-tickers?instId=ICP-USDT",
             "paths": "[\"data.price\"]",
             "timeout": "10"
           }
@@ -53,23 +53,23 @@
       ]
     },
     {
-      "output_id": "okx_dot_usd",
+      "output_id": "okx_icp_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"okx_dot_usdt\",\"usdt_usd\"]"
+        "input_ids": "[\"okx_icp_usdt\",\"usdt_usd\"]"
       }
     },
     {
-      "output_id": "kraken_dot_usd",
+      "output_id": "kraken_icp_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kraken_dot_usd",
+            "custom_node_url_key": "kraken_icp_usd",
             "default_node_host": "https://api.kraken.com",
-            "default_node_path": "/0/public/Ticker?pair=DOTUSD",
-            "paths": "[\"result.DOTUSD.c.0\"]",
+            "default_node_path": "/0/public/Ticker?pair=ICPUSD",
+            "paths": "[\"result.ICPUSD.c.0\"]",
             "timeout": "10"
           }
         },
@@ -79,14 +79,14 @@
       ]
     },
     {
-      "output_id": "binance_dot_usdt",
+      "output_id": "binance_icp_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "binance_dot_usdt",
+            "custom_node_url_key": "binance_icp_usdt",
             "default_node_host": "https://api-binance-proxy.carbon.network",
-            "default_node_path": "/api/v3/ticker/price?symbol=DOTUSDT",
+            "default_node_path": "/api/v3/ticker/price?symbol=ICPUSDT",
             "paths": "[\"price\"]",
             "timeout": "10"
           }
@@ -97,32 +97,32 @@
       ]
     },
     {
-      "output_id": "binance_dot_usd",
+      "output_id": "binance_icp_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"binance_dot_usdt\",\"usdt_usd\"]"
+        "input_ids": "[\"binance_icp_usdt\",\"usdt_usd\"]"
       }
     },
     {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"okx_dot_usd\", \"kraken_dot_usd\",\"binance_dot_usd\"]",
+        "value_ids": "[\"okx_icp_usd\", \"kraken_icp_usd\",\"binance_icp_usd\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "dot_usd",
+      "output_id": "icp_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"okx_dot_usd\",\"kraken_dot_usd\",\"binance_dot_usd\"]",
+        "value_ids": "[\"okx_icp_usd\",\"kraken_icp_usd\",\"binance_icp_usd\"]",
         "weights": "[0.3, 0.3, 0.4]"
       }
     },
     {
-      "output_id": "dot_usd",
-      "input_id": "dot_usd",
+      "output_id": "icp_usd",
+      "input_id": "icp_usd",
       "adapter": "float_handler",
       "config": {
         "operation": "round",
