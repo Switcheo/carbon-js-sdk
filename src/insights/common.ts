@@ -16,6 +16,8 @@ export const InsightsEndpoints = {
   "user/pnl": "/user/:address/pnl",
   "user/balance/graph": "/user/:address/balance/graph",
   "user/pnl/graph": "/user/:address/pnl/graph",
+  "user/fundings": "/user/:address/fundings",
+  "user/funding/breakdown": "/user/:address/funding/breakdown",
   "user/connected/wallet": "/user/connected/wallet",
 
 
@@ -57,6 +59,7 @@ export const InsightsEndpoints = {
   "competition/leaderboardlottery": "/competition/leaderboardlottery",
   "competition/leaderboardleague": "/competition/leaderboardleague",
   "competition/leaderboardvolume": "/competition/leaderboardvolume",
+  "competition/leaderboardcosmos": "/competition/leaderboardcosmos",
 
   //Coin Gecko Tokens api
   "info/denom_gecko_map": "/info/denom_gecko_map",
@@ -108,6 +111,11 @@ export interface TimeMeta {
   from: string;
   until: string;
   interval: Interval;
+}
+
+export interface NoIntervalTimeMeta {
+  from: string;
+  until: string;
 }
 
 export interface ParsedTimeMeta {

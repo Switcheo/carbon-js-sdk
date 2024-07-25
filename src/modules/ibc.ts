@@ -131,19 +131,23 @@ export class IBCModule extends BaseModule {
 
       if (chainId && chainInfoMap[chainId]) {
         const cw20RegexArr = denomTrace.baseDenom.match(cw20TokenRegex);
-        const coinGeckoId = tokenClient.geckoTokenNames?.[denom] ?? tokenClient.geckoTokenNames?.[denomTrace.baseDenom] ?? "";
+        const coinGeckoId = tokenClient.geckoTokenNames?.[denom] ?? tokenClient.geckoTokenNames?.[denomTrace.baseDenom];
         const dstDenom = isChainNativeToken ? denomTrace.baseDenom.replace(/:/g, '/') : IBCUtils.makeIBCMinimalDenom(denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, ''), denomTrace.baseDenom);
-        const currency = this.getAppCurrency(dstDenom, coinGeckoId, token, cw20RegexArr);
         const chainInfo = chainInfoMap[chainId];
-        chainInfo.currencies.push(currency);
         chainInfo.minimalDenomMap[token.denom] = dstDenom;
+        const existingCurrencyIndex = chainInfo.currencies.findIndex(c => c.coinMinimalDenom === dstDenom);
+        if (existingCurrencyIndex !== -1) {
+          continue;
+        }
+        const currency = this.getAppCurrency(dstDenom, coinGeckoId, token, cw20RegexArr);
+        chainInfo.currencies.push(currency);
       }
     }
 
     return chainInfoMap;
   }
 
-  getAppCurrency(coinMinimalDenom: string, coinGeckoId: string, tokenInfo?: Token, cw20RegexArr?: RegExpMatchArray | null): AppCurrency {
+  getAppCurrency(coinMinimalDenom: string, coinGeckoId?: string, tokenInfo?: Token, cw20RegexArr?: RegExpMatchArray | null): AppCurrency {
     const appCurrency = {
       coinDenom: tokenInfo?.symbol ?? "",
       coinMinimalDenom: coinMinimalDenom,

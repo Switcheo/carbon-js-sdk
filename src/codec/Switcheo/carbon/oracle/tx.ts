@@ -28,15 +28,6 @@ export interface MsgCreateOracleResponse {
   id: string;
 }
 
-export interface MsgCreateVote {
-  creator: string;
-  oracleId: string;
-  timestamp: Long;
-  data: string;
-}
-
-export interface MsgCreateVoteResponse {}
-
 export interface MsgUpdateOracle {
   updater: string;
   updateOracleParams?: UpdateOracleParams;
@@ -90,8 +81,18 @@ export interface MsgUpdateParams {
  */
 export interface MsgUpdateParamsResponse {}
 
+export interface MsgUpdateOracleContract {
+  creator: string;
+  oracleId: string;
+  contractAddress: string;
+}
+
+export interface MsgUpdateOracleContractResponse {}
+
 export interface ValidatorSignature {
-  validator: Uint8Array;
+  /** used to be named "validator", changed to "pub_key" */
+  pubKey: Uint8Array;
+  /** from 2.46.0 onwards */
   validatorIndex: number;
   signature: Uint8Array;
   signedTimestamp: Long;
@@ -436,148 +437,6 @@ export const MsgCreateOracleResponse = {
       ...baseMsgCreateOracleResponse,
     } as MsgCreateOracleResponse;
     message.id = object.id ?? "";
-    return message;
-  },
-};
-
-const baseMsgCreateVote: object = {
-  creator: "",
-  oracleId: "",
-  timestamp: Long.ZERO,
-  data: "",
-};
-
-export const MsgCreateVote = {
-  encode(
-    message: MsgCreateVote,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.oracleId !== "") {
-      writer.uint32(18).string(message.oracleId);
-    }
-    if (!message.timestamp.isZero()) {
-      writer.uint32(24).int64(message.timestamp);
-    }
-    if (message.data !== "") {
-      writer.uint32(34).string(message.data);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateVote {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateVote } as MsgCreateVote;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.oracleId = reader.string();
-          break;
-        case 3:
-          message.timestamp = reader.int64() as Long;
-          break;
-        case 4:
-          message.data = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgCreateVote {
-    const message = { ...baseMsgCreateVote } as MsgCreateVote;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.oracleId =
-      object.oracleId !== undefined && object.oracleId !== null
-        ? String(object.oracleId)
-        : "";
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromString(object.timestamp)
-        : Long.ZERO;
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? String(object.data)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgCreateVote): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
-    message.timestamp !== undefined &&
-      (obj.timestamp = (message.timestamp || Long.ZERO).toString());
-    message.data !== undefined && (obj.data = message.data);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MsgCreateVote>): MsgCreateVote {
-    const message = { ...baseMsgCreateVote } as MsgCreateVote;
-    message.creator = object.creator ?? "";
-    message.oracleId = object.oracleId ?? "";
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromValue(object.timestamp)
-        : Long.ZERO;
-    message.data = object.data ?? "";
-    return message;
-  },
-};
-
-const baseMsgCreateVoteResponse: object = {};
-
-export const MsgCreateVoteResponse = {
-  encode(
-    _: MsgCreateVoteResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreateVoteResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateVoteResponse } as MsgCreateVoteResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgCreateVoteResponse {
-    const message = { ...baseMsgCreateVoteResponse } as MsgCreateVoteResponse;
-    return message;
-  },
-
-  toJSON(_: MsgCreateVoteResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(_: DeepPartial<MsgCreateVoteResponse>): MsgCreateVoteResponse {
-    const message = { ...baseMsgCreateVoteResponse } as MsgCreateVoteResponse;
     return message;
   },
 };
@@ -1283,6 +1142,151 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
+const baseMsgUpdateOracleContract: object = {
+  creator: "",
+  oracleId: "",
+  contractAddress: "",
+};
+
+export const MsgUpdateOracleContract = {
+  encode(
+    message: MsgUpdateOracleContract,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.oracleId !== "") {
+      writer.uint32(18).string(message.oracleId);
+    }
+    if (message.contractAddress !== "") {
+      writer.uint32(26).string(message.contractAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateOracleContract {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateOracleContract,
+    } as MsgUpdateOracleContract;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.oracleId = reader.string();
+          break;
+        case 3:
+          message.contractAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateOracleContract {
+    const message = {
+      ...baseMsgUpdateOracleContract,
+    } as MsgUpdateOracleContract;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    message.contractAddress =
+      object.contractAddress !== undefined && object.contractAddress !== null
+        ? String(object.contractAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgUpdateOracleContract): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
+    message.contractAddress !== undefined &&
+      (obj.contractAddress = message.contractAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateOracleContract>
+  ): MsgUpdateOracleContract {
+    const message = {
+      ...baseMsgUpdateOracleContract,
+    } as MsgUpdateOracleContract;
+    message.creator = object.creator ?? "";
+    message.oracleId = object.oracleId ?? "";
+    message.contractAddress = object.contractAddress ?? "";
+    return message;
+  },
+};
+
+const baseMsgUpdateOracleContractResponse: object = {};
+
+export const MsgUpdateOracleContractResponse = {
+  encode(
+    _: MsgUpdateOracleContractResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateOracleContractResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateOracleContractResponse,
+    } as MsgUpdateOracleContractResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateOracleContractResponse {
+    const message = {
+      ...baseMsgUpdateOracleContractResponse,
+    } as MsgUpdateOracleContractResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateOracleContractResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateOracleContractResponse>
+  ): MsgUpdateOracleContractResponse {
+    const message = {
+      ...baseMsgUpdateOracleContractResponse,
+    } as MsgUpdateOracleContractResponse;
+    return message;
+  },
+};
+
 const baseValidatorSignature: object = {
   validatorIndex: 0,
   signedTimestamp: Long.ZERO,
@@ -1293,8 +1297,8 @@ export const ValidatorSignature = {
     message: ValidatorSignature,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.validator.length !== 0) {
-      writer.uint32(10).bytes(message.validator);
+    if (message.pubKey.length !== 0) {
+      writer.uint32(10).bytes(message.pubKey);
     }
     if (message.validatorIndex !== 0) {
       writer.uint32(16).int32(message.validatorIndex);
@@ -1312,13 +1316,13 @@ export const ValidatorSignature = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseValidatorSignature } as ValidatorSignature;
-    message.validator = new Uint8Array();
+    message.pubKey = new Uint8Array();
     message.signature = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.validator = reader.bytes();
+          message.pubKey = reader.bytes();
           break;
         case 2:
           message.validatorIndex = reader.int32();
@@ -1339,9 +1343,9 @@ export const ValidatorSignature = {
 
   fromJSON(object: any): ValidatorSignature {
     const message = { ...baseValidatorSignature } as ValidatorSignature;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? bytesFromBase64(object.validator)
+    message.pubKey =
+      object.pubKey !== undefined && object.pubKey !== null
+        ? bytesFromBase64(object.pubKey)
         : new Uint8Array();
     message.validatorIndex =
       object.validatorIndex !== undefined && object.validatorIndex !== null
@@ -1360,9 +1364,9 @@ export const ValidatorSignature = {
 
   toJSON(message: ValidatorSignature): unknown {
     const obj: any = {};
-    message.validator !== undefined &&
-      (obj.validator = base64FromBytes(
-        message.validator !== undefined ? message.validator : new Uint8Array()
+    message.pubKey !== undefined &&
+      (obj.pubKey = base64FromBytes(
+        message.pubKey !== undefined ? message.pubKey : new Uint8Array()
       ));
     message.validatorIndex !== undefined &&
       (obj.validatorIndex = message.validatorIndex);
@@ -1377,7 +1381,7 @@ export const ValidatorSignature = {
 
   fromPartial(object: DeepPartial<ValidatorSignature>): ValidatorSignature {
     const message = { ...baseValidatorSignature } as ValidatorSignature;
-    message.validator = object.validator ?? new Uint8Array();
+    message.pubKey = object.pubKey ?? new Uint8Array();
     message.validatorIndex = object.validatorIndex ?? 0;
     message.signature = object.signature ?? new Uint8Array();
     message.signedTimestamp =
@@ -1777,12 +1781,14 @@ export const MsgCreateResultResponse = {
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse>;
-  CreateVote(request: MsgCreateVote): Promise<MsgCreateVoteResponse>;
   UpdateOracle(request: MsgUpdateOracle): Promise<MsgUpdateOracleResponse>;
   RemoveOracle(request: MsgRemoveOracle): Promise<MsgRemoveOracleResponse>;
   SetOracleSlashEnabled(
     request: MsgSetOracleSlashEnabled
   ): Promise<MsgSetOracleSlashEnabledResponse>;
+  UpdateOracleContract(
+    request: MsgUpdateOracleContract
+  ): Promise<MsgUpdateOracleContractResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -1798,10 +1804,10 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.CreateOracle = this.CreateOracle.bind(this);
-    this.CreateVote = this.CreateVote.bind(this);
     this.UpdateOracle = this.UpdateOracle.bind(this);
     this.RemoveOracle = this.RemoveOracle.bind(this);
     this.SetOracleSlashEnabled = this.SetOracleSlashEnabled.bind(this);
+    this.UpdateOracleContract = this.UpdateOracleContract.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.CreateResult = this.CreateResult.bind(this);
   }
@@ -1814,18 +1820,6 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgCreateOracleResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  CreateVote(request: MsgCreateVote): Promise<MsgCreateVoteResponse> {
-    const data = MsgCreateVote.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "CreateVote",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreateVoteResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -1864,6 +1858,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSetOracleSlashEnabledResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateOracleContract(
+    request: MsgUpdateOracleContract
+  ): Promise<MsgUpdateOracleContractResponse> {
+    const data = MsgUpdateOracleContract.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Msg",
+      "UpdateOracleContract",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateOracleContractResponse.decode(new _m0.Reader(data))
     );
   }
 

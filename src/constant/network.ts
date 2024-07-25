@@ -9,7 +9,7 @@ export enum Network {
 
 export const CarbonChainIDs = {
   [Network.MainNet]: "carbon-1",
-  [Network.TestNet]: "carbon-testnet-42069",
+  [Network.TestNet]: "carbon-testnet-42070",
   [Network.DevNet]: "carbon-devnet-39911",
   [Network.LocalHost]: "carbon-localhost",
 } as const;
@@ -175,7 +175,7 @@ export const NetworkConfigs: {
 
   [Network.TestNet]: {
     network: Network.TestNet,
-    chainId: "carbon-testnet-42069",
+    chainId: "carbon-testnet-42070",
 
     tmRpcUrl: "https://test-tm-api.carbon.network",
     tmWsUrl: "wss://test-tm-api.carbon.network",

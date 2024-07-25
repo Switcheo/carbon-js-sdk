@@ -33,6 +33,10 @@ class KeplrAccount {
       return await signTransactionWrapper(
         async () => {
           const signOpts = { preferNoSetFee: true };
+          console.log('xx chainInfo: ',chainInfo)
+          console.log('xx signerAddress: ',signerAddress)
+          console.log('xx doc: ',doc)
+          console.log('xx signOpts: ',signOpts)
           return await keplr!.signDirect(chainInfo.chainId, signerAddress, doc, signOpts);
         })
     };
