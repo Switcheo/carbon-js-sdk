@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ConsensusPeers, ZionConsensusPeers } from "./consensus_peers";
+import { ConsensusPeers } from "./consensus_peers";
 
 export const protobufPackage = "Switcheo.carbon.headersync";
 
@@ -11,14 +11,6 @@ export interface QueryGetConsensusPeersRequest {
 
 export interface QueryGetConsensusPeersResponse {
   consensusPeers?: ConsensusPeers;
-}
-
-export interface QueryGetZionConsensusPeersRequest {
-  chainId: Long;
-}
-
-export interface QueryGetZionConsensusPeersResponse {
-  zionConsensusPeers?: ZionConsensusPeers;
 }
 
 const baseQueryGetConsensusPeersRequest: object = { chainId: Long.UZERO };
@@ -165,161 +157,12 @@ export const QueryGetConsensusPeersResponse = {
   },
 };
 
-const baseQueryGetZionConsensusPeersRequest: object = { chainId: Long.UZERO };
-
-export const QueryGetZionConsensusPeersRequest = {
-  encode(
-    message: QueryGetZionConsensusPeersRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.chainId.isZero()) {
-      writer.uint32(8).uint64(message.chainId);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetZionConsensusPeersRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetZionConsensusPeersRequest,
-    } as QueryGetZionConsensusPeersRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.chainId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryGetZionConsensusPeersRequest {
-    const message = {
-      ...baseQueryGetZionConsensusPeersRequest,
-    } as QueryGetZionConsensusPeersRequest;
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromString(object.chainId)
-        : Long.UZERO;
-    return message;
-  },
-
-  toJSON(message: QueryGetZionConsensusPeersRequest): unknown {
-    const obj: any = {};
-    message.chainId !== undefined &&
-      (obj.chainId = (message.chainId || Long.UZERO).toString());
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryGetZionConsensusPeersRequest>
-  ): QueryGetZionConsensusPeersRequest {
-    const message = {
-      ...baseQueryGetZionConsensusPeersRequest,
-    } as QueryGetZionConsensusPeersRequest;
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromValue(object.chainId)
-        : Long.UZERO;
-    return message;
-  },
-};
-
-const baseQueryGetZionConsensusPeersResponse: object = {};
-
-export const QueryGetZionConsensusPeersResponse = {
-  encode(
-    message: QueryGetZionConsensusPeersResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.zionConsensusPeers !== undefined) {
-      ZionConsensusPeers.encode(
-        message.zionConsensusPeers,
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetZionConsensusPeersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetZionConsensusPeersResponse,
-    } as QueryGetZionConsensusPeersResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.zionConsensusPeers = ZionConsensusPeers.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryGetZionConsensusPeersResponse {
-    const message = {
-      ...baseQueryGetZionConsensusPeersResponse,
-    } as QueryGetZionConsensusPeersResponse;
-    message.zionConsensusPeers =
-      object.zionConsensusPeers !== undefined &&
-      object.zionConsensusPeers !== null
-        ? ZionConsensusPeers.fromJSON(object.zionConsensusPeers)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryGetZionConsensusPeersResponse): unknown {
-    const obj: any = {};
-    message.zionConsensusPeers !== undefined &&
-      (obj.zionConsensusPeers = message.zionConsensusPeers
-        ? ZionConsensusPeers.toJSON(message.zionConsensusPeers)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryGetZionConsensusPeersResponse>
-  ): QueryGetZionConsensusPeersResponse {
-    const message = {
-      ...baseQueryGetZionConsensusPeersResponse,
-    } as QueryGetZionConsensusPeersResponse;
-    message.zionConsensusPeers =
-      object.zionConsensusPeers !== undefined &&
-      object.zionConsensusPeers !== null
-        ? ZionConsensusPeers.fromPartial(object.zionConsensusPeers)
-        : undefined;
-    return message;
-  },
-};
-
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
   ConsensusPeers(
     request: QueryGetConsensusPeersRequest
   ): Promise<QueryGetConsensusPeersResponse>;
-  ZionConsensusPeers(
-    request: QueryGetZionConsensusPeersRequest
-  ): Promise<QueryGetZionConsensusPeersResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -327,7 +170,6 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.ConsensusPeers = this.ConsensusPeers.bind(this);
-    this.ZionConsensusPeers = this.ZionConsensusPeers.bind(this);
   }
   ConsensusPeers(
     request: QueryGetConsensusPeersRequest
@@ -340,20 +182,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetConsensusPeersResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  ZionConsensusPeers(
-    request: QueryGetZionConsensusPeersRequest
-  ): Promise<QueryGetZionConsensusPeersResponse> {
-    const data = QueryGetZionConsensusPeersRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.headersync.Query",
-      "ZionConsensusPeers",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetZionConsensusPeersResponse.decode(new _m0.Reader(data))
     );
   }
 }
