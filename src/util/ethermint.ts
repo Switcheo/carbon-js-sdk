@@ -78,3 +78,61 @@ export async function populateEvmTransactionDetails(api: CarbonSDK, req: ethers.
     }
 
 }
+
+export async function populateUnsignedEvmTranscation(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.utils.UnsignedTransaction> {
+    const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+    const evmHexAddress = api.wallet?.evmHexAddress ?? ''
+    const nonce = req.nonce ?? (await provider.getTransactionCount(evmHexAddress))
+    const chainId = req.chainId ?? Number(parseChainId(await api.wallet?.getEvmChainId() ?? ''))
+    const value = req.value ? `0x${Number(req.value).toString(16)}` : undefined
+
+    const baseTx: ethers.providers.TransactionRequest = {
+        to: req.to ?? '',
+        from: req.from ?? api.wallet?.evmHexAddress,
+        nonce,
+        data: req.data,
+        value,
+        chainId,
+        // type = 0, 1 or 2 where 0 = legacyTx, 1 = AccessListTx, 2 = DynamicTx. Defaults to DynamicTx 
+        type: req.type ?? 2,
+        accessList: req.accessList,
+    }
+    const gasLimit = (await provider.estimateGas(baseTx)).toHexString()
+    const gasFee = await provider.getFeeData()
+
+    const unsignedTx: ethers.utils.UnsignedTransaction = {
+        to: req.to ?? '',
+        nonce: parseInt(nonce.toString()),
+        data: req.data,
+        value,
+        chainId,
+        // type = 0, 1 or 2 where 0 = legacyTx, 1 = AccessListTx, 2 = DynamicTx. Defaults to DynamicTx 
+        type: req.type ?? 2,
+        accessList: req.accessList,
+    }
+
+    if (!req.gasPrice) {
+        // Dynamic Tx
+        return {
+            ...unsignedTx,
+            maxPriorityFeePerGas: req.maxPriorityFeePerGas ?? gasFee.maxPriorityFeePerGas?.toHexString(),
+            maxFeePerGas: req.maxFeePerGas ?? gasFee.maxFeePerGas?.toHexString(),
+            gasLimit,
+            type: 2,
+        }
+    }
+    if (req.accessList) {
+        // AccessList Tx 
+        return {
+            ...unsignedTx,
+            gasLimit,
+            type: 1,
+        }
+    }
+    // LegacyTx
+    return {
+        ...unsignedTx,
+        gasLimit,
+        type: 0,
+    }
+}
