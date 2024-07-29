@@ -20,6 +20,7 @@ export interface ConsensusPeers_PeersEntry {
   value?: Peer;
 }
 
+/** Deprecated: Used for genesis import and export */
 export interface ZionConsensusPeers {
   chainId: Long;
   epochStartHeight: number;

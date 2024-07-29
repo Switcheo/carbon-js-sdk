@@ -14,12 +14,9 @@ export interface GenesisState {
    * by chain ID.
    */
   checkpointHashes: { [key: string]: Uint8Array };
-  /** Peers for each Zion PoS chain by chain ID. */
+  /** Deprecated: Used for genesis import and export */
   zionConsensusPeers: { [key: string]: ZionConsensusPeers };
-  /**
-   * Header Hash for Zion blocks where consensus public keys is updated for PoS
-   * chain by chain ID.
-   */
+  /** Deprecated: Used for genesis import and export */
   zionCheckpointHashes: { [key: string]: Uint8Array };
 }
 
