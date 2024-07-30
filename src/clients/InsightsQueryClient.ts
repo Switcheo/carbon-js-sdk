@@ -564,6 +564,21 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
   }
 
+  async FundingHistoryGraphData(
+    query: Insights.QueryGetFundingHistoryGraphDataRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryGraphDataResponse>> {
+    const request = this.apiManager.path(
+      "market/funding/history/chart",
+      {},
+      {
+        market: query.market,
+        period: query.period,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryGraphDataResponse>;
+  }
+
   async ProposalVotes(
     req: Insights.GetProposalVotesPathParams,
     query: Insights.GetProposalVotesQueryParams
