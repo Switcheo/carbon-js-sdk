@@ -71,7 +71,7 @@ class KeplrAccount {
         throw (parseEvmError(error as Error))
       }
     }
-    const signMessage = async (address: string, message: string): Promise<string> => { 
+    const signMessage = async (address: string, message: string): Promise<string> => {
       const chainId = chainInfo.chainId
       const { signature } = await keplr.signArbitrary(chainId, address, message)
       return Buffer.from(signature, 'base64').toString('hex')
@@ -104,14 +104,17 @@ class KeplrAccount {
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
         const unsignedTx = await populateUnsignedEvmTranscation(api, req)
-        const signedTx = await keplr!.signEthereum(
-          // carbon chain id
-          api.wallet?.getChainId() ?? '',
-          // cosmos address
-          api.wallet?.bech32Address ?? '',
-          JSON.stringify(unsignedTx),
-          EthSignType.TRANSACTION,
-        )
+        console.log('xx unsignedTx: ',unsignedTx)
+        const signedTx: string = await keplr.ethereum.request({ method: 'eth_signTransaction', params: unsignedTx })
+        console.log('xx signedTx: ',unsignedTx)
+        // const signedTx = await keplr!.signEthereum(
+        //   // carbon chain id
+        //   api.wallet?.getChainId() ?? '',
+        //   // cosmos address
+        //   api.wallet?.bech32Address ?? '',
+        //   JSON.stringify(unsignedTx),
+        //   EthSignType.TRANSACTION,
+        // )
         // const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`
         const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
         const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
@@ -123,7 +126,7 @@ class KeplrAccount {
       }
     }
 
-    const signMessage = async (address: string, message: string): Promise<string> => { 
+    const signMessage = async (address: string, message: string): Promise<string> => {
       const chainId = chainInfo.chainId
       const { signature } = await keplr.signArbitrary(chainId, address, message)
       return Buffer.from(signature, 'base64').toString('hex')
