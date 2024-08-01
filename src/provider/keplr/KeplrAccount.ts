@@ -245,10 +245,6 @@ class KeplrAccount {
       rpc: config.tmRpcUrl,
       chainName: `Carbon (${config.network})`,
       chainId: chainId,
-      evm: {
-        chainId: Number(parseChainId(CarbonEvmChainIDs[config.network])),
-        rpc: config.evmJsonRpcUrl,
-      },
       bech32Config: {
         bech32PrefixAccAddr: `${bech32Prefix}`,
         bech32PrefixAccPub: `${bech32Prefix}pub`,
