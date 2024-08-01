@@ -1,10 +1,11 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
+import { capitalize } from "lodash";
 import { CARBON_GAS_PRICE, CarbonEvmChainIDs, Network, NetworkConfigs, decTypeDecimals } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
-import { AppCurrency, ChainInfo, EthSignType, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
+import { AppCurrency, ChainInfo, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 import { ethers } from "ethers";
 import { PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
@@ -53,18 +54,16 @@ class KeplrAccount {
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
+        const chainId = Number(parseChainId(api.wallet?.getEvmChainId()))
+        const chainIdHex = `0x${chainId.toString(16)}`
+        await KeplrAccount.switchEvmChain(keplr, chainIdHex)
         const unsignedTx = await populateUnsignedEvmTranscation(api, req)
-        const signedTx = await keplr!.signEthereum(
-          // carbon chain id
-          api.wallet?.getChainId() ?? '',
-          // cosmos address
-          api.wallet?.bech32Address ?? '',
-          JSON.stringify(unsignedTx),
-          EthSignType.TRANSACTION,
-        )
-        const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
-        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
-        return (await provider.sendTransaction(rlpEncodedHex)).hash
+        const tx = {
+          ...unsignedTx,
+          chainId,
+          from: api.wallet?.evmHexAddress ?? '',
+        }
+        return await KeplrAccount.sendEvmTransaction(keplr, tx)
       }
       catch (error) {
         console.error(error)
@@ -103,22 +102,16 @@ class KeplrAccount {
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
+        const chainId = Number(parseChainId(api.wallet?.getEvmChainId()))
+        const chainIdHex = `0x${chainId.toString(16)}`
+        await KeplrAccount.switchEvmChain(keplr, chainIdHex)
         const unsignedTx = await populateUnsignedEvmTranscation(api, req)
-        console.log('xx unsignedTx: ',unsignedTx)
-        const signedTx: string = await keplr.ethereum.request({ method: 'eth_signTransaction', params: unsignedTx })
-        console.log('xx signedTx: ',unsignedTx)
-        // const signedTx = await keplr!.signEthereum(
-        //   // carbon chain id
-        //   api.wallet?.getChainId() ?? '',
-        //   // cosmos address
-        //   api.wallet?.bech32Address ?? '',
-        //   JSON.stringify(unsignedTx),
-        //   EthSignType.TRANSACTION,
-        // )
-        // const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`
-        const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
-        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
-        return (await provider.sendTransaction(rlpEncodedHex)).hash
+        const tx = {
+          ...unsignedTx,
+          chainId,
+          from: api.wallet?.evmHexAddress ?? '',
+        }
+        return await KeplrAccount.sendEvmTransaction(keplr, tx)
       }
       catch (error) {
         console.error(error)
@@ -185,6 +178,37 @@ class KeplrAccount {
       prevCurrencies.push(currentFeeCurrency);
       return prevCurrencies;
     }, []);
+  }
+
+  static async getEvmChainInfo(configProvider: SDKProvider): Promise<ChainInfo | null> {
+    const config = configProvider.getConfig()
+    const { network } = config
+    try {
+      const chainInfo = JSON.parse("{\"rpc\":\"https://evm-api.carbon.network\",\"nodeProvider\":{\"name\":\"Switcheo Labs\",\"email\":\"info@switcheo.network\",\"website\":\"https://www.switcheo.com/\"},\"chainId\":\"eip155:9790\",\"chainName\":\"Carbon EVM\",\"chainSymbolImageUrl\":\"https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/eip155:9790/chain.png\",\"bip44\":{\"coinType\":60},\"currencies\":[{\"coinDenom\":\"SWTH\",\"coinMinimalDenom\":\"swth\",\"coinDecimals\":18,\"coinGeckoId\":\"switcheo\"}],\"feeCurrencies\":[{\"coinDenom\":\"SWTH\",\"coinMinimalDenom\":\"swth\",\"coinDecimals\":18,\"coinGeckoId\":\"switcheo\"}],\"rest\":\"https://evm-api.carbon.network\",\"evm\":{\"chainId\":9790,\"rpc\":\"https://evm-api.carbon.network\"},\"features\":[\"eth-address-gen\",\"eth-key-sign\"],\"beta\":true}")
+      if (network === Network.MainNet) return chainInfo
+      return {
+        ...chainInfo,
+        rpc: NetworkConfigs[network].evmJsonRpcUrl,
+        chainId: `eip155:${parseChainId(CarbonEvmChainIDs[network])}`,
+        chainName: `Carbon EVM ${capitalize(network)}`,
+        rest: NetworkConfigs[network].evmJsonRpcUrl,
+        evm: {
+          chainId: Number(parseChainId(CarbonEvmChainIDs[network])),
+          rpc:NetworkConfigs[network].evmJsonRpcUrl,
+        },
+      }
+    } catch (error) {
+      console.warn('unable to get evm chain info: ', error)
+    }
+    return null
+  }
+
+  static async sendEvmTransaction(keplr: Keplr, tx: ethers.utils.UnsignedTransaction): Promise<string> {
+    return await keplr.ethereum.request({ method: 'eth_sendTransaction', params: [tx] });
+  }
+
+  static async switchEvmChain(keplr: Keplr, chainId: string) {
+    await keplr.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId }] });
   }
 
   static async getChainInfo(configProvider: SDKProvider): Promise<ChainInfo> {

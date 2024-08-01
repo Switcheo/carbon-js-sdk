@@ -510,6 +510,12 @@ class CarbonSDK {
     const keplrKey = await keplr.getKey(chainId);
     await keplr.enable(chainId);
 
+    const evmChainInfo = await KeplrAccount.getEvmChainInfo(this);
+    if (evmChainInfo) {
+      await keplr.experimentalSuggestChain(evmChainInfo)
+      await keplr.enable(evmChainInfo.chainId)
+    }
+
     const wallet = CarbonWallet.withKeplr(keplr, chainInfo, keplrKey, {
       ...opts,
       network: this.network,
