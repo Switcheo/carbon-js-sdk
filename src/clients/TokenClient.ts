@@ -4,11 +4,12 @@ import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/que
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
 import { QueryConnectionsResponse } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
 import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint';
+import { QueryAllConnectionsResponse } from "@carbon-sdk/codec/Switcheo/carbon/bridge/query";
 import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, cosmBridgeRegex, ibcTokenRegex, ibcWhitelist, swthChannels } from "@carbon-sdk/constant/ibc";
 import { GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { BRIDGE_IDS, BlockchainV2, BridgeMap, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
+import { AxelarBridge, BRIDGE_IDS, BlockchainV2, BridgeMap, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
 import { BN_ONE, BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -48,7 +49,7 @@ class TokenClient {
   public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
   public readonly poolTokens: TypeUtils.SimpleMap<Carbon.Coin.Token> = {};
   public readonly cdpTokens: TypeUtils.SimpleMap<Carbon.Coin.Token> = {};
-  public readonly bridges: BridgeMap = { polynetwork: [], ibc: [] };
+  public readonly bridges: BridgeMap = { polynetwork: [], ibc: [], axelar: [] };
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
@@ -115,14 +116,18 @@ class TokenClient {
   }
 
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
+    console.log('getBlockchainV2 denom', denom)
     if (!denom) return undefined
+    console.log('getBlockchainV2 this.tokens', this.tokens)
     const token = this.tokens[denom]
+    console.log('getBlockchainV2 token', token)
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupedToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       return 'Native'
     }
     const bridge = this.getBridgeFromToken(token)
+    console.log('getBlockchainV2 token', token)
     return bridge?.chainName;
   }
 
@@ -461,7 +466,14 @@ class TokenClient {
       if (!bridge.enabled) return
       return bridge.bridgeId.toNumber() === BRIDGE_IDS.ibc
     })
+    const unmatchedAxelarBridgeList = allBridges.bridges.filter(bridge => {
+      if (!bridge.enabled) return
+      return bridge.bridgeId.toNumber() === BRIDGE_IDS.axelar
+    })
+
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList)
+    const axelarBridges = await this.matchAxelarChainsWithDifferentChainIds(unmatchedAxelarBridgeList)
+    
     const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Carbon.Coin.Bridge) => {
       if (bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
       prev.push({
@@ -473,6 +485,7 @@ class TokenClient {
     Object.assign(this.bridges, {
       polynetwork: polynetworkBridges,
       ibc: ibcBridges,
+      axelar: axelarBridges,
     })
     return this.bridges
   }
@@ -539,8 +552,59 @@ class TokenClient {
     return newBridges
   }
 
+  async matchAxelarChainsWithDifferentChainIds(bridges: Carbon.Coin.Bridge[]): Promise<AxelarBridge[]> {
+    console.log('matching bridges...', bridges)
+    const newBridges: AxelarBridge[] = []
+    const pagination = PageRequest.fromPartial({ limit: new Long(1e6) });
+
+    try {
+      for (const bridge of bridges) {
+        const results: [
+          QueryAllConnectionsResponse,
+        ] = await Promise.all([
+          this.query.bridge.ConnectionAll({ bridgeId: bridge.bridgeId, pagination }),
+        ]);
+
+        const [{ connections }] = results;
+        console.log('matching connections...', connections)
+
+        newBridges.push({ ...bridge, chain_id_name: bridge.chainName ?? "" })
+      }
+    } finally {
+      const checkedBefore = new Array(newBridges.length).fill(false)
+      const chainMap: SimpleMap<string> = {}
+
+      for (let i = 0; i < newBridges.length; i++) {
+        if (checkedBefore[i]) continue
+
+        const bridge = newBridges[i]
+        const chainId = bridge.chain_id_name
+
+        if (chainMap[chainId]) {
+          const chainName = chainMap[chainId]
+
+          for (let j = i; j < newBridges.length; j++) {
+            const subBridge = newBridges[j]
+
+            if (subBridge.chain_id_name === chainId) {
+              subBridge.chainName = chainName
+              checkedBefore[j] = true
+            }
+          }
+        } else {
+          chainMap[chainId] = bridge.chainName
+        }
+      }
+    }
+    return newBridges
+  }
+
   public getIbcBlockchainNames(): string[] {
     return this.bridges.ibc.map(bridge => bridge.chainName)
+  }
+
+  public getAxelarBlockchainNames(): string[] {
+    return this.bridges.axelar.map(bridge => bridge.chainName)
   }
 
   public getIbcBridgeFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): IbcBridge | undefined => {
@@ -557,7 +621,7 @@ class TokenClient {
   }
 
   public getAllBlockchainNames(): string[] {
-    return this.getIbcBlockchainNames().concat(this.getPolynetworkBlockchainNames())
+    return this.getIbcBlockchainNames().concat(this.getPolynetworkBlockchainNames()).concat(this.getAxelarBlockchainNames())
   }
 
   public getBridgesFromBridgeId(bridgeId: number): Carbon.Coin.Bridge[] | IbcBridge[] {
@@ -566,6 +630,8 @@ class TokenClient {
         return this.bridges.polynetwork
       case BRIDGE_IDS.ibc:
         return this.bridges.ibc
+      case BRIDGE_IDS.axelar:
+        return this.bridges.axelar
       default:
         return this.bridges.polynetwork
     }

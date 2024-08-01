@@ -43,12 +43,14 @@ export class AxelarBridgeClient {
   public async deposit(params: DepositParams): Promise<EthersTransactionResponse> {
     const { contractAddress, receiverAddress, network, depositTokenExternalAddress, amount, token, nonce, gasLimit, gasPriceGwei, signer, signCompleteCallback } = params;
 
+    console.log('deposit params', params)
     if (gasLimit?.lt(150000)) {
       throw new Error("Minimum gas required: 150,000")
     }
     const rpcProvider = new ethers.providers.JsonRpcProvider(NetworkConfigs[network].evmJsonRpcUrl)
 
     const contract = new ethers.Contract(contractAddress, ABIs.axelarBridge, rpcProvider)
+    console.log('deposit signer', contract.connect(signer))
     const depositResultTx = await contract.connect(signer).deposit(
       receiverAddress, // carbonReceiver
       depositTokenExternalAddress, // asset
