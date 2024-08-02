@@ -182,27 +182,19 @@ class KeplrAccount {
 
   static async getEvmChainInfo(configProvider: SDKProvider): Promise<ChainInfo | null> {
     const config = configProvider.getConfig()
-    const { network, Bech32Prefix: bech32Prefix } = config
+    const { network } = config
     try {
-      const chainInfo = JSON.parse("{\"rpc\":\"https://evm-api.carbon.network\",\"nodeProvider\":{\"name\":\"Switcheo Labs\",\"email\":\"info@switcheo.network\",\"website\":\"https://www.switcheo.com/\"},\"chainId\":\"9790\",\"chainName\":\"Carbon EVM\",\"chainSymbolImageUrl\":\"https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/eip155:9790/chain.png\",\"bip44\":{\"coinType\":118},\"bech32Config\":{\"bech32PrefixAccAddr\":\"swth\",\"bech32PrefixAccPub\":\"swthpub\",\"bech32PrefixValAddr\":\"swthvaloper\",\"bech32PrefixValPub\":\"swthvaloperpub\",\"bech32PrefixConsAddr\":\"swthvalcons\",\"bech32PrefixConsPub\":\"swthvalconspub\"},\"currencies\":[{\"coinDenom\":\"SWTH\",\"coinMinimalDenom\":\"swth\",\"coinDecimals\":18,\"coinGeckoId\":\"switcheo\"}],\"feeCurrencies\":[{\"coinDenom\":\"SWTH\",\"coinMinimalDenom\":\"swth\",\"coinDecimals\":18,\"coinGeckoId\":\"switcheo\"}],\"rest\":\"https://evm-api.carbon.network\",\"evm\":{\"chainId\":9790,\"rpc\":\"https://evm-api.carbon.network\"},\"features\":[\"eth-address-gen\",\"eth-key-sign\"],\"beta\":true}")
+      const chainInfo = JSON.parse("{\"rpc\":\"https://evm-api.carbon.network\",\"nodeProvider\":{\"name\":\"Switcheo Labs\",\"email\":\"info@switcheo.network\",\"website\":\"https://www.switcheo.com/\"},\"chainId\":\"eip155:9790\",\"chainName\":\"Carbon EVM\",\"chainSymbolImageUrl\":\"https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/eip155:9790/chain.png\",\"bip44\":{\"coinType\":60},\"currencies\":[{\"coinDenom\":\"SWTH\",\"coinMinimalDenom\":\"swth\",\"coinDecimals\":18,\"coinGeckoId\":\"switcheo\"}],\"feeCurrencies\":[{\"coinDenom\":\"SWTH\",\"coinMinimalDenom\":\"swth\",\"coinDecimals\":18,\"coinGeckoId\":\"switcheo\"}],\"rest\":\"https://evm-api.carbon.network\",\"evm\":{\"chainId\":9790,\"rpc\":\"https://evm-api.carbon.network\"},\"features\":[\"eth-address-gen\",\"eth-key-sign\"],\"beta\":true}")
       if (network === Network.MainNet) return chainInfo
       return {
         ...chainInfo,
         rpc: NetworkConfigs[network].evmJsonRpcUrl,
-        chainId: `${parseChainId(CarbonEvmChainIDs[network])}`,
+        chainId: `eip155:${parseChainId(CarbonEvmChainIDs[network])}`,
         chainName: `Carbon EVM ${capitalize(network)}`,
         rest: NetworkConfigs[network].evmJsonRpcUrl,
         evm: {
           chainId: Number(parseChainId(CarbonEvmChainIDs[network])),
-          rpc: NetworkConfigs[network].evmJsonRpcUrl,
-        },
-        bech32Config: {
-          bech32PrefixAccAddr: `${bech32Prefix}`,
-          bech32PrefixAccPub: `${bech32Prefix}pub`,
-          bech32PrefixValAddr: `${bech32Prefix}valoper`,
-          bech32PrefixValPub: `${bech32Prefix}valoperpub`,
-          bech32PrefixConsAddr: `${bech32Prefix}valcons`,
-          bech32PrefixConsPub: `${bech32Prefix}valconspub`,
+          rpc:NetworkConfigs[network].evmJsonRpcUrl,
         },
       }
     } catch (error) {
