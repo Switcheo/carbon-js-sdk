@@ -124,7 +124,6 @@ class LeapAccount {
         if (typeof (leapInterface as any).signEthereum === 'function') {
 
           const unsignedTx = await populateUnsignedEvmTranscation(api, req)
-          console.log('xx unsignedTx', unsignedTx)
           const signedTx = await leapInterface!.signEthereum(
             // carbon chain id
             api.wallet?.getChainId() ?? '',
