@@ -899,10 +899,10 @@
     axios "^0.27.2"
     long "^4.0.0"
 
-"@keplr-wallet/types@^0.12.118":
-  version "0.12.118"
-  resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.12.118.tgz#4ccb63947d18e6653018599f7c70675c8a4cb66b"
-  integrity sha512-A+XAptdyd7IWbcIVn9QrBB+bcZBpioi0BCSWqTGcF2rRxJzGwYVt7WUxhiB/8i3mLwWTej64pTMWyudpK1+PCg==
+"@keplr-wallet/types@^0.12.107":
+  version "0.12.113"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.12.113.tgz#71865d4ce213937082172a4ade5702f7754f22ec"
+  integrity sha512-xin9BotERBPq2KcubSTCe7rLtnLbXorZdODX8yzke7IrDBMidq3YKdubNU3C/kfPw77n0rhQZibMY/W9lh3oZQ==
   dependencies:
     long "^4.0.0"
 
