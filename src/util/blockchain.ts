@@ -10,6 +10,7 @@ export enum SmartWalletBlockchain {
   BinanceSmartChain = "bsc",
   Arbitrum = "arbitrum",
   Polygon = "polygon",
+  Axelar = 'axelar',
 }
 
 export enum Blockchain {
@@ -64,8 +65,7 @@ export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
 export const BRIDGE_IDS = {
   polynetwork: 1,
   ibc: 2,
-  // axelar: 3, // testnet / mainnet
-  axelar: 9000, // localhost
+  axelar: 3,
 }
 
 export interface PolyNetworkBridge extends Coin.Bridge {
@@ -83,11 +83,6 @@ export interface IbcBridge extends Coin.Bridge {
 
 export interface AxelarBridge extends Coin.Bridge {
   chain_id_name: string;
-  // channels: {
-  //   src_channel: string;
-  //   dst_channel: string;
-  //   port_id: string; // for cosmwasm bridges
-  // }
 }
 
 export function isIbcBridge(object: Coin.Bridge): object is IbcBridge {

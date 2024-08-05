@@ -483,6 +483,7 @@ class TokenClient {
       return prev;
     }, [])
     Object.assign(this.bridges, {
+      allBridges: allBridges,
       polynetwork: polynetworkBridges,
       ibc: ibcBridges,
       axelar: axelarBridges,
@@ -604,7 +605,7 @@ class TokenClient {
   }
 
   public getAxelarBlockchainNames(): string[] {
-    return this.bridges.axelar.map(bridge => bridge.chainName)
+    return this.bridges.axelar.filter(bridge => bridge.bridgeId.toNumber() === BRIDGE_IDS.axelar).map(bridge => bridge.chainName)
   }
 
   public getIbcBridgeFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): IbcBridge | undefined => {

@@ -5,8 +5,7 @@ import "./_setup";
 
 (async () => {
   const sdk = await CarbonSDK.instance({
-    // network: CarbonSDK.Network.DevNet,
-    network: CarbonSDK.Network.LocalHost,
+    network: CarbonSDK.Network.DevNet,
   });
 
   const bridgeStateAll = await sdk.query.bridge.BridgeStateAll({})

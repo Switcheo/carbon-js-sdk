@@ -10,7 +10,7 @@ export interface AxelarBridgeClientOpts {
 interface ETHTxParams {
   gasPriceGwei?: BigNumber;
   gasLimit?: BigNumber;
-  signer: ethers.Signer;
+  signer?: ethers.Signer;
   nonce?: number
 }
 export interface DepositParams extends ETHTxParams {
@@ -22,6 +22,11 @@ export interface DepositParams extends ETHTxParams {
   token: Carbon.Coin.Token;
   nonce?: number;
   signCompleteCallback?: () => void;
+}
+
+export interface QueryContractParams {
+  contractAddress: string;
+  network: CarbonSDK.Network;
 }
 
 export interface EthersTransactionResponse extends ethers.Transaction {
@@ -41,16 +46,22 @@ export class AxelarBridgeClient {
 
   // lock deposit 
   public async deposit(params: DepositParams): Promise<EthersTransactionResponse> {
-    const { contractAddress, receiverAddress, network, depositTokenExternalAddress, amount, token, nonce, gasLimit, gasPriceGwei, signer, signCompleteCallback } = params;
+    const { contractAddress, receiverAddress, network, depositTokenExternalAddress, amount, token, nonce, gasLimit, gasPriceGwei, signCompleteCallback } = params;
 
     console.log('deposit params', params)
+    console.log('deposit NetworkConfigs', NetworkConfigs)
     if (gasLimit?.lt(150000)) {
       throw new Error("Minimum gas required: 150,000")
     }
     const rpcProvider = new ethers.providers.JsonRpcProvider(NetworkConfigs[network].evmJsonRpcUrl)
+    console.log('deposit rpcProvider', rpcProvider)
 
+    const signer = rpcProvider.getSigner()
+    console.log('deposit signer', signer)
     const contract = new ethers.Contract(contractAddress, ABIs.axelarBridge, rpcProvider)
-    console.log('deposit signer', contract.connect(signer))
+
+    console.log('deposit contract', contract)
+    console.log('deposit signCompleteCallback before', signCompleteCallback)
     const depositResultTx = await contract.connect(signer).deposit(
       receiverAddress, // carbonReceiver
       depositTokenExternalAddress, // asset
@@ -67,6 +78,7 @@ export class AxelarBridgeClient {
         }),
       }
     )
+    console.log('deposit signCompleteCallback after', signCompleteCallback)
 
     signCompleteCallback?.()
 
