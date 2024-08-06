@@ -473,7 +473,7 @@ class TokenClient {
 
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList)
     const axelarBridges = await this.matchAxelarChainsWithDifferentChainIds(unmatchedAxelarBridgeList)
-    
+
     const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Carbon.Coin.Bridge) => {
       if (bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
       prev.push({
@@ -560,11 +560,11 @@ class TokenClient {
 
     try {
       for (const bridge of bridges) {
-        const results: [
-          QueryAllConnectionsResponse,
-        ] = await Promise.all([
-          this.query.bridge.ConnectionAll({ bridgeId: bridge.bridgeId, pagination }),
-        ]);
+        const results:
+          QueryAllConnectionsResponse[]
+          = await Promise.all([
+            this.query.bridge.ConnectionAll({ bridgeId: bridge.bridgeId, pagination }),
+          ]);
 
         const [{ connections }] = results;
         console.log('matching connections...', connections)
