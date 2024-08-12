@@ -144,6 +144,24 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserPnlGraphResponse>;
   }
 
+  async UserFundings(
+    req: Insights.QueryGetUserFundingsPathParams,
+    query: Insights.QueryGetUserFundingsQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserFundingsResponse>> {
+    const request = this.apiManager.path("user/fundings", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserFundingsResponse>;
+  }
+
+  async UserFundingBreakdown(
+    req: Insights.QueryGetFundingBreakdownChartPathParams,
+    query: Insights.QueryGetFundingBreakdownChartQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingBreakdownChartResponse>> {
+    const request = this.apiManager.path("user/funding/breakdown", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingBreakdownChartResponse>;
+  }
+
   // Pool api
   async Pools(req: Insights.QueryGetPoolsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>> {
     const request = this.apiManager.path("pool/list", {}, req);
@@ -544,6 +562,21 @@ class InsightsQueryClient {
     );
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
+  }
+
+  async FundingHistoryGraphData(
+    query: Insights.QueryGetFundingHistoryGraphDataRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryGraphDataResponse>> {
+    const request = this.apiManager.path(
+      "market/funding/history/chart",
+      {},
+      {
+        market: query.market,
+        period: query.period,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryGraphDataResponse>;
   }
 
   async ProposalVotes(

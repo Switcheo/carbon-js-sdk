@@ -114,4 +114,8 @@ import { CarbonSDK } from "./_sdk";
   const fundingHistory = await sdk.insights.FundingHistory({})
   console.log("fundingHistory", fundingHistory)
 
+  // Funding History Graph Data
+  const fundingHistoryGraphData = await sdk.insights.FundingHistoryGraphData({ market: 'cmkt/117' })
+  console.log("fundingHistoryGraphData", fundingHistoryGraphData)
+
 })().catch(console.error).finally(() => process.exit(0));

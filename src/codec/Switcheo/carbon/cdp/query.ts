@@ -239,6 +239,14 @@ export interface QueryEModeResponse {
   eModeCategory?: EModeCategory;
 }
 
+export interface QueryHealthFactorRequest {
+  address: string;
+}
+
+export interface QueryHealthFactorResponse {
+  healthFactor: string;
+}
+
 export interface QueryAccountEModeRequest {
   address: string;
 }
@@ -3874,6 +3882,135 @@ export const QueryEModeResponse = {
   },
 };
 
+const baseQueryHealthFactorRequest: object = { address: "" };
+
+export const QueryHealthFactorRequest = {
+  encode(
+    message: QueryHealthFactorRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryHealthFactorRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryHealthFactorRequest,
+    } as QueryHealthFactorRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryHealthFactorRequest {
+    const message = {
+      ...baseQueryHealthFactorRequest,
+    } as QueryHealthFactorRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryHealthFactorRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryHealthFactorRequest>
+  ): QueryHealthFactorRequest {
+    const message = {
+      ...baseQueryHealthFactorRequest,
+    } as QueryHealthFactorRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryHealthFactorResponse: object = { healthFactor: "" };
+
+export const QueryHealthFactorResponse = {
+  encode(
+    message: QueryHealthFactorResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.healthFactor !== "") {
+      writer.uint32(10).string(message.healthFactor);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryHealthFactorResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryHealthFactorResponse,
+    } as QueryHealthFactorResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.healthFactor = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryHealthFactorResponse {
+    const message = {
+      ...baseQueryHealthFactorResponse,
+    } as QueryHealthFactorResponse;
+    message.healthFactor =
+      object.healthFactor !== undefined && object.healthFactor !== null
+        ? String(object.healthFactor)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryHealthFactorResponse): unknown {
+    const obj: any = {};
+    message.healthFactor !== undefined &&
+      (obj.healthFactor = message.healthFactor);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryHealthFactorResponse>
+  ): QueryHealthFactorResponse {
+    const message = {
+      ...baseQueryHealthFactorResponse,
+    } as QueryHealthFactorResponse;
+    message.healthFactor = object.healthFactor ?? "";
+    return message;
+  },
+};
+
 const baseQueryAccountEModeRequest: object = { address: "" };
 
 export const QueryAccountEModeRequest = {
@@ -4236,6 +4373,9 @@ export interface Query {
     request: QueryCdpPositionsRequest
   ): Promise<QueryCdpPositionsResponse>;
   Position(request: QueryCdpPositionRequest): Promise<QueryCdpPositionResponse>;
+  HealthFactor(
+    request: QueryHealthFactorRequest
+  ): Promise<QueryHealthFactorResponse>;
   /** Queries a list of EMode items. */
   EMode(request: QueryEModeRequest): Promise<QueryEModeResponse>;
   /** Queries a list of EModeAll items. */
@@ -4277,6 +4417,7 @@ export class QueryClientImpl implements Query {
     this.RewardDebtsAll = this.RewardDebtsAll.bind(this);
     this.PositionsAll = this.PositionsAll.bind(this);
     this.Position = this.Position.bind(this);
+    this.HealthFactor = this.HealthFactor.bind(this);
     this.EMode = this.EMode.bind(this);
     this.EModeAll = this.EModeAll.bind(this);
     this.AccountEMode = this.AccountEMode.bind(this);
@@ -4538,6 +4679,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCdpPositionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  HealthFactor(
+    request: QueryHealthFactorRequest
+  ): Promise<QueryHealthFactorResponse> {
+    const data = QueryHealthFactorRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "HealthFactor",
+      data
+    );
+    return promise.then((data) =>
+      QueryHealthFactorResponse.decode(new _m0.Reader(data))
     );
   }
 

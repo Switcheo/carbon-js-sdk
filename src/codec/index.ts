@@ -288,11 +288,8 @@ registry.register("/Switcheo.carbon.admin.MsgAcceptAdminTransfer", Carbon.Admin.
 registry.register("/Switcheo.carbon.admin.MsgAcceptAdminTransferResponse", Carbon.Admin.MsgAcceptAdminTransferResponse);
 
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTx", PolyNetwork.Ccm.MsgProcessCrossChainTx);
-registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx", PolyNetwork.Ccm.MsgProcessZionCrossChainTx);
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse", PolyNetwork.Ccm.MsgProcessCrossChainTxResponse);
-registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse", PolyNetwork.Ccm.MsgProcessZionCrossChainTxResponse);
 registry.register("/Switcheo.carbon.ccm.MsgCreateEmitEvent", PolyNetwork.Ccm.MsgCreateEmitEvent);
-registry.register("/Switcheo.carbon.ccm.MsgToggleEmitZionEvents", PolyNetwork.Ccm.MsgToggleEmitZionEvents);
 registry.register("/Switcheo.carbon.ccm.MsgUpdateParams", PolyNetwork.Ccm.MsgUpdateParams);
 registry.register("/Switcheo.carbon.ccm.MsgUpdateParamsResponse", PolyNetwork.Ccm.MsgUpdateParamsResponse);
 
@@ -445,6 +442,8 @@ registry.register("/Switcheo.carbon.liquiditypool.UpdatePoolRouteProposal", Carb
 
 registry.register("/Switcheo.carbon.insurance.MsgTopUpInsurance", Carbon.Insurance.MsgTopUpInsurance);
 registry.register("/Switcheo.carbon.insurance.MsgTopUpInsuranceResponse", Carbon.Insurance.MsgTopUpInsuranceResponse);
+registry.register("/Switcheo.carbon.insurance.MsgUpdateParams", Carbon.Insurance.MsgUpdateParams);
+registry.register("/Switcheo.carbon.insurance.MsgUpdateParamsResponse", Carbon.Insurance.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.pricing.MsgSetBackfillTimeInterval", Carbon.Pricing.MsgSetBackfillTimeInterval);
 registry.register("/Switcheo.carbon.pricing.MsgSetBackfillTimeIntervalResponse", Carbon.Pricing.MsgSetBackfillTimeIntervalResponse);
@@ -987,11 +986,8 @@ export const TxTypes = {
   "MsgAcceptAdminTransfer": "/Switcheo.carbon.admin.MsgAcceptAdminTransfer",
   "MsgAcceptAdminTransferResponse": "/Switcheo.carbon.admin.MsgAcceptAdminTransferResponse",
   "MsgProcessCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessCrossChainTx",
-  "MsgProcessZionCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx",
   "MsgProcessCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse",
-  "MsgProcessZionCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse",
   "MsgCreateEmitEvent": "/Switcheo.carbon.ccm.MsgCreateEmitEvent",
-  "MsgToggleEmitZionEvents": "/Switcheo.carbon.ccm.MsgToggleEmitZionEvents",
   "MsgCcmUpdateParams": "/Switcheo.carbon.ccm.MsgUpdateParams",
   "MsgCcmUpdateParamsResponse": "/Switcheo.carbon.ccm.MsgUpdateParamsResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
@@ -1135,6 +1131,8 @@ export const TxTypes = {
   "UpdatePoolRouteProposal": "/Switcheo.carbon.liquiditypool.UpdatePoolRouteProposal",
   "MsgTopUpInsurance": "/Switcheo.carbon.insurance.MsgTopUpInsurance",
   "MsgTopUpInsuranceResponse": "/Switcheo.carbon.insurance.MsgTopUpInsuranceResponse",
+  "MsgInsuranceUpdateParams": "/Switcheo.carbon.insurance.MsgUpdateParams",
+  "MsgInsuranceUpdateParamsResponse": "/Switcheo.carbon.insurance.MsgUpdateParamsResponse",
   "MsgSetBackfillTimeInterval": "/Switcheo.carbon.pricing.MsgSetBackfillTimeInterval",
   "MsgSetBackfillTimeIntervalResponse": "/Switcheo.carbon.pricing.MsgSetBackfillTimeIntervalResponse",
   "MsgSetSmoothenBand": "/Switcheo.carbon.pricing.MsgSetSmoothenBand",
@@ -4646,18 +4644,8 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgLockResponse": []
   },
   "/Switcheo.carbon.ccm": {
-    "Params": [
-      {
-        "name": "emit_zion_events",
-        "type": "bool"
-      }
-    ],
-    "ParamsToUpdate": [
-      {
-        "name": "emit_zion_events",
-        "type": "bool"
-      }
-    ],
+    "Params": [],
+    "ParamsToUpdate": [],
     "GenesisState": [
       {
         "name": "created_tx_count",
@@ -4686,6 +4674,16 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "zion_created_tx_details",
         "type": "ZionCreatedTxDetailsEntry[]",
+        "packageName": "/Switcheo.carbon.ccm.GenesisState"
+      },
+      {
+        "name": "zion_done_tx",
+        "type": "ZionDoneTxEntry[]",
+        "packageName": "/Switcheo.carbon.ccm.GenesisState"
+      },
+      {
+        "name": "zion_denom_to_creator",
+        "type": "ZionDenomToCreatorEntry[]",
         "packageName": "/Switcheo.carbon.ccm.GenesisState"
       }
     ],
@@ -4747,30 +4745,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgProcessZionCrossChainTx": [
-      {
-        "name": "submitter",
-        "type": "string"
-      },
-      {
-        "name": "from_chain_id",
-        "type": "uint64"
-      },
-      {
-        "name": "proof",
-        "type": "string"
-      },
-      {
-        "name": "header",
-        "type": "string"
-      },
-      {
-        "name": "raw_cross_tx",
-        "type": "string"
-      }
-    ],
     "MsgProcessCrossChainTxResponse": [],
-    "MsgProcessZionCrossChainTxResponse": [],
     "MsgCreateEmitEvent": [
       {
         "name": "creator",
@@ -4783,16 +4758,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "cross_chain_id",
         "type": "uint64"
-      }
-    ],
-    "MsgToggleEmitZionEvents": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "toggle_to",
-        "type": "bool"
       }
     ],
     "MsgUpdateParams": [
@@ -6396,6 +6361,18 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "e_mode_category",
         "type": "EModeCategory",
         "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryHealthFactorRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryHealthFactorResponse": [
+      {
+        "name": "health_factor",
+        "type": "string"
       }
     ],
     "QueryAccountEModeRequest": [
@@ -9199,19 +9176,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.headersync"
       }
     ],
-    "QueryGetZionConsensusPeersRequest": [
-      {
-        "name": "chain_id",
-        "type": "uint64"
-      }
-    ],
-    "QueryGetZionConsensusPeersResponse": [
-      {
-        "name": "zion_consensus_peers",
-        "type": "ZionConsensusPeers",
-        "packageName": "/Switcheo.carbon.headersync"
-      }
-    ],
     "MsgSyncGenesis": [
       {
         "name": "syncer",
@@ -9300,13 +9264,41 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "GenesisState": [],
+    "Params": [
+      {
+        "name": "min_market_liquidity",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "min_market_liquidity",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.insurance"
+      }
+    ],
     "QueryCoinBalancesRequest": [],
     "QueryCoinBalancesResponse": [
       {
         "name": "coins",
         "type": "Coin[]",
         "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.insurance"
       }
     ],
     "MsgTopUpInsurance": [
@@ -9327,7 +9319,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgTopUpInsuranceResponse": []
+    "MsgTopUpInsuranceResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.insurance"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.leverage": {
     "LeverageEvent": [
@@ -12644,7 +12648,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketEvent": [
       {
-        "name": "market_id",
+        "name": "market",
         "type": "Market",
         "packageName": "/Switcheo.carbon.market"
       },
@@ -13989,7 +13993,228 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "data",
         "type": "string"
       }
-    ]
+    ],
+    "MsgCreateOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "create_oracle_params",
+        "type": "CreateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "CreateOracleParams": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "min_turnout_percentage",
+        "type": "int64"
+      },
+      {
+        "name": "max_result_age",
+        "type": "int64"
+      },
+      {
+        "name": "security_type",
+        "type": "string"
+      },
+      {
+        "name": "result_strategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "MsgCreateOracleResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracle": [
+      {
+        "name": "updater",
+        "type": "string"
+      },
+      {
+        "name": "update_oracle_params",
+        "type": "UpdateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "UpdateOracleParams": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "minTurnoutPercentage",
+        "type": "int64"
+      },
+      {
+        "name": "maxResultAge",
+        "type": "int64"
+      },
+      {
+        "name": "securityType",
+        "type": "string"
+      },
+      {
+        "name": "resultStrategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracleResponse": [],
+    "MsgRemoveOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveOracleResponse": [],
+    "MsgSetOracleSlashEnabled": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgSetOracleSlashEnabledResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "MsgUpdateOracleContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracleContractResponse": [],
+    "ValidatorSignature": [
+      {
+        "name": "pub_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validator_index",
+        "type": "int32"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "signed_timestamp",
+        "type": "int64"
+      }
+    ],
+    "VotesForOracle": [
+      {
+        "name": "oracle_index",
+        "type": "int32"
+      },
+      {
+        "name": "votes_for_data",
+        "type": "VotesForData[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "VotesForData": [
+      {
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "name": "votes_for_timestamps",
+        "type": "VotesForTimestamp[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "VotesForTimestamp": [
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "validator_indexes",
+        "type": "int32[]"
+      }
+    ],
+    "MsgCreateResult": [
+      {
+        "name": "proposer",
+        "type": "string"
+      },
+      {
+        "name": "validator_signatures",
+        "type": "ValidatorSignature[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "votes_for_oracles",
+        "type": "VotesForOracle[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgCreateResultResponse": []
   },
   "/Switcheo.carbon.perpspool": {
     "Quote": [

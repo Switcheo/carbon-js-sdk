@@ -1,15 +1,17 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
-import { CARBON_GAS_PRICE, Network, decTypeDecimals } from "@carbon-sdk/constant";
+import { CARBON_GAS_PRICE, decTypeDecimals, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
 import { Leap } from "@cosmos-kit/leap-extension";
 
-import { AppCurrency, ChainInfo, FeeCurrency } from "@keplr-wallet/types";
-import SDKProvider from "../sdk";
-import { ethers } from "ethers";
+import { populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
+import { AppCurrency, ChainInfo, EthSignType, FeeCurrency } from "@keplr-wallet/types";
+import { ethers } from "ethers";
+import { parseEvmError } from "../metamask/error";
+import SDKProvider from "../sdk";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -54,7 +56,31 @@ class LeapAccount {
     };
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => { // eslint-disable-line
-      throw new Error("signing not available");
+      try {
+        // workaround for version mismatch in cosmos-kit/leap and leap-extension
+        const leapInterface = leap as any
+        if (typeof (leapInterface as any).signEthereum === 'function') {
+
+          const unsignedTx = await populateUnsignedEvmTranscation(api, req)
+          const signedTx = await leapInterface!.signEthereum(
+            // carbon chain id
+            api.wallet?.getChainId() ?? '',
+            // cosmos address
+            api.wallet?.bech32Address ?? '',
+            JSON.stringify(unsignedTx),
+            EthSignType.TRANSACTION,
+          ) as Uint8Array
+          const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
+          const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+          return (await provider.sendTransaction(rlpEncodedHex)).hash
+        } else {
+          throw new Error("signing not available")
+        }
+      }
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error))
+      }
     }
 
     const signMessage = async (address: string, message: string): Promise<string> => {
@@ -91,8 +117,32 @@ class LeapAccount {
       ];
     };
 
+
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => { // eslint-disable-line
-      throw new Error("signing not available");
+      try {
+        const leapInterface = leap as any
+        if (typeof (leapInterface as any).signEthereum === 'function') {
+
+          const unsignedTx = await populateUnsignedEvmTranscation(api, req)
+          const signedTx = await leapInterface!.signEthereum(
+            // carbon chain id
+            api.wallet?.getChainId() ?? '',
+            // cosmos address
+            api.wallet?.bech32Address ?? '',
+            JSON.stringify(unsignedTx),
+            EthSignType.TRANSACTION,
+          ) as Uint8Array
+          const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
+          const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+          return (await provider.sendTransaction(rlpEncodedHex)).hash
+        } else {
+          throw new Error("signing not available")
+        }
+      }
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error))
+      }
     }
 
     const signMessage = async (address: string, message: string): Promise<string> => {
@@ -167,7 +217,7 @@ class LeapAccount {
   }
 }
 
-namespace LeapAccount {}
+namespace LeapAccount { }
 
 export interface LeapExtended extends Leap {
   experimentalSuggestChain(chainInfo: ChainInfo): Promise<void>;
