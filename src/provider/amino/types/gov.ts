@@ -125,16 +125,6 @@ const UpdatePool: AminoValueMap = {
   },
 };
 
-const CreateOracle: AminoValueMap = {
-  value: {
-    msg: {
-      minTurnoutPercentage: ConvertEncType.Long,
-      maxResultAge: ConvertEncType.Long,
-      resolution: ConvertEncType.Long,
-    },
-  },
-};
-
 const SetCommitmentCurve: AminoValueMap = {
   value: {
     msg: {
@@ -171,14 +161,6 @@ const UpdateMarket: AminoValueMap = {
       initialMarginStep: ConvertEncType.Dec,
       maintenanceMarginRatio: ConvertEncType.Dec,
       maxLiquidationOrderDuration: ConvertEncType.Duration,
-    },
-  },
-};
-
-const SettlementPrice: AminoValueMap = {
-  value: {
-    msg: {
-      settlementPrice: ConvertEncType.Dec,
     },
   },
 };
