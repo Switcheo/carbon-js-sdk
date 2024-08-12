@@ -165,10 +165,6 @@ registry.register("/Switcheo.carbon.fee.MsgRemoveGasCost", Carbon.Fee.MsgRemoveG
 registry.register("/Switcheo.carbon.fee.MsgRemoveGasCostResponse", Carbon.Fee.MsgRemoveGasCostResponse);
 registry.register("/Switcheo.carbon.fee.MsgRemoveMinGasPrice", Carbon.Fee.MsgRemoveMinGasPrice);
 registry.register("/Switcheo.carbon.fee.MsgRemoveMinGasPriceResponse", Carbon.Fee.MsgRemoveMinGasPriceResponse);
-registry.register("/Switcheo.carbon.fee.SetMsgGasCostProposal", Carbon.Fee.SetMsgGasCostProposal);
-registry.register("/Switcheo.carbon.fee.SetMinGasPriceProposal", Carbon.Fee.SetMinGasPriceProposal);
-registry.register("/Switcheo.carbon.fee.RemoveMsgGasCostProposal", Carbon.Fee.RemoveMsgGasCostProposal);
-registry.register("/Switcheo.carbon.fee.RemoveMinGasPriceProposal", Carbon.Fee.RemoveMinGasPriceProposal);
 
 registry.register("/Switcheo.carbon.erc20.MsgConvertCoin", Carbon.Erc20.MsgConvertCoin);
 registry.register("/Switcheo.carbon.erc20.MsgConvertCoinResponse", Carbon.Erc20.MsgConvertCoinResponse);
@@ -187,6 +183,11 @@ registry.register("/Switcheo.carbon.erc20.MsgUpdateEVMHookEnabledResponse", Carb
 
 registry.register("/Switcheo.carbon.evmmerge.MsgMergeAccount", Carbon.Evmmerge.MsgMergeAccount);
 registry.register("/Switcheo.carbon.evmmerge.MsgMergeAccountResponse", Carbon.Evmmerge.MsgMergeAccountResponse);
+
+registry.register("/Switcheo.carbon.bank.MsgBlacklistAddress", Carbon.Bank.MsgBlacklistAddress);
+registry.register("/Switcheo.carbon.bank.MsgBlacklistAddressResponse", Carbon.Bank.MsgBlacklistAddressResponse);
+registry.register("/Switcheo.carbon.bank.MsgUnblacklistAddress", Carbon.Bank.MsgUnblacklistAddress);
+registry.register("/Switcheo.carbon.bank.MsgUnblacklistAddressResponse", Carbon.Bank.MsgUnblacklistAddressResponse);
 
 registry.register("/Switcheo.carbon.btcx.MsgCreate", PolyNetwork.Btcx.MsgCreate);
 registry.register("/Switcheo.carbon.btcx.MsgCreateResponse", PolyNetwork.Btcx.MsgCreateResponse);
@@ -273,7 +274,6 @@ registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleContract", Carbon.Orac
 registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleContractResponse", Carbon.Oracle.MsgUpdateOracleContractResponse);
 registry.register("/Switcheo.carbon.oracle.MsgCreateResult", Carbon.Oracle.MsgCreateResult);
 registry.register("/Switcheo.carbon.oracle.MsgCreateResultResponse", Carbon.Oracle.MsgCreateResultResponse);
-registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", Carbon.Oracle.CreateOracleProposal);
 
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", Carbon.Evmcontract.MsgDeactivateContract);
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse", Carbon.Evmcontract.MsgDeactivateContractResponse);
@@ -461,7 +461,6 @@ registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPrice", Carbon.Pr
 registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse", Carbon.Pricing.MsgUpdateSettlementPriceResponse);
 registry.register("/Switcheo.carbon.pricing.MsgRemoveTokenPrice", Carbon.Pricing.MsgRemoveTokenPrice);
 registry.register("/Switcheo.carbon.pricing.MsgRemoveTokenPriceResponse", Carbon.Pricing.MsgRemoveTokenPriceResponse);
-registry.register("/Switcheo.carbon.pricing.SettlementPriceProposal", Carbon.Pricing.SettlementPriceProposal);
 
 registry.register("/Switcheo.carbon.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
 registry.register("/Switcheo.carbon.lockproxy.MsgCreateResponse", PolyNetwork.Lockproxy.MsgCreateResponse);
@@ -872,10 +871,6 @@ export const TxTypes = {
   "MsgRemoveGasCostResponse": "/Switcheo.carbon.fee.MsgRemoveGasCostResponse",
   "MsgRemoveMinGasPrice": "/Switcheo.carbon.fee.MsgRemoveMinGasPrice",
   "MsgRemoveMinGasPriceResponse": "/Switcheo.carbon.fee.MsgRemoveMinGasPriceResponse",
-  "SetMsgGasCostProposal": "/Switcheo.carbon.fee.SetMsgGasCostProposal",
-  "SetMinGasPriceProposal": "/Switcheo.carbon.fee.SetMinGasPriceProposal",
-  "RemoveMsgGasCostProposal": "/Switcheo.carbon.fee.RemoveMsgGasCostProposal",
-  "RemoveMinGasPriceProposal": "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
   "MsgConvertCoin": "/Switcheo.carbon.erc20.MsgConvertCoin",
   "MsgConvertCoinResponse": "/Switcheo.carbon.erc20.MsgConvertCoinResponse",
   "MsgConvertERC20": "/Switcheo.carbon.erc20.MsgConvertERC20",
@@ -892,6 +887,10 @@ export const TxTypes = {
   "MsgUpdateEVMHookEnabledResponse": "/Switcheo.carbon.erc20.MsgUpdateEVMHookEnabledResponse",
   "MsgMergeAccount": "/Switcheo.carbon.evmmerge.MsgMergeAccount",
   "MsgMergeAccountResponse": "/Switcheo.carbon.evmmerge.MsgMergeAccountResponse",
+  "MsgBlacklistAddress": "/Switcheo.carbon.bank.MsgBlacklistAddress",
+  "MsgBlacklistAddressResponse": "/Switcheo.carbon.bank.MsgBlacklistAddressResponse",
+  "MsgUnblacklistAddress": "/Switcheo.carbon.bank.MsgUnblacklistAddress",
+  "MsgUnblacklistAddressResponse": "/Switcheo.carbon.bank.MsgUnblacklistAddressResponse",
   "MsgCreate": "/Switcheo.carbon.btcx.MsgCreate",
   "MsgCreateResponse": "/Switcheo.carbon.btcx.MsgCreateResponse",
   "MsgBind": "/Switcheo.carbon.btcx.MsgBind",
@@ -974,7 +973,6 @@ export const TxTypes = {
   "MsgUpdateOracleContractResponse": "/Switcheo.carbon.oracle.MsgUpdateOracleContractResponse",
   "MsgCreateResult": "/Switcheo.carbon.oracle.MsgCreateResult",
   "MsgCreateResultResponse": "/Switcheo.carbon.oracle.MsgCreateResultResponse",
-  "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
   "MsgDeactivateContract": "/Switcheo.carbon.evmcontract.MsgDeactivateContract",
   "MsgDeactivateContractResponse": "/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse",
   "MsgActivateContract": "/Switcheo.carbon.evmcontract.MsgActivateContract",
@@ -1149,7 +1147,6 @@ export const TxTypes = {
   "MsgUpdateSettlementPriceResponse": "/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse",
   "MsgRemoveTokenPrice": "/Switcheo.carbon.pricing.MsgRemoveTokenPrice",
   "MsgRemoveTokenPriceResponse": "/Switcheo.carbon.pricing.MsgRemoveTokenPriceResponse",
-  "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal",
   "MsgLockproxyCreate": "/Switcheo.carbon.lockproxy.MsgCreate",
   "MsgLockproxyCreateResponse": "/Switcheo.carbon.lockproxy.MsgCreateResponse",
   "MsgLockproxyBind": "/Switcheo.carbon.lockproxy.MsgBind",
@@ -2409,7 +2406,12 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
-    "GenesisState": [],
+    "GenesisState": [
+      {
+        "name": "blacklisted_addresses",
+        "type": "string[]"
+      }
+    ],
     "InternalTransfer": [
       {
         "name": "sender",
@@ -2488,7 +2490,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryInternalTransfersResponse": [
       {
-        "name": "internalTransfers",
+        "name": "internal_transfers",
         "type": "InternalTransfer[]",
         "packageName": "/Switcheo.carbon.bank"
       },
@@ -2497,7 +2499,48 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
       }
-    ]
+    ],
+    "QueryBlacklistRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryBlacklistResponse": [
+      {
+        "name": "is_blacklisted",
+        "type": "bool"
+      }
+    ],
+    "QueryBlacklistAllRequest": [],
+    "QueryBlacklistAllResponse": [
+      {
+        "name": "address",
+        "type": "string[]"
+      }
+    ],
+    "MsgBlacklistAddress": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgBlacklistAddressResponse": [],
+    "MsgUnblacklistAddress": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgUnblacklistAddressResponse": []
   },
   "/cosmos.base.query.v1beta1": {
     "PageRequest": [
@@ -3180,6 +3223,12 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "AxelarCallContractEvent": [
+      {
+        "name": "payload",
+        "type": "uint8[]"
+      }
+    ],
+    "ModuleAxelarCallContractEvent": [
       {
         "name": "nonce",
         "type": "uint64"
@@ -8927,64 +8976,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.fee"
       }
     ],
-    "SetMsgGasCostProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msg",
-        "type": "MsgGasCost",
-        "packageName": "/Switcheo.carbon.fee"
-      }
-    ],
-    "SetMinGasPriceProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msg",
-        "type": "MinGasPrice",
-        "packageName": "/Switcheo.carbon.fee"
-      }
-    ],
-    "RemoveMsgGasCostProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msgType",
-        "type": "string"
-      }
-    ],
-    "RemoveMinGasPriceProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
-      }
-    ],
     "QueryGetMsgGasCostRequest": [
       {
         "name": "msg_type",
@@ -13511,242 +13502,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.oracle"
       }
     ],
-    "MsgCreateOracle": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "create_oracle_params",
-        "type": "CreateOracleParams",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "CreateOracleParams": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "id",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "min_turnout_percentage",
-        "type": "int64"
-      },
-      {
-        "name": "max_result_age",
-        "type": "int64"
-      },
-      {
-        "name": "security_type",
-        "type": "string"
-      },
-      {
-        "name": "result_strategy",
-        "type": "string"
-      },
-      {
-        "name": "resolution",
-        "type": "int64"
-      },
-      {
-        "name": "spec",
-        "type": "string"
-      }
-    ],
-    "MsgCreateOracleResponse": [
-      {
-        "name": "id",
-        "type": "string"
-      }
-    ],
-    "MsgUpdateOracle": [
-      {
-        "name": "updater",
-        "type": "string"
-      },
-      {
-        "name": "update_oracle_params",
-        "type": "UpdateOracleParams",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "UpdateOracleParams": [
-      {
-        "name": "id",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "status",
-        "type": "string"
-      },
-      {
-        "name": "minTurnoutPercentage",
-        "type": "int64"
-      },
-      {
-        "name": "maxResultAge",
-        "type": "int64"
-      },
-      {
-        "name": "securityType",
-        "type": "string"
-      },
-      {
-        "name": "resultStrategy",
-        "type": "string"
-      },
-      {
-        "name": "resolution",
-        "type": "int64"
-      },
-      {
-        "name": "spec",
-        "type": "string"
-      }
-    ],
-    "MsgUpdateOracleResponse": [],
-    "MsgRemoveOracle": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      }
-    ],
-    "MsgRemoveOracleResponse": [],
-    "MsgSetOracleSlashEnabled": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "enabled",
-        "type": "bool"
-      }
-    ],
-    "MsgSetOracleSlashEnabledResponse": [],
-    "MsgUpdateParams": [
-      {
-        "name": "authority",
-        "type": "string"
-      },
-      {
-        "name": "params",
-        "type": "ParamsToUpdate",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "MsgUpdateParamsResponse": [],
-    "MsgUpdateOracleContract": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "contract_address",
-        "type": "string"
-      }
-    ],
-    "MsgUpdateOracleContractResponse": [],
-    "ValidatorSignature": [
-      {
-        "name": "validator",
-        "type": "uint8[]"
-      },
-      {
-        "name": "validator_index",
-        "type": "int32"
-      },
-      {
-        "name": "signature",
-        "type": "uint8[]"
-      },
-      {
-        "name": "signed_timestamp",
-        "type": "int64"
-      }
-    ],
-    "VotesForOracle": [
-      {
-        "name": "oracle_index",
-        "type": "int32"
-      },
-      {
-        "name": "votes_for_data",
-        "type": "VotesForData[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "VotesForData": [
-      {
-        "name": "data",
-        "type": "string"
-      },
-      {
-        "name": "votes_for_timestamps",
-        "type": "VotesForTimestamp[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "VotesForTimestamp": [
-      {
-        "name": "timestamp",
-        "type": "int64"
-      },
-      {
-        "name": "validator_indexes",
-        "type": "int32[]"
-      }
-    ],
-    "MsgCreateResult": [
-      {
-        "name": "proposer",
-        "type": "string"
-      },
-      {
-        "name": "validator_signatures",
-        "type": "ValidatorSignature[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      },
-      {
-        "name": "votes_for_oracles",
-        "type": "VotesForOracle[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "MsgCreateResultResponse": [],
-    "CreateOracleProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msg",
-        "type": "CreateOracleParams",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
     "QueryOracleRequest": [
       {
         "name": "id",
@@ -15500,31 +15255,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "stale_index_allowance",
         "type": "Duration",
         "packageName": "/google.protobuf"
-      }
-    ],
-    "SettlementPriceProposal": [
-      {
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "msg",
-        "type": "SettlementPriceParams",
-        "packageName": "/Switcheo.carbon.pricing"
-      }
-    ],
-    "SettlementPriceParams": [
-      {
-        "name": "market_id",
-        "type": "string"
-      },
-      {
-        "name": "settlement_price",
-        "type": "string"
       }
     ],
     "QueryPriceTokenRequest": [

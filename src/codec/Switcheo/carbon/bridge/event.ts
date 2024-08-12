@@ -140,8 +140,13 @@ export interface ExpiredPendingActionEvent {
   relayDetails?: RelayDetails;
 }
 
-/** Event signifying a Axelar CallContract call from Carbon */
+/** Event signifying a Axelar CallContract call */
 export interface AxelarCallContractEvent {
+  payload: Uint8Array;
+}
+
+/** Event signifying a Axelar CallContract call from Carbon's Bridge Module */
+export interface ModuleAxelarCallContractEvent {
   nonce: Long;
   payload: Uint8Array;
 }
@@ -2111,18 +2116,15 @@ export const ExpiredPendingActionEvent = {
   },
 };
 
-const baseAxelarCallContractEvent: object = { nonce: Long.UZERO };
+const baseAxelarCallContractEvent: object = {};
 
 export const AxelarCallContractEvent = {
   encode(
     message: AxelarCallContractEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.nonce.isZero()) {
-      writer.uint32(8).uint64(message.nonce);
-    }
     if (message.payload.length !== 0) {
-      writer.uint32(18).bytes(message.payload);
+      writer.uint32(10).bytes(message.payload);
     }
     return writer;
   },
@@ -2141,9 +2143,6 @@ export const AxelarCallContractEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.nonce = reader.uint64() as Long;
-          break;
-        case 2:
           message.payload = reader.bytes();
           break;
         default:
@@ -2158,10 +2157,6 @@ export const AxelarCallContractEvent = {
     const message = {
       ...baseAxelarCallContractEvent,
     } as AxelarCallContractEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
     message.payload =
       object.payload !== undefined && object.payload !== null
         ? bytesFromBase64(object.payload)
@@ -2171,8 +2166,6 @@ export const AxelarCallContractEvent = {
 
   toJSON(message: AxelarCallContractEvent): unknown {
     const obj: any = {};
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
     message.payload !== undefined &&
       (obj.payload = base64FromBytes(
         message.payload !== undefined ? message.payload : new Uint8Array()
@@ -2186,6 +2179,86 @@ export const AxelarCallContractEvent = {
     const message = {
       ...baseAxelarCallContractEvent,
     } as AxelarCallContractEvent;
+    message.payload = object.payload ?? new Uint8Array();
+    return message;
+  },
+};
+
+const baseModuleAxelarCallContractEvent: object = { nonce: Long.UZERO };
+
+export const ModuleAxelarCallContractEvent = {
+  encode(
+    message: ModuleAxelarCallContractEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.nonce.isZero()) {
+      writer.uint32(8).uint64(message.nonce);
+    }
+    if (message.payload.length !== 0) {
+      writer.uint32(18).bytes(message.payload);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ModuleAxelarCallContractEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseModuleAxelarCallContractEvent,
+    } as ModuleAxelarCallContractEvent;
+    message.payload = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.nonce = reader.uint64() as Long;
+          break;
+        case 2:
+          message.payload = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleAxelarCallContractEvent {
+    const message = {
+      ...baseModuleAxelarCallContractEvent,
+    } as ModuleAxelarCallContractEvent;
+    message.nonce =
+      object.nonce !== undefined && object.nonce !== null
+        ? Long.fromString(object.nonce)
+        : Long.UZERO;
+    message.payload =
+      object.payload !== undefined && object.payload !== null
+        ? bytesFromBase64(object.payload)
+        : new Uint8Array();
+    return message;
+  },
+
+  toJSON(message: ModuleAxelarCallContractEvent): unknown {
+    const obj: any = {};
+    message.nonce !== undefined &&
+      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.payload !== undefined &&
+      (obj.payload = base64FromBytes(
+        message.payload !== undefined ? message.payload : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ModuleAxelarCallContractEvent>
+  ): ModuleAxelarCallContractEvent {
+    const message = {
+      ...baseModuleAxelarCallContractEvent,
+    } as ModuleAxelarCallContractEvent;
     message.nonce =
       object.nonce !== undefined && object.nonce !== null
         ? Long.fromValue(object.nonce)
