@@ -24,7 +24,7 @@ import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
 import { sleep } from "@cosmjs/utils";
 import { Key as LeapKey } from "@cosmos-kit/core";
-import { Leap } from "@cosmos-kit/leap";
+import { Leap } from "@cosmos-kit/leap-extension";
 import { Key } from "@keplr-wallet/types";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
@@ -739,7 +739,7 @@ export class CarbonWallet {
     return this.sendTxs([msg], opts);
   }
 
-  async waitForTx(txHash: string, throwIfNotIncludedInBlock: boolean = false, timeoutMs: number = 60000, pollIntervalMs: number = 100): Promise<TxResponse> {
+  async waitForTx(txHash: string, throwIfNotIncludedInBlock: boolean = false, timeoutMs: number = 30000, pollIntervalMs: number = 500): Promise<TxResponse> {
     const txId = txHash.toUpperCase()
     let timedOut = false
     const txPollTimeout = setTimeout(() => {
@@ -835,6 +835,10 @@ export class CarbonWallet {
 
   isBrowserInjectedSigner() {
     return this.isSigner(CarbonSignerTypes.BrowserInjected);
+  }
+
+  isNonSigner() {
+    return this.isSigner(CarbonSignerTypes.PublicKey);
   }
 
   isSmartWalletEnabled() {

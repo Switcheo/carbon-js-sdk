@@ -14,3 +14,4 @@ export * as CarbonTx from "./tx";
 export * as TypeUtils from "./type";
 export * as GrantUtils from "./grant";
 export * as AllianceUtils from "./alliance";
+export * as MessageUtils from "./message";

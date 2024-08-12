@@ -1,4 +1,5 @@
 export { EventDataInsuranceFundTransfer } from "./event"
 export { FundByMarket, Fund } from "./fund"
-export { QueryCoinBalancesRequest, QueryCoinBalancesResponse } from "./query"
-export { MsgTopUpInsurance, MsgTopUpInsuranceResponse } from "./tx"
+export { Params, ParamsToUpdate } from "./params"
+export { QueryCoinBalancesRequest, QueryCoinBalancesResponse, QueryParamsRequest, QueryParamsResponse } from "./query"
+export { MsgTopUpInsurance, MsgTopUpInsuranceResponse, MsgUpdateParams, MsgUpdateParamsResponse } from "./tx"

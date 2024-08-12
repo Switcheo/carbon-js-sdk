@@ -71,21 +71,15 @@ export enum ProposalTypes {
   SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
   SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
   SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
-  
+
   // lp v2
   UpdatePoolV2 = "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
   SetRewardCurveV2 = "/Switcheo.carbon.liquiditypool.MsgSetRewardCurve",
   SetRewardsWeightsV2 = "/Switcheo.carbon.liquiditypool.MsgSetRewardsWeights",
   SetCommitmentCurveV2 = "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve",
 
-  // pricing v1
-  SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
-
   // pricing v2
   SettlementPriceV2 = "/Switcheo.carbon.pricing.MsgUpdateSettlementPrice",
-
-  // oracle v1
-  CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
 
   // oracle v2
   CreateOracleV2 = "/Switcheo.carbon.oracle.MsgCreateOracle",
@@ -154,11 +148,6 @@ export const decodeContent = (content?: Any): PropDecoded => {
         typeUrl: url,
         value: Carbon.Liquiditypool.UpdatePoolProposal.decode(value),
       };
-    case ProposalTypes.CreateOracle:
-      return {
-        typeUrl: url,
-        value: Carbon.Oracle.CreateOracleProposal.decode(value),
-      };
     case ProposalTypes.CreateToken:
       return {
         typeUrl: url,
@@ -169,26 +158,6 @@ export const decodeContent = (content?: Any): PropDecoded => {
         typeUrl: url,
         value: Carbon.Liquiditypool.SetCommitmentCurveProposal.decode(value),
       };
-    case ProposalTypes.SetMsgGasCost:
-      return {
-        typeUrl: url,
-        value: Carbon.Fee.SetMsgGasCostProposal.decode(value),
-      };
-    case ProposalTypes.SetMinGasPrice:
-      return {
-        typeUrl: url,
-        value: Carbon.Fee.SetMinGasPriceProposal.decode(value),
-      };
-    case ProposalTypes.RemoveMsgGasCost:
-      return {
-        typeUrl: url,
-        value: Carbon.Fee.RemoveMsgGasCostProposal.decode(value),
-      };
-    case ProposalTypes.RemoveMinGasPrice:
-      return {
-        typeUrl: url,
-        value: Carbon.Fee.RemoveMinGasPriceProposal.decode(value),
-      };
     case ProposalTypes.SetRewardCurve:
       return {
         typeUrl: url,
@@ -198,11 +167,6 @@ export const decodeContent = (content?: Any): PropDecoded => {
       return {
         typeUrl: url,
         value: Carbon.Liquiditypool.SetRewardsWeightsProposal.decode(value),
-      };
-    case ProposalTypes.SettlementPrice:
-      return {
-        typeUrl: url,
-        value: Carbon.Pricing.SettlementPriceProposal.decode(value),
       };
     case ProposalTypes.UpdateMarket:
       return {
@@ -246,10 +210,10 @@ export const decodeContent = (content?: Any): PropDecoded => {
         value: Carbon.Fee.MsgRemoveGasCost.decode(value),
       }
     case ProposalTypes.RemoveMinGasPriceV2:
-        return {
-          typeUrl: url,
-          value: MsgRemoveMinGasPrice.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: MsgRemoveMinGasPrice.decode(value),
+      }
     case ProposalTypes.CommunityPoolSpendV2:
       return {
         typeUrl: url,
@@ -266,55 +230,55 @@ export const decodeContent = (content?: Any): PropDecoded => {
         value: MsgCancelUpgrade.decode(value),
       }
     case ProposalTypes.CreateAllianceV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Alliance.MsgCreateAlliance.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Alliance.MsgCreateAlliance.decode(value),
+      }
     case ProposalTypes.UpdateAllianceV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Alliance.MsgUpdateAlliance.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Alliance.MsgUpdateAlliance.decode(value),
+      }
     case ProposalTypes.DeleteAllianceV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Alliance.MsgDeleteAlliance.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Alliance.MsgDeleteAlliance.decode(value),
+      }
     case ProposalTypes.UpdateMarketV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Market.MsgUpdateMarket.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Market.MsgUpdateMarket.decode(value),
+      }
     case ProposalTypes.UpdatePoolV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Liquiditypool.MsgUpdatePool.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Liquiditypool.MsgUpdatePool.decode(value),
+      }
     case ProposalTypes.SetRewardCurveV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Liquiditypool.MsgSetRewardCurve.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Liquiditypool.MsgSetRewardCurve.decode(value),
+      }
     case ProposalTypes.SetRewardsWeightsV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Liquiditypool.MsgSetRewardsWeights.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Liquiditypool.MsgSetRewardsWeights.decode(value),
+      }
     case ProposalTypes.SetCommitmentCurveV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Liquiditypool.MsgSetCommitmentCurve.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Liquiditypool.MsgSetCommitmentCurve.decode(value),
+      }
     case ProposalTypes.SettlementPriceV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Pricing.MsgUpdateSettlementPrice.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Pricing.MsgUpdateSettlementPrice.decode(value),
+      }
     case ProposalTypes.CreateOracleV2:
-        return {
-          typeUrl: url,
-          value: Carbon.Oracle.MsgCreateOracle.decode(value),
-        }
+      return {
+        typeUrl: url,
+        value: Carbon.Oracle.MsgCreateOracle.decode(value),
+      }
     case TxTypes.MsgAuthUpdateParams:
       return {
         typeUrl: url,
