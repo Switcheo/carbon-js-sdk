@@ -1,11 +1,13 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { Carbon, Duration } from "@carbon-sdk/codec";
-import { NetworkConfigProvider, NetworkConfigs } from "@carbon-sdk/constant";
+import { NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { CarbonTx } from "@carbon-sdk/util";
 import { Coin } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
+import Long from "long";
+
 export interface AxelarBridgeClientOpts {
   configProvider: NetworkConfigProvider;
 }
@@ -17,13 +19,11 @@ interface ETHTxParams {
 }
 export interface DepositParams extends ETHTxParams {
   contractAddress: string;
+  senderAddress: string;
   receiverAddress: string;
   amount: BigNumber;
   depositTokenExternalAddress: string;
-  network: CarbonSDK.Network;
-  token: Carbon.Coin.Token;
-  nonce?: number;
-  signCompleteCallback?: () => void;
+  rpcUrl: string;
 }
 
 export interface WithdrawParams {
@@ -56,43 +56,16 @@ export class AxelarBridgeClient {
 
   // lock deposit 
   public async deposit(params: DepositParams): Promise<EthersTransactionResponse> {
-    const { contractAddress, receiverAddress, network, depositTokenExternalAddress, amount, token, nonce, gasLimit, gasPriceGwei, signCompleteCallback, signer } = params;
-
-    console.log('deposit params', params)
-    console.log('deposit NetworkConfigs', NetworkConfigs)
-    if (gasLimit?.lt(150000)) {
-      throw new Error("Minimum gas required: 150,000")
-    }
-    const rpcProvider = new ethers.providers.JsonRpcProvider(NetworkConfigs[network].evmJsonRpcUrl)
-    console.log('deposit rpcProvider', rpcProvider)
-
-    console.log('deposit signer', signer)
+    const { contractAddress, senderAddress, receiverAddress, depositTokenExternalAddress, amount, signer, rpcUrl } = params;
+    const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl)
     const contract = new ethers.Contract(contractAddress, ABIs.axelarBridge, rpcProvider)
 
-    console.log('deposit contract', contract)
-    console.log('deposit amount.toString()', amount.toString())
-    console.log('deposit signCompleteCallback before', signCompleteCallback)
-    const depositResultTx = await contract.connect(signer).deposit(
-      receiverAddress, // carbonReceiver
+    return await contract.connect(signer).deposit(
+      senderAddress, // tokenSender
+      receiverAddress, // carbonReceiver bech32Address
       depositTokenExternalAddress, // asset
-      amount.toString(),
-      {
-        nonce,
-        value: "0",
-        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
-
-        // add tx value for ETH deposits, omit if ERC20 token
-        ...(token.tokenAddress === "0000000000000000000000000000000000000000" && {
-          value: amount.toString(),
-        }),
-      }
+      amount.toString(10),
     )
-    console.log('deposit signCompleteCallback after', signCompleteCallback)
-
-    signCompleteCallback?.()
-
-    return depositResultTx
   }
 
   public async withdraw(api: CarbonSDK, params: WithdrawParams, opts?: CarbonTx.SignTxOpts) {
@@ -106,7 +79,7 @@ export class AxelarBridgeClient {
     const wallet = api.getConnectedWallet()
     const walletAddress = wallet.bech32Address ?? ''
     const expiryDuration = Duration.fromPartial({
-      seconds: expirySeconds,
+      seconds: new Long(expirySeconds),
     })
     const value = Carbon.Bridge.MsgWithdrawToken.fromPartial({
       creator: walletAddress,
