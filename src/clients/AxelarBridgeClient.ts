@@ -12,7 +12,7 @@ export interface AxelarBridgeClientOpts {
 interface ETHTxParams {
   gasPriceGwei?: BigNumber;
   gasLimit?: BigNumber;
-  signer?: ethers.Signer;
+  signer: ethers.Signer;
   nonce?: number
 }
 export interface DepositParams extends ETHTxParams {
@@ -56,7 +56,7 @@ export class AxelarBridgeClient {
 
   // lock deposit 
   public async deposit(params: DepositParams): Promise<EthersTransactionResponse> {
-    const { contractAddress, receiverAddress, network, depositTokenExternalAddress, amount, token, nonce, gasLimit, gasPriceGwei, signCompleteCallback } = params;
+    const { contractAddress, receiverAddress, network, depositTokenExternalAddress, amount, token, nonce, gasLimit, gasPriceGwei, signCompleteCallback, signer } = params;
 
     console.log('deposit params', params)
     console.log('deposit NetworkConfigs', NetworkConfigs)
@@ -66,11 +66,11 @@ export class AxelarBridgeClient {
     const rpcProvider = new ethers.providers.JsonRpcProvider(NetworkConfigs[network].evmJsonRpcUrl)
     console.log('deposit rpcProvider', rpcProvider)
 
-    const signer = rpcProvider.getSigner()
     console.log('deposit signer', signer)
     const contract = new ethers.Contract(contractAddress, ABIs.axelarBridge, rpcProvider)
 
     console.log('deposit contract', contract)
+    console.log('deposit amount.toString()', amount.toString())
     console.log('deposit signCompleteCallback before', signCompleteCallback)
     const depositResultTx = await contract.connect(signer).deposit(
       receiverAddress, // carbonReceiver
