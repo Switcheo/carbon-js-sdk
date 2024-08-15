@@ -26,8 +26,8 @@ const MsgCancelOrder: AminoInit = {
 const MsgEditOrder: AminoInit = {
   aminoType: TxTypes.EditOrder,
   valueMap: {
-    price: ConvertEncType.Dec,
-    stopPrice: ConvertEncType.Dec,
+    price: ConvertEncType.DecOrZero,
+    stopPrice: ConvertEncType.DecOrZero,
   },
 };
 

@@ -247,6 +247,10 @@ export class MetaMask extends Eip6963Provider {
       }
     }
 
+    const signMessage = async (address: string, message: string) => {
+      return metamask.personalSign(address, message)
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       legacyEip712SignMode: metamask.legacyEip712SignMode,
@@ -255,6 +259,7 @@ export class MetaMask extends Eip6963Provider {
       getAccounts,
       signLegacyEip712,
       sendEvmTransaction,
+      signMessage,
     };
   }
 

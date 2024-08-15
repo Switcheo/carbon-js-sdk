@@ -32,3 +32,19 @@ export interface QueryGetFundingHistoryRequest {
   limit?: number;
   offset?: number;
 }
+
+// Period is the duration (in number of days) that the query should return results for
+export interface QueryGetFundingHistoryGraphDataRequest {
+  market: string;
+  period?: number;       
+}
+
+export interface FundingHistoryGraphData {
+  hourly: string;
+  market: string;
+  avgFunding: string;
+}
+
+export interface QueryGetFundingHistoryGraphDataResponse {
+  entries: FundingHistoryGraphData[]
+}
