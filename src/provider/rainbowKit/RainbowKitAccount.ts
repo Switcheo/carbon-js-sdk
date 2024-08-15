@@ -18,6 +18,7 @@ import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockch
 import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
+import { appendHexPrefix } from "@carbon-sdk/util/generic";
 
 export interface RainbowKitWalletOpts {
   publicKeyMessage?: string
@@ -154,14 +155,19 @@ class RainbowKitAccount extends Eip6963Provider {
       }
     }
 
+    const signMessage = async (address: string, message: string) => {
+      return rainbowKit.personalSign(address, message)
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       legacyEip712SignMode: rainbowKit.legacyEip712SignMode,
-      getAccounts,
       signDirect,
-      sendEvmTransaction,
       signAmino,
+      getAccounts,
       signLegacyEip712,
+      sendEvmTransaction,
+      signMessage,
     }
   }
 
@@ -343,6 +349,15 @@ class RainbowKitAccount extends Eip6963Provider {
 
       return signature.split('0x')[1]
     })
+  }
+
+  async personalSign(address: string, message: string): Promise<string> {
+    const api = this.getApi();
+    const ethAddress = ethers.utils.getAddress(address);
+    return (await api.request({
+      method: "personal_sign",
+      params: [appendHexPrefix(Buffer.from(message, "utf-8").toString("hex")), ethAddress],
+    })) as string;
   }
 
   async sendEvmTransaction(req: ethers.providers.TransactionRequest) {
