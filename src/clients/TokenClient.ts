@@ -116,18 +116,14 @@ class TokenClient {
   }
 
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
-    console.log('getBlockchainV2 denom', denom)
     if (!denom) return undefined
-    console.log('getBlockchainV2 this.tokens', this.tokens)
     const token = this.tokens[denom]
-    console.log('getBlockchainV2 token', token)
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupedToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       return 'Native'
     }
     const bridge = this.getBridgeFromToken(token)
-    console.log('getBlockchainV2 token', token)
     return bridge?.chainName;
   }
 
@@ -473,6 +469,7 @@ class TokenClient {
 
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList)
     const axelarBridges = await this.matchAxelarChainsWithDifferentChainIds(unmatchedAxelarBridgeList)
+    console.log('matching axelar bridges....', axelarBridges)
 
     const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Carbon.Coin.Bridge) => {
       if (bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
@@ -554,48 +551,33 @@ class TokenClient {
   }
 
   async matchAxelarChainsWithDifferentChainIds(bridges: Carbon.Coin.Bridge[]): Promise<AxelarBridge[]> {
-    console.log('matching bridges...', bridges)
     const newBridges: AxelarBridge[] = []
-    const pagination = PageRequest.fromPartial({ limit: new Long(1e6) });
+    const results: QueryAllConnectionsResponse = await this.query.bridge.ConnectionAll({ bridgeId: new Long(0) });
+    const connections = results.connections
 
     try {
       for (const bridge of bridges) {
-        const results:
-          QueryAllConnectionsResponse[]
-          = await Promise.all([
-            this.query.bridge.ConnectionAll({ bridgeId: bridge.bridgeId, pagination }),
-          ]);
 
-        const [{ connections }] = results;
-        console.log('matching connections...', connections)
-
-        newBridges.push({ ...bridge, chain_id_name: bridge.chainName ?? "" })
+        connections.forEach(connection => {
+          newBridges.push({
+            ...bridge,
+            name: `${connection.chainDisplayName} via Axelar`,
+            chain_id_name: connection.chainId,
+            chainName: connection.chainDisplayName,
+          });
+        });
       }
     } finally {
-      const checkedBefore = new Array(newBridges.length).fill(false)
-      const chainMap: SimpleMap<string> = {}
+      const chainMap: SimpleMap<string> = {};
 
-      for (let i = 0; i < newBridges.length; i++) {
-        if (checkedBefore[i]) continue
-
-        const bridge = newBridges[i]
-        const chainId = bridge.chain_id_name
-
+      newBridges.forEach((bridge) => {
+        const chainId = bridge.chain_id_name;
         if (chainMap[chainId]) {
-          const chainName = chainMap[chainId]
-
-          for (let j = i; j < newBridges.length; j++) {
-            const subBridge = newBridges[j]
-
-            if (subBridge.chain_id_name === chainId) {
-              subBridge.chainName = chainName
-              checkedBefore[j] = true
-            }
-          }
+          bridge.chainName = chainMap[chainId];
         } else {
-          chainMap[chainId] = bridge.chainName
+          chainMap[chainId] = bridge.chainName;
         }
-      }
+      });
     }
     return newBridges
   }

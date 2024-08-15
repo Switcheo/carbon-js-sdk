@@ -75,6 +75,14 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
+  Mantle: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const,
   Carbon: {
     //Carbon does not support Metamask legacy mnemonic sign in
     [Network.TestNet]: "",
@@ -189,7 +197,7 @@ const CARBON_EVM_MAINNET: MetaMaskChangeNetworkParam = {
 const BSC_MAINNET: MetaMaskChangeNetworkParam = {
   chainId: "0x38",
   blockExplorerUrls: ["https://bscscan.com"],
-  chainName: "BSC Mainnet",
+  chainName: "BNB Smart Chain",
   rpcUrls: [
     "https://bsc-dataseed2.binance.org/",
     "https://bsc-dataseed3.binance.org/",
@@ -213,21 +221,30 @@ const BSC_MAINNET: MetaMaskChangeNetworkParam = {
 const BSC_TESTNET: MetaMaskChangeNetworkParam = {
   chainId: "0x61",
   blockExplorerUrls: ["https://testnet.bscscan.com"],
-  chainName: "BSC Testnet",
+  chainName: "BNB Smart Chain Testnet",
   rpcUrls: [
-    "https://data-seed-prebsc-2-s1.binance.org:8545/",
-    "http://data-seed-prebsc-1-s2.binance.org:8545/",
-    "http://data-seed-prebsc-2-s2.binance.org:8545/",
-    "https://data-seed-prebsc-1-s3.binance.org:8545/",
-    "https://data-seed-prebsc-2-s3.binance.org:8545/",
-    "https://data-seed-prebsc-1-s1.binance.org:8545/",
+    "https://data-seed-prebsc-1-s1.bnbchain.org:8545",
   ],
   nativeCurrency: {
     decimals: 18,
     name: "Binance Coin",
-    symbol: "BNB",
+    symbol: "tBNB",
   },
 };
+
+const MANTLE_TESTNET: MetaMaskChangeNetworkParam = {
+  chainId: "0x138B",
+  blockExplorerUrls: ["https://sepolia.mantlescan.xyz"],
+  chainName: "Mantle Testnet",
+  rpcUrls: [
+    "https://rpc.sepolia.mantle.xyz/",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Mantle",
+    symbol: "MNT",
+  },
+}
 
 const ETH_MAINNET: MetaMaskChangeNetworkParam = {
   chainId: "0x1",
@@ -304,6 +321,20 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
     symbol: "OKT",
   },
 };
+
+const MANTLE_MAINNET: MetaMaskChangeNetworkParam = {
+  chainId: "0x4e454152",
+  blockExplorerUrls: ["https://explorer.mantle.xyz"],
+  chainName: "Mantle Mainnet",
+  rpcUrls: [
+    "https://rpc.mantle.xyz/",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Mantle",
+    symbol: "MNT",
+  },
+}
 
 /**
  * TODO: Add docs
@@ -458,6 +489,8 @@ export class MetaMask {
           return POLYGON_MAINNET;
         case 'OKC':
           return OKC_MAINNET;
+        case 'Mantle':
+          return MANTLE_MAINNET;
         default:
           // metamask should come with Ethereum configs
           return ETH_MAINNET;
@@ -473,6 +506,8 @@ export class MetaMask {
         return POLYGON_TESTNET;
       case 'OKC':
         return OKC_TESTNET;
+      case 'Mantle':
+        return MANTLE_TESTNET;
       default:
         // metamask should come with Ethereum configs
         return ETH_TESTNET;

@@ -467,6 +467,6 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
   }
 }
 
-export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon'] as const;
+export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon', 'Mantle'] as const;
 export type EVMChain = (typeof EvmChains)[number];
 export const isEvmChain = (chain: string): chain is EVMChain => EvmChains.includes(chain as any);
