@@ -267,7 +267,7 @@ export interface AssetParams {
 
 export interface Collateral {
   // CDP
-  cdp_denom: string;
+  cibt_denom: string;
   denom: string;
   collateral_amount: string; // string representation of number
 }
@@ -370,6 +370,6 @@ export interface RewardDebt {
 }
 
 export interface CDPTokenSupply {
-  cdp_denom: string;
+  cibt_denom: string;
   amount: string; // string representation of number
 }
