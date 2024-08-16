@@ -154,9 +154,18 @@ export class CDPModule extends BaseModule {
     const value = Carbon.Cdp.MsgLiquidateCollateral.fromPartial({
       creator: wallet.bech32Address,
       debtor: params.debtor,
-      minCollateral: params.minCollateral,
-      debt: params.debt,
-      stableInterest: params.stableInterest,
+      minCollateral: Coin.fromPartial({
+        amount: params.minCollateralAmount.toString(10),
+        denom: params.minCollateralDenom,
+      }),
+      debt: Coin.fromPartial({
+        amount: params.debtAmount.toString(10),
+        denom: params.debtDenom,
+      }),
+      stableInterest: Coin.fromPartial({
+        amount: params.stableInterestAmount.toString(10),
+        denom: params.stableInterestDenom,
+      }),
       debtFromCollateral: params.debtFromCollateral,
       interestFromCollateral: params.interestFromCollateral,
     });
@@ -241,8 +250,14 @@ export class CDPModule extends BaseModule {
 
     const value = Carbon.Cdp.MsgReturnStablecoin.fromPartial({
       creator: wallet.bech32Address,
-      principal: params.principal,
-      interest: params.interest,
+      principal: Coin.fromPartial({
+        denom: params.principalDenom,
+        amount: params.principalAmount.toString(10),
+      }),
+      interest: Coin.fromPartial({
+        denom: params.interestDenom,
+        amount: params.interestAmount.toString(10),
+      }),
       debtor: params.debtor,
       principalFromCollateral: params.principalFromCollateral,
       interestFromCollateral: params.interestFromCollateral,
@@ -1135,9 +1150,16 @@ export namespace CDPModule {
   }
   export interface LiquidateCollateralParams {
     debtor: string;
-    minCollateral: Coin;
-    debt: Coin;
-    stableInterest: Coin;
+
+    minCollateralAmount: BigNumber;
+    minCollateralDenom: string;
+
+    debtAmount: BigNumber;
+    debtDenom: string;
+
+    stableInterestAmount: BigNumber;
+    stableInterestDenom: string;
+
     debtFromCollateral: boolean;
     interestFromCollateral: boolean;
   }
@@ -1151,8 +1173,12 @@ export namespace CDPModule {
   }
 
   export interface ReturnStablecoinParams {
-    principal: Coin;
-    interest: Coin;
+    principalAmount: BigNumber;
+    principalDenom: string;
+
+    interestAmount: BigNumber;
+    interestDenom: string;
+
     debtor: string;
     principalFromCollateral: boolean;
     interestFromCollateral: boolean;
