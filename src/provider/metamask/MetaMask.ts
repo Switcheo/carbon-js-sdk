@@ -756,10 +756,27 @@ export class MetaMask {
   }
 
   async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
-    await this.verifyNetworkAndConnectedAccount(evmHexAddress, parseChainId(evmChainId))
+    // await this.verifyNetworkAndConnectedAccount(evmHexAddress, parseChainId(evmChainId))
+    const metamaskNetwork = await this.syncBlockchain()
+    const metamaskChainId = metamaskNetwork.chainId ? `carbon_${metamaskNetwork.chainId.toString()}-1` : ''
+    console.log("==========================") //wrlog
+    console.log("========signEip712========")
+    console.log("metamaskNetwork", metamaskNetwork)
+    console.log("metamaskChainId", metamaskChainId)
+    console.log("parsedMetamaskChainId", parseChainId(metamaskChainId))
+    console.log("evmChainId", evmChainId)
+    console.log("parsedEvmChainId", parseChainId(evmChainId))
     const metamaskAPI = await this.getConnectedAPI();
-    const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
+    console.log("metamaskAPI", metamaskAPI)
+    if (metamaskChainId !== evmChainId) {
+        memo = "signedChainId:" + metamaskNetwork.chainId?.toString()
+    }
+    const stdSignDoc = makeSignDoc(msgs, fee, metamaskChainId || evmChainId, memo, accountNumber, sequence)
+    // const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
+    console.log("stdSignDoc", stdSignDoc)
+    console.log("legacyEip712SignMode", this.legacyEip712SignMode)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
+    console.log("eip712tx", eip712Tx)
     return await signTransactionWrapper(async () => {
       const signature = (await metamaskAPI.request({
         method: 'eth_signTypedData_v4',
