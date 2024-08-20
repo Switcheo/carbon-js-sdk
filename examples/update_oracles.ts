@@ -98,6 +98,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
 
     if (!currentOracle) {
       console.log(`oracle ${oracleId} not found on mainnet`)
+      continue
     }
 
     const shouldUpdateReso = currentOracle.resolution == "2"
