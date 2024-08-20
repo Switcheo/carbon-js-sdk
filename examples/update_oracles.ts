@@ -4,6 +4,7 @@ import "./_setup";
 import { MsgUpdateOracle } from "../lib/codec/Switcheo/carbon/oracle/tx";
 import fs from 'fs';
 import path from 'path';
+import fetch from 'node-fetch';
 
 interface SimpleMap<OracleParams> {
   [index: string]: OracleParams;
