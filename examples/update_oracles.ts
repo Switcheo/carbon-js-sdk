@@ -102,24 +102,21 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
       continue
     }
 
-    const shouldUpdateReso = currentOracle.resolution == "2"
-
-    const txUpdateOracle = {
-      typeUrl: CarbonTx.Types.MsgUpdateOracle,
-      value: MsgUpdateOracle.fromPartial({
-        updater: connectedSDK.wallet.bech32Address,
-        updateOracleParams: {
-          id: oracleId,
-          resolution: shouldUpdateReso ? "1" : currentOracle.resolution,
-          spec,
-        },
-      }),
-    }
-    console.log(`updating oracle spec for ${oracleId}`)
+    const shouldUpdateReso = currentOracle.resolution == "1"
     if (shouldUpdateReso) {
-      console.log(`updating oracle reso for ${oracleId} from ${currentOracle.resolution} to 1`)
+      console.log(`updating oracle reso for ${oracleId} from ${currentOracle.resolution} to 2`)
+      const txUpdateOracle = {
+        typeUrl: CarbonTx.Types.MsgUpdateOracle,
+        value: MsgUpdateOracle.fromPartial({
+          updater: connectedSDK.wallet.bech32Address,
+          updateOracleParams: {
+            id: oracleId,
+            resolution: "2"
+          },
+        }),
+      }
+      txs.push(txUpdateOracle)
     }
-    txs.push(txUpdateOracle)
   }
 
   const result = await connectedSDK.wallet.sendTxs(txs);
