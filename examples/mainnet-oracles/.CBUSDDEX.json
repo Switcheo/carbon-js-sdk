@@ -82,6 +82,15 @@
       }
     },
     {
+      "output_id": "pancakeswap_busd_usd",
+      "input_id": "pancakeswap_busd_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "8"
+      }
+    },
+    {
       "adapter": "static_handler",
       "output_id": "static_usd",
       "config": {

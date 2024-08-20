@@ -40,10 +40,10 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bybit_ton_usdt",
-            "default_node_host": "https://api.bybit.com",
-            "default_node_path": "/v2/public/orderBook/L2?symbol=TONUSDT&depth=1",
-            "paths": "[\"result.0.price\"]",
+            "custom_node_url_key": "bybit_ton_usdt_1",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=TONUSDT",
+            "paths": "[\"result.price\"]",
             "timeout": "10"
           }
         },
@@ -130,7 +130,7 @@
       "adapter": "float_handler",
       "config": {
         "operation": "round",
-        "precision": "6"
+        "precision": "8"
       }
     }
   ]

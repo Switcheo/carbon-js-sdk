@@ -86,7 +86,7 @@
           "config": {
             "custom_node_url_key": "binance_trx_usdt",
             "default_node_host": "https://api-binance-proxy.carbon.network",
-            "default_node_path": "/api/v3/ticker/price?symbol=trxUSDT",
+            "default_node_path": "/api/v3/ticker/price?symbol=TRXUSDT",
             "paths": "[\"price\"]",
             "timeout": "10"
           }
@@ -126,7 +126,7 @@
       "adapter": "float_handler",
       "config": {
         "operation": "round",
-        "precision": "6"
+        "precision": "8"
       }
     }
   ]

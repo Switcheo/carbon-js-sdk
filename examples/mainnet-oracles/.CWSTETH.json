@@ -21,8 +21,8 @@
         {
           "adapter": "oracle_result_fetcher",
           "config": {
-              "oracle_id": "SIDXETH",
-              "stale_allowance": "900"
+            "oracle_id": "SIDXETH",
+            "stale_allowance": "900"
           }
         }
       ]
@@ -75,7 +75,7 @@
       "adapter": "float_handler",
       "config": {
         "operation": "round",
-        "precision": "6"
+        "precision": "8"
       }
     }
   ]

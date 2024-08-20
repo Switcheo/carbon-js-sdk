@@ -18,15 +18,15 @@
 		{
 			"output_id": "osmo_usd",
 			"adapters": [
-			  {
-				"adapter": "oracle_result_fetcher",
-				"config": {
-					"oracle_id": ".COSMO",
-					"stale_allowance": "900"
+				{
+					"adapter": "oracle_result_fetcher",
+					"config": {
+						"oracle_id": ".COSMO",
+						"stale_allowance": "900"
+					}
 				}
-			  }
 			]
-		  },
+		},
 		{
 			"output_id": "osmosis_evmos_osmo_pool",
 			"adapters": [
@@ -76,7 +76,7 @@
 			"adapter": "float_handler",
 			"config": {
 				"operation": "round",
-				"precision": "6"
+				"precision": "8"
 			}
 		}
 	]

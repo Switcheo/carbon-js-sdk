@@ -91,15 +91,15 @@
       }
     },
     {
-      "output_id": "bybit_canto_usdt",
+      "output_id": "mexc_canto_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bybit_perps_canto_usdt",
-            "default_node_host": "https://api.bybit.com",
-            "default_node_path": "/derivatives/v3/public/tickers?category=linear&symbol=CANTOUSDT",
-            "paths": "[\"result.list.0.indexPrice\"]",
+            "custom_node_url_key": "mexc_canto_usdt",
+            "default_node_host": "https://api.mexc.com",
+            "default_node_path": "/api/v3/ticker/price?symbol=CANTOUSDT",
+            "paths": "[\"price\"]",
             "timeout": "10"
           }
         },
@@ -121,11 +121,11 @@
       ]
     },
     {
-      "output_id": "bybit_canto_usd",
+      "output_id": "mexc_canto_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"bybit_canto_usdt\",\"usdt_usd\"]"
+        "input_ids": "[\"mexc_canto_usdt\",\"usdt_usd\"]"
       }
     },
     {
@@ -158,7 +158,7 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"gate_canto_usd\", \"bybit_canto_usd\",\"dex_canto_usd\"]",
+        "value_ids": "[\"gate_canto_usd\", \"mexc_canto_usd\",\"dex_canto_usd\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -166,8 +166,8 @@
       "output_id": "canto_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"gate_canto_usd\", \"bybit_canto_usd\",\"dex_canto_usd\"]",
-        "weights": "[0.1, 0.5, 0.4]"
+        "value_ids": "[\"gate_canto_usd\", \"mexc_canto_usd\",\"dex_canto_usd\"]",
+        "weights": "[0.3, 0.3, 0.4]"
       }
     },
     {
@@ -176,7 +176,7 @@
       "adapter": "float_handler",
       "config": {
         "operation": "round",
-        "precision": "6"
+        "precision": "8"
       }
     }
   ]

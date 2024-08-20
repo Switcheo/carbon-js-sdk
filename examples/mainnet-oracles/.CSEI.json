@@ -41,7 +41,7 @@
           "adapter": "fetcher_multiple",
           "config": {
             "custom_node_url_key": "bybit_sei_usdt",
-            "default_node_host": "https://api.bybit.com",
+            "default_node_host": "https://api-bybit.carbon.network",
             "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=SEIUSDT",
             "paths": "[\"result.price\"]",
             "timeout": "10"
@@ -126,7 +126,7 @@
       "adapter": "float_handler",
       "config": {
         "operation": "round",
-        "precision": "6"
+        "precision": "8"
       }
     }
   ]

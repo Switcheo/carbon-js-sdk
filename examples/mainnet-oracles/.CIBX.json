@@ -18,13 +18,13 @@
 		{
 			"output_id": "osmo_usd",
 			"adapters": [
-			  {
-				"adapter": "oracle_result_fetcher",
-				"config": {
-					"oracle_id": ".COSMO",
-					"stale_allowance": "900"
+				{
+					"adapter": "oracle_result_fetcher",
+					"config": {
+						"oracle_id": ".COSMO",
+						"stale_allowance": "900"
+					}
 				}
-			  }
 			]
 		},
 		{
@@ -68,7 +68,7 @@
 			"adapter": "float_handler",
 			"config": {
 				"operation": "round",
-				"precision": "4"
+				"precision": "8"
 			}
 		}
 	]
