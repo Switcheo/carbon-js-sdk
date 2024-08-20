@@ -235,7 +235,7 @@ const BSC_TESTNET: MetaMaskChangeNetworkParam = {
 const MANTLE_TESTNET: MetaMaskChangeNetworkParam = {
   chainId: "0x138B",
   blockExplorerUrls: ["https://sepolia.mantlescan.xyz"],
-  chainName: "Mantle Testnet",
+  chainName: "Mantle Sepolia",
   rpcUrls: [
     "https://rpc.sepolia.mantle.xyz/",
   ],
@@ -549,6 +549,8 @@ export class MetaMask {
     switch (blockchain) {
       case 'Binance Smart Chain':
         return 97;
+      case 'Mantle':
+        return 5003;
       case 'Arbitrum':
         return 421611;
       case 'Polygon':
