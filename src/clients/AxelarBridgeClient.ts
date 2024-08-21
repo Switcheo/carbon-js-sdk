@@ -11,19 +11,18 @@ import Long from "long";
 export interface AxelarBridgeClientOpts {
   configProvider: NetworkConfigProvider;
 }
-interface ETHTxParams {
-  gasPriceGwei?: BigNumber;
-  gasLimit?: BigNumber;
-  signer: ethers.Signer;
-  nonce?: number
-}
-export interface DepositParams extends ETHTxParams {
+
+export interface DepositParams {
   contractAddress: string;
   senderAddress: string;
   receiverAddress: string;
   amount: BigNumber;
   depositTokenExternalAddress: string;
   rpcUrl: string;
+  gasPriceGwei?: BigNumber;
+  gasLimit?: BigNumber;
+  signer: ethers.Signer;
+  nonce?: number
 }
 
 export interface WithdrawParams {
@@ -32,11 +31,6 @@ export interface WithdrawParams {
   tokens: Coin;
   relayFee: Coin;
   expirySeconds: number;
-}
-
-export interface QueryContractParams {
-  contractAddress: string;
-  network: CarbonSDK.Network;
 }
 
 export interface EthersTransactionResponse extends ethers.Transaction {
