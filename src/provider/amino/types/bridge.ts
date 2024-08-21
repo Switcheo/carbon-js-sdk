@@ -5,7 +5,7 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  WithdrawTokenTx: "carbon/MsgWithdrawToken",
+  WithdrawTokenTx: "bridge/MsgWithdrawToken",
 };
 
 const MsgWithdrawToken: AminoInit = {
