@@ -237,7 +237,7 @@ const MANTLE_TESTNET: MetaMaskChangeNetworkParam = {
   blockExplorerUrls: ["https://sepolia.mantlescan.xyz"],
   chainName: "Mantle Sepolia",
   rpcUrls: [
-    "https://rpc.sepolia.mantle.xyz/",
+    "https://rpc.sepolia.mantle.xyz",
   ],
   nativeCurrency: {
     decimals: 18,
