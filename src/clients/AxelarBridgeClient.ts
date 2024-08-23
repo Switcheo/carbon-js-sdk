@@ -3,7 +3,6 @@ import { Carbon, Duration } from "@carbon-sdk/codec";
 import { NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { CarbonTx } from "@carbon-sdk/util";
-import { Coin } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
 import Long from "long";
@@ -28,8 +27,10 @@ export interface DepositParams {
 export interface WithdrawParams {
   connectionId: string;
   receiver: string;
-  tokens: Coin;
-  relayFee: Coin;
+  tokenDenom: string;
+  tokenAmount: string;
+  relayDenom: string;
+  relayAmount: string;
   expirySeconds: number;
 }
 
@@ -66,8 +67,10 @@ export class AxelarBridgeClient {
     const {
       connectionId,
       receiver,
-      tokens,
-      relayFee,
+      tokenDenom,
+      tokenAmount,
+      relayDenom,
+      relayAmount,
       expirySeconds,
     } = params
     const wallet = api.getConnectedWallet()
@@ -79,8 +82,14 @@ export class AxelarBridgeClient {
       creator: walletAddress,
       connectionId,
       receiver,
-      tokens,
-      relayFee,
+      tokens: {
+        denom: tokenDenom,
+        amount: tokenAmount,
+      },
+      relayFee: {
+        denom: relayDenom,
+        amount: relayAmount,
+      },
       expiryDuration,
     })
 

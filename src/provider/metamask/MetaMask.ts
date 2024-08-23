@@ -323,7 +323,7 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
 };
 
 const MANTLE_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x4e454152",
+  chainId: "0x1388",
   blockExplorerUrls: ["https://explorer.mantle.xyz"],
   chainName: "Mantle Mainnet",
   rpcUrls: [
@@ -535,6 +535,8 @@ export class MetaMask {
       switch (blockchain) {
         case 'Binance Smart Chain':
           return 56;
+        case 'Mantle':
+          return 5000;
         case 'Arbitrum':
           return 42161;
         case 'Polygon':

@@ -8,9 +8,6 @@ export enum SmartWalletBlockchain {
   Neo = "neo",
   Ethereum = "eth",
   BinanceSmartChain = "bsc",
-  Arbitrum = "arbitrum",
-  Polygon = "polygon",
-  Axelar = 'axelar',
 }
 
 export enum Blockchain {

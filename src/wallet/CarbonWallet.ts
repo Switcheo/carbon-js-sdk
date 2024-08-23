@@ -849,9 +849,7 @@ export class CarbonWallet {
     if (this.mnemonic) {
       switch (blockchain) {
         case SmartWalletBlockchain.Ethereum:
-        case SmartWalletBlockchain.Arbitrum:
         case SmartWalletBlockchain.BinanceSmartChain:
-        case SmartWalletBlockchain.Polygon:
           return ETHAddress.mnemonicToPrivateKey(this.mnemonic);
         case SmartWalletBlockchain.Neo:
           return NEOAddress.mnemonicToPrivateKey(this.mnemonic);

@@ -469,7 +469,6 @@ class TokenClient {
 
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList)
     const axelarBridges = await this.matchAxelarChainsWithDifferentChainIds(unmatchedAxelarBridgeList)
-    console.log('matching axelar bridges....', axelarBridges)
 
     const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Carbon.Coin.Bridge) => {
       if (bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
@@ -479,8 +478,8 @@ class TokenClient {
       } as PolyNetworkBridge)
       return prev;
     }, [])
+
     Object.assign(this.bridges, {
-      allBridges: allBridges,
       polynetwork: polynetworkBridges,
       ibc: ibcBridges,
       axelar: axelarBridges,
@@ -552,7 +551,12 @@ class TokenClient {
 
   async matchAxelarChainsWithDifferentChainIds(bridges: Carbon.Coin.Bridge[]): Promise<AxelarBridge[]> {
     const newBridges: AxelarBridge[] = []
-    const results: QueryAllConnectionsResponse = await this.query.bridge.ConnectionAll({ bridgeId: new Long(0) });
+    const results: QueryAllConnectionsResponse = await this.query.bridge.ConnectionAll({
+      bridgeId: new Long(0),
+      pagination: PageRequest.fromPartial({
+        limit: new Long(10000),
+      }),
+    });
     const connections = results.connections
 
     try {
@@ -587,7 +591,7 @@ class TokenClient {
   }
 
   public getAxelarBlockchainNames(): string[] {
-    return this.bridges.axelar.filter(bridge => bridge.bridgeId.toNumber() === BRIDGE_IDS.axelar).map(bridge => bridge.chainName)
+    return this.bridges.axelar.map(bridge => bridge.chainName)
   }
 
   public getIbcBridgeFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): IbcBridge | undefined => {
