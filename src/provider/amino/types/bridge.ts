@@ -11,7 +11,9 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgWithdrawToken: AminoInit = {
   aminoType: TxTypes.WithdrawTokenTx,
   valueMap: {
-    expiryDuration: ConvertEncType.Duration,
+    expiryDuration: {
+      seconds: ConvertEncType.Long,
+    },
   },
 };
 
