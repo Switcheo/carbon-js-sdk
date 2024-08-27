@@ -44,12 +44,14 @@ export enum Blockchain {
   OmniFlixHub = "omniflixhub",
   Agoric = "agoric",
   Sommelier = "sommelier",
+  Mantle = 'mantle',
 }
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
 
 export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
   "Binance Smart Chain": Blockchain.BinanceSmartChain,
+  "BSC": Blockchain.BinanceSmartChain,
   "Ethereum": Blockchain.Ethereum,
   "Arbitrum": Blockchain.Arbitrum,
   "Polygon": Blockchain.Polygon,
