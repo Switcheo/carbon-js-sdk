@@ -1,5 +1,6 @@
 import { Network, NetworkConfig } from "@carbon-sdk/constant";
 import { APIUtils, BlockchainUtils } from "@carbon-sdk/util";
+import { getFormattedBlockchainName } from "@carbon-sdk/util/blockchain";
 import dayjs from "dayjs";
 import {
   ChainTransaction,
@@ -132,13 +133,16 @@ class HydrogenClient {
 
   public formatCrossChainTransferV2 = (value: any): CrossChainTransfer => {
     if (typeof value !== "object") return value;
+    // brdg tokens will all be chain_id 0 which will also be deprecated in future
+    // hence for brdg tokens cannot use chain_id to differentiate between blockchains
+    const isBridgeToken = this.tokenClient.isBridgedToken(value.carbon_token_id)
     return {
       ...value,
       created_at: formatDateField(value.created_at?.toString()),
       updated_at: formatDateField(value.updated_at?.toString()),
-      source_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id),
+      source_blockchain: isBridgeToken ? getFormattedBlockchainName(value.source_blockchain) : this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id),
       bridging_blockchain: getBridgeBlockchainFromId(value.bridge_id),
-      destination_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id),
+      destination_blockchain: isBridgeToken ? getFormattedBlockchainName(value.destination_blockchain) : this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id),
       source_event: this.formatChainEventV2(value.source_event, value.source_blockchain ?? ''),
       bridging_event: this.formatChainEventV2(value.bridging_event, getBridgeBlockchainFromId(value.bridge_id)),
       destination_event: this.formatChainEventV2(value.destination_event, value.destination_blockchain ?? ''),
@@ -148,8 +152,9 @@ class HydrogenClient {
 
   public formatCrossChainTransferDetailedV2 = (value: any): CrossChainTransferDetailed => {
     if (!value || typeof value !== "object") return value;
-    const source_blockchain = this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id)
-    const destination_blockchain = this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id)
+    const isBridgeToken = this.tokenClient.isBridgedToken(value.carbon_token_id)
+    const source_blockchain = isBridgeToken ? getFormattedBlockchainName(value.source_blockchain) : this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id)
+    const destination_blockchain = isBridgeToken ? getFormattedBlockchainName(value.destination_blockchain) : this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id)
     const bridging_blockchain = getBridgeBlockchainFromId(value.bridge_id)
     return {
       ...this.formatCrossChainTransferV2(value),

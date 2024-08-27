@@ -123,6 +123,14 @@ class TokenClient {
       // pool and cdp tokens are on the Native blockchain, hence 0
       return 'Native'
     }
+
+    if (this.isBridgedToken(denom)) {
+      // brdg tokens will all be chain_id 0 which will also be deprecated in future
+      // hence for brdg tokens cannot use chain_id to differentiate between blockchains
+      const bridgeList = this.bridges.axelar
+      const chainName = bridgeList.find((bridge) => bridge.bridgeAddress === token.bridgeAddress)?.chainName
+      return chainName
+    }
     const bridge = this.getBridgeFromToken(token)
     return bridge?.chainName;
   }
@@ -376,6 +384,11 @@ class TokenClient {
     return groupedTokenRegex.test(denom)
   }
 
+  public isBridgedToken(denom: string): boolean {
+    const bridgedTokenRegex = new RegExp(/^brdg\//)
+    return bridgedTokenRegex.test(denom)
+  }
+
   public isCarbonToken(token?: Carbon.Coin.Token | null): boolean {
     return Boolean(token && (this.isNativeToken(token.denom) || token.bridgeId.eq(0)));
   }
@@ -566,6 +579,7 @@ class TokenClient {
           newBridges.push({
             ...bridge,
             name: `${connection.chainDisplayName} via Axelar`,
+            bridgeAddress: connection.connectionId,
             chain_id_name: connection.chainId,
             chainName: connection.chainDisplayName,
           });
