@@ -9,7 +9,7 @@ import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvide
 import { cibtIbcTokenRegex, cosmBridgeRegex, ibcTokenRegex, ibcWhitelist, swthChannels } from "@carbon-sdk/constant/ibc";
 import { GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { AxelarBridge, BRIDGE_IDS, BlockchainV2, BridgeMap, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
+import { AxelarBridge, BRIDGE_IDS, BlockchainV2, BridgeMap, IbcBridge, PolyNetworkBridge, isIbcBridge, Blockchain } from '@carbon-sdk/util/blockchain';
 import { BN_ONE, BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -611,7 +611,7 @@ class TokenClient {
     return this.getIbcBlockchainNames().concat(this.getPolynetworkBlockchainNames()).concat(this.getAxelarBlockchainNames())
   }
 
-  public getBridgesFromBridgeId(bridgeId: number): Carbon.Coin.Bridge[] | IbcBridge[] {
+  public getBridgesFromBridgeId(bridgeId: number): Carbon.Coin.Bridge[] | IbcBridge[] | AxelarBridge[] {
     switch (bridgeId) {
       case BRIDGE_IDS.polynetwork:
         return this.bridges.polynetwork
