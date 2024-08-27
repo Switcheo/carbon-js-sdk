@@ -102,6 +102,8 @@ const getBridgeBlockchainFromId = (bridgeId: number): BlockchainUtils.Blockchain
       return 'Polynetwork'
     case 2:
       return 'Ibc'
+    case 3:
+      return 'Axelar'
     default:
       return 'Polynetwork'
   }
@@ -200,7 +202,7 @@ class HydrogenClient {
     const request = this.apiManager.path(
       "transfer_payloads",
       {},
-      {...req}
+      { ...req }
     );
     const response = await request.get();
     const result = response.data;
@@ -258,7 +260,7 @@ class HydrogenClient {
         ...req,
       }
     );
-    const response = await request.post({ body: { fee_denoms: req.fee_denoms }});
+    const response = await request.post({ body: { fee_denoms: req.fee_denoms } });
     const result = response.data;
 
     return version === "V1" ? formatFeeQuote(result) : this.formatFeeQuoteV2(result, blockchain!);
