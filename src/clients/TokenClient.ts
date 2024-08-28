@@ -564,15 +564,14 @@ class TokenClient {
 
   async matchAxelarChainsWithDifferentChainIds(bridges: Carbon.Coin.Bridge[]): Promise<AxelarBridge[]> {
     const newBridges: AxelarBridge[] = []
-    const results: QueryAllConnectionsResponse = await this.query.bridge.ConnectionAll({
-      bridgeId: new Long(0),
-      pagination: PageRequest.fromPartial({
-        limit: new Long(10000),
-      }),
-    });
-    const connections = results.connections
-
     try {
+      const results: QueryAllConnectionsResponse = await this.query.bridge.ConnectionAll({
+        bridgeId: new Long(0),
+        pagination: PageRequest.fromPartial({
+          limit: new Long(10000),
+        }),
+      });
+      const connections = results.connections
       for (const bridge of bridges) {
 
         connections.forEach(connection => {
@@ -585,6 +584,8 @@ class TokenClient {
           });
         });
       }
+    } catch (err) {
+      console.error(err)
     } finally {
       const chainMap: SimpleMap<string> = {};
 
