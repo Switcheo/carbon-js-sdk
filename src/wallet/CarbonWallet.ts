@@ -316,8 +316,6 @@ export class CarbonWallet {
   }
 
   public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    console.log("====================================") //wrlog
-    console.log("withMetamask evmChainId", evmChainId)
     const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64, addressOptions);
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
       providerAgent: ProviderAgent.MetamaskExtension,
