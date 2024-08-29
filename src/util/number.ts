@@ -7,7 +7,7 @@ export const BN_10000 = new BigNumber(10000);
 export const parseBN = (input?: string | BigNumber | number | null, defaultValue?: BigNumber) => {
   if (!input && input !== 0) return defaultValue;
   const result = BigNumber.isBigNumber(input) ? input : new BigNumber(input);
-  if (!result.isFinite() || result.isNaN()) return defaultValue;
+  if (result.isNaN()) return defaultValue;
 
   return result;
 };
