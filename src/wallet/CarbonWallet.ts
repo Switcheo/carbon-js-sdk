@@ -964,7 +964,7 @@ export class CarbonWallet {
   }
 
   public isEvmWallet() {
-    return this.providerAgent === ProviderAgent.MetamaskExtension
+    return this.providerAgent === ProviderAgent.MetamaskExtension || this.isRainbowKit;
   }
 
   private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
