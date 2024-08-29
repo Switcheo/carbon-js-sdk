@@ -22,6 +22,7 @@ import {
   AdminModule,
   AllianceModule,
   BankModule,
+  BridgeModule,
   BrokerModule,
   CDPModule,
   CoinModule,
@@ -143,6 +144,7 @@ class CarbonSDK {
   xchain: XChainModule;
   evm: EvmModule;
   evmmerge: EvmMergeModule;
+  bridge: BridgeModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -213,6 +215,7 @@ class CarbonSDK {
     this.xchain = new XChainModule(this);
     this.evm = new EvmModule(this);
     this.evmmerge = new EvmMergeModule(this);
+    this.bridge = new BridgeModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,

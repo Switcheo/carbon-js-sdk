@@ -505,8 +505,8 @@ export const blockchainForChainName: { [key: string]: string } = {
   [Blockchain.Mantle]: "Mantle",
 }
 
-export const getFormattedBlockchainName = (chain: string): BlockchainV2 => {
-  return blockchainForChainName[chain] ?? ''
+export const getFormattedBlockchainName = (chain: string): BlockchainV2 | undefined => {
+  return blockchainForChainName[chain]
 }
 
 export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon', 'Mantle'] as const;
