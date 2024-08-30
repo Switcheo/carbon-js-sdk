@@ -196,7 +196,7 @@ export interface MsgRegisterExternalToken {
   connectionId: string;
   assetAddress: string;
   decimals?: Long;
-  carbonTokenName: string;
+  carbonTokenName?: string;
   relayFee?: Coin;
   expiryDuration?: Duration;
 }
@@ -2750,7 +2750,6 @@ const baseMsgRegisterExternalToken: object = {
   creator: "",
   connectionId: "",
   assetAddress: "",
-  carbonTokenName: "",
 };
 
 export const MsgRegisterExternalToken = {
@@ -2773,8 +2772,11 @@ export const MsgRegisterExternalToken = {
         writer.uint32(34).fork()
       ).ldelim();
     }
-    if (message.carbonTokenName !== "") {
-      writer.uint32(42).string(message.carbonTokenName);
+    if (message.carbonTokenName !== undefined) {
+      StringValue.encode(
+        { value: message.carbonTokenName! },
+        writer.uint32(42).fork()
+      ).ldelim();
     }
     if (message.relayFee !== undefined) {
       Coin.encode(message.relayFee, writer.uint32(50).fork()).ldelim();
@@ -2813,7 +2815,10 @@ export const MsgRegisterExternalToken = {
           message.decimals = Int64Value.decode(reader, reader.uint32()).value;
           break;
         case 5:
-          message.carbonTokenName = reader.string();
+          message.carbonTokenName = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         case 6:
           message.relayFee = Coin.decode(reader, reader.uint32());
@@ -2852,7 +2857,7 @@ export const MsgRegisterExternalToken = {
     message.carbonTokenName =
       object.carbonTokenName !== undefined && object.carbonTokenName !== null
         ? String(object.carbonTokenName)
-        : "";
+        : undefined;
     message.relayFee =
       object.relayFee !== undefined && object.relayFee !== null
         ? Coin.fromJSON(object.relayFee)
@@ -2898,7 +2903,7 @@ export const MsgRegisterExternalToken = {
       object.decimals !== undefined && object.decimals !== null
         ? Long.fromValue(object.decimals)
         : undefined;
-    message.carbonTokenName = object.carbonTokenName ?? "";
+    message.carbonTokenName = object.carbonTokenName ?? undefined;
     message.relayFee =
       object.relayFee !== undefined && object.relayFee !== null
         ? Coin.fromPartial(object.relayFee)

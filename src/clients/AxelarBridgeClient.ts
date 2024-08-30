@@ -78,7 +78,8 @@ export class AxelarBridgeClient {
     const expiryDuration = Duration.fromPartial({
       seconds: new Long(expirySeconds),
     })
-    const value = Carbon.Bridge.MsgWithdrawToken.fromPartial({
+
+    const tx = {
       creator: walletAddress,
       connectionId,
       receiver,
@@ -90,8 +91,10 @@ export class AxelarBridgeClient {
         denom: relayDenom,
         amount: relayAmount,
       },
-      expiryDuration,
-    })
+      expiryDuration: { ...expiryDuration },
+    }
+
+    const value = Carbon.Bridge.MsgWithdrawToken.fromPartial(tx)
 
     return await wallet.sendTx(
       {

@@ -1383,7 +1383,7 @@ export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
 export { Empty } from "./google/protobuf/empty";
-export { Edition, editionFromJSON, editionToJSON, ExtensionRangeOptions_VerificationState, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FeatureSet_FieldPresence, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, FeatureSet_EnumType, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, FeatureSet_RepeatedFieldEncoding, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, FeatureSet_Utf8Validation, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, FeatureSet_MessageEncoding, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, FeatureSet_JsonFormat, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, FieldOptions_FeatureSupport, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
+export { Edition, editionFromJSON, editionToJSON, ExtensionRangeOptions_VerificationState, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FeatureSet_FieldPresence, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, FeatureSet_EnumType, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, FeatureSet_RepeatedFieldEncoding, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, FeatureSet_Utf8Validation, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, FeatureSet_MessageEncoding, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, FeatureSet_JsonFormat, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/alliance/gov";
 export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse, MsgCreateAlliance, MsgCreateAllianceResponse, MsgUpdateAlliance, MsgUpdateAllianceResponse, MsgDeleteAlliance, MsgDeleteAllianceResponse } from "./alliance/alliance/tx";
@@ -1726,6 +1726,10 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "php_generic_services",
+        "type": "bool"
+      },
+      {
         "name": "deprecated",
         "type": "bool"
       },
@@ -1860,11 +1864,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/google.protobuf"
       },
       {
-        "name": "feature_support",
-        "type": "FeatureSupport",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1919,11 +1918,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "debug_redact",
         "type": "bool"
-      },
-      {
-        "name": "feature_support",
-        "type": "FeatureSupport",
-        "packageName": "/google.protobuf.FieldOptions"
       },
       {
         "name": "uninterpreted_option",
@@ -3227,13 +3221,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "relay_whitelist_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_relay_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -3639,8 +3631,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUpdateMaxRelayExpiryResponse": [],
@@ -3651,8 +3642,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "whitelist_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUpdateRelayWhitelistDurationResponse": [],
@@ -3889,8 +3879,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgRegisterExternalTokenResponse": [],
@@ -3914,8 +3903,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgDeregisterExternalTokenResponse": [],
@@ -3939,8 +3927,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgDeployNativeTokenResponse": [],
@@ -3988,8 +3975,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgWithdrawTokenResponse": [],
@@ -4068,8 +4054,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgExecuteFromCarbonResponse": [],
@@ -5335,8 +5320,7 @@ export const EIP712Types: { [index: string]: any } = {
     "SetStalePriceGracePeriodEvent": [
       {
         "name": "stale_price_grace_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "type",
@@ -5722,8 +5706,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_price_grace_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "cdp_paused",
@@ -5731,8 +5714,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stablecoin_interest_rate_epoch",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "stablecoin_interest_rate_adjuster_coefficient",
@@ -5766,8 +5748,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_price_grace_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "cdp_paused",
@@ -5775,8 +5756,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stablecoin_interest_rate_epoch",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "stablecoin_interest_rate_adjuster_coefficient",
@@ -6782,8 +6762,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_price_grace_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgSetStalePriceGracePeriodResponse": [],
@@ -11890,8 +11869,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "default_max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "default_impact_size_usd",
@@ -11989,8 +11967,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "default_max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "default_impact_size_usd",
@@ -12040,8 +12017,7 @@ export const EIP712Types: { [index: string]: any } = {
     "ControlledParams": [
       {
         "name": "perpetuals_funding_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "Market": [
@@ -12115,8 +12091,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "impact_size",
@@ -12206,8 +12181,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "impact_size",
@@ -12384,8 +12358,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "perpetuals_funding_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "QueryGetMarketRequest": [
@@ -12647,8 +12620,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "perpetuals_funding_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUpdatePerpetualsFundingIntervalResponse": [],
@@ -13087,8 +13059,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "vote_timestamp_future_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "oracle_min_vote_factor",
@@ -13130,8 +13101,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "vote_timestamp_future_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "oracle_min_vote_factor",
@@ -13978,18 +13948,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "quote_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "market_utilization_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_market_utilization_snapshot_window",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "nav_per_share_snapshots",
@@ -13997,13 +13964,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "nav_per_share_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "index_last_updated_at_threshold",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -14013,18 +13978,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "quote_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "market_utilization_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_market_utilization_snapshot_window",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "nav_per_share_snapshots",
@@ -14032,13 +13994,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "nav_per_share_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "index_last_updated_at_threshold",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -14853,8 +14813,7 @@ export const EIP712Types: { [index: string]: any } = {
     "SetStaleIndexAllowanceEvent": [
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "type",
@@ -14864,8 +14823,7 @@ export const EIP712Types: { [index: string]: any } = {
     "SetBackfillTimeIntervalEvent": [
       {
         "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "type",
@@ -14883,13 +14841,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
+      },
+      {
+        "name": "future_prices_allowance",
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -14903,13 +14863,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
+      },
+      {
+        "name": "future_prices_allowance",
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -14940,8 +14902,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "QueryPriceTokenRequest": [
@@ -15052,8 +15013,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgSetBackfillTimeIntervalResponse": [],
@@ -15086,8 +15046,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgSetStaleIndexAllowanceResponse": [],
@@ -15368,15 +15327,13 @@ export const EIP712Types: { [index: string]: any } = {
     "Params": [
       {
         "name": "trading_fee_delegate_cooldown",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
       {
         "name": "trading_fee_delegate_cooldown",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -15559,8 +15516,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryCreationCooldownResponse": [
       {
         "name": "cooldown_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgCreateSubAccount": [
@@ -15637,13 +15593,11 @@ export const EIP712Types: { [index: string]: any } = {
     "Params": [
       {
         "name": "reward_delay_time",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "take_rate_claim_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "last_take_rate_claim_time",
@@ -15705,8 +15659,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "last_reward_change_time",
@@ -16047,8 +16000,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_weight_range",
@@ -16083,8 +16035,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_weight_range",
@@ -16547,8 +16498,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_weight_range",
@@ -16580,8 +16530,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_weight_range",
@@ -17899,8 +17848,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_age_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_bytes",
@@ -21225,8 +21173,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "period_spend_limit",
@@ -21535,15 +21482,13 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_deposit_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "VotingParams": [
       {
         "name": "voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "TallyParams": [
@@ -21568,13 +21513,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_deposit_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "quorum",
@@ -21602,8 +21545,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expedited_voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "expedited_threshold",
@@ -22117,15 +22059,13 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_deposit_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "VotingParams": [
       {
         "name": "voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "TallyParams": [
@@ -22414,8 +22354,7 @@ export const EIP712Types: { [index: string]: any } = {
     "Module": [
       {
         "name": "max_execution_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_metadata_len",
@@ -22481,13 +22420,11 @@ export const EIP712Types: { [index: string]: any } = {
     "DecisionPolicyWindows": [
       {
         "name": "voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "min_execution_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GroupInfo": [
@@ -23791,8 +23728,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ]
   },
@@ -23982,8 +23918,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "downtime_jail_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "slash_fraction_double_sign",
@@ -24410,8 +24345,7 @@ export const EIP712Types: { [index: string]: any } = {
     "Params": [
       {
         "name": "unbonding_time",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_validators",
@@ -30563,18 +30497,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "trusting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "unbonding_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_clock_drift",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "frozen_height",

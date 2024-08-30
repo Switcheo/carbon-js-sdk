@@ -51,6 +51,10 @@ const isArrayOfStrings = (value: unknown): value is string[] => {
   return Array.isArray(value) && value.length !== 0 && value.every(item => typeof item === "string");
 }
 
+const isConvertEncType = (value: any): value is ConvertEncType => {
+  return Object.values(ConvertEncType).includes(value as ConvertEncType)
+}
+
 /**
  * checks maps object to amino or direct form
  * @param mapItem obj to be converted
@@ -152,13 +156,13 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
         const nanosBN = new BigNumber(value?.nanos ?? 0).shiftedBy(-6);
         const seconds = (value?.seconds as Long) ?? new Long(0);
         return `${nanosBN.plus(seconds.toString()).toString(10)}`;
+        return `${nanosBN.plus(seconds.mul(new Long(10 ** 9)).toString()).toString(10)}`;
       } else {
         const durationBN = NumberUtils.bnOrZero(value.replace("s", ""));
-        const secondsBN = durationBN.decimalPlaces(0, 1);
-        const nanosBN = durationBN.minus(secondsBN).shiftedBy(6).decimalPlaces(0, 1);
+        const totalNanos = Long.fromString(value)
         return {
-          seconds: new Long(secondsBN.toNumber()),
-          nanos: nanosBN.toNumber(),
+          seconds: totalNanos.divide(10 ** 9),
+          nanos: totalNanos.mod(10 ** 9).toNumber(),
         };
       }
     default:
@@ -198,6 +202,10 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
             );
             return;
           }
+          if (isConvertEncType(newAminoMap[key])) {
+            aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true)
+            return
+          }
           aminoObj[snakeKey] = mapEachIndiv(newInput[key], newAminoMap[key] as TypeUtils.SimpleMap<ConvertEncType>, true);
         }
       });
@@ -212,6 +220,11 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
       const aminoObj: TypeUtils.SimpleMap<any> = {};
       Object.keys(newInput).forEach((key: string) => {
         const camelKey = TypeUtils.snakeToCamel(key);
+
+        if (isConvertEncType(newAminoMap[key])) {
+          aminoObj[camelKey] = paramConverter(newInput[key],newAminoMap[camelKey] as ConvertEncType, false)
+          return
+        }
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
           aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as ConvertEncType, false);
           if (aminoObj[camelKey] === null) delete aminoObj[camelKey]
