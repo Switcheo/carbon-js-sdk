@@ -1,10 +1,8 @@
-import * as BIP39 from "bip39";
-import { MsgWithdrawToken } from "../lib/codec/Switcheo/carbon/bridge/tx";
-import { CarbonSDK, CarbonTx, CoinModule } from "./_sdk";
-import "./_setup";
-import Long from "long";
 import BigNumber from "bignumber.js";
-import { Duration } from "../lib/codec";
+import * as BIP39 from "bip39";
+import Long from "long";
+import { BridgeModule, CarbonSDK, CoinModule } from "./_sdk";
+import "./_setup";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -36,27 +34,16 @@ import { Duration } from "../lib/codec";
   const balancesResult = await sdk.query.coin.Balances({ address: sdk.wallet.bech32Address })
   console.log('balances:', balancesResult)
 
-  const expiryDuration = Duration.fromPartial({
-    seconds: new Long(1000),
-  })
-
-  const result = await sdk.wallet.sendTxs([{
-    typeUrl: CarbonTx.Types.MsgWithdrawToken,
-    value: MsgWithdrawToken.fromPartial({
-      creator: sdk.wallet.bech32Address,
-      connectionId: externalToken?.connectionId ?? '',
-      receiver: sdk.wallet.evmHexAddress,
-      tokens: {
-        denom: externalToken?.denom ?? '',
-        amount: new BigNumber(10).shiftedBy(tokenDp).toString(10),
-      },
-      relayFee: {
-        denom: 'swth',
-        amount: '100',
-      },
-      expiryDuration,
-    })
-  }])
+  const withdrawParams: BridgeModule.WithdrawParams = {
+    connectionId: externalToken?.connectionId ?? '',
+    receiver: sdk.wallet.evmHexAddress,
+    tokenDenom: externalToken?.denom ?? '',
+    tokenAmount: new BigNumber(10).shiftedBy(tokenDp).toString(10),
+    relayDenom: 'swth',
+    relayAmount: '100',
+    expirySeconds: 1000,
+  }
+  const result = await sdk.bridge.withdraw(withdrawParams)
 
   console.log('withdraw tokens:', result);
 })().catch((e) => {

@@ -1,11 +1,7 @@
-import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { Carbon, Duration } from "@carbon-sdk/codec";
 import { NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
-import Long from "long";
 
 export interface AxelarBridgeClientOpts {
   configProvider: NetworkConfigProvider;
@@ -22,16 +18,6 @@ export interface DepositParams {
   gasLimit?: BigNumber;
   signer: ethers.Signer;
   nonce?: number
-}
-
-export interface WithdrawParams {
-  connectionId: string;
-  receiver: string;
-  tokenDenom: string;
-  tokenAmount: string;
-  relayDenom: string;
-  relayAmount: string;
-  expirySeconds: number;
 }
 
 export interface EthersTransactionResponse extends ethers.Transaction {
@@ -61,48 +47,6 @@ export class AxelarBridgeClient {
       depositTokenExternalAddress, // asset
       amount.toString(10),
     )
-  }
-
-  public async withdraw(api: CarbonSDK, params: WithdrawParams, opts?: CarbonTx.SignTxOpts) {
-    const {
-      connectionId,
-      receiver,
-      tokenDenom,
-      tokenAmount,
-      relayDenom,
-      relayAmount,
-      expirySeconds,
-    } = params
-    const wallet = api.getConnectedWallet()
-    const walletAddress = wallet.bech32Address ?? ''
-    const expiryDuration = Duration.fromPartial({
-      seconds: new Long(expirySeconds),
-    })
-
-    const tx = {
-      creator: walletAddress,
-      connectionId,
-      receiver,
-      tokens: {
-        denom: tokenDenom,
-        amount: tokenAmount,
-      },
-      relayFee: {
-        denom: relayDenom,
-        amount: relayAmount,
-      },
-      expiryDuration: { ...expiryDuration },
-    }
-
-    const value = Carbon.Bridge.MsgWithdrawToken.fromPartial(tx)
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgWithdrawToken,
-        value,
-      },
-      opts
-    );
   }
 }
 
