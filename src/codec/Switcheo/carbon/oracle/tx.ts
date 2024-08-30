@@ -89,6 +89,13 @@ export interface MsgUpdateOracleContract {
 
 export interface MsgUpdateOracleContractResponse {}
 
+export interface MsgDeployOracleContract {
+  creator: string;
+  oracleId: string;
+}
+
+export interface MsgDeployOracleContractResponse {}
+
 export interface ValidatorSignature {
   /** used to be named "validator", changed to "pub_key" */
   pubKey: Uint8Array;
@@ -1287,6 +1294,134 @@ export const MsgUpdateOracleContractResponse = {
   },
 };
 
+const baseMsgDeployOracleContract: object = { creator: "", oracleId: "" };
+
+export const MsgDeployOracleContract = {
+  encode(
+    message: MsgDeployOracleContract,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.oracleId !== "") {
+      writer.uint32(18).string(message.oracleId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeployOracleContract {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeployOracleContract,
+    } as MsgDeployOracleContract;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.oracleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeployOracleContract {
+    const message = {
+      ...baseMsgDeployOracleContract,
+    } as MsgDeployOracleContract;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgDeployOracleContract): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeployOracleContract>
+  ): MsgDeployOracleContract {
+    const message = {
+      ...baseMsgDeployOracleContract,
+    } as MsgDeployOracleContract;
+    message.creator = object.creator ?? "";
+    message.oracleId = object.oracleId ?? "";
+    return message;
+  },
+};
+
+const baseMsgDeployOracleContractResponse: object = {};
+
+export const MsgDeployOracleContractResponse = {
+  encode(
+    _: MsgDeployOracleContractResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeployOracleContractResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeployOracleContractResponse,
+    } as MsgDeployOracleContractResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeployOracleContractResponse {
+    const message = {
+      ...baseMsgDeployOracleContractResponse,
+    } as MsgDeployOracleContractResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeployOracleContractResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeployOracleContractResponse>
+  ): MsgDeployOracleContractResponse {
+    const message = {
+      ...baseMsgDeployOracleContractResponse,
+    } as MsgDeployOracleContractResponse;
+    return message;
+  },
+};
+
 const baseValidatorSignature: object = {
   validatorIndex: 0,
   signedTimestamp: Long.ZERO,
@@ -1789,6 +1924,9 @@ export interface Msg {
   UpdateOracleContract(
     request: MsgUpdateOracleContract
   ): Promise<MsgUpdateOracleContractResponse>;
+  DeployOracleContract(
+    request: MsgDeployOracleContract
+  ): Promise<MsgDeployOracleContractResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -1808,6 +1946,7 @@ export class MsgClientImpl implements Msg {
     this.RemoveOracle = this.RemoveOracle.bind(this);
     this.SetOracleSlashEnabled = this.SetOracleSlashEnabled.bind(this);
     this.UpdateOracleContract = this.UpdateOracleContract.bind(this);
+    this.DeployOracleContract = this.DeployOracleContract.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.CreateResult = this.CreateResult.bind(this);
   }
@@ -1872,6 +2011,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateOracleContractResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeployOracleContract(
+    request: MsgDeployOracleContract
+  ): Promise<MsgDeployOracleContractResponse> {
+    const data = MsgDeployOracleContract.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Msg",
+      "DeployOracleContract",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeployOracleContractResponse.decode(new _m0.Reader(data))
     );
   }
 

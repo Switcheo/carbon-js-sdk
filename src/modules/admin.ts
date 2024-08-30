@@ -524,7 +524,7 @@ export class AdminModule extends BaseModule {
         loanToValue: params.asset.loanToValue.toString(10),
         liquidationThreshold: params.asset.liquidationThreshold.toString(10),
         liquidationDiscount: params.asset.liquidationDiscount.toString(10),
-        allowRepayStablecoinInterestDebt: params.asset.allowRepayStablecoinInterestDebt,
+        allowRepayStablecoinInterest: params.asset.allowRepayStablecoinInterest,
         supplyCap: params.asset.supplyCap.toString(10),
         borrowCap: params.asset.borrowCap.toString(10),
       },
@@ -547,7 +547,7 @@ export class AdminModule extends BaseModule {
       assetParams: {
         denom: params.denom,
         rateStrategyName: params.rateStrategyName,
-        allowRepayStablecoinInterestDebt: params.allowRepayStablecoinInterestDebt,
+        allowRepayStablecoinInterest: params.allowRepayStablecoinInterest,
         loanToValue: params.loanToValue.toString(10),
         liquidationThreshold: params.liquidationThreshold.toString(10),
         liquidationDiscount: params.liquidationDiscount.toString(10),
@@ -927,7 +927,7 @@ export namespace AdminModule {
     liquidationDiscount: BigNumber;
     supplyCap: BigNumber;
     borrowCap: BigNumber;
-    allowRepayStablecoinInterestDebt: boolean;
+    allowRepayStablecoinInterest: boolean;
   }
   export interface AddRateStrategyParams {
     rateStrategy: RateStrategy;
@@ -944,7 +944,7 @@ export namespace AdminModule {
   export interface UpdateAssetParams {
     denom: string;
     rateStrategyName?: string;
-    allowRepayStablecoinInterestDebt?: boolean;
+    allowRepayStablecoinInterest?: boolean;
     loanToValue: BigNumber;
     liquidationThreshold: BigNumber;
     liquidationDiscount: BigNumber;
