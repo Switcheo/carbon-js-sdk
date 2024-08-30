@@ -155,10 +155,8 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
       if (toAmino) {
         const nanosBN = new BigNumber(value?.nanos ?? 0).shiftedBy(-6);
         const seconds = (value?.seconds as Long) ?? new Long(0);
-        return `${nanosBN.plus(seconds.toString()).toString(10)}`;
         return `${nanosBN.plus(seconds.mul(new Long(10 ** 9)).toString()).toString(10)}`;
       } else {
-        const durationBN = NumberUtils.bnOrZero(value.replace("s", ""));
         const totalNanos = Long.fromString(value)
         return {
           seconds: totalNanos.divide(10 ** 9),
