@@ -1,5 +1,6 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Duration } from "@carbon-sdk/codec";
+import BigNumber from "bignumber.js";
 import { Coin } from "cosmjs-types/cosmos/base/v1beta1/coin";
 import Long from "long";
 import { CarbonTx } from "../util";
@@ -23,12 +24,12 @@ export class BridgeModule extends BaseModule {
     })
     const tokens: Coin = {
       denom: tokenDenom,
-      amount: tokenAmount,
+      amount: tokenAmount.toString(10),
     }
 
     const relayFee: Coin = {
       denom: relayDenom,
-      amount: relayAmount,
+      amount: relayAmount.toString(10),
     }
 
     const value = Carbon.Bridge.MsgWithdrawToken.fromPartial({
@@ -55,9 +56,9 @@ export namespace BridgeModule {
     connectionId: string;
     receiver: string;
     tokenDenom: string;
-    tokenAmount: string;
+    tokenAmount: BigNumber;
     relayDenom: string;
-    relayAmount: string;
+    relayAmount: BigNumber;
     expirySeconds: number;
   }
 }

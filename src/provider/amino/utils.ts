@@ -113,6 +113,8 @@ export const mapEachIndiv = (
   return directMap;
 };
 
+export const NANOS_IN_ONE_SECOND = new Long(10 ** 9)
+
 /**
  * convert direct params to corresponding amino params
  * @param value direct params to be converted
@@ -155,12 +157,12 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
       if (toAmino) {
         const nanosBN = new BigNumber(value?.nanos ?? 0).shiftedBy(-6);
         const seconds = (value?.seconds as Long) ?? new Long(0);
-        return `${nanosBN.plus(seconds.mul(new Long(10 ** 9)).toString()).toString(10)}`;
+        return `${nanosBN.plus(seconds.mul(NANOS_IN_ONE_SECOND).toString()).toString(10)}`;
       } else {
         const totalNanos = Long.fromString(value)
         return {
-          seconds: totalNanos.divide(10 ** 9),
-          nanos: totalNanos.mod(10 ** 9).toNumber(),
+          seconds: totalNanos.divide(NANOS_IN_ONE_SECOND),
+          nanos: totalNanos.mod(NANOS_IN_ONE_SECOND).toNumber(),
         };
       }
     default:
@@ -220,7 +222,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         const camelKey = TypeUtils.snakeToCamel(key);
 
         if (isConvertEncType(newAminoMap[key])) {
-          aminoObj[camelKey] = paramConverter(newInput[key],newAminoMap[camelKey] as ConvertEncType, false)
+          aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as ConvertEncType, false)
           return
         }
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
