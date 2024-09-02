@@ -760,7 +760,7 @@ export class MetaMask {
     const metamaskChainId = metamaskNetwork.chainId ? `carbon_${metamaskNetwork.chainId.toString()}-1` : ''
     const metamaskAPI = await this.getConnectedAPI();
     if (metamaskChainId !== evmChainId) {
-        memo = "signedChainId:" + metamaskChainId + ";" + "actualChainId:" + evmChainId
+        memo += "signedChainId:" + metamaskChainId + ";" + "actualChainId:" + evmChainId
     }
     const stdSignDoc = makeSignDoc(msgs, fee, metamaskChainId || evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
