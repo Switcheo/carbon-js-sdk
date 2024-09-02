@@ -44,7 +44,10 @@ export interface AminoProcess {
  * @param value value to check
  */
 const typeCheck = (value: any): boolean => {
-  return Long.isLong(value) || BigNumber.isBigNumber(value) || value instanceof Uint8Array || value instanceof Date;
+  return Long.isLong(value)
+    || BigNumber.isBigNumber(value)
+    || value instanceof Uint8Array
+    || ((value.seconds !== undefined && Long.isLong(value.seconds)) && (value.nanos !== undefined && typeof value.nanos === 'number')); // Check for Duration interface
 };
 
 const isArrayOfStrings = (value: unknown): value is string[] => {
@@ -201,10 +204,6 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
               mapEachIndiv(newItem, newAminoMap[key] as TypeUtils.SimpleMap<ConvertEncType>, true)
             );
             return;
-          }
-          if (isConvertEncType(newAminoMap[key])) {
-            aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true)
-            return
           }
           aminoObj[snakeKey] = mapEachIndiv(newInput[key], newAminoMap[key] as TypeUtils.SimpleMap<ConvertEncType>, true);
         }
