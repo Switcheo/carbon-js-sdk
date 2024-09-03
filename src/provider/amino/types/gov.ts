@@ -23,8 +23,6 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.SetRewardsWeights]: "liquiditypool/SetRewardsWeightsProposal",
   [GovUtils.ProposalTypes.UpdatePool]: "liquiditypool/UpdatePoolProposal",
   [GovUtils.ProposalTypes.UpdateMarket]: "market/UpdateMarketProposal",
-  [GovUtils.ProposalTypes.CreateOracle]: "oracle/CreateOracleProposal",
-  [GovUtils.ProposalTypes.SettlementPrice]: "pricing/SettlementPriceProposal",
   [GovUtils.ProposalTypes.CreateGroup]: "coin/CreateGroupProposal",
   [GovUtils.ProposalTypes.UpdateGroup]: "coin.UpdateGroupProposal",
   [GovUtils.ProposalTypes.RegisterToGroup]: "coin/RegisterToGroupProposal",
@@ -127,16 +125,6 @@ const UpdatePool: AminoValueMap = {
   },
 };
 
-const CreateOracle: AminoValueMap = {
-  value: {
-    msg: {
-      minTurnoutPercentage: ConvertEncType.Long,
-      maxResultAge: ConvertEncType.Long,
-      resolution: ConvertEncType.Long,
-    },
-  },
-};
-
 const SetCommitmentCurve: AminoValueMap = {
   value: {
     msg: {
@@ -173,14 +161,6 @@ const UpdateMarket: AminoValueMap = {
       initialMarginStep: ConvertEncType.Dec,
       maintenanceMarginRatio: ConvertEncType.Dec,
       maxLiquidationOrderDuration: ConvertEncType.Duration,
-    },
-  },
-};
-
-const SettlementPrice: AminoValueMap = {
-  value: {
-    msg: {
-      settlementPrice: ConvertEncType.Dec,
     },
   },
 };
@@ -255,12 +235,6 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
       break;
     case GovUtils.ProposalTypes.RemoveMinGasPrice:
       newAmino.content = {};
-      break;
-    case GovUtils.ProposalTypes.SettlementPrice:
-      newAmino.content = { ...SettlementPrice };
-      break;
-    case GovUtils.ProposalTypes.CreateOracle:
-      newAmino.content = { ...CreateOracle };
       break;
     case GovUtils.ProposalTypes.UpdateMarket:
       newAmino.content = { ...UpdateMarket };
@@ -426,38 +400,6 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
         },
       };
     }
-    // case ContentTypes[GovUtils.ProposalTypes.SettlementPrice]: {
-    //   const settlementMsg = preProcessAmino(content.value.msg, SettlementPrice.value.msg);
-    //   const settlementProp = Carbon.Pricing.SettlementPriceProposal.fromPartial({
-    //     ...content.value,
-    //     msg: settlementMsg,
-    //   });
-    //   return {
-    //     newContent: {
-    //       typeUrl: GovUtils.ProposalTypes.SettlementPrice,
-    //       value: Carbon.Pricing.SettlementPriceProposal.encode(settlementProp).finish(),
-    //     },
-    //     newAmino: {
-    //       ...amino,
-    //     },
-    //   };
-    // }
-    // case ContentTypes[GovUtils.ProposalTypes.CreateOracle]: {
-    //   const createOracleMsg = preProcessAmino(content.value.msg, CreateOracle.value.msg);
-    //   const createOracleProp = Carbon.Oracle.CreateOracleProposal.fromPartial({
-    //     ...content.value,
-    //     msg: createOracleMsg,
-    //   });
-    //   return {
-    //     newContent: {
-    //       typeUrl: GovUtils.ProposalTypes.CreateOracle,
-    //       value: Carbon.Oracle.CreateOracleProposal.encode(createOracleProp).finish(),
-    //     },
-    //     newAmino: {
-    //       ...amino,
-    //     },
-    //   };
-    // }
     case ContentTypes[GovUtils.ProposalTypes.UpdateMarket]: {
       const updateMarketMsg = preProcessAmino(content.value.msg, UpdateMarket.value.msg);
       const updateMarketProp = Carbon.Market.UpdateMarketProposal.fromPartial({

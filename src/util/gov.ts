@@ -78,14 +78,8 @@ export enum ProposalTypes {
   SetRewardsWeightsV2 = "/Switcheo.carbon.liquiditypool.MsgSetRewardsWeights",
   SetCommitmentCurveV2 = "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve",
 
-  // pricing v1
-  SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
-
   // pricing v2
   SettlementPriceV2 = "/Switcheo.carbon.pricing.MsgUpdateSettlementPrice",
-
-  // oracle v1
-  CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
 
   // oracle v2
   CreateOracleV2 = "/Switcheo.carbon.oracle.MsgCreateOracle",

@@ -16,6 +16,7 @@ export interface Params {
   voteTimestampFutureAllowance?: Duration;
   oracleMinVoteFactor: string;
   maxPowerToSlashFactor: string;
+  evmOracleEnabled: boolean;
 }
 
 export interface ParamsToUpdate {
@@ -28,6 +29,7 @@ export interface ParamsToUpdate {
   voteTimestampFutureAllowance?: Duration;
   oracleMinVoteFactor: string;
   maxPowerToSlashFactor: string;
+  evmOracleEnabled?: boolean;
 }
 
 const baseParams: object = {
@@ -39,6 +41,7 @@ const baseParams: object = {
   newlyBondedWindowAllowance: 0,
   oracleMinVoteFactor: "",
   maxPowerToSlashFactor: "",
+  evmOracleEnabled: false,
 };
 
 export const Params = {
@@ -75,6 +78,9 @@ export const Params = {
     }
     if (message.maxPowerToSlashFactor !== "") {
       writer.uint32(74).string(message.maxPowerToSlashFactor);
+    }
+    if (message.evmOracleEnabled === true) {
+      writer.uint32(80).bool(message.evmOracleEnabled);
     }
     return writer;
   },
@@ -115,6 +121,9 @@ export const Params = {
           break;
         case 9:
           message.maxPowerToSlashFactor = reader.string();
+          break;
+        case 10:
+          message.evmOracleEnabled = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -171,6 +180,10 @@ export const Params = {
       object.maxPowerToSlashFactor !== null
         ? String(object.maxPowerToSlashFactor)
         : "";
+    message.evmOracleEnabled =
+      object.evmOracleEnabled !== undefined && object.evmOracleEnabled !== null
+        ? Boolean(object.evmOracleEnabled)
+        : false;
     return message;
   },
 
@@ -196,6 +209,8 @@ export const Params = {
       (obj.oracleMinVoteFactor = message.oracleMinVoteFactor);
     message.maxPowerToSlashFactor !== undefined &&
       (obj.maxPowerToSlashFactor = message.maxPowerToSlashFactor);
+    message.evmOracleEnabled !== undefined &&
+      (obj.evmOracleEnabled = message.evmOracleEnabled);
     return obj;
   },
 
@@ -214,6 +229,7 @@ export const Params = {
         : undefined;
     message.oracleMinVoteFactor = object.oracleMinVoteFactor ?? "";
     message.maxPowerToSlashFactor = object.maxPowerToSlashFactor ?? "";
+    message.evmOracleEnabled = object.evmOracleEnabled ?? false;
     return message;
   },
 };
@@ -272,6 +288,12 @@ export const ParamsToUpdate = {
     if (message.maxPowerToSlashFactor !== "") {
       writer.uint32(74).string(message.maxPowerToSlashFactor);
     }
+    if (message.evmOracleEnabled !== undefined) {
+      BoolValue.encode(
+        { value: message.evmOracleEnabled! },
+        writer.uint32(82).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -323,6 +345,12 @@ export const ParamsToUpdate = {
           break;
         case 9:
           message.maxPowerToSlashFactor = reader.string();
+          break;
+        case 10:
+          message.evmOracleEnabled = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -379,6 +407,10 @@ export const ParamsToUpdate = {
       object.maxPowerToSlashFactor !== null
         ? String(object.maxPowerToSlashFactor)
         : "";
+    message.evmOracleEnabled =
+      object.evmOracleEnabled !== undefined && object.evmOracleEnabled !== null
+        ? Boolean(object.evmOracleEnabled)
+        : undefined;
     return message;
   },
 
@@ -404,6 +436,8 @@ export const ParamsToUpdate = {
       (obj.oracleMinVoteFactor = message.oracleMinVoteFactor);
     message.maxPowerToSlashFactor !== undefined &&
       (obj.maxPowerToSlashFactor = message.maxPowerToSlashFactor);
+    message.evmOracleEnabled !== undefined &&
+      (obj.evmOracleEnabled = message.evmOracleEnabled);
     return obj;
   },
 
@@ -424,6 +458,7 @@ export const ParamsToUpdate = {
         : undefined;
     message.oracleMinVoteFactor = object.oracleMinVoteFactor ?? "";
     message.maxPowerToSlashFactor = object.maxPowerToSlashFactor ?? "";
+    message.evmOracleEnabled = object.evmOracleEnabled ?? undefined;
     return message;
   },
 };
