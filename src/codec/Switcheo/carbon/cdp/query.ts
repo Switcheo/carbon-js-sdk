@@ -57,7 +57,7 @@ export interface QueryAccountDataResponse {
 
 export interface QueryAccountCollateralRequest {
   address: string;
-  cdpDenom: string;
+  cibtDenom: string;
 }
 
 export interface QueryAccountCollateralResponse {
@@ -76,7 +76,7 @@ export interface QueryAccountCollateralAllResponse {
 
 export interface Collateral {
   denom: string;
-  cdpDenom: string;
+  cibtDenom: string;
   collateralAmount: string;
 }
 
@@ -101,7 +101,7 @@ export interface QueryAccountDebtAllResponse {
 
 export interface Debt {
   denom: string;
-  principalDebt: string;
+  principal: string;
   initialCumulativeInterestMultiplier: string;
 }
 
@@ -110,8 +110,8 @@ export interface QueryAccountStablecoinRequest {
 }
 
 export interface QueryAccountStablecoinResponse {
-  principalDebt: string;
-  interestDebt: string;
+  principal: string;
+  interest: string;
   initialCumulativeInterestMultiplier: string;
 }
 
@@ -158,7 +158,7 @@ export interface QueryStablecoinDebtResponse {
 export interface CdpPositionItem {
   address: string;
   denom: string;
-  cdpDenom: string;
+  cibtDenom: string;
   healthFactor: string;
   collateralAmount: string;
   borrowAmount: string;
@@ -845,7 +845,10 @@ export const QueryAccountDataResponse = {
   },
 };
 
-const baseQueryAccountCollateralRequest: object = { address: "", cdpDenom: "" };
+const baseQueryAccountCollateralRequest: object = {
+  address: "",
+  cibtDenom: "",
+};
 
 export const QueryAccountCollateralRequest = {
   encode(
@@ -855,8 +858,8 @@ export const QueryAccountCollateralRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
     }
     return writer;
   },
@@ -877,7 +880,7 @@ export const QueryAccountCollateralRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -895,9 +898,9 @@ export const QueryAccountCollateralRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     return message;
   },
@@ -905,7 +908,7 @@ export const QueryAccountCollateralRequest = {
   toJSON(message: QueryAccountCollateralRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     return obj;
   },
 
@@ -916,7 +919,7 @@ export const QueryAccountCollateralRequest = {
       ...baseQueryAccountCollateralRequest,
     } as QueryAccountCollateralRequest;
     message.address = object.address ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     return message;
   },
 };
@@ -1168,7 +1171,7 @@ export const QueryAccountCollateralAllResponse = {
 
 const baseCollateral: object = {
   denom: "",
-  cdpDenom: "",
+  cibtDenom: "",
   collateralAmount: "",
 };
 
@@ -1180,8 +1183,8 @@ export const Collateral = {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
     }
     if (message.collateralAmount !== "") {
       writer.uint32(26).string(message.collateralAmount);
@@ -1200,7 +1203,7 @@ export const Collateral = {
           message.denom = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 3:
           message.collateralAmount = reader.string();
@@ -1219,9 +1222,9 @@ export const Collateral = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.collateralAmount =
       object.collateralAmount !== undefined && object.collateralAmount !== null
@@ -1233,7 +1236,7 @@ export const Collateral = {
   toJSON(message: Collateral): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.collateralAmount !== undefined &&
       (obj.collateralAmount = message.collateralAmount);
     return obj;
@@ -1242,7 +1245,7 @@ export const Collateral = {
   fromPartial(object: DeepPartial<Collateral>): Collateral {
     const message = { ...baseCollateral } as Collateral;
     message.denom = object.denom ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.collateralAmount = object.collateralAmount ?? "";
     return message;
   },
@@ -1563,7 +1566,7 @@ export const QueryAccountDebtAllResponse = {
 
 const baseDebt: object = {
   denom: "",
-  principalDebt: "",
+  principal: "",
   initialCumulativeInterestMultiplier: "",
 };
 
@@ -1572,8 +1575,8 @@ export const Debt = {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.principalDebt !== "") {
-      writer.uint32(18).string(message.principalDebt);
+    if (message.principal !== "") {
+      writer.uint32(18).string(message.principal);
     }
     if (message.initialCumulativeInterestMultiplier !== "") {
       writer.uint32(26).string(message.initialCumulativeInterestMultiplier);
@@ -1592,7 +1595,7 @@ export const Debt = {
           message.denom = reader.string();
           break;
         case 2:
-          message.principalDebt = reader.string();
+          message.principal = reader.string();
           break;
         case 3:
           message.initialCumulativeInterestMultiplier = reader.string();
@@ -1611,9 +1614,9 @@ export const Debt = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
-    message.principalDebt =
-      object.principalDebt !== undefined && object.principalDebt !== null
-        ? String(object.principalDebt)
+    message.principal =
+      object.principal !== undefined && object.principal !== null
+        ? String(object.principal)
         : "";
     message.initialCumulativeInterestMultiplier =
       object.initialCumulativeInterestMultiplier !== undefined &&
@@ -1626,8 +1629,7 @@ export const Debt = {
   toJSON(message: Debt): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.principalDebt !== undefined &&
-      (obj.principalDebt = message.principalDebt);
+    message.principal !== undefined && (obj.principal = message.principal);
     message.initialCumulativeInterestMultiplier !== undefined &&
       (obj.initialCumulativeInterestMultiplier =
         message.initialCumulativeInterestMultiplier);
@@ -1637,7 +1639,7 @@ export const Debt = {
   fromPartial(object: DeepPartial<Debt>): Debt {
     const message = { ...baseDebt } as Debt;
     message.denom = object.denom ?? "";
-    message.principalDebt = object.principalDebt ?? "";
+    message.principal = object.principal ?? "";
     message.initialCumulativeInterestMultiplier =
       object.initialCumulativeInterestMultiplier ?? "";
     return message;
@@ -1709,8 +1711,8 @@ export const QueryAccountStablecoinRequest = {
 };
 
 const baseQueryAccountStablecoinResponse: object = {
-  principalDebt: "",
-  interestDebt: "",
+  principal: "",
+  interest: "",
   initialCumulativeInterestMultiplier: "",
 };
 
@@ -1719,11 +1721,11 @@ export const QueryAccountStablecoinResponse = {
     message: QueryAccountStablecoinResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.principalDebt !== "") {
-      writer.uint32(10).string(message.principalDebt);
+    if (message.principal !== "") {
+      writer.uint32(10).string(message.principal);
     }
-    if (message.interestDebt !== "") {
-      writer.uint32(18).string(message.interestDebt);
+    if (message.interest !== "") {
+      writer.uint32(18).string(message.interest);
     }
     if (message.initialCumulativeInterestMultiplier !== "") {
       writer.uint32(26).string(message.initialCumulativeInterestMultiplier);
@@ -1744,10 +1746,10 @@ export const QueryAccountStablecoinResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.principalDebt = reader.string();
+          message.principal = reader.string();
           break;
         case 2:
-          message.interestDebt = reader.string();
+          message.interest = reader.string();
           break;
         case 3:
           message.initialCumulativeInterestMultiplier = reader.string();
@@ -1764,13 +1766,13 @@ export const QueryAccountStablecoinResponse = {
     const message = {
       ...baseQueryAccountStablecoinResponse,
     } as QueryAccountStablecoinResponse;
-    message.principalDebt =
-      object.principalDebt !== undefined && object.principalDebt !== null
-        ? String(object.principalDebt)
+    message.principal =
+      object.principal !== undefined && object.principal !== null
+        ? String(object.principal)
         : "";
-    message.interestDebt =
-      object.interestDebt !== undefined && object.interestDebt !== null
-        ? String(object.interestDebt)
+    message.interest =
+      object.interest !== undefined && object.interest !== null
+        ? String(object.interest)
         : "";
     message.initialCumulativeInterestMultiplier =
       object.initialCumulativeInterestMultiplier !== undefined &&
@@ -1782,10 +1784,8 @@ export const QueryAccountStablecoinResponse = {
 
   toJSON(message: QueryAccountStablecoinResponse): unknown {
     const obj: any = {};
-    message.principalDebt !== undefined &&
-      (obj.principalDebt = message.principalDebt);
-    message.interestDebt !== undefined &&
-      (obj.interestDebt = message.interestDebt);
+    message.principal !== undefined && (obj.principal = message.principal);
+    message.interest !== undefined && (obj.interest = message.interest);
     message.initialCumulativeInterestMultiplier !== undefined &&
       (obj.initialCumulativeInterestMultiplier =
         message.initialCumulativeInterestMultiplier);
@@ -1798,8 +1798,8 @@ export const QueryAccountStablecoinResponse = {
     const message = {
       ...baseQueryAccountStablecoinResponse,
     } as QueryAccountStablecoinResponse;
-    message.principalDebt = object.principalDebt ?? "";
-    message.interestDebt = object.interestDebt ?? "";
+    message.principal = object.principal ?? "";
+    message.interest = object.interest ?? "";
     message.initialCumulativeInterestMultiplier =
       object.initialCumulativeInterestMultiplier ?? "";
     return message;
@@ -2490,7 +2490,7 @@ export const QueryStablecoinDebtResponse = {
 const baseCdpPositionItem: object = {
   address: "",
   denom: "",
-  cdpDenom: "",
+  cibtDenom: "",
   healthFactor: "",
   collateralAmount: "",
   borrowAmount: "",
@@ -2509,8 +2509,8 @@ export const CdpPositionItem = {
     if (message.denom !== "") {
       writer.uint32(18).string(message.denom);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(26).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(26).string(message.cibtDenom);
     }
     if (message.healthFactor !== "") {
       writer.uint32(34).string(message.healthFactor);
@@ -2544,7 +2544,7 @@ export const CdpPositionItem = {
           message.denom = reader.string();
           break;
         case 3:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 4:
           message.healthFactor = reader.string();
@@ -2579,9 +2579,9 @@ export const CdpPositionItem = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.healthFactor =
       object.healthFactor !== undefined && object.healthFactor !== null
@@ -2610,7 +2610,7 @@ export const CdpPositionItem = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.healthFactor !== undefined &&
       (obj.healthFactor = message.healthFactor);
     message.collateralAmount !== undefined &&
@@ -2626,7 +2626,7 @@ export const CdpPositionItem = {
     const message = { ...baseCdpPositionItem } as CdpPositionItem;
     message.address = object.address ?? "";
     message.denom = object.denom ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.healthFactor = object.healthFactor ?? "";
     message.collateralAmount = object.collateralAmount ?? "";
     message.borrowAmount = object.borrowAmount ?? "";
