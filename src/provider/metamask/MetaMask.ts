@@ -1,6 +1,6 @@
-import { CarbonEvmChainIDs, EVMChain, EthNetworkConfig, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
+import { ChainNames, BlockchainV2, EVMChain, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
@@ -119,7 +119,7 @@ export interface CallContractArgs {
 
 export interface StoredMnemonicInfo {
   mnemonic: string,
-  chain: EVMChainV2,
+  chain: EVMChain,
   privateKey: string,
   bech32Address: string
   evmHexAddress: string
@@ -435,7 +435,7 @@ export class MetaMask extends Eip6963Provider {
       }
     }
     if (legacyAccBlockchains.length > 0) {
-      const legacyMnemonicCiphers = legacyAccBlockchains.map(async (blockchain) => (this.getMnemonicInfo(blockchain as EVMChainV2)))
+      const legacyMnemonicCiphers = legacyAccBlockchains.map(async (blockchain) => (this.getMnemonicInfo(blockchain as EVMChain)))
       const results = await Promise.all(legacyMnemonicCiphers)
       return results.filter((result): result is StoredMnemonicInfo => result !== undefined)
     }
@@ -487,7 +487,7 @@ export class MetaMask extends Eip6963Provider {
       throw new Error(`${address} not connected on Metamask`);
   }
 
-  async getMnemonicInfo(connectedBlockchain: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
+  async getMnemonicInfo(connectedBlockchain: EVMChain): Promise<StoredMnemonicInfo | undefined> {
     const defaultAccount = await this.defaultAccount();
     let result: StoredMnemonicInfo | undefined
     if (connectedBlockchain && connectedBlockchain !== 'Carbon' && CONTRACT_HASH[connectedBlockchain][this.network]) {

@@ -15,7 +15,8 @@ class Eip6963Provider {
     let providers: EIP6963ProviderDetail[] = []
 
     function onAnnouncement(event: EIP6963AnnounceProviderEvent){
-      if(providers.map(p => p.info.uuid).includes(event.detail.info.uuid)) return
+      // Prevent adding a provider if it already exists in the list based on its uuid.
+      if (providers.some(p => p.info.uuid === event.detail.info.uuid)) return
       providers = [...providers, event.detail]
     }
 
