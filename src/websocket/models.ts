@@ -267,7 +267,7 @@ export interface AssetParams {
 
 export interface Collateral {
   // CDP
-  cdp_denom: string;
+  cibt_denom: string;
   denom: string;
   collateral_amount: string; // string representation of number
 }
@@ -275,7 +275,7 @@ export interface Collateral {
 export interface Debt {
   // CDP
   denom: string;
-  principal_debt: string; // string representation of number
+  principal: string; // string representation of number
   initial_cumulative_interest_multiplier: string; // string representation of number
 }
 
@@ -288,7 +288,7 @@ export interface AccountData {
 }
 
 export interface CDPAccountStablecoin {
-  principal_debt: string; // string representation of number
+  principal: string; // string representation of number
   interest_debt: string; // string representation of number
   initial_cumulative_interest_multiplier: string; // string representation of number
 }
@@ -370,6 +370,6 @@ export interface RewardDebt {
 }
 
 export interface CDPTokenSupply {
-  cdp_denom: string;
+  cibt_denom: string;
   amount: string; // string representation of number
 }

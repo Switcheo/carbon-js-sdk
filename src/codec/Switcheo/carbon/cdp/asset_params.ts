@@ -10,7 +10,7 @@ export interface AssetParams {
   /** deprecated: oracle_id is now on pricing */
   oracleId: string;
   rateStrategyName: string;
-  allowRepayStablecoinInterestDebt: boolean;
+  allowRepayStablecoinInterest: boolean;
   loanToValue: string;
   liquidationThreshold: string;
   liquidationDiscount: string;
@@ -28,7 +28,7 @@ export interface AssetUtilization {
 export interface UpdateAssetParams {
   denom: string;
   rateStrategyName?: string;
-  allowRepayStablecoinInterestDebt?: boolean;
+  allowRepayStablecoinInterest?: boolean;
   loanToValue: string;
   liquidationThreshold: string;
   liquidationDiscount: string;
@@ -40,7 +40,7 @@ const baseAssetParams: object = {
   denom: "",
   oracleId: "",
   rateStrategyName: "",
-  allowRepayStablecoinInterestDebt: false,
+  allowRepayStablecoinInterest: false,
   loanToValue: "",
   liquidationThreshold: "",
   liquidationDiscount: "",
@@ -62,8 +62,8 @@ export const AssetParams = {
     if (message.rateStrategyName !== "") {
       writer.uint32(26).string(message.rateStrategyName);
     }
-    if (message.allowRepayStablecoinInterestDebt === true) {
-      writer.uint32(32).bool(message.allowRepayStablecoinInterestDebt);
+    if (message.allowRepayStablecoinInterest === true) {
+      writer.uint32(32).bool(message.allowRepayStablecoinInterest);
     }
     if (message.loanToValue !== "") {
       writer.uint32(42).string(message.loanToValue);
@@ -100,7 +100,7 @@ export const AssetParams = {
           message.rateStrategyName = reader.string();
           break;
         case 4:
-          message.allowRepayStablecoinInterestDebt = reader.bool();
+          message.allowRepayStablecoinInterest = reader.bool();
           break;
         case 5:
           message.loanToValue = reader.string();
@@ -139,10 +139,10 @@ export const AssetParams = {
       object.rateStrategyName !== undefined && object.rateStrategyName !== null
         ? String(object.rateStrategyName)
         : "";
-    message.allowRepayStablecoinInterestDebt =
-      object.allowRepayStablecoinInterestDebt !== undefined &&
-      object.allowRepayStablecoinInterestDebt !== null
-        ? Boolean(object.allowRepayStablecoinInterestDebt)
+    message.allowRepayStablecoinInterest =
+      object.allowRepayStablecoinInterest !== undefined &&
+      object.allowRepayStablecoinInterest !== null
+        ? Boolean(object.allowRepayStablecoinInterest)
         : false;
     message.loanToValue =
       object.loanToValue !== undefined && object.loanToValue !== null
@@ -175,9 +175,8 @@ export const AssetParams = {
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     message.rateStrategyName !== undefined &&
       (obj.rateStrategyName = message.rateStrategyName);
-    message.allowRepayStablecoinInterestDebt !== undefined &&
-      (obj.allowRepayStablecoinInterestDebt =
-        message.allowRepayStablecoinInterestDebt);
+    message.allowRepayStablecoinInterest !== undefined &&
+      (obj.allowRepayStablecoinInterest = message.allowRepayStablecoinInterest);
     message.loanToValue !== undefined &&
       (obj.loanToValue = message.loanToValue);
     message.liquidationThreshold !== undefined &&
@@ -194,8 +193,8 @@ export const AssetParams = {
     message.denom = object.denom ?? "";
     message.oracleId = object.oracleId ?? "";
     message.rateStrategyName = object.rateStrategyName ?? "";
-    message.allowRepayStablecoinInterestDebt =
-      object.allowRepayStablecoinInterestDebt ?? false;
+    message.allowRepayStablecoinInterest =
+      object.allowRepayStablecoinInterest ?? false;
     message.loanToValue = object.loanToValue ?? "";
     message.liquidationThreshold = object.liquidationThreshold ?? "";
     message.liquidationDiscount = object.liquidationDiscount ?? "";
@@ -325,9 +324,9 @@ export const UpdateAssetParams = {
         writer.uint32(18).fork()
       ).ldelim();
     }
-    if (message.allowRepayStablecoinInterestDebt !== undefined) {
+    if (message.allowRepayStablecoinInterest !== undefined) {
       BoolValue.encode(
-        { value: message.allowRepayStablecoinInterestDebt! },
+        { value: message.allowRepayStablecoinInterest! },
         writer.uint32(26).fork()
       ).ldelim();
     }
@@ -366,7 +365,7 @@ export const UpdateAssetParams = {
           ).value;
           break;
         case 3:
-          message.allowRepayStablecoinInterestDebt = BoolValue.decode(
+          message.allowRepayStablecoinInterest = BoolValue.decode(
             reader,
             reader.uint32()
           ).value;
@@ -404,10 +403,10 @@ export const UpdateAssetParams = {
       object.rateStrategyName !== undefined && object.rateStrategyName !== null
         ? String(object.rateStrategyName)
         : undefined;
-    message.allowRepayStablecoinInterestDebt =
-      object.allowRepayStablecoinInterestDebt !== undefined &&
-      object.allowRepayStablecoinInterestDebt !== null
-        ? Boolean(object.allowRepayStablecoinInterestDebt)
+    message.allowRepayStablecoinInterest =
+      object.allowRepayStablecoinInterest !== undefined &&
+      object.allowRepayStablecoinInterest !== null
+        ? Boolean(object.allowRepayStablecoinInterest)
         : undefined;
     message.loanToValue =
       object.loanToValue !== undefined && object.loanToValue !== null
@@ -439,9 +438,8 @@ export const UpdateAssetParams = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.rateStrategyName !== undefined &&
       (obj.rateStrategyName = message.rateStrategyName);
-    message.allowRepayStablecoinInterestDebt !== undefined &&
-      (obj.allowRepayStablecoinInterestDebt =
-        message.allowRepayStablecoinInterestDebt);
+    message.allowRepayStablecoinInterest !== undefined &&
+      (obj.allowRepayStablecoinInterest = message.allowRepayStablecoinInterest);
     message.loanToValue !== undefined &&
       (obj.loanToValue = message.loanToValue);
     message.liquidationThreshold !== undefined &&
@@ -457,8 +455,8 @@ export const UpdateAssetParams = {
     const message = { ...baseUpdateAssetParams } as UpdateAssetParams;
     message.denom = object.denom ?? "";
     message.rateStrategyName = object.rateStrategyName ?? undefined;
-    message.allowRepayStablecoinInterestDebt =
-      object.allowRepayStablecoinInterestDebt ?? undefined;
+    message.allowRepayStablecoinInterest =
+      object.allowRepayStablecoinInterest ?? undefined;
     message.loanToValue = object.loanToValue ?? "";
     message.liquidationThreshold = object.liquidationThreshold ?? "";
     message.liquidationDiscount = object.liquidationDiscount ?? "";
