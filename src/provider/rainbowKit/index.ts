@@ -1,0 +1,1 @@
+export { default as RainbowKitAccount } from './RainbowKitAccount'
