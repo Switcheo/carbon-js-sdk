@@ -13,7 +13,7 @@ interface SimpleMap<T = unknown> {
 }
 
 (async () => {
-  const TESTNET_ORACLE_URL = "https://dev-api.carbon.network/carbon/oracle/v1/results_latest?pagination.limit=1000"
+  const TESTNET_ORACLE_URL = "https://test-api.carbon.network/carbon/oracle/v1/results_latest?pagination.limit=1000"
   const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/results_latest?pagination.limit=1000"
 
   // make get request to testnet oracle api and mainnet and compare
@@ -40,7 +40,7 @@ interface SimpleMap<T = unknown> {
     // check if price diff between mainnet and testnet oracles differ by more than 1%
     const priceDiff = parseFloat(price) / parseFloat(testnetPrice)
     if (priceDiff > parseFloat("1.01") || priceDiff < parseFloat("0.99")) {
-      console.log(`${oracleId}: ${price}, ${testnetPrice}, diff: ${priceDiff} \n`)
+      console.log(`${oracleId}: mainnet: ${price}, testnet: ${testnetPrice}, diff: ${priceDiff} \n`)
     }
   }
 })().catch(console.error).finally(() => process.exit(0));

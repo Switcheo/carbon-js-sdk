@@ -89,7 +89,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"bybit_ena_usdt\", \"binance_ena_usdt\", \"kucoin_ena_usdt\"]",
-        "weights": "[0.4, 0.4, 0.2]"
+        "weights": "[0.25, 0.70, 0.05]"
       }
     },
     {

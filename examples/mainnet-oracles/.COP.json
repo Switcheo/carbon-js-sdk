@@ -2,7 +2,7 @@
   "output_id": "op_usd",
   "templates": [
     {
-      "template_id": "response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -36,7 +36,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -61,29 +61,29 @@
       }
     },
     {
-      "output_id": "okx_op_usdt",
+      "output_id": "kucoin_op_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "okx_op_usdt",
-            "default_node_host": "https://www.okx.com",
-            "default_node_path": "/api/v5/market/index-tickers?instId=OP-USDT",
-            "paths": "[\"data.0.idxPx\"]",
+            "custom_node_url_key": "kucoin_op_usdt",
+            "default_node_host": "https://api.kucoin.com",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=OP-USDT",
+            "paths": "[\"data.price\"]",
             "timeout": "10"
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
     {
-      "output_id": "okx_op_usd",
+      "output_id": "kucoin_op_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"okx_op_usdt\",\"usdt_usd\"]"
+        "input_ids": "[\"kucoin_op_usdt\",\"usdt_usd\"]"
       }
     },
     {
@@ -100,7 +100,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -108,7 +108,7 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_op_usd\", \"okx_op_usd\",\"coinbase_op_usd\"]",
+        "value_ids": "[\"binance_op_usd\", \"kucoin_op_usd\",\"coinbase_op_usd\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -116,8 +116,8 @@
       "output_id": "op_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_op_usd\",\"okx_op_usd\",\"coinbase_op_usd\"]",
-        "weights": "[0.4, 0.3, 0.3]"
+        "value_ids": "[\"binance_op_usd\",\"kucoin_op_usd\",\"coinbase_op_usd\"]",
+        "weights": "[0.62, 0.14, 0.24]"
       }
     },
     {

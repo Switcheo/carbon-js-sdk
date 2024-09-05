@@ -23,6 +23,18 @@
   ],
   "jobs": [
     {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
       "output_id": "bybit_pendle_usdt",
       "adapters": [
         {
@@ -39,6 +51,14 @@
           "template": "full_response_handler"
         }
       ]
+    },
+    {
+      "output_id": "bybit_pendle_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_pendle_usdt\",\"usdt_usd\"]"
+      }
     },
     {
       "output_id": "binance_pendle_usdt",
@@ -59,15 +79,23 @@
       ]
     },
     {
-      "output_id": "kucoin_pendle_usdt",
+      "output_id": "binance_pendle_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_pendle_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "kraken_pendle_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kucoin_pendle_usdt",
-            "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=PENDLE-USDT",
-            "paths": "[\"data.price\"]",
+            "custom_node_url_key": "kraken_pendle_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=PENDLEUSD",
+            "paths": "[\"result.PENDLEUSD.c.0\"]",
             "timeout": "10"
           }
         },
@@ -80,36 +108,16 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_pendle_usdt\", \"binance_pendle_usdt\", \"kucoin_pendle_usdt\"]",
+        "value_ids": "[\"bybit_pendle_usd\", \"binance_pendle_usd\", \"kraken_pendle_usd\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "pendle_usdt",
+      "output_id": "pendle_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_pendle_usdt\", \"binance_pendle_usdt\", \"kucoin_pendle_usdt\"]",
-        "weights": "[0.4, 0.4, 0.2]"
-      }
-    },
-    {
-      "output_id": "usdt_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": ".CUSDT",
-            "stale_allowance": "900"
-          }
-        }
-      ]
-    },
-    {
-      "output_id": "pendle_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"pendle_usdt\",\"usdt_usd\"]"
+        "value_ids": "[\"bybit_pendle_usd\", \"binance_pendle_usd\", \"kraken_pendle_usd\"]",
+        "weights": "[0.06, 0.70, 0.24]"
       }
     },
     {

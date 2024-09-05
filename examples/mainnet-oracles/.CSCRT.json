@@ -19,54 +19,18 @@
           }
         }
       ]
-    },
-    {
-      "template_id": "rpc_response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "120"
-          }
-        }
-      ]
     }
   ],
   "jobs": [
     {
-      "output_id": "binance_scrt_usdt",
+      "output_id": "usdt_usd",
       "adapters": [
         {
-          "adapter": "fetcher_multiple",
+          "adapter": "oracle_result_fetcher",
           "config": {
-            "custom_node_url_key": "binance_scrt_usdt",
-            "default_node_host": "https://api-binance-proxy.carbon.network",
-            "default_node_path": "/api/v3/ticker/price?symbol=SCRTUSDT",
-            "paths": "[\"price\"]",
-            "timeout": "10"
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
           }
-        },
-        {
-          "template": "full_response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "binance_scrt_btc",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "binance_scrt_btc",
-            "default_node_host": "https://api-binance-proxy.carbon.network",
-            "default_node_path": "/api/v3/ticker/price?symbol=SCRTBTC",
-            "paths": "[\"price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "full_response_handler"
         }
       ]
     },
@@ -89,26 +53,28 @@
       ]
     },
     {
-      "output_id": "usdt_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": ".CUSDT",
-            "stale_allowance": "900"
-          }
-        }
-      ]
+      "output_id": "bybit_scrt_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_scrt_usdt\",\"usdt_usd\"]"
+      }
     },
     {
-      "output_id": "btc_usd",
+      "output_id": "binance_scrt_usdt",
       "adapters": [
         {
-          "adapter": "oracle_result_fetcher",
+          "adapter": "fetcher_multiple",
           "config": {
-            "oracle_id": "SIDXBTC",
-            "stale_allowance": "900"
+            "custom_node_url_key": "binance_scrt_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=SCRTUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
           }
+        },
+        {
+          "template": "full_response_handler"
         }
       ]
     },
@@ -121,26 +87,28 @@
       }
     },
     {
-      "output_id": "binance_btc_scrt_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"binance_scrt_btc\",\"btc_usd\"]"
-      }
-    },
-    {
-      "output_id": "bybit_scrt_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"bybit_scrt_usdt\",\"usdt_usd\"]"
-      }
+      "output_id": "kraken_scrt_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kraken_scrt_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=SCRTUSD",
+            "paths": "[\"result.SCRTUSD.c.0\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
     },
     {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"bybit_scrt_usd\"]",
+        "value_ids": "[\"bybit_scrt_usd\", \"binance_scrt_usd\", \"kraken_scrt_usd\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -148,8 +116,8 @@
       "output_id": "scrt_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"bybit_scrt_usd\"]",
-        "weights": "[0.4, 0.3, 0.3]"
+        "value_ids": "[\"bybit_scrt_usd\", \"binance_scrt_usd\", \"kraken_scrt_usd\"]",
+        "weights": "[0.39, 0.56, 0.05]"
       }
     },
     {

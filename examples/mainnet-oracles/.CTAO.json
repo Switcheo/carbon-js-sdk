@@ -23,12 +23,24 @@
   ],
   "jobs": [
     {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
       "output_id": "bybit_tao_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bybit_perps_tao_usdt",
+            "custom_node_url_key": "bybit_tao_usdt",
             "default_node_host": "https://api-bybit.carbon.network",
             "default_node_path": "/derivatives/v3/public/tickers?category=linear&symbol=TAOUSDT",
             "paths": "[\"result.list.0.indexPrice\"]",
@@ -39,6 +51,14 @@
           "template": "full_response_handler"
         }
       ]
+    },
+    {
+      "output_id": "bybit_tao_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_tao_usdt\",\"usdt_usd\"]"
+      }
     },
     {
       "output_id": "binance_tao_usdt",
@@ -59,15 +79,23 @@
       ]
     },
     {
-      "output_id": "kucoin_tao_usdt",
+      "output_id": "binance_tao_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_tao_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "kraken_tao_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kucoin_tao_usdt",
-            "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=TAO-USDT",
-            "paths": "[\"data.price\"]",
+            "custom_node_url_key": "kraken_tao_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=TAOUSD",
+            "paths": "[\"result.TAOUSD.c.0\"]",
             "timeout": "10"
           }
         },
@@ -80,36 +108,16 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_tao_usdt\", \"binance_tao_usdt\", \"kucoin_tao_usdt\"]",
+        "value_ids": "[\"bybit_tao_usd\", \"binance_tao_usd\", \"kraken_tao_usd\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "tao_usdt",
+      "output_id": "tao_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_tao_usdt\", \"binance_tao_usdt\", \"kucoin_tao_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
-      }
-    },
-    {
-      "output_id": "usdt_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": ".CUSDT",
-            "stale_allowance": "900"
-          }
-        }
-      ]
-    },
-    {
-      "output_id": "tao_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"tao_usdt\",\"usdt_usd\"]"
+        "value_ids": "[\"bybit_tao_usd\", \"binance_tao_usd\", \"kraken_tao_usd\"]",
+        "weights": "[0.05, 0.70, 0.25]"
       }
     },
     {

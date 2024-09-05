@@ -89,7 +89,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"bybit_ftm_usdt\", \"binance_ftm_usdt\", \"okx_ftm_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
+        "weights": "[0.20, 0.70, 0.10]"
       }
     },
     {

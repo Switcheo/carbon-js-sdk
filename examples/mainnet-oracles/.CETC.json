@@ -2,7 +2,7 @@
   "output_id": "etc_usd",
   "templates": [
     {
-      "template_id": "response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -36,7 +36,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -61,22 +61,30 @@
       }
     },
     {
-      "output_id": "kraken_etc_usd",
+      "output_id": "okx_etc_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kraken_etc_usd",
-            "default_node_host": "https://api.kraken.com",
-            "default_node_path": "/0/public/Ticker?pair=ETCUSD",
-            "paths": "[\"result.XETCZUSD.c.0\"]",
+            "custom_node_url_key": "okx_etc_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=ETC-USDT",
+            "paths": "[\"data.0.idxPx\"]",
             "timeout": "10"
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
+    },
+    {
+      "output_id": "okx_etc_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"okx_etc_usdt\",\"usdt_usd\"]"
+      }
     },
     {
       "output_id": "coinbase_etc_usd",
@@ -92,7 +100,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -100,7 +108,7 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_etc_usd\", \"kraken_etc_usd\",\"coinbase_etc_usd\"]",
+        "value_ids": "[\"binance_etc_usd\", \"okx_etc_usd\",\"coinbase_etc_usd\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -108,8 +116,8 @@
       "output_id": "etc_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_etc_usd\",\"kraken_etc_usd\",\"coinbase_etc_usd\"]",
-        "weights": "[0.4, 0.3, 0.3]"
+        "value_ids": "[\"binance_etc_usd\",\"okx_etc_usd\",\"coinbase_etc_usd\"]",
+        "weights": "[0.56, 0.27, 0.17]"
       }
     },
     {

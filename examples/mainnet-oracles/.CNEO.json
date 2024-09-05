@@ -1,14 +1,14 @@
 {
-  "output_id": "bneo_usd",
+  "output_id": "neo_usd",
   "templates": [
     {
-      "template_id": "unchanged_response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
           "config": {
             "strategy": "use_last",
-            "grace_duration": "10"
+            "grace_duration": "120"
           }
         },
         {
@@ -19,30 +19,24 @@
           }
         }
       ]
-    },
-    {
-      "template_id": "response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "10"
-          }
-        }
-      ]
     }
   ],
   "jobs": [
     {
-      "output_id": "usdt_usd",
+      "output_id": "bybit_neo_usdt",
       "adapters": [
         {
-          "adapter": "oracle_result_fetcher",
+          "adapter": "fetcher_multiple",
           "config": {
-            "oracle_id": ".CUSDT",
-            "stale_allowance": "900"
+            "custom_node_url_key": "bybit_perps_neo_usdt",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/derivatives/v3/public/tickers?category=linear&symbol=NEOUSDT",
+            "paths": "[\"result.list.0.indexPrice\"]",
+            "timeout": "10"
           }
+        },
+        {
+          "template": "full_response_handler"
         }
       ]
     },
@@ -60,17 +54,9 @@
           }
         },
         {
-          "template": "unchanged_response_handler"
+          "template": "full_response_handler"
         }
       ]
-    },
-    {
-      "output_id": "binance_neo_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"binance_neo_usdt\",\"usdt_usd\"]"
-      }
     },
     {
       "output_id": "okx_neo_usdt",
@@ -86,33 +72,7 @@
           }
         },
         {
-          "template": "unchanged_response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "okx_neo_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"okx_neo_usdt\",\"usdt_usd\"]"
-      }
-    },
-    {
-      "output_id": "bitfinex_neo_usd",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "bitfinex_neo_usd",
-            "default_node_host": "https://api.bitfinex.com",
-            "default_node_path": "/v1/pubticker/neousd",
-            "paths": "[\"mid\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "unchanged_response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -120,21 +80,41 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_neo_usd\", \"okx_neo_usd\",\"bitfinex_neo_usd\"]",
+        "value_ids": "[\"bybit_neo_usdt\", \"binance_neo_usdt\", \"okx_neo_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "bneo_usd",
+      "output_id": "neo_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_neo_usd\", \"okx_neo_usd\",\"bitfinex_neo_usd\"]",
-        "weights": "[0.6, 0.3, 0.1]"
+        "value_ids": "[\"bybit_neo_usdt\", \"binance_neo_usdt\", \"okx_neo_usdt\"]",
+        "weights": "[0.10, 0.83, 0.07]"
       }
     },
     {
-      "output_id": "bneo_usd",
-      "input_id": "bneo_usd",
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "neo_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"neo_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "neo_usd",
+      "input_id": "neo_usd",
       "adapter": "float_handler",
       "config": {
         "operation": "round",

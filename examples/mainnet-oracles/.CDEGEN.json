@@ -28,10 +28,28 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bybit_perps_degen_usdt",
+            "custom_node_url_key": "bybit_degen_usdt",
             "default_node_host": "https://api-bybit.carbon.network",
             "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=DEGENUSDT",
             "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_degen_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_degen_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=DEGEN-USDT",
+            "paths": "[\"data.0.idxPx\"]",
             "timeout": "10"
           }
         },
@@ -59,28 +77,10 @@
       ]
     },
     {
-      "output_id": "htx_degen_usdt",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "htx_degen_usdt",
-            "default_node_host": "https://api.huobi.pro",
-            "default_node_path": "/market/trade?symbol=degenusdt",
-            "paths": "[\"tick.data.0.price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "full_response_handler"
-        }
-      ]
-    },
-    {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_degen_usdt\", \"kucoin_degen_usdt\", \"htx_degen_usdt\"]",
+        "value_ids": "[\"bybit_degen_usdt\", \"okx_degen_usdt\", \"kucoin_degen_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -88,8 +88,8 @@
       "output_id": "degen_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_degen_usdt\", \"kucoin_degen_usdt\", \"htx_degen_usdt\"]",
-        "weights": "[0.5, 0.2, 0.3]"
+        "value_ids": "[\"bybit_degen_usdt\", \"okx_degen_usdt\", \"kucoin_degen_usdt\"]",
+        "weights": "[0.87, 0.03, 0.10]"
       }
     },
     {

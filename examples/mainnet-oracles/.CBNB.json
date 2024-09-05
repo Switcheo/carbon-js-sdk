@@ -89,7 +89,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"bybit_bnb_usdt\", \"binance_bnb_usdt\", \"okx_bnb_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
+        "weights": "[0.22, 0.72, 0.06]"
       }
     },
     {

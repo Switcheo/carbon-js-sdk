@@ -23,15 +23,15 @@
   ],
   "jobs": [
     {
-      "output_id": "bybit_pepe_usdt",
+      "output_id": "kucoin_pepe_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bybit_pepe_usdt",
-            "default_node_host": "https://api-bybit.carbon.network",
-            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=PEPEUSDT",
-            "paths": "[\"result.price\"]",
+            "custom_node_url_key": "kucoin_pepe_usdt",
+            "default_node_host": "https://api.kucoin.com",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=PEPE-USDT",
+            "paths": "[\"data.price\"]",
             "timeout": "10"
           }
         },
@@ -95,8 +95,8 @@
       }
     },
     {
-      "output_id": "bybit_pepe_usdt",
-      "input_id": "bybit_pepe_usdt",
+      "output_id": "kucoin_pepe_usdt",
+      "input_id": "kucoin_pepe_usdt",
       "adapter": "decimal_handler",
       "config": {
         "operation": "increase",
@@ -107,7 +107,7 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_pepe_usdt\", \"binance_pepe_usdt\", \"okx_pepe_usdt\"]",
+        "value_ids": "[\"kucoin_pepe_usdt\", \"binance_pepe_usdt\", \"okx_pepe_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -115,8 +115,8 @@
       "output_id": "pepe_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_pepe_usdt\", \"binance_pepe_usdt\", \"okx_pepe_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
+        "value_ids": "[\"kucoin_pepe_usdt\", \"binance_pepe_usdt\", \"okx_pepe_usdt\"]",
+        "weights": "[0.24, 0.72, 0.04]"
       }
     },
     {

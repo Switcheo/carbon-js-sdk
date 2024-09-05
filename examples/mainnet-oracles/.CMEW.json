@@ -41,6 +41,24 @@
       ]
     },
     {
+      "output_id": "binance_mew_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_mew_usdt",
+            "default_node_host": "https://fapi-binance-proxy.carbon.network",
+            "default_node_path": "/fapi/v2/ticker/price?symbol=MEWUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
       "output_id": "okx_mew_usdt",
       "adapters": [
         {
@@ -59,28 +77,10 @@
       ]
     },
     {
-      "output_id": "kucoin_mew_usdt",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "kucoin_mew_usdt",
-            "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=MEW-USDT",
-            "paths": "[\"data.price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "full_response_handler"
-        }
-      ]
-    },
-    {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_mew_usdt\", \"okx_mew_usdt\", \"kucoin_mew_usdt\"]",
+        "value_ids": "[\"bybit_mew_usdt\", \"binance_mew_usdt\", \"okx_mew_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -88,8 +88,8 @@
       "output_id": "mew_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_mew_usdt\", \"okx_mew_usdt\", \"kucoin_mew_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
+        "value_ids": "[\"bybit_mew_usdt\", \"binance_mew_usdt\", \"okx_mew_usdt\"]",
+        "weights": "[0.40, 0.40, 0.20]"
       }
     },
     {

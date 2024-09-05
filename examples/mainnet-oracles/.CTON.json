@@ -71,15 +71,15 @@
       ]
     },
     {
-      "output_id": "kucoin_ton_usdt",
+      "output_id": "binance_ton_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kucoin_ton_usdt",
-            "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=TON-USDT",
-            "paths": "[\"data.price\"]",
+            "custom_node_url_key": "binance_ton_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=TONUSDT",
+            "paths": "[\"price\"]",
             "timeout": "10"
           }
         },
@@ -92,7 +92,7 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"kucoin_ton_usdt\"]",
+        "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"binance_ton_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -100,8 +100,8 @@
       "output_id": "ton_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"kucoin_ton_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
+        "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"binance_ton_usdt\"]",
+        "weights": "[0.04, 0.39, 0.57]"
       }
     },
     {

@@ -23,6 +23,24 @@
   ],
   "jobs": [
     {
+      "output_id": "bybit_gas_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_gas_usdt",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/derivatives/v3/public/tickers?category=linear&symbol=GASUSDT",
+            "paths": "[\"result.list.0.indexPrice\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
       "output_id": "binance_gas_usdt",
       "adapters": [
         {
@@ -59,28 +77,10 @@
       ]
     },
     {
-      "output_id": "kucoin_gas_usdt",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "kucoin_gas_usdt",
-            "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=GAS-USDT",
-            "paths": "[\"data.price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "full_response_handler"
-        }
-      ]
-    },
-    {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_gas_usdt\", \"okx_gas_usdt\", \"kucoin_gas_usdt\"]",
+        "value_ids": "[\"bybit_gas_usdt\", \"binance_gas_usdt\", \"okx_gas_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -88,8 +88,8 @@
       "output_id": "gas_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_gas_usdt\", \"okx_gas_usdt\", \"kucoin_gas_usdt\"]",
-        "weights": "[0.4, 0.3, 0.3]"
+        "value_ids": "[\"bybit_gas_usdt\", \"binance_gas_usdt\", \"okx_gas_usdt\"]",
+        "weights": "[0.35, 0.45, 0.20]"
       }
     },
     {

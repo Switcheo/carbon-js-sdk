@@ -19,18 +19,6 @@
           }
         }
       ]
-    },
-    {
-      "template_id": "response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "10"
-          }
-        }
-      ]
     }
   ],
   "jobs": [
@@ -101,7 +89,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"binance_luna_usdt\", \"okx_luna_usdt\", \"kucoin_luna_usdt\"]",
-        "weights": "[0.6, 0.3, 0.1]"
+        "weights": "[0.51, 0.30, 0.19]"
       }
     },
     {

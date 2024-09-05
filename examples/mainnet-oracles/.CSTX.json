@@ -23,6 +23,44 @@
   ],
   "jobs": [
     {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "bybit_stx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_stx_usdt",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=STXUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "bybit_stx_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_stx_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
       "output_id": "binance_stx_usdt",
       "adapters": [
         {
@@ -41,54 +79,6 @@
       ]
     },
     {
-      "output_id": "okx_stx_usdt",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "okx_stx_usd",
-            "default_node_host": "https://www.okx.com",
-            "default_node_path": "/api/v5/market/index-tickers?instId=STX-USDT",
-            "paths": "[\"data.0.idxPx\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "full_response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "coinbase_stx_usd",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "coinbase_stx_usd",
-            "default_node_host": "https://api.exchange.coinbase.com",
-            "default_node_path": "/products/STX-USD/ticker",
-            "paths": "[\"price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "full_response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "usdt_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": ".CUSDT",
-            "stale_allowance": "900"
-          }
-        }
-      ]
-    },
-    {
       "output_id": "binance_stx_usd",
       "adapter": "math_filter",
       "config": {
@@ -97,18 +87,28 @@
       }
     },
     {
-      "output_id": "okx_stx_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"okx_stx_usdt\",\"usdt_usd\"]"
-      }
+      "output_id": "kraken_stx_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kraken_stx_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=STXUSD",
+            "paths": "[\"result.STXUSD.c.0\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
     },
     {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_stx_usd\", \"okx_stx_usd\", \"coinbase_stx_usd\"]",
+        "value_ids": "[\"bybit_stx_usd\", \"binance_stx_usd\", \"kraken_stx_usd\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -116,8 +116,8 @@
       "output_id": "stx_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_stx_usd\", \"okx_stx_usd\", \"coinbase_stx_usd\"]",
-        "weights": "[0.4, 0.3, 0.3]"
+        "value_ids": "[\"bybit_stx_usd\", \"binance_stx_usd\", \"kraken_stx_usd\"]",
+        "weights": "[0.12, 0.83, 0.05]"
       }
     },
     {

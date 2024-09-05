@@ -1,0 +1,131 @@
+{
+  "output_id": "datom_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "atom_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CATOM",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "datom_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "datom_redemption_rate",
+            "default_node_host": "https://lcd-neutron.whispernode.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/neutron17uqju9k0rj5t6arupnd70t2tp4n66est7fhh00wxc2ajxu0rsnasy0kgnx/smart/eyJyZWRlbXB0aW9uX3JhdGUiOnsiZGVub20iOiJmYWN0b3J5L25ldXRyb24xazZocjBmODNlN3VuMndqZjI5Y3NwazdqNjlqcm5za2s2NWszZWsybmo5ZHp0cmx6cGo2cTAwcnRzYS91ZGF0b20ifX0=",
+            "paths": "[\"data.redemption_rate\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "datom_usd_via_redemption_rate",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"datom_redemption_rate\",\"atom_usd\"]"
+      }
+    },
+    {
+      "output_id": "astroport_datom_usdc_6_via_swap_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "astroport_datom_usdc_6_via_swap_rate",
+            "default_node_host": "https://lcd-neutron.whispernode.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/neutron1nfns3ck2ykrs0fknckrzd9728cyf77devuzernhwcwrdxw7ssk2s3tjf8r/smart/ewogICJzaW11bGF0aW9uIjogeyJvZmZlcl9hc3NldCI6IHsKICAgICAgImFtb3VudCI6ICIxMDAwMDAwIiwKICAgICAgImluZm8iOiB7CiAgICAgICAgIm5hdGl2ZV90b2tlbiI6IHsKICAgICAgICAgICJkZW5vbSI6ICJmYWN0b3J5L25ldXRyb24xazZocjBmODNlN3VuMndqZjI5Y3NwazdqNjlqcm5za2s2NWszZWsybmo5ZHp0cmx6cGo2cTAwcnRzYS91ZGF0b20iCiAgICAgICAgfQogICAgICB9CiAgICB9fQp9",
+            "paths": "[\"data.return_amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdc_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDC",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "astroport_datom_usd_6_via_swap_rate",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"astroport_datom_usdc_6_via_swap_rate\",\"usdc_usd\"]"
+      }
+    },
+    {
+      "output_id": "astroport_datom_usd_via_swap_rate",
+      "input_id": "astroport_datom_usd_6_via_swap_rate",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "6"
+      }
+    },
+    {
+      "output_id": "datom_usd",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"astroport_datom_usd_via_swap_rate\", \"datom_usd_via_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "datom_usd",
+      "input_id": "datom_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "8"
+      }
+    },
+    {
+      "output_id": "datom_usd",
+      "input_id": "datom_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

@@ -117,7 +117,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"bybit_axl_usd\", \"binance_axl_usd\", \"coinbase_axl_usd\"]",
-        "weights": "[0.3, 0.4, 0.3]"
+        "weights": "[0.18, 0.70, 0.12]"
       }
     },
     {

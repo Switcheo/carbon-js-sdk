@@ -2,7 +2,7 @@
   "output_id": "bonk_usd",
   "templates": [
     {
-      "template_id": "response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -36,7 +36,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -61,30 +61,22 @@
       }
     },
     {
-      "output_id": "okx_bonk_usdt",
+      "output_id": "kraken_bonk_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "okx_bonk_usdt",
-            "default_node_host": "https://www.okx.com",
-            "default_node_path": "/api/v5/market/index-tickers?instId=BONK-USDT",
-            "paths": "[\"data.0.idxPx\"]",
+            "custom_node_url_key": "kraken_bonk_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=BONKUSD",
+            "paths": "[\"result.BONKUSD.c.0\"]",
             "timeout": "10"
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
-    },
-    {
-      "output_id": "okx_bonk_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"okx_bonk_usdt\",\"usdt_usd\"]"
-      }
     },
     {
       "output_id": "coinbase_bonk_usd",
@@ -100,7 +92,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -114,8 +106,8 @@
       }
     },
     {
-      "output_id": "okx_bonk_usd",
-      "input_id": "okx_bonk_usd",
+      "output_id": "kraken_bonk_usd",
+      "input_id": "kraken_bonk_usd",
       "adapter": "decimal_handler",
       "config": {
         "operation": "increase",
@@ -135,7 +127,7 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_bonk_usd\", \"okx_bonk_usd\",\"coinbase_bonk_usd\"]",
+        "value_ids": "[\"binance_bonk_usd\", \"kraken_bonk_usd\",\"coinbase_bonk_usd\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -143,8 +135,8 @@
       "output_id": "bonk_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_bonk_usd\",\"okx_bonk_usd\",\"coinbase_bonk_usd\"]",
-        "weights": "[0.4, 0.3, 0.3]"
+        "value_ids": "[\"binance_bonk_usd\",\"kraken_bonk_usd\",\"coinbase_bonk_usd\"]",
+        "weights": "[0.56, 0.05, 0.39]"
       }
     },
     {

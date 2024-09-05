@@ -2,7 +2,7 @@
   "output_id": "arch_usd",
   "templates": [
     {
-      "template_id": "response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -36,7 +36,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -74,7 +74,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -92,7 +92,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -139,7 +139,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -174,7 +174,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },

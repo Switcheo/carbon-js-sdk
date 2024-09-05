@@ -59,15 +59,15 @@
       ]
     },
     {
-      "output_id": "kucoin_tia_usdt",
+      "output_id": "okx_tia_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kucoin_tia_usdt",
-            "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=TIA-USDT",
-            "paths": "[\"data.price\"]",
+            "custom_node_url_key": "okx_tia_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=TIA-USDT",
+            "paths": "[\"data.0.idxPx\"]",
             "timeout": "10"
           }
         },
@@ -80,7 +80,7 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"kucoin_tia_usdt\"]",
+        "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"okx_tia_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -88,8 +88,8 @@
       "output_id": "tia_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"kucoin_tia_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
+        "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"okx_tia_usdt\"]",
+        "weights": "[0.20, 0.70, 0.10]"
       }
     },
     {

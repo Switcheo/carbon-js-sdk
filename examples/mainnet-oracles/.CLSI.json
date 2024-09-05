@@ -2,7 +2,7 @@
   "output_id": "lsi_usd",
   "templates": [
     {
-      "template_id": "response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -29,14 +29,14 @@
           "adapter": "fetcher_multiple",
           "config": {
             "custom_node_url_key": "lsi_usd",
-						"default_node_host": "http://lsi-index.carbon.network",
-						"default_node_path": "",
-						"paths": "[\"price\"]",
-						"timeout": "10"
+            "default_node_host": "http://lsi-index.carbon.network",
+            "default_node_path": "",
+            "paths": "[\"price\"]",
+            "timeout": "10"
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },

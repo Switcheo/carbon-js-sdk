@@ -23,6 +23,18 @@
   ],
   "jobs": [
     {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
       "output_id": "bybit_dym_usdt",
       "adapters": [
         {
@@ -39,6 +51,14 @@
           "template": "full_response_handler"
         }
       ]
+    },
+    {
+      "output_id": "bybit_dym_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_dym_usdt\",\"usdt_usd\"]"
+      }
     },
     {
       "output_id": "binance_dym_usdt",
@@ -59,15 +79,23 @@
       ]
     },
     {
-      "output_id": "kucoin_dym_usdt",
+      "output_id": "binance_dym_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_dym_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "kraken_dym_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kucoin_dym_usdt",
-            "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=DYM-USDT",
-            "paths": "[\"data.price\"]",
+            "custom_node_url_key": "kraken_dym_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=DYMUSD",
+            "paths": "[\"result.DYMUSD.c.0\"]",
             "timeout": "10"
           }
         },
@@ -80,36 +108,16 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_dym_usdt\", \"binance_dym_usdt\", \"kucoin_dym_usdt\"]",
+        "value_ids": "[\"bybit_dym_usd\", \"binance_dym_usd\", \"kraken_dym_usd\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "dym_usdt",
+      "output_id": "dym_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_dym_usdt\", \"binance_dym_usdt\", \"kucoin_dym_usdt\"]",
-        "weights": "[0.4, 0.4, 0.2]"
-      }
-    },
-    {
-      "output_id": "usdt_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": ".CUSDT",
-            "stale_allowance": "900"
-          }
-        }
-      ]
-    },
-    {
-      "output_id": "dym_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"dym_usdt\",\"usdt_usd\"]"
+        "value_ids": "[\"bybit_dym_usd\", \"binance_dym_usd\", \"kraken_dym_usd\"]",
+        "weights": "[0.20, 0.70, 0.10]"
       }
     },
     {

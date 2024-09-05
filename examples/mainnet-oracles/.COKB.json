@@ -2,7 +2,7 @@
   "output_id": "okb_usd",
   "templates": [
     {
-      "template_id": "unchanged_response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -16,18 +16,6 @@
           "config": {
             "strategy": "nullify",
             "threshold_duration": "900"
-          }
-        }
-      ]
-    },
-    {
-      "template_id": "response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "120"
           }
         }
       ]
@@ -48,7 +36,7 @@
           }
         },
         {
-          "template": "unchanged_response_handler"
+          "template": "full_response_handler"
         }
       ]
     },

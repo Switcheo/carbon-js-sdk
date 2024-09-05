@@ -41,6 +41,24 @@
       ]
     },
     {
+      "output_id": "binance_pyth_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_pyth_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=PYTHUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
       "output_id": "okx_pyth_usdt",
       "adapters": [
         {
@@ -59,28 +77,10 @@
       ]
     },
     {
-      "output_id": "kucoin_pyth_usdt",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "kucoin_pyth_usdt",
-            "default_node_host": "https://api.kucoin.com",
-            "default_node_path": "/api/v1/market/orderbook/level1?symbol=PYTH-USDT",
-            "paths": "[\"data.price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "full_response_handler"
-        }
-      ]
-    },
-    {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_pyth_usdt\", \"okx_pyth_usdt\", \"kucoin_pyth_usdt\"]",
+        "value_ids": "[\"bybit_pyth_usdt\", \"binance_pyth_usdt\", \"okx_pyth_usdt\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -88,8 +88,8 @@
       "output_id": "pyth_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_pyth_usdt\", \"okx_pyth_usdt\", \"kucoin_pyth_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
+        "value_ids": "[\"bybit_pyth_usdt\", \"binance_pyth_usdt\", \"okx_pyth_usdt\"]",
+        "weights": "[0.40, 0.40, 0.20]"
       }
     },
     {

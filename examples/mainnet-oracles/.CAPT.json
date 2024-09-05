@@ -2,7 +2,7 @@
   "output_id": "apt_usd",
   "templates": [
     {
-      "template_id": "response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -23,6 +23,44 @@
   ],
   "jobs": [
     {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "bybit_apt_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_apt_usdt",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=APTUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "bybit_apt_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_apt_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
       "output_id": "binance_apt_usdt",
       "adapters": [
         {
@@ -36,19 +74,7 @@
           }
         },
         {
-          "template": "response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "usdt_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": ".CUSDT",
-            "stale_allowance": "900"
-          }
+          "template": "full_response_handler"
         }
       ]
     },
@@ -59,24 +85,6 @@
         "operation": "multiply",
         "input_ids": "[\"binance_apt_usdt\",\"usdt_usd\"]"
       }
-    },
-    {
-      "output_id": "kraken_apt_usd",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "kraken_apt_usd",
-            "default_node_host": "https://api.kraken.com",
-            "default_node_path": "/0/public/Ticker?pair=APTUSD",
-            "paths": "[\"result.APTUSD.c.0\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "response_handler"
-        }
-      ]
     },
     {
       "output_id": "coinbase_apt_usd",
@@ -92,7 +100,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -100,7 +108,7 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_apt_usd\", \"kraken_apt_usd\",\"coinbase_apt_usd\"]",
+        "value_ids": "[\"bybit_apt_usd\", \"binance_apt_usd\", \"coinbase_apt_usd\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -108,8 +116,8 @@
       "output_id": "apt_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_apt_usd\",\"kraken_apt_usd\",\"coinbase_apt_usd\"]",
-        "weights": "[0.4, 0.3, 0.3]"
+        "value_ids": "[\"bybit_apt_usd\", \"binance_apt_usd\", \"coinbase_apt_usd\"]",
+        "weights": "[0.06, 0.67, 0.27]"
       }
     },
     {

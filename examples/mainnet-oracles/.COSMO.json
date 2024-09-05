@@ -2,7 +2,7 @@
   "output_id": "osmo_usd",
   "templates": [
     {
-      "template_id": "response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -23,51 +23,6 @@
   ],
   "jobs": [
     {
-      "output_id": "pyth_osmo_usd_8",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "pyth_osmo_usd",
-            "default_node_host": "https://hermes.pyth.network",
-            "default_node_path": "/api/latest_price_feeds?ids[]=0x5867f5683c757393a0670ef0f701490950fe93fdb006d181c8265a831ac0c5c6",
-            "paths": "[\"0.price.price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "pyth_osmo_usd",
-      "input_id": "pyth_osmo_usd_8",
-      "adapter": "decimal_handler",
-      "config": {
-        "operation": "decrease",
-        "exponent": "8"
-      }
-    },
-    {
-      "output_id": "coinbase_osmo_usd",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "coinbase_osmo_usd",
-            "default_node_host": "https://api.exchange.coinbase.com",
-            "default_node_path": "/products/OSMO-USD/ticker",
-            "paths": "[\"price\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "response_handler"
-        }
-      ]
-    },
-    {
       "output_id": "binance_osmo_usdt",
       "adapters": [
         {
@@ -81,7 +36,7 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
     },
@@ -106,10 +61,54 @@
       }
     },
     {
+      "output_id": "kucoin_osmo_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kucoin_osmo_usdt",
+            "default_node_host": "https://api.kucoin.com",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=OSMO-USDT",
+            "paths": "[\"data.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "kucoin_osmo_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"kucoin_osmo_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "coinbase_osmo_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "coinbase_osmo_usd",
+            "default_node_host": "https://api.exchange.coinbase.com",
+            "default_node_path": "/products/OSMO-USD/ticker",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"pyth_osmo_usd\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "value_ids": "[\"binance_osmo_usd\", \"kucoin_osmo_usd\",\"coinbase_osmo_usd\"]",
         "tolerance_percentage": "3"
       }
     },
@@ -117,8 +116,8 @@
       "output_id": "osmo_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"pyth_osmo_usd\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
-        "weights": "[0.3, 0.3, 0.4]"
+        "value_ids": "[\"binance_osmo_usd\",\"kucoin_osmo_usd\",\"coinbase_osmo_usd\"]",
+        "weights": "[0.43, 0.25, 0.32]"
       }
     },
     {

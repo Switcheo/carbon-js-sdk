@@ -23,6 +23,18 @@
   ],
   "jobs": [
     {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
       "output_id": "bybit_strk_usdt",
       "adapters": [
         {
@@ -39,6 +51,14 @@
           "template": "full_response_handler"
         }
       ]
+    },
+    {
+      "output_id": "bybit_strk_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_strk_usdt\",\"usdt_usd\"]"
+      }
     },
     {
       "output_id": "binance_strk_usdt",
@@ -59,15 +79,23 @@
       ]
     },
     {
-      "output_id": "okx_strk_usdt",
+      "output_id": "binance_strk_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_strk_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "coinbase_strk_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "okx_strk_usdt",
-            "default_node_host": "https://www.okx.com",
-            "default_node_path": "/api/v5/market/index-tickers?instId=STRK-USDT",
-            "paths": "[\"data.0.idxPx\"]",
+            "custom_node_url_key": "coinbase_strk_usd",
+            "default_node_host": "https://api.exchange.coinbase.com",
+            "default_node_path": "/products/STRK-USD/ticker",
+            "paths": "[\"price\"]",
             "timeout": "10"
           }
         },
@@ -80,36 +108,16 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_strk_usdt\", \"binance_strk_usdt\", \"okx_strk_usdt\"]",
+        "value_ids": "[\"bybit_strk_usd\", \"binance_strk_usd\", \"coinbase_strk_usd\"]",
         "tolerance_percentage": "3"
       }
     },
     {
-      "output_id": "strk_usdt",
+      "output_id": "strk_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_strk_usdt\", \"binance_strk_usdt\", \"okx_strk_usdt\"]",
-        "weights": "[0.3, 0.4, 0.3]"
-      }
-    },
-    {
-      "output_id": "usdt_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": ".CUSDT",
-            "stale_allowance": "900"
-          }
-        }
-      ]
-    },
-    {
-      "output_id": "strk_usd",
-      "adapter": "math_filter",
-      "config": {
-        "operation": "multiply",
-        "input_ids": "[\"strk_usdt\",\"usdt_usd\"]"
+        "value_ids": "[\"bybit_strk_usd\", \"binance_strk_usd\", \"coinbase_strk_usd\"]",
+        "weights": "[0.35, 0.60, 0.05]"
       }
     },
     {

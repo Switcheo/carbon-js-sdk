@@ -60,7 +60,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
 
   const specMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
-  const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles"
+  const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=1000"
   const mainnetOracles = await fetch(MAINNET_ORACLE_URL).then((res) => res.json());
 
   const txs: any[] = []
