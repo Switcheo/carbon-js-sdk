@@ -102,7 +102,7 @@ export interface SupplyAssetEvent {
   supplier: string;
   denom: string;
   amountSupplied: string;
-  cdpDenom: string;
+  cibtDenom: string;
   amountMinted: string;
 }
 
@@ -110,7 +110,7 @@ export interface WithdrawAssetEvent {
   withdrawer: string;
   denom: string;
   amountWithdrawed: string;
-  cdpDenom: string;
+  cibtDenom: string;
   amountBurned: string;
 }
 
@@ -135,7 +135,7 @@ export interface RepayAssetEvent {
 
 export interface LockCollateralEvent {
   locker: string;
-  cdpDenom: string;
+  cibtDenom: string;
   amountLocked: string;
   debtValue: string;
   collateralValue: string;
@@ -143,7 +143,7 @@ export interface LockCollateralEvent {
 
 export interface UnlockCollateralEvent {
   unlocker: string;
-  cdpDenom: string;
+  cibtDenom: string;
   amountUnlocked: string;
   debtValue: string;
   collateralValue: string;
@@ -191,25 +191,9 @@ export interface LiquidateCollateralEvent {
   debtDenom: string;
   debtAmount: string;
   id: Long;
-}
-
-export interface LiquidateCollateralWithStablecoinEvent {
-  creator: string;
-  liquidator: string;
-  debtor: string;
-  collateralDenom: string;
-  collateralAmountLiquidated: string;
-  collateralAmountLiquidator: string;
-  collateralAmountFee: string;
-  liquidationPrice: string;
-  marketPrice: string;
-  discount: string;
-  debtDenom: string;
-  debtAmount: string;
   principalAmount: string;
   interestDenom: string;
   interestAmount: string;
-  id: Long;
 }
 
 export interface ClaimRewardEvent {
@@ -1623,7 +1607,7 @@ const baseSupplyAssetEvent: object = {
   supplier: "",
   denom: "",
   amountSupplied: "",
-  cdpDenom: "",
+  cibtDenom: "",
   amountMinted: "",
 };
 
@@ -1641,8 +1625,8 @@ export const SupplyAssetEvent = {
     if (message.amountSupplied !== "") {
       writer.uint32(26).string(message.amountSupplied);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(34).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(34).string(message.cibtDenom);
     }
     if (message.amountMinted !== "") {
       writer.uint32(42).string(message.amountMinted);
@@ -1667,7 +1651,7 @@ export const SupplyAssetEvent = {
           message.amountSupplied = reader.string();
           break;
         case 4:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 5:
           message.amountMinted = reader.string();
@@ -1694,9 +1678,9 @@ export const SupplyAssetEvent = {
       object.amountSupplied !== undefined && object.amountSupplied !== null
         ? String(object.amountSupplied)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.amountMinted =
       object.amountMinted !== undefined && object.amountMinted !== null
@@ -1711,7 +1695,7 @@ export const SupplyAssetEvent = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amountSupplied !== undefined &&
       (obj.amountSupplied = message.amountSupplied);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.amountMinted !== undefined &&
       (obj.amountMinted = message.amountMinted);
     return obj;
@@ -1722,7 +1706,7 @@ export const SupplyAssetEvent = {
     message.supplier = object.supplier ?? "";
     message.denom = object.denom ?? "";
     message.amountSupplied = object.amountSupplied ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.amountMinted = object.amountMinted ?? "";
     return message;
   },
@@ -1732,7 +1716,7 @@ const baseWithdrawAssetEvent: object = {
   withdrawer: "",
   denom: "",
   amountWithdrawed: "",
-  cdpDenom: "",
+  cibtDenom: "",
   amountBurned: "",
 };
 
@@ -1750,8 +1734,8 @@ export const WithdrawAssetEvent = {
     if (message.amountWithdrawed !== "") {
       writer.uint32(26).string(message.amountWithdrawed);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(34).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(34).string(message.cibtDenom);
     }
     if (message.amountBurned !== "") {
       writer.uint32(42).string(message.amountBurned);
@@ -1776,7 +1760,7 @@ export const WithdrawAssetEvent = {
           message.amountWithdrawed = reader.string();
           break;
         case 4:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 5:
           message.amountBurned = reader.string();
@@ -1803,9 +1787,9 @@ export const WithdrawAssetEvent = {
       object.amountWithdrawed !== undefined && object.amountWithdrawed !== null
         ? String(object.amountWithdrawed)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.amountBurned =
       object.amountBurned !== undefined && object.amountBurned !== null
@@ -1820,7 +1804,7 @@ export const WithdrawAssetEvent = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amountWithdrawed !== undefined &&
       (obj.amountWithdrawed = message.amountWithdrawed);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.amountBurned !== undefined &&
       (obj.amountBurned = message.amountBurned);
     return obj;
@@ -1831,7 +1815,7 @@ export const WithdrawAssetEvent = {
     message.withdrawer = object.withdrawer ?? "";
     message.denom = object.denom ?? "";
     message.amountWithdrawed = object.amountWithdrawed ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.amountBurned = object.amountBurned ?? "";
     return message;
   },
@@ -2101,7 +2085,7 @@ export const RepayAssetEvent = {
 
 const baseLockCollateralEvent: object = {
   locker: "",
-  cdpDenom: "",
+  cibtDenom: "",
   amountLocked: "",
   debtValue: "",
   collateralValue: "",
@@ -2115,8 +2099,8 @@ export const LockCollateralEvent = {
     if (message.locker !== "") {
       writer.uint32(10).string(message.locker);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
     }
     if (message.amountLocked !== "") {
       writer.uint32(26).string(message.amountLocked);
@@ -2141,7 +2125,7 @@ export const LockCollateralEvent = {
           message.locker = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 3:
           message.amountLocked = reader.string();
@@ -2166,9 +2150,9 @@ export const LockCollateralEvent = {
       object.locker !== undefined && object.locker !== null
         ? String(object.locker)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.amountLocked =
       object.amountLocked !== undefined && object.amountLocked !== null
@@ -2188,7 +2172,7 @@ export const LockCollateralEvent = {
   toJSON(message: LockCollateralEvent): unknown {
     const obj: any = {};
     message.locker !== undefined && (obj.locker = message.locker);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.amountLocked !== undefined &&
       (obj.amountLocked = message.amountLocked);
     message.debtValue !== undefined && (obj.debtValue = message.debtValue);
@@ -2200,7 +2184,7 @@ export const LockCollateralEvent = {
   fromPartial(object: DeepPartial<LockCollateralEvent>): LockCollateralEvent {
     const message = { ...baseLockCollateralEvent } as LockCollateralEvent;
     message.locker = object.locker ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.amountLocked = object.amountLocked ?? "";
     message.debtValue = object.debtValue ?? "";
     message.collateralValue = object.collateralValue ?? "";
@@ -2210,7 +2194,7 @@ export const LockCollateralEvent = {
 
 const baseUnlockCollateralEvent: object = {
   unlocker: "",
-  cdpDenom: "",
+  cibtDenom: "",
   amountUnlocked: "",
   debtValue: "",
   collateralValue: "",
@@ -2224,8 +2208,8 @@ export const UnlockCollateralEvent = {
     if (message.unlocker !== "") {
       writer.uint32(10).string(message.unlocker);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
     }
     if (message.amountUnlocked !== "") {
       writer.uint32(26).string(message.amountUnlocked);
@@ -2253,7 +2237,7 @@ export const UnlockCollateralEvent = {
           message.unlocker = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 3:
           message.amountUnlocked = reader.string();
@@ -2278,9 +2262,9 @@ export const UnlockCollateralEvent = {
       object.unlocker !== undefined && object.unlocker !== null
         ? String(object.unlocker)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.amountUnlocked =
       object.amountUnlocked !== undefined && object.amountUnlocked !== null
@@ -2300,7 +2284,7 @@ export const UnlockCollateralEvent = {
   toJSON(message: UnlockCollateralEvent): unknown {
     const obj: any = {};
     message.unlocker !== undefined && (obj.unlocker = message.unlocker);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.amountUnlocked !== undefined &&
       (obj.amountUnlocked = message.amountUnlocked);
     message.debtValue !== undefined && (obj.debtValue = message.debtValue);
@@ -2314,7 +2298,7 @@ export const UnlockCollateralEvent = {
   ): UnlockCollateralEvent {
     const message = { ...baseUnlockCollateralEvent } as UnlockCollateralEvent;
     message.unlocker = object.unlocker ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.amountUnlocked = object.amountUnlocked ?? "";
     message.debtValue = object.debtValue ?? "";
     message.collateralValue = object.collateralValue ?? "";
@@ -2764,6 +2748,9 @@ const baseLiquidateCollateralEvent: object = {
   debtDenom: "",
   debtAmount: "",
   id: Long.UZERO,
+  principalAmount: "",
+  interestDenom: "",
+  interestAmount: "",
 };
 
 export const LiquidateCollateralEvent = {
@@ -2806,6 +2793,15 @@ export const LiquidateCollateralEvent = {
     }
     if (!message.id.isZero()) {
       writer.uint32(96).uint64(message.id);
+    }
+    if (message.principalAmount !== "") {
+      writer.uint32(106).string(message.principalAmount);
+    }
+    if (message.interestDenom !== "") {
+      writer.uint32(114).string(message.interestDenom);
+    }
+    if (message.interestAmount !== "") {
+      writer.uint32(122).string(message.interestAmount);
     }
     return writer;
   },
@@ -2857,6 +2853,15 @@ export const LiquidateCollateralEvent = {
           break;
         case 12:
           message.id = reader.uint64() as Long;
+          break;
+        case 13:
+          message.principalAmount = reader.string();
+          break;
+        case 14:
+          message.interestDenom = reader.string();
+          break;
+        case 15:
+          message.interestAmount = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2921,6 +2926,18 @@ export const LiquidateCollateralEvent = {
       object.id !== undefined && object.id !== null
         ? Long.fromString(object.id)
         : Long.UZERO;
+    message.principalAmount =
+      object.principalAmount !== undefined && object.principalAmount !== null
+        ? String(object.principalAmount)
+        : "";
+    message.interestDenom =
+      object.interestDenom !== undefined && object.interestDenom !== null
+        ? String(object.interestDenom)
+        : "";
+    message.interestAmount =
+      object.interestAmount !== undefined && object.interestAmount !== null
+        ? String(object.interestAmount)
+        : "";
     return message;
   },
 
@@ -2945,6 +2962,12 @@ export const LiquidateCollateralEvent = {
     message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
     message.id !== undefined &&
       (obj.id = (message.id || Long.UZERO).toString());
+    message.principalAmount !== undefined &&
+      (obj.principalAmount = message.principalAmount);
+    message.interestDenom !== undefined &&
+      (obj.interestDenom = message.interestDenom);
+    message.interestAmount !== undefined &&
+      (obj.interestAmount = message.interestAmount);
     return obj;
   },
 
@@ -2971,285 +2994,9 @@ export const LiquidateCollateralEvent = {
       object.id !== undefined && object.id !== null
         ? Long.fromValue(object.id)
         : Long.UZERO;
-    return message;
-  },
-};
-
-const baseLiquidateCollateralWithStablecoinEvent: object = {
-  creator: "",
-  liquidator: "",
-  debtor: "",
-  collateralDenom: "",
-  collateralAmountLiquidated: "",
-  collateralAmountLiquidator: "",
-  collateralAmountFee: "",
-  liquidationPrice: "",
-  marketPrice: "",
-  discount: "",
-  debtDenom: "",
-  debtAmount: "",
-  principalAmount: "",
-  interestDenom: "",
-  interestAmount: "",
-  id: Long.UZERO,
-};
-
-export const LiquidateCollateralWithStablecoinEvent = {
-  encode(
-    message: LiquidateCollateralWithStablecoinEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.liquidator !== "") {
-      writer.uint32(18).string(message.liquidator);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(26).string(message.debtor);
-    }
-    if (message.collateralDenom !== "") {
-      writer.uint32(34).string(message.collateralDenom);
-    }
-    if (message.collateralAmountLiquidated !== "") {
-      writer.uint32(42).string(message.collateralAmountLiquidated);
-    }
-    if (message.collateralAmountLiquidator !== "") {
-      writer.uint32(50).string(message.collateralAmountLiquidator);
-    }
-    if (message.collateralAmountFee !== "") {
-      writer.uint32(58).string(message.collateralAmountFee);
-    }
-    if (message.liquidationPrice !== "") {
-      writer.uint32(66).string(message.liquidationPrice);
-    }
-    if (message.marketPrice !== "") {
-      writer.uint32(74).string(message.marketPrice);
-    }
-    if (message.discount !== "") {
-      writer.uint32(82).string(message.discount);
-    }
-    if (message.debtDenom !== "") {
-      writer.uint32(90).string(message.debtDenom);
-    }
-    if (message.debtAmount !== "") {
-      writer.uint32(98).string(message.debtAmount);
-    }
-    if (message.principalAmount !== "") {
-      writer.uint32(106).string(message.principalAmount);
-    }
-    if (message.interestDenom !== "") {
-      writer.uint32(114).string(message.interestDenom);
-    }
-    if (message.interestAmount !== "") {
-      writer.uint32(122).string(message.interestAmount);
-    }
-    if (!message.id.isZero()) {
-      writer.uint32(128).uint64(message.id);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): LiquidateCollateralWithStablecoinEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseLiquidateCollateralWithStablecoinEvent,
-    } as LiquidateCollateralWithStablecoinEvent;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.liquidator = reader.string();
-          break;
-        case 3:
-          message.debtor = reader.string();
-          break;
-        case 4:
-          message.collateralDenom = reader.string();
-          break;
-        case 5:
-          message.collateralAmountLiquidated = reader.string();
-          break;
-        case 6:
-          message.collateralAmountLiquidator = reader.string();
-          break;
-        case 7:
-          message.collateralAmountFee = reader.string();
-          break;
-        case 8:
-          message.liquidationPrice = reader.string();
-          break;
-        case 9:
-          message.marketPrice = reader.string();
-          break;
-        case 10:
-          message.discount = reader.string();
-          break;
-        case 11:
-          message.debtDenom = reader.string();
-          break;
-        case 12:
-          message.debtAmount = reader.string();
-          break;
-        case 13:
-          message.principalAmount = reader.string();
-          break;
-        case 14:
-          message.interestDenom = reader.string();
-          break;
-        case 15:
-          message.interestAmount = reader.string();
-          break;
-        case 16:
-          message.id = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): LiquidateCollateralWithStablecoinEvent {
-    const message = {
-      ...baseLiquidateCollateralWithStablecoinEvent,
-    } as LiquidateCollateralWithStablecoinEvent;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.liquidator =
-      object.liquidator !== undefined && object.liquidator !== null
-        ? String(object.liquidator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.collateralAmountLiquidated =
-      object.collateralAmountLiquidated !== undefined &&
-      object.collateralAmountLiquidated !== null
-        ? String(object.collateralAmountLiquidated)
-        : "";
-    message.collateralAmountLiquidator =
-      object.collateralAmountLiquidator !== undefined &&
-      object.collateralAmountLiquidator !== null
-        ? String(object.collateralAmountLiquidator)
-        : "";
-    message.collateralAmountFee =
-      object.collateralAmountFee !== undefined &&
-      object.collateralAmountFee !== null
-        ? String(object.collateralAmountFee)
-        : "";
-    message.liquidationPrice =
-      object.liquidationPrice !== undefined && object.liquidationPrice !== null
-        ? String(object.liquidationPrice)
-        : "";
-    message.marketPrice =
-      object.marketPrice !== undefined && object.marketPrice !== null
-        ? String(object.marketPrice)
-        : "";
-    message.discount =
-      object.discount !== undefined && object.discount !== null
-        ? String(object.discount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
-    message.principalAmount =
-      object.principalAmount !== undefined && object.principalAmount !== null
-        ? String(object.principalAmount)
-        : "";
-    message.interestDenom =
-      object.interestDenom !== undefined && object.interestDenom !== null
-        ? String(object.interestDenom)
-        : "";
-    message.interestAmount =
-      object.interestAmount !== undefined && object.interestAmount !== null
-        ? String(object.interestAmount)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    return message;
-  },
-
-  toJSON(message: LiquidateCollateralWithStablecoinEvent): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.liquidator !== undefined && (obj.liquidator = message.liquidator);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
-    message.collateralAmountLiquidated !== undefined &&
-      (obj.collateralAmountLiquidated = message.collateralAmountLiquidated);
-    message.collateralAmountLiquidator !== undefined &&
-      (obj.collateralAmountLiquidator = message.collateralAmountLiquidator);
-    message.collateralAmountFee !== undefined &&
-      (obj.collateralAmountFee = message.collateralAmountFee);
-    message.liquidationPrice !== undefined &&
-      (obj.liquidationPrice = message.liquidationPrice);
-    message.marketPrice !== undefined &&
-      (obj.marketPrice = message.marketPrice);
-    message.discount !== undefined && (obj.discount = message.discount);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.principalAmount !== undefined &&
-      (obj.principalAmount = message.principalAmount);
-    message.interestDenom !== undefined &&
-      (obj.interestDenom = message.interestDenom);
-    message.interestAmount !== undefined &&
-      (obj.interestAmount = message.interestAmount);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<LiquidateCollateralWithStablecoinEvent>
-  ): LiquidateCollateralWithStablecoinEvent {
-    const message = {
-      ...baseLiquidateCollateralWithStablecoinEvent,
-    } as LiquidateCollateralWithStablecoinEvent;
-    message.creator = object.creator ?? "";
-    message.liquidator = object.liquidator ?? "";
-    message.debtor = object.debtor ?? "";
-    message.collateralDenom = object.collateralDenom ?? "";
-    message.collateralAmountLiquidated =
-      object.collateralAmountLiquidated ?? "";
-    message.collateralAmountLiquidator =
-      object.collateralAmountLiquidator ?? "";
-    message.collateralAmountFee = object.collateralAmountFee ?? "";
-    message.liquidationPrice = object.liquidationPrice ?? "";
-    message.marketPrice = object.marketPrice ?? "";
-    message.discount = object.discount ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.debtAmount = object.debtAmount ?? "";
     message.principalAmount = object.principalAmount ?? "";
     message.interestDenom = object.interestDenom ?? "";
     message.interestAmount = object.interestAmount ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
     return message;
   },
 };

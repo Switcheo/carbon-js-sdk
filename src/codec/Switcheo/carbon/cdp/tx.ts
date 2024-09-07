@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams, UpdateAssetParams } from "./asset_params";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import {
   CreateRewardSchemeParams,
   UpdateRewardSchemeParams,
@@ -73,7 +74,7 @@ export interface MsgSupplyAssetResponse {}
 
 export interface MsgWithdrawAsset {
   creator: string;
-  cdpDenom: string;
+  cibtDenom: string;
   amount: string;
 }
 
@@ -81,7 +82,7 @@ export interface MsgWithdrawAssetResponse {}
 
 export interface MsgLockCollateral {
   creator: string;
-  cdpDenom: string;
+  cibtDenom: string;
   amount: string;
 }
 
@@ -89,7 +90,7 @@ export interface MsgLockCollateralResponse {}
 
 export interface MsgUnlockCollateral {
   creator: string;
-  cdpDenom: string;
+  cibtDenom: string;
   amount: string;
 }
 
@@ -108,6 +109,7 @@ export interface MsgRepayAsset {
   denom: string;
   amount: string;
   debtor: string;
+  fromCollateral: boolean;
 }
 
 export interface MsgRepayAssetResponse {}
@@ -123,7 +125,7 @@ export interface MsgSupplyAssetAndLockCollateralResponse {}
 
 export interface MsgUnlockCollateralAndWithdrawAsset {
   creator: string;
-  cdpDenom: string;
+  cibtDenom: string;
   unlockAmount: string;
   withdrawAmount: string;
 }
@@ -133,10 +135,11 @@ export interface MsgUnlockCollateralAndWithdrawAssetResponse {}
 export interface MsgLiquidateCollateral {
   creator: string;
   debtor: string;
-  collateralDenom: string;
-  minCollateralAmount: string;
-  debtDenom: string;
-  debtAmount: string;
+  minCollateral?: Coin;
+  debt?: Coin;
+  stableInterest?: Coin;
+  debtFromCollateral: boolean;
+  interestFromCollateral: boolean;
 }
 
 export interface MsgLiquidateCollateralResponse {}
@@ -154,26 +157,6 @@ export interface MsgSetInterestFee {
 }
 
 export interface MsgSetInterestFeeResponse {}
-
-export interface MsgRepayAssetWithCdpTokens {
-  creator: string;
-  debtor: string;
-  debtDenom: string;
-  cdpDenom: string;
-  cdpAmount: string;
-}
-
-export interface MsgRepayAssetWithCdpTokensResponse {}
-
-export interface MsgRepayAssetWithCollateral {
-  creator: string;
-  debtor: string;
-  debtDenom: string;
-  cdpDenom: string;
-  cdpAmount: string;
-}
-
-export interface MsgRepayAssetWithCollateralResponse {}
 
 export interface MsgSetStablecoinMintCap {
   creator: string;
@@ -198,10 +181,11 @@ export interface MsgMintStablecoinResponse {}
 
 export interface MsgReturnStablecoin {
   creator: string;
-  principalAmount: string;
-  interestDenom: string;
-  interestAmount: string;
+  principal?: Coin;
+  interest?: Coin;
   debtor: string;
+  principalFromCollateral: boolean;
+  interestFromCollateral: boolean;
 }
 
 export interface MsgReturnStablecoinResponse {}
@@ -226,45 +210,6 @@ export interface MsgSetSmallLiquidationSize {
 }
 
 export interface MsgSetSmallLiquidationSizeResponse {}
-
-export interface MsgLiquidateCollateralWithCdpTokens {
-  creator: string;
-  debtor: string;
-  collateralDenom: string;
-  minCollateralAmount: string;
-  debtDenom: string;
-  debtAmount: string;
-  debtCollateralDenom: string;
-  debtCollateralAmount: string;
-}
-
-export interface MsgLiquidateCollateralWithCdpTokensResponse {}
-
-export interface MsgLiquidateCollateralWithCollateral {
-  creator: string;
-  debtor: string;
-  collateralDenom: string;
-  minCollateralAmount: string;
-  debtDenom: string;
-  debtAmount: string;
-  debtCollateralDenom: string;
-  debtCollateralAmount: string;
-}
-
-export interface MsgLiquidateCollateralWithCollateralResponse {}
-
-export interface MsgLiquidateCollateralWithStablecoin {
-  creator: string;
-  debtor: string;
-  collateralDenom: string;
-  minCollateralAmount: string;
-  debtDenom: string;
-  debtAmount: string;
-  interestDenom: string;
-  interestAmount: string;
-}
-
-export interface MsgLiquidateCollateralWithStablecoinResponse {}
 
 export interface MsgCreateRewardScheme {
   creator: string;
@@ -299,52 +244,6 @@ export interface MsgSetCdpPaused {
 }
 
 export interface MsgSetCdpPausedResponse {}
-
-export interface MsgReturnStablecoinWithInterestInCollateral {
-  creator: string;
-  principalAmount: string;
-  interestCdpDenom: string;
-  interestCdpAmount: string;
-  debtor: string;
-}
-
-export interface MsgReturnStablecoinWithInterestInCollateralResponse {}
-
-export interface MsgReturnStablecoinWithInterestInCdpTokens {
-  creator: string;
-  principalAmount: string;
-  interestCdpDenom: string;
-  interestCdpAmount: string;
-  debtor: string;
-}
-
-export interface MsgReturnStablecoinWithInterestInCdpTokensResponse {}
-
-export interface MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens {
-  creator: string;
-  debtor: string;
-  collateralDenom: string;
-  minCollateralAmount: string;
-  debtDenom: string;
-  debtAmount: string;
-  interestCdpDenom: string;
-  interestCdpAmount: string;
-}
-
-export interface MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse {}
-
-export interface MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
-  creator: string;
-  debtor: string;
-  collateralDenom: string;
-  minCollateralAmount: string;
-  debtDenom: string;
-  debtAmount: string;
-  interestCdpDenom: string;
-  interestCdpAmount: string;
-}
-
-export interface MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {}
 
 export interface MsgConvertTokenInCdpToGroupTokens {
   creator: string;
@@ -1263,7 +1162,7 @@ export const MsgSupplyAssetResponse = {
   },
 };
 
-const baseMsgWithdrawAsset: object = { creator: "", cdpDenom: "", amount: "" };
+const baseMsgWithdrawAsset: object = { creator: "", cibtDenom: "", amount: "" };
 
 export const MsgWithdrawAsset = {
   encode(
@@ -1273,8 +1172,8 @@ export const MsgWithdrawAsset = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
     }
     if (message.amount !== "") {
       writer.uint32(26).string(message.amount);
@@ -1293,7 +1192,7 @@ export const MsgWithdrawAsset = {
           message.creator = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 3:
           message.amount = reader.string();
@@ -1312,9 +1211,9 @@ export const MsgWithdrawAsset = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
@@ -1326,7 +1225,7 @@ export const MsgWithdrawAsset = {
   toJSON(message: MsgWithdrawAsset): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
@@ -1334,7 +1233,7 @@ export const MsgWithdrawAsset = {
   fromPartial(object: DeepPartial<MsgWithdrawAsset>): MsgWithdrawAsset {
     const message = { ...baseMsgWithdrawAsset } as MsgWithdrawAsset;
     message.creator = object.creator ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
@@ -1392,7 +1291,11 @@ export const MsgWithdrawAssetResponse = {
   },
 };
 
-const baseMsgLockCollateral: object = { creator: "", cdpDenom: "", amount: "" };
+const baseMsgLockCollateral: object = {
+  creator: "",
+  cibtDenom: "",
+  amount: "",
+};
 
 export const MsgLockCollateral = {
   encode(
@@ -1402,8 +1305,8 @@ export const MsgLockCollateral = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
     }
     if (message.amount !== "") {
       writer.uint32(26).string(message.amount);
@@ -1422,7 +1325,7 @@ export const MsgLockCollateral = {
           message.creator = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 3:
           message.amount = reader.string();
@@ -1441,9 +1344,9 @@ export const MsgLockCollateral = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
@@ -1455,7 +1358,7 @@ export const MsgLockCollateral = {
   toJSON(message: MsgLockCollateral): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
@@ -1463,7 +1366,7 @@ export const MsgLockCollateral = {
   fromPartial(object: DeepPartial<MsgLockCollateral>): MsgLockCollateral {
     const message = { ...baseMsgLockCollateral } as MsgLockCollateral;
     message.creator = object.creator ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
@@ -1523,7 +1426,7 @@ export const MsgLockCollateralResponse = {
 
 const baseMsgUnlockCollateral: object = {
   creator: "",
-  cdpDenom: "",
+  cibtDenom: "",
   amount: "",
 };
 
@@ -1535,8 +1438,8 @@ export const MsgUnlockCollateral = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
     }
     if (message.amount !== "") {
       writer.uint32(26).string(message.amount);
@@ -1555,7 +1458,7 @@ export const MsgUnlockCollateral = {
           message.creator = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 3:
           message.amount = reader.string();
@@ -1574,9 +1477,9 @@ export const MsgUnlockCollateral = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
@@ -1588,7 +1491,7 @@ export const MsgUnlockCollateral = {
   toJSON(message: MsgUnlockCollateral): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
@@ -1596,7 +1499,7 @@ export const MsgUnlockCollateral = {
   fromPartial(object: DeepPartial<MsgUnlockCollateral>): MsgUnlockCollateral {
     const message = { ...baseMsgUnlockCollateral } as MsgUnlockCollateral;
     message.creator = object.creator ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
@@ -1780,6 +1683,7 @@ const baseMsgRepayAsset: object = {
   denom: "",
   amount: "",
   debtor: "",
+  fromCollateral: false,
 };
 
 export const MsgRepayAsset = {
@@ -1798,6 +1702,9 @@ export const MsgRepayAsset = {
     }
     if (message.debtor !== "") {
       writer.uint32(34).string(message.debtor);
+    }
+    if (message.fromCollateral === true) {
+      writer.uint32(40).bool(message.fromCollateral);
     }
     return writer;
   },
@@ -1820,6 +1727,9 @@ export const MsgRepayAsset = {
           break;
         case 4:
           message.debtor = reader.string();
+          break;
+        case 5:
+          message.fromCollateral = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1847,6 +1757,10 @@ export const MsgRepayAsset = {
       object.debtor !== undefined && object.debtor !== null
         ? String(object.debtor)
         : "";
+    message.fromCollateral =
+      object.fromCollateral !== undefined && object.fromCollateral !== null
+        ? Boolean(object.fromCollateral)
+        : false;
     return message;
   },
 
@@ -1856,6 +1770,8 @@ export const MsgRepayAsset = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.debtor !== undefined && (obj.debtor = message.debtor);
+    message.fromCollateral !== undefined &&
+      (obj.fromCollateral = message.fromCollateral);
     return obj;
   },
 
@@ -1865,6 +1781,7 @@ export const MsgRepayAsset = {
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.debtor = object.debtor ?? "";
+    message.fromCollateral = object.fromCollateral ?? false;
     return message;
   },
 };
@@ -2073,7 +1990,7 @@ export const MsgSupplyAssetAndLockCollateralResponse = {
 
 const baseMsgUnlockCollateralAndWithdrawAsset: object = {
   creator: "",
-  cdpDenom: "",
+  cibtDenom: "",
   unlockAmount: "",
   withdrawAmount: "",
 };
@@ -2086,8 +2003,8 @@ export const MsgUnlockCollateralAndWithdrawAsset = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
     }
     if (message.unlockAmount !== "") {
       writer.uint32(26).string(message.unlockAmount);
@@ -2114,7 +2031,7 @@ export const MsgUnlockCollateralAndWithdrawAsset = {
           message.creator = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.cibtDenom = reader.string();
           break;
         case 3:
           message.unlockAmount = reader.string();
@@ -2138,9 +2055,9 @@ export const MsgUnlockCollateralAndWithdrawAsset = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
         : "";
     message.unlockAmount =
       object.unlockAmount !== undefined && object.unlockAmount !== null
@@ -2156,7 +2073,7 @@ export const MsgUnlockCollateralAndWithdrawAsset = {
   toJSON(message: MsgUnlockCollateralAndWithdrawAsset): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
     message.unlockAmount !== undefined &&
       (obj.unlockAmount = message.unlockAmount);
     message.withdrawAmount !== undefined &&
@@ -2171,7 +2088,7 @@ export const MsgUnlockCollateralAndWithdrawAsset = {
       ...baseMsgUnlockCollateralAndWithdrawAsset,
     } as MsgUnlockCollateralAndWithdrawAsset;
     message.creator = object.creator ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
     message.unlockAmount = object.unlockAmount ?? "";
     message.withdrawAmount = object.withdrawAmount ?? "";
     return message;
@@ -2233,10 +2150,8 @@ export const MsgUnlockCollateralAndWithdrawAssetResponse = {
 const baseMsgLiquidateCollateral: object = {
   creator: "",
   debtor: "",
-  collateralDenom: "",
-  minCollateralAmount: "",
-  debtDenom: "",
-  debtAmount: "",
+  debtFromCollateral: false,
+  interestFromCollateral: false,
 };
 
 export const MsgLiquidateCollateral = {
@@ -2250,17 +2165,20 @@ export const MsgLiquidateCollateral = {
     if (message.debtor !== "") {
       writer.uint32(18).string(message.debtor);
     }
-    if (message.collateralDenom !== "") {
-      writer.uint32(26).string(message.collateralDenom);
+    if (message.minCollateral !== undefined) {
+      Coin.encode(message.minCollateral, writer.uint32(26).fork()).ldelim();
     }
-    if (message.minCollateralAmount !== "") {
-      writer.uint32(34).string(message.minCollateralAmount);
+    if (message.debt !== undefined) {
+      Coin.encode(message.debt, writer.uint32(34).fork()).ldelim();
     }
-    if (message.debtDenom !== "") {
-      writer.uint32(42).string(message.debtDenom);
+    if (message.stableInterest !== undefined) {
+      Coin.encode(message.stableInterest, writer.uint32(42).fork()).ldelim();
     }
-    if (message.debtAmount !== "") {
-      writer.uint32(50).string(message.debtAmount);
+    if (message.debtFromCollateral === true) {
+      writer.uint32(48).bool(message.debtFromCollateral);
+    }
+    if (message.interestFromCollateral === true) {
+      writer.uint32(56).bool(message.interestFromCollateral);
     }
     return writer;
   },
@@ -2282,16 +2200,19 @@ export const MsgLiquidateCollateral = {
           message.debtor = reader.string();
           break;
         case 3:
-          message.collateralDenom = reader.string();
+          message.minCollateral = Coin.decode(reader, reader.uint32());
           break;
         case 4:
-          message.minCollateralAmount = reader.string();
+          message.debt = Coin.decode(reader, reader.uint32());
           break;
         case 5:
-          message.debtDenom = reader.string();
+          message.stableInterest = Coin.decode(reader, reader.uint32());
           break;
         case 6:
-          message.debtAmount = reader.string();
+          message.debtFromCollateral = reader.bool();
+          break;
+        case 7:
+          message.interestFromCollateral = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2311,23 +2232,28 @@ export const MsgLiquidateCollateral = {
       object.debtor !== undefined && object.debtor !== null
         ? String(object.debtor)
         : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.minCollateralAmount =
-      object.minCollateralAmount !== undefined &&
-      object.minCollateralAmount !== null
-        ? String(object.minCollateralAmount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
+    message.minCollateral =
+      object.minCollateral !== undefined && object.minCollateral !== null
+        ? Coin.fromJSON(object.minCollateral)
+        : undefined;
+    message.debt =
+      object.debt !== undefined && object.debt !== null
+        ? Coin.fromJSON(object.debt)
+        : undefined;
+    message.stableInterest =
+      object.stableInterest !== undefined && object.stableInterest !== null
+        ? Coin.fromJSON(object.stableInterest)
+        : undefined;
+    message.debtFromCollateral =
+      object.debtFromCollateral !== undefined &&
+      object.debtFromCollateral !== null
+        ? Boolean(object.debtFromCollateral)
+        : false;
+    message.interestFromCollateral =
+      object.interestFromCollateral !== undefined &&
+      object.interestFromCollateral !== null
+        ? Boolean(object.interestFromCollateral)
+        : false;
     return message;
   },
 
@@ -2335,12 +2261,20 @@ export const MsgLiquidateCollateral = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
-    message.minCollateralAmount !== undefined &&
-      (obj.minCollateralAmount = message.minCollateralAmount);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
+    message.minCollateral !== undefined &&
+      (obj.minCollateral = message.minCollateral
+        ? Coin.toJSON(message.minCollateral)
+        : undefined);
+    message.debt !== undefined &&
+      (obj.debt = message.debt ? Coin.toJSON(message.debt) : undefined);
+    message.stableInterest !== undefined &&
+      (obj.stableInterest = message.stableInterest
+        ? Coin.toJSON(message.stableInterest)
+        : undefined);
+    message.debtFromCollateral !== undefined &&
+      (obj.debtFromCollateral = message.debtFromCollateral);
+    message.interestFromCollateral !== undefined &&
+      (obj.interestFromCollateral = message.interestFromCollateral);
     return obj;
   },
 
@@ -2350,10 +2284,20 @@ export const MsgLiquidateCollateral = {
     const message = { ...baseMsgLiquidateCollateral } as MsgLiquidateCollateral;
     message.creator = object.creator ?? "";
     message.debtor = object.debtor ?? "";
-    message.collateralDenom = object.collateralDenom ?? "";
-    message.minCollateralAmount = object.minCollateralAmount ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.debtAmount = object.debtAmount ?? "";
+    message.minCollateral =
+      object.minCollateral !== undefined && object.minCollateral !== null
+        ? Coin.fromPartial(object.minCollateral)
+        : undefined;
+    message.debt =
+      object.debt !== undefined && object.debt !== null
+        ? Coin.fromPartial(object.debt)
+        : undefined;
+    message.stableInterest =
+      object.stableInterest !== undefined && object.stableInterest !== null
+        ? Coin.fromPartial(object.stableInterest)
+        : undefined;
+    message.debtFromCollateral = object.debtFromCollateral ?? false;
+    message.interestFromCollateral = object.interestFromCollateral ?? false;
     return message;
   },
 };
@@ -2645,346 +2589,6 @@ export const MsgSetInterestFeeResponse = {
     const message = {
       ...baseMsgSetInterestFeeResponse,
     } as MsgSetInterestFeeResponse;
-    return message;
-  },
-};
-
-const baseMsgRepayAssetWithCdpTokens: object = {
-  creator: "",
-  debtor: "",
-  debtDenom: "",
-  cdpDenom: "",
-  cdpAmount: "",
-};
-
-export const MsgRepayAssetWithCdpTokens = {
-  encode(
-    message: MsgRepayAssetWithCdpTokens,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(18).string(message.debtor);
-    }
-    if (message.debtDenom !== "") {
-      writer.uint32(26).string(message.debtDenom);
-    }
-    if (message.cdpDenom !== "") {
-      writer.uint32(34).string(message.cdpDenom);
-    }
-    if (message.cdpAmount !== "") {
-      writer.uint32(42).string(message.cdpAmount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRepayAssetWithCdpTokens {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRepayAssetWithCdpTokens,
-    } as MsgRepayAssetWithCdpTokens;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.debtor = reader.string();
-          break;
-        case 3:
-          message.debtDenom = reader.string();
-          break;
-        case 4:
-          message.cdpDenom = reader.string();
-          break;
-        case 5:
-          message.cdpAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgRepayAssetWithCdpTokens {
-    const message = {
-      ...baseMsgRepayAssetWithCdpTokens,
-    } as MsgRepayAssetWithCdpTokens;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
-        : "";
-    message.cdpAmount =
-      object.cdpAmount !== undefined && object.cdpAmount !== null
-        ? String(object.cdpAmount)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgRepayAssetWithCdpTokens): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
-    message.cdpAmount !== undefined && (obj.cdpAmount = message.cdpAmount);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgRepayAssetWithCdpTokens>
-  ): MsgRepayAssetWithCdpTokens {
-    const message = {
-      ...baseMsgRepayAssetWithCdpTokens,
-    } as MsgRepayAssetWithCdpTokens;
-    message.creator = object.creator ?? "";
-    message.debtor = object.debtor ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
-    message.cdpAmount = object.cdpAmount ?? "";
-    return message;
-  },
-};
-
-const baseMsgRepayAssetWithCdpTokensResponse: object = {};
-
-export const MsgRepayAssetWithCdpTokensResponse = {
-  encode(
-    _: MsgRepayAssetWithCdpTokensResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRepayAssetWithCdpTokensResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRepayAssetWithCdpTokensResponse,
-    } as MsgRepayAssetWithCdpTokensResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgRepayAssetWithCdpTokensResponse {
-    const message = {
-      ...baseMsgRepayAssetWithCdpTokensResponse,
-    } as MsgRepayAssetWithCdpTokensResponse;
-    return message;
-  },
-
-  toJSON(_: MsgRepayAssetWithCdpTokensResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgRepayAssetWithCdpTokensResponse>
-  ): MsgRepayAssetWithCdpTokensResponse {
-    const message = {
-      ...baseMsgRepayAssetWithCdpTokensResponse,
-    } as MsgRepayAssetWithCdpTokensResponse;
-    return message;
-  },
-};
-
-const baseMsgRepayAssetWithCollateral: object = {
-  creator: "",
-  debtor: "",
-  debtDenom: "",
-  cdpDenom: "",
-  cdpAmount: "",
-};
-
-export const MsgRepayAssetWithCollateral = {
-  encode(
-    message: MsgRepayAssetWithCollateral,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(18).string(message.debtor);
-    }
-    if (message.debtDenom !== "") {
-      writer.uint32(26).string(message.debtDenom);
-    }
-    if (message.cdpDenom !== "") {
-      writer.uint32(34).string(message.cdpDenom);
-    }
-    if (message.cdpAmount !== "") {
-      writer.uint32(42).string(message.cdpAmount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRepayAssetWithCollateral {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRepayAssetWithCollateral,
-    } as MsgRepayAssetWithCollateral;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.debtor = reader.string();
-          break;
-        case 3:
-          message.debtDenom = reader.string();
-          break;
-        case 4:
-          message.cdpDenom = reader.string();
-          break;
-        case 5:
-          message.cdpAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgRepayAssetWithCollateral {
-    const message = {
-      ...baseMsgRepayAssetWithCollateral,
-    } as MsgRepayAssetWithCollateral;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.cdpDenom =
-      object.cdpDenom !== undefined && object.cdpDenom !== null
-        ? String(object.cdpDenom)
-        : "";
-    message.cdpAmount =
-      object.cdpAmount !== undefined && object.cdpAmount !== null
-        ? String(object.cdpAmount)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgRepayAssetWithCollateral): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
-    message.cdpAmount !== undefined && (obj.cdpAmount = message.cdpAmount);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgRepayAssetWithCollateral>
-  ): MsgRepayAssetWithCollateral {
-    const message = {
-      ...baseMsgRepayAssetWithCollateral,
-    } as MsgRepayAssetWithCollateral;
-    message.creator = object.creator ?? "";
-    message.debtor = object.debtor ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.cdpDenom = object.cdpDenom ?? "";
-    message.cdpAmount = object.cdpAmount ?? "";
-    return message;
-  },
-};
-
-const baseMsgRepayAssetWithCollateralResponse: object = {};
-
-export const MsgRepayAssetWithCollateralResponse = {
-  encode(
-    _: MsgRepayAssetWithCollateralResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRepayAssetWithCollateralResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRepayAssetWithCollateralResponse,
-    } as MsgRepayAssetWithCollateralResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgRepayAssetWithCollateralResponse {
-    const message = {
-      ...baseMsgRepayAssetWithCollateralResponse,
-    } as MsgRepayAssetWithCollateralResponse;
-    return message;
-  },
-
-  toJSON(_: MsgRepayAssetWithCollateralResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgRepayAssetWithCollateralResponse>
-  ): MsgRepayAssetWithCollateralResponse {
-    const message = {
-      ...baseMsgRepayAssetWithCollateralResponse,
-    } as MsgRepayAssetWithCollateralResponse;
     return message;
   },
 };
@@ -3374,10 +2978,9 @@ export const MsgMintStablecoinResponse = {
 
 const baseMsgReturnStablecoin: object = {
   creator: "",
-  principalAmount: "",
-  interestDenom: "",
-  interestAmount: "",
   debtor: "",
+  principalFromCollateral: false,
+  interestFromCollateral: false,
 };
 
 export const MsgReturnStablecoin = {
@@ -3388,17 +2991,20 @@ export const MsgReturnStablecoin = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.principalAmount !== "") {
-      writer.uint32(18).string(message.principalAmount);
+    if (message.principal !== undefined) {
+      Coin.encode(message.principal, writer.uint32(18).fork()).ldelim();
     }
-    if (message.interestDenom !== "") {
-      writer.uint32(26).string(message.interestDenom);
-    }
-    if (message.interestAmount !== "") {
-      writer.uint32(34).string(message.interestAmount);
+    if (message.interest !== undefined) {
+      Coin.encode(message.interest, writer.uint32(26).fork()).ldelim();
     }
     if (message.debtor !== "") {
-      writer.uint32(42).string(message.debtor);
+      writer.uint32(34).string(message.debtor);
+    }
+    if (message.principalFromCollateral === true) {
+      writer.uint32(40).bool(message.principalFromCollateral);
+    }
+    if (message.interestFromCollateral === true) {
+      writer.uint32(48).bool(message.interestFromCollateral);
     }
     return writer;
   },
@@ -3414,16 +3020,19 @@ export const MsgReturnStablecoin = {
           message.creator = reader.string();
           break;
         case 2:
-          message.principalAmount = reader.string();
+          message.principal = Coin.decode(reader, reader.uint32());
           break;
         case 3:
-          message.interestDenom = reader.string();
+          message.interest = Coin.decode(reader, reader.uint32());
           break;
         case 4:
-          message.interestAmount = reader.string();
+          message.debtor = reader.string();
           break;
         case 5:
-          message.debtor = reader.string();
+          message.principalFromCollateral = reader.bool();
+          break;
+        case 6:
+          message.interestFromCollateral = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3439,45 +3048,64 @@ export const MsgReturnStablecoin = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.principalAmount =
-      object.principalAmount !== undefined && object.principalAmount !== null
-        ? String(object.principalAmount)
-        : "";
-    message.interestDenom =
-      object.interestDenom !== undefined && object.interestDenom !== null
-        ? String(object.interestDenom)
-        : "";
-    message.interestAmount =
-      object.interestAmount !== undefined && object.interestAmount !== null
-        ? String(object.interestAmount)
-        : "";
+    message.principal =
+      object.principal !== undefined && object.principal !== null
+        ? Coin.fromJSON(object.principal)
+        : undefined;
+    message.interest =
+      object.interest !== undefined && object.interest !== null
+        ? Coin.fromJSON(object.interest)
+        : undefined;
     message.debtor =
       object.debtor !== undefined && object.debtor !== null
         ? String(object.debtor)
         : "";
+    message.principalFromCollateral =
+      object.principalFromCollateral !== undefined &&
+      object.principalFromCollateral !== null
+        ? Boolean(object.principalFromCollateral)
+        : false;
+    message.interestFromCollateral =
+      object.interestFromCollateral !== undefined &&
+      object.interestFromCollateral !== null
+        ? Boolean(object.interestFromCollateral)
+        : false;
     return message;
   },
 
   toJSON(message: MsgReturnStablecoin): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.principalAmount !== undefined &&
-      (obj.principalAmount = message.principalAmount);
-    message.interestDenom !== undefined &&
-      (obj.interestDenom = message.interestDenom);
-    message.interestAmount !== undefined &&
-      (obj.interestAmount = message.interestAmount);
+    message.principal !== undefined &&
+      (obj.principal = message.principal
+        ? Coin.toJSON(message.principal)
+        : undefined);
+    message.interest !== undefined &&
+      (obj.interest = message.interest
+        ? Coin.toJSON(message.interest)
+        : undefined);
     message.debtor !== undefined && (obj.debtor = message.debtor);
+    message.principalFromCollateral !== undefined &&
+      (obj.principalFromCollateral = message.principalFromCollateral);
+    message.interestFromCollateral !== undefined &&
+      (obj.interestFromCollateral = message.interestFromCollateral);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgReturnStablecoin>): MsgReturnStablecoin {
     const message = { ...baseMsgReturnStablecoin } as MsgReturnStablecoin;
     message.creator = object.creator ?? "";
-    message.principalAmount = object.principalAmount ?? "";
-    message.interestDenom = object.interestDenom ?? "";
-    message.interestAmount = object.interestAmount ?? "";
+    message.principal =
+      object.principal !== undefined && object.principal !== null
+        ? Coin.fromPartial(object.principal)
+        : undefined;
+    message.interest =
+      object.interest !== undefined && object.interest !== null
+        ? Coin.fromPartial(object.interest)
+        : undefined;
     message.debtor = object.debtor ?? "";
+    message.principalFromCollateral = object.principalFromCollateral ?? false;
+    message.interestFromCollateral = object.interestFromCollateral ?? false;
     return message;
   },
 };
@@ -3930,652 +3558,6 @@ export const MsgSetSmallLiquidationSizeResponse = {
     const message = {
       ...baseMsgSetSmallLiquidationSizeResponse,
     } as MsgSetSmallLiquidationSizeResponse;
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithCdpTokens: object = {
-  creator: "",
-  debtor: "",
-  collateralDenom: "",
-  minCollateralAmount: "",
-  debtDenom: "",
-  debtAmount: "",
-  debtCollateralDenom: "",
-  debtCollateralAmount: "",
-};
-
-export const MsgLiquidateCollateralWithCdpTokens = {
-  encode(
-    message: MsgLiquidateCollateralWithCdpTokens,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(18).string(message.debtor);
-    }
-    if (message.collateralDenom !== "") {
-      writer.uint32(26).string(message.collateralDenom);
-    }
-    if (message.minCollateralAmount !== "") {
-      writer.uint32(34).string(message.minCollateralAmount);
-    }
-    if (message.debtDenom !== "") {
-      writer.uint32(42).string(message.debtDenom);
-    }
-    if (message.debtAmount !== "") {
-      writer.uint32(50).string(message.debtAmount);
-    }
-    if (message.debtCollateralDenom !== "") {
-      writer.uint32(58).string(message.debtCollateralDenom);
-    }
-    if (message.debtCollateralAmount !== "") {
-      writer.uint32(66).string(message.debtCollateralAmount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgLiquidateCollateralWithCdpTokens {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgLiquidateCollateralWithCdpTokens,
-    } as MsgLiquidateCollateralWithCdpTokens;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.debtor = reader.string();
-          break;
-        case 3:
-          message.collateralDenom = reader.string();
-          break;
-        case 4:
-          message.minCollateralAmount = reader.string();
-          break;
-        case 5:
-          message.debtDenom = reader.string();
-          break;
-        case 6:
-          message.debtAmount = reader.string();
-          break;
-        case 7:
-          message.debtCollateralDenom = reader.string();
-          break;
-        case 8:
-          message.debtCollateralAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgLiquidateCollateralWithCdpTokens {
-    const message = {
-      ...baseMsgLiquidateCollateralWithCdpTokens,
-    } as MsgLiquidateCollateralWithCdpTokens;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.minCollateralAmount =
-      object.minCollateralAmount !== undefined &&
-      object.minCollateralAmount !== null
-        ? String(object.minCollateralAmount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
-    message.debtCollateralDenom =
-      object.debtCollateralDenom !== undefined &&
-      object.debtCollateralDenom !== null
-        ? String(object.debtCollateralDenom)
-        : "";
-    message.debtCollateralAmount =
-      object.debtCollateralAmount !== undefined &&
-      object.debtCollateralAmount !== null
-        ? String(object.debtCollateralAmount)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgLiquidateCollateralWithCdpTokens): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
-    message.minCollateralAmount !== undefined &&
-      (obj.minCollateralAmount = message.minCollateralAmount);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.debtCollateralDenom !== undefined &&
-      (obj.debtCollateralDenom = message.debtCollateralDenom);
-    message.debtCollateralAmount !== undefined &&
-      (obj.debtCollateralAmount = message.debtCollateralAmount);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgLiquidateCollateralWithCdpTokens>
-  ): MsgLiquidateCollateralWithCdpTokens {
-    const message = {
-      ...baseMsgLiquidateCollateralWithCdpTokens,
-    } as MsgLiquidateCollateralWithCdpTokens;
-    message.creator = object.creator ?? "";
-    message.debtor = object.debtor ?? "";
-    message.collateralDenom = object.collateralDenom ?? "";
-    message.minCollateralAmount = object.minCollateralAmount ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.debtAmount = object.debtAmount ?? "";
-    message.debtCollateralDenom = object.debtCollateralDenom ?? "";
-    message.debtCollateralAmount = object.debtCollateralAmount ?? "";
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithCdpTokensResponse: object = {};
-
-export const MsgLiquidateCollateralWithCdpTokensResponse = {
-  encode(
-    _: MsgLiquidateCollateralWithCdpTokensResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgLiquidateCollateralWithCdpTokensResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgLiquidateCollateralWithCdpTokensResponse,
-    } as MsgLiquidateCollateralWithCdpTokensResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgLiquidateCollateralWithCdpTokensResponse {
-    const message = {
-      ...baseMsgLiquidateCollateralWithCdpTokensResponse,
-    } as MsgLiquidateCollateralWithCdpTokensResponse;
-    return message;
-  },
-
-  toJSON(_: MsgLiquidateCollateralWithCdpTokensResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgLiquidateCollateralWithCdpTokensResponse>
-  ): MsgLiquidateCollateralWithCdpTokensResponse {
-    const message = {
-      ...baseMsgLiquidateCollateralWithCdpTokensResponse,
-    } as MsgLiquidateCollateralWithCdpTokensResponse;
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithCollateral: object = {
-  creator: "",
-  debtor: "",
-  collateralDenom: "",
-  minCollateralAmount: "",
-  debtDenom: "",
-  debtAmount: "",
-  debtCollateralDenom: "",
-  debtCollateralAmount: "",
-};
-
-export const MsgLiquidateCollateralWithCollateral = {
-  encode(
-    message: MsgLiquidateCollateralWithCollateral,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(18).string(message.debtor);
-    }
-    if (message.collateralDenom !== "") {
-      writer.uint32(26).string(message.collateralDenom);
-    }
-    if (message.minCollateralAmount !== "") {
-      writer.uint32(34).string(message.minCollateralAmount);
-    }
-    if (message.debtDenom !== "") {
-      writer.uint32(42).string(message.debtDenom);
-    }
-    if (message.debtAmount !== "") {
-      writer.uint32(50).string(message.debtAmount);
-    }
-    if (message.debtCollateralDenom !== "") {
-      writer.uint32(58).string(message.debtCollateralDenom);
-    }
-    if (message.debtCollateralAmount !== "") {
-      writer.uint32(66).string(message.debtCollateralAmount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgLiquidateCollateralWithCollateral {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgLiquidateCollateralWithCollateral,
-    } as MsgLiquidateCollateralWithCollateral;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.debtor = reader.string();
-          break;
-        case 3:
-          message.collateralDenom = reader.string();
-          break;
-        case 4:
-          message.minCollateralAmount = reader.string();
-          break;
-        case 5:
-          message.debtDenom = reader.string();
-          break;
-        case 6:
-          message.debtAmount = reader.string();
-          break;
-        case 7:
-          message.debtCollateralDenom = reader.string();
-          break;
-        case 8:
-          message.debtCollateralAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgLiquidateCollateralWithCollateral {
-    const message = {
-      ...baseMsgLiquidateCollateralWithCollateral,
-    } as MsgLiquidateCollateralWithCollateral;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.minCollateralAmount =
-      object.minCollateralAmount !== undefined &&
-      object.minCollateralAmount !== null
-        ? String(object.minCollateralAmount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
-    message.debtCollateralDenom =
-      object.debtCollateralDenom !== undefined &&
-      object.debtCollateralDenom !== null
-        ? String(object.debtCollateralDenom)
-        : "";
-    message.debtCollateralAmount =
-      object.debtCollateralAmount !== undefined &&
-      object.debtCollateralAmount !== null
-        ? String(object.debtCollateralAmount)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgLiquidateCollateralWithCollateral): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
-    message.minCollateralAmount !== undefined &&
-      (obj.minCollateralAmount = message.minCollateralAmount);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.debtCollateralDenom !== undefined &&
-      (obj.debtCollateralDenom = message.debtCollateralDenom);
-    message.debtCollateralAmount !== undefined &&
-      (obj.debtCollateralAmount = message.debtCollateralAmount);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgLiquidateCollateralWithCollateral>
-  ): MsgLiquidateCollateralWithCollateral {
-    const message = {
-      ...baseMsgLiquidateCollateralWithCollateral,
-    } as MsgLiquidateCollateralWithCollateral;
-    message.creator = object.creator ?? "";
-    message.debtor = object.debtor ?? "";
-    message.collateralDenom = object.collateralDenom ?? "";
-    message.minCollateralAmount = object.minCollateralAmount ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.debtAmount = object.debtAmount ?? "";
-    message.debtCollateralDenom = object.debtCollateralDenom ?? "";
-    message.debtCollateralAmount = object.debtCollateralAmount ?? "";
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithCollateralResponse: object = {};
-
-export const MsgLiquidateCollateralWithCollateralResponse = {
-  encode(
-    _: MsgLiquidateCollateralWithCollateralResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgLiquidateCollateralWithCollateralResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgLiquidateCollateralWithCollateralResponse,
-    } as MsgLiquidateCollateralWithCollateralResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgLiquidateCollateralWithCollateralResponse {
-    const message = {
-      ...baseMsgLiquidateCollateralWithCollateralResponse,
-    } as MsgLiquidateCollateralWithCollateralResponse;
-    return message;
-  },
-
-  toJSON(_: MsgLiquidateCollateralWithCollateralResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgLiquidateCollateralWithCollateralResponse>
-  ): MsgLiquidateCollateralWithCollateralResponse {
-    const message = {
-      ...baseMsgLiquidateCollateralWithCollateralResponse,
-    } as MsgLiquidateCollateralWithCollateralResponse;
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithStablecoin: object = {
-  creator: "",
-  debtor: "",
-  collateralDenom: "",
-  minCollateralAmount: "",
-  debtDenom: "",
-  debtAmount: "",
-  interestDenom: "",
-  interestAmount: "",
-};
-
-export const MsgLiquidateCollateralWithStablecoin = {
-  encode(
-    message: MsgLiquidateCollateralWithStablecoin,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(18).string(message.debtor);
-    }
-    if (message.collateralDenom !== "") {
-      writer.uint32(26).string(message.collateralDenom);
-    }
-    if (message.minCollateralAmount !== "") {
-      writer.uint32(34).string(message.minCollateralAmount);
-    }
-    if (message.debtDenom !== "") {
-      writer.uint32(42).string(message.debtDenom);
-    }
-    if (message.debtAmount !== "") {
-      writer.uint32(50).string(message.debtAmount);
-    }
-    if (message.interestDenom !== "") {
-      writer.uint32(58).string(message.interestDenom);
-    }
-    if (message.interestAmount !== "") {
-      writer.uint32(66).string(message.interestAmount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgLiquidateCollateralWithStablecoin {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoin,
-    } as MsgLiquidateCollateralWithStablecoin;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.debtor = reader.string();
-          break;
-        case 3:
-          message.collateralDenom = reader.string();
-          break;
-        case 4:
-          message.minCollateralAmount = reader.string();
-          break;
-        case 5:
-          message.debtDenom = reader.string();
-          break;
-        case 6:
-          message.debtAmount = reader.string();
-          break;
-        case 7:
-          message.interestDenom = reader.string();
-          break;
-        case 8:
-          message.interestAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgLiquidateCollateralWithStablecoin {
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoin,
-    } as MsgLiquidateCollateralWithStablecoin;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.minCollateralAmount =
-      object.minCollateralAmount !== undefined &&
-      object.minCollateralAmount !== null
-        ? String(object.minCollateralAmount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
-    message.interestDenom =
-      object.interestDenom !== undefined && object.interestDenom !== null
-        ? String(object.interestDenom)
-        : "";
-    message.interestAmount =
-      object.interestAmount !== undefined && object.interestAmount !== null
-        ? String(object.interestAmount)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgLiquidateCollateralWithStablecoin): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
-    message.minCollateralAmount !== undefined &&
-      (obj.minCollateralAmount = message.minCollateralAmount);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.interestDenom !== undefined &&
-      (obj.interestDenom = message.interestDenom);
-    message.interestAmount !== undefined &&
-      (obj.interestAmount = message.interestAmount);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgLiquidateCollateralWithStablecoin>
-  ): MsgLiquidateCollateralWithStablecoin {
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoin,
-    } as MsgLiquidateCollateralWithStablecoin;
-    message.creator = object.creator ?? "";
-    message.debtor = object.debtor ?? "";
-    message.collateralDenom = object.collateralDenom ?? "";
-    message.minCollateralAmount = object.minCollateralAmount ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.debtAmount = object.debtAmount ?? "";
-    message.interestDenom = object.interestDenom ?? "";
-    message.interestAmount = object.interestAmount ?? "";
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithStablecoinResponse: object = {};
-
-export const MsgLiquidateCollateralWithStablecoinResponse = {
-  encode(
-    _: MsgLiquidateCollateralWithStablecoinResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgLiquidateCollateralWithStablecoinResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinResponse,
-    } as MsgLiquidateCollateralWithStablecoinResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgLiquidateCollateralWithStablecoinResponse {
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinResponse,
-    } as MsgLiquidateCollateralWithStablecoinResponse;
-    return message;
-  },
-
-  toJSON(_: MsgLiquidateCollateralWithStablecoinResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgLiquidateCollateralWithStablecoinResponse>
-  ): MsgLiquidateCollateralWithStablecoinResponse {
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinResponse,
-    } as MsgLiquidateCollateralWithStablecoinResponse;
     return message;
   },
 };
@@ -5215,807 +4197,6 @@ export const MsgSetCdpPausedResponse = {
     return message;
   },
 };
-
-const baseMsgReturnStablecoinWithInterestInCollateral: object = {
-  creator: "",
-  principalAmount: "",
-  interestCdpDenom: "",
-  interestCdpAmount: "",
-  debtor: "",
-};
-
-export const MsgReturnStablecoinWithInterestInCollateral = {
-  encode(
-    message: MsgReturnStablecoinWithInterestInCollateral,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.principalAmount !== "") {
-      writer.uint32(18).string(message.principalAmount);
-    }
-    if (message.interestCdpDenom !== "") {
-      writer.uint32(26).string(message.interestCdpDenom);
-    }
-    if (message.interestCdpAmount !== "") {
-      writer.uint32(34).string(message.interestCdpAmount);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(42).string(message.debtor);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgReturnStablecoinWithInterestInCollateral {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCollateral,
-    } as MsgReturnStablecoinWithInterestInCollateral;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.principalAmount = reader.string();
-          break;
-        case 3:
-          message.interestCdpDenom = reader.string();
-          break;
-        case 4:
-          message.interestCdpAmount = reader.string();
-          break;
-        case 5:
-          message.debtor = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgReturnStablecoinWithInterestInCollateral {
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCollateral,
-    } as MsgReturnStablecoinWithInterestInCollateral;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.principalAmount =
-      object.principalAmount !== undefined && object.principalAmount !== null
-        ? String(object.principalAmount)
-        : "";
-    message.interestCdpDenom =
-      object.interestCdpDenom !== undefined && object.interestCdpDenom !== null
-        ? String(object.interestCdpDenom)
-        : "";
-    message.interestCdpAmount =
-      object.interestCdpAmount !== undefined &&
-      object.interestCdpAmount !== null
-        ? String(object.interestCdpAmount)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgReturnStablecoinWithInterestInCollateral): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.principalAmount !== undefined &&
-      (obj.principalAmount = message.principalAmount);
-    message.interestCdpDenom !== undefined &&
-      (obj.interestCdpDenom = message.interestCdpDenom);
-    message.interestCdpAmount !== undefined &&
-      (obj.interestCdpAmount = message.interestCdpAmount);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgReturnStablecoinWithInterestInCollateral>
-  ): MsgReturnStablecoinWithInterestInCollateral {
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCollateral,
-    } as MsgReturnStablecoinWithInterestInCollateral;
-    message.creator = object.creator ?? "";
-    message.principalAmount = object.principalAmount ?? "";
-    message.interestCdpDenom = object.interestCdpDenom ?? "";
-    message.interestCdpAmount = object.interestCdpAmount ?? "";
-    message.debtor = object.debtor ?? "";
-    return message;
-  },
-};
-
-const baseMsgReturnStablecoinWithInterestInCollateralResponse: object = {};
-
-export const MsgReturnStablecoinWithInterestInCollateralResponse = {
-  encode(
-    _: MsgReturnStablecoinWithInterestInCollateralResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgReturnStablecoinWithInterestInCollateralResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCollateralResponse,
-    } as MsgReturnStablecoinWithInterestInCollateralResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgReturnStablecoinWithInterestInCollateralResponse {
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCollateralResponse,
-    } as MsgReturnStablecoinWithInterestInCollateralResponse;
-    return message;
-  },
-
-  toJSON(_: MsgReturnStablecoinWithInterestInCollateralResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgReturnStablecoinWithInterestInCollateralResponse>
-  ): MsgReturnStablecoinWithInterestInCollateralResponse {
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCollateralResponse,
-    } as MsgReturnStablecoinWithInterestInCollateralResponse;
-    return message;
-  },
-};
-
-const baseMsgReturnStablecoinWithInterestInCdpTokens: object = {
-  creator: "",
-  principalAmount: "",
-  interestCdpDenom: "",
-  interestCdpAmount: "",
-  debtor: "",
-};
-
-export const MsgReturnStablecoinWithInterestInCdpTokens = {
-  encode(
-    message: MsgReturnStablecoinWithInterestInCdpTokens,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.principalAmount !== "") {
-      writer.uint32(18).string(message.principalAmount);
-    }
-    if (message.interestCdpDenom !== "") {
-      writer.uint32(26).string(message.interestCdpDenom);
-    }
-    if (message.interestCdpAmount !== "") {
-      writer.uint32(34).string(message.interestCdpAmount);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(42).string(message.debtor);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgReturnStablecoinWithInterestInCdpTokens {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCdpTokens,
-    } as MsgReturnStablecoinWithInterestInCdpTokens;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.principalAmount = reader.string();
-          break;
-        case 3:
-          message.interestCdpDenom = reader.string();
-          break;
-        case 4:
-          message.interestCdpAmount = reader.string();
-          break;
-        case 5:
-          message.debtor = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgReturnStablecoinWithInterestInCdpTokens {
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCdpTokens,
-    } as MsgReturnStablecoinWithInterestInCdpTokens;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.principalAmount =
-      object.principalAmount !== undefined && object.principalAmount !== null
-        ? String(object.principalAmount)
-        : "";
-    message.interestCdpDenom =
-      object.interestCdpDenom !== undefined && object.interestCdpDenom !== null
-        ? String(object.interestCdpDenom)
-        : "";
-    message.interestCdpAmount =
-      object.interestCdpAmount !== undefined &&
-      object.interestCdpAmount !== null
-        ? String(object.interestCdpAmount)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgReturnStablecoinWithInterestInCdpTokens): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.principalAmount !== undefined &&
-      (obj.principalAmount = message.principalAmount);
-    message.interestCdpDenom !== undefined &&
-      (obj.interestCdpDenom = message.interestCdpDenom);
-    message.interestCdpAmount !== undefined &&
-      (obj.interestCdpAmount = message.interestCdpAmount);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgReturnStablecoinWithInterestInCdpTokens>
-  ): MsgReturnStablecoinWithInterestInCdpTokens {
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCdpTokens,
-    } as MsgReturnStablecoinWithInterestInCdpTokens;
-    message.creator = object.creator ?? "";
-    message.principalAmount = object.principalAmount ?? "";
-    message.interestCdpDenom = object.interestCdpDenom ?? "";
-    message.interestCdpAmount = object.interestCdpAmount ?? "";
-    message.debtor = object.debtor ?? "";
-    return message;
-  },
-};
-
-const baseMsgReturnStablecoinWithInterestInCdpTokensResponse: object = {};
-
-export const MsgReturnStablecoinWithInterestInCdpTokensResponse = {
-  encode(
-    _: MsgReturnStablecoinWithInterestInCdpTokensResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgReturnStablecoinWithInterestInCdpTokensResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCdpTokensResponse,
-    } as MsgReturnStablecoinWithInterestInCdpTokensResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgReturnStablecoinWithInterestInCdpTokensResponse {
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCdpTokensResponse,
-    } as MsgReturnStablecoinWithInterestInCdpTokensResponse;
-    return message;
-  },
-
-  toJSON(_: MsgReturnStablecoinWithInterestInCdpTokensResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgReturnStablecoinWithInterestInCdpTokensResponse>
-  ): MsgReturnStablecoinWithInterestInCdpTokensResponse {
-    const message = {
-      ...baseMsgReturnStablecoinWithInterestInCdpTokensResponse,
-    } as MsgReturnStablecoinWithInterestInCdpTokensResponse;
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens: object = {
-  creator: "",
-  debtor: "",
-  collateralDenom: "",
-  minCollateralAmount: "",
-  debtDenom: "",
-  debtAmount: "",
-  interestCdpDenom: "",
-  interestCdpAmount: "",
-};
-
-export const MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens = {
-  encode(
-    message: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(18).string(message.debtor);
-    }
-    if (message.collateralDenom !== "") {
-      writer.uint32(26).string(message.collateralDenom);
-    }
-    if (message.minCollateralAmount !== "") {
-      writer.uint32(34).string(message.minCollateralAmount);
-    }
-    if (message.debtDenom !== "") {
-      writer.uint32(42).string(message.debtDenom);
-    }
-    if (message.debtAmount !== "") {
-      writer.uint32(50).string(message.debtAmount);
-    }
-    if (message.interestCdpDenom !== "") {
-      writer.uint32(58).string(message.interestCdpDenom);
-    }
-    if (message.interestCdpAmount !== "") {
-      writer.uint32(66).string(message.interestCdpAmount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
-    } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.debtor = reader.string();
-          break;
-        case 3:
-          message.collateralDenom = reader.string();
-          break;
-        case 4:
-          message.minCollateralAmount = reader.string();
-          break;
-        case 5:
-          message.debtDenom = reader.string();
-          break;
-        case 6:
-          message.debtAmount = reader.string();
-          break;
-        case 7:
-          message.interestCdpDenom = reader.string();
-          break;
-        case 8:
-          message.interestCdpAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(
-    object: any
-  ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens {
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
-    } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.minCollateralAmount =
-      object.minCollateralAmount !== undefined &&
-      object.minCollateralAmount !== null
-        ? String(object.minCollateralAmount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
-    message.interestCdpDenom =
-      object.interestCdpDenom !== undefined && object.interestCdpDenom !== null
-        ? String(object.interestCdpDenom)
-        : "";
-    message.interestCdpAmount =
-      object.interestCdpAmount !== undefined &&
-      object.interestCdpAmount !== null
-        ? String(object.interestCdpAmount)
-        : "";
-    return message;
-  },
-
-  toJSON(
-    message: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens
-  ): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
-    message.minCollateralAmount !== undefined &&
-      (obj.minCollateralAmount = message.minCollateralAmount);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.interestCdpDenom !== undefined &&
-      (obj.interestCdpDenom = message.interestCdpDenom);
-    message.interestCdpAmount !== undefined &&
-      (obj.interestCdpAmount = message.interestCdpAmount);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens>
-  ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens {
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
-    } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens;
-    message.creator = object.creator ?? "";
-    message.debtor = object.debtor ?? "";
-    message.collateralDenom = object.collateralDenom ?? "";
-    message.minCollateralAmount = object.minCollateralAmount ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.debtAmount = object.debtAmount ?? "";
-    message.interestCdpDenom = object.interestCdpDenom ?? "";
-    message.interestCdpAmount = object.interestCdpAmount ?? "";
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse: object =
-  {};
-
-export const MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse =
-  {
-    encode(
-      _: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse,
-      writer: _m0.Writer = _m0.Writer.create()
-    ): _m0.Writer {
-      return writer;
-    },
-
-    decode(
-      input: _m0.Reader | Uint8Array,
-      length?: number
-    ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse {
-      const reader =
-        input instanceof _m0.Reader ? input : new _m0.Reader(input);
-      let end = length === undefined ? reader.len : reader.pos + length;
-      const message = {
-        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse,
-      } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse;
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          default:
-            reader.skipType(tag & 7);
-            break;
-        }
-      }
-      return message;
-    },
-
-    fromJSON(
-      _: any
-    ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse {
-      const message = {
-        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse,
-      } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse;
-      return message;
-    },
-
-    toJSON(
-      _: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse
-    ): unknown {
-      const obj: any = {};
-      return obj;
-    },
-
-    fromPartial(
-      _: DeepPartial<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse>
-    ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse {
-      const message = {
-        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse,
-      } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse;
-      return message;
-    },
-  };
-
-const baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateral: object =
-  {
-    creator: "",
-    debtor: "",
-    collateralDenom: "",
-    minCollateralAmount: "",
-    debtDenom: "",
-    debtAmount: "",
-    interestCdpDenom: "",
-    interestCdpAmount: "",
-  };
-
-export const MsgLiquidateCollateralWithStablecoinAndInterestInCollateral = {
-  encode(
-    message: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.debtor !== "") {
-      writer.uint32(18).string(message.debtor);
-    }
-    if (message.collateralDenom !== "") {
-      writer.uint32(26).string(message.collateralDenom);
-    }
-    if (message.minCollateralAmount !== "") {
-      writer.uint32(34).string(message.minCollateralAmount);
-    }
-    if (message.debtDenom !== "") {
-      writer.uint32(42).string(message.debtDenom);
-    }
-    if (message.debtAmount !== "") {
-      writer.uint32(50).string(message.debtAmount);
-    }
-    if (message.interestCdpDenom !== "") {
-      writer.uint32(58).string(message.interestCdpDenom);
-    }
-    if (message.interestCdpAmount !== "") {
-      writer.uint32(66).string(message.interestCdpAmount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
-    } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateral;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.debtor = reader.string();
-          break;
-        case 3:
-          message.collateralDenom = reader.string();
-          break;
-        case 4:
-          message.minCollateralAmount = reader.string();
-          break;
-        case 5:
-          message.debtDenom = reader.string();
-          break;
-        case 6:
-          message.debtAmount = reader.string();
-          break;
-        case 7:
-          message.interestCdpDenom = reader.string();
-          break;
-        case 8:
-          message.interestCdpAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(
-    object: any
-  ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
-    } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateral;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.minCollateralAmount =
-      object.minCollateralAmount !== undefined &&
-      object.minCollateralAmount !== null
-        ? String(object.minCollateralAmount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
-    message.interestCdpDenom =
-      object.interestCdpDenom !== undefined && object.interestCdpDenom !== null
-        ? String(object.interestCdpDenom)
-        : "";
-    message.interestCdpAmount =
-      object.interestCdpAmount !== undefined &&
-      object.interestCdpAmount !== null
-        ? String(object.interestCdpAmount)
-        : "";
-    return message;
-  },
-
-  toJSON(
-    message: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral
-  ): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
-    message.minCollateralAmount !== undefined &&
-      (obj.minCollateralAmount = message.minCollateralAmount);
-    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.interestCdpDenom !== undefined &&
-      (obj.interestCdpDenom = message.interestCdpDenom);
-    message.interestCdpAmount !== undefined &&
-      (obj.interestCdpAmount = message.interestCdpAmount);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgLiquidateCollateralWithStablecoinAndInterestInCollateral>
-  ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
-    const message = {
-      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
-    } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateral;
-    message.creator = object.creator ?? "";
-    message.debtor = object.debtor ?? "";
-    message.collateralDenom = object.collateralDenom ?? "";
-    message.minCollateralAmount = object.minCollateralAmount ?? "";
-    message.debtDenom = object.debtDenom ?? "";
-    message.debtAmount = object.debtAmount ?? "";
-    message.interestCdpDenom = object.interestCdpDenom ?? "";
-    message.interestCdpAmount = object.interestCdpAmount ?? "";
-    return message;
-  },
-};
-
-const baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse: object =
-  {};
-
-export const MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse =
-  {
-    encode(
-      _: MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse,
-      writer: _m0.Writer = _m0.Writer.create()
-    ): _m0.Writer {
-      return writer;
-    },
-
-    decode(
-      input: _m0.Reader | Uint8Array,
-      length?: number
-    ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {
-      const reader =
-        input instanceof _m0.Reader ? input : new _m0.Reader(input);
-      let end = length === undefined ? reader.len : reader.pos + length;
-      const message = {
-        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse,
-      } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse;
-      while (reader.pos < end) {
-        const tag = reader.uint32();
-        switch (tag >>> 3) {
-          default:
-            reader.skipType(tag & 7);
-            break;
-        }
-      }
-      return message;
-    },
-
-    fromJSON(
-      _: any
-    ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {
-      const message = {
-        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse,
-      } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse;
-      return message;
-    },
-
-    toJSON(
-      _: MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse
-    ): unknown {
-      const obj: any = {};
-      return obj;
-    },
-
-    fromPartial(
-      _: DeepPartial<MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse>
-    ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {
-      const message = {
-        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse,
-      } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse;
-      return message;
-    },
-  };
 
 const baseMsgConvertTokenInCdpToGroupTokens: object = {
   creator: "",
@@ -6972,12 +5153,6 @@ export interface Msg {
   SetInterestFee(
     request: MsgSetInterestFee
   ): Promise<MsgSetInterestFeeResponse>;
-  RepayAssetWithCdpTokens(
-    request: MsgRepayAssetWithCdpTokens
-  ): Promise<MsgRepayAssetWithCdpTokensResponse>;
-  RepayAssetWithCollateral(
-    request: MsgRepayAssetWithCollateral
-  ): Promise<MsgRepayAssetWithCollateralResponse>;
   CreateRewardScheme(
     request: MsgCreateRewardScheme
   ): Promise<MsgCreateRewardSchemeResponse>;
@@ -7006,31 +5181,10 @@ export interface Msg {
   SetSmallLiquidationSize(
     request: MsgSetSmallLiquidationSize
   ): Promise<MsgSetSmallLiquidationSizeResponse>;
-  LiquidateCollateralWithCdpTokens(
-    request: MsgLiquidateCollateralWithCdpTokens
-  ): Promise<MsgLiquidateCollateralWithCdpTokensResponse>;
-  LiquidateCollateralWithCollateral(
-    request: MsgLiquidateCollateralWithCollateral
-  ): Promise<MsgLiquidateCollateralWithCollateralResponse>;
-  LiquidateCollateralWithStablecoin(
-    request: MsgLiquidateCollateralWithStablecoin
-  ): Promise<MsgLiquidateCollateralWithStablecoinResponse>;
   SetStalePriceGracePeriod(
     request: MsgSetStalePriceGracePeriod
   ): Promise<MsgSetStalePriceGracePeriodResponse>;
   SetCdpPaused(request: MsgSetCdpPaused): Promise<MsgSetCdpPausedResponse>;
-  ReturnStablecoinWithInterestInCdpTokens(
-    request: MsgReturnStablecoinWithInterestInCdpTokens
-  ): Promise<MsgReturnStablecoinWithInterestInCdpTokensResponse>;
-  ReturnStablecoinWithInterestInCollateral(
-    request: MsgReturnStablecoinWithInterestInCollateral
-  ): Promise<MsgReturnStablecoinWithInterestInCollateralResponse>;
-  LiquidateCollateralWithStablecoinAndInterestInCdpTokens(
-    request: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens
-  ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse>;
-  LiquidateCollateralWithStablecoinAndInterestInCollateral(
-    request: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral
-  ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse>;
   ConvertTokenInCdpToGroupTokens(
     request: MsgConvertTokenInCdpToGroupTokens
   ): Promise<MsgConvertTokenInCdpToGroupTokensResponse>;
@@ -7077,8 +5231,6 @@ export class MsgClientImpl implements Msg {
     this.LiquidateCollateral = this.LiquidateCollateral.bind(this);
     this.SetLiquidationFee = this.SetLiquidationFee.bind(this);
     this.SetInterestFee = this.SetInterestFee.bind(this);
-    this.RepayAssetWithCdpTokens = this.RepayAssetWithCdpTokens.bind(this);
-    this.RepayAssetWithCollateral = this.RepayAssetWithCollateral.bind(this);
     this.CreateRewardScheme = this.CreateRewardScheme.bind(this);
     this.UpdateRewardScheme = this.UpdateRewardScheme.bind(this);
     this.ClaimRewards = this.ClaimRewards.bind(this);
@@ -7090,22 +5242,8 @@ export class MsgClientImpl implements Msg {
       this.SetCompleteLiquidationThreshold.bind(this);
     this.SetMinimumCloseFactor = this.SetMinimumCloseFactor.bind(this);
     this.SetSmallLiquidationSize = this.SetSmallLiquidationSize.bind(this);
-    this.LiquidateCollateralWithCdpTokens =
-      this.LiquidateCollateralWithCdpTokens.bind(this);
-    this.LiquidateCollateralWithCollateral =
-      this.LiquidateCollateralWithCollateral.bind(this);
-    this.LiquidateCollateralWithStablecoin =
-      this.LiquidateCollateralWithStablecoin.bind(this);
     this.SetStalePriceGracePeriod = this.SetStalePriceGracePeriod.bind(this);
     this.SetCdpPaused = this.SetCdpPaused.bind(this);
-    this.ReturnStablecoinWithInterestInCdpTokens =
-      this.ReturnStablecoinWithInterestInCdpTokens.bind(this);
-    this.ReturnStablecoinWithInterestInCollateral =
-      this.ReturnStablecoinWithInterestInCollateral.bind(this);
-    this.LiquidateCollateralWithStablecoinAndInterestInCdpTokens =
-      this.LiquidateCollateralWithStablecoinAndInterestInCdpTokens.bind(this);
-    this.LiquidateCollateralWithStablecoinAndInterestInCollateral =
-      this.LiquidateCollateralWithStablecoinAndInterestInCollateral.bind(this);
     this.ConvertTokenInCdpToGroupTokens =
       this.ConvertTokenInCdpToGroupTokens.bind(this);
     this.AddEModeCategory = this.AddEModeCategory.bind(this);
@@ -7326,34 +5464,6 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  RepayAssetWithCdpTokens(
-    request: MsgRepayAssetWithCdpTokens
-  ): Promise<MsgRepayAssetWithCdpTokensResponse> {
-    const data = MsgRepayAssetWithCdpTokens.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "RepayAssetWithCdpTokens",
-      data
-    );
-    return promise.then((data) =>
-      MsgRepayAssetWithCdpTokensResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  RepayAssetWithCollateral(
-    request: MsgRepayAssetWithCollateral
-  ): Promise<MsgRepayAssetWithCollateralResponse> {
-    const data = MsgRepayAssetWithCollateral.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "RepayAssetWithCollateral",
-      data
-    );
-    return promise.then((data) =>
-      MsgRepayAssetWithCollateralResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   CreateRewardScheme(
     request: MsgCreateRewardScheme
   ): Promise<MsgCreateRewardSchemeResponse> {
@@ -7492,48 +5602,6 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  LiquidateCollateralWithCdpTokens(
-    request: MsgLiquidateCollateralWithCdpTokens
-  ): Promise<MsgLiquidateCollateralWithCdpTokensResponse> {
-    const data = MsgLiquidateCollateralWithCdpTokens.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "LiquidateCollateralWithCdpTokens",
-      data
-    );
-    return promise.then((data) =>
-      MsgLiquidateCollateralWithCdpTokensResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  LiquidateCollateralWithCollateral(
-    request: MsgLiquidateCollateralWithCollateral
-  ): Promise<MsgLiquidateCollateralWithCollateralResponse> {
-    const data = MsgLiquidateCollateralWithCollateral.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "LiquidateCollateralWithCollateral",
-      data
-    );
-    return promise.then((data) =>
-      MsgLiquidateCollateralWithCollateralResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  LiquidateCollateralWithStablecoin(
-    request: MsgLiquidateCollateralWithStablecoin
-  ): Promise<MsgLiquidateCollateralWithStablecoinResponse> {
-    const data = MsgLiquidateCollateralWithStablecoin.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "LiquidateCollateralWithStablecoin",
-      data
-    );
-    return promise.then((data) =>
-      MsgLiquidateCollateralWithStablecoinResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   SetStalePriceGracePeriod(
     request: MsgSetStalePriceGracePeriod
   ): Promise<MsgSetStalePriceGracePeriodResponse> {
@@ -7557,78 +5625,6 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSetCdpPausedResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  ReturnStablecoinWithInterestInCdpTokens(
-    request: MsgReturnStablecoinWithInterestInCdpTokens
-  ): Promise<MsgReturnStablecoinWithInterestInCdpTokensResponse> {
-    const data =
-      MsgReturnStablecoinWithInterestInCdpTokens.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "ReturnStablecoinWithInterestInCdpTokens",
-      data
-    );
-    return promise.then((data) =>
-      MsgReturnStablecoinWithInterestInCdpTokensResponse.decode(
-        new _m0.Reader(data)
-      )
-    );
-  }
-
-  ReturnStablecoinWithInterestInCollateral(
-    request: MsgReturnStablecoinWithInterestInCollateral
-  ): Promise<MsgReturnStablecoinWithInterestInCollateralResponse> {
-    const data =
-      MsgReturnStablecoinWithInterestInCollateral.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "ReturnStablecoinWithInterestInCollateral",
-      data
-    );
-    return promise.then((data) =>
-      MsgReturnStablecoinWithInterestInCollateralResponse.decode(
-        new _m0.Reader(data)
-      )
-    );
-  }
-
-  LiquidateCollateralWithStablecoinAndInterestInCdpTokens(
-    request: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens
-  ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse> {
-    const data =
-      MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens.encode(
-        request
-      ).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "LiquidateCollateralWithStablecoinAndInterestInCdpTokens",
-      data
-    );
-    return promise.then((data) =>
-      MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse.decode(
-        new _m0.Reader(data)
-      )
-    );
-  }
-
-  LiquidateCollateralWithStablecoinAndInterestInCollateral(
-    request: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral
-  ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse> {
-    const data =
-      MsgLiquidateCollateralWithStablecoinAndInterestInCollateral.encode(
-        request
-      ).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "LiquidateCollateralWithStablecoinAndInterestInCollateral",
-      data
-    );
-    return promise.then((data) =>
-      MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse.decode(
-        new _m0.Reader(data)
-      )
     );
   }
 

@@ -8,6 +8,7 @@ import {
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { TradingFees, FeeTier, StakeEquivalence, FeeStructure } from "./fee";
 import { Params } from "./params";
+import { BoolValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
@@ -22,6 +23,7 @@ export interface QueryGetMarketResponse {
 
 export interface QueryAllMarketRequest {
   pagination?: PageRequest;
+  isActive?: boolean;
 }
 
 export interface QueryAllMarketResponse {
@@ -245,6 +247,12 @@ export const QueryAllMarketRequest = {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
+    if (message.isActive !== undefined) {
+      BoolValue.encode(
+        { value: message.isActive! },
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -261,6 +269,9 @@ export const QueryAllMarketRequest = {
         case 1:
           message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
+        case 2:
+          message.isActive = BoolValue.decode(reader, reader.uint32()).value;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -275,6 +286,10 @@ export const QueryAllMarketRequest = {
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
         : undefined;
+    message.isActive =
+      object.isActive !== undefined && object.isActive !== null
+        ? Boolean(object.isActive)
+        : undefined;
     return message;
   },
 
@@ -284,6 +299,7 @@ export const QueryAllMarketRequest = {
       (obj.pagination = message.pagination
         ? PageRequest.toJSON(message.pagination)
         : undefined);
+    message.isActive !== undefined && (obj.isActive = message.isActive);
     return obj;
   },
 
@@ -295,6 +311,7 @@ export const QueryAllMarketRequest = {
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
         : undefined;
+    message.isActive = object.isActive ?? undefined;
     return message;
   },
 };
