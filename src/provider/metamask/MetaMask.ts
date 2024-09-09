@@ -1,6 +1,6 @@
-import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
+import { ChainNames, BlockchainV2, EVMChain, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
@@ -24,10 +24,8 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { parseEvmError } from "./error";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
-
-
-
-export type EVMChain = EVMChainV2;
+import { Eip6963Provider } from "../eip6963Provider";
+import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 
 type ChainContracts = {
   [key in Network]: string;
@@ -113,30 +111,12 @@ const getEncryptMessage = (input: string) => {
     .replace(/^\s+/gm, "");
 };
 
-interface RequestArguments {
-  method: string;
-  params?: unknown[] | object;
-}
-
 interface MetaMaskAPI {
   isMetaMask: boolean;
   chainId: string | null;
-  isConnected: () => boolean;
+  _state: { isConnected: boolean };
   request: (args: RequestArguments) => Promise<unknown>;
   on: (eventName: string, listener: (...args: unknown[]) => void) => any;
-}
-
-export interface MetaMaskChangeNetworkParam {
-  chainId: string;
-  blockExplorerUrls?: string[];
-  chainName?: string;
-  iconUrls?: string[];
-  nativeCurrency?: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  rpcUrls?: string[];
 }
 
 export interface CallContractArgs {
@@ -145,201 +125,18 @@ export interface CallContractArgs {
   data?: string;
 }
 
-export interface MetaMaskSyncResult {
-  blockchain?: Blockchain | BlockchainV2;
-  chainId?: number;
-}
-
 export interface StoredMnemonicInfo {
   mnemonic: string,
-  chain: EVMChainV2,
+  chain: EVMChain,
   privateKey: string,
   bech32Address: string
   evmHexAddress: string
 }
 
-const CarbonEvmNativeCurrency = {
-  decimals: 18,
-  name: "SWTH",
-  symbol: "SWTH",
-}
-
-const CARBON_EVM_LOCALHOST: MetaMaskChangeNetworkParam = {
-  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.LocalHost])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM Localhost",
-  rpcUrls: [`${NetworkConfigs[Network.LocalHost].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency,
-}
-const CARBON_EVM_DEVNET: MetaMaskChangeNetworkParam = {
-  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.DevNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM Devnet",
-  rpcUrls: [`${NetworkConfigs[Network.DevNet].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency,
-}
-const CARBON_EVM_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.TestNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM Testnet",
-  rpcUrls: [`${NetworkConfigs[Network.TestNet].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency,
-}
-
-const CARBON_EVM_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.MainNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM",
-  rpcUrls: [`${NetworkConfigs[Network.MainNet].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency,
-}
-
-const BSC_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x38",
-  blockExplorerUrls: ["https://bscscan.com"],
-  chainName: "BNB Smart Chain",
-  rpcUrls: [
-    "https://bsc-dataseed2.binance.org/",
-    "https://bsc-dataseed3.binance.org/",
-    "https://bsc-dataseed4.binance.org/",
-    "https://bsc-dataseed1.defibit.io/",
-    "https://bsc-dataseed2.defibit.io/",
-    "https://bsc-dataseed3.defibit.io/",
-    "https://bsc-dataseed4.defibit.io/",
-    "https://bsc-dataseed1.ninicoin.io/",
-    "https://bsc-dataseed2.ninicoin.io/",
-    "https://bsc-dataseed3.ninicoin.io/",
-    "https://bsc-dataseed4.ninicoin.io/",
-    "https://bsc-dataseed1.binance.org/",
-  ],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Binance Coin",
-    symbol: "BNB",
-  },
-};
-const BSC_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x61",
-  blockExplorerUrls: ["https://testnet.bscscan.com"],
-  chainName: "BNB Smart Chain Testnet",
-  rpcUrls: [
-    "https://data-seed-prebsc-1-s1.bnbchain.org:8545",
-  ],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Binance Coin",
-    symbol: "tBNB",
-  },
-};
-
-const MANTLE_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x138B",
-  blockExplorerUrls: ["https://sepolia.mantlescan.xyz"],
-  chainName: "Mantle Sepolia",
-  rpcUrls: [
-    "https://rpc.sepolia.mantle.xyz",
-  ],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Mantle",
-    symbol: "MNT",
-  },
-}
-
-const ETH_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x1",
-  rpcUrls: ["https://mainnet.infura.io/v3/"],
-};
-const ETH_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x5",
-  rpcUrls: ["https://goerli.infura.io/v3/"],
-};
-
-const ARBITRUM_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0xA4B1",
-  blockExplorerUrls: ["https://explorer.arbitrum.io"],
-  chainName: "Arbitrum One",
-  rpcUrls: ["https://arb1.arbitrum.io/rpc"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ethereum",
-    symbol: "ETH",
-  },
-};
-const ARBITRUM_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x66EEB",
-  blockExplorerUrls: [""],
-  chainName: "Arbitrum Testnet",
-  rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ethereum",
-    symbol: "ETH",
-  },
-};
-const POLYGON_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x89",
-  blockExplorerUrls: ["https://polygonscan.com/"],
-  chainName: "Polygon Mainnet",
-  rpcUrls: ["https://polygon-rpc.com"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Matic",
-    symbol: "MATIC",
-  },
-};
-const POLYGON_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x13881",
-  blockExplorerUrls: ["https://mumbai.polygonscan.com"],
-  chainName: "Polygon Mumbai",
-  rpcUrls: ["https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Matic",
-    symbol: "MATIC",
-  },
-};
-const OKC_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x42",
-  blockExplorerUrls: ["https://www.oklink.com/okc"],
-  chainName: "OKC Mainnet",
-  rpcUrls: ["https://exchainrpc.okex.org"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "OKT",
-    symbol: "OKT",
-  },
-};
-const OKC_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x41",
-  blockExplorerUrls: ["https://www.oklink.com/okc-test"],
-  chainName: "OKC Testnet",
-  rpcUrls: ["https://exchaintestrpc.okex.org"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "OKT",
-    symbol: "OKT",
-  },
-};
-
-const MANTLE_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x1388",
-  blockExplorerUrls: ["https://explorer.mantle.xyz"],
-  chainName: "Mantle Mainnet",
-  rpcUrls: [
-    "https://rpc.mantle.xyz/",
-  ],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Mantle",
-    symbol: "MNT",
-  },
-}
-
 /**
  * TODO: Add docs
  */
-export class MetaMask {
+export class MetaMask extends Eip6963Provider {
   private blockchain: EVMChain = 'Ethereum';
   private connectedAccount: string = ''
 
@@ -564,8 +361,9 @@ export class MetaMask {
     }
   }
 
-  constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) { }
-
+  constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) {
+    super()
+  }
 
   private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
@@ -590,8 +388,8 @@ export class MetaMask {
     return this.connectedAccount
   }
 
-  async syncBlockchain(): Promise<MetaMaskSyncResult> {
-    const metamaskAPI = await this.getAPI()
+  async syncBlockchain(): Promise<SyncResult> {
+    const metamaskAPI = await this.getConnectedAPI()
     const chainIdHex = (await metamaskAPI?.request({ method: "eth_chainId" })) as string;
     const chainId = chainIdHex ? parseInt(chainIdHex, 16) : undefined;
     const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
@@ -606,21 +404,22 @@ export class MetaMask {
   }
 
   async getAPI(): Promise<MetaMaskAPI | null> {
-    return await detectEthereumProvider()
+    return await detectEthereumProvider({ mustBeMetaMask: true })
+  }
+
+  getMetaMaskProvider(): MetaMaskAPI | undefined {
+    const metamaskProvider = super.getProvider(SupportedEip6963Provider.MetaMask)
+    return metamaskProvider?.provider as MetaMaskAPI
   }
 
   async getConnectedAPI(): Promise<MetaMaskAPI> {
-    const metamaskAPI = await this.getAPI();
-    if (!metamaskAPI) {
+    const metamaskProvider = this.getMetaMaskProvider()
+
+    if (!metamaskProvider) {
       throw new Error("MetaMask not connected, please check that your extension is enabled");
     }
 
-    if (metamaskAPI?.isConnected()) {
-      return metamaskAPI;
-    }
-
-    await metamaskAPI.request({ method: "eth_requestAccounts" });
-    return metamaskAPI;
+    return metamaskProvider;
   }
 
   async connect() {
@@ -652,7 +451,7 @@ export class MetaMask {
       }
     }
     if (legacyAccBlockchains.length > 0) {
-      const legacyMnemonicCiphers = legacyAccBlockchains.map(async (blockchain) => (this.getMnemonicInfo(blockchain as EVMChainV2)))
+      const legacyMnemonicCiphers = legacyAccBlockchains.map(async (blockchain) => (this.getMnemonicInfo(blockchain as EVMChain)))
       const results = await Promise.all(legacyMnemonicCiphers)
       return results.filter((result): result is StoredMnemonicInfo => result !== undefined)
     }
@@ -704,7 +503,7 @@ export class MetaMask {
       throw new Error(`${address} not connected on Metamask`);
   }
 
-  async getMnemonicInfo(connectedBlockchain: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
+  async getMnemonicInfo(connectedBlockchain: EVMChain): Promise<StoredMnemonicInfo | undefined> {
     const defaultAccount = await this.defaultAccount();
     let result: StoredMnemonicInfo | undefined
     if (connectedBlockchain && connectedBlockchain !== 'Carbon' && CONTRACT_HASH[connectedBlockchain][this.network]) {

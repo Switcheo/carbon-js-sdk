@@ -5,7 +5,7 @@ import { registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
-import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs, SupportedEip6963Provider } from "@carbon-sdk/constant";
 import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
+import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
 
 dayjs.extend(utc)
 
@@ -45,6 +46,7 @@ export interface CarbonWalletGenericOpts {
   triggerMerge?: boolean;
 
   gasFee?: GasFee;
+  isRainbowKit?: boolean
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -175,6 +177,8 @@ export class CarbonWallet {
 
   disableRetryOnSequenceError: boolean;
 
+  isRainbowKit: boolean = false
+
   // for analytics
   providerAgent?: ProviderAgent | string;
 
@@ -208,6 +212,7 @@ export class CarbonWallet {
     this.gasFee = opts.gasFee;
 
     this.updateNetwork(network);
+    this.isRainbowKit = opts.isRainbowKit ?? false
 
     this.onRequestSign = opts.onRequestSign;
     this.onSignComplete = opts.onSignComplete;
@@ -320,6 +325,16 @@ export class CarbonWallet {
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
       providerAgent: ProviderAgent.MetamaskExtension,
       ...opts,
+    });
+    return wallet;
+  }
+
+  public static withRainbowKit(rainbowKit: RainbowKitAccount, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, walletProvider: SupportedEip6963Provider, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+    const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, compressedPubKeyBase64, addressOptions)
+    const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
+      ...opts,
+      providerAgent: walletProvider,
+      isRainbowKit: true,
     });
     return wallet;
   }
@@ -947,7 +962,7 @@ export class CarbonWallet {
   }
 
   public isEvmWallet() {
-    return this.providerAgent === ProviderAgent.MetamaskExtension
+    return this.providerAgent === ProviderAgent.MetamaskExtension || this.isRainbowKit;
   }
 
   private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
