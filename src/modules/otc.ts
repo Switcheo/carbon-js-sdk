@@ -1,21 +1,36 @@
-import { MsgAcceptQuote, MsgCreateRfq } from "@carbon-sdk/codec/Switcheo/carbon/otc/tx";
+import { MsgAcceptQuote, MsgCancelRfq, MsgCreateRfq } from "@carbon-sdk/codec/Switcheo/carbon/otc/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
 export class OTCModule extends BaseModule {
-  public async createRfq(denoms: OTCModule.CreateRfqParams[]) {
+  public async createRfq(params: OTCModule.CreateRfqParams) {
     const wallet = this.getWallet();
+    const { denoms: sellCoins, buyDenom } = params;
 
     const value = MsgCreateRfq.fromPartial({
       requester: wallet.bech32Address,
-      sellCoins: denoms,
-      buyDenom: 'swth',
-      expiryTime: new Date(Date.now() + 1000 * 60 * 60),
+      sellCoins,
+      buyDenom: buyDenom ?? 'swth',
+      expiryTime: new Date(Date.now() + 1000 * 60 * 2),
     })
 
     return await wallet.sendTx({
       value,
       typeUrl: CarbonTx.Types.MsgCreateRfq,
+    })
+  }
+
+  public async cancelRfq(rfqId: string) {
+    const wallet = this.getWallet();
+
+    const value = MsgCancelRfq.fromPartial({
+      requester: wallet.bech32Address,
+      id: rfqId,
+    })
+
+    return await wallet.sendTx({
+      value,
+      typeUrl: CarbonTx.Types.MsgCancelRfq,
     })
   }
 
@@ -36,7 +51,10 @@ export class OTCModule extends BaseModule {
 
 export namespace OTCModule {
   export interface CreateRfqParams {
-    denom: string;
-    amount: string;
+    denoms: {
+      denom: string;
+      amount: string;
+    }[],
+    buyDenom?: string
   }
 }
