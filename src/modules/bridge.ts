@@ -3,10 +3,23 @@ import { Duration } from "@carbon-sdk/codec";
 import BigNumber from "bignumber.js";
 import { Coin } from "cosmjs-types/cosmos/base/v1beta1/coin";
 import Long from "long";
-import { CarbonTx } from "../util";
+import { CarbonTx, FetchUtils } from "../util";
 import BaseModule from "./base";
 
 export class BridgeModule extends BaseModule {
+  public async getRelayFees(relayDenom: string, connectionId: string) {
+    const config = this.sdkProvider.getTokenClient().configProvider.getConfig();
+    const url = `${config.hydrogenUrl}/bridge_fees?fee_denom=${relayDenom}&connection_id=${connectionId}`;
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+    const result: BridgeModule.BridgeRelayFees = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
+    return result
+  }
+
   public async withdraw(params: BridgeModule.WithdrawParams, opts?: CarbonTx.SignTxOpts) {
     const {
       connectionId,
@@ -60,5 +73,15 @@ export namespace BridgeModule {
     relayDenom: string;
     relayAmount: BigNumber;
     expirySeconds: number;
+  }
+
+  export interface BridgeRelayFees {
+    deposit: string,
+    withdraw: string,
+    execute: string,
+    withdraw_and_execute: string,
+    register_token: string,
+    deregister_token: string,
+    time_quoted_at: string,
   }
 }

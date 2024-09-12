@@ -29,6 +29,9 @@ export const HydrogenEndpoints = {
 
   // Fee service api
   fee_quote: "/fee_quote",
+
+  // Bridge fees
+  bridge_fee: "/bridge_fee",
 };
 
 const formatDateField = (value?: string | null) => {

@@ -38,9 +38,9 @@ import "./_setup";
     connectionId: externalToken?.connectionId ?? '',
     receiver: sdk.wallet.evmHexAddress,
     tokenDenom: externalToken?.denom ?? '',
-    tokenAmount: new BigNumber(10).shiftedBy(tokenDp).toString(10),
+    tokenAmount: new BigNumber(10).shiftedBy(tokenDp),
     relayDenom: 'swth',
-    relayAmount: '100',
+    relayAmount: new BigNumber(100),
     expirySeconds: 1000,
   }
   const result = await sdk.bridge.withdraw(withdrawParams)
