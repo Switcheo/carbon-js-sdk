@@ -134,9 +134,9 @@ class HydrogenClient {
       ...value,
       created_at: formatDateField(value.created_at?.toString()),
       updated_at: formatDateField(value.updated_at?.toString()),
-      source_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id),
+      source_blockchain: this.tokenClient.getBlockchainV2FromIDs(Number(value.from_chain_id), value.bridge_id),
       bridging_blockchain: getBridgeBlockchainFromId(value.bridge_id),
-      destination_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id),
+      destination_blockchain: this.tokenClient.getBlockchainV2FromIDs(Number(value.to_chain_id), value.bridge_id),
       source_event: this.formatChainEventV2(value.source_event, value.source_blockchain ?? ''),
       bridging_event: this.formatChainEventV2(value.bridging_event, getBridgeBlockchainFromId(value.bridge_id)),
       destination_event: this.formatChainEventV2(value.destination_event, value.destination_blockchain ?? ''),
@@ -146,8 +146,8 @@ class HydrogenClient {
 
   public formatCrossChainTransferDetailedV2 = (value: any): CrossChainTransferDetailed => {
     if (!value || typeof value !== "object") return value;
-    const source_blockchain = this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id)
-    const destination_blockchain = this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id)
+    const source_blockchain = this.tokenClient.getBlockchainV2FromIDs(Number(value.from_chain_id), value.bridge_id)
+    const destination_blockchain = this.tokenClient.getBlockchainV2FromIDs(Number(value.to_chain_id), value.bridge_id)
     const bridging_blockchain = getBridgeBlockchainFromId(value.bridge_id)
     return {
       ...this.formatCrossChainTransferV2(value),

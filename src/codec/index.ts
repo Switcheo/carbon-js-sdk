@@ -94,10 +94,6 @@ registry.register("/Switcheo.carbon.cdp.MsgSetLiquidationFee", Carbon.Cdp.MsgSet
 registry.register("/Switcheo.carbon.cdp.MsgSetLiquidationFeeResponse", Carbon.Cdp.MsgSetLiquidationFeeResponse);
 registry.register("/Switcheo.carbon.cdp.MsgSetInterestFee", Carbon.Cdp.MsgSetInterestFee);
 registry.register("/Switcheo.carbon.cdp.MsgSetInterestFeeResponse", Carbon.Cdp.MsgSetInterestFeeResponse);
-registry.register("/Switcheo.carbon.cdp.MsgRepayAssetWithCdpTokens", Carbon.Cdp.MsgRepayAssetWithCdpTokens);
-registry.register("/Switcheo.carbon.cdp.MsgRepayAssetWithCdpTokensResponse", Carbon.Cdp.MsgRepayAssetWithCdpTokensResponse);
-registry.register("/Switcheo.carbon.cdp.MsgRepayAssetWithCollateral", Carbon.Cdp.MsgRepayAssetWithCollateral);
-registry.register("/Switcheo.carbon.cdp.MsgRepayAssetWithCollateralResponse", Carbon.Cdp.MsgRepayAssetWithCollateralResponse);
 registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinMintCap", Carbon.Cdp.MsgSetStablecoinMintCap);
 registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinMintCapResponse", Carbon.Cdp.MsgSetStablecoinMintCapResponse);
 registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinInterestRate", Carbon.Cdp.MsgSetStablecoinInterestRate);
@@ -112,12 +108,6 @@ registry.register("/Switcheo.carbon.cdp.MsgSetMinimumCloseFactor", Carbon.Cdp.Ms
 registry.register("/Switcheo.carbon.cdp.MsgSetMinimumCloseFactorResponse", Carbon.Cdp.MsgSetMinimumCloseFactorResponse);
 registry.register("/Switcheo.carbon.cdp.MsgSetSmallLiquidationSize", Carbon.Cdp.MsgSetSmallLiquidationSize);
 registry.register("/Switcheo.carbon.cdp.MsgSetSmallLiquidationSizeResponse", Carbon.Cdp.MsgSetSmallLiquidationSizeResponse);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithCdpTokens", Carbon.Cdp.MsgLiquidateCollateralWithCdpTokens);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithCdpTokensResponse", Carbon.Cdp.MsgLiquidateCollateralWithCdpTokensResponse);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithCollateral", Carbon.Cdp.MsgLiquidateCollateralWithCollateral);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithCollateralResponse", Carbon.Cdp.MsgLiquidateCollateralWithCollateralResponse);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoin", Carbon.Cdp.MsgLiquidateCollateralWithStablecoin);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinResponse", Carbon.Cdp.MsgLiquidateCollateralWithStablecoinResponse);
 registry.register("/Switcheo.carbon.cdp.MsgCreateRewardScheme", Carbon.Cdp.MsgCreateRewardScheme);
 registry.register("/Switcheo.carbon.cdp.MsgCreateRewardSchemeResponse", Carbon.Cdp.MsgCreateRewardSchemeResponse);
 registry.register("/Switcheo.carbon.cdp.MsgUpdateRewardScheme", Carbon.Cdp.MsgUpdateRewardScheme);
@@ -128,14 +118,6 @@ registry.register("/Switcheo.carbon.cdp.MsgSetStalePriceGracePeriod", Carbon.Cdp
 registry.register("/Switcheo.carbon.cdp.MsgSetStalePriceGracePeriodResponse", Carbon.Cdp.MsgSetStalePriceGracePeriodResponse);
 registry.register("/Switcheo.carbon.cdp.MsgSetCdpPaused", Carbon.Cdp.MsgSetCdpPaused);
 registry.register("/Switcheo.carbon.cdp.MsgSetCdpPausedResponse", Carbon.Cdp.MsgSetCdpPausedResponse);
-registry.register("/Switcheo.carbon.cdp.MsgReturnStablecoinWithInterestInCollateral", Carbon.Cdp.MsgReturnStablecoinWithInterestInCollateral);
-registry.register("/Switcheo.carbon.cdp.MsgReturnStablecoinWithInterestInCollateralResponse", Carbon.Cdp.MsgReturnStablecoinWithInterestInCollateralResponse);
-registry.register("/Switcheo.carbon.cdp.MsgReturnStablecoinWithInterestInCdpTokens", Carbon.Cdp.MsgReturnStablecoinWithInterestInCdpTokens);
-registry.register("/Switcheo.carbon.cdp.MsgReturnStablecoinWithInterestInCdpTokensResponse", Carbon.Cdp.MsgReturnStablecoinWithInterestInCdpTokensResponse);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens", Carbon.Cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse", Carbon.Cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateral", Carbon.Cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateral);
-registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse", Carbon.Cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse);
 registry.register("/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokens", Carbon.Cdp.MsgConvertTokenInCdpToGroupTokens);
 registry.register("/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokensResponse", Carbon.Cdp.MsgConvertTokenInCdpToGroupTokensResponse);
 registry.register("/Switcheo.carbon.cdp.MsgAddEModeCategory", Carbon.Cdp.MsgAddEModeCategory);
@@ -211,6 +193,8 @@ registry.register("/Switcheo.carbon.oracle.MsgUpdateParams", Carbon.Oracle.MsgUp
 registry.register("/Switcheo.carbon.oracle.MsgUpdateParamsResponse", Carbon.Oracle.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleContract", Carbon.Oracle.MsgUpdateOracleContract);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleContractResponse", Carbon.Oracle.MsgUpdateOracleContractResponse);
+registry.register("/Switcheo.carbon.oracle.MsgDeployOracleContract", Carbon.Oracle.MsgDeployOracleContract);
+registry.register("/Switcheo.carbon.oracle.MsgDeployOracleContractResponse", Carbon.Oracle.MsgDeployOracleContractResponse);
 registry.register("/Switcheo.carbon.oracle.MsgCreateResult", Carbon.Oracle.MsgCreateResult);
 registry.register("/Switcheo.carbon.oracle.MsgCreateResultResponse", Carbon.Oracle.MsgCreateResultResponse);
 
@@ -742,10 +726,6 @@ export const TxTypes = {
   "MsgSetLiquidationFeeResponse": "/Switcheo.carbon.cdp.MsgSetLiquidationFeeResponse",
   "MsgSetInterestFee": "/Switcheo.carbon.cdp.MsgSetInterestFee",
   "MsgSetInterestFeeResponse": "/Switcheo.carbon.cdp.MsgSetInterestFeeResponse",
-  "MsgRepayAssetWithCdpTokens": "/Switcheo.carbon.cdp.MsgRepayAssetWithCdpTokens",
-  "MsgRepayAssetWithCdpTokensResponse": "/Switcheo.carbon.cdp.MsgRepayAssetWithCdpTokensResponse",
-  "MsgRepayAssetWithCollateral": "/Switcheo.carbon.cdp.MsgRepayAssetWithCollateral",
-  "MsgRepayAssetWithCollateralResponse": "/Switcheo.carbon.cdp.MsgRepayAssetWithCollateralResponse",
   "MsgSetStablecoinMintCap": "/Switcheo.carbon.cdp.MsgSetStablecoinMintCap",
   "MsgSetStablecoinMintCapResponse": "/Switcheo.carbon.cdp.MsgSetStablecoinMintCapResponse",
   "MsgSetStablecoinInterestRate": "/Switcheo.carbon.cdp.MsgSetStablecoinInterestRate",
@@ -760,12 +740,6 @@ export const TxTypes = {
   "MsgSetMinimumCloseFactorResponse": "/Switcheo.carbon.cdp.MsgSetMinimumCloseFactorResponse",
   "MsgSetSmallLiquidationSize": "/Switcheo.carbon.cdp.MsgSetSmallLiquidationSize",
   "MsgSetSmallLiquidationSizeResponse": "/Switcheo.carbon.cdp.MsgSetSmallLiquidationSizeResponse",
-  "MsgLiquidateCollateralWithCdpTokens": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithCdpTokens",
-  "MsgLiquidateCollateralWithCdpTokensResponse": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithCdpTokensResponse",
-  "MsgLiquidateCollateralWithCollateral": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithCollateral",
-  "MsgLiquidateCollateralWithCollateralResponse": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithCollateralResponse",
-  "MsgLiquidateCollateralWithStablecoin": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoin",
-  "MsgLiquidateCollateralWithStablecoinResponse": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinResponse",
   "MsgCreateRewardScheme": "/Switcheo.carbon.cdp.MsgCreateRewardScheme",
   "MsgCreateRewardSchemeResponse": "/Switcheo.carbon.cdp.MsgCreateRewardSchemeResponse",
   "MsgUpdateRewardScheme": "/Switcheo.carbon.cdp.MsgUpdateRewardScheme",
@@ -776,14 +750,6 @@ export const TxTypes = {
   "MsgSetStalePriceGracePeriodResponse": "/Switcheo.carbon.cdp.MsgSetStalePriceGracePeriodResponse",
   "MsgSetCdpPaused": "/Switcheo.carbon.cdp.MsgSetCdpPaused",
   "MsgSetCdpPausedResponse": "/Switcheo.carbon.cdp.MsgSetCdpPausedResponse",
-  "MsgReturnStablecoinWithInterestInCollateral": "/Switcheo.carbon.cdp.MsgReturnStablecoinWithInterestInCollateral",
-  "MsgReturnStablecoinWithInterestInCollateralResponse": "/Switcheo.carbon.cdp.MsgReturnStablecoinWithInterestInCollateralResponse",
-  "MsgReturnStablecoinWithInterestInCdpTokens": "/Switcheo.carbon.cdp.MsgReturnStablecoinWithInterestInCdpTokens",
-  "MsgReturnStablecoinWithInterestInCdpTokensResponse": "/Switcheo.carbon.cdp.MsgReturnStablecoinWithInterestInCdpTokensResponse",
-  "MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens",
-  "MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse",
-  "MsgLiquidateCollateralWithStablecoinAndInterestInCollateral": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateral",
-  "MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse",
   "MsgConvertTokenInCdpToGroupTokens": "/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokens",
   "MsgConvertTokenInCdpToGroupTokensResponse": "/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokensResponse",
   "MsgAddEModeCategory": "/Switcheo.carbon.cdp.MsgAddEModeCategory",
@@ -850,6 +816,8 @@ export const TxTypes = {
   "MsgOracleUpdateParamsResponse": "/Switcheo.carbon.oracle.MsgUpdateParamsResponse",
   "MsgUpdateOracleContract": "/Switcheo.carbon.oracle.MsgUpdateOracleContract",
   "MsgUpdateOracleContractResponse": "/Switcheo.carbon.oracle.MsgUpdateOracleContractResponse",
+  "MsgDeployOracleContract": "/Switcheo.carbon.oracle.MsgDeployOracleContract",
+  "MsgDeployOracleContractResponse": "/Switcheo.carbon.oracle.MsgDeployOracleContractResponse",
   "MsgCreateResult": "/Switcheo.carbon.oracle.MsgCreateResult",
   "MsgCreateResultResponse": "/Switcheo.carbon.oracle.MsgCreateResultResponse",
   "MsgDeactivateContract": "/Switcheo.carbon.evmcontract.MsgDeactivateContract",
@@ -3317,7 +3285,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "allow_repay_stablecoin_interest_debt",
+        "name": "allow_repay_stablecoin_interest",
         "type": "bool"
       },
       {
@@ -3369,7 +3337,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "allow_repay_stablecoin_interest_debt",
+        "name": "allow_repay_stablecoin_interest",
         "type": "bool"
       },
       {
@@ -3879,7 +3847,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -3901,7 +3869,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -3971,7 +3939,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -3993,7 +3961,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -4135,56 +4103,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "id",
         "type": "uint64"
-      }
-    ],
-    "LiquidateCollateralWithStablecoinEvent": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "liquidator",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      },
-      {
-        "name": "collateral_denom",
-        "type": "string"
-      },
-      {
-        "name": "collateral_amount_liquidated",
-        "type": "string"
-      },
-      {
-        "name": "collateral_amount_liquidator",
-        "type": "string"
-      },
-      {
-        "name": "collateral_amount_fee",
-        "type": "string"
-      },
-      {
-        "name": "liquidation_price",
-        "type": "string"
-      },
-      {
-        "name": "market_price",
-        "type": "string"
-      },
-      {
-        "name": "discount",
-        "type": "string"
-      },
-      {
-        "name": "debt_denom",
-        "type": "string"
-      },
-      {
-        "name": "debt_amount",
-        "type": "string"
       },
       {
         "name": "principal_amount",
@@ -4197,10 +4115,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "interest_amount",
         "type": "string"
-      },
-      {
-        "name": "id",
-        "type": "uint64"
       }
     ],
     "ClaimRewardEvent": [
@@ -4390,18 +4304,18 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "account_to_collateralized",
-        "type": "AccountToCollateralizedEntry[]",
+        "name": "collateralized_cibt_records",
+        "type": "CollateralizedCibtRecordsEntry[]",
         "packageName": "/Switcheo.carbon.cdp.GenesisState"
       },
       {
-        "name": "account_to_principal_debt",
-        "type": "AccountToPrincipalDebtEntry[]",
+        "name": "principal_records",
+        "type": "PrincipalRecordsEntry[]",
         "packageName": "/Switcheo.carbon.cdp.GenesisState"
       },
       {
-        "name": "account_to_initial_cumulative_interest_multiplier",
-        "type": "AccountToInitialCumulativeInterestMultiplierEntry[]",
+        "name": "initial_cumulative_interest_multiplier_records",
+        "type": "InitialCumulativeInterestMultiplierRecordsEntry[]",
         "packageName": "/Switcheo.carbon.cdp.GenesisState"
       },
       {
@@ -4410,18 +4324,18 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.cdp"
       },
       {
-        "name": "account_to_principal_stablecoin_debt",
-        "type": "AccountToPrincipalStablecoinDebtEntry[]",
+        "name": "principal_stablecoin_debt_records",
+        "type": "PrincipalStablecoinDebtRecordsEntry[]",
         "packageName": "/Switcheo.carbon.cdp.GenesisState"
       },
       {
-        "name": "account_to_stablecoin_initial_cumulative_interest_multiplier",
-        "type": "AccountToStablecoinInitialCumulativeInterestMultiplierEntry[]",
+        "name": "stablecoin_initial_cumulative_interest_multiplier_records",
+        "type": "StablecoinInitialCumulativeInterestMultiplierRecordsEntry[]",
         "packageName": "/Switcheo.carbon.cdp.GenesisState"
       },
       {
-        "name": "account_to_reward_debt",
-        "type": "AccountToRewardDebtEntry[]",
+        "name": "reward_debt_records",
+        "type": "RewardDebtRecordsEntry[]",
         "packageName": "/Switcheo.carbon.cdp.GenesisState"
       },
       {
@@ -4435,8 +4349,8 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.cdp"
       },
       {
-        "name": "account_to_e_mode_category",
-        "type": "AccountToEModeCategoryEntry[]",
+        "name": "account_e_mode_category_records",
+        "type": "AccountEModeCategoryRecordsEntry[]",
         "packageName": "/Switcheo.carbon.cdp.GenesisState"
       }
     ],
@@ -4510,7 +4424,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       }
     ],
@@ -4550,7 +4464,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -4604,7 +4518,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "principal_debt",
+        "name": "principal",
         "type": "string"
       },
       {
@@ -4620,11 +4534,11 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryAccountStablecoinResponse": [
       {
-        "name": "principal_debt",
+        "name": "principal",
         "type": "string"
       },
       {
-        "name": "interest_debt",
+        "name": "interest",
         "type": "string"
       },
       {
@@ -4714,7 +4628,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -5044,7 +4958,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -5059,7 +4973,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -5074,7 +4988,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -5114,6 +5028,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "debtor",
         "type": "string"
+      },
+      {
+        "name": "from_collateral",
+        "type": "bool"
       }
     ],
     "MsgRepayAssetResponse": [],
@@ -5142,7 +5060,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdp_denom",
+        "name": "cibt_denom",
         "type": "string"
       },
       {
@@ -5165,20 +5083,27 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "collateral_denom",
-        "type": "string"
+        "name": "min_collateral",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
       },
       {
-        "name": "min_collateral_amount",
-        "type": "string"
+        "name": "debt",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
       },
       {
-        "name": "debt_denom",
-        "type": "string"
+        "name": "stable_interest",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
       },
       {
-        "name": "debt_amount",
-        "type": "string"
+        "name": "debt_from_collateral",
+        "type": "bool"
+      },
+      {
+        "name": "interest_from_collateral",
+        "type": "bool"
       }
     ],
     "MsgLiquidateCollateralResponse": [],
@@ -5204,52 +5129,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgSetInterestFeeResponse": [],
-    "MsgRepayAssetWithCdpTokens": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      },
-      {
-        "name": "debt_denom",
-        "type": "string"
-      },
-      {
-        "name": "cdp_denom",
-        "type": "string"
-      },
-      {
-        "name": "cdp_amount",
-        "type": "string"
-      }
-    ],
-    "MsgRepayAssetWithCdpTokensResponse": [],
-    "MsgRepayAssetWithCollateral": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      },
-      {
-        "name": "debt_denom",
-        "type": "string"
-      },
-      {
-        "name": "cdp_denom",
-        "type": "string"
-      },
-      {
-        "name": "cdp_amount",
-        "type": "string"
-      }
-    ],
-    "MsgRepayAssetWithCollateralResponse": [],
     "MsgSetStablecoinMintCap": [
       {
         "name": "creator",
@@ -5289,20 +5168,26 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "principal_amount",
-        "type": "string"
+        "name": "principal",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
       },
       {
-        "name": "interest_denom",
-        "type": "string"
-      },
-      {
-        "name": "interest_amount",
-        "type": "string"
+        "name": "interest",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
       },
       {
         "name": "debtor",
         "type": "string"
+      },
+      {
+        "name": "principal_from_collateral",
+        "type": "bool"
+      },
+      {
+        "name": "interest_from_collateral",
+        "type": "bool"
       }
     ],
     "MsgReturnStablecoinResponse": [],
@@ -5339,111 +5224,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgSetSmallLiquidationSizeResponse": [],
-    "MsgLiquidateCollateralWithCdpTokens": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      },
-      {
-        "name": "collateral_denom",
-        "type": "string"
-      },
-      {
-        "name": "min_collateral_amount",
-        "type": "string"
-      },
-      {
-        "name": "debt_denom",
-        "type": "string"
-      },
-      {
-        "name": "debt_amount",
-        "type": "string"
-      },
-      {
-        "name": "debt_collateral_denom",
-        "type": "string"
-      },
-      {
-        "name": "debt_collateral_amount",
-        "type": "string"
-      }
-    ],
-    "MsgLiquidateCollateralWithCdpTokensResponse": [],
-    "MsgLiquidateCollateralWithCollateral": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      },
-      {
-        "name": "collateral_denom",
-        "type": "string"
-      },
-      {
-        "name": "min_collateral_amount",
-        "type": "string"
-      },
-      {
-        "name": "debt_denom",
-        "type": "string"
-      },
-      {
-        "name": "debt_amount",
-        "type": "string"
-      },
-      {
-        "name": "debt_collateral_denom",
-        "type": "string"
-      },
-      {
-        "name": "debt_collateral_amount",
-        "type": "string"
-      }
-    ],
-    "MsgLiquidateCollateralWithCollateralResponse": [],
-    "MsgLiquidateCollateralWithStablecoin": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      },
-      {
-        "name": "collateral_denom",
-        "type": "string"
-      },
-      {
-        "name": "min_collateral_amount",
-        "type": "string"
-      },
-      {
-        "name": "debt_denom",
-        "type": "string"
-      },
-      {
-        "name": "debt_amount",
-        "type": "string"
-      },
-      {
-        "name": "interest_denom",
-        "type": "string"
-      },
-      {
-        "name": "interest_amount",
-        "type": "string"
-      }
-    ],
-    "MsgLiquidateCollateralWithStablecoinResponse": [],
     "MsgCreateRewardScheme": [
       {
         "name": "creator",
@@ -5498,122 +5278,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgSetCdpPausedResponse": [],
-    "MsgReturnStablecoinWithInterestInCollateral": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "principal_amount",
-        "type": "string"
-      },
-      {
-        "name": "interest_cdp_denom",
-        "type": "string"
-      },
-      {
-        "name": "interest_cdp_amount",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      }
-    ],
-    "MsgReturnStablecoinWithInterestInCollateralResponse": [],
-    "MsgReturnStablecoinWithInterestInCdpTokens": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "principal_amount",
-        "type": "string"
-      },
-      {
-        "name": "interest_cdp_denom",
-        "type": "string"
-      },
-      {
-        "name": "interest_cdp_amount",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      }
-    ],
-    "MsgReturnStablecoinWithInterestInCdpTokensResponse": [],
-    "MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      },
-      {
-        "name": "collateral_denom",
-        "type": "string"
-      },
-      {
-        "name": "min_collateral_amount",
-        "type": "string"
-      },
-      {
-        "name": "debt_denom",
-        "type": "string"
-      },
-      {
-        "name": "debt_amount",
-        "type": "string"
-      },
-      {
-        "name": "interest_cdp_denom",
-        "type": "string"
-      },
-      {
-        "name": "interest_cdp_amount",
-        "type": "string"
-      }
-    ],
-    "MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse": [],
-    "MsgLiquidateCollateralWithStablecoinAndInterestInCollateral": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "debtor",
-        "type": "string"
-      },
-      {
-        "name": "collateral_denom",
-        "type": "string"
-      },
-      {
-        "name": "min_collateral_amount",
-        "type": "string"
-      },
-      {
-        "name": "debt_denom",
-        "type": "string"
-      },
-      {
-        "name": "debt_amount",
-        "type": "string"
-      },
-      {
-        "name": "interest_cdp_denom",
-        "type": "string"
-      },
-      {
-        "name": "interest_cdp_amount",
-        "type": "string"
-      }
-    ],
-    "MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse": [],
     "MsgConvertTokenInCdpToGroupTokens": [
       {
         "name": "creator",
@@ -11222,6 +10886,10 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
       }
     ],
     "QueryAllMarketResponse": [
@@ -11909,6 +11577,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "max_power_to_slash_factor",
         "type": "string"
+      },
+      {
+        "name": "evm_oracle_enabled",
+        "type": "bool"
       }
     ],
     "ParamsToUpdate": [
@@ -11948,6 +11620,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "max_power_to_slash_factor",
         "type": "string"
+      },
+      {
+        "name": "evm_oracle_enabled",
+        "type": "bool"
       }
     ],
     "GenesisState": [
@@ -12383,6 +12059,17 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdateOracleContractResponse": [],
+    "MsgDeployOracleContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "MsgDeployOracleContractResponse": [],
     "ValidatorSignature": [
       {
         "name": "pub_key",

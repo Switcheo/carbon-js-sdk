@@ -101,6 +101,6 @@ export const DEFAULT_EIP712_TYPES = {
 export const DEFAULT_CARBON_DOMAIN_FIELDS = {
     name: 'Carbon',
     version: '1.0.0',
-    verifyingContract: 'cosmos',
+    verifyingContract: '0x0000000000000000000000000000636f736D6F73',
     salt: '1',
 }
