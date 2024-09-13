@@ -207,11 +207,15 @@ function isNonZeroField(fieldValue: any): boolean {
 
 export function constructEIP712Tx(doc: CarbonTx.StdSignDoc): EIP712Tx {
     const { account_number, chain_id, fee, memo, sequence } = doc
+    console.log('xx', 'Constructing tx start')
+    console.log('xx', 'chainID: ', chain_id)
+    console.log('xx', 'parsed chainID: ', parseChainId(chain_id))
+    console.log('xx', 'Constructing tx end')
     const eip712Tx = {
         types: getTypes(doc.msgs),
         primaryType: "Tx",
-        domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(doc.chain_id) },
-        message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) },
+        domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: "1" },
+        message: { account_number, chain_id: "1", fee, memo, sequence, ...convertMsgs(doc.msgs) },
     }
 
     return eip712Tx
