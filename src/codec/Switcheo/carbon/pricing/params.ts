@@ -11,6 +11,7 @@ export interface Params {
   impactBand: number;
   staleIndexAllowance?: Duration;
   backfillTimeInterval?: Duration;
+  futurePricesAllowance?: Duration;
 }
 
 export interface ParamsToUpdate {
@@ -18,6 +19,7 @@ export interface ParamsToUpdate {
   impactBand?: number;
   staleIndexAllowance?: Duration;
   backfillTimeInterval?: Duration;
+  futurePricesAllowance?: Duration;
 }
 
 const baseParams: object = { smoothenBand: 0, impactBand: 0 };
@@ -45,6 +47,12 @@ export const Params = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.futurePricesAllowance !== undefined) {
+      Duration.encode(
+        message.futurePricesAllowance,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -69,6 +77,12 @@ export const Params = {
           break;
         case 4:
           message.backfillTimeInterval = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 5:
+          message.futurePricesAllowance = Duration.decode(
             reader,
             reader.uint32()
           );
@@ -101,6 +115,11 @@ export const Params = {
       object.backfillTimeInterval !== null
         ? Duration.fromJSON(object.backfillTimeInterval)
         : undefined;
+    message.futurePricesAllowance =
+      object.futurePricesAllowance !== undefined &&
+      object.futurePricesAllowance !== null
+        ? Duration.fromJSON(object.futurePricesAllowance)
+        : undefined;
     return message;
   },
 
@@ -116,6 +135,10 @@ export const Params = {
     message.backfillTimeInterval !== undefined &&
       (obj.backfillTimeInterval = message.backfillTimeInterval
         ? Duration.toJSON(message.backfillTimeInterval)
+        : undefined);
+    message.futurePricesAllowance !== undefined &&
+      (obj.futurePricesAllowance = message.futurePricesAllowance
+        ? Duration.toJSON(message.futurePricesAllowance)
         : undefined);
     return obj;
   },
@@ -133,6 +156,11 @@ export const Params = {
       object.backfillTimeInterval !== undefined &&
       object.backfillTimeInterval !== null
         ? Duration.fromPartial(object.backfillTimeInterval)
+        : undefined;
+    message.futurePricesAllowance =
+      object.futurePricesAllowance !== undefined &&
+      object.futurePricesAllowance !== null
+        ? Duration.fromPartial(object.futurePricesAllowance)
         : undefined;
     return message;
   },
@@ -169,6 +197,12 @@ export const ParamsToUpdate = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.futurePricesAllowance !== undefined) {
+      Duration.encode(
+        message.futurePricesAllowance,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -203,6 +237,12 @@ export const ParamsToUpdate = {
             reader.uint32()
           );
           break;
+        case 5:
+          message.futurePricesAllowance = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -231,6 +271,11 @@ export const ParamsToUpdate = {
       object.backfillTimeInterval !== null
         ? Duration.fromJSON(object.backfillTimeInterval)
         : undefined;
+    message.futurePricesAllowance =
+      object.futurePricesAllowance !== undefined &&
+      object.futurePricesAllowance !== null
+        ? Duration.fromJSON(object.futurePricesAllowance)
+        : undefined;
     return message;
   },
 
@@ -246,6 +291,10 @@ export const ParamsToUpdate = {
     message.backfillTimeInterval !== undefined &&
       (obj.backfillTimeInterval = message.backfillTimeInterval
         ? Duration.toJSON(message.backfillTimeInterval)
+        : undefined);
+    message.futurePricesAllowance !== undefined &&
+      (obj.futurePricesAllowance = message.futurePricesAllowance
+        ? Duration.toJSON(message.futurePricesAllowance)
         : undefined);
     return obj;
   },
@@ -263,6 +312,11 @@ export const ParamsToUpdate = {
       object.backfillTimeInterval !== undefined &&
       object.backfillTimeInterval !== null
         ? Duration.fromPartial(object.backfillTimeInterval)
+        : undefined;
+    message.futurePricesAllowance =
+      object.futurePricesAllowance !== undefined &&
+      object.futurePricesAllowance !== null
+        ? Duration.fromPartial(object.futurePricesAllowance)
         : undefined;
     return message;
   },
