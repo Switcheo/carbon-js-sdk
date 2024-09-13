@@ -19,42 +19,49 @@ export interface MsgSetBridgeEnabled {
   isEnabled: boolean;
 }
 
-export interface MsgSetBridgeEnabledResponse {}
+export interface MsgSetBridgeEnabledResponse { }
 
 export interface MsgUpdateAxelarIbcChannel {
   creator: string;
   channelId: string;
 }
 
-export interface MsgUpdateAxelarIbcChannelResponse {}
+export interface MsgUpdateAxelarIbcChannelResponse { }
 
 export interface MsgUpdateIbcTimeoutHeightOffset {
   creator: string;
   offset: Long;
 }
 
-export interface MsgUpdateIbcTimeoutHeightOffsetResponse {}
+export interface MsgUpdateIbcTimeoutHeightOffsetResponse { }
 
 export interface MsgUpdateMaxRelayExpiry {
   creator: string;
   expiry?: Duration;
 }
 
-export interface MsgUpdateMaxRelayExpiryResponse {}
+export interface MsgUpdateMaxRelayExpiryResponse { }
 
 export interface MsgUpdateRelayWhitelistDuration {
   creator: string;
   whitelistDuration?: Duration;
 }
 
-export interface MsgUpdateRelayWhitelistDurationResponse {}
+export interface MsgUpdateRelayWhitelistDurationResponse { }
+
+export interface MsgUpdateRefundAddress {
+  creator: string;
+  refundAddress: string;
+}
+
+export interface MsgUpdateRefundAddressResponse { }
 
 export interface MsgUpdateParams {
   authority: string;
   params?: Params;
 }
 
-export interface MsgUpdateParamsResponse {}
+export interface MsgUpdateParamsResponse { }
 
 /**
  * MsgAxelarSendToken is a convenience method to send a *Axelar Supported* token
@@ -77,7 +84,7 @@ export interface MsgAxelarSendToken {
   tokens?: Coin;
 }
 
-export interface MsgAxelarSendTokenResponse {}
+export interface MsgAxelarSendTokenResponse { }
 
 /**
  * MsgAxelarCallContract is a convenience method to do a GMP call to axelar.
@@ -98,7 +105,7 @@ export interface MsgAxelarCallContract {
   payload: Uint8Array;
 }
 
-export interface MsgAxelarCallContractResponse {}
+export interface MsgAxelarCallContractResponse { }
 
 /**
  * MsgAxelarCallContractWithToken is a convenience method to do a GMP call to
@@ -125,7 +132,7 @@ export interface MsgAxelarCallContractWithToken {
   payload: Uint8Array;
 }
 
-export interface MsgAxelarCallContractWithTokenResponse {}
+export interface MsgAxelarCallContractWithTokenResponse { }
 
 export interface MsgCreateConnection {
   creator: string;
@@ -138,7 +145,7 @@ export interface MsgCreateConnection {
   isOptimisticConfirm: boolean;
 }
 
-export interface MsgCreateConnectionResponse {}
+export interface MsgCreateConnectionResponse { }
 
 export interface MsgUpdateConnection {
   creator: string;
@@ -152,21 +159,21 @@ export interface UpdateConnectionParams {
   isOptimisticConfirm?: boolean;
 }
 
-export interface MsgUpdateConnectionResponse {}
+export interface MsgUpdateConnectionResponse { }
 
 export interface MsgRemoveConnection {
   creator: string;
   connectionId: string;
 }
 
-export interface MsgRemoveConnectionResponse {}
+export interface MsgRemoveConnectionResponse { }
 
 export interface MsgAddControllersForConnection {
   creator: string;
   controllers?: ControllerContracts;
 }
 
-export interface MsgAddControllersForConnectionResponse {}
+export interface MsgAddControllersForConnectionResponse { }
 
 export interface MsgUpdateControllersForConnection {
   creator: string;
@@ -174,14 +181,14 @@ export interface MsgUpdateControllersForConnection {
   controllers?: ControllersToUpdate;
 }
 
-export interface MsgUpdateControllersForConnectionResponse {}
+export interface MsgUpdateControllersForConnectionResponse { }
 
 export interface MsgRemoveControllersForConnection {
   creator: string;
   connectionId: string;
 }
 
-export interface MsgRemoveControllersForConnectionResponse {}
+export interface MsgRemoveControllersForConnectionResponse { }
 
 export interface MsgRemoveNonceMapForConnection {
   creator: string;
@@ -189,7 +196,7 @@ export interface MsgRemoveNonceMapForConnection {
   gatewayAddress: string;
 }
 
-export interface MsgRemoveNonceMapForConnectionResponse {}
+export interface MsgRemoveNonceMapForConnectionResponse { }
 
 export interface MsgRegisterExternalToken {
   creator: string;
@@ -201,7 +208,7 @@ export interface MsgRegisterExternalToken {
   expiryDuration?: Duration;
 }
 
-export interface MsgRegisterExternalTokenResponse {}
+export interface MsgRegisterExternalTokenResponse { }
 
 export interface MsgDeregisterExternalToken {
   creator: string;
@@ -211,7 +218,7 @@ export interface MsgDeregisterExternalToken {
   expiryDuration?: Duration;
 }
 
-export interface MsgDeregisterExternalTokenResponse {}
+export interface MsgDeregisterExternalTokenResponse { }
 
 export interface MsgDeployNativeToken {
   creator: string;
@@ -221,7 +228,7 @@ export interface MsgDeployNativeToken {
   expiryDuration?: Duration;
 }
 
-export interface MsgDeployNativeTokenResponse {}
+export interface MsgDeployNativeTokenResponse { }
 
 export interface MsgRegisterDeployedToken {
   creator: string;
@@ -230,7 +237,7 @@ export interface MsgRegisterDeployedToken {
   denom: string;
 }
 
-export interface MsgRegisterDeployedTokenResponse {}
+export interface MsgRegisterDeployedTokenResponse { }
 
 export interface MsgWithdrawToken {
   creator: string;
@@ -241,7 +248,7 @@ export interface MsgWithdrawToken {
   expiryDuration?: Duration;
 }
 
-export interface MsgWithdrawTokenResponse {}
+export interface MsgWithdrawTokenResponse { }
 
 export interface MsgUpdateExternalToken {
   creator: string;
@@ -252,7 +259,7 @@ export interface MsgUpdateExternalToken {
   isCarbonOwned: boolean;
 }
 
-export interface MsgUpdateExternalTokenResponse {}
+export interface MsgUpdateExternalTokenResponse { }
 
 export interface MsgDeleteExternalToken {
   creator: string;
@@ -260,7 +267,7 @@ export interface MsgDeleteExternalToken {
   denom: string;
 }
 
-export interface MsgDeleteExternalTokenResponse {}
+export interface MsgDeleteExternalTokenResponse { }
 
 export interface MsgExecuteFromCarbon {
   creator: string;
@@ -273,21 +280,21 @@ export interface MsgExecuteFromCarbon {
   expiryDuration?: Duration;
 }
 
-export interface MsgExecuteFromCarbonResponse {}
+export interface MsgExecuteFromCarbonResponse { }
 
 export interface MsgStartRelay {
   relayer: string;
   nonce: Long;
 }
 
-export interface MsgStartRelayResponse {}
+export interface MsgStartRelayResponse { }
 
 export interface MsgPruneExpiredPendingActions {
   creator: string;
   nonces: Long[];
 }
 
-export interface MsgPruneExpiredPendingActionsResponse {}
+export interface MsgPruneExpiredPendingActionsResponse { }
 
 export interface MsgRevertPendingAction {
   authority: string;
@@ -296,7 +303,7 @@ export interface MsgRevertPendingAction {
   actionType: Long;
 }
 
-export interface MsgRevertPendingActionResponse {}
+export interface MsgRevertPendingActionResponse { }
 
 export interface MsgConfirmPendingAction {
   authority: string;
@@ -305,21 +312,21 @@ export interface MsgConfirmPendingAction {
   actionType: Long;
 }
 
-export interface MsgConfirmPendingActionResponse {}
+export interface MsgConfirmPendingActionResponse { }
 
 export interface MsgAddRelayer {
   authority: string;
   relayer: string;
 }
 
-export interface MsgAddRelayerResponse {}
+export interface MsgAddRelayerResponse { }
 
 export interface MsgRemoveRelayer {
   authority: string;
   relayer: string;
 }
 
-export interface MsgRemoveRelayerResponse {}
+export interface MsgRemoveRelayerResponse { }
 
 const baseMsgSetBridgeEnabled: object = {
   creator: "",
@@ -910,7 +917,7 @@ export const MsgUpdateRelayWhitelistDuration = {
         : "";
     message.whitelistDuration =
       object.whitelistDuration !== undefined &&
-      object.whitelistDuration !== null
+        object.whitelistDuration !== null
         ? Duration.fromJSON(object.whitelistDuration)
         : undefined;
     return message;
@@ -935,7 +942,7 @@ export const MsgUpdateRelayWhitelistDuration = {
     message.creator = object.creator ?? "";
     message.whitelistDuration =
       object.whitelistDuration !== undefined &&
-      object.whitelistDuration !== null
+        object.whitelistDuration !== null
         ? Duration.fromPartial(object.whitelistDuration)
         : undefined;
     return message;
@@ -990,6 +997,129 @@ export const MsgUpdateRelayWhitelistDurationResponse = {
     const message = {
       ...baseMsgUpdateRelayWhitelistDurationResponse,
     } as MsgUpdateRelayWhitelistDurationResponse;
+    return message;
+  },
+};
+
+const baseMsgUpdateRefundAddress: object = { creator: "", refundAddress: "" };
+
+export const MsgUpdateRefundAddress = {
+  encode(
+    message: MsgUpdateRefundAddress,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.refundAddress !== "") {
+      writer.uint32(18).string(message.refundAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateRefundAddress {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateRefundAddress } as MsgUpdateRefundAddress;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.refundAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateRefundAddress {
+    const message = { ...baseMsgUpdateRefundAddress } as MsgUpdateRefundAddress;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.refundAddress =
+      object.refundAddress !== undefined && object.refundAddress !== null
+        ? String(object.refundAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgUpdateRefundAddress): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.refundAddress !== undefined &&
+      (obj.refundAddress = message.refundAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateRefundAddress>
+  ): MsgUpdateRefundAddress {
+    const message = { ...baseMsgUpdateRefundAddress } as MsgUpdateRefundAddress;
+    message.creator = object.creator ?? "";
+    message.refundAddress = object.refundAddress ?? "";
+    return message;
+  },
+};
+
+const baseMsgUpdateRefundAddressResponse: object = {};
+
+export const MsgUpdateRefundAddressResponse = {
+  encode(
+    _: MsgUpdateRefundAddressResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateRefundAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateRefundAddressResponse,
+    } as MsgUpdateRefundAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateRefundAddressResponse {
+    const message = {
+      ...baseMsgUpdateRefundAddressResponse,
+    } as MsgUpdateRefundAddressResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateRefundAddressResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateRefundAddressResponse>
+  ): MsgUpdateRefundAddressResponse {
+    const message = {
+      ...baseMsgUpdateRefundAddressResponse,
+    } as MsgUpdateRefundAddressResponse;
     return message;
   },
 };
@@ -1180,7 +1310,7 @@ export const MsgAxelarSendToken = {
         : "";
     message.destinationAddress =
       object.destinationAddress !== undefined &&
-      object.destinationAddress !== null
+        object.destinationAddress !== null
         ? String(object.destinationAddress)
         : "";
     message.tokens =
@@ -1336,7 +1466,7 @@ export const MsgAxelarCallContract = {
         : "";
     message.destinationAddress =
       object.destinationAddress !== undefined &&
-      object.destinationAddress !== null
+        object.destinationAddress !== null
         ? String(object.destinationAddress)
         : "";
     message.payload =
@@ -1503,7 +1633,7 @@ export const MsgAxelarCallContractWithToken = {
         : "";
     message.destinationAddress =
       object.destinationAddress !== undefined &&
-      object.destinationAddress !== null
+        object.destinationAddress !== null
         ? String(object.destinationAddress)
         : "";
     message.tokens =
@@ -1705,7 +1835,7 @@ export const MsgCreateConnection = {
         : "";
     message.tokenGatewayAddress =
       object.tokenGatewayAddress !== undefined &&
-      object.tokenGatewayAddress !== null
+        object.tokenGatewayAddress !== null
         ? String(object.tokenGatewayAddress)
         : "";
     message.encoding =
@@ -1718,7 +1848,7 @@ export const MsgCreateConnection = {
         : false;
     message.isOptimisticConfirm =
       object.isOptimisticConfirm !== undefined &&
-      object.isOptimisticConfirm !== null
+        object.isOptimisticConfirm !== null
         ? Boolean(object.isOptimisticConfirm)
         : false;
     return message;
@@ -1871,7 +2001,7 @@ export const MsgUpdateConnection = {
         : "";
     message.updateConnectionParams =
       object.updateConnectionParams !== undefined &&
-      object.updateConnectionParams !== null
+        object.updateConnectionParams !== null
         ? UpdateConnectionParams.fromJSON(object.updateConnectionParams)
         : undefined;
     return message;
@@ -1895,7 +2025,7 @@ export const MsgUpdateConnection = {
     message.connectionId = object.connectionId ?? "";
     message.updateConnectionParams =
       object.updateConnectionParams !== undefined &&
-      object.updateConnectionParams !== null
+        object.updateConnectionParams !== null
         ? UpdateConnectionParams.fromPartial(object.updateConnectionParams)
         : undefined;
     return message;
@@ -1975,7 +2105,7 @@ export const UpdateConnectionParams = {
         : undefined;
     message.isOptimisticConfirm =
       object.isOptimisticConfirm !== undefined &&
-      object.isOptimisticConfirm !== null
+        object.isOptimisticConfirm !== null
         ? Boolean(object.isOptimisticConfirm)
         : undefined;
     return message;
@@ -4096,7 +4226,7 @@ export const MsgExecuteFromCarbon = {
         : "";
     message.executionContract =
       object.executionContract !== undefined &&
-      object.executionContract !== null
+        object.executionContract !== null
         ? String(object.executionContract)
         : "";
     message.method =
@@ -5049,6 +5179,9 @@ export interface Msg {
   UpdateRelayWhitelistDuration(
     request: MsgUpdateRelayWhitelistDuration
   ): Promise<MsgUpdateRelayWhitelistDurationResponse>;
+  UpdateRefundAddress(
+    request: MsgUpdateRefundAddress
+  ): Promise<MsgUpdateRefundAddressResponse>;
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
   CreateConnection(
     request: MsgCreateConnection
@@ -5128,6 +5261,7 @@ export class MsgClientImpl implements Msg {
     this.UpdateMaxRelayExpiry = this.UpdateMaxRelayExpiry.bind(this);
     this.UpdateRelayWhitelistDuration =
       this.UpdateRelayWhitelistDuration.bind(this);
+    this.UpdateRefundAddress = this.UpdateRefundAddress.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.CreateConnection = this.CreateConnection.bind(this);
     this.UpdateConnection = this.UpdateConnection.bind(this);
@@ -5227,6 +5361,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateRelayWhitelistDurationResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateRefundAddress(
+    request: MsgUpdateRefundAddress
+  ): Promise<MsgUpdateRefundAddressResponse> {
+    const data = MsgUpdateRefundAddress.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "UpdateRefundAddress",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateRefundAddressResponse.decode(new _m0.Reader(data))
     );
   }
 

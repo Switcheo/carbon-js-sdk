@@ -33,11 +33,14 @@ export interface Params {
    * relay that has not been started will be pruned from the store
    */
   maxRelayExpiryDuration?: Duration;
+  /** refund_address for deposits that fail due to wrong receiver address */
+  refundAddress: string;
 }
 
 const baseParams: object = {
   axelarIbcChannel: "",
   ibcTimeoutHeightOffset: Long.UZERO,
+  refundAddress: "",
 };
 
 export const Params = {
@@ -62,6 +65,9 @@ export const Params = {
         message.maxRelayExpiryDuration,
         writer.uint32(34).fork()
       ).ldelim();
+    }
+    if (message.refundAddress !== "") {
+      writer.uint32(42).string(message.refundAddress);
     }
     return writer;
   },
@@ -91,6 +97,9 @@ export const Params = {
             reader.uint32()
           );
           break;
+        case 5:
+          message.refundAddress = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -107,19 +116,23 @@ export const Params = {
         : "";
     message.ibcTimeoutHeightOffset =
       object.ibcTimeoutHeightOffset !== undefined &&
-      object.ibcTimeoutHeightOffset !== null
+        object.ibcTimeoutHeightOffset !== null
         ? Long.fromString(object.ibcTimeoutHeightOffset)
         : Long.UZERO;
     message.relayWhitelistDuration =
       object.relayWhitelistDuration !== undefined &&
-      object.relayWhitelistDuration !== null
+        object.relayWhitelistDuration !== null
         ? Duration.fromJSON(object.relayWhitelistDuration)
         : undefined;
     message.maxRelayExpiryDuration =
       object.maxRelayExpiryDuration !== undefined &&
-      object.maxRelayExpiryDuration !== null
+        object.maxRelayExpiryDuration !== null
         ? Duration.fromJSON(object.maxRelayExpiryDuration)
         : undefined;
+    message.refundAddress =
+      object.refundAddress !== undefined && object.refundAddress !== null
+        ? String(object.refundAddress)
+        : "";
     return message;
   },
 
@@ -139,6 +152,8 @@ export const Params = {
       (obj.maxRelayExpiryDuration = message.maxRelayExpiryDuration
         ? Duration.toJSON(message.maxRelayExpiryDuration)
         : undefined);
+    message.refundAddress !== undefined &&
+      (obj.refundAddress = message.refundAddress);
     return obj;
   },
 
@@ -147,19 +162,20 @@ export const Params = {
     message.axelarIbcChannel = object.axelarIbcChannel ?? "";
     message.ibcTimeoutHeightOffset =
       object.ibcTimeoutHeightOffset !== undefined &&
-      object.ibcTimeoutHeightOffset !== null
+        object.ibcTimeoutHeightOffset !== null
         ? Long.fromValue(object.ibcTimeoutHeightOffset)
         : Long.UZERO;
     message.relayWhitelistDuration =
       object.relayWhitelistDuration !== undefined &&
-      object.relayWhitelistDuration !== null
+        object.relayWhitelistDuration !== null
         ? Duration.fromPartial(object.relayWhitelistDuration)
         : undefined;
     message.maxRelayExpiryDuration =
       object.maxRelayExpiryDuration !== undefined &&
-      object.maxRelayExpiryDuration !== null
+        object.maxRelayExpiryDuration !== null
         ? Duration.fromPartial(object.maxRelayExpiryDuration)
         : undefined;
+    message.refundAddress = object.refundAddress ?? "";
     return message;
   },
 };

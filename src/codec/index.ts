@@ -188,6 +188,8 @@ registry.register("/Switcheo.carbon.bridge.MsgUpdateMaxRelayExpiry", Carbon.Brid
 registry.register("/Switcheo.carbon.bridge.MsgUpdateMaxRelayExpiryResponse", Carbon.Bridge.MsgUpdateMaxRelayExpiryResponse);
 registry.register("/Switcheo.carbon.bridge.MsgUpdateRelayWhitelistDuration", Carbon.Bridge.MsgUpdateRelayWhitelistDuration);
 registry.register("/Switcheo.carbon.bridge.MsgUpdateRelayWhitelistDurationResponse", Carbon.Bridge.MsgUpdateRelayWhitelistDurationResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateRefundAddress", Carbon.Bridge.MsgUpdateRefundAddress);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateRefundAddressResponse", Carbon.Bridge.MsgUpdateRefundAddressResponse);
 registry.register("/Switcheo.carbon.bridge.MsgUpdateParams", Carbon.Bridge.MsgUpdateParams);
 registry.register("/Switcheo.carbon.bridge.MsgUpdateParamsResponse", Carbon.Bridge.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.bridge.MsgAxelarSendToken", Carbon.Bridge.MsgAxelarSendToken);
@@ -873,6 +875,8 @@ export const TxTypes = {
   "MsgUpdateMaxRelayExpiryResponse": "/Switcheo.carbon.bridge.MsgUpdateMaxRelayExpiryResponse",
   "MsgUpdateRelayWhitelistDuration": "/Switcheo.carbon.bridge.MsgUpdateRelayWhitelistDuration",
   "MsgUpdateRelayWhitelistDurationResponse": "/Switcheo.carbon.bridge.MsgUpdateRelayWhitelistDurationResponse",
+  "MsgUpdateRefundAddress": "/Switcheo.carbon.bridge.MsgUpdateRefundAddress",
+  "MsgUpdateRefundAddressResponse": "/Switcheo.carbon.bridge.MsgUpdateRefundAddressResponse",
   "MsgBridgeUpdateParams": "/Switcheo.carbon.bridge.MsgUpdateParams",
   "MsgBridgeUpdateParamsResponse": "/Switcheo.carbon.bridge.MsgUpdateParamsResponse",
   "MsgAxelarSendToken": "/Switcheo.carbon.bridge.MsgAxelarSendToken",
@@ -3226,6 +3230,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "max_relay_expiry_duration",
         "type": "string"
+      },
+      {
+        "name": "refund_address",
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -3646,6 +3654,17 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdateRelayWhitelistDurationResponse": [],
+    "MsgUpdateRefundAddress": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "refund_address",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateRefundAddressResponse": [],
     "MsgUpdateParams": [
       {
         "name": "authority",
@@ -4779,10 +4798,6 @@ export const EIP712Types: { [index: string]: any } = {
     "AssetParams": [
       {
         "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
         "type": "string"
       },
       {
@@ -12903,24 +12918,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "Vote": [
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "timestamp",
-        "type": "int64"
-      },
-      {
-        "name": "data",
-        "type": "string"
-      },
-      {
-        "name": "voter",
-        "type": "string"
-      }
-    ],
     "Result": [
       {
         "name": "oracle_id",
@@ -12933,16 +12930,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "data",
         "type": "string"
-      }
-    ],
-    "Mark": [
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "timestamp",
-        "type": "int64"
       }
     ],
     "Contract": [
@@ -13128,11 +13115,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.oracle"
       },
       {
-        "name": "votes",
-        "type": "Vote[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      },
-      {
         "name": "params",
         "type": "Params",
         "packageName": "/Switcheo.carbon.oracle"
@@ -13214,37 +13196,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "latest_results",
         "type": "Result[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryVotesRequest": [
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "timestamp",
-        "type": "int64"
-      },
-      {
-        "name": "voter",
-        "type": "string"
-      },
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryVotesResponse": [
-      {
-        "name": "votes",
-        "type": "Vote[]",
         "packageName": "/Switcheo.carbon.oracle"
       },
       {
