@@ -19,49 +19,49 @@ export interface MsgSetBridgeEnabled {
   isEnabled: boolean;
 }
 
-export interface MsgSetBridgeEnabledResponse {}
+export interface MsgSetBridgeEnabledResponse { }
 
 export interface MsgUpdateAxelarIbcChannel {
   creator: string;
   channelId: string;
 }
 
-export interface MsgUpdateAxelarIbcChannelResponse {}
+export interface MsgUpdateAxelarIbcChannelResponse { }
 
 export interface MsgUpdateIbcTimeoutHeightOffset {
   creator: string;
   offset: Long;
 }
 
-export interface MsgUpdateIbcTimeoutHeightOffsetResponse {}
+export interface MsgUpdateIbcTimeoutHeightOffsetResponse { }
 
 export interface MsgUpdateMaxRelayExpiry {
   creator: string;
   expiry?: Duration;
 }
 
-export interface MsgUpdateMaxRelayExpiryResponse {}
+export interface MsgUpdateMaxRelayExpiryResponse { }
 
 export interface MsgUpdateRelayWhitelistDuration {
   creator: string;
   whitelistDuration?: Duration;
 }
 
-export interface MsgUpdateRelayWhitelistDurationResponse {}
+export interface MsgUpdateRelayWhitelistDurationResponse { }
 
 export interface MsgUpdateRefundAddress {
   creator: string;
   refundAddress: string;
 }
 
-export interface MsgUpdateRefundAddressResponse {}
+export interface MsgUpdateRefundAddressResponse { }
 
 export interface MsgUpdateParams {
   authority: string;
   params?: Params;
 }
 
-export interface MsgUpdateParamsResponse {}
+export interface MsgUpdateParamsResponse { }
 
 /**
  * MsgAxelarSendToken is a convenience method to send a *Axelar Supported* token
@@ -84,7 +84,7 @@ export interface MsgAxelarSendToken {
   tokens?: Coin;
 }
 
-export interface MsgAxelarSendTokenResponse {}
+export interface MsgAxelarSendTokenResponse { }
 
 /**
  * MsgAxelarCallContract is a convenience method to do a GMP call to axelar.
@@ -105,7 +105,7 @@ export interface MsgAxelarCallContract {
   payload: Uint8Array;
 }
 
-export interface MsgAxelarCallContractResponse {}
+export interface MsgAxelarCallContractResponse { }
 
 /**
  * MsgAxelarCallContractWithToken is a convenience method to do a GMP call to
@@ -132,7 +132,7 @@ export interface MsgAxelarCallContractWithToken {
   payload: Uint8Array;
 }
 
-export interface MsgAxelarCallContractWithTokenResponse {}
+export interface MsgAxelarCallContractWithTokenResponse { }
 
 export interface MsgCreateConnection {
   creator: string;
@@ -145,7 +145,7 @@ export interface MsgCreateConnection {
   isOptimisticConfirm: boolean;
 }
 
-export interface MsgCreateConnectionResponse {}
+export interface MsgCreateConnectionResponse { }
 
 export interface MsgUpdateConnection {
   creator: string;
@@ -159,21 +159,21 @@ export interface UpdateConnectionParams {
   isOptimisticConfirm?: boolean;
 }
 
-export interface MsgUpdateConnectionResponse {}
+export interface MsgUpdateConnectionResponse { }
 
 export interface MsgRemoveConnection {
   creator: string;
   connectionId: string;
 }
 
-export interface MsgRemoveConnectionResponse {}
+export interface MsgRemoveConnectionResponse { }
 
 export interface MsgAddControllersForConnection {
   creator: string;
   controllers?: ControllerContracts;
 }
 
-export interface MsgAddControllersForConnectionResponse {}
+export interface MsgAddControllersForConnectionResponse { }
 
 export interface MsgUpdateControllersForConnection {
   creator: string;
@@ -181,14 +181,14 @@ export interface MsgUpdateControllersForConnection {
   controllers?: ControllersToUpdate;
 }
 
-export interface MsgUpdateControllersForConnectionResponse {}
+export interface MsgUpdateControllersForConnectionResponse { }
 
 export interface MsgRemoveControllersForConnection {
   creator: string;
   connectionId: string;
 }
 
-export interface MsgRemoveControllersForConnectionResponse {}
+export interface MsgRemoveControllersForConnectionResponse { }
 
 export interface MsgRemoveNonceMapForConnection {
   creator: string;
@@ -196,7 +196,7 @@ export interface MsgRemoveNonceMapForConnection {
   gatewayAddress: string;
 }
 
-export interface MsgRemoveNonceMapForConnectionResponse {}
+export interface MsgRemoveNonceMapForConnectionResponse { }
 
 export interface MsgRegisterExternalToken {
   creator: string;
@@ -208,7 +208,7 @@ export interface MsgRegisterExternalToken {
   expiryDuration?: Duration;
 }
 
-export interface MsgRegisterExternalTokenResponse {}
+export interface MsgRegisterExternalTokenResponse { }
 
 export interface MsgDeregisterExternalToken {
   creator: string;
@@ -218,7 +218,7 @@ export interface MsgDeregisterExternalToken {
   expiryDuration?: Duration;
 }
 
-export interface MsgDeregisterExternalTokenResponse {}
+export interface MsgDeregisterExternalTokenResponse { }
 
 export interface MsgDeployNativeToken {
   creator: string;
@@ -228,7 +228,7 @@ export interface MsgDeployNativeToken {
   expiryDuration?: Duration;
 }
 
-export interface MsgDeployNativeTokenResponse {}
+export interface MsgDeployNativeTokenResponse { }
 
 export interface MsgRegisterDeployedToken {
   creator: string;
@@ -237,7 +237,7 @@ export interface MsgRegisterDeployedToken {
   denom: string;
 }
 
-export interface MsgRegisterDeployedTokenResponse {}
+export interface MsgRegisterDeployedTokenResponse { }
 
 export interface MsgWithdrawToken {
   creator: string;
@@ -248,7 +248,7 @@ export interface MsgWithdrawToken {
   expiryDuration?: Duration;
 }
 
-export interface MsgWithdrawTokenResponse {}
+export interface MsgWithdrawTokenResponse { }
 
 export interface MsgUpdateExternalToken {
   creator: string;
@@ -259,7 +259,7 @@ export interface MsgUpdateExternalToken {
   isCarbonOwned: boolean;
 }
 
-export interface MsgUpdateExternalTokenResponse {}
+export interface MsgUpdateExternalTokenResponse { }
 
 export interface MsgDeleteExternalToken {
   creator: string;
@@ -267,7 +267,7 @@ export interface MsgDeleteExternalToken {
   denom: string;
 }
 
-export interface MsgDeleteExternalTokenResponse {}
+export interface MsgDeleteExternalTokenResponse { }
 
 export interface MsgExecuteFromCarbon {
   creator: string;
@@ -280,21 +280,21 @@ export interface MsgExecuteFromCarbon {
   expiryDuration?: Duration;
 }
 
-export interface MsgExecuteFromCarbonResponse {}
+export interface MsgExecuteFromCarbonResponse { }
 
 export interface MsgStartRelay {
   relayer: string;
   nonce: Long;
 }
 
-export interface MsgStartRelayResponse {}
+export interface MsgStartRelayResponse { }
 
 export interface MsgPruneExpiredPendingActions {
   creator: string;
   nonces: Long[];
 }
 
-export interface MsgPruneExpiredPendingActionsResponse {}
+export interface MsgPruneExpiredPendingActionsResponse { }
 
 export interface MsgRevertPendingAction {
   authority: string;
@@ -303,7 +303,7 @@ export interface MsgRevertPendingAction {
   actionType: Long;
 }
 
-export interface MsgRevertPendingActionResponse {}
+export interface MsgRevertPendingActionResponse { }
 
 export interface MsgConfirmPendingAction {
   authority: string;
@@ -312,21 +312,21 @@ export interface MsgConfirmPendingAction {
   actionType: Long;
 }
 
-export interface MsgConfirmPendingActionResponse {}
+export interface MsgConfirmPendingActionResponse { }
 
 export interface MsgAddRelayer {
   authority: string;
   relayer: string;
 }
 
-export interface MsgAddRelayerResponse {}
+export interface MsgAddRelayerResponse { }
 
 export interface MsgRemoveRelayer {
   authority: string;
   relayer: string;
 }
 
-export interface MsgRemoveRelayerResponse {}
+export interface MsgRemoveRelayerResponse { }
 
 const baseMsgSetBridgeEnabled: object = {
   creator: "",
@@ -917,7 +917,7 @@ export const MsgUpdateRelayWhitelistDuration = {
         : "";
     message.whitelistDuration =
       object.whitelistDuration !== undefined &&
-      object.whitelistDuration !== null
+        object.whitelistDuration !== null
         ? Duration.fromJSON(object.whitelistDuration)
         : undefined;
     return message;
@@ -942,7 +942,7 @@ export const MsgUpdateRelayWhitelistDuration = {
     message.creator = object.creator ?? "";
     message.whitelistDuration =
       object.whitelistDuration !== undefined &&
-      object.whitelistDuration !== null
+        object.whitelistDuration !== null
         ? Duration.fromPartial(object.whitelistDuration)
         : undefined;
     return message;
@@ -1310,7 +1310,7 @@ export const MsgAxelarSendToken = {
         : "";
     message.destinationAddress =
       object.destinationAddress !== undefined &&
-      object.destinationAddress !== null
+        object.destinationAddress !== null
         ? String(object.destinationAddress)
         : "";
     message.tokens =
@@ -1466,7 +1466,7 @@ export const MsgAxelarCallContract = {
         : "";
     message.destinationAddress =
       object.destinationAddress !== undefined &&
-      object.destinationAddress !== null
+        object.destinationAddress !== null
         ? String(object.destinationAddress)
         : "";
     message.payload =
@@ -1633,7 +1633,7 @@ export const MsgAxelarCallContractWithToken = {
         : "";
     message.destinationAddress =
       object.destinationAddress !== undefined &&
-      object.destinationAddress !== null
+        object.destinationAddress !== null
         ? String(object.destinationAddress)
         : "";
     message.tokens =
@@ -1835,7 +1835,7 @@ export const MsgCreateConnection = {
         : "";
     message.tokenGatewayAddress =
       object.tokenGatewayAddress !== undefined &&
-      object.tokenGatewayAddress !== null
+        object.tokenGatewayAddress !== null
         ? String(object.tokenGatewayAddress)
         : "";
     message.encoding =
@@ -1848,7 +1848,7 @@ export const MsgCreateConnection = {
         : false;
     message.isOptimisticConfirm =
       object.isOptimisticConfirm !== undefined &&
-      object.isOptimisticConfirm !== null
+        object.isOptimisticConfirm !== null
         ? Boolean(object.isOptimisticConfirm)
         : false;
     return message;
@@ -2001,7 +2001,7 @@ export const MsgUpdateConnection = {
         : "";
     message.updateConnectionParams =
       object.updateConnectionParams !== undefined &&
-      object.updateConnectionParams !== null
+        object.updateConnectionParams !== null
         ? UpdateConnectionParams.fromJSON(object.updateConnectionParams)
         : undefined;
     return message;
@@ -2025,7 +2025,7 @@ export const MsgUpdateConnection = {
     message.connectionId = object.connectionId ?? "";
     message.updateConnectionParams =
       object.updateConnectionParams !== undefined &&
-      object.updateConnectionParams !== null
+        object.updateConnectionParams !== null
         ? UpdateConnectionParams.fromPartial(object.updateConnectionParams)
         : undefined;
     return message;
@@ -2105,7 +2105,7 @@ export const UpdateConnectionParams = {
         : undefined;
     message.isOptimisticConfirm =
       object.isOptimisticConfirm !== undefined &&
-      object.isOptimisticConfirm !== null
+        object.isOptimisticConfirm !== null
         ? Boolean(object.isOptimisticConfirm)
         : undefined;
     return message;
@@ -4226,7 +4226,7 @@ export const MsgExecuteFromCarbon = {
         : "";
     message.executionContract =
       object.executionContract !== undefined &&
-      object.executionContract !== null
+        object.executionContract !== null
         ? String(object.executionContract)
         : "";
     message.method =

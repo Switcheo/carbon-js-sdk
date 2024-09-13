@@ -50,6 +50,10 @@ export interface ZilNetworkConfig {
   bridgeEntranceAddr: string;
 }
 
+export interface MantleNetworkConfig {
+  rpcURL: string;
+}
+
 export interface NetworkConfig {
   tmRpcUrl: string;
   tmWsUrl: string;
@@ -73,10 +77,10 @@ export interface NetworkConfig {
   arbitrum: EthNetworkConfig;
   polygon: EthNetworkConfig;
   okc: EthNetworkConfig;
-
   neo: NeoNetworkConfig;
   n3: N3NetworkConfig;
   zil: ZilNetworkConfig;
+  mantle: MantleNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
@@ -171,6 +175,10 @@ export const NetworkConfigs: {
       bridgeEntranceAddr: "0x5d78b51a1ceae202a793f4e87478253f41a22956",
       chainId: 1,
     },
+
+    mantle: {
+      rpcURL: 'https://rpc.mantle.xyz',
+    },
   },
 
   [Network.TestNet]: {
@@ -258,22 +266,38 @@ export const NetworkConfigs: {
       bridgeEntranceAddr: "0xccf798e633d6fb6505b494fc010903f9be3bc99b",
       chainId: 111,
     },
+
+    mantle: {
+      rpcURL: "https://rpc.sepolia.mantle.xyz",
+    },
   },
 
   [Network.DevNet]: {
     network: Network.DevNet,
     chainId: "carbon-devnet-39911",
 
-    tmRpcUrl: "https://dev-tm-api.carbon.network",
-    tmWsUrl: "wss://dev-tm-api.carbon.network",
-    restUrl: "https://dev-api.carbon.network",
-    grpcUrl: "dev-grpc.carbon.network",
-    evmJsonRpcUrl: "https://dev-evm-api.carbon.network/",
-    evmWsUrl: "wss://dev-evm-ws.carbon.network/",
+    // tmRpcUrl: "https://dev-tm-api.carbon.network",
+    // tmWsUrl: "wss://dev-tm-api.carbon.network",
+    // restUrl: "https://dev-api.carbon.network",
+    // grpcUrl: "dev-grpc.carbon.network",
+    // evmJsonRpcUrl: "https://dev-evm-api.carbon.network/",
+    // evmWsUrl: "wss://dev-evm-ws.carbon.network/",
+    // insightsUrl: "https://dev-api-insights.carbon.network",
+    // hydrogenUrl: "https://dev-hydrogen-api.carbon.network",
+    // wsUrl: "wss://dev-ws-api.carbon.network/ws",
+    // faucetUrl: "https://dev-faucet.carbon.network",
+
+    //* OnPrem network params for running locally
+    tmRpcUrl: "http://202.156.63.105:30007",
+    tmWsUrl: "ws://202.156.63.105:30007",
+    restUrl: "http://202.156.63.105:30002",
+    grpcUrl: "http://202.156.63.105:30005",
+    evmJsonRpcUrl: "http://202.156.63.105:30008",
+    evmWsUrl: "ws://202.156.63.105:30009/ws",
     insightsUrl: "https://dev-api-insights.carbon.network",
     hydrogenUrl: "https://dev-hydrogen-api.carbon.network",
-    wsUrl: "wss://dev-ws-api.carbon.network/ws",
-    faucetUrl: "https://dev-faucet.carbon.network",
+    wsUrl: "ws://202.156.63.105:30004/ws",
+    faucetUrl: "http://202.156.63.105:30003",
 
     Bech32Prefix: "swth",
 
@@ -345,6 +369,10 @@ export const NetworkConfigs: {
       lockProxyAddr: "0xa5a43eecd29534edf80792a9889f52c77455245d",
       bridgeEntranceAddr: "0xbbe98D54689c96D0278a1222594533e8C5fa551e",
       chainId: 333,
+    },
+
+    mantle: {
+      rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
   },
 
@@ -433,6 +461,10 @@ export const NetworkConfigs: {
       lockProxyAddr: "",
       bridgeEntranceAddr: "",
       chainId: 1,
+    },
+
+    mantle: {
+      rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
   },
 } as const;

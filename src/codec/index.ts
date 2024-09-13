@@ -179,68 +179,68 @@ registry.register("/Switcheo.carbon.btcx.MsgBindResponse", PolyNetwork.Btcx.MsgB
 registry.register("/Switcheo.carbon.btcx.MsgLock", PolyNetwork.Btcx.MsgLock);
 registry.register("/Switcheo.carbon.btcx.MsgLockResponse", PolyNetwork.Btcx.MsgLockResponse);
 
-registry.register("/Switcheo.carbon.bridge.MsgSetBridgeEnabled", MsgSetBridgeEnabled);
-registry.register("/Switcheo.carbon.bridge.MsgSetBridgeEnabledResponse", MsgSetBridgeEnabledResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateAxelarIbcChannel", MsgUpdateAxelarIbcChannel);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateAxelarIbcChannelResponse", MsgUpdateAxelarIbcChannelResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateIbcTimeoutHeightOffset", MsgUpdateIbcTimeoutHeightOffset);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateIbcTimeoutHeightOffsetResponse", MsgUpdateIbcTimeoutHeightOffsetResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateMaxRelayExpiry", MsgUpdateMaxRelayExpiry);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateMaxRelayExpiryResponse", MsgUpdateMaxRelayExpiryResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateRelayWhitelistDuration", MsgUpdateRelayWhitelistDuration);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateRelayWhitelistDurationResponse", MsgUpdateRelayWhitelistDurationResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateRefundAddress", MsgUpdateRefundAddress);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateRefundAddressResponse", MsgUpdateRefundAddressResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateParams", MsgUpdateParams);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
-registry.register("/Switcheo.carbon.bridge.MsgAxelarSendToken", MsgAxelarSendToken);
-registry.register("/Switcheo.carbon.bridge.MsgAxelarSendTokenResponse", MsgAxelarSendTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContract", MsgAxelarCallContract);
-registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractResponse", MsgAxelarCallContractResponse);
-registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractWithToken", MsgAxelarCallContractWithToken);
-registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractWithTokenResponse", MsgAxelarCallContractWithTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgCreateConnection", MsgCreateConnection);
-registry.register("/Switcheo.carbon.bridge.MsgCreateConnectionResponse", MsgCreateConnectionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateConnection", MsgUpdateConnection);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateConnectionResponse", MsgUpdateConnectionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgRemoveConnection", MsgRemoveConnection);
-registry.register("/Switcheo.carbon.bridge.MsgRemoveConnectionResponse", MsgRemoveConnectionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgAddControllersForConnection", MsgAddControllersForConnection);
-registry.register("/Switcheo.carbon.bridge.MsgAddControllersForConnectionResponse", MsgAddControllersForConnectionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateControllersForConnection", MsgUpdateControllersForConnection);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateControllersForConnectionResponse", MsgUpdateControllersForConnectionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgRemoveControllersForConnection", MsgRemoveControllersForConnection);
-registry.register("/Switcheo.carbon.bridge.MsgRemoveControllersForConnectionResponse", MsgRemoveControllersForConnectionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgRemoveNonceMapForConnection", MsgRemoveNonceMapForConnection);
-registry.register("/Switcheo.carbon.bridge.MsgRemoveNonceMapForConnectionResponse", MsgRemoveNonceMapForConnectionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgRegisterExternalToken", MsgRegisterExternalToken);
-registry.register("/Switcheo.carbon.bridge.MsgRegisterExternalTokenResponse", MsgRegisterExternalTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgDeregisterExternalToken", MsgDeregisterExternalToken);
-registry.register("/Switcheo.carbon.bridge.MsgDeregisterExternalTokenResponse", MsgDeregisterExternalTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgDeployNativeToken", MsgDeployNativeToken);
-registry.register("/Switcheo.carbon.bridge.MsgDeployNativeTokenResponse", MsgDeployNativeTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgRegisterDeployedToken", MsgRegisterDeployedToken);
-registry.register("/Switcheo.carbon.bridge.MsgRegisterDeployedTokenResponse", MsgRegisterDeployedTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgWithdrawToken", MsgWithdrawToken);
-registry.register("/Switcheo.carbon.bridge.MsgWithdrawTokenResponse", MsgWithdrawTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateExternalToken", MsgUpdateExternalToken);
-registry.register("/Switcheo.carbon.bridge.MsgUpdateExternalTokenResponse", MsgUpdateExternalTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgDeleteExternalToken", MsgDeleteExternalToken);
-registry.register("/Switcheo.carbon.bridge.MsgDeleteExternalTokenResponse", MsgDeleteExternalTokenResponse);
-registry.register("/Switcheo.carbon.bridge.MsgExecuteFromCarbon", MsgExecuteFromCarbon);
-registry.register("/Switcheo.carbon.bridge.MsgExecuteFromCarbonResponse", MsgExecuteFromCarbonResponse);
-registry.register("/Switcheo.carbon.bridge.MsgStartRelay", MsgStartRelay);
-registry.register("/Switcheo.carbon.bridge.MsgStartRelayResponse", MsgStartRelayResponse);
-registry.register("/Switcheo.carbon.bridge.MsgPruneExpiredPendingActions", MsgPruneExpiredPendingActions);
-registry.register("/Switcheo.carbon.bridge.MsgPruneExpiredPendingActionsResponse", MsgPruneExpiredPendingActionsResponse);
-registry.register("/Switcheo.carbon.bridge.MsgRevertPendingAction", MsgRevertPendingAction);
-registry.register("/Switcheo.carbon.bridge.MsgRevertPendingActionResponse", MsgRevertPendingActionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgConfirmPendingAction", MsgConfirmPendingAction);
-registry.register("/Switcheo.carbon.bridge.MsgConfirmPendingActionResponse", MsgConfirmPendingActionResponse);
-registry.register("/Switcheo.carbon.bridge.MsgAddRelayer", MsgAddRelayer);
-registry.register("/Switcheo.carbon.bridge.MsgAddRelayerResponse", MsgAddRelayerResponse);
-registry.register("/Switcheo.carbon.bridge.MsgRemoveRelayer", MsgRemoveRelayer);
-registry.register("/Switcheo.carbon.bridge.MsgRemoveRelayerResponse", MsgRemoveRelayerResponse);
+registry.register("/Switcheo.carbon.bridge.MsgSetBridgeEnabled", Carbon.Bridge.MsgSetBridgeEnabled);
+registry.register("/Switcheo.carbon.bridge.MsgSetBridgeEnabledResponse", Carbon.Bridge.MsgSetBridgeEnabledResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateAxelarIbcChannel", Carbon.Bridge.MsgUpdateAxelarIbcChannel);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateAxelarIbcChannelResponse", Carbon.Bridge.MsgUpdateAxelarIbcChannelResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateIbcTimeoutHeightOffset", Carbon.Bridge.MsgUpdateIbcTimeoutHeightOffset);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateIbcTimeoutHeightOffsetResponse", Carbon.Bridge.MsgUpdateIbcTimeoutHeightOffsetResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateMaxRelayExpiry", Carbon.Bridge.MsgUpdateMaxRelayExpiry);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateMaxRelayExpiryResponse", Carbon.Bridge.MsgUpdateMaxRelayExpiryResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateRelayWhitelistDuration", Carbon.Bridge.MsgUpdateRelayWhitelistDuration);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateRelayWhitelistDurationResponse", Carbon.Bridge.MsgUpdateRelayWhitelistDurationResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateRefundAddress", Carbon.Bridge.MsgUpdateRefundAddress);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateRefundAddressResponse", Carbon.Bridge.MsgUpdateRefundAddressResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateParams", Carbon.Bridge.MsgUpdateParams);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateParamsResponse", Carbon.Bridge.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarSendToken", Carbon.Bridge.MsgAxelarSendToken);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarSendTokenResponse", Carbon.Bridge.MsgAxelarSendTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContract", Carbon.Bridge.MsgAxelarCallContract);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractResponse", Carbon.Bridge.MsgAxelarCallContractResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractWithToken", Carbon.Bridge.MsgAxelarCallContractWithToken);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractWithTokenResponse", Carbon.Bridge.MsgAxelarCallContractWithTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgCreateConnection", Carbon.Bridge.MsgCreateConnection);
+registry.register("/Switcheo.carbon.bridge.MsgCreateConnectionResponse", Carbon.Bridge.MsgCreateConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateConnection", Carbon.Bridge.MsgUpdateConnection);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateConnectionResponse", Carbon.Bridge.MsgUpdateConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveConnection", Carbon.Bridge.MsgRemoveConnection);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveConnectionResponse", Carbon.Bridge.MsgRemoveConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAddControllersForConnection", Carbon.Bridge.MsgAddControllersForConnection);
+registry.register("/Switcheo.carbon.bridge.MsgAddControllersForConnectionResponse", Carbon.Bridge.MsgAddControllersForConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateControllersForConnection", Carbon.Bridge.MsgUpdateControllersForConnection);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateControllersForConnectionResponse", Carbon.Bridge.MsgUpdateControllersForConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveControllersForConnection", Carbon.Bridge.MsgRemoveControllersForConnection);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveControllersForConnectionResponse", Carbon.Bridge.MsgRemoveControllersForConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveNonceMapForConnection", Carbon.Bridge.MsgRemoveNonceMapForConnection);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveNonceMapForConnectionResponse", Carbon.Bridge.MsgRemoveNonceMapForConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterExternalToken", Carbon.Bridge.MsgRegisterExternalToken);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterExternalTokenResponse", Carbon.Bridge.MsgRegisterExternalTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgDeregisterExternalToken", Carbon.Bridge.MsgDeregisterExternalToken);
+registry.register("/Switcheo.carbon.bridge.MsgDeregisterExternalTokenResponse", Carbon.Bridge.MsgDeregisterExternalTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgDeployNativeToken", Carbon.Bridge.MsgDeployNativeToken);
+registry.register("/Switcheo.carbon.bridge.MsgDeployNativeTokenResponse", Carbon.Bridge.MsgDeployNativeTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterDeployedToken", Carbon.Bridge.MsgRegisterDeployedToken);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterDeployedTokenResponse", Carbon.Bridge.MsgRegisterDeployedTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgWithdrawToken", Carbon.Bridge.MsgWithdrawToken);
+registry.register("/Switcheo.carbon.bridge.MsgWithdrawTokenResponse", Carbon.Bridge.MsgWithdrawTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateExternalToken", Carbon.Bridge.MsgUpdateExternalToken);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateExternalTokenResponse", Carbon.Bridge.MsgUpdateExternalTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgDeleteExternalToken", Carbon.Bridge.MsgDeleteExternalToken);
+registry.register("/Switcheo.carbon.bridge.MsgDeleteExternalTokenResponse", Carbon.Bridge.MsgDeleteExternalTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgExecuteFromCarbon", Carbon.Bridge.MsgExecuteFromCarbon);
+registry.register("/Switcheo.carbon.bridge.MsgExecuteFromCarbonResponse", Carbon.Bridge.MsgExecuteFromCarbonResponse);
+registry.register("/Switcheo.carbon.bridge.MsgStartRelay", Carbon.Bridge.MsgStartRelay);
+registry.register("/Switcheo.carbon.bridge.MsgStartRelayResponse", Carbon.Bridge.MsgStartRelayResponse);
+registry.register("/Switcheo.carbon.bridge.MsgPruneExpiredPendingActions", Carbon.Bridge.MsgPruneExpiredPendingActions);
+registry.register("/Switcheo.carbon.bridge.MsgPruneExpiredPendingActionsResponse", Carbon.Bridge.MsgPruneExpiredPendingActionsResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRevertPendingAction", Carbon.Bridge.MsgRevertPendingAction);
+registry.register("/Switcheo.carbon.bridge.MsgRevertPendingActionResponse", Carbon.Bridge.MsgRevertPendingActionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgConfirmPendingAction", Carbon.Bridge.MsgConfirmPendingAction);
+registry.register("/Switcheo.carbon.bridge.MsgConfirmPendingActionResponse", Carbon.Bridge.MsgConfirmPendingActionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAddRelayer", Carbon.Bridge.MsgAddRelayer);
+registry.register("/Switcheo.carbon.bridge.MsgAddRelayerResponse", Carbon.Bridge.MsgAddRelayerResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveRelayer", Carbon.Bridge.MsgRemoveRelayer);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveRelayerResponse", Carbon.Bridge.MsgRemoveRelayerResponse);
 
 registry.register("/Switcheo.carbon.position.MsgSetMargin", Carbon.Position.MsgSetMargin);
 registry.register("/Switcheo.carbon.position.MsgSetMarginResponse", Carbon.Position.MsgSetMarginResponse);
@@ -3231,13 +3231,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "relay_whitelist_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_relay_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "refund_address",
@@ -3647,8 +3645,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUpdateMaxRelayExpiryResponse": [],
@@ -3659,8 +3656,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "whitelist_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUpdateRelayWhitelistDurationResponse": [],
@@ -3908,8 +3904,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgRegisterExternalTokenResponse": [],
@@ -3933,8 +3928,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgDeregisterExternalTokenResponse": [],
@@ -3958,8 +3952,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgDeployNativeTokenResponse": [],
@@ -4007,8 +4000,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgWithdrawTokenResponse": [],
@@ -4087,8 +4079,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgExecuteFromCarbonResponse": [],
@@ -5350,8 +5341,7 @@ export const EIP712Types: { [index: string]: any } = {
     "SetStalePriceGracePeriodEvent": [
       {
         "name": "stale_price_grace_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "type",
@@ -5737,8 +5727,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_price_grace_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "cdp_paused",
@@ -5746,8 +5735,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stablecoin_interest_rate_epoch",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "stablecoin_interest_rate_adjuster_coefficient",
@@ -5781,8 +5769,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_price_grace_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "cdp_paused",
@@ -5790,8 +5777,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stablecoin_interest_rate_epoch",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "stablecoin_interest_rate_adjuster_coefficient",
@@ -6797,8 +6783,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_price_grace_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgSetStalePriceGracePeriodResponse": [],
@@ -11905,8 +11890,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "default_max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "default_impact_size_usd",
@@ -12004,8 +11988,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "default_max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "default_impact_size_usd",
@@ -12055,8 +12038,7 @@ export const EIP712Types: { [index: string]: any } = {
     "ControlledParams": [
       {
         "name": "perpetuals_funding_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "Market": [
@@ -12130,8 +12112,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "impact_size",
@@ -12221,8 +12202,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "impact_size",
@@ -12399,8 +12379,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "perpetuals_funding_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "QueryGetMarketRequest": [
@@ -12662,8 +12641,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "perpetuals_funding_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUpdatePerpetualsFundingIntervalResponse": [],
@@ -13074,8 +13052,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "vote_timestamp_future_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "oracle_min_vote_factor",
@@ -13117,8 +13094,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "vote_timestamp_future_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "oracle_min_vote_factor",
@@ -13929,18 +13905,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "quote_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "market_utilization_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_market_utilization_snapshot_window",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "nav_per_share_snapshots",
@@ -13948,13 +13921,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "nav_per_share_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "index_last_updated_at_threshold",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -13964,18 +13935,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "quote_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "market_utilization_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_market_utilization_snapshot_window",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "nav_per_share_snapshots",
@@ -13983,13 +13951,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "nav_per_share_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "index_last_updated_at_threshold",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -14804,8 +14770,7 @@ export const EIP712Types: { [index: string]: any } = {
     "SetStaleIndexAllowanceEvent": [
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "type",
@@ -14815,8 +14780,7 @@ export const EIP712Types: { [index: string]: any } = {
     "SetBackfillTimeIntervalEvent": [
       {
         "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "type",
@@ -14834,18 +14798,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "future_prices_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -14859,18 +14820,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "future_prices_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -14901,8 +14859,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "QueryPriceTokenRequest": [
@@ -15013,8 +14970,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgSetBackfillTimeIntervalResponse": [],
@@ -15047,8 +15003,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgSetStaleIndexAllowanceResponse": [],
@@ -15329,15 +15284,13 @@ export const EIP712Types: { [index: string]: any } = {
     "Params": [
       {
         "name": "trading_fee_delegate_cooldown",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
       {
         "name": "trading_fee_delegate_cooldown",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -15520,8 +15473,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryCreationCooldownResponse": [
       {
         "name": "cooldown_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgCreateSubAccount": [
@@ -15598,13 +15550,11 @@ export const EIP712Types: { [index: string]: any } = {
     "Params": [
       {
         "name": "reward_delay_time",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "take_rate_claim_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "last_take_rate_claim_time",
@@ -15666,8 +15616,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "last_reward_change_time",
@@ -16008,8 +15957,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_weight_range",
@@ -16044,8 +15992,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_weight_range",
@@ -16508,8 +16455,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_weight_range",
@@ -16541,8 +16487,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_change_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_weight_range",
@@ -17860,8 +17805,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_age_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_bytes",
@@ -21186,8 +21130,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "period_spend_limit",
@@ -21496,15 +21439,13 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_deposit_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "VotingParams": [
       {
         "name": "voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "TallyParams": [
@@ -21529,13 +21470,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_deposit_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "quorum",
@@ -21563,8 +21502,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expedited_voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "expedited_threshold",
@@ -22078,15 +22016,13 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_deposit_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "VotingParams": [
       {
         "name": "voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "TallyParams": [
@@ -22375,8 +22311,7 @@ export const EIP712Types: { [index: string]: any } = {
     "Module": [
       {
         "name": "max_execution_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_metadata_len",
@@ -22442,13 +22377,11 @@ export const EIP712Types: { [index: string]: any } = {
     "DecisionPolicyWindows": [
       {
         "name": "voting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "min_execution_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GroupInfo": [
@@ -23752,8 +23685,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ]
   },
@@ -23943,8 +23875,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "downtime_jail_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "slash_fraction_double_sign",
@@ -24371,8 +24302,7 @@ export const EIP712Types: { [index: string]: any } = {
     "Params": [
       {
         "name": "unbonding_time",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_validators",
@@ -30524,18 +30454,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "trusting_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "unbonding_period",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "max_clock_drift",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "frozen_height",
