@@ -519,7 +519,6 @@ export class AdminModule extends BaseModule {
       creator: wallet.bech32Address,
       assetParams: {
         denom: params.asset.denom,
-        oracleId: params.asset.oracleId,
         rateStrategyName: params.asset.rateStrategyName,
         loanToValue: params.asset.loanToValue.toString(10),
         liquidationThreshold: params.asset.liquidationThreshold.toString(10),
