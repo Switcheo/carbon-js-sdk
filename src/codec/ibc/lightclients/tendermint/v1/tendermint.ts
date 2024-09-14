@@ -39,7 +39,7 @@ export interface ClientState {
    * chained proof. NOTE: ClientState must stored under
    * `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored
    * under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using
-   * the default upgrade module, upgrade_path should be []string{"upgrade",
+   * the default upgrade module, upgrade_path should be `[]string{"upgrade",
    * "upgradedIBCState"}`
    */
   upgradePath: string[];
