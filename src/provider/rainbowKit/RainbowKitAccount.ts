@@ -79,7 +79,7 @@ class RainbowKitAccount extends Eip6963Provider {
 
     const signAmino = async (_: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, msgs, fee, memo, sequence } = doc
-      const {sig, signedDoc } = await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712(
         evmHexAddress,
         account_number,
         evmChainId,
@@ -334,14 +334,14 @@ class RainbowKitAccount extends Eip6963Provider {
   async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{sig: string, signedDoc: CarbonTx.StdSignDoc}> {
     const { chainId } = await this.syncBlockchain()
     const walletChainId = chainId ? `carbon_${chainId.toString()}-1` : ''
-    const ethereum = this.getApi()
+    const api = this.getApi()
     if (walletChainId !== evmChainId) {
         memo += "signedChainId:" + walletChainId + ";" + "actualChainId:" + evmChainId
     }
     const stdSignDoc = makeSignDoc(msgs, fee, walletChainId || evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
     const sig = await signTransactionWrapper(async () => {
-      const signature = (await ethereum.request({
+      const signature = (await api.request({
         method: 'eth_signTypedData_v4',
         params: [
           evmHexAddress,
