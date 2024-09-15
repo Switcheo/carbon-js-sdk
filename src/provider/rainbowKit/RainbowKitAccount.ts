@@ -1,7 +1,7 @@
 import { AddressUtils, AminoTypesMap, CarbonSDK, CarbonTx, Models, SupportedEip6963Provider } from "@carbon-sdk/index";
 import { ETH_SECP256K1_TYPE, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
-import { Algo, EncodeObject } from "@cosmjs/proto-signing";
+import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
 import { ethers } from "ethers";
 import { parseEvmError } from "../metamask/error";
 import { DirectSignResponse } from "@keplr-wallet/types";
@@ -54,7 +54,7 @@ class RainbowKitAccount extends Eip6963Provider {
         gas: authInfo.fee?.gasLimit.toString() ?? "0",
       }
       const aminoMsgs = msgs.map(msg => AminoTypesMap.toAmino(msg))
-      const { sig } = await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712(
         evmHexAddress,
         doc.accountNumber.toString(),
         evmChainId,
@@ -62,10 +62,20 @@ class RainbowKitAccount extends Eip6963Provider {
         fee,
         txBody.memo,
         authInfo.signerInfos[0].sequence.toString())
+      const signedTxBody = {
+        messages: msgs,
+        memo: signedDoc.memo,
+      };
+      const signedTxBodyEncodeObject: TxBodyEncodeObject = {
+        typeUrl: "/cosmos.tx.v1beta1.TxBody",
+        value: signedTxBody,
+      };
+      const signedTxBodyBytes = registry.encode(signedTxBodyEncodeObject);
+      const signDoc = makeProtoSignDoc(signedTxBodyBytes, doc.authInfoBytes, signedDoc.chain_id, parseInt(signedDoc.account_number));
       const sigBz = Uint8Array.from(Buffer.from(sig, 'hex'))
 
       return {
-        signed: doc,
+        signed: signDoc,
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
