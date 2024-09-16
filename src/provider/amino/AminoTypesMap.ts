@@ -22,6 +22,7 @@ import {
   PerpspoolAmino,
   ERC20Amino,
   GrantAmino,
+  OtcAmino,
 } from "./types";
 
 const AminoTypesMap = new AminoTypes({
@@ -47,6 +48,7 @@ const AminoTypesMap = new AminoTypes({
   ...PerpspoolAmino,
   ...ERC20Amino,
   ...GrantAmino,
+  ...OtcAmino,
 });
 
 export default AminoTypesMap;
