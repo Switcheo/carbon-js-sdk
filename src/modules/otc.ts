@@ -3,24 +3,24 @@ import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
 export class OTCModule extends BaseModule {
-  public async createRfq(params: OTCModule.CreateRfqParams) {
+  public async createRfq(params: OTCModule.CreateRfqParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const { denoms: sellCoins, buyDenom } = params;
+    const { denoms: sellCoins, buyDenom, expiryTime } = params;
 
     const value = MsgCreateRfq.fromPartial({
       requester: wallet.bech32Address,
       sellCoins,
       buyDenom: buyDenom ?? 'swth',
-      expiryTime: new Date(Date.now() + 1000 * 60 * 2),
+      expiryTime: new Date(Date.parse(expiryTime.toString())),
     })
 
     return await wallet.sendTx({
       value,
       typeUrl: CarbonTx.Types.MsgCreateRfq,
-    })
+    }, opts)
   }
 
-  public async cancelRfq(rfqId: string) {
+  public async cancelRfq(rfqId: string, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCancelRfq.fromPartial({
@@ -31,10 +31,10 @@ export class OTCModule extends BaseModule {
     return await wallet.sendTx({
       value,
       typeUrl: CarbonTx.Types.MsgCancelRfq,
-    })
+    }, opts)
   }
 
-  public async acceptQuote(quoteId: string) {
+  public async acceptQuote(quoteId: string, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgAcceptQuote.fromPartial({
@@ -45,7 +45,7 @@ export class OTCModule extends BaseModule {
     return await wallet.sendTx({
       value,
       typeUrl: CarbonTx.Types.MsgAcceptQuote,
-    })
+    }, opts)
   }
 }
 
@@ -55,6 +55,7 @@ export namespace OTCModule {
       denom: string;
       amount: string;
     }[],
-    buyDenom?: string
+    buyDenom: string
+    expiryTime: Date
   }
 }
