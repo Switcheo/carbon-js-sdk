@@ -293,6 +293,8 @@ registry.register("/Switcheo.carbon.coin.MsgLinkToken", Carbon.Coin.MsgLinkToken
 registry.register("/Switcheo.carbon.coin.MsgLinkTokenResponse", Carbon.Coin.MsgLinkTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgWithdraw", Carbon.Coin.MsgWithdraw);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", Carbon.Coin.MsgWithdrawResponse);
+registry.register("/Switcheo.carbon.coin.MsgAdminWithdraw", Carbon.Coin.MsgAdminWithdraw);
+registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawResponse", Carbon.Coin.MsgAdminWithdrawResponse);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", Carbon.Coin.MsgAuthorizeBridge);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", Carbon.Coin.MsgAuthorizeBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", Carbon.Coin.MsgDeauthorizeBridge);
@@ -974,6 +976,8 @@ export const TxTypes = {
   "MsgLinkTokenResponse": "/Switcheo.carbon.coin.MsgLinkTokenResponse",
   "MsgWithdraw": "/Switcheo.carbon.coin.MsgWithdraw",
   "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
+  "MsgAdminWithdraw": "/Switcheo.carbon.coin.MsgAdminWithdraw",
+  "MsgAdminWithdrawResponse": "/Switcheo.carbon.coin.MsgAdminWithdrawResponse",
   "MsgAuthorizeBridge": "/Switcheo.carbon.coin.MsgAuthorizeBridge",
   "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
   "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
@@ -7415,6 +7419,25 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgWithdrawResponse": [],
+    "MsgAdminWithdraw": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "to_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgAdminWithdrawResponse": [],
     "MsgAuthorizeBridge": [
       {
         "name": "creator",
@@ -7970,6 +7993,13 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPolyBlacklistRequest": [],
+    "QueryPolyBlacklistResponse": [
+      {
+        "name": "blacklisted_tokens",
+        "type": "string[]"
       }
     ]
   },
