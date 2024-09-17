@@ -84,6 +84,15 @@ export interface MsgWithdraw {
 
 export interface MsgWithdrawResponse {}
 
+export interface MsgAdminWithdraw {
+  creator: string;
+  toAddress: string;
+  denom: string;
+  amount: string;
+}
+
+export interface MsgAdminWithdrawResponse {}
+
 export interface MsgAuthorizeBridge {
   creator: string;
   bridgeId: Long;
@@ -1315,6 +1324,152 @@ export const MsgWithdrawResponse = {
 
   fromPartial(_: DeepPartial<MsgWithdrawResponse>): MsgWithdrawResponse {
     const message = { ...baseMsgWithdrawResponse } as MsgWithdrawResponse;
+    return message;
+  },
+};
+
+const baseMsgAdminWithdraw: object = {
+  creator: "",
+  toAddress: "",
+  denom: "",
+  amount: "",
+};
+
+export const MsgAdminWithdraw = {
+  encode(
+    message: MsgAdminWithdraw,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.toAddress !== "") {
+      writer.uint32(18).string(message.toAddress);
+    }
+    if (message.denom !== "") {
+      writer.uint32(26).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(34).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAdminWithdraw {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAdminWithdraw } as MsgAdminWithdraw;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.toAddress = reader.string();
+          break;
+        case 3:
+          message.denom = reader.string();
+          break;
+        case 4:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAdminWithdraw {
+    const message = { ...baseMsgAdminWithdraw } as MsgAdminWithdraw;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.toAddress =
+      object.toAddress !== undefined && object.toAddress !== null
+        ? String(object.toAddress)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgAdminWithdraw): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.toAddress !== undefined && (obj.toAddress = message.toAddress);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAdminWithdraw>): MsgAdminWithdraw {
+    const message = { ...baseMsgAdminWithdraw } as MsgAdminWithdraw;
+    message.creator = object.creator ?? "";
+    message.toAddress = object.toAddress ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgAdminWithdrawResponse: object = {};
+
+export const MsgAdminWithdrawResponse = {
+  encode(
+    _: MsgAdminWithdrawResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAdminWithdrawResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAdminWithdrawResponse,
+    } as MsgAdminWithdrawResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAdminWithdrawResponse {
+    const message = {
+      ...baseMsgAdminWithdrawResponse,
+    } as MsgAdminWithdrawResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAdminWithdrawResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgAdminWithdrawResponse>
+  ): MsgAdminWithdrawResponse {
+    const message = {
+      ...baseMsgAdminWithdrawResponse,
+    } as MsgAdminWithdrawResponse;
     return message;
   },
 };
@@ -3865,6 +4020,7 @@ export interface Msg {
   UnbindToken(request: MsgUnbindToken): Promise<MsgUnbindTokenResponse>;
   LinkToken(request: MsgLinkToken): Promise<MsgLinkTokenResponse>;
   Withdraw(request: MsgWithdraw): Promise<MsgWithdrawResponse>;
+  AdminWithdraw(request: MsgAdminWithdraw): Promise<MsgAdminWithdrawResponse>;
   AuthorizeBridge(
     request: MsgAuthorizeBridge
   ): Promise<MsgAuthorizeBridgeResponse>;
@@ -3913,6 +4069,7 @@ export class MsgClientImpl implements Msg {
     this.UnbindToken = this.UnbindToken.bind(this);
     this.LinkToken = this.LinkToken.bind(this);
     this.Withdraw = this.Withdraw.bind(this);
+    this.AdminWithdraw = this.AdminWithdraw.bind(this);
     this.AuthorizeBridge = this.AuthorizeBridge.bind(this);
     this.DeauthorizeBridge = this.DeauthorizeBridge.bind(this);
     this.EditBridgeName = this.EditBridgeName.bind(this);
@@ -4009,6 +4166,18 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgWithdrawResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AdminWithdraw(request: MsgAdminWithdraw): Promise<MsgAdminWithdrawResponse> {
+    const data = MsgAdminWithdraw.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "AdminWithdraw",
+      data
+    );
+    return promise.then((data) =>
+      MsgAdminWithdrawResponse.decode(new _m0.Reader(data))
     );
   }
 

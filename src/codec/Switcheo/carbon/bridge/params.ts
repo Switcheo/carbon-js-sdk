@@ -116,17 +116,17 @@ export const Params = {
         : "";
     message.ibcTimeoutHeightOffset =
       object.ibcTimeoutHeightOffset !== undefined &&
-        object.ibcTimeoutHeightOffset !== null
+      object.ibcTimeoutHeightOffset !== null
         ? Long.fromString(object.ibcTimeoutHeightOffset)
         : Long.UZERO;
     message.relayWhitelistDuration =
       object.relayWhitelistDuration !== undefined &&
-        object.relayWhitelistDuration !== null
+      object.relayWhitelistDuration !== null
         ? Duration.fromJSON(object.relayWhitelistDuration)
         : undefined;
     message.maxRelayExpiryDuration =
       object.maxRelayExpiryDuration !== undefined &&
-        object.maxRelayExpiryDuration !== null
+      object.maxRelayExpiryDuration !== null
         ? Duration.fromJSON(object.maxRelayExpiryDuration)
         : undefined;
     message.refundAddress =
@@ -162,17 +162,17 @@ export const Params = {
     message.axelarIbcChannel = object.axelarIbcChannel ?? "";
     message.ibcTimeoutHeightOffset =
       object.ibcTimeoutHeightOffset !== undefined &&
-        object.ibcTimeoutHeightOffset !== null
+      object.ibcTimeoutHeightOffset !== null
         ? Long.fromValue(object.ibcTimeoutHeightOffset)
         : Long.UZERO;
     message.relayWhitelistDuration =
       object.relayWhitelistDuration !== undefined &&
-        object.relayWhitelistDuration !== null
+      object.relayWhitelistDuration !== null
         ? Duration.fromPartial(object.relayWhitelistDuration)
         : undefined;
     message.maxRelayExpiryDuration =
       object.maxRelayExpiryDuration !== undefined &&
-        object.maxRelayExpiryDuration !== null
+      object.maxRelayExpiryDuration !== null
         ? Duration.fromPartial(object.maxRelayExpiryDuration)
         : undefined;
     message.refundAddress = object.refundAddress ?? "";
