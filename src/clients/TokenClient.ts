@@ -475,13 +475,9 @@ class TokenClient {
       if (!bridge.enabled) return
       return bridge.bridgeId.toNumber() === BRIDGE_IDS.ibc
     })
-    const unmatchedAxelarBridgeList = allBridges.bridges.filter(bridge => {
-      if (!bridge.enabled) return
-      return bridge.bridgeId.toNumber() === BRIDGE_IDS.axelar
-    })
 
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList)
-    const axelarBridges = await this.matchAxelarChainsWithDifferentChainIds(unmatchedAxelarBridgeList)
+    const axelarBridges = await this.mapBridgesFromConnections()
 
     const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Carbon.Coin.Bridge) => {
       if (bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
@@ -562,7 +558,7 @@ class TokenClient {
     return newBridges
   }
 
-  async matchAxelarChainsWithDifferentChainIds(bridges: Carbon.Coin.Bridge[]): Promise<AxelarBridge[]> {
+  async mapBridgesFromConnections(): Promise<AxelarBridge[]> {
     const newBridges: AxelarBridge[] = []
     try {
       const results: QueryAllConnectionsResponse = await this.query.bridge.ConnectionAll({
@@ -572,18 +568,19 @@ class TokenClient {
         }),
       });
       const connections = results.connections
-      for (const bridge of bridges) {
-
-        connections.forEach(connection => {
-          newBridges.push({
-            ...bridge,
-            name: `${connection.chainDisplayName} via Axelar`,
-            bridgeAddress: connection.connectionId,
-            chain_id_name: connection.chainId,
-            chainName: connection.chainDisplayName,
-          });
+      connections.forEach(connection => {
+        newBridges.push({
+          name: `${connection.chainDisplayName} via Axelar`,
+          bridgeId: new Long(BRIDGE_IDS.axelar),
+          chainId: new Long(BRIDGE_IDS.axelar),
+          bridgeAddress: connection.connectionId,
+          chain_id_name: connection.chainId,
+          chainName: connection.chainDisplayName,
+          bridgeName: 'Axelar',
+          bridgeAddresses: [],
+          enabled: connection.isEnabled,
         });
-      }
+      });
     } catch (err) {
       console.error(err)
     } finally {
