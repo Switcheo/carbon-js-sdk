@@ -11,12 +11,12 @@ export class OTCModule extends BaseModule {
       requester: wallet.bech32Address,
       sellCoins,
       buyDenom: buyDenom ?? 'swth',
-      expiryTime: new Date(Date.parse(expiryTime.toString())),
+      expiryTime: expiryTime ?? new Date(0),
     })
 
     return await wallet.sendTx({
-      value,
       typeUrl: CarbonTx.Types.MsgCreateRfq,
+      value,
     }, opts)
   }
 
@@ -29,8 +29,8 @@ export class OTCModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-      value,
       typeUrl: CarbonTx.Types.MsgCancelRfq,
+      value,
     }, opts)
   }
 
@@ -43,8 +43,8 @@ export class OTCModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-      value,
       typeUrl: CarbonTx.Types.MsgAcceptQuote,
+      value,
     }, opts)
   }
 }

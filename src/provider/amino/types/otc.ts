@@ -1,17 +1,19 @@
 import { TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, generateAminoType } from "../utils";
+import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  MsgCreateRfq: "otc/MsgCreateRfq",
-  MsgCancelRfq: "otc/MsgCancelRfq",
-  MsgAcceptQuote: "otc/MsgAcceptQuote",
+  MsgCreateRfq: "otc/CreateRfq",
+  MsgCancelRfq: "otc/CancelRfq",
+  MsgAcceptQuote: "otc/AcceptQuote",
 };
 
 const MsgCreateRfq: AminoInit = {
   aminoType: TxTypes.MsgCreateRfq,
-  valueMap: {},
+  valueMap: {
+    expiryTime: ConvertEncType.Date,
+  },
 };
 
 const MsgCancelRfq: AminoInit = {
