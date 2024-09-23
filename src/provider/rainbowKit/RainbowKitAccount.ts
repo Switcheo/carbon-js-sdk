@@ -348,8 +348,8 @@ class RainbowKitAccount extends Eip6963Provider {
     if (walletChainId !== evmChainId) {
         memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + walletChainId + ";" + "carbon-chain-id:" + evmChainId
     }
-    const stdSignDoc = makeSignDoc(msgs, fee, walletChainId || evmChainId, memo, accountNumber, sequence)
-    const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
+    const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
+    const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc, walletChainId)
     const sig = await signTransactionWrapper(async () => {
       const signature = (await api.request({
         method: 'eth_signTypedData_v4',

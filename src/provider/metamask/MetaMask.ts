@@ -584,8 +584,8 @@ export class MetaMask extends Eip6963Provider {
     if (metamaskChainId !== evmChainId) {
         memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + metamaskChainId + ";" + "carbon-chain-id:" + evmChainId
     }
-    const stdSignDoc = makeSignDoc(msgs, fee, metamaskChainId || evmChainId, memo, accountNumber, sequence)
-    const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
+    const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
+    const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc, metamaskChainId)
     const sig = await signTransactionWrapper(async () => {
       const signature = (await metamaskAPI.request({
         method: 'eth_signTypedData_v4',
