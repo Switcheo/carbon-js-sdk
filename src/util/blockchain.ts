@@ -8,8 +8,6 @@ export enum SmartWalletBlockchain {
   Neo = "neo",
   Ethereum = "eth",
   BinanceSmartChain = "bsc",
-  Arbitrum = "arbitrum",
-  Polygon = "polygon",
 }
 
 export enum Blockchain {
@@ -46,12 +44,14 @@ export enum Blockchain {
   OmniFlixHub = "omniflixhub",
   Agoric = "agoric",
   Sommelier = "sommelier",
+  Mantle = "mantle",
 }
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
 
 export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
   "Binance Smart Chain": Blockchain.BinanceSmartChain,
+  "BSC": Blockchain.BinanceSmartChain,
   "Ethereum": Blockchain.Ethereum,
   "Arbitrum": Blockchain.Arbitrum,
   "Polygon": Blockchain.Polygon,
@@ -64,6 +64,7 @@ export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
 export const BRIDGE_IDS = {
   polynetwork: 1,
   ibc: 2,
+  axelar: 3,
 }
 
 export interface PolyNetworkBridge extends Coin.Bridge {
@@ -79,6 +80,11 @@ export interface IbcBridge extends Coin.Bridge {
   }
 }
 
+export interface AxelarBridge extends Coin.Bridge {
+  chain_id_name: string;
+  bridgeAddress: string;
+}
+
 export function isIbcBridge(object: Coin.Bridge): object is IbcBridge {
   return Object.prototype.hasOwnProperty.call(object, "chain_id_name")
 }
@@ -86,6 +92,7 @@ export function isIbcBridge(object: Coin.Bridge): object is IbcBridge {
 export interface BridgeMap {
   polynetwork: PolyNetworkBridge[]
   ibc: IbcBridge[]
+  axelar: AxelarBridge[]
 }
 
 export type ChainIds = SimpleMap<number>
@@ -460,6 +467,48 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
   }
 }
 
-export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon'] as const;
+// function to map hydrogen chain to BlockchainV2 format
+export const blockchainForChainName: { [key: string]: string } = {
+  [Blockchain.Neo]: "Neo",
+  [Blockchain.Ethereum]: "Ethereum",
+  [Blockchain.BinanceSmartChain]: "Binance Smart Chain",
+  [Blockchain.Zilliqa]: "Zilliqa",
+  [Blockchain.Arbitrum]: "Arbitrum",
+  [Blockchain.Polygon]: "Polygon",
+  [Blockchain.Okc]: "OKC",
+  [Blockchain.Native]: "Native",
+  [Blockchain.Btc]: "BTC",
+  [Blockchain.Carbon]: "Carbon",
+  [Blockchain.Switcheo]: "Switcheo",
+  [Blockchain.TradeHub]: "TradeHub",
+  [Blockchain.PolyNetwork]: "PolyNetwork",
+  [Blockchain.Neo3]: "Neo3",
+  [Blockchain.Osmosis]: "Osmosis",
+  [Blockchain.Ibc]: "IBC",
+  [Blockchain.Terra]: "Terra",
+  [Blockchain.CosmosHub]: "Cosmos Hub",
+  [Blockchain.Juno]: "Juno",
+  [Blockchain.Evmos]: "Evmos",
+  [Blockchain.Axelar]: "Axelar",
+  [Blockchain.Stride]: "Stride",
+  [Blockchain.Kujira]: "Kujira",
+  [Blockchain.Terra2]: "Terra 2",
+  [Blockchain.Quicksilver]: "Quicksilver",
+  [Blockchain.Comdex]: "Comdex",
+  [Blockchain.StafiHub]: "Stafi Hub",
+  [Blockchain.Persistence]: "Persistence",
+  [Blockchain.Stargaze]: "Stargaze",
+  [Blockchain.Canto]: "Canto",
+  [Blockchain.OmniFlixHub]: "OmniFlix Hub",
+  [Blockchain.Agoric]: "Agoric",
+  [Blockchain.Sommelier]: "Sommelier",
+  [Blockchain.Mantle]: "Mantle",
+}
+
+export const getFormattedBlockchainName = (chain: string): BlockchainV2 | undefined => {
+  return blockchainForChainName[chain]
+}
+
+export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon', 'Mantle'] as const;
 export type EVMChain = (typeof EvmChains)[number];
 export const isEvmChain = (chain: string): chain is EVMChain => EvmChains.includes(chain as any);
