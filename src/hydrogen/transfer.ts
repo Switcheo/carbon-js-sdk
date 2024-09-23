@@ -5,7 +5,7 @@ export interface GetTransfersRequest {
   bridging_blockchain?: string;
   source_blockchain?: string;
   destination_blockchain?: string;
-  blockchains?:string;
+  blockchains?: string;
   address?: string;
   from_address?: string;
   to_address?: string;
