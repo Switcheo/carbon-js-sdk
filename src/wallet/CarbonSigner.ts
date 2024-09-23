@@ -1,6 +1,8 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { SignDoc } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
+import { NetworkConfigs } from "@carbon-sdk/constant";
 import { CosmosLedger } from "@carbon-sdk/provider";
+import { populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { sortObject } from "@carbon-sdk/util/generic";
 import { constructAdr36SignDoc } from "@carbon-sdk/util/message";
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
@@ -72,7 +74,16 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSi
   }
 
   async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> { // eslint-disable-line
-    throw new Error("signing not available");
+    const unsignedTx = await populateUnsignedEvmTranscation(api, req)
+    const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+    const evmWallet = new ethers.Wallet(api.wallet?.privateKey ?? '', provider)
+
+    const transactionResponse = await evmWallet.sendTransaction({
+      ...unsignedTx,
+      type: unsignedTx.type ?? 2,
+    })
+
+    return transactionResponse.hash
   }
 
   async signMessage(address: string, message: string): Promise<string> {
