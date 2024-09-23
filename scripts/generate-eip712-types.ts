@@ -137,6 +137,7 @@ function getSolidityTyping(fieldType: string): string {
 
 function convertGoogleProtobufTypingToPrimitive(fieldType: string): string {
     switch (fieldType) {
+        case 'duration':
         case 'timestamp':
         case 'stringvalue':
             return 'string'

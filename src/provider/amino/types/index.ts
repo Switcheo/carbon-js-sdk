@@ -21,3 +21,4 @@ export { default as PerpspoolAmino } from "./perpspool";
 export { default as ERC20Amino } from "./erc20";
 export { default as GrantAmino } from "./grant";
 export { default as OtcAmino } from "./otc";
+export { default as BridgeAmino } from "./bridge";

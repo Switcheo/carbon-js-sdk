@@ -22,3 +22,4 @@ export * from "./evmmerge";
 export * from "./perpspool";
 export * from "./erc20";
 export * from "./otc";
+export * from "./bridge";
