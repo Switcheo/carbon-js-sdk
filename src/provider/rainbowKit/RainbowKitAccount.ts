@@ -119,7 +119,7 @@ class RainbowKitAccount extends Eip6963Provider {
       // FeePayer here is only used for legacy EIP-712
       const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
 
-      const { sig, signedDoc }= await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712(
         evmHexAddress,
         account_number,
         chain_id,
