@@ -10,8 +10,8 @@ export class OTCModule extends BaseModule {
     const value = MsgCreateRfq.fromPartial({
       requester: wallet.bech32Address,
       sellCoins,
-      buyDenom: buyDenom ?? 'swth',
-      expiryTime: expiryTime ?? new Date(0),
+      buyDenom: buyDenom,
+      expiryTime: expiryTime,
     })
 
     return await wallet.sendTx({
