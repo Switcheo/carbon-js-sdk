@@ -969,7 +969,7 @@ export class CarbonWallet {
 
   private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
     const denomGasPrice = this.gasFee?.getGasPrice(feeDenom);
-    let totalGasCost = messages.reduce((result, message) => {
+    const totalGasCost = messages.reduce((result, message) => {
       const gasCost = this.gasFee?.getGasCost(message.typeUrl);
       return result.plus(gasCost ?? BN_ZERO);
     }, BN_ZERO);
@@ -978,7 +978,6 @@ export class CarbonWallet {
     // override zero gas cost tx with some gas for tx execution
     // set overall fee to zero, implying 0 gas price.
     if (totalGasCost.isZero()) {
-      totalGasCost = DEFAULT_GAS;
       totalFees = BN_ZERO;
     }
 
@@ -989,7 +988,7 @@ export class CarbonWallet {
           denom: feeDenom,
         },
       ],
-      gas: totalGasCost.toString(10),
+      gas: DEFAULT_GAS.toString(10),
     };
   }
 
