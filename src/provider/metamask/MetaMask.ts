@@ -81,7 +81,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "",
   } as const,
-  Optimism: {
+  OP: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -297,7 +297,7 @@ export class MetaMask extends Eip6963Provider {
         return isMainnet ? OKC_MAINNET : OKC_TESTNET
       case 'Mantle':
         return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
-      case 'Optimism':
+      case 'OP':
         return isMainnet ? OP_MAINNET : OP_TESTNET
       default:
         // metamask should come with Ethereum configs

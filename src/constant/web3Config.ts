@@ -193,7 +193,7 @@ export const MANTLE_TESTNET: ChangeNetworkParam = {
 }
 
 export const OP_MAINNET: ChangeNetworkParam = {
-  chainId: "0xA",  // Optimism Mainnet Chain ID (hex of 10)
+  chainId: "0xA",  // OP Mainnet Chain ID (hex of 10)
   blockExplorerUrls: ["https://optimistic.etherscan.io"],
   chainName: "OP Mainnet",
   rpcUrls: [
@@ -207,9 +207,9 @@ export const OP_MAINNET: ChangeNetworkParam = {
 }
 
 export const OP_TESTNET: ChangeNetworkParam = {
-  chainId: "0x1A4",  // Optimism Sepolia Chain ID (hex of 420)
+  chainId: "0xaa36a7",  // OP Sepolia Chain ID (hex of 11155420)
   blockExplorerUrls: ["https://sepolia-optimism.etherscan.io"],
-  chainName: "OP Sepolia",
+  chainName: "OP Sepolia Testnet",
   rpcUrls: [
     "https://sepolia.optimism.io",
   ],

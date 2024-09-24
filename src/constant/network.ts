@@ -55,7 +55,7 @@ export interface MantleNetworkConfig {
   rpcURL: string;
 }
 
-export interface OptimismNetworkConfig {
+export interface OPNetworkConfig {
   rpcURL: string;
 }
 
@@ -86,7 +86,7 @@ export interface NetworkConfig {
   n3: N3NetworkConfig;
   zil: ZilNetworkConfig;
   mantle: MantleNetworkConfig;
-  optimism: OptimismNetworkConfig;
+  op: OPNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
@@ -186,7 +186,7 @@ export const NetworkConfigs: {
       rpcURL: MANTLE_MAINNET.rpcUrls?.[0] ?? "",
     },
 
-    optimism: {
+    op: {
       rpcURL: OP_MAINNET.rpcUrls?.[0] ?? "",
     },
   },
@@ -281,7 +281,7 @@ export const NetworkConfigs: {
       rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
     },
 
-    optimism: {
+    op: {
       rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
     },
   },
@@ -389,7 +389,7 @@ export const NetworkConfigs: {
       rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
     },
 
-    optimism: {
+    op: {
       rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
     },
   },
@@ -485,7 +485,7 @@ export const NetworkConfigs: {
       rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
     },
 
-    optimism: {
+    op: {
       rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
     },
   },
