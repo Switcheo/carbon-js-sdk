@@ -8,7 +8,7 @@ import { Blockchain, BlockchainV2, EVMChain as EVMChainV2 } from "@carbon-sdk/ut
 export const DEFAULT_FEE_DENOM = "swth";
 
 // 0.0000001 SWTH
-// 100 SWTH sats
+// 1 SWTH sats
 export const DEFAULT_GAS_PRICE = new BigNumber(10);
 export const DEFAULT_GAS = new BigNumber(100_000_000);
 
