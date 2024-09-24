@@ -4,7 +4,7 @@ import { NetworkConfigs } from "@carbon-sdk/constant";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { sortObject } from "@carbon-sdk/util/generic";
-import { constructAdr36SignDoc, constructMsgSignData } from "@carbon-sdk/util/message";
+import { constructAdr36SignDoc } from "@carbon-sdk/util/message";
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
 import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { ethers } from "ethers";
