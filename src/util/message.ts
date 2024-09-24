@@ -25,6 +25,6 @@ export const constructAdr36SignDoc = (address: string, message: string): StdSign
   return signDoc
 }
 
-export const constructMsgSignData = (address: string, message: string): MsgSignData => {
+const constructMsgSignData = (address: string, message: string): MsgSignData => {
   return { signer: address, data: Buffer.from(message).toString('base64') }
 }

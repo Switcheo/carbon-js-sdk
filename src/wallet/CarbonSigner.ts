@@ -158,8 +158,9 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
   async signMessage(_: string, message: string): Promise<string> {
     const account = await this.retrieveAccount()
     const { pubkey, address } = account
-    const data = JSON.stringify(constructMsgSignData(address, message))
-    const signBytes = await this.ledger.sign(JSON.stringify(data))
+    const doc = constructAdr36SignDoc(address, message)
+    const msg = JSON.stringify(sortObject(doc))
+    const signBytes = await this.ledger.sign(msg)
     const { signature } = encodeSecp256k1Signature(pubkey, signBytes)
     return Buffer.from(signature, 'base64').toString('hex')
   }
