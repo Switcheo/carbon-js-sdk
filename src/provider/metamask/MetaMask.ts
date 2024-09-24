@@ -283,29 +283,26 @@ export class MetaMask extends Eip6963Provider {
     if (blockchain === 'Carbon') {
       return MetaMask.getCarbonEvmNetworkParams(network)
     }
-    const lowercaseBlockchain = blockchain.toLowerCase()
+
     const isMainnet = network === Network.MainNet
 
-    if (lowercaseBlockchain.includes('binance smart chain') || lowercaseBlockchain.includes('bsc')) {
-      return isMainnet ? BSC_MAINNET : BSC_TESTNET
+    switch (blockchain) {
+      case 'Binance Smart Chain':
+        return isMainnet ? BSC_MAINNET : BSC_TESTNET;
+      case 'Arbitrum':
+        return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET;
+      case 'Polygon':
+        return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET;
+      case 'OKC':
+        return isMainnet ? OKC_MAINNET : OKC_TESTNET;
+      case 'Mantle':
+        return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET;
+      case 'Optimism':
+        return isMainnet ? OP_MAINNET : OP_TESTNET
+      default:
+        // metamask should come with Ethereum configs
+        return ETH_MAINNET;
     }
-    if (lowercaseBlockchain.includes('arbitrum')) {
-      return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET
-    }
-    if (lowercaseBlockchain.includes('polygon')) {
-      return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET
-    }
-    if (lowercaseBlockchain.includes('okc')) {
-      return isMainnet ? OKC_MAINNET : OKC_TESTNET
-    }
-    if (lowercaseBlockchain.includes('mantle')) {
-      return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
-    }
-    if (lowercaseBlockchain.includes('optimism') || lowercaseBlockchain.includes('op')) {
-      return isMainnet ? OP_MAINNET : OP_TESTNET
-    }
-
-    return isMainnet ? ETH_MAINNET : ETH_TESTNET;
   }
   static getCarbonEvmNetworkParams(network: Network): MetaMaskChangeNetworkParam {
     switch (network) {

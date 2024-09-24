@@ -188,7 +188,7 @@ export const NetworkConfigs: {
 
     optimism: {
       rpcURL: OP_MAINNET.rpcUrls?.[0] ?? "",
-    }
+    },
   },
 
   [Network.TestNet]: {
@@ -283,7 +283,7 @@ export const NetworkConfigs: {
 
     optimism: {
       rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
-    }
+    },
   },
 
   [Network.DevNet]: {
@@ -391,7 +391,7 @@ export const NetworkConfigs: {
 
     optimism: {
       rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
-    }
+    },
   },
 
   [Network.LocalHost]: {
@@ -487,6 +487,6 @@ export const NetworkConfigs: {
 
     optimism: {
       rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
-    }
+    },
   },
 } as const;
