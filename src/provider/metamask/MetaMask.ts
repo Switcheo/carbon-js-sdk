@@ -288,20 +288,20 @@ export class MetaMask extends Eip6963Provider {
 
     switch (blockchain) {
       case 'Binance Smart Chain':
-        return isMainnet ? BSC_MAINNET : BSC_TESTNET;
+        return isMainnet ? BSC_MAINNET : BSC_TESTNET
       case 'Arbitrum':
-        return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET;
+        return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET
       case 'Polygon':
-        return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET;
+        return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET
       case 'OKC':
-        return isMainnet ? OKC_MAINNET : OKC_TESTNET;
+        return isMainnet ? OKC_MAINNET : OKC_TESTNET
       case 'Mantle':
-        return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET;
+        return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
       case 'Optimism':
         return isMainnet ? OP_MAINNET : OP_TESTNET
       default:
         // metamask should come with Ethereum configs
-        return ETH_MAINNET;
+        return isMainnet ? ETH_MAINNET : ETH_TESTNET
     }
   }
   static getCarbonEvmNetworkParams(network: Network): MetaMaskChangeNetworkParam {
