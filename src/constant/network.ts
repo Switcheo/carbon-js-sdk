@@ -1,5 +1,4 @@
 import { CONST } from "@cityofzion/neon-core-next";
-import { MANTLE_MAINNET, MANTLE_TESTNET, OP_MAINNET, OP_TESTNET } from "./web3Config";
 
 export enum Network {
   MainNet = "mainnet",
@@ -25,8 +24,11 @@ export const CarbonEvmChainIDs = {
 
 export const DEFAULT_NETWORK = Network.MainNet;
 
-export interface EthNetworkConfig {
-  rpcURL: string;
+export interface BaseNetworkConfig {
+  rpcURL: string
+}
+
+export interface EthNetworkConfig extends BaseNetworkConfig {
   wsURL: string;
   payerURL: string;
   lockProxyAddr: string;
@@ -35,29 +37,23 @@ export interface EthNetworkConfig {
   byteCodeHash: string;
 }
 
-export interface NeoNetworkConfig {
-  rpcURL: string;
+export interface NeoNetworkConfig extends BaseNetworkConfig {
   wrapperScriptHash: string;
 }
-export interface N3NetworkConfig {
-  rpcURL: string;
+
+export interface N3NetworkConfig extends BaseNetworkConfig {
   networkMagic: number;
 }
 
-export interface ZilNetworkConfig {
-  rpcURL: string;
+export interface ZilNetworkConfig extends BaseNetworkConfig {
   chainId: number;
   lockProxyAddr: string;
   bridgeEntranceAddr: string;
 }
 
-export interface MantleNetworkConfig {
-  rpcURL: string;
-}
+export interface MantleNetworkConfig extends BaseNetworkConfig { }
 
-export interface OPNetworkConfig {
-  rpcURL: string;
-}
+export interface OPNetworkConfig extends BaseNetworkConfig { }
 
 export interface NetworkConfig {
   tmRpcUrl: string;
@@ -183,11 +179,11 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: MANTLE_MAINNET.rpcUrls?.[0] ?? "",
+      rpcURL: "https://rpc.mantle.xyz",
     },
 
     op: {
-      rpcURL: OP_MAINNET.rpcUrls?.[0] ?? "",
+      rpcURL: "https://mainnet.optimism.io",
     },
   },
 
@@ -278,11 +274,11 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
+      rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     op: {
-      rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
+      rpcURL: "https://sepolia.optimism.io",
     },
   },
 
@@ -386,11 +382,11 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
+      rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     op: {
-      rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
+      rpcURL: "https://sepolia.optimism.io",
     },
   },
 
@@ -482,11 +478,11 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
+      rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     op: {
-      rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
+      rpcURL: "https://sepolia.optimism.io",
     },
   },
 } as const;

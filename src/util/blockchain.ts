@@ -45,6 +45,7 @@ export enum Blockchain {
   Agoric = "agoric",
   Sommelier = "sommelier",
   Mantle = "mantle",
+  OP = 'op'
 }
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
@@ -97,7 +98,7 @@ export interface BridgeMap {
 
 export type ChainIds = SimpleMap<number>
 
-export const ChainNames = {
+export const ChainNames: SimpleMap<string> = {
   1: "MainNet",
   3: "Ropsten",
   4: "Rinkeby",
@@ -112,6 +113,10 @@ export const ChainNames = {
   80001: "Polygon Mumbai",
   42161: "Arbitrum MainNet",
   421611: "Arbitrum TestNet",
+  5000: "Mantle MainNet",
+  5001: "Mantle TestNet",
+  10: "OP MainNet",
+  11155420: "OP TestNet",
 } as const
 
 export const CHAIN_IDS: ChainIds = {
@@ -420,6 +425,10 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
         case 19: /* FALLTHROUGH */
         case 42161:
           return "Arbitrum"
+        case 5000:
+          return "Mantle"
+        case 10:
+          return "Optimism"
         default:
           return undefined
       }
@@ -439,6 +448,10 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
         case 2: /* FALLTHROUGH */
         case 502:
           return "Ethereum"
+        case 5001:
+          return "Mantle"
+        case 11155420:
+          return "Optimism"
         default:
           return undefined
       }
@@ -457,6 +470,10 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
           return "Binance Smart Chain"
         case 111:
           return 'Zilliqa'
+        case 5001:
+          return "Mantle"
+        case 11155420:
+          return "Optimism"
         default:
           return undefined
       }
