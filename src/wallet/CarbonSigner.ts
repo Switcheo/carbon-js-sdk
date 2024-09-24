@@ -4,7 +4,7 @@ import { NetworkConfigs } from "@carbon-sdk/constant";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { sortObject } from "@carbon-sdk/util/generic";
-import { constructAdr36SignDoc, constructMsgSignData } from "@carbon-sdk/util/message";
+import { constructAdr36SignDoc } from "@carbon-sdk/util/message";
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
 import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { ethers } from "ethers";
@@ -158,8 +158,9 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
   async signMessage(_: string, message: string): Promise<string> {
     const account = await this.retrieveAccount()
     const { pubkey, address } = account
-    const data = JSON.stringify(constructMsgSignData(address, message))
-    const signBytes = await this.ledger.sign(JSON.stringify(data))
+    const doc = constructAdr36SignDoc(address, message)
+    const msg = JSON.stringify(sortObject(doc))
+    const signBytes = await this.ledger.sign(msg)
     const { signature } = encodeSecp256k1Signature(pubkey, signBytes)
     return Buffer.from(signature, 'base64').toString('hex')
   }
