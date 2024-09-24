@@ -1,4 +1,4 @@
-import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { ChainNames, BlockchainV2, EVMChain, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -73,6 +73,14 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
+  Mantle: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const,
   Carbon: {
     //Carbon does not support Metamask legacy mnemonic sign in
     [Network.TestNet]: "",
@@ -106,7 +114,7 @@ const getEncryptMessage = (input: string) => {
 interface MetaMaskAPI {
   isMetaMask: boolean;
   chainId: string | null;
-  _state: {isConnected: boolean};
+  _state: { isConnected: boolean };
   request: (args: RequestArguments) => Promise<unknown>;
   on: (eventName: string, listener: (...args: unknown[]) => void) => any;
 }
@@ -278,6 +286,8 @@ export class MetaMask extends Eip6963Provider {
           return POLYGON_MAINNET;
         case 'OKC':
           return OKC_MAINNET;
+        case 'Mantle':
+          return MANTLE_MAINNET;
         default:
           // metamask should come with Ethereum configs
           return ETH_MAINNET;
@@ -293,6 +303,8 @@ export class MetaMask extends Eip6963Provider {
         return POLYGON_TESTNET;
       case 'OKC':
         return OKC_TESTNET;
+      case 'Mantle':
+        return MANTLE_TESTNET;
       default:
         // metamask should come with Ethereum configs
         return ETH_TESTNET;
@@ -320,6 +332,8 @@ export class MetaMask extends Eip6963Provider {
       switch (blockchain) {
         case 'Binance Smart Chain':
           return 56;
+        case 'Mantle':
+          return 5000;
         case 'Arbitrum':
           return 42161;
         case 'Polygon':
@@ -334,6 +348,8 @@ export class MetaMask extends Eip6963Provider {
     switch (blockchain) {
       case 'Binance Smart Chain':
         return 97;
+      case 'Mantle':
+        return 5003;
       case 'Arbitrum':
         return 421611;
       case 'Polygon':

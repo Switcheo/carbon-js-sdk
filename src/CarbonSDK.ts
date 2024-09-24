@@ -14,7 +14,7 @@ import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import BigNumber from "bignumber.js";
 import * as clients from "./clients";
-import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { CarbonQueryClient, AxelarBridgeClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import GasFee from "./clients/GasFee";
 import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
@@ -22,6 +22,7 @@ import {
   AdminModule,
   AllianceModule,
   BankModule,
+  BridgeModule,
   BrokerModule,
   CDPModule,
   CoinModule,
@@ -144,6 +145,7 @@ class CarbonSDK {
   xchain: XChainModule;
   evm: EvmModule;
   evmmerge: EvmMergeModule;
+  bridge: BridgeModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -151,6 +153,7 @@ class CarbonSDK {
   arbitrum: ETHClient;
   polygon: ETHClient;
   okc: ETHClient;
+  axelarBridgeClient: AxelarBridgeClient;
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
@@ -213,6 +216,7 @@ class CarbonSDK {
     this.xchain = new XChainModule(this);
     this.evm = new EvmModule(this);
     this.evmmerge = new EvmMergeModule(this);
+    this.bridge = new BridgeModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,
@@ -258,6 +262,10 @@ class CarbonSDK {
       blockchain: Blockchain.Okc,
       tokenClient: this.token,
     });
+
+    this.axelarBridgeClient = AxelarBridgeClient.instance({
+      configProvider: this,
+    })
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
@@ -266,10 +274,8 @@ class CarbonSDK {
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
     const tmClient: Tendermint37Client = opts.tmClient ?? new (Tendermint37Client as any)(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
-
     let chainId = networkConfig.chainId; // fallback chain ID
     let normalInit = true;
-
     try {
       chainId = (await tmClient.status())?.nodeInfo.network;
     } catch (error) {

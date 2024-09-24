@@ -293,7 +293,10 @@ export interface ProofSpec {
    */
   leafSpec?: LeafOp;
   innerSpec?: InnerSpec;
-  /** max_depth (if > 0) is the maximum number of InnerOps allowed (mainly for fixed-depth tries) */
+  /**
+   * max_depth (if > 0) is the maximum number of InnerOps allowed (mainly for fixed-depth tries)
+   * the max_depth is interpreted as 128 if set to 0
+   */
   maxDepth: number;
   /** min_depth (if > 0) is the minimum number of InnerOps allowed (mainly for fixed-depth tries) */
   minDepth: number;

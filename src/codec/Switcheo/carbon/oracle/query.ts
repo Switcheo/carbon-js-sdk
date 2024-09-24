@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Oracle, Result, Vote, Contract } from "./oracle";
+import { Oracle, Result, Contract } from "./oracle";
 import {
   PageRequest,
   PageResponse,
@@ -45,18 +45,6 @@ export interface QueryResultsLatestRequest {
 
 export interface QueryResultsLatestResponse {
   latestResults: Result[];
-  pagination?: PageResponse;
-}
-
-export interface QueryVotesRequest {
-  oracleId: string;
-  timestamp: Long;
-  voter: string;
-  pagination?: PageRequest;
-}
-
-export interface QueryVotesResponse {
-  votes: Vote[];
   pagination?: PageResponse;
 }
 
@@ -705,185 +693,6 @@ export const QueryResultsLatestResponse = {
     message.latestResults = (object.latestResults ?? []).map((e) =>
       Result.fromPartial(e)
     );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryVotesRequest: object = {
-  oracleId: "",
-  timestamp: Long.ZERO,
-  voter: "",
-};
-
-export const QueryVotesRequest = {
-  encode(
-    message: QueryVotesRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.oracleId !== "") {
-      writer.uint32(10).string(message.oracleId);
-    }
-    if (!message.timestamp.isZero()) {
-      writer.uint32(16).int64(message.timestamp);
-    }
-    if (message.voter !== "") {
-      writer.uint32(26).string(message.voter);
-    }
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(34).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryVotesRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.oracleId = reader.string();
-          break;
-        case 2:
-          message.timestamp = reader.int64() as Long;
-          break;
-        case 3:
-          message.voter = reader.string();
-          break;
-        case 4:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryVotesRequest {
-    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
-    message.oracleId =
-      object.oracleId !== undefined && object.oracleId !== null
-        ? String(object.oracleId)
-        : "";
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromString(object.timestamp)
-        : Long.ZERO;
-    message.voter =
-      object.voter !== undefined && object.voter !== null
-        ? String(object.voter)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryVotesRequest): unknown {
-    const obj: any = {};
-    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
-    message.timestamp !== undefined &&
-      (obj.timestamp = (message.timestamp || Long.ZERO).toString());
-    message.voter !== undefined && (obj.voter = message.voter);
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<QueryVotesRequest>): QueryVotesRequest {
-    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
-    message.oracleId = object.oracleId ?? "";
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromValue(object.timestamp)
-        : Long.ZERO;
-    message.voter = object.voter ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryVotesResponse: object = {};
-
-export const QueryVotesResponse = {
-  encode(
-    message: QueryVotesResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.votes) {
-      Vote.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryVotesResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
-    message.votes = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.votes.push(Vote.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryVotesResponse {
-    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
-    message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryVotesResponse): unknown {
-    const obj: any = {};
-    if (message.votes) {
-      obj.votes = message.votes.map((e) => (e ? Vote.toJSON(e) : undefined));
-    } else {
-      obj.votes = [];
-    }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<QueryVotesResponse>): QueryVotesResponse {
-    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
-    message.votes = (object.votes ?? []).map((e) => Vote.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -2202,8 +2011,6 @@ export interface Query {
   ResultsLatest(
     request: QueryResultsLatestRequest
   ): Promise<QueryResultsLatestResponse>;
-  /** Get votes for all oracles, or a specific oracle */
-  Votes(request: QueryVotesRequest): Promise<QueryVotesResponse>;
   /** Get voting power for an address */
   VoterPower(request: QueryVoterPowerRequest): Promise<QueryVoterPowerResponse>;
   /** Get all slash counters */
@@ -2242,7 +2049,6 @@ export class QueryClientImpl implements Query {
     this.OracleAll = this.OracleAll.bind(this);
     this.Results = this.Results.bind(this);
     this.ResultsLatest = this.ResultsLatest.bind(this);
-    this.Votes = this.Votes.bind(this);
     this.VoterPower = this.VoterPower.bind(this);
     this.SlashCounterAll = this.SlashCounterAll.bind(this);
     this.SlashCounter = this.SlashCounter.bind(this);
@@ -2300,18 +2106,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryResultsLatestResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  Votes(request: QueryVotesRequest): Promise<QueryVotesResponse> {
-    const data = QueryVotesRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Query",
-      "Votes",
-      data
-    );
-    return promise.then((data) =>
-      QueryVotesResponse.decode(new _m0.Reader(data))
     );
   }
 

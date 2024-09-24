@@ -7,8 +7,6 @@ export const protobufPackage = "Switcheo.carbon.cdp";
 
 export interface AssetParams {
   denom: string;
-  /** deprecated: oracle_id is now on pricing */
-  oracleId: string;
   rateStrategyName: string;
   allowRepayStablecoinInterest: boolean;
   loanToValue: string;
@@ -38,7 +36,6 @@ export interface UpdateAssetParams {
 
 const baseAssetParams: object = {
   denom: "",
-  oracleId: "",
   rateStrategyName: "",
   allowRepayStablecoinInterest: false,
   loanToValue: "",
@@ -55,9 +52,6 @@ export const AssetParams = {
   ): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
-    }
-    if (message.oracleId !== "") {
-      writer.uint32(18).string(message.oracleId);
     }
     if (message.rateStrategyName !== "") {
       writer.uint32(26).string(message.rateStrategyName);
@@ -93,9 +87,6 @@ export const AssetParams = {
         case 1:
           message.denom = reader.string();
           break;
-        case 2:
-          message.oracleId = reader.string();
-          break;
         case 3:
           message.rateStrategyName = reader.string();
           break;
@@ -130,10 +121,6 @@ export const AssetParams = {
     message.denom =
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
-        : "";
-    message.oracleId =
-      object.oracleId !== undefined && object.oracleId !== null
-        ? String(object.oracleId)
         : "";
     message.rateStrategyName =
       object.rateStrategyName !== undefined && object.rateStrategyName !== null
@@ -172,7 +159,6 @@ export const AssetParams = {
   toJSON(message: AssetParams): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     message.rateStrategyName !== undefined &&
       (obj.rateStrategyName = message.rateStrategyName);
     message.allowRepayStablecoinInterest !== undefined &&
@@ -191,7 +177,6 @@ export const AssetParams = {
   fromPartial(object: DeepPartial<AssetParams>): AssetParams {
     const message = { ...baseAssetParams } as AssetParams;
     message.denom = object.denom ?? "";
-    message.oracleId = object.oracleId ?? "";
     message.rateStrategyName = object.rateStrategyName ?? "";
     message.allowRepayStablecoinInterest =
       object.allowRepayStablecoinInterest ?? false;
