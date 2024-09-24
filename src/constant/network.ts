@@ -1,4 +1,5 @@
 import { CONST } from "@cityofzion/neon-core-next";
+import { MANTLE_MAINNET, MANTLE_TESTNET, OP_MAINNET, OP_TESTNET } from "./web3Config";
 
 export enum Network {
   MainNet = "mainnet",
@@ -54,6 +55,10 @@ export interface MantleNetworkConfig {
   rpcURL: string;
 }
 
+export interface OptimismNetworkConfig {
+  rpcURL: string;
+}
+
 export interface NetworkConfig {
   tmRpcUrl: string;
   tmWsUrl: string;
@@ -81,6 +86,7 @@ export interface NetworkConfig {
   n3: N3NetworkConfig;
   zil: ZilNetworkConfig;
   mantle: MantleNetworkConfig;
+  optimism: OptimismNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
@@ -177,8 +183,12 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: 'https://rpc.mantle.xyz',
+      rpcURL: MANTLE_MAINNET.rpcUrls?.[0] ?? "",
     },
+
+    optimism: {
+      rpcURL: OP_MAINNET.rpcUrls?.[0] ?? "",
+    }
   },
 
   [Network.TestNet]: {
@@ -268,8 +278,12 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: "https://rpc.sepolia.mantle.xyz",
+      rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
     },
+
+    optimism: {
+      rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
+    }
   },
 
   [Network.DevNet]: {
@@ -372,8 +386,12 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: "https://rpc.sepolia.mantle.xyz",
+      rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
     },
+
+    optimism: {
+      rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
+    }
   },
 
   [Network.LocalHost]: {
@@ -464,7 +482,11 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: "https://rpc.sepolia.mantle.xyz",
+      rpcURL: MANTLE_TESTNET.rpcUrls?.[0] ?? "",
     },
+
+    optimism: {
+      rpcURL: OP_TESTNET.rpcUrls?.[0] ?? "",
+    }
   },
 } as const;

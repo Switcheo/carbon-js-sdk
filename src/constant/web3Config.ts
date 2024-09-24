@@ -191,3 +191,31 @@ export const MANTLE_TESTNET: ChangeNetworkParam = {
     symbol: "MNT",
   },
 }
+
+export const OP_MAINNET: ChangeNetworkParam = {
+  chainId: "0xA",  // Optimism Mainnet Chain ID (hex of 10)
+  blockExplorerUrls: ["https://optimistic.etherscan.io"],
+  chainName: "OP Mainnet",
+  rpcUrls: [
+    "https://mainnet.optimism.io",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+}
+
+export const OP_TESTNET: ChangeNetworkParam = {
+  chainId: "0x1A4",  // Optimism Sepolia Chain ID (hex of 420)
+  blockExplorerUrls: ["https://sepolia-optimism.etherscan.io"],
+  chainName: "OP Sepolia",
+  rpcUrls: [
+    "https://sepolia.optimism.io",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+}

@@ -1,4 +1,4 @@
-import { CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { ChainNames, BlockchainV2, EVMChain, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -74,6 +74,14 @@ const CONTRACT_HASH: {
     [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
   Mantle: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const,
+  Optimism: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -275,40 +283,29 @@ export class MetaMask extends Eip6963Provider {
     if (blockchain === 'Carbon') {
       return MetaMask.getCarbonEvmNetworkParams(network)
     }
+    const lowercaseBlockchain = blockchain.toLowerCase()
+    const isMainnet = network === Network.MainNet
 
-    if (network === Network.MainNet) {
-      switch (blockchain) {
-        case 'Binance Smart Chain':
-          return BSC_MAINNET;
-        case 'Arbitrum':
-          return ARBITRUM_MAINNET;
-        case 'Polygon':
-          return POLYGON_MAINNET;
-        case 'OKC':
-          return OKC_MAINNET;
-        case 'Mantle':
-          return MANTLE_MAINNET;
-        default:
-          // metamask should come with Ethereum configs
-          return ETH_MAINNET;
-      }
+    if (lowercaseBlockchain.includes('binance smart chain') || lowercaseBlockchain.includes('bsc')) {
+      return isMainnet ? BSC_MAINNET : BSC_TESTNET
+    }
+    if (lowercaseBlockchain.includes('arbitrum')) {
+      return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET
+    }
+    if (lowercaseBlockchain.includes('polygon')) {
+      return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET
+    }
+    if (lowercaseBlockchain.includes('okc')) {
+      return isMainnet ? OKC_MAINNET : OKC_TESTNET
+    }
+    if (lowercaseBlockchain.includes('mantle')) {
+      return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
+    }
+    if (lowercaseBlockchain.includes('optimism') || lowercaseBlockchain.includes('op')) {
+      return isMainnet ? OP_MAINNET : OP_TESTNET
     }
 
-    switch (blockchain) {
-      case 'Binance Smart Chain':
-        return BSC_TESTNET;
-      case 'Arbitrum':
-        return ARBITRUM_TESTNET;
-      case 'Polygon':
-        return POLYGON_TESTNET;
-      case 'OKC':
-        return OKC_TESTNET;
-      case 'Mantle':
-        return MANTLE_TESTNET;
-      default:
-        // metamask should come with Ethereum configs
-        return ETH_TESTNET;
-    }
+    return isMainnet ? ETH_MAINNET : ETH_TESTNET;
   }
   static getCarbonEvmNetworkParams(network: Network): MetaMaskChangeNetworkParam {
     switch (network) {
