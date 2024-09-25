@@ -1,4 +1,4 @@
-import { CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
+import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { ChainNames, BlockchainV2, EVMChain, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -307,6 +307,8 @@ export class MetaMask extends Eip6963Provider {
         return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
       case 'OP':
         return isMainnet ? OP_MAINNET : OP_TESTNET
+      case 'Base':
+        return isMainnet ? BASE_MAINNET : BASE_TESTNET
       default:
         // metamask should come with Ethereum configs
         return isMainnet ? ETH_MAINNET : ETH_TESTNET
@@ -343,6 +345,8 @@ export class MetaMask extends Eip6963Provider {
         return isMainnet ? 66 : 65;
       case 'OP':
         return isMainnet ? 10 : 11155420;
+      case 'Base':
+        return isMainnet ? 8453 : 84532;
       default:
         // Fallback to Ethereum chain ID
         return isMainnet ? 1 : 5;
@@ -751,6 +755,11 @@ export class MetaMask extends Eip6963Provider {
       case 11155420:  // OP Sepolia Testnet
         this.blockchain = 'OP';
         return isMainnet ? 10 : 11155420;
+
+      case 8453:
+      case 84532:
+        this.blockchain = 'Base';
+        return isMainnet ? 8453 : 84532;
 
       default:
         // Handle cases where users log into devnet using mainnet chains

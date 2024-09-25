@@ -15,7 +15,7 @@ import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
-import { CarbonEvmChainIDs, EVMChain, MANTLE_MAINNET, MANTLE_TESTNET, Network, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EVMChain, MANTLE_MAINNET, MANTLE_TESTNET, Network, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -220,6 +220,8 @@ class RainbowKitAccount extends Eip6963Provider {
         return isMainnet ? 66 : 65;
       case 'OP':
         return isMainnet ? 10 : 11155420;
+      case 'Base':
+        return isMainnet ? 8453 : 84532;
       default:
         // Fallback to Ethereum chain ID
         return isMainnet ? 1 : 5;
@@ -259,6 +261,8 @@ class RainbowKitAccount extends Eip6963Provider {
         return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
       case 'OP':
         return isMainnet ? OP_MAINNET : OP_TESTNET
+      case 'Base':
+        return isMainnet ? BASE_MAINNET : BASE_TESTNET
       default:
         // metamask should come with Ethereum configs
         return isMainnet ? ETH_MAINNET : ETH_TESTNET

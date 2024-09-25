@@ -219,3 +219,31 @@ export const OP_TESTNET: ChangeNetworkParam = {
     symbol: "ETH",
   },
 }
+
+export const BASE_MAINNET: ChangeNetworkParam = {
+  chainId: "0x2105",  // Base MainNet Chain ID (hex of 8453)
+  blockExplorerUrls: ["https://basescan.org"],
+  chainName: "Base Mainnet",
+  rpcUrls: [
+    "https://base-rpc.publicnode.com",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+}
+
+export const BASE_TESTNET: ChangeNetworkParam = {
+  chainId: "0x14a34",  // Base Sepolia TestNet Chain ID (hex of 84532)
+  blockExplorerUrls: ["https://sepolia.basescan.org"],
+  chainName: "Base Sepolia Testnet",
+  rpcUrls: [
+    "https://base-sepolia-rpc.publicnode.com",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+}
