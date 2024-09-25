@@ -89,6 +89,14 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "",
   } as const,
+  Base: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const,
   Carbon: {
     //Carbon does not support Metamask legacy mnemonic sign in
     [Network.TestNet]: "",

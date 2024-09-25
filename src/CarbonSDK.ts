@@ -152,6 +152,9 @@ class CarbonSDK {
   bsc: ETHClient;
   arbitrum: ETHClient;
   polygon: ETHClient;
+  mantle: ETHClient;
+  op: ETHClient;
+  base: ETHClient;
   okc: ETHClient;
   axelarBridgeClient: AxelarBridgeClient;
   zil: ZILClient;
@@ -266,6 +269,24 @@ class CarbonSDK {
     this.axelarBridgeClient = AxelarBridgeClient.instance({
       configProvider: this,
     })
+
+    this.mantle = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Mantle,
+      tokenClient: this.token,
+    });
+
+    this.op = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.OP,
+      tokenClient: this.token,
+    });
+
+    this.base = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Base,
+      tokenClient: this.token,
+    });
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {

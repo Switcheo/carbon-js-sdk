@@ -51,10 +51,6 @@ export interface ZilNetworkConfig extends BaseNetworkConfig {
   bridgeEntranceAddr: string;
 }
 
-export interface MantleNetworkConfig extends BaseNetworkConfig { }
-
-export interface OPNetworkConfig extends BaseNetworkConfig { }
-
 export interface NetworkConfig {
   tmRpcUrl: string;
   tmWsUrl: string;
@@ -81,12 +77,23 @@ export interface NetworkConfig {
   neo: NeoNetworkConfig;
   n3: N3NetworkConfig;
   zil: ZilNetworkConfig;
-  mantle: MantleNetworkConfig;
-  op: OPNetworkConfig;
+  mantle: EthNetworkConfig;
+  op: EthNetworkConfig;
+  base: EthNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
   getConfig(): NetworkConfig;
+}
+
+const EthNetworkConfigFallback: EthNetworkConfig = {
+  rpcURL: "",
+  wsURL: "",
+  payerURL: "",
+  bridgeEntranceAddr: "",
+  lockProxyAddr: "",
+  balanceReader: "",
+  byteCodeHash: "",
 }
 
 export const NetworkConfigs: {
@@ -179,12 +186,19 @@ export const NetworkConfigs: {
     },
 
     mantle: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://rpc.mantle.xyz",
     },
 
     op: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://mainnet.optimism.io",
     },
+
+    base: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://base-rpc.publicnode.com",
+    }
   },
 
   [Network.TestNet]: {
@@ -274,11 +288,18 @@ export const NetworkConfigs: {
     },
 
     mantle: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     op: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://sepolia.optimism.io",
+    },
+
+    base: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
   },
 
@@ -382,11 +403,18 @@ export const NetworkConfigs: {
     },
 
     mantle: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     op: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://sepolia.optimism.io",
+    },
+
+    base: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
   },
 
@@ -478,11 +506,18 @@ export const NetworkConfigs: {
     },
 
     mantle: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     op: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://sepolia.optimism.io",
+    },
+
+    base: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
   },
 } as const;

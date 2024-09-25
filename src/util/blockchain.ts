@@ -45,7 +45,8 @@ export enum Blockchain {
   Agoric = "agoric",
   Sommelier = "sommelier",
   Mantle = "mantle",
-  OP = 'op'
+  OP = 'op',
+  Base = 'base',
 }
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
@@ -114,9 +115,11 @@ export const ChainNames: SimpleMap<string> = {
   42161: "Arbitrum MainNet",
   421611: "Arbitrum TestNet",
   5000: "Mantle MainNet",
-  5001: "Mantle TestNet",
+  5001: "Mantle Sepolia TestNet",
   10: "OP MainNet",
-  11155420: "OP TestNet",
+  11155420: "OP Sepolia TestNet",
+  8453: "Base",
+  84532: "Base Sepolia TestNet"
 } as const
 
 export const CHAIN_IDS: ChainIds = {
@@ -277,6 +280,12 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
         case 19: /* FALLTHROUGH */
         case 42161:
           return Blockchain.Arbitrum
+        case 5000:
+          return Blockchain.Mantle
+        case 10:
+          return Blockchain.OP
+        case 8453:
+          return Blockchain.Base
         default:
           return undefined
       }
@@ -296,6 +305,12 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
         case 2: /* FALLTHROUGH */
         case 502:
           return Blockchain.Ethereum
+        case 5001:
+          return Blockchain.Mantle
+        case 11155420:
+          return Blockchain.OP
+        case 84532:
+          return Blockchain.Base
         default:
           return undefined
       }
@@ -314,6 +329,12 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return Blockchain.BinanceSmartChain
         case 111:
           return Blockchain.Zilliqa
+        case 5001:
+          return Blockchain.Mantle
+        case 11155420:
+          return Blockchain.OP
+        case 84532:
+          return Blockchain.Base
         default:
           return undefined
       }
@@ -346,6 +367,15 @@ export const getBlockchainFromChainV2 = (chainId?: number) => {
     case 42161:
     case 421611:
       return 'Arbitrum'
+    case 5000:
+    case 5001:
+      return 'Mantle'
+    case 10:
+    case 11155420:
+      return 'Optimism'
+    case 8453:
+    case 84532:
+      return 'Base'
     case Number(parseChainId((CarbonEvmChainIDs[Network.LocalHost]))):
     case Number(parseChainId((CarbonEvmChainIDs[Network.DevNet]))):
     case Number(parseChainId((CarbonEvmChainIDs[Network.TestNet]))):
@@ -428,7 +458,9 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
         case 5000:
           return "Mantle"
         case 10:
-          return "Optimism"
+          return "OP"
+        case 8453:
+          return "Base"
         default:
           return undefined
       }
@@ -451,7 +483,7 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
         case 5001:
           return "Mantle"
         case 11155420:
-          return "Optimism"
+          return "OP"
         default:
           return undefined
       }
@@ -473,7 +505,9 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
         case 5001:
           return "Mantle"
         case 11155420:
-          return "Optimism"
+          return "OP"
+        case 84532:
+          return "Base"
         default:
           return undefined
       }
@@ -520,12 +554,14 @@ export const blockchainForChainName: { [key: string]: string } = {
   [Blockchain.Agoric]: "Agoric",
   [Blockchain.Sommelier]: "Sommelier",
   [Blockchain.Mantle]: "Mantle",
+  [Blockchain.OP]: "OP",
+  [Blockchain.Base]: "Base",
 }
 
 export const getFormattedBlockchainName = (chain: string): BlockchainV2 | undefined => {
   return blockchainForChainName[chain]
 }
 
-export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon', 'Mantle', 'OP'] as const;
+export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon', 'Mantle', 'OP', 'Base'] as const;
 export type EVMChain = (typeof EvmChains)[number];
 export const isEvmChain = (chain: string): chain is EVMChain => EvmChains.includes(chain as any);
