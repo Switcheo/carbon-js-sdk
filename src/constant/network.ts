@@ -198,7 +198,7 @@ export const NetworkConfigs: {
     base: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://base-rpc.publicnode.com",
-    }
+    },
   },
 
   [Network.TestNet]: {

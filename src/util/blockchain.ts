@@ -119,7 +119,7 @@ export const ChainNames: SimpleMap<string> = {
   10: "OP MainNet",
   11155420: "OP Sepolia TestNet",
   8453: "Base",
-  84532: "Base Sepolia TestNet"
+  84532: "Base Sepolia TestNet",
 } as const
 
 export const CHAIN_IDS: ChainIds = {
