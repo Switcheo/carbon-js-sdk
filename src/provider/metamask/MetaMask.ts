@@ -747,9 +747,9 @@ export class MetaMask extends Eip6963Provider {
         return isMainnet ? 66 : 65;
 
       case 5000:  // Mantle Mainnet
-      case 5001:  // Mantle Testnet
+      case 5003:  // Mantle Testnet
         this.blockchain = 'Mantle';
-        return isMainnet ? 5000 : 5001;
+        return isMainnet ? 5000 : 5003;
 
       case 10:    // OP Mainnet
       case 11155420:  // OP Sepolia Testnet

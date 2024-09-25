@@ -115,7 +115,7 @@ export const ChainNames: SimpleMap<string> = {
   42161: "Arbitrum MainNet",
   421611: "Arbitrum TestNet",
   5000: "Mantle MainNet",
-  5001: "Mantle Sepolia TestNet",
+  5003: "Mantle Sepolia TestNet",
   10: "OP MainNet",
   11155420: "OP Sepolia TestNet",
   8453: "Base",
@@ -305,7 +305,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
         case 2: /* FALLTHROUGH */
         case 502:
           return Blockchain.Ethereum
-        case 5001:
+        case 5003:
           return Blockchain.Mantle
         case 11155420:
           return Blockchain.OP
@@ -329,7 +329,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return Blockchain.BinanceSmartChain
         case 111:
           return Blockchain.Zilliqa
-        case 5001:
+        case 5003:
           return Blockchain.Mantle
         case 11155420:
           return Blockchain.OP
@@ -368,7 +368,7 @@ export const getBlockchainFromChainV2 = (chainId?: number) => {
     case 421611:
       return 'Arbitrum'
     case 5000:
-    case 5001:
+    case 5003:
       return 'Mantle'
     case 10:
     case 11155420:
@@ -480,7 +480,7 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
         case 2: /* FALLTHROUGH */
         case 502:
           return "Ethereum"
-        case 5001:
+        case 5003:
           return "Mantle"
         case 11155420:
           return "OP"
@@ -502,7 +502,7 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
           return "Binance Smart Chain"
         case 111:
           return 'Zilliqa'
-        case 5001:
+        case 5003:
           return "Mantle"
         case 11155420:
           return "OP"
