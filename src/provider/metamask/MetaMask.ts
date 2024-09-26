@@ -762,10 +762,6 @@ export class MetaMask extends Eip6963Provider {
         return isMainnet ? 8453 : 84532;
 
       default:
-        // Handle cases where users log into devnet using mainnet chains
-        if (currentChainId === 56 && !isMainnet) {
-          return 97; // Mainnet BSC connecting to Testnet -> return Testnet chain ID
-        }
         // Default fallback for Ethereum if no specific match found
         return isMainnet ? 1 : 5;
     }

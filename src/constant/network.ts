@@ -24,11 +24,11 @@ export const CarbonEvmChainIDs = {
 
 export const DEFAULT_NETWORK = Network.MainNet;
 
-export interface BaseNetworkConfig {
+export interface BasicNetworkConfig {
   rpcURL: string
 }
 
-export interface EthNetworkConfig extends BaseNetworkConfig {
+export interface EthNetworkConfig extends BasicNetworkConfig {
   wsURL: string;
   payerURL: string;
   lockProxyAddr: string;
@@ -37,15 +37,15 @@ export interface EthNetworkConfig extends BaseNetworkConfig {
   byteCodeHash: string;
 }
 
-export interface NeoNetworkConfig extends BaseNetworkConfig {
+export interface NeoNetworkConfig extends BasicNetworkConfig {
   wrapperScriptHash: string;
 }
 
-export interface N3NetworkConfig extends BaseNetworkConfig {
+export interface N3NetworkConfig extends BasicNetworkConfig {
   networkMagic: number;
 }
 
-export interface ZilNetworkConfig extends BaseNetworkConfig {
+export interface ZilNetworkConfig extends BasicNetworkConfig {
   chainId: number;
   lockProxyAddr: string;
   bridgeEntranceAddr: string;

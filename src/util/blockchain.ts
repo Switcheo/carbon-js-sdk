@@ -61,6 +61,9 @@ export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
   "Zilliqa": Blockchain.Zilliqa,
   "Neo": Blockchain.Neo,
   "Neo3": Blockchain.Neo3,
+  "Mantle": Blockchain.Mantle,
+  "OP": Blockchain.OP,
+  "Base": Blockchain.Base,
 };
 
 export const BRIDGE_IDS = {
@@ -484,6 +487,8 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
           return "Mantle"
         case 11155420:
           return "OP"
+        case 84532:
+          return "Base"
         default:
           return undefined
       }
