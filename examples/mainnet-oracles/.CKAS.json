@@ -1,0 +1,125 @@
+{
+  "output_id": "kas_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bybit_kas_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_kas_usdt",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=KASUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_kas_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_kas_usdt",
+            "default_node_host": "https://fapi-binance-proxy.carbon.network",
+            "default_node_path": "/fapi/v2/ticker/price?symbol=KASUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "kucoin_kas_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kucoin_kas_usdt",
+            "default_node_host": "https://api.kucoin.com",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=KAS-USDT",
+            "paths": "[\"data.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_kas_usdt\", \"binance_kas_usdt\", \"kucoin_kas_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "kas_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_kas_usdt\", \"binance_kas_usdt\", \"kucoin_kas_usdt\"]",
+        "weights": "[0.30, 0.70, 0.30]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "kas_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"kas_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "kas_usd",
+      "input_id": "kas_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "8"
+      }
+    }
+  ]
+}

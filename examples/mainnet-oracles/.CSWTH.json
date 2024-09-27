@@ -55,7 +55,7 @@
       "adapter": "float_handler",
       "config": {
         "operation": "round",
-        "precision": "18"
+        "precision": "8"
       }
     }
   ]
