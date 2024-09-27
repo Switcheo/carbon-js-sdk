@@ -65,6 +65,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
     "SIDXETH",
     ".CSOL",
     ".CSWTH",
+    ".CRSWTHSWTHLP",
     ".CLSI"
   ]
 
