@@ -47,6 +47,7 @@ const typeCheck = (value: any): boolean => {
   return Long.isLong(value)
     || BigNumber.isBigNumber(value)
     || value instanceof Uint8Array
+    || value instanceof Date
     || ((value.seconds !== undefined && Long.isLong(value.seconds)) && (value.nanos !== undefined && typeof value.nanos === 'number')); // Check for Duration interface
 };
 
