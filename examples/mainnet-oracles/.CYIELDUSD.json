@@ -22,7 +22,7 @@
           "adapter": "evm_fetcher",
           "config": {
             "custom_node_url_key": "eth_rpc",
-            "default_node_rpc": "https://eth-mainnet.alchemyapi.io/v2/mgFiNmIil4LUFoT1uBBIJvBodN3p8jiR",
+            "default_node_rpc": "https://rpc-eth.carbon.network",
             "address": "0x97e6E0a40a3D02F12d1cEC30ebfbAE04e37C119E",
             "calldata": "0x4cdad50600000000000000000000000000000000000000000000003635c9adc5dea00000"
           }

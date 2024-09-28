@@ -53,7 +53,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.MainNet,
+    network: CarbonSDK.Network.TestNet,
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
@@ -61,12 +61,9 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   const specMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
   const oraclesToUpdate = [
-    "SIDXBTC",
-    "SIDXETH",
-    ".CSOL",
-    ".CSWTH",
-    ".CRSWTHSWTHLP",
-    ".CLSI"
+    ".CBIT",
+    ".CWSTETH",
+    ".CYIELDUSD",
   ]
 
   const txs: any[] = []
