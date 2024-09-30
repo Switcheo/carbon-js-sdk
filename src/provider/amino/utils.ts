@@ -46,6 +46,7 @@ export interface AminoProcess {
 const typeCheck = (value: any): boolean => {
   return Long.isLong(value)
     || BigNumber.isBigNumber(value)
+    || value instanceof Date
     || value instanceof Uint8Array
     || ((value.seconds !== undefined && Long.isLong(value.seconds)) && (value.nanos !== undefined && typeof value.nanos === 'number')); // Check for Duration interface
 };
