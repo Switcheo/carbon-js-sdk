@@ -261,6 +261,17 @@ registry.register("/Switcheo.carbon.oracle.MsgDeployOracleContractResponse", Car
 registry.register("/Switcheo.carbon.oracle.MsgCreateResult", Carbon.Oracle.MsgCreateResult);
 registry.register("/Switcheo.carbon.oracle.MsgCreateResultResponse", Carbon.Oracle.MsgCreateResultResponse);
 
+registry.register("/Switcheo.carbon.otc.MsgCreateRfq", Carbon.Otc.MsgCreateRfq);
+registry.register("/Switcheo.carbon.otc.MsgCreateRfqResponse", Carbon.Otc.MsgCreateRfqResponse);
+registry.register("/Switcheo.carbon.otc.MsgCancelRfq", Carbon.Otc.MsgCancelRfq);
+registry.register("/Switcheo.carbon.otc.MsgCancelRfqResponse", Carbon.Otc.MsgCancelRfqResponse);
+registry.register("/Switcheo.carbon.otc.MsgCreateQuote", Carbon.Otc.MsgCreateQuote);
+registry.register("/Switcheo.carbon.otc.MsgCreateQuoteResponse", Carbon.Otc.MsgCreateQuoteResponse);
+registry.register("/Switcheo.carbon.otc.MsgAcceptQuote", Carbon.Otc.MsgAcceptQuote);
+registry.register("/Switcheo.carbon.otc.MsgAcceptQuoteResponse", Carbon.Otc.MsgAcceptQuoteResponse);
+registry.register("/Switcheo.carbon.otc.MsgUpdateParams", Carbon.Otc.MsgUpdateParams);
+registry.register("/Switcheo.carbon.otc.MsgUpdateParamsResponse", Carbon.Otc.MsgUpdateParamsResponse);
+
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", Carbon.Evmcontract.MsgDeactivateContract);
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse", Carbon.Evmcontract.MsgDeactivateContractResponse);
 registry.register("/Switcheo.carbon.evmcontract.MsgActivateContract", Carbon.Evmcontract.MsgActivateContract);
@@ -293,8 +304,6 @@ registry.register("/Switcheo.carbon.coin.MsgLinkToken", Carbon.Coin.MsgLinkToken
 registry.register("/Switcheo.carbon.coin.MsgLinkTokenResponse", Carbon.Coin.MsgLinkTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgWithdraw", Carbon.Coin.MsgWithdraw);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", Carbon.Coin.MsgWithdrawResponse);
-registry.register("/Switcheo.carbon.coin.MsgAdminWithdraw", Carbon.Coin.MsgAdminWithdraw);
-registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawResponse", Carbon.Coin.MsgAdminWithdrawResponse);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", Carbon.Coin.MsgAuthorizeBridge);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", Carbon.Coin.MsgAuthorizeBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", Carbon.Coin.MsgDeauthorizeBridge);
@@ -947,6 +956,16 @@ export const TxTypes = {
   "MsgDeployOracleContractResponse": "/Switcheo.carbon.oracle.MsgDeployOracleContractResponse",
   "MsgCreateResult": "/Switcheo.carbon.oracle.MsgCreateResult",
   "MsgCreateResultResponse": "/Switcheo.carbon.oracle.MsgCreateResultResponse",
+  "MsgCreateRfq": "/Switcheo.carbon.otc.MsgCreateRfq",
+  "MsgCreateRfqResponse": "/Switcheo.carbon.otc.MsgCreateRfqResponse",
+  "MsgCancelRfq": "/Switcheo.carbon.otc.MsgCancelRfq",
+  "MsgCancelRfqResponse": "/Switcheo.carbon.otc.MsgCancelRfqResponse",
+  "MsgCreateQuote": "/Switcheo.carbon.otc.MsgCreateQuote",
+  "MsgCreateQuoteResponse": "/Switcheo.carbon.otc.MsgCreateQuoteResponse",
+  "MsgAcceptQuote": "/Switcheo.carbon.otc.MsgAcceptQuote",
+  "MsgAcceptQuoteResponse": "/Switcheo.carbon.otc.MsgAcceptQuoteResponse",
+  "MsgOtcUpdateParams": "/Switcheo.carbon.otc.MsgUpdateParams",
+  "MsgOtcUpdateParamsResponse": "/Switcheo.carbon.otc.MsgUpdateParamsResponse",
   "MsgDeactivateContract": "/Switcheo.carbon.evmcontract.MsgDeactivateContract",
   "MsgDeactivateContractResponse": "/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse",
   "MsgActivateContract": "/Switcheo.carbon.evmcontract.MsgActivateContract",
@@ -976,8 +995,6 @@ export const TxTypes = {
   "MsgLinkTokenResponse": "/Switcheo.carbon.coin.MsgLinkTokenResponse",
   "MsgWithdraw": "/Switcheo.carbon.coin.MsgWithdraw",
   "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
-  "MsgAdminWithdraw": "/Switcheo.carbon.coin.MsgAdminWithdraw",
-  "MsgAdminWithdrawResponse": "/Switcheo.carbon.coin.MsgAdminWithdrawResponse",
   "MsgAuthorizeBridge": "/Switcheo.carbon.coin.MsgAuthorizeBridge",
   "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
   "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
@@ -4799,6 +4816,17 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.cdp": {
+    "AssetParamsAPI": [
+      {
+        "name": "asset_params",
+        "type": "AssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "token_name",
+        "type": "string"
+      }
+    ],
     "AssetParams": [
       {
         "name": "denom",
@@ -6074,7 +6102,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryAssetResponse": [
       {
         "name": "asset_params",
-        "type": "AssetParams",
+        "type": "AssetParamsAPI",
         "packageName": "/Switcheo.carbon.cdp"
       }
     ],
@@ -6088,7 +6116,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryAssetAllResponse": [
       {
         "name": "asset_params_all",
-        "type": "AssetParams[]",
+        "type": "AssetParamsAPI[]",
         "packageName": "/Switcheo.carbon.cdp"
       },
       {
@@ -7419,25 +7447,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgWithdrawResponse": [],
-    "MsgAdminWithdraw": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "to_address",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      }
-    ],
-    "MsgAdminWithdrawResponse": [],
     "MsgAuthorizeBridge": [
       {
         "name": "creator",
@@ -7993,13 +8002,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryPolyBlacklistRequest": [],
-    "QueryPolyBlacklistResponse": [
-      {
-        "name": "blacklisted_tokens",
-        "type": "string[]"
       }
     ]
   },
@@ -13609,6 +13611,364 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MsgCreateResultResponse": []
   },
+  "/Switcheo.carbon.otc": {
+    "Rfq": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "requester",
+        "type": "string"
+      },
+      {
+        "name": "sell_coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "buy_denom",
+        "type": "string"
+      },
+      {
+        "name": "expiry_time",
+        "type": "string"
+      }
+    ],
+    "RfqWithStatus": [
+      {
+        "name": "rfq",
+        "type": "Rfq",
+        "packageName": "/Switcheo.carbon.otc"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      }
+    ],
+    "Quote": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "quoter",
+        "type": "string"
+      },
+      {
+        "name": "rfq_id",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "expiry_time",
+        "type": "string"
+      }
+    ],
+    "QuoteWithStatus": [
+      {
+        "name": "quote",
+        "type": "Quote",
+        "packageName": "/Switcheo.carbon.otc"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      }
+    ],
+    "QuoteEvent": [
+      {
+        "name": "quote",
+        "type": "Quote",
+        "packageName": "/Switcheo.carbon.otc"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "updated_block_height",
+        "type": "uint64"
+      }
+    ],
+    "RfqEvent": [
+      {
+        "name": "rfq",
+        "type": "Rfq",
+        "packageName": "/Switcheo.carbon.otc"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "updated_block_height",
+        "type": "uint64"
+      }
+    ],
+    "Params": [
+      {
+        "name": "fee_collector_whitelisted_market_makers",
+        "type": "string[]"
+      },
+      {
+        "name": "fee_collector_blacklisted_denoms",
+        "type": "string[]"
+      },
+      {
+        "name": "fee_collector_rfq_block_interval",
+        "type": "int64"
+      },
+      {
+        "name": "fee_collector_rfq_expiry_duration",
+        "type": "string"
+      },
+      {
+        "name": "minimum_duration",
+        "type": "string"
+      },
+      {
+        "name": "maximum_duration",
+        "type": "string"
+      },
+      {
+        "name": "enable_fee_conversion",
+        "type": "bool"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "fee_collector_whitelisted_market_makers",
+        "type": "string[]"
+      },
+      {
+        "name": "fee_collector_blacklisted_denoms",
+        "type": "string[]"
+      },
+      {
+        "name": "fee_collector_rfq_block_interval",
+        "type": "int64"
+      },
+      {
+        "name": "fee_collector_rfq_expiry_duration",
+        "type": "string"
+      },
+      {
+        "name": "minimum_duration",
+        "type": "string"
+      },
+      {
+        "name": "maximum_duration",
+        "type": "string"
+      },
+      {
+        "name": "enable_fee_conversion",
+        "type": "bool"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.otc"
+      },
+      {
+        "name": "rfqs",
+        "type": "Rfq[]",
+        "packageName": "/Switcheo.carbon.otc"
+      },
+      {
+        "name": "quotes",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.otc"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.otc"
+      }
+    ],
+    "QueryRfqRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryRfqResponse": [
+      {
+        "name": "rfq",
+        "type": "RfqWithStatus",
+        "packageName": "/Switcheo.carbon.otc"
+      }
+    ],
+    "QueryAllRfqRequest": [
+      {
+        "name": "requester",
+        "type": "string"
+      },
+      {
+        "name": "buy_denom",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllRfqResponse": [
+      {
+        "name": "rfqs",
+        "type": "RfqWithStatus[]",
+        "packageName": "/Switcheo.carbon.otc"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryQuoteRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryQuoteResponse": [
+      {
+        "name": "quote",
+        "type": "QuoteWithStatus",
+        "packageName": "/Switcheo.carbon.otc"
+      }
+    ],
+    "QueryAllQuoteRequest": [
+      {
+        "name": "quoter",
+        "type": "string"
+      },
+      {
+        "name": "rfq_id",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "min_quantity",
+        "type": "string"
+      },
+      {
+        "name": "max_quantity",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllQuoteResponse": [
+      {
+        "name": "quotes",
+        "type": "QuoteWithStatus[]",
+        "packageName": "/Switcheo.carbon.otc"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgCreateRfq": [
+      {
+        "name": "requester",
+        "type": "string"
+      },
+      {
+        "name": "sell_coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "buy_denom",
+        "type": "string"
+      },
+      {
+        "name": "expiry_time",
+        "type": "string"
+      }
+    ],
+    "MsgCreateRfqResponse": [],
+    "MsgCancelRfq": [
+      {
+        "name": "requester",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "MsgCancelRfqResponse": [],
+    "MsgCreateQuote": [
+      {
+        "name": "quoter",
+        "type": "string"
+      },
+      {
+        "name": "rfq_id",
+        "type": "string"
+      },
+      {
+        "name": "quantity",
+        "type": "string"
+      },
+      {
+        "name": "expiry_time",
+        "type": "string"
+      }
+    ],
+    "MsgCreateQuoteResponse": [],
+    "MsgAcceptQuote": [
+      {
+        "name": "requester",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "MsgAcceptQuoteResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.otc"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
+  },
   "/Switcheo.carbon.perpspool": {
     "Quote": [
       {
@@ -15388,6 +15748,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],
