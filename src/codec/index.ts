@@ -262,16 +262,16 @@ registry.register("/Switcheo.carbon.oracle.MsgDeployOracleContractResponse", Car
 registry.register("/Switcheo.carbon.oracle.MsgCreateResult", Carbon.Oracle.MsgCreateResult);
 registry.register("/Switcheo.carbon.oracle.MsgCreateResultResponse", Carbon.Oracle.MsgCreateResultResponse);
 
-registry.register("/Switcheo.carbon.otc.MsgCreateRfq", MsgCreateRfq);
-registry.register("/Switcheo.carbon.otc.MsgCreateRfqResponse", MsgCreateRfqResponse);
-registry.register("/Switcheo.carbon.otc.MsgCancelRfq", MsgCancelRfq);
-registry.register("/Switcheo.carbon.otc.MsgCancelRfqResponse", MsgCancelRfqResponse);
-registry.register("/Switcheo.carbon.otc.MsgCreateQuote", MsgCreateQuote);
-registry.register("/Switcheo.carbon.otc.MsgCreateQuoteResponse", MsgCreateQuoteResponse);
-registry.register("/Switcheo.carbon.otc.MsgAcceptQuote", MsgAcceptQuote);
-registry.register("/Switcheo.carbon.otc.MsgAcceptQuoteResponse", MsgAcceptQuoteResponse);
-registry.register("/Switcheo.carbon.otc.MsgUpdateParams", MsgUpdateParams);
-registry.register("/Switcheo.carbon.otc.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.otc.MsgCreateRfq", Carbon.Otc.MsgCreateRfq);
+registry.register("/Switcheo.carbon.otc.MsgCreateRfqResponse", Carbon.Otc.MsgCreateRfqResponse);
+registry.register("/Switcheo.carbon.otc.MsgCancelRfq", Carbon.Otc.MsgCancelRfq);
+registry.register("/Switcheo.carbon.otc.MsgCancelRfqResponse", Carbon.Otc.MsgCancelRfqResponse);
+registry.register("/Switcheo.carbon.otc.MsgCreateQuote", Carbon.Otc.MsgCreateQuote);
+registry.register("/Switcheo.carbon.otc.MsgCreateQuoteResponse", Carbon.Otc.MsgCreateQuoteResponse);
+registry.register("/Switcheo.carbon.otc.MsgAcceptQuote", Carbon.Otc.MsgAcceptQuote);
+registry.register("/Switcheo.carbon.otc.MsgAcceptQuoteResponse", Carbon.Otc.MsgAcceptQuoteResponse);
+registry.register("/Switcheo.carbon.otc.MsgUpdateParams", Carbon.Otc.MsgUpdateParams);
+registry.register("/Switcheo.carbon.otc.MsgUpdateParamsResponse", Carbon.Otc.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", Carbon.Evmcontract.MsgDeactivateContract);
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse", Carbon.Evmcontract.MsgDeactivateContractResponse);
@@ -305,8 +305,6 @@ registry.register("/Switcheo.carbon.coin.MsgLinkToken", Carbon.Coin.MsgLinkToken
 registry.register("/Switcheo.carbon.coin.MsgLinkTokenResponse", Carbon.Coin.MsgLinkTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgWithdraw", Carbon.Coin.MsgWithdraw);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", Carbon.Coin.MsgWithdrawResponse);
-registry.register("/Switcheo.carbon.coin.MsgAdminWithdraw", Carbon.Coin.MsgAdminWithdraw);
-registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawResponse", Carbon.Coin.MsgAdminWithdrawResponse);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", Carbon.Coin.MsgAuthorizeBridge);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", Carbon.Coin.MsgAuthorizeBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", Carbon.Coin.MsgDeauthorizeBridge);
@@ -755,7 +753,7 @@ registry.register("/ethermint.evm.v1.MsgUpdateParams", MsgEvmUpdateParams);
 registry.register("/ethermint.evm.v1.MsgUpdateParamsResponse", MsgEvmUpdateParamsResponse);
 registry.register("/cosmwasm.wasm.v1.MsgExecuteContract", MsgExecuteContract);
 
-/* 
+/*
 Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
 */
 export const TxTypes = {
@@ -998,8 +996,6 @@ export const TxTypes = {
   "MsgLinkTokenResponse": "/Switcheo.carbon.coin.MsgLinkTokenResponse",
   "MsgWithdraw": "/Switcheo.carbon.coin.MsgWithdraw",
   "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
-  "MsgAdminWithdraw": "/Switcheo.carbon.coin.MsgAdminWithdraw",
-  "MsgAdminWithdrawResponse": "/Switcheo.carbon.coin.MsgAdminWithdrawResponse",
   "MsgAuthorizeBridge": "/Switcheo.carbon.coin.MsgAuthorizeBridge",
   "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
   "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
@@ -1425,7 +1421,7 @@ export { RewardHistory } from "./alliance/alliance/params";
 export { UnbondingDelegation } from "./alliance/alliance/unbonding";
 export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 
-/* 
+/*
 EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
 */
 export const EIP712Types: { [index: string]: any } = {
@@ -4827,6 +4823,17 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.cdp": {
+    "AssetParamsAPI": [
+      {
+        "name": "asset_params",
+        "type": "AssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "token_name",
+        "type": "string"
+      }
+    ],
     "AssetParams": [
       {
         "name": "denom",
@@ -6102,7 +6109,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryAssetResponse": [
       {
         "name": "asset_params",
-        "type": "AssetParams",
+        "type": "AssetParamsAPI",
         "packageName": "/Switcheo.carbon.cdp"
       }
     ],
@@ -6116,7 +6123,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryAssetAllResponse": [
       {
         "name": "asset_params_all",
-        "type": "AssetParams[]",
+        "type": "AssetParamsAPI[]",
         "packageName": "/Switcheo.carbon.cdp"
       },
       {
@@ -7447,25 +7454,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgWithdrawResponse": [],
-    "MsgAdminWithdraw": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "to_address",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      }
-    ],
-    "MsgAdminWithdrawResponse": [],
     "MsgAuthorizeBridge": [
       {
         "name": "creator",
@@ -8021,13 +8009,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryPolyBlacklistRequest": [],
-    "QueryPolyBlacklistResponse": [
-      {
-        "name": "blacklisted_tokens",
-        "type": "string[]"
       }
     ]
   },
@@ -13751,18 +13732,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "fee_collector_rfq_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "minimum_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "maximum_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "enable_fee_conversion",
@@ -13784,18 +13762,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "fee_collector_rfq_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "minimum_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "maximum_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "enable_fee_conversion",
@@ -15780,6 +15755,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],

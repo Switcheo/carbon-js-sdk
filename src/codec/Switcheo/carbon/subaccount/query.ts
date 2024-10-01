@@ -8,6 +8,7 @@ import {
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { Params } from "./params";
 import { Duration } from "../../../google/protobuf/duration";
+import { StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.subaccount";
 
@@ -30,6 +31,7 @@ export interface QueryGetSubAccountResponse {
 export interface QueryAllSubAccountRequest {
   pagination?: PageRequest;
   mainAddress: string;
+  role?: string;
 }
 
 export interface QueryAllSubAccountResponse {
@@ -341,6 +343,12 @@ export const QueryAllSubAccountRequest = {
     if (message.mainAddress !== "") {
       writer.uint32(18).string(message.mainAddress);
     }
+    if (message.role !== undefined) {
+      StringValue.encode(
+        { value: message.role! },
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -362,6 +370,9 @@ export const QueryAllSubAccountRequest = {
         case 2:
           message.mainAddress = reader.string();
           break;
+        case 3:
+          message.role = StringValue.decode(reader, reader.uint32()).value;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -382,6 +393,10 @@ export const QueryAllSubAccountRequest = {
       object.mainAddress !== undefined && object.mainAddress !== null
         ? String(object.mainAddress)
         : "";
+    message.role =
+      object.role !== undefined && object.role !== null
+        ? String(object.role)
+        : undefined;
     return message;
   },
 
@@ -393,6 +408,7 @@ export const QueryAllSubAccountRequest = {
         : undefined);
     message.mainAddress !== undefined &&
       (obj.mainAddress = message.mainAddress);
+    message.role !== undefined && (obj.role = message.role);
     return obj;
   },
 
@@ -407,6 +423,7 @@ export const QueryAllSubAccountRequest = {
         ? PageRequest.fromPartial(object.pagination)
         : undefined;
     message.mainAddress = object.mainAddress ?? "";
+    message.role = object.role ?? undefined;
     return message;
   },
 };
