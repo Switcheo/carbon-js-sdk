@@ -5,6 +5,11 @@ import { StringValue, BoolValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
+export interface AssetParamsAPI {
+  assetParams?: AssetParams;
+  tokenName: string;
+}
+
 export interface AssetParams {
   denom: string;
   rateStrategyName: string;
@@ -33,6 +38,80 @@ export interface UpdateAssetParams {
   supplyCap: string;
   borrowCap: string;
 }
+
+const baseAssetParamsAPI: object = { tokenName: "" };
+
+export const AssetParamsAPI = {
+  encode(
+    message: AssetParamsAPI,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.assetParams !== undefined) {
+      AssetParams.encode(
+        message.assetParams,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.tokenName !== "") {
+      writer.uint32(18).string(message.tokenName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AssetParamsAPI {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseAssetParamsAPI } as AssetParamsAPI;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.assetParams = AssetParams.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.tokenName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AssetParamsAPI {
+    const message = { ...baseAssetParamsAPI } as AssetParamsAPI;
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromJSON(object.assetParams)
+        : undefined;
+    message.tokenName =
+      object.tokenName !== undefined && object.tokenName !== null
+        ? String(object.tokenName)
+        : "";
+    return message;
+  },
+
+  toJSON(message: AssetParamsAPI): unknown {
+    const obj: any = {};
+    message.assetParams !== undefined &&
+      (obj.assetParams = message.assetParams
+        ? AssetParams.toJSON(message.assetParams)
+        : undefined);
+    message.tokenName !== undefined && (obj.tokenName = message.tokenName);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<AssetParamsAPI>): AssetParamsAPI {
+    const message = { ...baseAssetParamsAPI } as AssetParamsAPI;
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromPartial(object.assetParams)
+        : undefined;
+    message.tokenName = object.tokenName ?? "";
+    return message;
+  },
+};
 
 const baseAssetParams: object = {
   denom: "",

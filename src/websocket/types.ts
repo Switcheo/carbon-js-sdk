@@ -29,6 +29,8 @@ export enum WSChannel {
   cdp_token_supply_by_denom = "cdp_token_supply_by_denom",
   token_supply_by_denom = "token_supply_by_denom",
   market_liquidity_usage_multiplier = "market_liquidity_usage_multiplier",
+  otc_rfqs_by_address = "otc_rfqs_by_address",
+  otc_quotes_for_rfq = "otc_quotes_for_rfq",
 }
 
 export enum WSRequest {
@@ -269,6 +271,13 @@ export interface WsSubscribeTokenSupplyByDenom extends WsSubscribeParams {
 
 export interface WsSubscribeMarketLiquidityUsageMultiplier extends WsSubscribeParams { }
 
+export interface WsSubscribeOTCRFQsByAddress extends WsSubscribeParams {
+  address: string;
+ }
+export interface WsSubscribeOTCQuotesForRfq extends WsSubscribeParams {
+  rfq_id: string;
+}
+
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
   | WsSubscribeBooksParams
@@ -300,4 +309,6 @@ export type WsSubscriptionParams =
   | WsSubscribeCDPTokenSupply
   | WsSubscribeCDPTokenSupplyByDenom
   | WsSubscribeTokenSupplyByDenom
-  | WsSubscribeMarketLiquidityUsageMultiplier;
+  | WsSubscribeMarketLiquidityUsageMultiplier
+  | WsSubscribeOTCRFQsByAddress
+  | WsSubscribeOTCQuotesForRfq;

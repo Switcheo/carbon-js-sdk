@@ -1,4 +1,4 @@
-export { AssetParams, AssetUtilization, UpdateAssetParams } from "./asset_params"
+export { AssetParamsAPI, AssetParams, AssetUtilization, UpdateAssetParams } from "./asset_params"
 export { CDPLiquidations } from "./cdp_liquidations"
 export { DebtInfo } from "./debt_info"
 export { EModeCategory } from "./e_mode_category"
