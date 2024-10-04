@@ -89,7 +89,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"bybit_sui_usdt\", \"binance_sui_usdt\", \"kucoin_sui_usdt\"]",
-        "weights": "[0.35, 0.40, 0.25]"
+        "weights": "[0.00, 1.00, 0.00]"
       }
     },
     {
