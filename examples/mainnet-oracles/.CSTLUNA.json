@@ -51,8 +51,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "astroport_stluna_redemption_rate",
-            "default_node_host": "https://phoenix-lcd.terra.dev",
+            "custom_node_url_key": "astroport_stluna_redemption_rate_1",
+            "default_node_host": "https://terra2.tdrsys.com",
             "default_node_path": "/cosmwasm/wasm/v1/contract/terra1re0yj0j6e9v2szg7kp02ut6u8jjea586t6pnpq6628wl36fphtpqwt6l7p/smart/ewogICJzaW11bGF0aW9uIjogeyJvZmZlcl9hc3NldCI6IHsKICAgICAgImFtb3VudCI6ICIxMDAwMDAwIiwKICAgICAgImluZm8iOiB7CiAgICAgICAgIm5hdGl2ZV90b2tlbiI6IHsKICAgICAgICAgICJkZW5vbSI6ICJpYmMvMDgwOTVDRURFQTI5OTc3QzlERDBDRTlBNDgzMjlGREE2MjJDMTgzMzU5RDVGOTBDRjA0Q0M0RkY4MENCRTQzMSIKICAgICAgICB9CiAgICAgIH0KICAgIH19Cn0=",
             "paths": "[\"data.return_amount\"]",
             "timeout": "10"

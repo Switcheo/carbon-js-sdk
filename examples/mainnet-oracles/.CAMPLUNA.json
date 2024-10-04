@@ -33,8 +33,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "eris_ampluna_redemption_rate",
-            "default_node_host": "https://phoenix-lcd.terra.dev",
+            "custom_node_url_key": "eris_ampluna_redemption_rate_1",
+            "default_node_host": "https://terra2.tdrsys.com",
             "default_node_path": "/cosmwasm/wasm/v1/contract/terra10788fkzah89xrdm27zkj5yvhj9x3494lxawzm5qq3vvxcqz2yzaqyd3enk/smart/eyJzdGF0ZSI6e319",
             "paths": "[\"data.exchange_rate\"]",
             "timeout": "10"
@@ -51,8 +51,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "astroport_ampluna_redemption_rate",
-            "default_node_host": "https://phoenix-lcd.terra.dev",
+            "custom_node_url_key": "astroport_ampluna_redemption_rate_1",
+            "default_node_host": "https://terra2.tdrsys.com",
             "default_node_path": "/cosmwasm/wasm/v1/contract/terra1cr8dg06sh343hh4xzn3gxd3ayetsjtet7q5gp4kfrewul2kql8sqvhaey4/smart/eyJzaW11bGF0aW9uIjp7Im9mZmVyX2Fzc2V0Ijp7ImFtb3VudCI6IjEwMDAwMDAiLCJpbmZvIjp7InRva2VuIjp7ImNvbnRyYWN0X2FkZHIiOiJ0ZXJyYTFlY2dhenlkMHdhYWozZzdsOWNteTVndWxoeGtwczJnbXh1OWdoZHVjdnV5cGpxNjhtcTJzNWx2c2N0In19fX19",
             "paths": "[\"data.return_amount\"]",
             "timeout": "10"
@@ -78,8 +78,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "ampluna_whitewhale_redemption_rate",
-            "default_node_host": "https://phoenix-lcd.terra.dev",
+            "custom_node_url_key": "ampluna_whitewhale_redemption_rate_1",
+            "default_node_host": "https://terra2.tdrsys.com",
             "default_node_path": "/cosmwasm/wasm/v1/contract/terra1tsx0dmasjvd45k6tdywzv77d5t9k3lpzyuleavuah77pg3lwm9cq4469pm/smart/eyJzaW11bGF0aW9uIjp7Im9mZmVyX2Fzc2V0Ijp7ImFtb3VudCI6IjEwMDAwMDAiLCJpbmZvIjp7InRva2VuIjp7ImNvbnRyYWN0X2FkZHIiOiJ0ZXJyYTFlY2dhenlkMHdhYWozZzdsOWNteTVndWxoeGtwczJnbXh1OWdoZHVjdnV5cGpxNjhtcTJzNWx2c2N0In19fX19",
             "paths": "[\"data.return_amount\"]",
             "timeout": "10"
