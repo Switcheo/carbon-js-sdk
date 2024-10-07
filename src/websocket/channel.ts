@@ -31,6 +31,8 @@ import {
   WsSubscribeCDPTokenSupplyByDenom,
   WsSubscribeTokenSupplyByDenom,
   WsSubscribeMarketLiquidityUsageMultiplier as WsSubscribeMarketLiquidityUsageMultiplier,
+  WsSubscribeOTCRFQsByAddress,
+  WsSubscribeOTCQuotesForRfq,
 } from "./types";
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -154,6 +156,14 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
     case WSChannel.market_liquidity_usage_multiplier: {
       const { channel } = params as WsSubscribeMarketLiquidityUsageMultiplier;
       return [channel].join(":");
+    }
+    case WSChannel.otc_rfqs_by_address: {
+      const { channel, address } = params as WsSubscribeOTCRFQsByAddress;
+      return [channel, address].join(":");
+    }
+    case WSChannel.otc_quotes_for_rfq: {
+      const { channel, rfq_id } = params as WsSubscribeOTCQuotesForRfq;
+      return [channel, rfq_id].join(":");
     }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`);
@@ -310,6 +320,15 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
       return {
         channel,
       } as WsSubscribeMarketLiquidityUsageMultiplier;
+    case WSChannel.otc_rfqs_by_address:
+      return {
+        channel,
+      } as WsSubscribeOTCRFQsByAddress;
+    case WSChannel.otc_quotes_for_rfq:
+      return {
+        channel,
+        rfq_id: param0,
+      } as WsSubscribeOTCQuotesForRfq;
     default:
       throw new Error("Error parsing channelId");
   }
