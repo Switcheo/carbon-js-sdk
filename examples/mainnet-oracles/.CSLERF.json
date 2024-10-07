@@ -30,7 +30,7 @@
           "config": {
             "custom_node_url_key": "bybit_perps_slerf_usdt",
             "default_node_host": "https://api-bybit.carbon.network",
-            "default_node_path": "/derivatives/v3/public/tickers?category=linear&symbol=SLERFUSDT",
+            "default_node_path": "/v5/market/tickers?category=linear&symbol=SLERFUSDT",
             "paths": "[\"result.list.0.indexPrice\"]",
             "timeout": "10"
           }
