@@ -1,0 +1,125 @@
+{
+  "output_id": "eigen_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bybit_eigen_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_eigen_usdt",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=EIGENUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_eigen_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_eigen_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=EIGENUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_eigen_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_eigen_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=EIGEN-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_eigen_usdt\", \"binance_eigen_usdt\", \"okx_eigen_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "eigen_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_eigen_usdt\", \"binance_eigen_usdt\", \"okx_eigen_usdt\"]",
+        "weights": "[0.15, 0.35, 0.50]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "eigen_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"eigen_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "eigen_usd",
+      "input_id": "eigen_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "8"
+      }
+    }
+  ]
+}
