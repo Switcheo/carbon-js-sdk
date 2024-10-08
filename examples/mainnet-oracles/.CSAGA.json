@@ -117,7 +117,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"bybit_saga_usd\", \"binance_saga_usd\", \"kraken_saga_usd\"]",
-        "weights": "[0.00, 1.00, 0.00]"
+        "weights": "[0.15, 0.70, 0.15]"
       }
     },
     {

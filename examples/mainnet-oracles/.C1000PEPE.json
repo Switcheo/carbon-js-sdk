@@ -116,7 +116,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"kucoin_pepe_usdt\", \"binance_pepe_usdt\", \"okx_pepe_usdt\"]",
-        "weights": "[0.00, 1.00, 0.00]"
+        "weights": "[0.24, 0.72, 0.04]"
       }
     },
     {

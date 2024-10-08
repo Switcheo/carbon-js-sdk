@@ -136,7 +136,7 @@
       "adapter": "weighted_average",
       "config": {
         "value_ids": "[\"binance_bonk_usd\",\"kraken_bonk_usd\",\"coinbase_bonk_usd\"]",
-        "weights": "[1.00, 0.00, 0.00]"
+        "weights": "[0.56, 0.05, 0.39]"
       }
     },
     {
