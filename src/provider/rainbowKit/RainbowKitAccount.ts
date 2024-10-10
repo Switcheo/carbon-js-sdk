@@ -1,7 +1,7 @@
 import { AddressUtils, AminoTypesMap, CarbonSDK, CarbonTx, Models, SupportedEip6963Provider } from "@carbon-sdk/index";
 import { ETH_SECP256K1_TYPE, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
-import { Algo, EncodeObject } from "@cosmjs/proto-signing";
+import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
 import { ethers } from "ethers";
 import { parseEvmError } from "../metamask/error";
 import { DirectSignResponse } from "@keplr-wallet/types";
@@ -54,7 +54,7 @@ class RainbowKitAccount extends Eip6963Provider {
         gas: authInfo.fee?.gasLimit.toString() ?? "0",
       }
       const aminoMsgs = msgs.map(msg => AminoTypesMap.toAmino(msg))
-      const sig = await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712(
         evmHexAddress,
         doc.accountNumber.toString(),
         evmChainId,
@@ -62,10 +62,20 @@ class RainbowKitAccount extends Eip6963Provider {
         fee,
         txBody.memo,
         authInfo.signerInfos[0].sequence.toString())
+      const signedTxBody = {
+        messages: msgs,
+        memo: signedDoc.memo,
+      };
+      const signedTxBodyEncodeObject: TxBodyEncodeObject = {
+        typeUrl: "/cosmos.tx.v1beta1.TxBody",
+        value: signedTxBody,
+      };
+      const signedTxBodyBytes = registry.encode(signedTxBodyEncodeObject);
+      const signDoc = makeProtoSignDoc(signedTxBodyBytes, doc.authInfoBytes, signedDoc.chain_id, parseInt(signedDoc.account_number));
       const sigBz = Uint8Array.from(Buffer.from(sig, 'hex'))
 
       return {
-        signed: doc,
+        signed: signDoc,
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
@@ -79,7 +89,7 @@ class RainbowKitAccount extends Eip6963Provider {
 
     const signAmino = async (_: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, msgs, fee, memo, sequence } = doc
-      const sig = await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712(
         evmHexAddress,
         account_number,
         evmChainId,
@@ -90,7 +100,7 @@ class RainbowKitAccount extends Eip6963Provider {
       const sigBz = Uint8Array.from(Buffer.from(sig, 'hex'))
 
       return {
-        signed: doc,
+        signed: signedDoc,
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
@@ -109,7 +119,7 @@ class RainbowKitAccount extends Eip6963Provider {
       // FeePayer here is only used for legacy EIP-712
       const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
 
-      const sig = await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712(
         evmHexAddress,
         account_number,
         chain_id,
@@ -119,7 +129,7 @@ class RainbowKitAccount extends Eip6963Provider {
         sequence,
         feePayer)
       return {
-        signed: doc,
+        signed: signedDoc,
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
@@ -315,24 +325,26 @@ class RainbowKitAccount extends Eip6963Provider {
     await this.changeNetworkIfRequired("Carbon", network);
   }
 
-  async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
-    await this.verifyNetworkAndConnectedAccount(evmHexAddress, parseChainId(evmChainId))
+  async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {
+    const { chainId } = await this.syncBlockchain()
+    const walletChainId = chainId ? `carbon_${chainId.toString()}-1` : ''
+    const api = this.getApi()
+    if (walletChainId !== evmChainId) {
+      memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + walletChainId + ";" + "carbon-chain-id:" + evmChainId
+    }
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
-    const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
-
-    const ethereum = this.getApi()
-
-    return await signTransactionWrapper(async () => {
-      const signature = await ethereum.request({
+    const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc, walletChainId)
+    const sig = await signTransactionWrapper(async () => {
+      const signature = (await api.request({
         method: 'eth_signTypedData_v4',
         params: [
           evmHexAddress,
           JSON.stringify(eip712Tx),
         ],
-      }) as string
-
+      })) as string
       return signature.split('0x')[1]
     })
+    return { sig, signedDoc: stdSignDoc }
   }
 
   async personalSign(address: string, message: string): Promise<string> {

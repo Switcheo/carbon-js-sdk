@@ -118,12 +118,6 @@ export interface QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry {
   value: Long;
 }
 
-export interface QueryPolyBlacklistRequest {}
-
-export interface QueryPolyBlacklistResponse {
-  blacklistedTokens: string[];
-}
-
 const baseQueryGetTokenRequest: object = { denom: "" };
 
 export const QueryGetTokenRequest = {
@@ -1956,126 +1950,6 @@ export const QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry = {
   },
 };
 
-const baseQueryPolyBlacklistRequest: object = {};
-
-export const QueryPolyBlacklistRequest = {
-  encode(
-    _: QueryPolyBlacklistRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryPolyBlacklistRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryPolyBlacklistRequest,
-    } as QueryPolyBlacklistRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): QueryPolyBlacklistRequest {
-    const message = {
-      ...baseQueryPolyBlacklistRequest,
-    } as QueryPolyBlacklistRequest;
-    return message;
-  },
-
-  toJSON(_: QueryPolyBlacklistRequest): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<QueryPolyBlacklistRequest>
-  ): QueryPolyBlacklistRequest {
-    const message = {
-      ...baseQueryPolyBlacklistRequest,
-    } as QueryPolyBlacklistRequest;
-    return message;
-  },
-};
-
-const baseQueryPolyBlacklistResponse: object = { blacklistedTokens: "" };
-
-export const QueryPolyBlacklistResponse = {
-  encode(
-    message: QueryPolyBlacklistResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.blacklistedTokens) {
-      writer.uint32(10).string(v!);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryPolyBlacklistResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryPolyBlacklistResponse,
-    } as QueryPolyBlacklistResponse;
-    message.blacklistedTokens = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.blacklistedTokens.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryPolyBlacklistResponse {
-    const message = {
-      ...baseQueryPolyBlacklistResponse,
-    } as QueryPolyBlacklistResponse;
-    message.blacklistedTokens = (object.blacklistedTokens ?? []).map((e: any) =>
-      String(e)
-    );
-    return message;
-  },
-
-  toJSON(message: QueryPolyBlacklistResponse): unknown {
-    const obj: any = {};
-    if (message.blacklistedTokens) {
-      obj.blacklistedTokens = message.blacklistedTokens.map((e) => e);
-    } else {
-      obj.blacklistedTokens = [];
-    }
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryPolyBlacklistResponse>
-  ): QueryPolyBlacklistResponse {
-    const message = {
-      ...baseQueryPolyBlacklistResponse,
-    } as QueryPolyBlacklistResponse;
-    message.blacklistedTokens = (object.blacklistedTokens ?? []).map((e) => e);
-    return message;
-  },
-};
-
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get token details for a denom */
@@ -2112,9 +1986,6 @@ export interface Query {
   TokenGroupMappings(
     request: QueryTokenGroupMappingsRequest
   ): Promise<QueryTokenGroupMappingsResponse>;
-  PolyBlacklistAll(
-    request: QueryPolyBlacklistRequest
-  ): Promise<QueryPolyBlacklistResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2132,7 +2003,6 @@ export class QueryClientImpl implements Query {
     this.TokenGroup = this.TokenGroup.bind(this);
     this.TokenGroupAll = this.TokenGroupAll.bind(this);
     this.TokenGroupMappings = this.TokenGroupMappings.bind(this);
-    this.PolyBlacklistAll = this.PolyBlacklistAll.bind(this);
   }
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
@@ -2277,20 +2147,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryTokenGroupMappingsResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  PolyBlacklistAll(
-    request: QueryPolyBlacklistRequest
-  ): Promise<QueryPolyBlacklistResponse> {
-    const data = QueryPolyBlacklistRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.coin.Query",
-      "PolyBlacklistAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryPolyBlacklistResponse.decode(new _m0.Reader(data))
     );
   }
 }

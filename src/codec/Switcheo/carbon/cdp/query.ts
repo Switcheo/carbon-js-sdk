@@ -7,7 +7,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import { AssetParams } from "./asset_params";
+import { AssetParamsAPI } from "./asset_params";
 import { DebtInfo } from "./debt_info";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { StablecoinInterestInfo } from "./stablecoin_interest_info";
@@ -120,7 +120,7 @@ export interface QueryAssetRequest {
 }
 
 export interface QueryAssetResponse {
-  assetParams?: AssetParams;
+  assetParams?: AssetParamsAPI;
 }
 
 export interface QueryAssetAllRequest {
@@ -128,7 +128,7 @@ export interface QueryAssetAllRequest {
 }
 
 export interface QueryAssetAllResponse {
-  assetParamsAll: AssetParams[];
+  assetParamsAll: AssetParamsAPI[];
   pagination?: PageResponse;
 }
 
@@ -1867,7 +1867,7 @@ export const QueryAssetResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.assetParams !== undefined) {
-      AssetParams.encode(
+      AssetParamsAPI.encode(
         message.assetParams,
         writer.uint32(10).fork()
       ).ldelim();
@@ -1883,7 +1883,7 @@ export const QueryAssetResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.assetParams = AssetParams.decode(reader, reader.uint32());
+          message.assetParams = AssetParamsAPI.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1897,7 +1897,7 @@ export const QueryAssetResponse = {
     const message = { ...baseQueryAssetResponse } as QueryAssetResponse;
     message.assetParams =
       object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromJSON(object.assetParams)
+        ? AssetParamsAPI.fromJSON(object.assetParams)
         : undefined;
     return message;
   },
@@ -1906,7 +1906,7 @@ export const QueryAssetResponse = {
     const obj: any = {};
     message.assetParams !== undefined &&
       (obj.assetParams = message.assetParams
-        ? AssetParams.toJSON(message.assetParams)
+        ? AssetParamsAPI.toJSON(message.assetParams)
         : undefined);
     return obj;
   },
@@ -1915,7 +1915,7 @@ export const QueryAssetResponse = {
     const message = { ...baseQueryAssetResponse } as QueryAssetResponse;
     message.assetParams =
       object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromPartial(object.assetParams)
+        ? AssetParamsAPI.fromPartial(object.assetParams)
         : undefined;
     return message;
   },
@@ -1991,7 +1991,7 @@ export const QueryAssetAllResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.assetParamsAll) {
-      AssetParams.encode(v!, writer.uint32(10).fork()).ldelim();
+      AssetParamsAPI.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -2015,7 +2015,7 @@ export const QueryAssetAllResponse = {
       switch (tag >>> 3) {
         case 1:
           message.assetParamsAll.push(
-            AssetParams.decode(reader, reader.uint32())
+            AssetParamsAPI.decode(reader, reader.uint32())
           );
           break;
         case 2:
@@ -2032,7 +2032,7 @@ export const QueryAssetAllResponse = {
   fromJSON(object: any): QueryAssetAllResponse {
     const message = { ...baseQueryAssetAllResponse } as QueryAssetAllResponse;
     message.assetParamsAll = (object.assetParamsAll ?? []).map((e: any) =>
-      AssetParams.fromJSON(e)
+      AssetParamsAPI.fromJSON(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -2045,7 +2045,7 @@ export const QueryAssetAllResponse = {
     const obj: any = {};
     if (message.assetParamsAll) {
       obj.assetParamsAll = message.assetParamsAll.map((e) =>
-        e ? AssetParams.toJSON(e) : undefined
+        e ? AssetParamsAPI.toJSON(e) : undefined
       );
     } else {
       obj.assetParamsAll = [];
@@ -2062,7 +2062,7 @@ export const QueryAssetAllResponse = {
   ): QueryAssetAllResponse {
     const message = { ...baseQueryAssetAllResponse } as QueryAssetAllResponse;
     message.assetParamsAll = (object.assetParamsAll ?? []).map((e) =>
-      AssetParams.fromPartial(e)
+      AssetParamsAPI.fromPartial(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null

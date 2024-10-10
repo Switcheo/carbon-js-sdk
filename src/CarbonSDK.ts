@@ -42,6 +42,7 @@ import {
   ProfileModule,
   SubAccountModule,
   XChainModule,
+  OTCModule,
 } from "./modules";
 import { GrantModule } from "./modules/grant";
 import { StakingModule } from "./modules/staking";
@@ -146,6 +147,7 @@ class CarbonSDK {
   evm: EvmModule;
   evmmerge: EvmMergeModule;
   bridge: BridgeModule;
+  otc: OTCModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -220,6 +222,7 @@ class CarbonSDK {
     this.evm = new EvmModule(this);
     this.evmmerge = new EvmMergeModule(this);
     this.bridge = new BridgeModule(this);
+    this.otc = new OTCModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,

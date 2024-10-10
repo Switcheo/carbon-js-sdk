@@ -23,6 +23,7 @@ import {
   ERC20Amino,
   GrantAmino,
   BridgeAmino,
+  OtcAmino,
 } from "./types";
 
 const AminoTypesMap = new AminoTypes({
@@ -49,6 +50,7 @@ const AminoTypesMap = new AminoTypes({
   ...ERC20Amino,
   ...GrantAmino,
   ...BridgeAmino,
+  ...OtcAmino,
 });
 
 export default AminoTypesMap;

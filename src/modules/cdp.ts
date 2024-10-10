@@ -449,7 +449,7 @@ export class CDPModule extends BaseModule {
     const [debtInfoResponse, collateralsRsp, assetParamsRsp, debtsRsp, stablecoinDebtInfoRsp] = await Promise.all([debtInfoPromise, collateralsPromise, assetParamsPromise, debtsPromise, stablecoinDebtInfoPromise]);
     const debtInfos = debtInfoResponse.debtInfosAll;
     const collaterals = collateralsRsp.collaterals;
-    const assetParams = assetParamsRsp.assetParamsAll;
+    const assetParamsAPI = assetParamsRsp.assetParamsAll;
 
     let totalCollateralsUsd = BN_ZERO;
     let availableBorrowsUsd = BN_ZERO;
@@ -468,13 +468,13 @@ export class CDPModule extends BaseModule {
       if (!collateralUsdVal) {
         continue;
       }
-      const assetParam = assetParams.find((a) => a.denom === denom);
-      if (!assetParam) {
+      const assetParamAPI = assetParamsAPI.find((a) => a.assetParams?.denom === denom);
+      if (!assetParamAPI) {
         continue;
       }
-      const ltv = bnOrZero(assetParam.loanToValue).div(BN_10000);
+      const ltv = bnOrZero(assetParamAPI.assetParams?.loanToValue).div(BN_10000);
       const availableBorrowUsd = collateralUsdVal.times(ltv);
-      const liquidationThreshold = bnOrZero(assetParam.liquidationThreshold).div(BN_10000);
+      const liquidationThreshold = bnOrZero(assetParamAPI.assetParams?.liquidationThreshold).div(BN_10000);
       const liquidationThresholdVal = collateralUsdVal.times(liquidationThreshold);
       totalCollateralsUsd = totalCollateralsUsd.plus(collateralUsdVal);
       availableBorrowsUsd = availableBorrowsUsd.plus(availableBorrowUsd);
@@ -633,8 +633,8 @@ export class CDPModule extends BaseModule {
       const balance = moduleBalancesMap[underlyingDenom]?.amount;
       const debtInfo = debtInfosAll.debtInfosAll.find((debtInfo) => debtInfo.denom === underlyingDenom);
 
-      const assetParam = assetParamsAll.assetParamsAll.find((assetParam) => assetParam.denom === underlyingDenom);
-      const rateStrategy = rateStrategies.rateStrategyParamsAll.find((rateStrategy) => rateStrategy.name === assetParam?.rateStrategyName);
+      const assetParamAPI = assetParamsAll.assetParamsAll.find((assetParamAPI) => assetParamAPI.assetParams?.denom === underlyingDenom);
+      const rateStrategy = rateStrategies.rateStrategyParamsAll.find((rateStrategy) => rateStrategy.name === assetParamAPI?.assetParams?.rateStrategyName);
 
       if (!debtInfo || !supply || !tokenPrice || !rateStrategy) throw new Error("unable to retrieve token info");
 
@@ -784,7 +784,7 @@ export class CDPModule extends BaseModule {
     if (!rateStrategyParams) {
       if (!assetParams) {
         const assetResponse = await sdk.query.cdp.Asset(Carbon.Cdp.QueryAssetRequest.fromPartial({ denom }));
-        assetParams = assetResponse.assetParams;
+        assetParams = assetResponse.assetParams?.assetParams;
         if (!assetParams) {
           throw new Error("unable to retrieve asset param for " + denom);
         }
@@ -888,11 +888,13 @@ export class CDPModule extends BaseModule {
 
     const denom = this.getUnderlyingDenom(cibtDenom);
 
-    const assetParams = await sdk.query.cdp.Asset({ denom: denom });
-    if (!assetParams.assetParams) return;
-    let unlockRatio = new BigNumber(assetParams.assetParams.loanToValue);
+    const assetResponse = await sdk.query.cdp.Asset({ denom: denom });
+    if (!assetResponse.assetParams?.assetParams) return;
+    const params = assetResponse.assetParams.assetParams
+    const ltv = params.loanToValue
+    let unlockRatio = new BigNumber(ltv);
     if (sdk.getConfig().network === Network.LocalHost || sdk.getConfig().network === Network.DevNet) {
-      unlockRatio = new BigNumber(assetParams.assetParams.liquidationThreshold);
+      unlockRatio = new BigNumber(params.liquidationThreshold);
     }
 
     const accountDataRequest = this.getAccountData(account);
@@ -960,11 +962,12 @@ export class CDPModule extends BaseModule {
     if (!params.params) {
       throw new Error("unable to retrieve cdp params");
     }
-    if (!asset.assetParams) throw new Error("unable to retrieve asset param for " + cdpActualDenom);
+    if (!asset.assetParams?.assetParams) throw new Error("unable to retrieve asset param for " + cdpActualDenom);
     if (!debtorAccountCollateral.collateral) {
       throw Error("unable to retrieve debtor's collateral amount");
     }
-    const bonus = bnOrZero(asset.assetParams.liquidationDiscount).div(BN_10000);
+    const assetParams = asset.assetParams.assetParams
+    const bonus = bnOrZero(assetParams.liquidationDiscount).div(BN_10000);
     const cdpTokenPrice = await this.getCdpTokenPrice(cibtDenom);
     const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus));
 
