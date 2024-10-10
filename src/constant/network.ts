@@ -24,8 +24,11 @@ export const CarbonEvmChainIDs = {
 
 export const DEFAULT_NETWORK = Network.MainNet;
 
-export interface EthNetworkConfig {
-  rpcURL: string;
+export interface BasicNetworkConfig {
+  rpcURL: string
+}
+
+export interface EthNetworkConfig extends BasicNetworkConfig {
   wsURL: string;
   payerURL: string;
   lockProxyAddr: string;
@@ -34,24 +37,18 @@ export interface EthNetworkConfig {
   byteCodeHash: string;
 }
 
-export interface NeoNetworkConfig {
-  rpcURL: string;
+export interface NeoNetworkConfig extends BasicNetworkConfig {
   wrapperScriptHash: string;
 }
-export interface N3NetworkConfig {
-  rpcURL: string;
+
+export interface N3NetworkConfig extends BasicNetworkConfig {
   networkMagic: number;
 }
 
-export interface ZilNetworkConfig {
-  rpcURL: string;
+export interface ZilNetworkConfig extends BasicNetworkConfig {
   chainId: number;
   lockProxyAddr: string;
   bridgeEntranceAddr: string;
-}
-
-export interface MantleNetworkConfig {
-  rpcURL: string;
 }
 
 export interface NetworkConfig {
@@ -80,11 +77,23 @@ export interface NetworkConfig {
   neo: NeoNetworkConfig;
   n3: N3NetworkConfig;
   zil: ZilNetworkConfig;
-  mantle: MantleNetworkConfig;
+  mantle: EthNetworkConfig;
+  op: EthNetworkConfig;
+  base: EthNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
   getConfig(): NetworkConfig;
+}
+
+const EthNetworkConfigFallback: EthNetworkConfig = {
+  rpcURL: "",
+  wsURL: "",
+  payerURL: "",
+  bridgeEntranceAddr: "",
+  lockProxyAddr: "",
+  balanceReader: "",
+  byteCodeHash: "",
 }
 
 export const NetworkConfigs: {
@@ -177,7 +186,18 @@ export const NetworkConfigs: {
     },
 
     mantle: {
-      rpcURL: 'https://rpc.mantle.xyz',
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://rpc.mantle.xyz",
+    },
+
+    op: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://mainnet.optimism.io",
+    },
+
+    base: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://base-rpc.publicnode.com",
     },
   },
 
@@ -268,7 +288,18 @@ export const NetworkConfigs: {
     },
 
     mantle: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://rpc.sepolia.mantle.xyz",
+    },
+
+    op: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://sepolia.optimism.io",
+    },
+
+    base: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
   },
 
@@ -372,7 +403,18 @@ export const NetworkConfigs: {
     },
 
     mantle: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://rpc.sepolia.mantle.xyz",
+    },
+
+    op: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://sepolia.optimism.io",
+    },
+
+    base: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
   },
 
@@ -464,7 +506,18 @@ export const NetworkConfigs: {
     },
 
     mantle: {
+      ...EthNetworkConfigFallback,
       rpcURL: "https://rpc.sepolia.mantle.xyz",
+    },
+
+    op: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://sepolia.optimism.io",
+    },
+
+    base: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
   },
 } as const;

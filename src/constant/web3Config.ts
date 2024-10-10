@@ -191,3 +191,59 @@ export const MANTLE_TESTNET: ChangeNetworkParam = {
     symbol: "MNT",
   },
 }
+
+export const OP_MAINNET: ChangeNetworkParam = {
+  chainId: "0xA",  // OP Mainnet Chain ID (hex of 10)
+  blockExplorerUrls: ["https://optimistic.etherscan.io"],
+  chainName: "OP Mainnet",
+  rpcUrls: [
+    "https://mainnet.optimism.io",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+}
+
+export const OP_TESTNET: ChangeNetworkParam = {
+  chainId: "0xaa36a7",  // OP Sepolia Chain ID (hex of 11155420)
+  blockExplorerUrls: ["https://sepolia-optimism.etherscan.io"],
+  chainName: "OP Sepolia Testnet",
+  rpcUrls: [
+    "https://sepolia.optimism.io",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+}
+
+export const BASE_MAINNET: ChangeNetworkParam = {
+  chainId: "0x2105",  // Base MainNet Chain ID (hex of 8453)
+  blockExplorerUrls: ["https://basescan.org"],
+  chainName: "Base Mainnet",
+  rpcUrls: [
+    "https://base-rpc.publicnode.com",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+}
+
+export const BASE_TESTNET: ChangeNetworkParam = {
+  chainId: "0x14a34",  // Base Sepolia TestNet Chain ID (hex of 84532)
+  blockExplorerUrls: ["https://sepolia.basescan.org"],
+  chainName: "Base Sepolia Testnet",
+  rpcUrls: [
+    "https://base-sepolia-rpc.publicnode.com",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+}

@@ -15,7 +15,7 @@ import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
-import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EVMChain, MANTLE_MAINNET, MANTLE_TESTNET, Network, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -202,7 +202,7 @@ class RainbowKitAccount extends Eip6963Provider {
     return defaultAccount;
   }
 
-  async syncBlockchain(): Promise<SyncResult > {
+  async syncBlockchain(): Promise<SyncResult> {
     const rainbowKitApi = this.getApi()
     const chainIdHex = (await rainbowKitApi?.request({ method: "eth_chainId" })) as string;
     const chainId = chainIdHex ? parseInt(chainIdHex, 16) : undefined;
@@ -216,37 +216,29 @@ class RainbowKitAccount extends Eip6963Provider {
     if (blockchain === "Carbon") {
       return Number(parseChainId(CarbonEvmChainIDs[network]))
     }
-
-    if (network === Network.MainNet) {
-      switch (blockchain) {
-        case 'Binance Smart Chain':
-          return 56;
-        case 'Arbitrum':
-          return 42161;
-        case 'Polygon':
-          return 137;
-        case 'OKC':
-          return 66;
-        default:
-          return 1;
-      }
-    }
-
+    const isMainnet = network === Network.MainNet
     switch (blockchain) {
       case 'Binance Smart Chain':
-        return 97;
+        return isMainnet ? 56 : 97;
+      case 'Mantle':
+        return isMainnet ? 5000 : 5003;
       case 'Arbitrum':
-        return 421611;
+        return isMainnet ? 42161 : 421611;
       case 'Polygon':
-        return 80001;
+        return isMainnet ? 137 : 80001;
       case 'OKC':
-        return 65;
+        return isMainnet ? 66 : 65;
+      case 'OP':
+        return isMainnet ? 10 : 11155420;
+      case 'Base':
+        return isMainnet ? 8453 : 84532;
       default:
-        return 5;
+        // Fallback to Ethereum chain ID
+        return isMainnet ? 1 : 5;
     }
   }
 
-  static getCarbonEvmNetworkParams(network: Network): ChangeNetworkParam  {
+  static getCarbonEvmNetworkParams(network: Network): ChangeNetworkParam {
     switch (network) {
       case Network.LocalHost:
         return CARBON_EVM_LOCALHOST;
@@ -259,39 +251,31 @@ class RainbowKitAccount extends Eip6963Provider {
     }
   }
 
-  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): ChangeNetworkParam  {
+  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): ChangeNetworkParam {
     if (blockchain === 'Carbon') {
       return RainbowKitAccount.getCarbonEvmNetworkParams(network)
     }
 
-    if (network === Network.MainNet) {
-      switch (blockchain) {
-        case 'Binance Smart Chain':
-          return BSC_MAINNET;
-        case 'Arbitrum':
-          return ARBITRUM_MAINNET;
-        case 'Polygon':
-          return POLYGON_MAINNET;
-        case 'OKC':
-          return OKC_MAINNET;
-        default:
-          // should come with Ethereum configs
-          return ETH_MAINNET;
-      }
-    }
+    const isMainnet = network === Network.MainNet
 
     switch (blockchain) {
       case 'Binance Smart Chain':
-        return BSC_TESTNET;
+        return isMainnet ? BSC_MAINNET : BSC_TESTNET
       case 'Arbitrum':
-        return ARBITRUM_TESTNET;
+        return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET
       case 'Polygon':
-        return POLYGON_TESTNET;
+        return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET
       case 'OKC':
-        return OKC_TESTNET;
+        return isMainnet ? OKC_MAINNET : OKC_TESTNET
+      case 'Mantle':
+        return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
+      case 'OP':
+        return isMainnet ? OP_MAINNET : OP_TESTNET
+      case 'Base':
+        return isMainnet ? BASE_MAINNET : BASE_TESTNET
       default:
-        // should come with Ethereum configs
-        return ETH_TESTNET;
+        // metamask should come with Ethereum configs
+        return isMainnet ? ETH_MAINNET : ETH_TESTNET
     }
   }
 
@@ -341,12 +325,12 @@ class RainbowKitAccount extends Eip6963Provider {
     await this.changeNetworkIfRequired("Carbon", network);
   }
 
-  async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{sig: string, signedDoc: CarbonTx.StdSignDoc}> {
+  async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {
     const { chainId } = await this.syncBlockchain()
     const walletChainId = chainId ? `carbon_${chainId.toString()}-1` : ''
     const api = this.getApi()
     if (walletChainId !== evmChainId) {
-        memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + walletChainId + ";" + "carbon-chain-id:" + evmChainId
+      memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + walletChainId + ";" + "carbon-chain-id:" + evmChainId
     }
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc, walletChainId)
@@ -360,7 +344,7 @@ class RainbowKitAccount extends Eip6963Provider {
       })) as string
       return signature.split('0x')[1]
     })
-    return {sig, signedDoc: stdSignDoc}
+    return { sig, signedDoc: stdSignDoc }
   }
 
   async personalSign(address: string, message: string): Promise<string> {
