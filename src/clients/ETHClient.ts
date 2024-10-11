@@ -60,16 +60,19 @@ export interface EthersTransactionResponse extends ethers.Transaction {
 
 export const FEE_MULTIPLIER = ethers.BigNumber.from(2);
 
-type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc;
+type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc | Blockchain.Mantle | Blockchain.OP | Blockchain.Base;
 
 export class ETHClient {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc] as const;
+  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc, Blockchain.Mantle, Blockchain.OP, Blockchain.Base] as const;
   static BLOCKCHAIN_KEY = {
     [Blockchain.BinanceSmartChain]: "bsc",
     [Blockchain.Ethereum]: "eth",
     [Blockchain.Arbitrum]: "arbitrum",
     [Blockchain.Polygon]: "polygon",
     [Blockchain.Okc]: "okc",
+    [Blockchain.Mantle]: 'mantle',
+    [Blockchain.OP]: 'op',
+    [Blockchain.Base]: 'base',
   };
 
   static BLOCKCHAINV2_MAPPING = {
@@ -78,13 +81,16 @@ export class ETHClient {
     [Blockchain.Arbitrum]: "Arbitrum",
     [Blockchain.Polygon]: "Polygon",
     [Blockchain.Okc]: "OKC",
+    [Blockchain.Mantle]: 'Mantle',
+    [Blockchain.OP]: 'OP',
+    [Blockchain.Base]: 'Base',
   };
 
   private constructor(
     public readonly configProvider: NetworkConfigProvider,
     public readonly blockchain: typeof ETHClient.SUPPORTED_BLOCKCHAINS[number],
     public readonly tokenClient: TokenClient
-  ) {}
+  ) { }
 
   public static instance(opts: ETHClientOpts) {
     const { configProvider, blockchain, tokenClient } = opts;
@@ -98,20 +104,19 @@ export class ETHClient {
     const tokenQueryResults = await api.token.getAllTokens();
     const lockProxyAddress = this.getLockProxyAddress().toLowerCase();
     const tokens = tokenQueryResults.filter(
-      (token) =>
-        {
-          const isCorrectBlockchain = 
-          version === "V2" 
-            ? 
+      (token) => {
+        const isCorrectBlockchain =
+          version === "V2"
+            ?
             this.tokenClient.getBlockchainV2(token.denom) == ETHClient.BLOCKCHAINV2_MAPPING[this.blockchain]
-            : 
+            :
             blockchainForChainId(token.chainId.toNumber(), api.network) == this.blockchain
-          return isCorrectBlockchain && 
+        return isCorrectBlockchain &&
           token.tokenAddress.length == 40 &&
           token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
           (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
           this.verifyChecksum(appendHexPrefix(token.tokenAddress))
-        }
+      }
     );
     const assetIds = tokens.map((token) => {
       return this.verifyChecksum(appendHexPrefix(token.tokenAddress));
