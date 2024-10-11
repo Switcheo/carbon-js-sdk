@@ -1,4 +1,4 @@
-import { CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
+import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { ChainNames, BlockchainV2, EVMChain, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -74,6 +74,22 @@ const CONTRACT_HASH: {
     [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
   Mantle: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const,
+  OP: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const,
+  Base: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -286,38 +302,26 @@ export class MetaMask extends Eip6963Provider {
       return MetaMask.getCarbonEvmNetworkParams(network)
     }
 
-    if (network === Network.MainNet) {
-      switch (blockchain) {
-        case 'Binance Smart Chain':
-          return BSC_MAINNET;
-        case 'Arbitrum':
-          return ARBITRUM_MAINNET;
-        case 'Polygon':
-          return POLYGON_MAINNET;
-        case 'OKC':
-          return OKC_MAINNET;
-        case 'Mantle':
-          return MANTLE_MAINNET;
-        default:
-          // metamask should come with Ethereum configs
-          return ETH_MAINNET;
-      }
-    }
+    const isMainnet = network === Network.MainNet
 
     switch (blockchain) {
       case 'Binance Smart Chain':
-        return BSC_TESTNET;
+        return isMainnet ? BSC_MAINNET : BSC_TESTNET
       case 'Arbitrum':
-        return ARBITRUM_TESTNET;
+        return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET
       case 'Polygon':
-        return POLYGON_TESTNET;
+        return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET
       case 'OKC':
-        return OKC_TESTNET;
+        return isMainnet ? OKC_MAINNET : OKC_TESTNET
       case 'Mantle':
-        return MANTLE_TESTNET;
+        return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
+      case 'OP':
+        return isMainnet ? OP_MAINNET : OP_TESTNET
+      case 'Base':
+        return isMainnet ? BASE_MAINNET : BASE_TESTNET
       default:
         // metamask should come with Ethereum configs
-        return ETH_TESTNET;
+        return isMainnet ? ETH_MAINNET : ETH_TESTNET
     }
   }
   static getCarbonEvmNetworkParams(network: Network): MetaMaskChangeNetworkParam {
@@ -337,37 +341,25 @@ export class MetaMask extends Eip6963Provider {
     if (blockchain === "Carbon") {
       return Number(parseChainId(CarbonEvmChainIDs[network]))
     }
-
-    if (network === Network.MainNet) {
-      switch (blockchain) {
-        case 'Binance Smart Chain':
-          return 56;
-        case 'Mantle':
-          return 5000;
-        case 'Arbitrum':
-          return 42161;
-        case 'Polygon':
-          return 137;
-        case 'OKC':
-          return 66;
-        default:
-          return 1;
-      }
-    }
-
+    const isMainnet = network === Network.MainNet
     switch (blockchain) {
       case 'Binance Smart Chain':
-        return 97;
+        return isMainnet ? 56 : 97;
       case 'Mantle':
-        return 5003;
+        return isMainnet ? 5000 : 5003;
       case 'Arbitrum':
-        return 421611;
+        return isMainnet ? 42161 : 421611;
       case 'Polygon':
-        return 80001;
+        return isMainnet ? 137 : 80001;
       case 'OKC':
-        return 65;
+        return isMainnet ? 66 : 65;
+      case 'OP':
+        return isMainnet ? 10 : 11155420;
+      case 'Base':
+        return isMainnet ? 8453 : 84532;
       default:
-        return 5;
+        // Fallback to Ethereum chain ID
+        return isMainnet ? 1 : 5;
     }
   }
 
@@ -688,7 +680,7 @@ export class MetaMask extends Eip6963Provider {
 
     const requiredChainId = this.getRequiredChain(this.network, chainId);
     if (chainId !== requiredChainId) {
-      const requiredNetworkName = ChainNames[requiredChainId] || ChainNames[3];
+      const requiredNetworkName: string = ChainNames[requiredChainId] ?? ChainNames[3];
       throw new Error(`MetaMask not connected to correct network, please use ${requiredNetworkName} (Chain ID: ${requiredChainId})`);
     }
 
@@ -740,60 +732,56 @@ export class MetaMask extends Eip6963Provider {
     return match[1]?.trim();
   }
 
-  private getRequiredChain(network: Network, currentChainId: number) {
-    // set correct blockchain given the chain ID
-    if (network === Network.MainNet) {
-      if (currentChainId === 1) {
+  private getRequiredChain(network: Network, currentChainId: number): number {
+    const isMainnet = network === Network.MainNet;
+
+    switch (currentChainId) {
+      case 1:  // Ethereum Mainnet
+      case 5:  // Ethereum Goerli Testnet
         this.blockchain = 'Ethereum';
-        return currentChainId;
-      }
-      if (currentChainId === 56) {
+        return isMainnet ? 1 : 5;
+
+      case 56:  // Binance Smart Chain Mainnet
+      case 97:  // Binance Smart Chain Testnet
         this.blockchain = 'Binance Smart Chain';
-        return currentChainId;
-      }
-      if (currentChainId === 42161) {
+        return isMainnet ? 56 : 97;
+
+      case 42161:  // Arbitrum Mainnet
+      case 421611: // Arbitrum Testnet
         this.blockchain = 'Arbitrum';
-        return currentChainId;
-      }
-      if (currentChainId === 137) {
+        return isMainnet ? 42161 : 421611;
+
+      case 137:   // Polygon Mainnet
+      case 80001: // Polygon Testnet
         this.blockchain = 'Polygon';
-        return currentChainId;
-      }
-      if (currentChainId === 66) {
+        return isMainnet ? 137 : 80001;
+
+      case 66:  // OKC Mainnet
+      case 65:  // OKC Testnet
         this.blockchain = 'OKC';
-        return currentChainId;
-      }
+        return isMainnet ? 66 : 65;
 
-      return 1;
-    }
+      case 5000:  // Mantle Mainnet
+      case 5003:  // Mantle Testnet
+        this.blockchain = 'Mantle';
+        return isMainnet ? 5000 : 5003;
 
-    if (currentChainId === 5) {
-      this.blockchain = 'Ethereum';
-      return currentChainId;
-    }
-    if (currentChainId === 97) {
-      this.blockchain = 'Binance Smart Chain';
-      return currentChainId;
-    }
-    if (currentChainId === 421611) {
-      this.blockchain = 'Arbitrum';
-      return currentChainId;
-    }
-    if (currentChainId === 80001) {
-      this.blockchain = 'Polygon';
-      return currentChainId;
-    }
-    if (currentChainId === 65) {
-      this.blockchain = 'OKC';
-      return currentChainId;
-    }
+      case 10:    // OP Mainnet
+      case 11155420:  // OP Sepolia Testnet
+        this.blockchain = 'OP';
+        return isMainnet ? 10 : 11155420;
 
-    // Deal with cases where users are logging in to devnet using mainnet chains
-    if (currentChainId === 56) {
-      return 97;
+      case 8453:
+      case 84532:
+        this.blockchain = 'Base';
+        return isMainnet ? 8453 : 84532;
+
+      default:
+        // Default fallback for Ethereum if no specific match found
+        return isMainnet ? 1 : 5;
     }
-    return 5;
   }
+
 
   private getContractHash(blockchain: EVMChain = this.blockchain) {
     const contractHash = CONTRACT_HASH[blockchain][this.network];
