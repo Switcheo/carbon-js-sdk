@@ -12,6 +12,8 @@ import { signatureImport } from "secp256k1";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 const semver = require("semver");
 
+import CarbonEVMLedger from "./CarbonEVMLedger";
+
 const INTERACTION_TIMEOUT = 120; // seconds to wait for user action on Ledger, currently is always limited to 60
 const REQUIRED_COSMOS_APP_VERSION = "1.5.3";
 
@@ -25,6 +27,7 @@ const BECH32PREFIX = `cosmos`;
 class CosmosLedger {
   private readonly testModeAllowed: Boolean;
   private cosmosApp: any;
+  private carbonEVMApp: any;
   private hdPath: Array<number>;
   private hrp: string;
   public platform: string;
@@ -129,6 +132,8 @@ class CosmosLedger {
 
     const cosmosLedgerApp = new CosmosLedgerApp(transport);
     this.cosmosApp = cosmosLedgerApp;
+    const carbonEVMLedgerApp = new CarbonEVMLedger(transport);
+    this.carbonEVMApp = carbonEVMLedgerApp;
 
     // checks if the Ledger is connected and the app is open
     await this.isReady();
@@ -138,6 +143,7 @@ class CosmosLedger {
 
   async disconnect() {
     await this.cosmosApp.transport.close()
+    await this.carbonEVMApp.transport.close()
   }
 
   async getDeviceName() {
@@ -250,6 +256,14 @@ class CosmosLedger {
     // we have to parse the signature from Ledger as it's in DER format
     const parsedSignature = signatureImport(response.signature);
     return parsedSignature;
+  }
+
+  async signEvmMessage(tx: ethers.providers.TransactionRequest) {
+    await this.connect();
+    const response = await signTransactionWrapper(async () => {
+      return await this.carbonEVMApp.signEIP712Tx(tx);
+    });
+    return response;
   }
 
   // parse Ledger errors in a more user friendly format
