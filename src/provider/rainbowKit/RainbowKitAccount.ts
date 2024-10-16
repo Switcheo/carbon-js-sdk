@@ -357,6 +357,7 @@ class RainbowKitAccount extends Eip6963Provider {
   }
 
   async sendEvmTransaction(req: ethers.providers.TransactionRequest) {
+    await this.verifyNetworkAndConnectedAccount(req.from!, req.chainId!.toString())
     const ethereum = this.getApi();
     const tx = {
       from: req.from,
