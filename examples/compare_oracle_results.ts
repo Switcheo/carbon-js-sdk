@@ -39,7 +39,7 @@ interface SimpleMap<T = unknown> {
     }
     // check if price diff between mainnet and testnet oracles differ by more than 1%
     const priceDiff = parseFloat(price) / parseFloat(testnetPrice)
-    if (priceDiff > parseFloat("1.01") || priceDiff < parseFloat("0.99")) {
+    if (priceDiff > parseFloat("1.005") || priceDiff < parseFloat("0.995")) {
       console.log(`${oracleId}: mainnet: ${price}, testnet: ${testnetPrice}, diff: ${priceDiff} \n`)
     }
   }
