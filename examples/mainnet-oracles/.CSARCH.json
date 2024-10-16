@@ -33,8 +33,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "sarch_redemption_rate",
-            "default_node_host": "https://archway-api.w3coins.io",
+            "custom_node_url_key": "sarch_redemption_rate_1",
+            "default_node_host": "https://api.mainnet.archway.io",
             "default_node_path": "/cosmwasm/wasm/v1/contract/archway1p3wrpsrxldc6laecc8r3ck52cmg3chu06mmm3thqvt6exy36f79q575rsq/smart/eyJzdGF0dXNfaW5mbyI6e319",
             "paths": "[\"data.ratio\"]",
             "timeout": "10"
@@ -51,8 +51,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "astrovault_xarch_sarch_pool",
-            "default_node_host": "https://archway-api.w3coins.io",
+            "custom_node_url_key": "astrovault_xarch_sarch_pool_1",
+            "default_node_host": "https://api.mainnet.archway.io",
             "default_node_path": "/cosmwasm/wasm/v1/contract/archway1352tn8gyl6df9azwznldg5ths0xst720xgc82q2as3c5kz0tx64qm0dq3j/smart/ewogICJwb29sIjoge30KfQ==",
             "paths": "[\"data.assets.0.amount\", \"data.assets.1.amount\"]",
             "timeout": "10"

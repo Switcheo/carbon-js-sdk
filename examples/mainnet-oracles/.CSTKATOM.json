@@ -101,8 +101,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "astroport_stkatom_atom_redemption_rate_1",
-            "default_node_host": "https://api.neutron.quokkastake.io",
+            "custom_node_url_key": "astroport_stkatom_atom_redemption_rate",
+            "default_node_host": "https://lcd-neutron.whispernode.com",
             "default_node_path": "/cosmwasm/wasm/v1/contract/neutron1d73vc84e36d4mmm9dwqql4sty3fx4usjmupxewx36e4qudm5auqs0yryma/smart/ewogICJzaW11bGF0aW9uIjogeyJvZmZlcl9hc3NldCI6IHsKICAgICAgImFtb3VudCI6ICIxMDAwMDAwIiwKICAgICAgImluZm8iOiB7CiAgICAgICAgIm5hdGl2ZV90b2tlbiI6IHsKICAgICAgICAgICJkZW5vbSI6ICJpYmMvMzY0OUNFMEM4QTJDNzkwNDhEOEM2RjMxRkYxOEZBNjlDOUJDN0VCMTkzNTEyRTBCRDAzQjczMzAxMTI5MDQ0NSIKICAgICAgICB9CiAgICAgIH0KICAgIH19Cn0=",
             "paths": "[\"data.return_amount\"]",
             "timeout": "10"

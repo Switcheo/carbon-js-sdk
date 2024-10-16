@@ -4,6 +4,7 @@ import "./_setup";
 import { MsgUpdateOracle } from "../lib/codec/Switcheo/carbon/oracle/tx";
 import fs from 'fs';
 import path from 'path';
+import BigNumber from "bignumber.js";
 
 // Function to read JSON files from a folder
 function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: string]: any }> {
@@ -61,7 +62,8 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   const specMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
   const oraclesToUpdate = [
-    ".CSAGA",
+    ".CARCH",
+    ".CSARCH",
   ]
 
   const txs: any[] = []
