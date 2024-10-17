@@ -19,6 +19,18 @@
           }
         }
       ]
+    },
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
     }
   ],
   "jobs": [
@@ -41,8 +53,73 @@
       ]
     },
     {
+      "output_id": "osmosis_usdy_usdc_12",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_usdy_usdc",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/poolmanager/pools/1926/prices?base_asset_denom=ibc/23104D411A6EB6031FA92FB75F227422B84989969E91DCAD56A535DD7FF0A373&quote_asset_denom=ibc/23104D411A6EB6031FA92FB75F227422B84989969E91DCAD56A535DD7FF0A373",
+            "paths": "[\"spot_price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_usdy_usdc",
+      "input_id": "osmosis_usdy_usdc_12",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "increase",
+        "exponent": "12"
+      }
+    },
+    {
+      "output_id": "osmosis_usdy_usdc",
+      "input_id": "osmosis_usdy_usdc",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "1800"
+      }
+    },
+    {
+      "output_id": "usdc_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDC",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_usdy_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"osmosis_usdy_usdc\",\"usdc_usd\"]"
+      }
+    },
+    {
       "output_id": "usdy_usd",
-      "input_id": "dexscreener_usdy_usd",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"osmosis_usdy_usd\",\"dexscreener_usdy_usd\"]"
+      }
+    },
+    {
+      "output_id": "usdy_usd",
+      "input_id": "usdy_usd",
       "adapter": "float_handler",
       "config": {
         "operation": "round",
