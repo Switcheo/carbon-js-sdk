@@ -45,6 +45,10 @@ class CosmosLedger {
     this.userAgent = navigator.userAgent; // set it here to overwrite in tests
   }
 
+  public getHdPath() {
+    return this.hdPath
+  }
+
   // quickly test connection and compatibility with the Ledger device throwing away the connection
   async testDevice() {
     // poll device with low timeout to check if the device is connected

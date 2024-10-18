@@ -151,19 +151,30 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
       signature,
     };
   }
-  private async connectoToEthApp() {
+  private async connectToEthApp() {
     if (!this.opts?.connectEthApp) throw new Error('evm app initialisation is not provided')
     const evmLedger = await this.opts.connectEthApp()
     this.ledger.initEthApp(evmLedger.ethApp)
     return evmLedger
   }
 
+  // [44, 118, 0, 0, 0] => m/44'/118/0/0/0
+  private getBip44Path(): string {
+    const hdPathArray: Array<number> = this.ledger.getHdPath()
+    return hdPathArray.reduce((acc, element, index) => {
+      acc.concat(`/`).concat(element.toString())
+      if (index === 0 || index === 1) acc.concat("'")
+
+      return acc
+    }, 'm')
+  }
+
   async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
-    const evmLedger = await this.connectoToEthApp()
+    const evmLedger = await this.connectToEthApp()
     const unsignedTx = await populateUnsignedEvmTranscation(api, req)
     const serializedTx = ethers.utils.serializeTransaction(unsignedTx)
-    const bipString = evmLedger.getBIP44Path()
-    console.log('xx bipString:',bipString)
+    const bipString = this.getBip44Path()
+    console.log('xx bipString:', bipString)
     const signature = await evmLedger.signTransaction(serializedTx.substring(2), bipString)
     const signedTx = ethers.utils.serializeTransaction(unsignedTx, signature)
     const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
