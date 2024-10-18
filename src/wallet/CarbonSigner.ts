@@ -166,7 +166,7 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
         acc = acc.concat(element.toString()).concat("'")
         return acc
       }
-        acc = acc.concat(`/`).concat(element.toString())
+      acc = acc.concat(`/`).concat(element.toString())
       if (index === 0 || index === 1 || index === 2) acc = acc.concat("'")
       return acc
     }, '')
@@ -177,8 +177,7 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
     const evmLedger = await this.connectToEthApp()
     const unsignedTx = await populateUnsignedEvmTranscation(api, req)
     const serializedTx = ethers.utils.serializeTransaction(unsignedTx)
-    console.log('xx bipString:', bip44String)
-    const signature = await evmLedger.signTransaction(serializedTx.substring(2))
+    const signature = await evmLedger.signTransaction(serializedTx.substring(2), bip44String)
     const signedTx = ethers.utils.serializeTransaction(unsignedTx, signature)
     const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
     return (await provider!.sendTransaction(signedTx)).hash
