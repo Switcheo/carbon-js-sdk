@@ -172,8 +172,7 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
       value: (unsignedTx.value || undefined),
   };
     const serializedTx = ethers.utils.serializeTransaction(baseTx)
-    const bipString = evmLedger.getBIP44Path()
-    const signature = await evmLedger.signTransaction(bipString, serializedTx.substring(2))
+    const signature = await evmLedger.signTransaction(serializedTx.substring(2))
     const signedTx = ethers.utils.serializeTransaction(unsignedTx, signature)
     const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
     return (await provider!.sendTransaction(signedTx)).hash
