@@ -6,6 +6,6 @@ export interface EthApp {
 
 export interface EvmLedger {
   readonly ethApp: EthApp;
-  getBIP44Path(): string;
+  getBIP44Path(): string
   signTransaction(msg: string, bip44String?: string): Promise<string>;
 }
