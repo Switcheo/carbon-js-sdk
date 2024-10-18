@@ -32,6 +32,7 @@ import utc from "dayjs/plugin/utc";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
+import { EvmLedger } from "@carbon-sdk/provider/ledger";
 
 dayjs.extend(utc)
 
@@ -67,6 +68,14 @@ export interface CarbonWalletGenericOpts {
    * Optional callback that will be called if tx broadcast fails.
    */
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
+}
+
+export type LedgerWalletConnectionOpts = {
+  connectEthApp?: () => Promise<EvmLedger>
+}
+
+export interface CarbonLedgerWalletGenericOpts extends CarbonWalletGenericOpts {
+  connectionOpts?: LedgerWalletConnectionOpts
 }
 
 export interface MetaMaskWalletOpts {
@@ -281,11 +290,12 @@ export class CarbonWallet {
     });
   }
 
-  public static withLedger(cosmosLedger: CosmosLedger, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = new CarbonLedgerSigner(cosmosLedger);
+  public static withLedger(cosmosLedger: CosmosLedger, publicKeyBase64: string, opts: Omit<CarbonLedgerWalletGenericOpts, "signer"> = {}) {
+    const { connectionOpts, ...rest } = opts
+    const signer = new CarbonLedgerSigner(cosmosLedger, connectionOpts);
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       providerAgent: ProviderAgent.Ledger,
-      ...opts,
+      ...rest,
     });
     return wallet;
   }

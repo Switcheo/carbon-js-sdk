@@ -14,7 +14,7 @@ import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import BigNumber from "bignumber.js";
 import * as clients from "./clients";
-import { CarbonQueryClient, AxelarBridgeClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { AxelarBridgeClient, CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import GasFee from "./clients/GasFee";
 import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
@@ -35,6 +35,7 @@ import {
   LeverageModule,
   LiquidityPoolModule,
   MarketModule,
+  OTCModule,
   OracleModule,
   OrderModule,
   PerpspoolModule,
@@ -42,21 +43,20 @@ import {
   ProfileModule,
   SubAccountModule,
   XChainModule,
-  OTCModule,
 } from "./modules";
 import { GrantModule } from "./modules/grant";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { MetaMask } from "./provider/metamask/MetaMask";
+import RainbowKitAccount, { RainbowKitWalletOpts } from "./provider/rainbowKit/RainbowKitAccount";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
-import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
+import { CarbonLedgerSigner, CarbonLedgerWalletGenericOpts, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export * as Carbon from "./codec/carbon-models";
-import RainbowKitAccount, { RainbowKitWalletOpts } from "./provider/rainbowKit/RainbowKitAccount";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -359,7 +359,7 @@ class CarbonSDK {
   public static async instanceWithLedger(
     ledger: CosmosLedger,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
-    walletOpts?: CarbonWalletGenericOpts
+    walletOpts?: CarbonLedgerWalletGenericOpts
   ) {
     const sdk = await CarbonSDK.instance(sdkOpts);
     return sdk.connectWithLedger(ledger, walletOpts);
@@ -531,7 +531,7 @@ class CarbonSDK {
     return this.connect(wallet);
   }
 
-  public async connectWithLedger(ledger: CosmosLedger, opts?: CarbonWalletGenericOpts) {
+  public async connectWithLedger(ledger: CosmosLedger, opts?: CarbonLedgerWalletGenericOpts) {
     const publicKeyBuffer = await ledger.getPubKey();
     const publicKeyBase64 = publicKeyBuffer.toString("base64");
 

@@ -8,6 +8,7 @@ import { constructAdr36SignDoc } from "@carbon-sdk/util/message";
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
 import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { ethers } from "ethers";
+import { LedgerWalletConnectionOpts } from "./CarbonWallet";
 
 export enum CarbonSignerTypes {
   Ledger,
@@ -150,9 +151,22 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
       signature,
     };
   }
+  private async connectoToEthApp() {
+    if (!this.opts?.connectEthApp) throw new Error('evm app initialisation is not provided')
+    const evmLedger = await this.opts.connectEthApp()
+    this.ledger.initEthApp(evmLedger.ethApp)
+    return evmLedger
+  }
 
-  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> { // eslint-disable-line
-    throw new Error("signing not available");
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
+    const evmLedger = await this.connectoToEthApp()
+    const unsignedTx = await populateUnsignedEvmTranscation(api, req)
+    const serializedTx = ethers.utils.serializeTransaction(unsignedTx)
+    const bipString = evmLedger.getBIP44Path()
+    const signature = await evmLedger.signTransaction(bipString, serializedTx.substring(2))
+    const signedTx = ethers.utils.serializeTransaction(unsignedTx, signature)
+    const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+    return (await provider!.sendTransaction(signedTx)).hash
   }
 
   async signMessage(_: string, message: string): Promise<string> {
@@ -165,5 +179,5 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
     return Buffer.from(signature, 'base64').toString('hex')
   }
 
-  constructor(readonly ledger: CosmosLedger) { }
+  constructor(readonly ledger: CosmosLedger, readonly opts?: LedgerWalletConnectionOpts) { }
 }
