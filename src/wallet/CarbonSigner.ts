@@ -158,12 +158,12 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
     return evmLedger
   }
 
-  // [44, 118, 0, 0, 0] => m/44'/118/0/0/0
+  // [44, 118, 0, 0, 0] => 44'/118'/0'/0/0
   private getBip44String(): string {
     const hdPathArray: Array<number> = this.ledger.getHdPath()
     return hdPathArray.reduce((acc, element, index) => {
       acc = acc.concat(`/`).concat(element.toString())
-      if (index === 0 || index === 1) acc = acc.concat("'")
+      if (index === 0 || index === 1 || index === 2) acc = acc.concat("'")
 
       return acc
     }, 'm')
