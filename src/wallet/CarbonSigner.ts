@@ -151,9 +151,9 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
       signature,
     };
   }
-  private async connectToEthApp(bip44String: string) {
+  private async connectToEthApp() {
     if (!this.opts?.connectEthApp) throw new Error('evm app initialisation is not provided')
-    const evmLedger = await this.opts.connectEthApp(bip44String)
+    const evmLedger = await this.opts.connectEthApp()
     this.ledger.initEthApp(evmLedger.ethApp)
     return evmLedger
   }
@@ -174,7 +174,7 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
 
   async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
     const bip44String = this.getBip44String()
-    const evmLedger = await this.connectToEthApp(bip44String)
+    const evmLedger = await this.connectToEthApp()
     const unsignedTx = await populateUnsignedEvmTranscation(api, req)
     const serializedTx = ethers.utils.serializeTransaction(unsignedTx)
     console.log('xx bipString:', bip44String)
