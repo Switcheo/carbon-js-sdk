@@ -5,9 +5,15 @@ import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
 
 (async () => {
-  const sdk = await CarbonSDK.instance();
+  const sdk = await CarbonSDK.instance({
+    network: CarbonSDK.Network.MainNet,
+  });
 
   // GRPC Queries
+  const txDetails = await sdk.query.chain.getTx("DD13F908B5A9C3495B23049B32D20EB7A1631F606DECF76EAAD79444250565CE");
+  const decodedTx = CarbonTx.decode(txDetails?.tx);
+  console.log("tx decoded", decodedTx?.authInfo?.fee);
+  process.exit(0);
 
   // query market stats
   const marketStats = await sdk.query.marketstats.MarketStats({
@@ -71,7 +77,7 @@ import "./_setup";
 
   // query all profiles with pagination
   const profiles = await sdk.query.profile.ProfileAll({
-    username: "",
+    // username: "",
     pagination: PageRequest.fromPartial({
       limit: new Long(5),
     }),
@@ -140,9 +146,9 @@ import "./_setup";
   console.log("tx events", JSON.parse(tx.rawLog));
 
   // decode tx
-  const decodedTx = CarbonTx.decode(tx.tx);
-  console.log("tx decoded", JSON.stringify(decodedTx));
-  console.log("tx msgs", decodedTx?.body?.messages);
+  // const decodedTx = CarbonTx.decode(tx.tx);
+  // console.log("tx decoded", JSON.stringify(decodedTx));
+  // console.log("tx msgs", decodedTx?.body?.messages);
 })()
   .catch(console.error)
   .finally(() => process.exit(0));

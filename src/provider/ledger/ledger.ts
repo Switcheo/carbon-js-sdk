@@ -12,6 +12,8 @@ import { signatureImport } from "secp256k1";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 const semver = require("semver");
 
+import { EthApp } from "./evm";
+
 const INTERACTION_TIMEOUT = 120; // seconds to wait for user action on Ledger, currently is always limited to 60
 const REQUIRED_COSMOS_APP_VERSION = "1.5.3";
 
@@ -25,6 +27,7 @@ const BECH32PREFIX = `cosmos`;
 class CosmosLedger {
   private readonly testModeAllowed: Boolean;
   private cosmosApp: any;
+  private ethApp: EthApp | undefined = undefined
   private hdPath: Array<number>;
   private hrp: string;
   public platform: string;
@@ -40,6 +43,10 @@ class CosmosLedger {
     this.hrp = hrp;
     this.platform = navigator.platform; // set it here to overwrite in tests
     this.userAgent = navigator.userAgent; // set it here to overwrite in tests
+  }
+
+  public getHdPath() {
+    return this.hdPath
   }
 
   // quickly test connection and compatibility with the Ledger device throwing away the connection
@@ -132,12 +139,13 @@ class CosmosLedger {
 
     // checks if the Ledger is connected and the app is open
     await this.isReady();
-  
+
     return this;
   }
 
   async disconnect() {
     await this.cosmosApp.transport.close()
+    await this.ethApp?.transport.close()
   }
 
   async getDeviceName() {
@@ -286,6 +294,10 @@ class CosmosLedger {
         throw new Error(`Ledger Native Error: ${error_message}`);
     }
   }
+
+  public async initEthApp(app: EthApp) {
+    this.ethApp = app
+  }
 }
 
 // stiched version string from Ledger app version object
@@ -328,5 +340,6 @@ function getBrowser(userAgent: string) {
   else if (isOpera) return "opera";
   else return "chrome";
 }
+
 
 export default CosmosLedger;
