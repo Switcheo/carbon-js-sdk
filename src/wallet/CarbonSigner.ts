@@ -162,11 +162,14 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
   private getBip44String(): string {
     const hdPathArray: Array<number> = this.ledger.getHdPath()
     return hdPathArray.reduce((acc, element, index) => {
-      acc = acc.concat(`/`).concat(element.toString())
+      if (index === 0) {
+        acc = acc.concat(element.toString())
+        return acc
+      }
+        acc = acc.concat(`/`).concat(element.toString())
       if (index === 0 || index === 1 || index === 2) acc = acc.concat("'")
-
       return acc
-    }, 'm')
+    }, '')
   }
 
   async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
