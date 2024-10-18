@@ -71,7 +71,7 @@ export interface CarbonWalletGenericOpts {
 }
 
 export type LedgerWalletConnectionOpts = {
-  connectEthApp?: () => Promise<EvmLedger>
+  connectEthApp?: (bipString?: string) => Promise<EvmLedger>
 }
 
 export interface CarbonLedgerWalletGenericOpts extends CarbonWalletGenericOpts {
