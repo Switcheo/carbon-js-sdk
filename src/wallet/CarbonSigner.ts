@@ -161,18 +161,9 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
   async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
     const evmLedger = await this.connectoToEthApp()
     const unsignedTx = await populateUnsignedEvmTranscation(api, req)
-    // reconstruct tx that is signable by ledger
-    const baseTx: ethers.utils.UnsignedTransaction = {
-      chainId: (unsignedTx.chainId || undefined),
-      data: (unsignedTx.data || undefined),
-      gasLimit: (unsignedTx.gasLimit || undefined),
-      gasPrice: (unsignedTx.gasPrice || undefined),
-      nonce: (unsignedTx.nonce ? ethers.BigNumber.from(unsignedTx.nonce).toNumber(): undefined),
-      to: (unsignedTx.to || undefined),
-      value: (unsignedTx.value || undefined),
-  };
-    const serializedTx = ethers.utils.serializeTransaction(baseTx)
-    const signature = await evmLedger.signTransaction(serializedTx.substring(2))
+    const serializedTx = ethers.utils.serializeTransaction(unsignedTx)
+    const bipString = evmLedger.getBIP44Path()
+    const signature = await evmLedger.signTransaction(serializedTx.substring(2), bipString)
     const signedTx = ethers.utils.serializeTransaction(unsignedTx, signature)
     const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
     return (await provider!.sendTransaction(signedTx)).hash
