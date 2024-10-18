@@ -29,9 +29,9 @@
           "adapter": "fetcher_multiple",
           "config": {
             "custom_node_url_key": "bybit_ar_usdt",
-            "default_node_host": "https://api-bybit-proxy.carbon.network",
-            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=ARUSDT",
-            "paths": "[\"result.price\"]",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/v5/market/tickers?category=spot&symbol=ARUSDT",
+            "paths": "[\"result.list.0.lastPrice\"]",
             "timeout": "10"
           }
         },
