@@ -1,30 +1,26 @@
-import { AddressUtils, AminoTypesMap, CarbonSDK, CarbonTx, Models, SupportedEip6963Provider } from "@carbon-sdk/index";
-import { ETH_SECP256K1_TYPE, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
-import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
-import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
-import { ethers } from "ethers";
-import { parseEvmError } from "../metamask/error";
-import { DirectSignResponse } from "@keplr-wallet/types";
-import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { TxTypes, registry } from "@carbon-sdk/codec";
-import { StdFee } from "@cosmjs/stargate";
+import { registry, TxTypes } from "@carbon-sdk/codec";
+import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EVMChain, MANTLE_MAINNET, MANTLE_TESTNET, Network, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
-import { AminoMsg, makeSignDoc } from "@cosmjs/amino";
+import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
-import { signTransactionWrapper } from "@carbon-sdk/util/provider";
+import { ETH_SECP256K1_TYPE, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
+import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
+import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
-import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
-import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EVMChain, MANTLE_MAINNET, MANTLE_TESTNET, Network, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { signTransactionWrapper } from "@carbon-sdk/util/provider";
+import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
+import { AminoMsg, makeSignDoc } from "@cosmjs/amino";
+import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
+import { StdFee } from "@cosmjs/stargate";
+import { DirectSignResponse } from "@keplr-wallet/types";
+import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { ethers } from "ethers";
+import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
-import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
-import { appendHexPrefix } from "@carbon-sdk/util/generic";
+import { parseEvmError } from "../metamask/error";
 
-export interface RainbowKitWalletOpts {
-  publicKeyMessage?: string
-  publicKeyBase64: string;
-  walletProvider: SupportedEip6963Provider;
-}
 
 interface RainbowkitAPI {
   chainId: string | null;
@@ -198,7 +194,6 @@ class RainbowKitAccount extends Eip6963Provider {
     if (!defaultAccount) {
       throw new Error("No default account, please create one first");
     }
-
     return defaultAccount;
   }
 
@@ -323,6 +318,25 @@ class RainbowKitAccount extends Eip6963Provider {
   async verifyNetwork(evmChainId: string) {
     const network = carbonNetworkFromChainId(evmChainId);
     await this.changeNetworkIfRequired("Carbon", network);
+  }
+
+  static async authenticate(provider: RainbowKitAccount, enableJwtAuth?: boolean) {
+    const address = await provider.defaultAccount()
+    const message = enableJwtAuth ? AuthUtils.getAuthMessage() : DEFAULT_PUBLIC_KEY_MESSAGE;
+    const signature = await provider.personalSign(address, message)
+    const publicKeyHex = EvmUtils.recoverPublicKey(message, signature)
+
+    return {
+      publicKey: Buffer.from(publicKeyHex, 'hex').toString('base64'),
+      signature,
+      message,
+    };
+  }
+
+  async getPublicKey(address: string, message: string): Promise<string> {
+    const signedMessage = await this.personalSign(address, message)
+    const uncompressedPublicKey = ethers.utils.recoverPublicKey(ethers.utils.hashMessage(message), signedMessage)
+    return ethers.utils.computePublicKey(uncompressedPublicKey, true).split('0x')[1]
   }
 
   async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {

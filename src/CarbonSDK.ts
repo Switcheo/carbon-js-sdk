@@ -14,7 +14,7 @@ import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import BigNumber from "bignumber.js";
 import * as clients from "./clients";
-import { CarbonQueryClient, AxelarBridgeClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { AxelarBridgeClient, CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import GasFee from "./clients/GasFee";
 import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
@@ -35,6 +35,7 @@ import {
   LeverageModule,
   LiquidityPoolModule,
   MarketModule,
+  OTCModule,
   OracleModule,
   OrderModule,
   PerpspoolModule,
@@ -42,21 +43,21 @@ import {
   ProfileModule,
   SubAccountModule,
   XChainModule,
-  OTCModule,
 } from "./modules";
 import { GrantModule } from "./modules/grant";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { MetaMask } from "./provider/metamask/MetaMask";
+import RainbowKitAccount from "./provider/rainbowKit/RainbowKitAccount";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
-import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, RainbowKitWalletOpts } from "./wallet";
+import { GrantRequest, GrantType } from "./util/auth";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export * as Carbon from "./codec/carbon-models";
-import RainbowKitAccount, { RainbowKitWalletOpts } from "./provider/rainbowKit/RainbowKitAccount";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -387,10 +388,9 @@ class CarbonSDK {
     metamask: MetaMask,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts,
-    metamaskWalletOpts?: MetaMaskWalletOpts
   ) {
     const sdk = await CarbonSDK.instance(sdkOpts);
-    return sdk.connectWithMetamask(metamask, walletOpts, metamaskWalletOpts);
+    return sdk.connectWithMetamask(metamask, walletOpts);
   }
 
   public static async instanceWithRainbowKit(
@@ -472,7 +472,7 @@ class CarbonSDK {
     };
   }
 
-  public async connect(wallet: CarbonWallet): Promise<ConnectedCarbonSDK> {
+  public async connect(wallet: CarbonWallet, opts?: CarbonWalletGenericOpts): Promise<ConnectedCarbonSDK> {
     if (!wallet.initialized) {
       try {
         // Perform initialize function as per normal, but add try-catch statement to check err message
@@ -481,7 +481,7 @@ class CarbonSDK {
           evmChainId: this.evmChainId,
         }
         const gasFee = await this.getGasFee();
-        await wallet.initialize(this.query, gasFee, overrideConfig);
+        await wallet.initialize(this.query, gasFee, overrideConfig, opts);
       } catch (err) {
         const errorTyped = err as Error;
         // In the case where account does not exist on chain, still allow wallet connection.
@@ -510,7 +510,7 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet);
+    return this.connect(wallet, opts);
   }
 
   public async connectWithMnemonic(mnemonic: string, opts?: CarbonWalletGenericOpts) {
@@ -519,7 +519,7 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet);
+    return this.connect(wallet, opts);
   }
 
   public async connectWithSigner(signer: CarbonSigner, publicKeyBase64: string, opts?: CarbonWalletGenericOpts) {
@@ -528,7 +528,7 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet);
+    return this.connect(wallet, opts);
   }
 
   public async connectWithLedger(ledger: CosmosLedger, opts?: CarbonWalletGenericOpts) {
@@ -540,7 +540,7 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet);
+    return this.connect(wallet, opts);
   }
 
   public async connectWithKeplr(keplr: Keplr, opts?: CarbonWalletGenericOpts) {
@@ -556,7 +556,7 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet);
+    return this.connect(wallet, opts);
   }
 
   public async connectWithLeap(leap: LeapExtended, opts?: CarbonWalletGenericOpts) {
@@ -572,29 +572,36 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet);
+    return this.connect(wallet, opts);
   }
 
-  public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, metamaskWalletOpts?: MetaMaskWalletOpts) {
+  public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix,
     };
-    let publicKeyBase64: string
-    const address = await metamask.defaultAccount()
-    if (metamaskWalletOpts?.publicKeyBase64) {
-      publicKeyBase64 = metamaskWalletOpts?.publicKeyBase64
-    } else {
-      const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage)
-      publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
-    }
-    const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKeyBase64, addressOptions, {
+
+    const enableJwtAuth = opts?.enableJwtAuth
+    const { publicKey, message, signature } = await MetaMask.authenticate(metamask, enableJwtAuth)
+
+    const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKey, addressOptions, {
       ...opts,
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet);
+
+    if (enableJwtAuth) {
+      const authRequest: GrantRequest = {
+        grant_type: GrantType.SignatureEth,
+        message,
+        public_key: Buffer.from(publicKey, 'base64').toString('hex'),
+        signature,
+      }
+      await wallet.reloadJwtToken(authRequest)
+    }
+
+    return this.connect(wallet, opts);
   }
 
   public async connectWithRainbowKit(rainbowKit: RainbowKitAccount, rainbowKitWalletOpts: RainbowKitWalletOpts, opts?: CarbonWalletGenericOpts) {
@@ -604,13 +611,26 @@ class CarbonSDK {
       bech32Prefix: this.networkConfig.Bech32Prefix,
     };
 
-    const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, rainbowKitWalletOpts.publicKeyBase64, addressOptions, rainbowKitWalletOpts.walletProvider, {
+    const enableJwtAuth = opts?.enableJwtAuth
+    const { publicKey, message, signature } = await RainbowKitAccount.authenticate(rainbowKit, enableJwtAuth)
+
+    const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, publicKey, addressOptions, rainbowKitWalletOpts.walletProvider, {
       ...opts,
       network: this.network,
       config: this.configOverride,
     })
 
-    return this.connect(wallet);
+    if (enableJwtAuth) {
+      const authRequest: GrantRequest = {
+        grant_type: GrantType.SignatureEth,
+        message,
+        public_key: Buffer.from(publicKey, 'base64').toString('hex'),
+        signature,
+      }
+      await wallet.reloadJwtToken(authRequest)
+    }
+
+    return this.connect(wallet, opts);
   }
 
   public async connectViewOnly(bech32Address: string, opts?: CarbonWalletGenericOpts) {
@@ -619,7 +639,7 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet);
+    return this.connect(wallet, opts);
   }
 
   public getConfig(): NetworkConfig {
