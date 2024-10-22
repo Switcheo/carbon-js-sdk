@@ -33,8 +33,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "datom_redemption_rate",
-            "default_node_host": "https://lcd-neutron.whispernode.com",
+            "custom_node_url_key": "datom_redemption_rate_1",
+            "default_node_host": "https://api.neutron.quokkastake.io",
             "default_node_path": "/cosmwasm/wasm/v1/contract/neutron17uqju9k0rj5t6arupnd70t2tp4n66est7fhh00wxc2ajxu0rsnasy0kgnx/smart/eyJyZWRlbXB0aW9uX3JhdGUiOnsiZGVub20iOiJmYWN0b3J5L25ldXRyb24xazZocjBmODNlN3VuMndqZjI5Y3NwazdqNjlqcm5za2s2NWszZWsybmo5ZHp0cmx6cGo2cTAwcnRzYS91ZGF0b20ifX0=",
             "paths": "[\"data.redemption_rate\"]",
             "timeout": "10"
@@ -59,8 +59,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "astroport_datom_usdc_6_via_swap_rate",
-            "default_node_host": "https://lcd-neutron.whispernode.com",
+            "custom_node_url_key": "astroport_datom_usdc_6_via_swap_rate_1",
+            "default_node_host": "https://api.neutron.quokkastake.io",
             "default_node_path": "/cosmwasm/wasm/v1/contract/neutron1nfns3ck2ykrs0fknckrzd9728cyf77devuzernhwcwrdxw7ssk2s3tjf8r/smart/ewogICJzaW11bGF0aW9uIjogeyJvZmZlcl9hc3NldCI6IHsKICAgICAgImFtb3VudCI6ICIxMDAwMDAwIiwKICAgICAgImluZm8iOiB7CiAgICAgICAgIm5hdGl2ZV90b2tlbiI6IHsKICAgICAgICAgICJkZW5vbSI6ICJmYWN0b3J5L25ldXRyb24xazZocjBmODNlN3VuMndqZjI5Y3NwazdqNjlqcm5za2s2NWszZWsybmo5ZHp0cmx6cGo2cTAwcnRzYS91ZGF0b20iCiAgICAgICAgfQogICAgICB9CiAgICB9fQp9",
             "paths": "[\"data.return_amount\"]",
             "timeout": "10"
