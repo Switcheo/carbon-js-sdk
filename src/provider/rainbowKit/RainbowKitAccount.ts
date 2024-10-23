@@ -320,7 +320,7 @@ class RainbowKitAccount extends Eip6963Provider {
     await this.changeNetworkIfRequired("Carbon", network);
   }
 
-  static async authenticate(provider: RainbowKitAccount, enableJwtAuth?: boolean) {
+  static async signAndRecoverPubKey(provider: RainbowKitAccount, enableJwtAuth?: boolean) {
     const address = await provider.defaultAccount()
     const message = enableJwtAuth ? AuthUtils.getAuthMessage() : DEFAULT_PUBLIC_KEY_MESSAGE;
     const signature = await provider.personalSign(address, message)

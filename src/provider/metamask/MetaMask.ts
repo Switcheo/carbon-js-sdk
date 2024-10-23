@@ -294,7 +294,7 @@ export class MetaMask extends Eip6963Provider {
     };
   }
 
-  static async authenticate(provider: MetaMask, enableJwtAuth?: boolean) {
+  static async signAndRecoverPubKey(provider: MetaMask, enableJwtAuth?: boolean) {
     const address = await provider.defaultAccount()
     const message = enableJwtAuth ? AuthUtils.getAuthMessage() : DEFAULT_PUBLIC_KEY_MESSAGE
     const signature = await provider.personalSign(address, message)

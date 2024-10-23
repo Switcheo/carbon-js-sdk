@@ -53,7 +53,7 @@ import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
-import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, RainbowKitWalletOpts } from "./wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, EvmWalletOpts, RainbowKitWalletOpts } from "./wallet";
 import { GrantRequest, GrantType } from "./util/auth";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
@@ -575,28 +575,41 @@ class CarbonSDK {
     return this.connect(wallet, opts);
   }
 
-  public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts) {
+  public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, evmWalletOpts?: EvmWalletOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix,
     };
 
-    const enableJwtAuth = opts?.enableJwtAuth
-    const { publicKey, message, signature } = await MetaMask.authenticate(metamask, enableJwtAuth)
+    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt
 
-    const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKey, addressOptions, {
+    const signMessageRequired = !evmWalletOpts?.publicKeyBase64 || noJwtProvided
+
+    let pubKey = evmWalletOpts?.publicKeyBase64
+    let message: string | undefined
+    let signature: string | undefined
+
+    if (signMessageRequired) {
+      const result = await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth)
+      pubKey = result.publicKey
+      message = result.message
+      signature = result.signature
+    }
+
+    const wallet = CarbonWallet.withMetamask(metamask, evmChainId, pubKey!, addressOptions, {
       ...opts,
       network: this.network,
       config: this.configOverride,
     });
 
-    if (enableJwtAuth) {
+
+    if (noJwtProvided) {
       const authRequest: GrantRequest = {
         grant_type: GrantType.SignatureEth,
-        message,
-        public_key: Buffer.from(publicKey, 'base64').toString('hex'),
-        signature,
+        message: message!,
+        public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
+        signature: signature!,
       }
       await wallet.reloadJwtToken(authRequest)
     }
@@ -611,21 +624,33 @@ class CarbonSDK {
       bech32Prefix: this.networkConfig.Bech32Prefix,
     };
 
-    const enableJwtAuth = opts?.enableJwtAuth
-    const { publicKey, message, signature } = await RainbowKitAccount.authenticate(rainbowKit, enableJwtAuth)
+    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt
 
-    const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, publicKey, addressOptions, rainbowKitWalletOpts.walletProvider, {
+    const signMessageRequired = !rainbowKitWalletOpts?.publicKeyBase64 || noJwtProvided
+
+    let pubKey = rainbowKitWalletOpts?.publicKeyBase64
+    let message: string | undefined
+    let signature: string | undefined
+
+    if (signMessageRequired) {
+      const result = await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth)
+      pubKey = result.publicKey
+      message = result.message
+      signature = result.signature
+    }
+
+    const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, pubKey!, addressOptions, rainbowKitWalletOpts.walletProvider, {
       ...opts,
       network: this.network,
       config: this.configOverride,
     })
 
-    if (enableJwtAuth) {
+    if (noJwtProvided) {
       const authRequest: GrantRequest = {
         grant_type: GrantType.SignatureEth,
-        message,
-        public_key: Buffer.from(publicKey, 'base64').toString('hex'),
-        signature,
+        message: message!,
+        public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
+        signature: signature!,
       }
       await wallet.reloadJwtToken(authRequest)
     }

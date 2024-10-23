@@ -12,7 +12,7 @@ import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } f
 import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { ETHAddress, NEOAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
-import { AccessTokenResponse, GrantRequest, GrantType, hasExpired } from "@carbon-sdk/util/auth";
+import { AccessTokenResponse, GrantRequest, GrantType, hasExpired, hasRefreshTokenExpired, isValidIssuer } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { fetch } from "@carbon-sdk/util/fetch";
@@ -51,7 +51,7 @@ export interface CarbonWalletGenericOpts {
   gasFee?: GasFee;
   isRainbowKit?: boolean;
   enableJwtAuth?: boolean;
-
+  jwt?: AccessTokenResponse
   /**
    * Optional callback that will be called before signing is requested/executed.
    */
@@ -71,6 +71,11 @@ export interface CarbonWalletGenericOpts {
    * Optional callback that will be called if tx broadcast fails.
    */
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
+
+  /**
+   * Optional callback that will be called before an arbitrary message is signed
+   */
+  onRequestSignMessage?: CarbonWallet.OnRequestSignMessageCallback
 }
 
 export interface AuthInfo {
@@ -78,7 +83,11 @@ export interface AuthInfo {
   signature: string
 }
 
-export interface RainbowKitWalletOpts {
+export interface EvmWalletOpts {
+  publicKeyBase64?: string;
+}
+
+export interface RainbowKitWalletOpts extends EvmWalletOpts {
   walletProvider: SupportedEip6963Provider;
 }
 
@@ -162,6 +171,7 @@ export class CarbonWallet {
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
   onBroadcastTxSuccess?: CarbonWallet.OnBroadcastTxSuccessCallback;
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
+  onRequestSignMessage?: CarbonWallet.OnRequestSignMessageCallback;
 
   defaultTimeoutBlocks: number;
 
@@ -218,6 +228,7 @@ export class CarbonWallet {
     this.defaultTimeoutBlocks = opts.defaultTimeoutBlocks ?? 30; // default ~1 minute
     this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
     this.triggerMerge = opts.triggerMerge ?? false
+    this.jwt = opts?.jwt
 
     this.gasFee = opts.gasFee;
 
@@ -228,6 +239,7 @@ export class CarbonWallet {
     this.onSignComplete = opts.onSignComplete;
     this.onBroadcastTxSuccess = opts.onBroadcastTxSuccess;
     this.onBroadcastTxFail = opts.onBroadcastTxFail;
+    this.onRequestSignMessage = opts.onRequestSignMessage;
 
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
@@ -378,14 +390,12 @@ export class CarbonWallet {
 
   public async reloadJwtToken(request?: GrantRequest) {
     if (this.jwt) {
-      const { iss, exp, iat } = jwtDecode(this.jwt.access_token)
-      const validIssuer = iss === 'demex-auth'
-      if (!validIssuer) return this.getNewJwtToken(request)
+      const { iss, exp } = jwtDecode(this.jwt.access_token)
+      if (!isValidIssuer(iss)) return this.getNewJwtToken(request)
       const accessTokenExpired = hasExpired(exp)
       if (accessTokenExpired) {
-        const refreshTokenExpired = hasExpired(iat)
-        if (refreshTokenExpired) return this.getNewJwtToken(request)
-        return this.refreshJwtToken(this.jwt.refresh_token)
+        if (!hasRefreshTokenExpired(this.jwt.refresh_token)) return this.refreshJwtToken(this.jwt.refresh_token)
+        return this.getNewJwtToken(request)
       }
       return
     }
@@ -408,15 +418,21 @@ export class CarbonWallet {
   }
 
   public async constructGrantRequest() {
-    const address = this.isEvmWallet() ? this.hexAddress : this.bech32Address
+    const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
     const message = AuthUtils.getAuthMessage()
-    const signature = await this.signer.signMessage(address, message)
+    const signature = await this.signMessage(address, message)
     return {
       grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
       message,
       public_key: this.publicKey.toString('hex'),
       signature,
     }
+  }
+
+  private async signMessage(address: string, message: string) {
+    await GenericUtils.callIgnoreError(() => this.onRequestSignMessage?.())
+    const signature = await this.signer.signMessage(address, message)
+    return signature
   }
 
   public setGrantee(grantee?: Grantee) {
@@ -1080,6 +1096,7 @@ export namespace CarbonWallet {
   export type SendTxResponse = DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse;
   export type SendTxToMempoolWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type SendTxWithoutConfirmResponse = BroadcastTxAsyncResponse;
+  export type OnRequestSignMessageCallback = () => void | Promise<void>;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
   export type OnBroadcastTxFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;

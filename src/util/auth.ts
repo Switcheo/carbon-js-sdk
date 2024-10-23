@@ -39,3 +39,12 @@ export const hasExpired = (exp: number = 0): boolean => {
   const currentUnix = dayjs().unix()
   return (currentUnix + expirybufferSeconds) >= exp
 }
+
+export const hasRefreshTokenExpired = (refreshToken: string) => {
+  const payloadStr: string | undefined = refreshToken.split('.')[1]
+  if (!payloadStr) return true
+  const payload = JSON.parse(Buffer.from(payloadStr, 'base64').toString())
+  return hasExpired(payload.exp)
+}
+
+export const isValidIssuer = (iss?: string) => iss === 'demex-auth'
