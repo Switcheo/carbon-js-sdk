@@ -73,9 +73,9 @@ export interface CarbonWalletGenericOpts {
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
 
   /**
-   * Optional callback that will be called before an arbitrary message is signed
+   * Optional callback that will be called before authentication is requested
    */
-  onRequestSignMessage?: CarbonWallet.OnRequestSignMessageCallback
+  onRequestAuthCallback?: CarbonWallet.OnRequestAuthCallback
 }
 
 export interface AuthInfo {
@@ -171,7 +171,7 @@ export class CarbonWallet {
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
   onBroadcastTxSuccess?: CarbonWallet.OnBroadcastTxSuccessCallback;
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
-  onRequestSignMessage?: CarbonWallet.OnRequestSignMessageCallback;
+  onRequestAuthCallback?: CarbonWallet.OnRequestAuthCallback;
 
   defaultTimeoutBlocks: number;
 
@@ -239,7 +239,7 @@ export class CarbonWallet {
     this.onSignComplete = opts.onSignComplete;
     this.onBroadcastTxSuccess = opts.onBroadcastTxSuccess;
     this.onBroadcastTxFail = opts.onBroadcastTxFail;
-    this.onRequestSignMessage = opts.onRequestSignMessage;
+    this.onRequestAuthCallback = opts.onRequestAuthCallback;
 
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
@@ -418,21 +418,16 @@ export class CarbonWallet {
   }
 
   public async constructGrantRequest() {
+    await GenericUtils.callIgnoreError(() => this.onRequestAuthCallback?.())
     const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
     const message = AuthUtils.getAuthMessage()
-    const signature = await this.signMessage(address, message)
+    const signature = await this.signer.signMessage(address, message)
     return {
       grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
       message,
       public_key: this.publicKey.toString('hex'),
       signature,
     }
-  }
-
-  private async signMessage(address: string, message: string) {
-    await GenericUtils.callIgnoreError(() => this.onRequestSignMessage?.())
-    const signature = await this.signer.signMessage(address, message)
-    return signature
   }
 
   public setGrantee(grantee?: Grantee) {
@@ -1096,7 +1091,7 @@ export namespace CarbonWallet {
   export type SendTxResponse = DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse;
   export type SendTxToMempoolWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type SendTxWithoutConfirmResponse = BroadcastTxAsyncResponse;
-  export type OnRequestSignMessageCallback = () => void | Promise<void>;
+  export type OnRequestAuthCallback = () => void | Promise<void>;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
   export type OnBroadcastTxFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
