@@ -1,31 +1,31 @@
+import { TxTypes, registry } from "@carbon-sdk/codec";
+import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SupportedEip6963Provider, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { ChainNames, BlockchainV2, EVMChain, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
-import { appendHexPrefix } from "@carbon-sdk/util/generic";
-import { ethers } from "ethers";
-import { makeSignDoc } from "@cosmjs/amino/build";
-import * as ethSignUtils from "eth-sig-util";
+import { AminoTypesMap, AuthUtils, CarbonSDK, EvmUtils, Models, ProviderAgent } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx } from "@carbon-sdk/util";
-import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
-import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
-import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
-import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
-import { AminoTypesMap, CarbonSDK, Models, ProviderAgent } from "@carbon-sdk/index";
-import { StdFee } from "@cosmjs/stargate";
-import { AminoMsg } from "@cosmjs/amino";
-import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
-import { TxTypes, registry } from "@carbon-sdk/codec";
-import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { ETHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { ETHAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { BLOCKCHAIN_V2_TO_V1_MAPPING, BlockchainV2, ChainNames, EVMChain, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
-import { SWTHAddress } from '@carbon-sdk/util/address'
-import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
-import detectEthereumProvider from "@metamask/detect-provider";
-import { parseEvmError } from "./error";
+import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
+import { appendHexPrefix } from "@carbon-sdk/util/generic";
+import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
-import { Eip6963Provider } from "../eip6963Provider";
+import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
+import { AminoMsg } from "@cosmjs/amino";
+import { makeSignDoc } from "@cosmjs/amino/build";
+import { Algo, EncodeObject, TxBodyEncodeObject, makeSignDoc as makeProtoSignDoc } from "@cosmjs/proto-signing";
+import { StdFee } from "@cosmjs/stargate";
+import detectEthereumProvider from "@metamask/detect-provider";
+import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import * as ethSignUtils from "eth-sig-util";
+import { ethers } from "ethers";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
+import { Eip6963Provider } from "../eip6963Provider";
+import { parseEvmError } from "./error";
+import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
+import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
 
 type ChainContracts = {
   [key in Network]: string;
@@ -106,8 +106,6 @@ const CONTRACT_HASH: {
     [Network.MainNet]: "",
   } as const,
 } as const;
-
-const DEFAULT_PUBLIC_KEY_MESSAGE = `By signing, I confirm that I have read and agreed to the terms and conditions outlined here (https://guide.dem.exchange/technical/terms-and-conditions).\nAdditionally, I verify that I am not a citizen of any of the following countries: Afghanistan, Angola, Central African Republic, China (Mainland), Côte d'Ivoire, Crimea, Cuba, Democratic Republic of Congo, Ethiopia, Guinea-Bissau, Haiti, Iran, Kuwait, Lebanon, Liberia, Libya, Mali, North Korea, Rwanda, Sevastopol, Sierra Leone, Singapore, Somalia, South Africa, Sudan, South Sudan, Syria, Quebec (Canada), U.S, Yemen, Zimbabwe.`
 
 const REGISTRY_CONTRACT_ABI = ABIs.keyStorage;
 
@@ -206,7 +204,7 @@ export class MetaMask extends Eip6963Provider {
     };
     const signAmino = async (_: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, msgs, fee, memo, sequence } = doc
-      const { sig, signedDoc }  = await metamask.signEip712(
+      const { sig, signedDoc } = await metamask.signEip712(
         evmHexAddress,
         account_number,
         evmChainId,
@@ -231,7 +229,6 @@ export class MetaMask extends Eip6963Provider {
       const address = await metamask.defaultAccount()
       return [
         {
-          // Possible to change to "ethsecp256k1" ?
           algo: "secp256k1" as Algo,
           address,
           pubkey: Uint8Array.from(Buffer.from(pubKeyBase64, 'base64')),
@@ -295,6 +292,18 @@ export class MetaMask extends Eip6963Provider {
       sendEvmTransaction,
       signMessage,
     };
+  }
+
+  static async signAndRecoverPubKey(provider: MetaMask, enableJwtAuth?: boolean) {
+    const address = await provider.defaultAccount()
+    const message = enableJwtAuth ? AuthUtils.getAuthMessage() : DEFAULT_PUBLIC_KEY_MESSAGE
+    const signature = await provider.personalSign(address, message)
+    const publicKeyHex = EvmUtils.recoverPublicKey(message, signature)
+    return {
+      publicKey: Buffer.from(publicKeyHex, 'hex').toString('base64'),
+      signature,
+      message,
+    }
   }
 
   static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): MetaMaskChangeNetworkParam {
@@ -544,9 +553,9 @@ export class MetaMask extends Eip6963Provider {
   }
 
   async encryptMnemonic(mnemonic: string): Promise<string> {
-    const metamaskAPI = await this.getConnectedAPI();
+
     const defaultAccount = await this.defaultAccount();
-    const publicKey = await this.getEncryptionPublicKey(defaultAccount, metamaskAPI) as string;
+    const publicKey = await this.getEncryptionPublicKey(defaultAccount) as string;
 
     const messageToEncrypt = getEncryptMessage(mnemonic);
 
@@ -565,14 +574,13 @@ export class MetaMask extends Eip6963Provider {
   }
 
   // create signed public key for merging of cosmos and ethereum accounts (Metamask V2)
-  async signPublicKeyMergeAccount(publicKey: string, address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
-    const api = metamaskAPI ?? await this.getConnectedAPI();
+  async signPublicKeyMergeAccount(publicKey: string, address: string): Promise<string> {
     const message = `${PUBLIC_KEY_SIGNING_TEXT}${publicKey}`;
-    return (await this.personalSign(address, message, api)).split("0x")[1]
+    return (await this.personalSign(address, message)).split("0x")[1]
   }
 
-  async personalSign(address: string, message: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
-    const api = metamaskAPI ?? await this.getConnectedAPI();
+  async personalSign(address: string, message: string): Promise<string> {
+    const api = await this.getConnectedAPI();
     const ethAddress = ethers.utils.getAddress(address);
     return (await api.request({
       method: "personal_sign",
@@ -580,27 +588,21 @@ export class MetaMask extends Eip6963Provider {
     })) as string;
   }
 
-  async getEncryptionPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
-    const api = metamaskAPI ?? await this.getConnectedAPI();
+  async getEncryptionPublicKey(address: string): Promise<string> {
+    const api = await this.getConnectedAPI();
     const publicKey = (await api.request({
       method: "eth_getEncryptionPublicKey",
       params: [address],
     })) as string;
     return publicKey;
   }
-  // get public key from Metamask
-  async getPublicKey(address: string, message: string = DEFAULT_PUBLIC_KEY_MESSAGE, metamaskAPI?: MetaMaskAPI): Promise<string> {
-    const signedMessage = await this.personalSign(address, message, metamaskAPI)
-    const uncompressedPublicKey = ethers.utils.recoverPublicKey(ethers.utils.hashMessage(message), signedMessage)
-    return ethers.utils.computePublicKey(uncompressedPublicKey, true).split('0x')[1]
-  }
 
-  async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{sig: string, signedDoc: CarbonTx.StdSignDoc}> {
+  async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {
     const metamaskNetwork = await this.syncBlockchain()
     const metamaskChainId = metamaskNetwork.chainId ? `carbon_${metamaskNetwork.chainId.toString()}-1` : ''
     const metamaskAPI = await this.getConnectedAPI();
     if (metamaskChainId !== evmChainId) {
-        memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + metamaskChainId + ";" + "carbon-chain-id:" + evmChainId
+      memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + metamaskChainId + ";" + "carbon-chain-id:" + evmChainId
     }
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc, metamaskChainId)
@@ -614,12 +616,12 @@ export class MetaMask extends Eip6963Provider {
       })) as string
       return signature.split('0x')[1]
     })
-    return {sig, signedDoc: stdSignDoc}
+    return { sig, signedDoc: stdSignDoc }
   }
 
-  async sendEvmTransaction(req: ethers.providers.TransactionRequest, metamaskAPI?: MetaMaskAPI) {
+  async sendEvmTransaction(req: ethers.providers.TransactionRequest) {
     await this.verifyNetworkAndConnectedAccount(req.from!, req.chainId!.toString())
-    const api = metamaskAPI ?? await this.getConnectedAPI();
+    const api = await this.getConnectedAPI();
     const tx = {
       from: req.from,
       to: req.to,

@@ -1,17 +1,20 @@
 export * as AddressUtils from "./address";
+export * as AllianceUtils from "./alliance";
 export * as APIUtils from "./api";
+export * as AuthUtils from "./auth";
 export * as BlockchainUtils from "./blockchain";
 export * as ExternalUtils from "./external";
 export * as FetchUtils from "./fetch";
 export * as GenericUtils from "./generic";
 export * as GovUtils from "./gov";
+export * as GrantUtils from "./grant";
 export * as IBCUtils from "./ibc";
+export * as MessageUtils from "./message";
 export * as NetworkUtils from "./network";
 export * as NumberUtils from "./number";
 export * as TokenUtils from "./token";
 export * as TransferUtils from "./transferfees";
 export * as CarbonTx from "./tx";
 export * as TypeUtils from "./type";
-export * as GrantUtils from "./grant";
-export * as AllianceUtils from "./alliance";
-export * as MessageUtils from "./message";
+export * as EvmUtils from "./evm";
+
