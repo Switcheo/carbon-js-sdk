@@ -171,7 +171,7 @@ export class CarbonWallet {
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
   onBroadcastTxSuccess?: CarbonWallet.OnBroadcastTxSuccessCallback;
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
-  onRequestAuthCallback?: CarbonWallet.OnRequestAuthCallback;
+  onRequestAuth?: CarbonWallet.OnRequestAuthCallback;
 
   defaultTimeoutBlocks: number;
 
@@ -239,7 +239,7 @@ export class CarbonWallet {
     this.onSignComplete = opts.onSignComplete;
     this.onBroadcastTxSuccess = opts.onBroadcastTxSuccess;
     this.onBroadcastTxFail = opts.onBroadcastTxFail;
-    this.onRequestAuthCallback = opts.onRequestAuthCallback;
+    this.onRequestAuth = opts.onRequestAuthCallback;
 
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
@@ -418,7 +418,7 @@ export class CarbonWallet {
   }
 
   public async constructGrantRequest() {
-    await GenericUtils.callIgnoreError(() => this.onRequestAuthCallback?.())
+    await GenericUtils.callIgnoreError(() => this.onRequestAuth?.())
     const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
     const message = AuthUtils.getAuthMessage()
     const signature = await this.signer.signMessage(address, message)
