@@ -76,6 +76,11 @@ export interface CarbonWalletGenericOpts {
    * Optional callback that will be called before authentication is requested
    */
   onRequestAuth?: CarbonWallet.OnRequestAuthCallback
+
+  /**
+  * Optional callback that will be called after authentication is complete
+  */
+  onAuthComplete?: CarbonWallet.OnAuthComplete
 }
 
 export interface AuthInfo {
@@ -172,6 +177,7 @@ export class CarbonWallet {
   onBroadcastTxSuccess?: CarbonWallet.OnBroadcastTxSuccessCallback;
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
   onRequestAuth?: CarbonWallet.OnRequestAuthCallback;
+  onAuthComplete?: CarbonWallet.OnAuthComplete;
 
   defaultTimeoutBlocks: number;
 
@@ -240,6 +246,7 @@ export class CarbonWallet {
     this.onBroadcastTxSuccess = opts.onBroadcastTxSuccess;
     this.onBroadcastTxFail = opts.onBroadcastTxFail;
     this.onRequestAuth = opts.onRequestAuth;
+    this.onAuthComplete = opts.onAuthComplete;
 
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
@@ -417,16 +424,20 @@ export class CarbonWallet {
     this.jwt = response.data.result
   }
 
-  public async constructGrantRequest() {
-    await GenericUtils.callIgnoreError(() => this.onRequestAuth?.())
-    const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
-    const message = AuthUtils.getAuthMessage()
-    const signature = await this.signer.signMessage(address, message)
-    return {
-      grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
-      message,
-      public_key: this.publicKey.toString('hex'),
-      signature,
+  private async constructGrantRequest() {
+    try {
+      await GenericUtils.callIgnoreError(() => this.onRequestAuth?.())
+      const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
+      const message = AuthUtils.getAuthMessage()
+      const signature = await this.signer.signMessage(address, message)
+      return {
+        grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
+        message,
+        public_key: this.publicKey.toString('hex'),
+        signature,
+      }
+    } finally {
+      await GenericUtils.callIgnoreError(() => this.onAuthComplete?.())
     }
   }
 
@@ -1092,6 +1103,7 @@ export namespace CarbonWallet {
   export type SendTxToMempoolWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type SendTxWithoutConfirmResponse = BroadcastTxAsyncResponse;
   export type OnRequestAuthCallback = () => void | Promise<void>;
+  export type OnAuthComplete = () => void | Promise<void>;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
   export type OnBroadcastTxFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
