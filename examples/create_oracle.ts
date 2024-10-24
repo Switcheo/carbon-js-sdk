@@ -53,7 +53,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.TestNet,
+    network: CarbonSDK.Network.MainNet,
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
@@ -61,8 +61,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   const mainnetOraclesMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
   const oraclesToCreate = [
-    ".CUNI",
-    ".CUSDY"
+    ".CHYPER",
   ]
 
   const txs: any[] = []
@@ -79,7 +78,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
           maxResultAge: 300,
           securityType: "SecuredByValidators",
           resultStrategy: "median",
-          resolution: oracleId == ".CUNI" ? 2 : 15,
+          resolution: 2,
           spec,
         },
       }),
