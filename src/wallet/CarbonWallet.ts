@@ -239,7 +239,7 @@ export class CarbonWallet {
     this.onSignComplete = opts.onSignComplete;
     this.onBroadcastTxSuccess = opts.onBroadcastTxSuccess;
     this.onBroadcastTxFail = opts.onBroadcastTxFail;
-    this.onRequestAuth = opts.onRequestAuthCallback;
+    this.onRequestAuth = opts.onRequestAuth;
 
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
