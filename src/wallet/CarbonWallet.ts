@@ -75,7 +75,7 @@ export interface CarbonWalletGenericOpts {
   /**
    * Optional callback that will be called before authentication is requested
    */
-  onRequestAuthCallback?: CarbonWallet.OnRequestAuthCallback
+  onRequestAuth?: CarbonWallet.OnRequestAuthCallback
 }
 
 export interface AuthInfo {
