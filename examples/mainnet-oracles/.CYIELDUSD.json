@@ -46,7 +46,7 @@
       "adapter": "unchanged_handler",
       "config": {
         "strategy": "nullify",
-        "threshold_duration": "5400"
+        "threshold_duration": "86400"
       }
     },
     {
