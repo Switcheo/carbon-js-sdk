@@ -61,7 +61,8 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   const mainnetOraclesMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
   const oraclesToCreate = [
-    ".CHYPER",
+    ".CMETH",
+    ".CMANTLEPTMETH26DEC24",
   ]
 
   const txs: any[] = []
@@ -78,7 +79,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
           maxResultAge: 300,
           securityType: "SecuredByValidators",
           resultStrategy: "median",
-          resolution: 2,
+          resolution: 41,
           spec,
         },
       }),

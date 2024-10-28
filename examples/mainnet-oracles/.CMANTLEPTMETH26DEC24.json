@@ -1,0 +1,112 @@
+{
+  "output_id": "ptmeth_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "eth_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": "SIDXETH",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "meth_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CMETH",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "pendle_ptmeth_meth_redemption_rate_rsp",
+      "adapters": [
+        {
+          "adapter": "evm_fetcher",
+          "config": {
+            "custom_node_url_key": "mantle_rpc",
+            "default_node_rpc": "https://rpc-mantle.carbon.network",
+            "address": "0x9a9Fa8338dd5E5B2188006f1Cd2Ef26d921650C2",
+            "calldata": "0xa31426d100000000000000000000000099e83709846b6cb82d47a0d78b175e68497ea28b0000000000000000000000000000000000000000000000000000000000000384"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "pendle_ptmeth_meth_redemption_rate_rsp",
+      "output_id": "pendle_ptmeth_meth_redemption_rate_18",
+      "adapter": "evm_value_parser",
+      "config": {
+        "output_type": "uint256"
+      }
+    },
+    {
+      "output_id": "pendle_ptmeth_meth_redemption_rate",
+      "input_id": "pendle_ptmeth_meth_redemption_rate_18",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "18"
+      }
+    },
+    {
+      "output_id": "ptmeth_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"meth_usd\",\"pendle_ptmeth_meth_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "ptmeth_usd",
+      "input_id": "ptmeth_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    },
+    {
+      "output_id": "ptmeth_usd",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"ptmeth_usd\",\"eth_usd\"]"
+      }
+    },
+    {
+      "output_id": "ptmeth_usd",
+      "input_id": "ptmeth_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "8"
+      }
+    }
+  ]
+}
