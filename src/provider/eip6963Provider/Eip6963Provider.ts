@@ -7,11 +7,11 @@ class Eip6963Provider {
     this.getProviders()
   }
 
-  protected getProvider(name: SupportedEip6963Provider) {
+  public getProvider(name: SupportedEip6963Provider) {
     return this.providers.find(p => p.info.name === name)
   }
 
-  protected getDefaultProvider() {
+  public getDefaultProvider() {
     return this.providers[0]
   }
 
