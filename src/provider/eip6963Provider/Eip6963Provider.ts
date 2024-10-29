@@ -7,14 +7,18 @@ class Eip6963Provider {
     this.getProviders()
   }
 
-  public getProvider(name : SupportedEip6963Provider) {
+  protected getProvider(name: SupportedEip6963Provider) {
     return this.providers.find(p => p.info.name === name)
+  }
+
+  protected getDefaultProvider() {
+    return this.providers[0]
   }
 
   private getProviders() {
     let providers: EIP6963ProviderDetail[] = []
 
-    function onAnnouncement(event: EIP6963AnnounceProviderEvent){
+    function onAnnouncement(event: EIP6963AnnounceProviderEvent) {
       // Prevent adding a provider if it already exists in the list based on its uuid.
       if (providers.some(p => p.info.uuid === event.detail.info.uuid)) return
       providers = [...providers, event.detail]
@@ -23,7 +27,7 @@ class Eip6963Provider {
     window.addEventListener("eip6963:announceProvider", onAnnouncement);
     window.dispatchEvent(new Event("eip6963:requestProvider"));
 
-    this.providers =  providers
+    this.providers = providers
   }
 }
 
