@@ -12,7 +12,7 @@ export interface DepositParams {
   senderAddress: string;
   receiverAddress: string;
   amount: BigNumber;
-  depositTokenExternalAddress: string;
+  depositTokenExternalAddress?: string;
   rpcUrl: string;
   gasPriceGwei?: BigNumber;
   gasLimit?: BigNumber;
@@ -51,6 +51,19 @@ export class AxelarBridgeClient {
     const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
     const abi = isSupportNativeToken ? ABIs.nativeDepositer : ABIs.axelarBridge;
     const contract = new ethers.Contract(contractAddress, abi, rpcProvider);
+
+    if (isSupportNativeToken) {
+      return await contract.connect(signer).deposit(
+        senderAddress, // tokenSender
+        receiverAddress, // carbonReceiver bech32Address
+        {
+          nonce,
+          ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+          ...(gasLimit && { gasLimit: gasLimit.toString(10) }),
+          value: amount.toString(10),
+        }
+      );
+    }
 
     return await contract.connect(signer).deposit(
       senderAddress, // tokenSender
