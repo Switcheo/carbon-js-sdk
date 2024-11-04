@@ -18,7 +18,7 @@ export interface DepositParams {
   gasLimit?: BigNumber;
   signer: ethers.Signer;
   nonce?: number;
-  isSupportNativeToken?: boolean;
+  isNativeTokenDeposit?: boolean;
 }
 
 export interface EthersTransactionResponse extends ethers.Transaction {
@@ -46,22 +46,24 @@ export class AxelarBridgeClient {
       nonce,
       gasPriceGwei,
       gasLimit,
-      isSupportNativeToken = false,
+      isNativeTokenDeposit = false,
     } = params;
     const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
-    const abi = isSupportNativeToken ? ABIs.nativeDepositer : ABIs.axelarBridge;
+    const abi = isNativeTokenDeposit ? ABIs.nativeDepositer : ABIs.axelarBridge;
     const contract = new ethers.Contract(contractAddress, abi, rpcProvider);
 
-    if (isSupportNativeToken) {
+    const txParams = {
+      nonce,
+      ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+      ...(gasLimit && { gasLimit: gasLimit.toString(10) }),
+      ...(isNativeTokenDeposit && { value: amount.toString(10) }),
+    };
+
+    if (isNativeTokenDeposit) {
       return await contract.connect(signer).deposit(
         senderAddress, // tokenSender
         receiverAddress, // carbonReceiver bech32Address
-        {
-          nonce,
-          ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-          ...(gasLimit && { gasLimit: gasLimit.toString(10) }),
-          value: amount.toString(10),
-        }
+        txParams
       );
     }
 
@@ -70,11 +72,7 @@ export class AxelarBridgeClient {
       receiverAddress, // carbonReceiver bech32Address
       depositTokenExternalAddress, // asset
       amount.toString(10),
-      {
-        nonce,
-        ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-        ...(gasLimit && { gasLimit: gasLimit.toString(10) }),
-      }
+      txParams
     );
   }
 }
