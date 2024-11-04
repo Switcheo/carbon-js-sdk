@@ -37,7 +37,7 @@ export class AxelarBridgeClient {
 
   // lock deposit 
   public async deposit(params: DepositParams): Promise<EthersTransactionResponse> {
-    const { contractAddress, senderAddress, receiverAddress, depositTokenExternalAddress, amount, signer, rpcUrl } = params;
+    const { contractAddress, senderAddress, receiverAddress, depositTokenExternalAddress, amount, signer, rpcUrl, nonce, gasPriceGwei, gasLimit } = params;
     const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl)
     const contract = new ethers.Contract(contractAddress, ABIs.axelarBridge, rpcProvider)
 
@@ -46,6 +46,11 @@ export class AxelarBridgeClient {
       receiverAddress, // carbonReceiver bech32Address
       depositTokenExternalAddress, // asset
       amount.toString(10),
+      {
+        nonce,
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
+      }
     )
   }
 }
