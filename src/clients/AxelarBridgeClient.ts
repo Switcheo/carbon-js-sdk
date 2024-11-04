@@ -17,7 +17,8 @@ export interface DepositParams {
   gasPriceGwei?: BigNumber;
   gasLimit?: BigNumber;
   signer: ethers.Signer;
-  nonce?: number
+  nonce?: number;
+  isSupportNativeToken?: boolean;
 }
 
 export interface EthersTransactionResponse extends ethers.Transaction {
@@ -25,21 +26,31 @@ export interface EthersTransactionResponse extends ethers.Transaction {
 }
 
 export class AxelarBridgeClient {
-
-  private constructor(
-    public readonly configProvider: NetworkConfigProvider,
-  ) { }
+  private constructor(public readonly configProvider: NetworkConfigProvider) {}
 
   public static instance(opts: AxelarBridgeClientOpts) {
-    const { configProvider } = opts
-    return new AxelarBridgeClient(configProvider)
+    const { configProvider } = opts;
+    return new AxelarBridgeClient(configProvider);
   }
 
-  // lock deposit 
+  // lock deposit
   public async deposit(params: DepositParams): Promise<EthersTransactionResponse> {
-    const { contractAddress, senderAddress, receiverAddress, depositTokenExternalAddress, amount, signer, rpcUrl, nonce, gasPriceGwei, gasLimit } = params;
-    const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl)
-    const contract = new ethers.Contract(contractAddress, ABIs.axelarBridge, rpcProvider)
+    const {
+      contractAddress,
+      senderAddress,
+      receiverAddress,
+      depositTokenExternalAddress,
+      amount,
+      signer,
+      rpcUrl,
+      nonce,
+      gasPriceGwei,
+      gasLimit,
+      isSupportNativeToken = false,
+    } = params;
+    const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
+    const abi = isSupportNativeToken ? ABIs.nativeDepositer : ABIs.axelarBridge;
+    const contract = new ethers.Contract(contractAddress, abi, rpcProvider);
 
     return await contract.connect(signer).deposit(
       senderAddress, // tokenSender
@@ -48,11 +59,11 @@ export class AxelarBridgeClient {
       amount.toString(10),
       {
         nonce,
-        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
+        ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+        ...(gasLimit && { gasLimit: gasLimit.toString(10) }),
       }
-    )
+    );
   }
 }
 
-export default AxelarBridgeClient
+export default AxelarBridgeClient;
