@@ -33,8 +33,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "eris_ampkuji_redemption_rate",
-            "default_node_host": "https://rest-kujira.ecostake.com",
+            "custom_node_url_key": "eris_ampkuji_redemption_rate_1",
+            "default_node_host": "https://kujira-api.polkachu.com",
             "default_node_path": "/cosmwasm/wasm/v1/contract/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/smart/eyJzdGF0ZSI6e319",
             "paths": "[\"data.exchange_rate\"]",
             "timeout": "10"
@@ -51,8 +51,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "fin_ampkuji_swap_rate",
-            "default_node_host": "https://rest-kujira.ecostake.com",
+            "custom_node_url_key": "fin_ampkuji_swap_rate_1",
+            "default_node_host": "https://kujira-api.polkachu.com",
             "default_node_path": "/cosmwasm/wasm/v1/contract/kujira1lse59wt7a5yksdd08mennt299katjkfzdhmh8hvck8ln08jktcmsxrnh8s/smart/ewogICJzaW11bGF0aW9uIjp7CiAgICAib2ZmZXJfYXNzZXQiOnsKICAgICAgImFtb3VudCI6IjEwMDAwMDAiLAogICAgICAiaW5mbyI6ewogICAgICAgICJuYXRpdmVfdG9rZW4iOnsKICAgICAgICAgICJkZW5vbSI6ImZhY3Rvcnkva3VqaXJhMW4zZnI1ZjU2cjJjZTBzMzd3ZHZ3cms5OHloaHEzdW5ueGdjcXVzOG56c2Z4dmxsazB5eHF1dXJxdHkvYW1wS1VKSSIKICAgICAgICB9CiAgICAgIH0KICAgIH0KICB9Cn0=",
             "paths": "[\"data.return_amount\"]",
             "timeout": "10"

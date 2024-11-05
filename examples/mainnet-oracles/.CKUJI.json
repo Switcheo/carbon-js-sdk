@@ -67,8 +67,8 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kujira_kuji_usdc_4",
-            "default_node_host": "https://rest-kujira.ecostake.com",
+            "custom_node_url_key": "kujira_kuji_usdc_5",
+            "default_node_host": "https://kujira-api.polkachu.com",
             "default_node_path": "/cosmwasm/wasm/v1/contract/kujira1pw96huy6z02uk8hdpruk6g8u700dp8yxjhp46c24rwkzay2lfd3quqdum5/smart/eyJib29rIjp7ImxpbWl0IjogMX19",
             "paths": "[\"data.quote.0.quote_price\"]",
             "timeout": "10"

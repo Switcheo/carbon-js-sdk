@@ -1,5 +1,5 @@
 {
-  "output_id": "hyper_usd",
+  "output_id": "hype_usd",
   "templates": [
     {
       "template_id": "full_response_handler",
@@ -23,14 +23,14 @@
   ],
   "jobs": [
     {
-      "output_id": "hyper_usd",
+      "output_id": "hype_usd",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "hyper_usd",
+            "custom_node_url_key": "hype_usd",
             "default_node_host": "https://oracle-utils.carbon.network",
-            "default_node_path": "/hyper",
+            "default_node_path": "/hype",
             "paths": "[\"price\"]",
             "timeout": "10"
           }
@@ -41,8 +41,8 @@
       ]
     },
     {
-      "output_id": "hyper_usd",
-      "input_id": "hyper_usd",
+      "output_id": "hype_usd",
+      "input_id": "hype_usd",
       "adapter": "float_handler",
       "config": {
         "operation": "round",

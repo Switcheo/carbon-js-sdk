@@ -62,7 +62,8 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   const specMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
   const oraclesToUpdate = [
-    ".CYIELDUSD",
+    ".CKUJI",
+    ".CAMPKUJI",
   ]
 
   const txs: any[] = []
