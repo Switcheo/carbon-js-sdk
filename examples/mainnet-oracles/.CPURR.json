@@ -32,7 +32,7 @@
             "default_node_host": "https://api.hyperliquid.xyz",
             "default_node_path": "/info",
             "request_body": "{\"type\": \"allMids\"}",
-            "paths": "[\"PURR/USDC\"]",
+            "paths": "[\"PURR\"]",
             "timeout": "10"
           }
         },

@@ -1,0 +1,157 @@
+{
+  "output_id": "virtual_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "bybit_virtual_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_virtual_usdt",
+            "default_node_host": "https://api-bybit.carbon.network",
+            "default_node_path": "/v5/market/tickers?category=linear&symbol=VIRTUALUSDT",
+            "paths": "[\"result.list.0.indexPrice\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "bybit_virtual_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"bybit_virtual_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "eth_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": "SIDXETH",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "uniswap_virtual_eth_rsp",
+      "adapters": [
+        {
+          "adapter": "evm_fetcher",
+          "config": {
+            "custom_node_url_key": "base_rpc",
+            "default_node_rpc": "https://rpc-base.carbon.network",
+            "address": "0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a",
+            "calldata": "0xc6a5026a0000000000000000000000000b3e328455c4059eeb9e3f84b5543f74e24e7e1b00000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000027100000000000000000000000000000000000000000000000000000000000000000"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "uniswap_virtual_eth_rsp",
+      "output_id": "uniswap_virtual_eth_rsp_18",
+      "adapter": "evm_struct_parser",
+      "config": {
+        "output_type": "uint256",
+        "output_struct": "[\"uint256\",\"uint160\",\"uint32\",\"uint256\"]",
+        "output_index": "0"
+      }
+    },
+    {
+      "input_id": "uniswap_virtual_eth_rsp_18",
+      "output_id": "uniswap_virtual_eth",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "18"
+      }
+    },
+    {
+      "output_id": "uniswap_virtual_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"uniswap_virtual_eth\",\"eth_usd\"]"
+      }
+    },
+    {
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_virtual_usd\", \"uniswap_virtual_usd\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "virtual_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_virtual_usd\", \"uniswap_virtual_usd\"]",
+        "weights": "[0.5, 0.5]"
+      }
+    },
+    {
+      "output_id": "virtual_usd",
+      "input_id": "virtual_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "8"
+      }
+    }
+  ]
+}
