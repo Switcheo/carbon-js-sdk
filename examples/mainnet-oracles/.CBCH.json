@@ -47,7 +47,7 @@
           "adapter": "fetcher_multiple",
           "config": {
             "custom_node_url_key": "binance_bch_usdt",
-            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_host": "https://api-binance-proxy-1.carbon.network",
             "default_node_path": "/api/v3/ticker/price?symbol=BCHUSDT",
             "paths": "[\"price\"]",
             "timeout": "10"
