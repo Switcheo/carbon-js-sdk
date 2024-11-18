@@ -81,6 +81,9 @@ export const WrapToMultiSigMsg = (
 
   console.log('====== CLI cmd to execute:')
   console.log(`carbond tx group exec ${proposalId} --from ${connectedSDK.wallet.bech32Address} --keyring-backend file --fees 100000000swth -y \n`)
+
+  console.log('====== Voting UI:')
+  console.log(`https://0xbeef.carbon.network/group/${process.env.GROUP_ID}/proposal/${proposalId}`)
 })().catch((e) => {
   console.log({ e })
 }).finally(() => process.exit(0));
