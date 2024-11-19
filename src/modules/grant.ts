@@ -9,6 +9,15 @@ import { MsgGrantAllowance, MsgRevokeAllowance } from "@carbon-sdk/codec/cosmos/
 import { GrantTypes } from "@carbon-sdk/provider/amino/types/grant";
 import BaseModule from "./base";
 
+interface GrantMessages {
+  typeUrl: string,
+  value: MsgGrant | MsgRevokeAllowance | MsgGrantAllowance
+}
+
+interface RevokeMessages {
+  typeUrl: string,
+  value: MsgRevoke | MsgRevokeAllowance
+}
 export class GrantModule extends BaseModule {
   public async grantAuthAndAllowance(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
@@ -32,8 +41,10 @@ export class GrantModule extends BaseModule {
         typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
       }
     })
-    let messages = encodedGrantMsgs
+    let messages: GrantMessages[] = encodedGrantMsgs
 
+    // can only have one existing grant between granter and grantee
+    // to 'extend' have to revoke existing fee-grant and approve new fee-grant with new expiration
     if (params.existingGrantee) {
       const encodedRevokeAllowanceMsg = [{
         typeUrl: CarbonTx.Types.MsgRevokeAllowance,
@@ -74,6 +85,7 @@ export class GrantModule extends BaseModule {
     const wallet = this.getWallet()
     const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
 
+
     const encodedRevokeGrantMsgs = authorizedSignlessMsgs.map((msg: string) => {
       const revokeMsg = MsgRevoke.fromPartial({
         granter: params.granter ?? wallet.bech32Address,
@@ -86,7 +98,18 @@ export class GrantModule extends BaseModule {
       }
     })
 
-    const result = await wallet.sendTxs(encodedRevokeGrantMsgs, opts)
+    let messages: RevokeMessages[] = encodedRevokeGrantMsgs
+    const encodedRevokeAllowanceMsg = [{
+      typeUrl: CarbonTx.Types.MsgRevokeAllowance,
+      value: MsgRevokeAllowance.fromPartial({
+        granter: params.granter ?? wallet.bech32Address,
+        grantee: params.grantee,
+      }),
+    }]
+
+    messages = messages.concat(encodedRevokeAllowanceMsg)
+
+    const result = await wallet.sendTxs(messages, opts)
 
     return result
   }
