@@ -5,6 +5,8 @@
 Try out the [examples](./examples/). The project has to be built before you can start running the examples
 
 ```bash
+# go to the root of your carbon-js-sdk directory
+cd /path/to/carbon-js-sdk
 
 # install ts-node, typescript
 npm i -g ts-node typescript
@@ -14,10 +16,12 @@ yarn
 
 # build the SDK
 yarn build
+```
 
+## To Run Example script
+```bash
 # run connect SDK example
 ts-node examples/connect_sdk
-
 ```
 
 ## Initializing CarbonSDK
