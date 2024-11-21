@@ -1,16 +1,17 @@
-import * as BIP39 from "bip39";
-import { MsgUpdateOracle } from "../lib/codec/Switcheo/carbon/oracle/tx";
-import { MsgSubmitProposal, Exec, MsgSubmitProposalResponse } from "../lib/codec/cosmos/group/v1/tx"
-import { Any } from "../lib/codec";
-import { CarbonSDK, CarbonTx } from "./_sdk";
 import "./_setup";
-import { DeliverTxResponse } from "@cosmjs/stargate";
 
-export const WrapToMultiSigMsg = (
+import { EncodeObject } from "@cosmjs/proto-signing";
+import { DeliverTxResponse } from "@cosmjs/stargate";
+import { MsgUpdateOracle } from "../lib/codec/Switcheo/carbon/oracle/tx";
+import { Exec, MsgSubmitProposal, MsgSubmitProposalResponse } from "../lib/codec/cosmos/group/v1/tx";
+import { CarbonSDK, CarbonTx } from "./_sdk";
+import NodeLedger from "./node-ledger";
+
+const wrapToMultiSigMsg = (
   groupPolicyAddress: string,
   proposers: string[],
   metadata: string,
-  messages: Any[],
+  messages: EncodeObject[],
   shouldExec: boolean,
   title: string,
   summary: string,
@@ -29,14 +30,18 @@ export const WrapToMultiSigMsg = (
   return groupMsg
 }
 
-(async () => {
-  const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
-  console.log("mnemonics", mnemonics);
 
-  const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.LocalHost,
-  });
-  const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
+(async () => {
+  console.log('\n====== Connecting to Ledger')
+  console.log("Please ensure that:")
+  console.log("1. Your ledger is connected.")
+  console.log("2. The ledger connected Cosmos app is open.")
+  console.log("3. Approve any system permission pop up for connection.")
+  console.log("\nConnecting to ledger…")
+  const ledger = await new NodeLedger().connect();
+
+  console.log("Successfully connected with ledger, address:", ledger.getCosmosAddress());
+  const sdk = await CarbonSDK.instanceWithLedger(ledger as any);
 
   const groupPolicyAddress = process.env.GROUP_ADDRESS ?? ""
   const updateOracleMsg = MsgUpdateOracle.fromPartial({
@@ -47,16 +52,16 @@ export const WrapToMultiSigMsg = (
     }
   })
 
-  const msgs: Any[] = [
+  const msgs: EncodeObject[] = [
     {
       typeUrl: CarbonTx.Types.MsgUpdateOracle,
       value: MsgUpdateOracle.encode(updateOracleMsg).finish()
     }
   ]
 
-  const groupMsg = WrapToMultiSigMsg(
+  const groupMsg = wrapToMultiSigMsg(
     groupPolicyAddress,                       // group address
-    [connectedSDK.wallet.bech32Address],      // proposers
+    [sdk.wallet.bech32Address],               // proposers
     "",                                       // metadata
     msgs,                                     // msgs to execute
     false,                                    // shouldTryExec immediately
@@ -64,7 +69,7 @@ export const WrapToMultiSigMsg = (
     "",                                       // summary
   )
 
-  const result = await connectedSDK.wallet.sendTxs([{
+  const result = await sdk.wallet.sendTxs([{
     typeUrl: CarbonTx.Types.MsgGroupSubmitProposal,
     value: groupMsg,
   }])
@@ -77,13 +82,14 @@ export const WrapToMultiSigMsg = (
   const proposalId = response.proposalId
 
   console.log('\n====== CLI cmd to vote:')
-  console.log(`carbond tx group vote ${proposalId} ${connectedSDK.wallet.bech32Address} VOTE_OPTION_YES "" --keyring-backend file --fees 1000000000swth -y \n`)
+  console.log(`carbond tx group vote ${proposalId} ${sdk.wallet.bech32Address} VOTE_OPTION_YES "" --keyring-backend file --fees 1000000000swth -y \n`)
 
   console.log('====== CLI cmd to execute:')
-  console.log(`carbond tx group exec ${proposalId} --from ${connectedSDK.wallet.bech32Address} --keyring-backend file --fees 100000000swth -y \n`)
+  console.log(`carbond tx group exec ${proposalId} --from ${sdk.wallet.bech32Address} --keyring-backend file --fees 100000000swth -y \n`)
 
   console.log('====== Voting UI:')
   console.log(`https://0xbeef.carbon.network/group/${process.env.GROUP_ID}/proposal/${proposalId}`)
 })().catch((e) => {
   console.log({ e })
 }).finally(() => process.exit(0));
+
