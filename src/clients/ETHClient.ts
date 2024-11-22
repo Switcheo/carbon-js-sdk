@@ -153,8 +153,8 @@ export class ETHClient {
     const nonce = await this.getTxNonce(ethAddress, params.nonce, rpcProvider);
     const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, approvalAmount, {
       nonce,
-      ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-      ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
+      ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+      ...gasLimit && ({ gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
     });
 
     return approveResultTx;
@@ -223,15 +223,15 @@ export class ETHClient {
         toAssetHash, // _toAssetHash
       ],
       [
-        amount.toString(10), // amount
-        feeAmount.toString(10), // fee amount
-        amount.toString(10),
+        amount.dp(0, BigNumber.ROUND_FLOOR).toString(10), // amount
+        feeAmount.dp(0, BigNumber.ROUND_FLOOR).toString(10), // fee amount
+        amount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
       ], // callAmount
       {
-        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
         nonce,
-        value: ethAmount.toString(10),
+        value: ethAmount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
       }
     );
 
@@ -269,19 +269,19 @@ export class ETHClient {
       feeAddress, // _feeAddress
       [
         // _values
-        amount.toString(), // amount
+        amount.dp(0, BigNumber.ROUND_FLOOR).toString(10), // amount
         "0", // feeAmount
-        amount.toString(), // callAmount
+        amount.dp(0, BigNumber.ROUND_FLOOR).toString(10), // callAmount
       ],
       {
         nonce,
         value: "0",
-        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
 
         // add tx value for ETH deposits, omit if ERC20 token
         ...(token.tokenAddress === "0000000000000000000000000000000000000000" && {
-          value: amount.toString(),
+          value: amount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
         }),
       }
     );

@@ -398,12 +398,12 @@ export class ZILClient {
       {
         vname: "amount",
         type: "Uint256",
-        value: amount.toString(10),
+        value: amount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
       },
       {
         vname: "withdrawFeeAmount",
         type: "Uint256",
-        value: feeAmount.toString(10),
+        value: feeAmount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
       },
     ];
 
@@ -493,7 +493,7 @@ export class ZILClient {
       {
         vname: "amount",
         type: "Uint256",
-        value: amount.toString(),
+        value: amount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
       },
       {
         vname: "feeAmount",
