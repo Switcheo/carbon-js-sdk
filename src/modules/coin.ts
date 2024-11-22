@@ -15,8 +15,8 @@ export class CoinModule extends BaseModule {
       creator: wallet.bech32Address,
       toAddress: params.toAddress,
       denom: params.denom,
-      amount: params.amount.toString(10),
-      feeAmount: params.feeAmount.toString(10),
+      amount: params.amount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
+      feeAmount: params.feeAmount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
       feeAddress: params.feeAddress,
       feeDenom: params.feeDenom,
     });
@@ -108,11 +108,11 @@ export class CoinModule extends BaseModule {
       bridgeAddress: params.bridgeAddress,
     })
     return await wallet.sendTx(
-        {
-          typeUrl: CarbonTx.Types.MsgAddBridgeAddress,
-          value,
-        },
-        opts
+      {
+        typeUrl: CarbonTx.Types.MsgAddBridgeAddress,
+        value,
+      },
+      opts
     );
   }
 
@@ -132,11 +132,11 @@ export class CoinModule extends BaseModule {
       },
     })
     return await wallet.sendTx(
-        {
-          typeUrl: CarbonTx.Types.MsgCreateToken,
-          value,
-        },
-        opts
+      {
+        typeUrl: CarbonTx.Types.MsgCreateToken,
+        value,
+      },
+      opts
     );
   }
 
