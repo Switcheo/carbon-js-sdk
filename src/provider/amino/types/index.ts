@@ -22,3 +22,4 @@ export { default as ERC20Amino } from "./erc20";
 export { default as GrantAmino } from "./grant";
 export { default as BridgeAmino } from "./bridge";
 export { default as OtcAmino } from "./otc";
+export { default as GroupAmino } from "./group";
