@@ -605,7 +605,7 @@ export class CarbonWallet {
     } = txRequest;
 
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
-    if (this.isGranteeValid() && isAuthorized && !txRequest.signOpts?.bypassGrantee) {
+    if (this.isGranteeValid() && isAuthorized) {
       await this.signWithGrantee(txRequest)
     } else {
       try {
@@ -762,23 +762,6 @@ export class CarbonWallet {
           handler: { resolve, reject },
         });
 
-        if (!this.disableRetryOnSequenceError && reattempts < 1 && this.isFeeGrantNotFound(error)) {
-          // reset grantee state
-          this.grantee = undefined
-
-          // invalidate account sequence for reload on next signTx call
-          this.sequenceInvalidated = true;
-
-          // requeue transaction for signTx
-          this.txSignManager.enqueue({
-            reattempts: (reattempts ?? 0) + 1,
-            signerAddress: txRequest.signerAddress,
-            messages: txRequest.messages,
-            broadcastOpts,
-            signOpts: { ...txRequest.signOpts, bypassGrantee: true },
-            handler: { resolve, reject },
-          });
-        }
       } else {
         reject(error);
       }
@@ -1109,16 +1092,6 @@ export class CarbonWallet {
 
     return false
   };
-
-  private isFeeGrantNotFound = (error?: Error) => {
-    const errorMessage = 'fee-grant not found';
-    const includes = error?.message.includes(errorMessage);
-    if (includes) {
-      return {
-        message: error?.message,
-      }
-    }
-  }
 
   private getQueryClient(): CarbonQueryClient {
     if (!this.query) throw new Error("wallet not initialized");

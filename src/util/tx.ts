@@ -111,7 +111,6 @@ export interface SignTxOpts {
   accountNumber?: number;
   explicitSignerData?: Partial<CarbonSignerData>;
   triggerMerge?: boolean; // stack merge account tx if user account is unmerged
-  bypassGrantee?: boolean
 }
 
 export interface BroadcastTxOpts {
