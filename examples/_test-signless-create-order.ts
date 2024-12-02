@@ -41,7 +41,6 @@ import "./_setup";
     mnemonics: randomMnemonics,
     expiry,
     enabled: true,
-    authMsgsVersion: 1,
   }
 
   await connectedSDK.wallet.setGranteeDetails(granteeDetails)
