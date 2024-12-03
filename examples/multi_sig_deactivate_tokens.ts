@@ -40,11 +40,15 @@ export const WrapToMultiSigMsg = (
   const groupPolicyAddress = process.env.GROUP_ADDRESS ?? ""
 
   const tokensToDeactivate = [
-    "brdg/41589e35bdd37fa000a2a310fe076015e52dfd78fc9a09b504903c7b83fb9c4b", // wETH from arb
-    "brdg/54d7e3e21eeac0b0761a0294142b0c4f234e5e08a23f770e435755ebebdb951c", // wBNB from bsc
-    "brdg/80e8c20d295cf162023922ecfa61fd73184b6e0bd1f3f4b32265fc69ae7aed23", // wETH from eth
-    "brdg/a07dd6e75ea4045aaa3949322b6243163293aebd8610333eff20b6db4beffa0e", // wMATIC from polygon
-    "brdg/0a01ca811ca0cfdc3a6aba0950f0cbd533c9b642654333c5f134fc7828950c8f", // GMX from arb
+    // "brdg/41589e35bdd37fa000a2a310fe076015e52dfd78fc9a09b504903c7b83fb9c4b", // wETH from arb
+    // "brdg/54d7e3e21eeac0b0761a0294142b0c4f234e5e08a23f770e435755ebebdb951c", // wBNB from bsc
+    // "brdg/80e8c20d295cf162023922ecfa61fd73184b6e0bd1f3f4b32265fc69ae7aed23", // wETH from eth
+    // "brdg/a07dd6e75ea4045aaa3949322b6243163293aebd8610333eff20b6db4beffa0e", // wMATIC from polygon
+    // "brdg/0a01ca811ca0cfdc3a6aba0950f0cbd533c9b642654333c5f134fc7828950c8f", // GMX from arb
+    // "bit.1.2.9d68c4"
+    // "toncoin.1.2.ccd645",
+    "doge.1.2.16c6fa",
+    "ftm.1.2.6936d3",
   ]
 
   let msgs: Any[] = []
@@ -54,7 +58,7 @@ export const WrapToMultiSigMsg = (
       updater: groupPolicyAddress,
       denom,
       updateTokenParams: {
-        isActive: false
+        isActive: true
       }
     })
 
@@ -71,7 +75,7 @@ export const WrapToMultiSigMsg = (
     "",                                       // metadata
     msgs,                                     // msgs to execute
     true,                                    // shouldTryExec immediately
-    "",                                       // title
+    "reactivating ton token",                                       // title
     "",                                       // summary
   )
 
