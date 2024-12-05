@@ -364,6 +364,7 @@ class InsightsQueryClient {
       interval: req.interval,
       from: req.from,
       until: req.until,
+      type: req.marketType,
     };
     const request = this.apiManager.path("market/volume", {}, queryParams);
     const response = await request.get();

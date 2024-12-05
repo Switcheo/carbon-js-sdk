@@ -10,6 +10,7 @@ export interface MarketVolume {
 
 export interface QueryGetMarketVolumeRequest extends QueryByTimeRequest {
   market?: string;
+  marketType?: MarketType;
 }
 
 export interface QueryGetMarketVolumeResponse {
@@ -20,4 +21,9 @@ export interface QueryGetMarketVolumeResponse {
     markets: MarketVolume[];
   }[];
   meta: TimeMeta;
+}
+
+export enum MarketType {
+  SPOT = "spot",
+  FUTURES = "futures",
 }
