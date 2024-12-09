@@ -1,3 +1,5 @@
+import { PaginationObj } from "./common";
+
 export interface GetRelaysRequest {
   source_tx_hash?: string;
   bridging_tx_hash?: string;
@@ -6,11 +8,7 @@ export interface GetRelaysRequest {
 
 export interface GetRelaysResponse {
   data: RelaysResponse[];
-  pagination: {
-    total: number;
-    current_offset: number;
-    limit: number;
-  };
+  pagination: PaginationObj;
 }
 
 export interface RelaysResponse {
@@ -33,4 +31,13 @@ export interface RelaysResponse {
   bridging_broadcast_status: string;
   start_block_time: string;
   end_block_time: string;
+}
+
+export interface RelaySearchRequest {
+  searchTerm: string;
+}
+
+export interface RelaySearchResponse {
+  data: RelaysResponse[];
+  pagination: PaginationObj;
 }

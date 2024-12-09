@@ -13,6 +13,8 @@ import {
   GetTransfersRequest,
   GetTransfersResponse,
   RelaysResponse,
+  RelaySearchRequest,
+  RelaySearchResponse,
 } from "../hydrogen";
 import { GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import TokenClient from './TokenClient'
@@ -32,6 +34,9 @@ export const HydrogenEndpoints = {
 
   // Bridge fees
   bridge_fee: "/bridge_fee",
+
+  // Search api
+  search: "/search",
 };
 
 const formatDateField = (value?: string | null) => {
@@ -272,6 +277,17 @@ class HydrogenClient {
     const result = response.data;
 
     return version === "V1" ? formatFeeQuote(result) : this.formatFeeQuoteV2(result, blockchain!);
+  }
+
+  async searchRelay(req: RelaySearchRequest): Promise<RelaySearchResponse> {
+    this.checkState();
+    const request = this.apiManager.path("search", {}, { search_term: req.searchTerm });
+    const response = await request.get();
+    const result = response.data;
+    return {
+      ...result,
+      data: result.data.map(this.formatRelaysTransfersV2),
+    };
   }
 }
 

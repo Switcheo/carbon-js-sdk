@@ -1,4 +1,5 @@
 import { Blockchain, BlockchainV2 } from "../util/blockchain";
+import { PaginationObj } from "./common";
 import { RelaysResponse } from "./relays";
 
 export interface GetTransfersRequest {
@@ -18,20 +19,12 @@ export interface GetTransfersRequest {
 
 export interface GetTransfersResponse {
   data: CrossChainTransfer[];
-  pagination: {
-    total: number;
-    current_offset: number;
-    limit: number;
-  };
+  pagination: PaginationObj;
 }
 
 export interface GetDetailedTransfersResponse {
   data: CrossChainTransferDetailed[];
-  pagination: {
-    total: number;
-    current_offset: number;
-    limit: number;
-  };
+  pagination: PaginationObj;
 }
 
 export enum CrossChainFlowStatus {
