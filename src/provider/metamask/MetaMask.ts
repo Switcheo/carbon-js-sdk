@@ -12,6 +12,7 @@ import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
+import { SimpleMap } from "@carbon-sdk/util/type";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { AminoMsg } from "@cosmjs/amino";
 import { makeSignDoc } from "@cosmjs/amino/build";
@@ -445,9 +446,9 @@ export class MetaMask extends Eip6963Provider {
     return defaultAccount;
   }
 
-  async getEncryptedLegacyAccounts(network: Network = Network.MainNet): Promise<StoredMnemonicInfo[] | undefined> {
+  async getEncryptedLegacyAccount(network: Network = Network.MainNet, metamaskBlockchain?: EVMChain): Promise<StoredMnemonicInfo | undefined> {
     const defaultAccount = await this.defaultAccount();
-    const legacyAccounts: any = network === Network.MainNet ? LEGACY_ACCOUNTS_MAINNET : LEGACY_ACCOUNTS_TESTNET
+    const legacyAccounts: SimpleMap<string[]> = network === Network.MainNet ? LEGACY_ACCOUNTS_MAINNET : LEGACY_ACCOUNTS_TESTNET
     const legacyAccBlockchains = []
     for (const [blockchain] of Object.entries(legacyAccounts)) {
       for (const address of legacyAccounts[blockchain]) {
@@ -457,12 +458,13 @@ export class MetaMask extends Eip6963Provider {
         }
       }
     }
-    if (legacyAccBlockchains.length > 0) {
-      const legacyMnemonicCiphers = legacyAccBlockchains.map(async (blockchain) => (this.getMnemonicInfo(blockchain as EVMChain)))
-      const results = await Promise.all(legacyMnemonicCiphers)
-      return results.filter((result): result is StoredMnemonicInfo => result !== undefined)
+    if (!legacyAccBlockchains.length) return undefined
+
+    let connectBlockchain: EVMChain = legacyAccBlockchains[0] as EVMChain
+    if (legacyAccBlockchains.length > 1 && metamaskBlockchain && legacyAccBlockchains.includes(metamaskBlockchain)) {
+      connectBlockchain = metamaskBlockchain
     }
-    return undefined
+    return await this.getMnemonicInfo(connectBlockchain)
   }
 
   async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network) {
