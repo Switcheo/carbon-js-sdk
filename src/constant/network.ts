@@ -121,7 +121,7 @@ export const NetworkConfigs: {
     feeAddress: "08d8f59e475830d9a1bb97d74285c4d34c6dac08", // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
 
     eth: {
-      rpcURL: "https://eth-mainnet.alchemyapi.io/v2/RWHcfoaBKzRpXnLONcEDnVqtUp7StNYl",
+      rpcURL: "https://ethereum-rpc.publicnode.com",
       wsURL: "wss://mainnet.dagger.matic.network",
       payerURL: "https://payer.carbon.network",
       bridgeEntranceAddr: "0x93fd29ff3b662c9e5e15681bb3b139d6ce2ca9c5",
