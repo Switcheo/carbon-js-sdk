@@ -708,7 +708,7 @@ export class MetaMask extends Eip6963Provider {
     const decryptedCipherText = (
       (await metamaskAPI.request({
         method: "eth_decrypt",
-        params: [JSON.stringify(cipher), defaultAccount],
+        params: [Buffer.from(JSON.stringify(cipher)).toString('hex'), defaultAccount],
       })) as string
     )?.trim();
 
