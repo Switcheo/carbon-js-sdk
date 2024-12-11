@@ -1,30 +1,31 @@
-import { TxTypes, registry } from "@carbon-sdk/codec";
+import { registry, TxTypes } from "@carbon-sdk/codec";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { AminoTypesMap, AuthUtils, CarbonSDK, EvmUtils, Models, ProviderAgent, SupportedEip6963Provider } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx } from "@carbon-sdk/util";
 import { ETHAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
-import { BLOCKCHAIN_V2_TO_V1_MAPPING, BlockchainV2, ChainNames, EVMChain, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
+import { BlockchainV2, BLOCKCHAIN_V2_TO_V1_MAPPING, ChainNames, EVMChain, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
-import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
+import { ETH_SECP256K1_TYPE, parseChainId, populateEvmTransactionDetails, PUBLIC_KEY_SIGNING_TEXT } from "@carbon-sdk/util/ethermint";
+import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
+import { SimpleMap } from "@carbon-sdk/util/type";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { AminoMsg } from "@cosmjs/amino";
 import { makeSignDoc } from "@cosmjs/amino/build";
-import { Algo, EncodeObject, TxBodyEncodeObject, makeSignDoc as makeProtoSignDoc } from "@cosmjs/proto-signing";
+import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
 import { StdFee } from "@cosmjs/stargate";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import * as ethSignUtils from "eth-sig-util";
 import { ethers } from "ethers";
-import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
+import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "./error";
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
-import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
 
 type ChainContracts = {
   [key in Network]: string;
@@ -447,7 +448,7 @@ export class MetaMask extends Eip6963Provider {
 
   async getEncryptedLegacyAccounts(network: Network = Network.MainNet): Promise<StoredMnemonicInfo[] | undefined> {
     const defaultAccount = await this.defaultAccount();
-    const legacyAccounts: any = network === Network.MainNet ? LEGACY_ACCOUNTS_MAINNET : LEGACY_ACCOUNTS_TESTNET
+    const legacyAccounts: SimpleMap<string[]> = network === Network.MainNet ? LEGACY_ACCOUNTS_MAINNET : LEGACY_ACCOUNTS_TESTNET
     const legacyAccBlockchains = []
     for (const [blockchain] of Object.entries(legacyAccounts)) {
       for (const address of legacyAccounts[blockchain]) {
