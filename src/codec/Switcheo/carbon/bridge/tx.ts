@@ -206,6 +206,7 @@ export interface MsgRegisterExternalToken {
   carbonTokenName?: string;
   relayFee?: Coin;
   expiryDuration?: Duration;
+  carbonSymbol?: string;
 }
 
 export interface MsgRegisterExternalTokenResponse {}
@@ -257,6 +258,7 @@ export interface MsgUpdateExternalToken {
   tokenName: string;
   decimals: Long;
   isCarbonOwned: boolean;
+  tokenSymbol: string;
 }
 
 export interface MsgUpdateExternalTokenResponse {}
@@ -2917,6 +2919,12 @@ export const MsgRegisterExternalToken = {
         writer.uint32(58).fork()
       ).ldelim();
     }
+    if (message.carbonSymbol !== undefined) {
+      StringValue.encode(
+        { value: message.carbonSymbol! },
+        writer.uint32(66).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -2955,6 +2963,12 @@ export const MsgRegisterExternalToken = {
           break;
         case 7:
           message.expiryDuration = Duration.decode(reader, reader.uint32());
+          break;
+        case 8:
+          message.carbonSymbol = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -2996,6 +3010,10 @@ export const MsgRegisterExternalToken = {
       object.expiryDuration !== undefined && object.expiryDuration !== null
         ? Duration.fromJSON(object.expiryDuration)
         : undefined;
+    message.carbonSymbol =
+      object.carbonSymbol !== undefined && object.carbonSymbol !== null
+        ? String(object.carbonSymbol)
+        : undefined;
     return message;
   },
 
@@ -3017,6 +3035,8 @@ export const MsgRegisterExternalToken = {
       (obj.expiryDuration = message.expiryDuration
         ? Duration.toJSON(message.expiryDuration)
         : undefined);
+    message.carbonSymbol !== undefined &&
+      (obj.carbonSymbol = message.carbonSymbol);
     return obj;
   },
 
@@ -3042,6 +3062,7 @@ export const MsgRegisterExternalToken = {
       object.expiryDuration !== undefined && object.expiryDuration !== null
         ? Duration.fromPartial(object.expiryDuration)
         : undefined;
+    message.carbonSymbol = object.carbonSymbol ?? undefined;
     return message;
   },
 };
@@ -3813,6 +3834,7 @@ const baseMsgUpdateExternalToken: object = {
   tokenName: "",
   decimals: Long.ZERO,
   isCarbonOwned: false,
+  tokenSymbol: "",
 };
 
 export const MsgUpdateExternalToken = {
@@ -3837,6 +3859,9 @@ export const MsgUpdateExternalToken = {
     }
     if (message.isCarbonOwned === true) {
       writer.uint32(48).bool(message.isCarbonOwned);
+    }
+    if (message.tokenSymbol !== "") {
+      writer.uint32(58).string(message.tokenSymbol);
     }
     return writer;
   },
@@ -3868,6 +3893,9 @@ export const MsgUpdateExternalToken = {
           break;
         case 6:
           message.isCarbonOwned = reader.bool();
+          break;
+        case 7:
+          message.tokenSymbol = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3903,6 +3931,10 @@ export const MsgUpdateExternalToken = {
       object.isCarbonOwned !== undefined && object.isCarbonOwned !== null
         ? Boolean(object.isCarbonOwned)
         : false;
+    message.tokenSymbol =
+      object.tokenSymbol !== undefined && object.tokenSymbol !== null
+        ? String(object.tokenSymbol)
+        : "";
     return message;
   },
 
@@ -3918,6 +3950,8 @@ export const MsgUpdateExternalToken = {
       (obj.decimals = (message.decimals || Long.ZERO).toString());
     message.isCarbonOwned !== undefined &&
       (obj.isCarbonOwned = message.isCarbonOwned);
+    message.tokenSymbol !== undefined &&
+      (obj.tokenSymbol = message.tokenSymbol);
     return obj;
   },
 
@@ -3934,6 +3968,7 @@ export const MsgUpdateExternalToken = {
         ? Long.fromValue(object.decimals)
         : Long.ZERO;
     message.isCarbonOwned = object.isCarbonOwned ?? false;
+    message.tokenSymbol = object.tokenSymbol ?? "";
     return message;
   },
 };
