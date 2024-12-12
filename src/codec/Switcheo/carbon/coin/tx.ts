@@ -84,6 +84,14 @@ export interface MsgWithdraw {
 
 export interface MsgWithdrawResponse {}
 
+export interface MsgMigratePolyToken {
+  creator: string;
+  denom: string;
+  amount: string;
+}
+
+export interface MsgMigratePolyTokenResponse {}
+
 export interface MsgAuthorizeBridge {
   creator: string;
   bridgeId: Long;
@@ -1315,6 +1323,135 @@ export const MsgWithdrawResponse = {
 
   fromPartial(_: DeepPartial<MsgWithdrawResponse>): MsgWithdrawResponse {
     const message = { ...baseMsgWithdrawResponse } as MsgWithdrawResponse;
+    return message;
+  },
+};
+
+const baseMsgMigratePolyToken: object = { creator: "", denom: "", amount: "" };
+
+export const MsgMigratePolyToken = {
+  encode(
+    message: MsgMigratePolyToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgMigratePolyToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgMigratePolyToken } as MsgMigratePolyToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgMigratePolyToken {
+    const message = { ...baseMsgMigratePolyToken } as MsgMigratePolyToken;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgMigratePolyToken): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgMigratePolyToken>): MsgMigratePolyToken {
+    const message = { ...baseMsgMigratePolyToken } as MsgMigratePolyToken;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgMigratePolyTokenResponse: object = {};
+
+export const MsgMigratePolyTokenResponse = {
+  encode(
+    _: MsgMigratePolyTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgMigratePolyTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgMigratePolyTokenResponse,
+    } as MsgMigratePolyTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgMigratePolyTokenResponse {
+    const message = {
+      ...baseMsgMigratePolyTokenResponse,
+    } as MsgMigratePolyTokenResponse;
+    return message;
+  },
+
+  toJSON(_: MsgMigratePolyTokenResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgMigratePolyTokenResponse>
+  ): MsgMigratePolyTokenResponse {
+    const message = {
+      ...baseMsgMigratePolyTokenResponse,
+    } as MsgMigratePolyTokenResponse;
     return message;
   },
 };
@@ -3865,6 +4002,9 @@ export interface Msg {
   UnbindToken(request: MsgUnbindToken): Promise<MsgUnbindTokenResponse>;
   LinkToken(request: MsgLinkToken): Promise<MsgLinkTokenResponse>;
   Withdraw(request: MsgWithdraw): Promise<MsgWithdrawResponse>;
+  MigratePolyToken(
+    request: MsgMigratePolyToken
+  ): Promise<MsgMigratePolyTokenResponse>;
   AuthorizeBridge(
     request: MsgAuthorizeBridge
   ): Promise<MsgAuthorizeBridgeResponse>;
@@ -3913,6 +4053,7 @@ export class MsgClientImpl implements Msg {
     this.UnbindToken = this.UnbindToken.bind(this);
     this.LinkToken = this.LinkToken.bind(this);
     this.Withdraw = this.Withdraw.bind(this);
+    this.MigratePolyToken = this.MigratePolyToken.bind(this);
     this.AuthorizeBridge = this.AuthorizeBridge.bind(this);
     this.DeauthorizeBridge = this.DeauthorizeBridge.bind(this);
     this.EditBridgeName = this.EditBridgeName.bind(this);
@@ -4009,6 +4150,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgWithdrawResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  MigratePolyToken(
+    request: MsgMigratePolyToken
+  ): Promise<MsgMigratePolyTokenResponse> {
+    const data = MsgMigratePolyToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "MigratePolyToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgMigratePolyTokenResponse.decode(new _m0.Reader(data))
     );
   }
 

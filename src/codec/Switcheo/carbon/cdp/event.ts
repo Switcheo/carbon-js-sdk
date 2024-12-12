@@ -222,6 +222,10 @@ export interface RefundReserveEvent {
   amountRefunded: string;
 }
 
+export interface MigrateCdpDbEvent {
+  shouldMigrate: boolean;
+}
+
 const baseNewRateStrategyParamsEvent: object = { type: "" };
 
 export const NewRateStrategyParamsEvent = {
@@ -3375,6 +3379,60 @@ export const RefundReserveEvent = {
         ? RewardScheme.fromPartial(object.rewardScheme)
         : undefined;
     message.amountRefunded = object.amountRefunded ?? "";
+    return message;
+  },
+};
+
+const baseMigrateCdpDbEvent: object = { shouldMigrate: false };
+
+export const MigrateCdpDbEvent = {
+  encode(
+    message: MigrateCdpDbEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.shouldMigrate === true) {
+      writer.uint32(8).bool(message.shouldMigrate);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MigrateCdpDbEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMigrateCdpDbEvent } as MigrateCdpDbEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.shouldMigrate = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MigrateCdpDbEvent {
+    const message = { ...baseMigrateCdpDbEvent } as MigrateCdpDbEvent;
+    message.shouldMigrate =
+      object.shouldMigrate !== undefined && object.shouldMigrate !== null
+        ? Boolean(object.shouldMigrate)
+        : false;
+    return message;
+  },
+
+  toJSON(message: MigrateCdpDbEvent): unknown {
+    const obj: any = {};
+    message.shouldMigrate !== undefined &&
+      (obj.shouldMigrate = message.shouldMigrate);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MigrateCdpDbEvent>): MigrateCdpDbEvent {
+    const message = { ...baseMigrateCdpDbEvent } as MigrateCdpDbEvent;
+    message.shouldMigrate = object.shouldMigrate ?? false;
     return message;
   },
 };

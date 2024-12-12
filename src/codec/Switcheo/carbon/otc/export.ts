@@ -2,5 +2,3 @@ export { MsgCreateRfq, MsgCreateRfqResponse, MsgCancelRfq, MsgCancelRfqResponse,
 export { Rfq, RfqWithStatus } from "./rfq";
 export { Quote, QuoteWithStatus } from "./quote";
 export { QueryParamsRequest, QueryParamsResponse, QueryRfqRequest, QueryRfqResponse, QueryAllRfqRequest, QueryAllRfqResponse, QueryQuoteRequest, QueryQuoteResponse, QueryAllQuoteRequest, QueryAllQuoteResponse } from "./query";
-export { QuoteEvent, RfqEvent } from "./event";
-export { ParamsToUpdate } from "./params";

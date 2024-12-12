@@ -1,6 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.insurance";
 
@@ -11,6 +13,18 @@ export interface FundByMarket {
 
 export interface Fund {
   amount: string;
+}
+
+/**
+ * fund utilization is the amount of insurance fund used by a market within a
+ * given interval
+ */
+export interface FundUtilization {
+  marketId: string;
+  /** start time of the current interval */
+  intervalStartTime?: Date;
+  /** amount of insurance fund used within the interval */
+  currentUtilization?: Coin;
 }
 
 const baseFundByMarket: object = { amount: "" };
@@ -132,6 +146,101 @@ export const Fund = {
   },
 };
 
+const baseFundUtilization: object = { marketId: "" };
+
+export const FundUtilization = {
+  encode(
+    message: FundUtilization,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
+    }
+    if (message.intervalStartTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.intervalStartTime),
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    if (message.currentUtilization !== undefined) {
+      Coin.encode(
+        message.currentUtilization,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FundUtilization {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseFundUtilization } as FundUtilization;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketId = reader.string();
+          break;
+        case 2:
+          message.intervalStartTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 3:
+          message.currentUtilization = Coin.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FundUtilization {
+    const message = { ...baseFundUtilization } as FundUtilization;
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.intervalStartTime =
+      object.intervalStartTime !== undefined &&
+      object.intervalStartTime !== null
+        ? fromJsonTimestamp(object.intervalStartTime)
+        : undefined;
+    message.currentUtilization =
+      object.currentUtilization !== undefined &&
+      object.currentUtilization !== null
+        ? Coin.fromJSON(object.currentUtilization)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: FundUtilization): unknown {
+    const obj: any = {};
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    message.intervalStartTime !== undefined &&
+      (obj.intervalStartTime = message.intervalStartTime.toISOString());
+    message.currentUtilization !== undefined &&
+      (obj.currentUtilization = message.currentUtilization
+        ? Coin.toJSON(message.currentUtilization)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<FundUtilization>): FundUtilization {
+    const message = { ...baseFundUtilization } as FundUtilization;
+    message.marketId = object.marketId ?? "";
+    message.intervalStartTime = object.intervalStartTime ?? undefined;
+    message.currentUtilization =
+      object.currentUtilization !== undefined &&
+      object.currentUtilization !== null
+        ? Coin.fromPartial(object.currentUtilization)
+        : undefined;
+    return message;
+  },
+};
+
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
@@ -185,6 +294,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
