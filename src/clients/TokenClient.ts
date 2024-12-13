@@ -192,14 +192,12 @@ class TokenClient {
   }
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
-    console.log('cc Enter the getTokenName: ', denom)
     if (typeof denom !== "string") return "";
     if (!TokenClient.isIBCDenom(denom) && !TokenClient.isCdpIbcDenom(denom)) {
       denom = denom.toLowerCase();
     }
 
     const symbol = this.getSymbol(denom);
-    console.log('cc Symbol: ', symbol)
 
     if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = symbol.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
@@ -216,16 +214,12 @@ class TokenClient {
     }
 
     if (this.isBridgedToken(denom)) {
-      console.log('cc Enter the isBridgedToken check: ', this.isBridgedToken(denom))
-      console.log('cc Bridge token symbol: ', this.symbols[denom] ?? denom.toUpperCase())
       return this.symbols[denom] ?? denom.toUpperCase();
     }
 
     if (TokenClient.isIBCDenom(denom)) {
-      console.log('cc Enter the isIBCDenom check: ', TokenClient.isIBCDenom(denom))
       const splitDenom = denom.split("/");
       denom = `${splitDenom[0].toLowerCase()}/${splitDenom[1].toUpperCase()}`;
-      console.log('cc IBC token symbol: ', this.symbols[denom] ?? denom.toUpperCase())
       return this.symbols[denom] ?? denom.toUpperCase();
     }
 
@@ -236,9 +230,7 @@ class TokenClient {
     if (overrideMap?.[symbol]) {
       return overrideMap[symbol];
     }
-
-    console.log('cc thisSymbols: ', this.symbols)
-    console.log('cc Reaching the end of getTokenName: ', symbol)
+    
     return symbol;
   }
 
@@ -450,15 +442,6 @@ class TokenClient {
 
     const networkConfig = this.configProvider.getConfig();
     const tokenBlacklist = TokenBlacklist[networkConfig.network] ?? [];
-    console.log('cc Tokens before blacklist filter: ', result.tokens.length); // 689
-    console.log('cc Tokens after blacklist filter: ', result.tokens.filter((token) => !tokenBlacklist.includes(token.denom)).length); // 687
-
-    const targetDenom = 'ibc/062588846168EDFECF20F7681F2A0A131A53B9A3C8535BCA8F7D1A268246974B';
-    const targetDenom2 = 'brdg/cb2cdde14b5ab81cb400650d00e47ab5085dd5fa3fa904ec7904e2488ecdfd6c';
-    const filteredTokens = result.tokens.filter((token) => !tokenBlacklist.includes(token.denom));
-    console.log('Contains Target Token:', filteredTokens.some(t => t.denom === targetDenom)); // true
-    console.log('Contains Target Token2:', filteredTokens.some(t => t.denom === targetDenom2)); //true
-
     return result.tokens.filter((token) => !tokenBlacklist.includes(token.denom));
   }
 
@@ -466,7 +449,6 @@ class TokenClient {
     const tokenResponse = await this.getAllTokens();
 
     for (const token of tokenResponse) {
-      console.log('Processing token denom: ', token.denom);
       if (TokenClient.isPoolToken(token.denom)) {
         this.poolTokens[token.denom] = token;
       } else if (TokenClient.isCdpToken(token.denom)) {
@@ -481,12 +463,6 @@ class TokenClient {
         this.symbols[token.denom] = token.symbol;
       }
     }
-    console.log('cc thisTokens final: ', this.tokens);
-    const targetDenom = 'ibc/062588846168EDFECF20F7681F2A0A131A53B9A3C8535BCA8F7D1A268246974B';
-    const targetDenom2 = 'brdg/cb2cdde14b5ab81cb400650d00e47ab5085dd5fa3fa904ec7904e2488ecdfd6c';
-    console.log('cc Expected denom exists: ', Object.keys(this.tokens).includes(targetDenom)); // true
-    console.log('cc Expected denom2 exists: ', Object.keys(this.tokens).includes(targetDenom2)); //true
-    console.log('cc Total tokens final: ', Object.keys(this.tokens).length); // 495 
     return this.tokens;
   }
 
