@@ -198,6 +198,7 @@ class TokenClient {
     }
 
     const symbol = this.getSymbol(denom);
+
     if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = symbol.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
@@ -210,6 +211,10 @@ class TokenClient {
       const symbolB = this.getTokenName(denomB);
 
       return `${symbolA}-${symbolB}`;
+    }
+
+    if (this.isBridgedToken(denom)) {
+      return this.symbols[denom] ?? denom.toUpperCase();
     }
 
     if (TokenClient.isIBCDenom(denom)) {
@@ -225,7 +230,7 @@ class TokenClient {
     if (overrideMap?.[symbol]) {
       return overrideMap[symbol];
     }
-
+    
     return symbol;
   }
 
