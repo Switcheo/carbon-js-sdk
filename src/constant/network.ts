@@ -224,7 +224,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
-      rpcURL: "https://eth-goerli.g.alchemy.com/v2/OTTRiEhTje49mmrrm4WbuPbZmuZMivEu",
+      rpcURL: "https://sepolia.drpc.org",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0xa06569e48fed18ed840c3f064ffd9bbf95debce7",
@@ -339,7 +339,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
-      rpcURL: "https://eth-goerli.g.alchemy.com/v2/OTTRiEhTje49mmrrm4WbuPbZmuZMivEu",
+      rpcURL: "https://sepolia.drpc.org",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0x7f7317167e90afa38972e46b031bb4da0b1f6f73",
@@ -443,7 +443,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
     eth: {
-      rpcURL: "https://eth-goerli.g.alchemy.com/v2/OTTRiEhTje49mmrrm4WbuPbZmuZMivEu",
+      rpcURL: "https://sepolia.drpc.org",
       wsURL: "wss://ropsten.dagger.matic.network",
       payerURL: `http://localhost:8001`,
       bridgeEntranceAddr: "",
