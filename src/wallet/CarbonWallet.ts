@@ -143,8 +143,6 @@ export interface AccountInfo extends Account {
 export interface Grantee {
   expiry: Date;
   signer: OfflineDirectSigner;
-  address: string;
-  authMsgsVersion: number;
 }
 
 interface PromiseHandler<T> {
@@ -447,10 +445,9 @@ export class CarbonWallet {
 
   private isGranteeValid(): boolean {
     if (!this.grantee) return false
-    const { expiry, authMsgsVersion } = this.grantee;
+    const { expiry } = this.grantee;
     const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(BUFFER_PERIOD, 'seconds'));
-    const versionUpToDate = authMsgsVersion === this.authorizedMsgsVersion;
-    return hasNotExpired && versionUpToDate && !!this.grantee.signer;
+    return hasNotExpired && !!this.grantee.signer;
   }
 
   public updateNetwork(network: Network): CarbonWallet {
@@ -761,6 +758,7 @@ export class CarbonWallet {
           signOpts: txRequest.signOpts,
           handler: { resolve, reject },
         });
+
       } else {
         reject(error);
       }
