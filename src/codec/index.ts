@@ -269,8 +269,8 @@ registry.register("/Switcheo.carbon.otc.MsgCreateQuote", Carbon.Otc.MsgCreateQuo
 registry.register("/Switcheo.carbon.otc.MsgCreateQuoteResponse", Carbon.Otc.MsgCreateQuoteResponse);
 registry.register("/Switcheo.carbon.otc.MsgAcceptQuote", Carbon.Otc.MsgAcceptQuote);
 registry.register("/Switcheo.carbon.otc.MsgAcceptQuoteResponse", Carbon.Otc.MsgAcceptQuoteResponse);
-registry.register("/Switcheo.carbon.otc.MsgUpdateParams", Carbon.Otc.MsgUpdateParams);
-registry.register("/Switcheo.carbon.otc.MsgUpdateParamsResponse", Carbon.Otc.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.otc.MsgUpdateParams", MsgUpdateParams);
+registry.register("/Switcheo.carbon.otc.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", Carbon.Evmcontract.MsgDeactivateContract);
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse", Carbon.Evmcontract.MsgDeactivateContractResponse);
@@ -283,6 +283,10 @@ registry.register("/Switcheo.carbon.admin.MsgInitiateAdminTransfer", Carbon.Admi
 registry.register("/Switcheo.carbon.admin.MsgInitiateAdminTransferResponse", Carbon.Admin.MsgInitiateAdminTransferResponse);
 registry.register("/Switcheo.carbon.admin.MsgAcceptAdminTransfer", Carbon.Admin.MsgAcceptAdminTransfer);
 registry.register("/Switcheo.carbon.admin.MsgAcceptAdminTransferResponse", Carbon.Admin.MsgAcceptAdminTransferResponse);
+registry.register("/Switcheo.carbon.admin.MsgUpdateParams", Carbon.Admin.MsgUpdateParams);
+registry.register("/Switcheo.carbon.admin.MsgUpdateParamsResponse", Carbon.Admin.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.admin.MsgHaltCurrentVersion", Carbon.Admin.MsgHaltCurrentVersion);
+registry.register("/Switcheo.carbon.admin.MsgHaltCurrentVersionResponse", Carbon.Admin.MsgHaltCurrentVersionResponse);
 
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTx", PolyNetwork.Ccm.MsgProcessCrossChainTx);
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse", PolyNetwork.Ccm.MsgProcessCrossChainTxResponse);
@@ -304,6 +308,8 @@ registry.register("/Switcheo.carbon.coin.MsgLinkToken", Carbon.Coin.MsgLinkToken
 registry.register("/Switcheo.carbon.coin.MsgLinkTokenResponse", Carbon.Coin.MsgLinkTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgWithdraw", Carbon.Coin.MsgWithdraw);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", Carbon.Coin.MsgWithdrawResponse);
+registry.register("/Switcheo.carbon.coin.MsgMigratePolyToken", Carbon.Coin.MsgMigratePolyToken);
+registry.register("/Switcheo.carbon.coin.MsgMigratePolyTokenResponse", Carbon.Coin.MsgMigratePolyTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", Carbon.Coin.MsgAuthorizeBridge);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", Carbon.Coin.MsgAuthorizeBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", Carbon.Coin.MsgDeauthorizeBridge);
@@ -976,6 +982,10 @@ export const TxTypes = {
   "MsgInitiateAdminTransferResponse": "/Switcheo.carbon.admin.MsgInitiateAdminTransferResponse",
   "MsgAcceptAdminTransfer": "/Switcheo.carbon.admin.MsgAcceptAdminTransfer",
   "MsgAcceptAdminTransferResponse": "/Switcheo.carbon.admin.MsgAcceptAdminTransferResponse",
+  "MsgAdminUpdateParams": "/Switcheo.carbon.admin.MsgUpdateParams",
+  "MsgAdminUpdateParamsResponse": "/Switcheo.carbon.admin.MsgUpdateParamsResponse",
+  "MsgHaltCurrentVersion": "/Switcheo.carbon.admin.MsgHaltCurrentVersion",
+  "MsgHaltCurrentVersionResponse": "/Switcheo.carbon.admin.MsgHaltCurrentVersionResponse",
   "MsgProcessCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessCrossChainTx",
   "MsgProcessCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse",
   "MsgCreateEmitEvent": "/Switcheo.carbon.ccm.MsgCreateEmitEvent",
@@ -995,6 +1005,8 @@ export const TxTypes = {
   "MsgLinkTokenResponse": "/Switcheo.carbon.coin.MsgLinkTokenResponse",
   "MsgWithdraw": "/Switcheo.carbon.coin.MsgWithdraw",
   "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
+  "MsgMigratePolyToken": "/Switcheo.carbon.coin.MsgMigratePolyToken",
+  "MsgMigratePolyTokenResponse": "/Switcheo.carbon.coin.MsgMigratePolyTokenResponse",
   "MsgAuthorizeBridge": "/Switcheo.carbon.coin.MsgAuthorizeBridge",
   "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
   "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
@@ -1403,6 +1415,8 @@ export const TxTypes = {
 
 
 // Exported for convenience
+export { QuoteEvent, RfqEvent } from "./Switcheo/carbon/otc/event";
+export { ParamsToUpdate } from "./Switcheo/carbon/otc/params";
 export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
@@ -2081,16 +2095,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/google.protobuf.GeneratedCodeInfo"
       }
     ],
-    "Timestamp": [
-      {
-        "name": "seconds",
-        "type": "int64"
-      },
-      {
-        "name": "nanos",
-        "type": "int32"
-      }
-    ],
     "DoubleValue": [
       {
         "name": "value",
@@ -2145,6 +2149,16 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint8[]"
       }
     ],
+    "Timestamp": [
+      {
+        "name": "seconds",
+        "type": "int64"
+      },
+      {
+        "name": "nanos",
+        "type": "int32"
+      }
+    ],
     "Duration": [
       {
         "name": "seconds",
@@ -2171,7 +2185,33 @@ export const EIP712Types: { [index: string]: any } = {
     "GenesisState": []
   },
   "/Switcheo.carbon.admin": {
-    "GenesisState": [],
+    "Params": [
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "version",
+        "type": "uint32"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "admin_recipient",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.admin"
+      }
+    ],
     "QueryAdminRequest": [],
     "QueryAdminResponse": [
       {
@@ -2184,6 +2224,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "address",
         "type": "string"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.admin"
       }
     ],
     "MsgInitiateAdminTransfer": [
@@ -2203,7 +2251,26 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgAcceptAdminTransferResponse": []
+    "MsgAcceptAdminTransferResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.admin"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "MsgHaltCurrentVersion": [
+      {
+        "name": "creator",
+        "type": "string"
+      }
+    ],
+    "MsgHaltCurrentVersionResponse": []
   },
   "/google.api": {
     "Http": [
@@ -3302,7 +3369,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "token_address",
+        "name": "token_external_address",
         "type": "string"
       },
       {
@@ -3321,6 +3388,10 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "relay_details",
         "type": "RelayDetails",
         "packageName": "/Switcheo.carbon.bridge"
+      },
+      {
+        "name": "token_symbol",
+        "type": "string"
       }
     ],
     "PendingDeregisterToken": [
@@ -3920,6 +3991,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "expiry_duration",
         "type": "string"
+      },
+      {
+        "name": "carbon_symbol",
+        "type": "string"
       }
     ],
     "MsgRegisterExternalTokenResponse": [],
@@ -4043,6 +4118,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "is_carbon_owned",
         "type": "bool"
+      },
+      {
+        "name": "token_symbol",
+        "type": "string"
       }
     ],
     "MsgUpdateExternalTokenResponse": [],
@@ -5724,6 +5803,12 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "amount_refunded",
         "type": "string"
+      }
+    ],
+    "MigrateCdpDbEvent": [
+      {
+        "name": "should_migrate",
+        "type": "bool"
       }
     ],
     "Params": [
@@ -7447,6 +7532,21 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgWithdrawResponse": [],
+    "MsgMigratePolyToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgMigratePolyTokenResponse": [],
     "MsgAuthorizeBridge": [
       {
         "name": "creator",
@@ -7835,6 +7935,10 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
       }
     ],
     "QueryAllTokenResponse": [
@@ -8945,11 +9049,34 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "FundUtilization": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "interval_start_time",
+        "type": "string"
+      },
+      {
+        "name": "current_utilization",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
     "Params": [
       {
         "name": "min_market_liquidity",
         "type": "Coin[]",
         "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "utilization_interval",
+        "type": "string"
+      },
+      {
+        "name": "max_utilization_ratio",
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -8957,12 +9084,25 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "min_market_liquidity",
         "type": "Coin[]",
         "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "utilization_interval",
+        "type": "string"
+      },
+      {
+        "name": "max_utilization_ratio",
+        "type": "string"
       }
     ],
     "GenesisState": [
       {
         "name": "params",
         "type": "Params",
+        "packageName": "/Switcheo.carbon.insurance"
+      },
+      {
+        "name": "fund_utilizations",
+        "type": "FundUtilization[]",
         "packageName": "/Switcheo.carbon.insurance"
       }
     ],
@@ -8980,6 +9120,38 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "params",
         "type": "Params",
         "packageName": "/Switcheo.carbon.insurance"
+      }
+    ],
+    "QueryGetFundUtilizationRequest": [
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "QueryGetFundUtilizationResponse": [
+      {
+        "name": "fund_utilization",
+        "type": "FundUtilization",
+        "packageName": "/Switcheo.carbon.insurance"
+      }
+    ],
+    "QueryAllFundUtilizationRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllFundUtilizationResponse": [
+      {
+        "name": "fund_utilizations",
+        "type": "FundUtilization[]",
+        "packageName": "/Switcheo.carbon.insurance"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "MsgTopUpInsurance": [
