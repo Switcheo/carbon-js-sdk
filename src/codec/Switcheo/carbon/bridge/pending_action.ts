@@ -3,17 +3,18 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { RelayDetails } from "./bridge";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
-import { Int64Value } from "../../../google/protobuf/wrappers";
+import { Int64Value, StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.bridge";
 
 export interface PendingRegisterToken {
   connectionId: string;
-  tokenAddress: string;
+  tokenExternalAddress: string;
   decimals?: Long;
   tokenName: string;
   isCarbonOwned: boolean;
   relayDetails?: RelayDetails;
+  tokenSymbol?: string;
 }
 
 export interface PendingDeregisterToken {
@@ -57,7 +58,7 @@ export interface PendingWithdrawAndExecute {
 
 const basePendingRegisterToken: object = {
   connectionId: "",
-  tokenAddress: "",
+  tokenExternalAddress: "",
   tokenName: "",
   isCarbonOwned: false,
 };
@@ -70,8 +71,8 @@ export const PendingRegisterToken = {
     if (message.connectionId !== "") {
       writer.uint32(10).string(message.connectionId);
     }
-    if (message.tokenAddress !== "") {
-      writer.uint32(18).string(message.tokenAddress);
+    if (message.tokenExternalAddress !== "") {
+      writer.uint32(18).string(message.tokenExternalAddress);
     }
     if (message.decimals !== undefined) {
       Int64Value.encode(
@@ -91,6 +92,12 @@ export const PendingRegisterToken = {
         writer.uint32(50).fork()
       ).ldelim();
     }
+    if (message.tokenSymbol !== undefined) {
+      StringValue.encode(
+        { value: message.tokenSymbol! },
+        writer.uint32(58).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -108,7 +115,7 @@ export const PendingRegisterToken = {
           message.connectionId = reader.string();
           break;
         case 2:
-          message.tokenAddress = reader.string();
+          message.tokenExternalAddress = reader.string();
           break;
         case 3:
           message.decimals = Int64Value.decode(reader, reader.uint32()).value;
@@ -121,6 +128,12 @@ export const PendingRegisterToken = {
           break;
         case 6:
           message.relayDetails = RelayDetails.decode(reader, reader.uint32());
+          break;
+        case 7:
+          message.tokenSymbol = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -136,9 +149,10 @@ export const PendingRegisterToken = {
       object.connectionId !== undefined && object.connectionId !== null
         ? String(object.connectionId)
         : "";
-    message.tokenAddress =
-      object.tokenAddress !== undefined && object.tokenAddress !== null
-        ? String(object.tokenAddress)
+    message.tokenExternalAddress =
+      object.tokenExternalAddress !== undefined &&
+      object.tokenExternalAddress !== null
+        ? String(object.tokenExternalAddress)
         : "";
     message.decimals =
       object.decimals !== undefined && object.decimals !== null
@@ -156,6 +170,10 @@ export const PendingRegisterToken = {
       object.relayDetails !== undefined && object.relayDetails !== null
         ? RelayDetails.fromJSON(object.relayDetails)
         : undefined;
+    message.tokenSymbol =
+      object.tokenSymbol !== undefined && object.tokenSymbol !== null
+        ? String(object.tokenSymbol)
+        : undefined;
     return message;
   },
 
@@ -163,8 +181,8 @@ export const PendingRegisterToken = {
     const obj: any = {};
     message.connectionId !== undefined &&
       (obj.connectionId = message.connectionId);
-    message.tokenAddress !== undefined &&
-      (obj.tokenAddress = message.tokenAddress);
+    message.tokenExternalAddress !== undefined &&
+      (obj.tokenExternalAddress = message.tokenExternalAddress);
     message.decimals !== undefined && (obj.decimals = message.decimals);
     message.tokenName !== undefined && (obj.tokenName = message.tokenName);
     message.isCarbonOwned !== undefined &&
@@ -173,13 +191,15 @@ export const PendingRegisterToken = {
       (obj.relayDetails = message.relayDetails
         ? RelayDetails.toJSON(message.relayDetails)
         : undefined);
+    message.tokenSymbol !== undefined &&
+      (obj.tokenSymbol = message.tokenSymbol);
     return obj;
   },
 
   fromPartial(object: DeepPartial<PendingRegisterToken>): PendingRegisterToken {
     const message = { ...basePendingRegisterToken } as PendingRegisterToken;
     message.connectionId = object.connectionId ?? "";
-    message.tokenAddress = object.tokenAddress ?? "";
+    message.tokenExternalAddress = object.tokenExternalAddress ?? "";
     message.decimals =
       object.decimals !== undefined && object.decimals !== null
         ? Long.fromValue(object.decimals)
@@ -190,6 +210,7 @@ export const PendingRegisterToken = {
       object.relayDetails !== undefined && object.relayDetails !== null
         ? RelayDetails.fromPartial(object.relayDetails)
         : undefined;
+    message.tokenSymbol = object.tokenSymbol ?? undefined;
     return message;
   },
 };

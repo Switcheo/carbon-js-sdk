@@ -63,6 +63,13 @@ export interface MsgUpdateParams {
 
 export interface MsgUpdateParamsResponse {}
 
+export interface MsgUpdateAxelarCallDenom {
+  authority: string;
+  denom: string;
+}
+
+export interface MsgUpdateAxelarCallDenomResponse {}
+
 /**
  * MsgAxelarSendToken is a convenience method to send a *Axelar Supported* token
  * via axelar.
@@ -206,6 +213,7 @@ export interface MsgRegisterExternalToken {
   carbonTokenName?: string;
   relayFee?: Coin;
   expiryDuration?: Duration;
+  carbonSymbol?: string;
 }
 
 export interface MsgRegisterExternalTokenResponse {}
@@ -257,6 +265,7 @@ export interface MsgUpdateExternalToken {
   tokenName: string;
   decimals: Long;
   isCarbonOwned: boolean;
+  tokenSymbol: string;
 }
 
 export interface MsgUpdateExternalTokenResponse {}
@@ -1241,6 +1250,134 @@ export const MsgUpdateParamsResponse = {
     const message = {
       ...baseMsgUpdateParamsResponse,
     } as MsgUpdateParamsResponse;
+    return message;
+  },
+};
+
+const baseMsgUpdateAxelarCallDenom: object = { authority: "", denom: "" };
+
+export const MsgUpdateAxelarCallDenom = {
+  encode(
+    message: MsgUpdateAxelarCallDenom,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateAxelarCallDenom {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateAxelarCallDenom,
+    } as MsgUpdateAxelarCallDenom;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateAxelarCallDenom {
+    const message = {
+      ...baseMsgUpdateAxelarCallDenom,
+    } as MsgUpdateAxelarCallDenom;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgUpdateAxelarCallDenom): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateAxelarCallDenom>
+  ): MsgUpdateAxelarCallDenom {
+    const message = {
+      ...baseMsgUpdateAxelarCallDenom,
+    } as MsgUpdateAxelarCallDenom;
+    message.authority = object.authority ?? "";
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseMsgUpdateAxelarCallDenomResponse: object = {};
+
+export const MsgUpdateAxelarCallDenomResponse = {
+  encode(
+    _: MsgUpdateAxelarCallDenomResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateAxelarCallDenomResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateAxelarCallDenomResponse,
+    } as MsgUpdateAxelarCallDenomResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateAxelarCallDenomResponse {
+    const message = {
+      ...baseMsgUpdateAxelarCallDenomResponse,
+    } as MsgUpdateAxelarCallDenomResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateAxelarCallDenomResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateAxelarCallDenomResponse>
+  ): MsgUpdateAxelarCallDenomResponse {
+    const message = {
+      ...baseMsgUpdateAxelarCallDenomResponse,
+    } as MsgUpdateAxelarCallDenomResponse;
     return message;
   },
 };
@@ -2917,6 +3054,12 @@ export const MsgRegisterExternalToken = {
         writer.uint32(58).fork()
       ).ldelim();
     }
+    if (message.carbonSymbol !== undefined) {
+      StringValue.encode(
+        { value: message.carbonSymbol! },
+        writer.uint32(66).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -2955,6 +3098,12 @@ export const MsgRegisterExternalToken = {
           break;
         case 7:
           message.expiryDuration = Duration.decode(reader, reader.uint32());
+          break;
+        case 8:
+          message.carbonSymbol = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -2996,6 +3145,10 @@ export const MsgRegisterExternalToken = {
       object.expiryDuration !== undefined && object.expiryDuration !== null
         ? Duration.fromJSON(object.expiryDuration)
         : undefined;
+    message.carbonSymbol =
+      object.carbonSymbol !== undefined && object.carbonSymbol !== null
+        ? String(object.carbonSymbol)
+        : undefined;
     return message;
   },
 
@@ -3017,6 +3170,8 @@ export const MsgRegisterExternalToken = {
       (obj.expiryDuration = message.expiryDuration
         ? Duration.toJSON(message.expiryDuration)
         : undefined);
+    message.carbonSymbol !== undefined &&
+      (obj.carbonSymbol = message.carbonSymbol);
     return obj;
   },
 
@@ -3042,6 +3197,7 @@ export const MsgRegisterExternalToken = {
       object.expiryDuration !== undefined && object.expiryDuration !== null
         ? Duration.fromPartial(object.expiryDuration)
         : undefined;
+    message.carbonSymbol = object.carbonSymbol ?? undefined;
     return message;
   },
 };
@@ -3813,6 +3969,7 @@ const baseMsgUpdateExternalToken: object = {
   tokenName: "",
   decimals: Long.ZERO,
   isCarbonOwned: false,
+  tokenSymbol: "",
 };
 
 export const MsgUpdateExternalToken = {
@@ -3837,6 +3994,9 @@ export const MsgUpdateExternalToken = {
     }
     if (message.isCarbonOwned === true) {
       writer.uint32(48).bool(message.isCarbonOwned);
+    }
+    if (message.tokenSymbol !== "") {
+      writer.uint32(58).string(message.tokenSymbol);
     }
     return writer;
   },
@@ -3868,6 +4028,9 @@ export const MsgUpdateExternalToken = {
           break;
         case 6:
           message.isCarbonOwned = reader.bool();
+          break;
+        case 7:
+          message.tokenSymbol = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3903,6 +4066,10 @@ export const MsgUpdateExternalToken = {
       object.isCarbonOwned !== undefined && object.isCarbonOwned !== null
         ? Boolean(object.isCarbonOwned)
         : false;
+    message.tokenSymbol =
+      object.tokenSymbol !== undefined && object.tokenSymbol !== null
+        ? String(object.tokenSymbol)
+        : "";
     return message;
   },
 
@@ -3918,6 +4085,8 @@ export const MsgUpdateExternalToken = {
       (obj.decimals = (message.decimals || Long.ZERO).toString());
     message.isCarbonOwned !== undefined &&
       (obj.isCarbonOwned = message.isCarbonOwned);
+    message.tokenSymbol !== undefined &&
+      (obj.tokenSymbol = message.tokenSymbol);
     return obj;
   },
 
@@ -3934,6 +4103,7 @@ export const MsgUpdateExternalToken = {
         ? Long.fromValue(object.decimals)
         : Long.ZERO;
     message.isCarbonOwned = object.isCarbonOwned ?? false;
+    message.tokenSymbol = object.tokenSymbol ?? "";
     return message;
   },
 };
@@ -5183,6 +5353,9 @@ export interface Msg {
     request: MsgUpdateRefundAddress
   ): Promise<MsgUpdateRefundAddressResponse>;
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
+  UpdateAxlearCallDenom(
+    request: MsgUpdateAxelarCallDenom
+  ): Promise<MsgUpdateAxelarCallDenomResponse>;
   CreateConnection(
     request: MsgCreateConnection
   ): Promise<MsgCreateConnectionResponse>;
@@ -5263,6 +5436,7 @@ export class MsgClientImpl implements Msg {
       this.UpdateRelayWhitelistDuration.bind(this);
     this.UpdateRefundAddress = this.UpdateRefundAddress.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
+    this.UpdateAxlearCallDenom = this.UpdateAxlearCallDenom.bind(this);
     this.CreateConnection = this.CreateConnection.bind(this);
     this.UpdateConnection = this.UpdateConnection.bind(this);
     this.RemoveConnection = this.RemoveConnection.bind(this);
@@ -5387,6 +5561,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateAxlearCallDenom(
+    request: MsgUpdateAxelarCallDenom
+  ): Promise<MsgUpdateAxelarCallDenomResponse> {
+    const data = MsgUpdateAxelarCallDenom.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Msg",
+      "UpdateAxlearCallDenom",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateAxelarCallDenomResponse.decode(new _m0.Reader(data))
     );
   }
 
