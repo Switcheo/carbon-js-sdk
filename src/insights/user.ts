@@ -23,6 +23,28 @@ export interface Profile {
   twitter: string;
 }
 
+export interface StatsigUserProperties {
+  isNew: boolean
+  hasDeposited: boolean
+  hasTradedSpot: boolean
+  hasTradedPerp: boolean
+  hasWithdrawn: boolean
+  hasSwapped: boolean
+  isLending: number
+  hasLent: number
+  isBorrowing: number
+  hasBorrowed: number
+  isStaking: number
+  hasStaked: number
+  providingPerpLiq: boolean
+  providingSpotLiq: boolean
+  providedPerpLiq: boolean
+  providedSpotLiq: boolean
+  isAReferrer: boolean
+  isAReferee: boolean
+  allCampaigns: string[]
+}
+
 export interface UserGrowth {
   t: string;
   minHeight: number;
@@ -78,6 +100,14 @@ export interface QueryGetUserProfileRequest {
 
 export interface QueryGetUserProfileResponse {
   entries: Profile;
+}
+
+export interface QueryGetStatsigUserPropertiesRequest {
+  address: string;
+}
+
+export interface QueryGetStatsigUserPropertiesResponse {
+  entries: StatsigUserProperties
 }
 
 export interface QueryGetActiveAccountsRequest extends QueryByTimeRequest { }

@@ -80,6 +80,16 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserProfileResponse>;
   }
 
+  // Statsig api
+  async StatsigUserProperties(
+    req: Insights.QueryGetStatsigUserPropertiesRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetStatsigUserPropertiesResponse>> {
+    const routeParams: Insights.QueryGetStatsigUserPropertiesRequest = { address: req.address };
+    const request = this.apiManager.path("statsig", routeParams, {});
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetStatsigUserPropertiesResponse>;
+  }
+
   async UserGrowth(
     req: Insights.QueryGetUserGrowthRequest = {}
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserGrowthResponse>> {

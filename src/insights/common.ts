@@ -20,6 +20,8 @@ export const InsightsEndpoints = {
   "user/funding/breakdown": "/user/:address/funding/breakdown",
   "user/connected/wallet": "/user/connected/wallet",
 
+  // Statsig api
+  "statsig": "statsig/:address",
 
   // Pool api
   "pool/list": "/pool/list",
