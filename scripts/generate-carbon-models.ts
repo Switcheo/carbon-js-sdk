@@ -31,6 +31,7 @@ const whitelistCarbonExports: { [name: string]: string } = {
   'Misc': 'Switcheo/carbon/misc',
   'Oracle': 'Switcheo/carbon/oracle',
   'Order': 'Switcheo/carbon/order',
+  'Otc': 'Switcheo/carbon/otc',
   'Perpspool': 'Switcheo/carbon/perpspool',
   'Position': 'Switcheo/carbon/position',
   'Pricing': 'Switcheo/carbon/pricing',
