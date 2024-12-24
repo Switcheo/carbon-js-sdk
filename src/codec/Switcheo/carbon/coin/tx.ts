@@ -92,6 +92,14 @@ export interface MsgMigratePolyToken {
 
 export interface MsgMigratePolyTokenResponse {}
 
+export interface MsgAdminWithdrawPoly {
+  creator: string;
+  denom: string;
+  amount: string;
+}
+
+export interface MsgAdminWithdrawPolyResponse {}
+
 export interface MsgAuthorizeBridge {
   creator: string;
   bridgeId: Long;
@@ -1452,6 +1460,138 @@ export const MsgMigratePolyTokenResponse = {
     const message = {
       ...baseMsgMigratePolyTokenResponse,
     } as MsgMigratePolyTokenResponse;
+    return message;
+  },
+};
+
+const baseMsgAdminWithdrawPoly: object = { creator: "", denom: "", amount: "" };
+
+export const MsgAdminWithdrawPoly = {
+  encode(
+    message: MsgAdminWithdrawPoly,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAdminWithdrawPoly {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAdminWithdrawPoly } as MsgAdminWithdrawPoly;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAdminWithdrawPoly {
+    const message = { ...baseMsgAdminWithdrawPoly } as MsgAdminWithdrawPoly;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgAdminWithdrawPoly): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAdminWithdrawPoly>): MsgAdminWithdrawPoly {
+    const message = { ...baseMsgAdminWithdrawPoly } as MsgAdminWithdrawPoly;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgAdminWithdrawPolyResponse: object = {};
+
+export const MsgAdminWithdrawPolyResponse = {
+  encode(
+    _: MsgAdminWithdrawPolyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAdminWithdrawPolyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAdminWithdrawPolyResponse,
+    } as MsgAdminWithdrawPolyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAdminWithdrawPolyResponse {
+    const message = {
+      ...baseMsgAdminWithdrawPolyResponse,
+    } as MsgAdminWithdrawPolyResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAdminWithdrawPolyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgAdminWithdrawPolyResponse>
+  ): MsgAdminWithdrawPolyResponse {
+    const message = {
+      ...baseMsgAdminWithdrawPolyResponse,
+    } as MsgAdminWithdrawPolyResponse;
     return message;
   },
 };
@@ -4005,6 +4145,9 @@ export interface Msg {
   MigratePolyToken(
     request: MsgMigratePolyToken
   ): Promise<MsgMigratePolyTokenResponse>;
+  AdminWithdrawPoly(
+    request: MsgAdminWithdrawPoly
+  ): Promise<MsgAdminWithdrawPolyResponse>;
   AuthorizeBridge(
     request: MsgAuthorizeBridge
   ): Promise<MsgAuthorizeBridgeResponse>;
@@ -4054,6 +4197,7 @@ export class MsgClientImpl implements Msg {
     this.LinkToken = this.LinkToken.bind(this);
     this.Withdraw = this.Withdraw.bind(this);
     this.MigratePolyToken = this.MigratePolyToken.bind(this);
+    this.AdminWithdrawPoly = this.AdminWithdrawPoly.bind(this);
     this.AuthorizeBridge = this.AuthorizeBridge.bind(this);
     this.DeauthorizeBridge = this.DeauthorizeBridge.bind(this);
     this.EditBridgeName = this.EditBridgeName.bind(this);
@@ -4164,6 +4308,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgMigratePolyTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AdminWithdrawPoly(
+    request: MsgAdminWithdrawPoly
+  ): Promise<MsgAdminWithdrawPolyResponse> {
+    const data = MsgAdminWithdrawPoly.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "AdminWithdrawPoly",
+      data
+    );
+    return promise.then((data) =>
+      MsgAdminWithdrawPolyResponse.decode(new _m0.Reader(data))
     );
   }
 
