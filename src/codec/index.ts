@@ -192,6 +192,8 @@ registry.register("/Switcheo.carbon.bridge.MsgUpdateRefundAddress", Carbon.Bridg
 registry.register("/Switcheo.carbon.bridge.MsgUpdateRefundAddressResponse", Carbon.Bridge.MsgUpdateRefundAddressResponse);
 registry.register("/Switcheo.carbon.bridge.MsgUpdateParams", Carbon.Bridge.MsgUpdateParams);
 registry.register("/Switcheo.carbon.bridge.MsgUpdateParamsResponse", Carbon.Bridge.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateAxelarCallDenom", Carbon.Bridge.MsgUpdateAxelarCallDenom);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateAxelarCallDenomResponse", Carbon.Bridge.MsgUpdateAxelarCallDenomResponse);
 registry.register("/Switcheo.carbon.bridge.MsgAxelarSendToken", Carbon.Bridge.MsgAxelarSendToken);
 registry.register("/Switcheo.carbon.bridge.MsgAxelarSendTokenResponse", Carbon.Bridge.MsgAxelarSendTokenResponse);
 registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContract", Carbon.Bridge.MsgAxelarCallContract);
@@ -269,8 +271,8 @@ registry.register("/Switcheo.carbon.otc.MsgCreateQuote", Carbon.Otc.MsgCreateQuo
 registry.register("/Switcheo.carbon.otc.MsgCreateQuoteResponse", Carbon.Otc.MsgCreateQuoteResponse);
 registry.register("/Switcheo.carbon.otc.MsgAcceptQuote", Carbon.Otc.MsgAcceptQuote);
 registry.register("/Switcheo.carbon.otc.MsgAcceptQuoteResponse", Carbon.Otc.MsgAcceptQuoteResponse);
-registry.register("/Switcheo.carbon.otc.MsgUpdateParams", MsgUpdateParams);
-registry.register("/Switcheo.carbon.otc.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.otc.MsgUpdateParams", Carbon.Otc.MsgUpdateParams);
+registry.register("/Switcheo.carbon.otc.MsgUpdateParamsResponse", Carbon.Otc.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", Carbon.Evmcontract.MsgDeactivateContract);
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse", Carbon.Evmcontract.MsgDeactivateContractResponse);
@@ -310,6 +312,8 @@ registry.register("/Switcheo.carbon.coin.MsgWithdraw", Carbon.Coin.MsgWithdraw);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", Carbon.Coin.MsgWithdrawResponse);
 registry.register("/Switcheo.carbon.coin.MsgMigratePolyToken", Carbon.Coin.MsgMigratePolyToken);
 registry.register("/Switcheo.carbon.coin.MsgMigratePolyTokenResponse", Carbon.Coin.MsgMigratePolyTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawPoly", Carbon.Coin.MsgAdminWithdrawPoly);
+registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawPolyResponse", Carbon.Coin.MsgAdminWithdrawPolyResponse);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", Carbon.Coin.MsgAuthorizeBridge);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", Carbon.Coin.MsgAuthorizeBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", Carbon.Coin.MsgDeauthorizeBridge);
@@ -896,6 +900,8 @@ export const TxTypes = {
   "MsgUpdateRefundAddressResponse": "/Switcheo.carbon.bridge.MsgUpdateRefundAddressResponse",
   "MsgBridgeUpdateParams": "/Switcheo.carbon.bridge.MsgUpdateParams",
   "MsgBridgeUpdateParamsResponse": "/Switcheo.carbon.bridge.MsgUpdateParamsResponse",
+  "MsgUpdateAxelarCallDenom": "/Switcheo.carbon.bridge.MsgUpdateAxelarCallDenom",
+  "MsgUpdateAxelarCallDenomResponse": "/Switcheo.carbon.bridge.MsgUpdateAxelarCallDenomResponse",
   "MsgAxelarSendToken": "/Switcheo.carbon.bridge.MsgAxelarSendToken",
   "MsgAxelarSendTokenResponse": "/Switcheo.carbon.bridge.MsgAxelarSendTokenResponse",
   "MsgAxelarCallContract": "/Switcheo.carbon.bridge.MsgAxelarCallContract",
@@ -1007,6 +1013,8 @@ export const TxTypes = {
   "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
   "MsgMigratePolyToken": "/Switcheo.carbon.coin.MsgMigratePolyToken",
   "MsgMigratePolyTokenResponse": "/Switcheo.carbon.coin.MsgMigratePolyTokenResponse",
+  "MsgAdminWithdrawPoly": "/Switcheo.carbon.coin.MsgAdminWithdrawPoly",
+  "MsgAdminWithdrawPolyResponse": "/Switcheo.carbon.coin.MsgAdminWithdrawPolyResponse",
   "MsgAuthorizeBridge": "/Switcheo.carbon.coin.MsgAuthorizeBridge",
   "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
   "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
@@ -1415,8 +1423,6 @@ export const TxTypes = {
 
 
 // Exported for convenience
-export { QuoteEvent, RfqEvent } from "./Switcheo/carbon/otc/event";
-export { ParamsToUpdate } from "./Switcheo/carbon/otc/params";
 export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
@@ -3322,6 +3328,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "refund_address",
         "type": "string"
+      },
+      {
+        "name": "axelar_call_denom",
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -3769,6 +3779,17 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdateParamsResponse": [],
+    "MsgUpdateAxelarCallDenom": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateAxelarCallDenomResponse": [],
     "MsgAxelarSendToken": [
       {
         "name": "creator",
@@ -7547,6 +7568,21 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgMigratePolyTokenResponse": [],
+    "MsgAdminWithdrawPoly": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgAdminWithdrawPolyResponse": [],
     "MsgAuthorizeBridge": [
       {
         "name": "creator",

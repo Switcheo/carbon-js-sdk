@@ -35,12 +35,14 @@ export interface Params {
   maxRelayExpiryDuration?: Duration;
   /** refund_address for deposits that fail due to wrong receiver address */
   refundAddress: string;
+  axelarCallDenom: string;
 }
 
 const baseParams: object = {
   axelarIbcChannel: "",
   ibcTimeoutHeightOffset: Long.UZERO,
   refundAddress: "",
+  axelarCallDenom: "",
 };
 
 export const Params = {
@@ -68,6 +70,9 @@ export const Params = {
     }
     if (message.refundAddress !== "") {
       writer.uint32(42).string(message.refundAddress);
+    }
+    if (message.axelarCallDenom !== "") {
+      writer.uint32(50).string(message.axelarCallDenom);
     }
     return writer;
   },
@@ -99,6 +104,9 @@ export const Params = {
           break;
         case 5:
           message.refundAddress = reader.string();
+          break;
+        case 6:
+          message.axelarCallDenom = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -133,6 +141,10 @@ export const Params = {
       object.refundAddress !== undefined && object.refundAddress !== null
         ? String(object.refundAddress)
         : "";
+    message.axelarCallDenom =
+      object.axelarCallDenom !== undefined && object.axelarCallDenom !== null
+        ? String(object.axelarCallDenom)
+        : "";
     return message;
   },
 
@@ -154,6 +166,8 @@ export const Params = {
         : undefined);
     message.refundAddress !== undefined &&
       (obj.refundAddress = message.refundAddress);
+    message.axelarCallDenom !== undefined &&
+      (obj.axelarCallDenom = message.axelarCallDenom);
     return obj;
   },
 
@@ -176,6 +190,7 @@ export const Params = {
         ? Duration.fromPartial(object.maxRelayExpiryDuration)
         : undefined;
     message.refundAddress = object.refundAddress ?? "";
+    message.axelarCallDenom = object.axelarCallDenom ?? "";
     return message;
   },
 };
