@@ -13,6 +13,7 @@ export enum ConvertEncType {
   Date = "date",
   DateToNum = "date-number",
   Duration = "duration",
+  Uint8Array = "uint8array",
 }
 
 export type AminoValueMap =
@@ -169,6 +170,8 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
           nanos: totalNanos.mod(NANOS_IN_ONE_SECOND).toNumber(),
         };
       }
+    case ConvertEncType.Uint8Array:
+      return toAmino ? Buffer.from(value).toString('base64') : new Uint8Array(Buffer.from(value, 'base64'));
     default:
       return value;
   }
@@ -216,7 +219,6 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         ? aminoProcess.fromAminoProcess(valueMap, input)
         : {};
       const { input: newInput = input, amino: newAminoMap = valueMap } = processRes;
-
       const aminoObj: TypeUtils.SimpleMap<any> = {};
       Object.keys(newInput).forEach((key: string) => {
         const camelKey = TypeUtils.snakeToCamel(key);

@@ -6,6 +6,7 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   WithdrawTokenTx: "bridge/MsgWithdrawToken",
+  WithdrawAndExecuteTokenTx: "bridge/MsgExecuteFromCarbon",
 };
 
 const MsgWithdrawToken: AminoInit = {
@@ -14,10 +15,18 @@ const MsgWithdrawToken: AminoInit = {
     expiryDuration: ConvertEncType.Duration,
   },
 };
+const MsgWithdrawAndExecuteToken: AminoInit = {
+  aminoType: TxTypes.WithdrawAndExecuteTokenTx,
+  valueMap: {
+    expiryDuration: ConvertEncType.Duration,
+    executionBytes: ConvertEncType.Uint8Array,
+  },
+};
 
 
 const BridgeAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgWithdrawToken]: generateAminoType(MsgWithdrawToken),
+  [CarbonTx.Types.MsgExecuteFromCarbon]: generateAminoType(MsgWithdrawAndExecuteToken),
 };
 
 export default BridgeAmino;
