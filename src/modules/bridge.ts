@@ -122,7 +122,7 @@ export namespace BridgeModule {
   export interface WithdrawAndExecuteParams {
     connectionId: string;
     executionContract: string;
-    executionBytes: Buffer;
+    executionBytes: Uint8Array;
     tokenDenom: string;
     tokenAmount: BigNumber;
     relayDenom: string;
