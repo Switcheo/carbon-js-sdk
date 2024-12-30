@@ -25,6 +25,7 @@ const MsgWithdrawAndExecuteToken: AminoInit = {
 
 const withdrawAndExecuteAminoProcess: AminoProcess = {
   toAminoProcess: (amino: AminoValueMap, input: any) => {
+    console.log('xx amino toAminoProcess', input)
     const { executionBytes } = input as MsgExecuteFromCarbon;
     return {
       amino,
@@ -35,6 +36,7 @@ const withdrawAndExecuteAminoProcess: AminoProcess = {
     };
   },
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
+    console.log('xx amino fromAminoProcess', input)
     const buffer = Buffer.from(input.executionBytes, 'base64');
     return {
       amino,
