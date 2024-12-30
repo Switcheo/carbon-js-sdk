@@ -20,38 +20,14 @@ const MsgWithdrawAndExecuteToken: AminoInit = {
   aminoType: TxTypes.WithdrawAndExecuteTokenTx,
   valueMap: {
     expiryDuration: ConvertEncType.Duration,
-  },
-};
-
-const withdrawAndExecuteAminoProcess: AminoProcess = {
-  toAminoProcess: (amino: AminoValueMap, input: any) => {
-    console.log('xx amino toAminoProcess', input)
-    const { executionBytes } = input as MsgExecuteFromCarbon;
-    return {
-      amino,
-      input: {
-        ...input,
-        executionBytes: Buffer.from(executionBytes).toString('base64'),
-      },
-    };
-  },
-  fromAminoProcess: (amino: AminoValueMap, input: any) => {
-    console.log('xx amino fromAminoProcess', input)
-    const buffer = Buffer.from(input.execution_bytes, 'base64');
-    return {
-      amino,
-      input: {
-        ...input,
-        execution_bytes: new Uint8Array(buffer),
-      },
-    };
+    executionBytes: ConvertEncType.Uint8Array,
   },
 };
 
 
 const BridgeAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgWithdrawToken]: generateAminoType(MsgWithdrawToken),
-  [CarbonTx.Types.MsgExecuteFromCarbon]: generateAminoType(MsgWithdrawAndExecuteToken, withdrawAndExecuteAminoProcess),
+  [CarbonTx.Types.MsgExecuteFromCarbon]: generateAminoType(MsgWithdrawAndExecuteToken),
 };
 
 export default BridgeAmino;
