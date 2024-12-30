@@ -181,6 +181,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
     toAmino: (input: TypeUtils.SimpleMap<any>) => {
       const processRes: AminoProcessOutput | undefined = aminoProcess?.toAminoProcess ? aminoProcess.toAminoProcess(valueMap, input) : {};
       const { input: newInput = input, amino: newAminoMap = valueMap } = processRes;
+      console.log('xx processRes to amino', processRes)
 
       const aminoObj: TypeUtils.SimpleMap<any> = {};
       Object.keys(newInput).forEach((key: string) => {
@@ -209,6 +210,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
           aminoObj[snakeKey] = mapEachIndiv(newInput[key], newAminoMap[key] as TypeUtils.SimpleMap<ConvertEncType>, true);
         }
       });
+      console.log('xx aminoObj to amino', aminoObj)
       return aminoObj;
     },
     fromAmino: (input: TypeUtils.SimpleMap<any>) => {
@@ -216,7 +218,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         ? aminoProcess.fromAminoProcess(valueMap, input)
         : {};
       const { input: newInput = input, amino: newAminoMap = valueMap } = processRes;
-
+      console.log('xx processRes from amino', processRes)
       const aminoObj: TypeUtils.SimpleMap<any> = {};
       Object.keys(newInput).forEach((key: string) => {
         const camelKey = TypeUtils.snakeToCamel(key);
@@ -238,6 +240,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
           aminoObj[camelKey] = mapEachIndiv(newInput[key], newAminoMap[camelKey] as TypeUtils.SimpleMap<ConvertEncType>, false);
         }
       });
+      console.log('xx aminoObj from amino', aminoObj)
       return aminoObj;
     },
   };
