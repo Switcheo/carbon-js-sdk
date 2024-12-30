@@ -189,6 +189,9 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         if (!newInput[key]) return;
         if (typeCheck(newInput[key])) {
           aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true);
+          console.log('snakeKey', snakeKey)
+          console.log('aminoObj[snakeKey]', aminoObj[snakeKey])
+          console.log('newAminoMap[key]', newAminoMap[key])
           if (aminoObj[snakeKey] === null) delete aminoObj[snakeKey]
           return;
         }
