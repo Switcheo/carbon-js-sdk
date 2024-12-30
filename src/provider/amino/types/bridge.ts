@@ -42,7 +42,7 @@ const withdrawAndExecuteAminoProcess: AminoProcess = {
       amino,
       input: {
         ...input,
-        executionBytes: new Uint8Array(buffer),
+        execution_bytes: new Uint8Array(buffer),
       },
     };
   },
