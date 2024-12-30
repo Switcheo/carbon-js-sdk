@@ -37,7 +37,7 @@ const withdrawAndExecuteAminoProcess: AminoProcess = {
   },
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
     console.log('xx amino fromAminoProcess', input)
-    const buffer = Buffer.from(input.executionBytes, 'base64');
+    const buffer = Buffer.from(input.execution_bytes, 'base64');
     return {
       amino,
       input: {
