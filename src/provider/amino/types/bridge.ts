@@ -1,8 +1,7 @@
 import { TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType } from "../utils";
-import { MsgExecuteFromCarbon } from "@carbon-sdk/codec/Switcheo/carbon/bridge/tx";
+import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
