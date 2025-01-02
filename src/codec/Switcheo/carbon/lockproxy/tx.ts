@@ -57,6 +57,24 @@ export interface MsgDeleteWrapperMapping {
 
 export interface MsgDeleteWrapperMappingResponse {}
 
+export interface MsgAddExtension {
+  creator: string;
+  chainId: Long;
+  lockproxyAddress: string;
+  extensionAddress: string;
+}
+
+export interface MsgAddExtensionResponse {}
+
+export interface MsgRemoveExtension {
+  creator: string;
+  chainId: Long;
+  lockproxyAddress: string;
+  extensionAddress: string;
+}
+
+export interface MsgRemoveExtensionResponse {}
+
 const baseMsgCreate: object = { creator: "" };
 
 export const MsgCreate = {
@@ -922,6 +940,310 @@ export const MsgDeleteWrapperMappingResponse = {
   },
 };
 
+const baseMsgAddExtension: object = {
+  creator: "",
+  chainId: Long.UZERO,
+  lockproxyAddress: "",
+  extensionAddress: "",
+};
+
+export const MsgAddExtension = {
+  encode(
+    message: MsgAddExtension,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(16).uint64(message.chainId);
+    }
+    if (message.lockproxyAddress !== "") {
+      writer.uint32(26).string(message.lockproxyAddress);
+    }
+    if (message.extensionAddress !== "") {
+      writer.uint32(34).string(message.extensionAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddExtension {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAddExtension } as MsgAddExtension;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.chainId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.lockproxyAddress = reader.string();
+          break;
+        case 4:
+          message.extensionAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddExtension {
+    const message = { ...baseMsgAddExtension } as MsgAddExtension;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.lockproxyAddress =
+      object.lockproxyAddress !== undefined && object.lockproxyAddress !== null
+        ? String(object.lockproxyAddress)
+        : "";
+    message.extensionAddress =
+      object.extensionAddress !== undefined && object.extensionAddress !== null
+        ? String(object.extensionAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgAddExtension): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.lockproxyAddress !== undefined &&
+      (obj.lockproxyAddress = message.lockproxyAddress);
+    message.extensionAddress !== undefined &&
+      (obj.extensionAddress = message.extensionAddress);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAddExtension>): MsgAddExtension {
+    const message = { ...baseMsgAddExtension } as MsgAddExtension;
+    message.creator = object.creator ?? "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
+    message.lockproxyAddress = object.lockproxyAddress ?? "";
+    message.extensionAddress = object.extensionAddress ?? "";
+    return message;
+  },
+};
+
+const baseMsgAddExtensionResponse: object = {};
+
+export const MsgAddExtensionResponse = {
+  encode(
+    _: MsgAddExtensionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddExtensionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddExtensionResponse,
+    } as MsgAddExtensionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAddExtensionResponse {
+    const message = {
+      ...baseMsgAddExtensionResponse,
+    } as MsgAddExtensionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAddExtensionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgAddExtensionResponse>
+  ): MsgAddExtensionResponse {
+    const message = {
+      ...baseMsgAddExtensionResponse,
+    } as MsgAddExtensionResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveExtension: object = {
+  creator: "",
+  chainId: Long.UZERO,
+  lockproxyAddress: "",
+  extensionAddress: "",
+};
+
+export const MsgRemoveExtension = {
+  encode(
+    message: MsgRemoveExtension,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(16).uint64(message.chainId);
+    }
+    if (message.lockproxyAddress !== "") {
+      writer.uint32(26).string(message.lockproxyAddress);
+    }
+    if (message.extensionAddress !== "") {
+      writer.uint32(34).string(message.extensionAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveExtension {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRemoveExtension } as MsgRemoveExtension;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.chainId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.lockproxyAddress = reader.string();
+          break;
+        case 4:
+          message.extensionAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveExtension {
+    const message = { ...baseMsgRemoveExtension } as MsgRemoveExtension;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.lockproxyAddress =
+      object.lockproxyAddress !== undefined && object.lockproxyAddress !== null
+        ? String(object.lockproxyAddress)
+        : "";
+    message.extensionAddress =
+      object.extensionAddress !== undefined && object.extensionAddress !== null
+        ? String(object.extensionAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveExtension): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.lockproxyAddress !== undefined &&
+      (obj.lockproxyAddress = message.lockproxyAddress);
+    message.extensionAddress !== undefined &&
+      (obj.extensionAddress = message.extensionAddress);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgRemoveExtension>): MsgRemoveExtension {
+    const message = { ...baseMsgRemoveExtension } as MsgRemoveExtension;
+    message.creator = object.creator ?? "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
+    message.lockproxyAddress = object.lockproxyAddress ?? "";
+    message.extensionAddress = object.extensionAddress ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveExtensionResponse: object = {};
+
+export const MsgRemoveExtensionResponse = {
+  encode(
+    _: MsgRemoveExtensionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveExtensionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveExtensionResponse,
+    } as MsgRemoveExtensionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveExtensionResponse {
+    const message = {
+      ...baseMsgRemoveExtensionResponse,
+    } as MsgRemoveExtensionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveExtensionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveExtensionResponse>
+  ): MsgRemoveExtensionResponse {
+    const message = {
+      ...baseMsgRemoveExtensionResponse,
+    } as MsgRemoveExtensionResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -934,6 +1256,10 @@ export interface Msg {
   DeleteWrapperMapping(
     request: MsgDeleteWrapperMapping
   ): Promise<MsgDeleteWrapperMappingResponse>;
+  AddExtension(request: MsgAddExtension): Promise<MsgAddExtensionResponse>;
+  RemoveExtension(
+    request: MsgRemoveExtension
+  ): Promise<MsgRemoveExtensionResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -945,6 +1271,8 @@ export class MsgClientImpl implements Msg {
     this.Lock = this.Lock.bind(this);
     this.SetWrapperMapping = this.SetWrapperMapping.bind(this);
     this.DeleteWrapperMapping = this.DeleteWrapperMapping.bind(this);
+    this.AddExtension = this.AddExtension.bind(this);
+    this.RemoveExtension = this.RemoveExtension.bind(this);
   }
   Create(request: MsgCreate): Promise<MsgCreateResponse> {
     const data = MsgCreate.encode(request).finish();
@@ -1003,6 +1331,32 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgDeleteWrapperMappingResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AddExtension(request: MsgAddExtension): Promise<MsgAddExtensionResponse> {
+    const data = MsgAddExtension.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.lockproxy.Msg",
+      "AddExtension",
+      data
+    );
+    return promise.then((data) =>
+      MsgAddExtensionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveExtension(
+    request: MsgRemoveExtension
+  ): Promise<MsgRemoveExtensionResponse> {
+    const data = MsgRemoveExtension.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.lockproxy.Msg",
+      "RemoveExtension",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveExtensionResponse.decode(new _m0.Reader(data))
     );
   }
 }

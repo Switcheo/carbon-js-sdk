@@ -10,10 +10,6 @@ export interface RateStrategyParams {
   baseVariableBorrowRate: string;
   variableRateSlope1: string;
   variableRateSlope2: string;
-  baseStableBorrowRate: string;
-  stableRateSlope1: string;
-  stableRateSlope2: string;
-  optimalStableToTotalDebtRatio: string;
 }
 
 const baseRateStrategyParams: object = {
@@ -22,10 +18,6 @@ const baseRateStrategyParams: object = {
   baseVariableBorrowRate: "",
   variableRateSlope1: "",
   variableRateSlope2: "",
-  baseStableBorrowRate: "",
-  stableRateSlope1: "",
-  stableRateSlope2: "",
-  optimalStableToTotalDebtRatio: "",
 };
 
 export const RateStrategyParams = {
@@ -47,18 +39,6 @@ export const RateStrategyParams = {
     }
     if (message.variableRateSlope2 !== "") {
       writer.uint32(42).string(message.variableRateSlope2);
-    }
-    if (message.baseStableBorrowRate !== "") {
-      writer.uint32(50).string(message.baseStableBorrowRate);
-    }
-    if (message.stableRateSlope1 !== "") {
-      writer.uint32(58).string(message.stableRateSlope1);
-    }
-    if (message.stableRateSlope2 !== "") {
-      writer.uint32(66).string(message.stableRateSlope2);
-    }
-    if (message.optimalStableToTotalDebtRatio !== "") {
-      writer.uint32(74).string(message.optimalStableToTotalDebtRatio);
     }
     return writer;
   },
@@ -84,18 +64,6 @@ export const RateStrategyParams = {
           break;
         case 5:
           message.variableRateSlope2 = reader.string();
-          break;
-        case 6:
-          message.baseStableBorrowRate = reader.string();
-          break;
-        case 7:
-          message.stableRateSlope1 = reader.string();
-          break;
-        case 8:
-          message.stableRateSlope2 = reader.string();
-          break;
-        case 9:
-          message.optimalStableToTotalDebtRatio = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -130,24 +98,6 @@ export const RateStrategyParams = {
       object.variableRateSlope2 !== null
         ? String(object.variableRateSlope2)
         : "";
-    message.baseStableBorrowRate =
-      object.baseStableBorrowRate !== undefined &&
-      object.baseStableBorrowRate !== null
-        ? String(object.baseStableBorrowRate)
-        : "";
-    message.stableRateSlope1 =
-      object.stableRateSlope1 !== undefined && object.stableRateSlope1 !== null
-        ? String(object.stableRateSlope1)
-        : "";
-    message.stableRateSlope2 =
-      object.stableRateSlope2 !== undefined && object.stableRateSlope2 !== null
-        ? String(object.stableRateSlope2)
-        : "";
-    message.optimalStableToTotalDebtRatio =
-      object.optimalStableToTotalDebtRatio !== undefined &&
-      object.optimalStableToTotalDebtRatio !== null
-        ? String(object.optimalStableToTotalDebtRatio)
-        : "";
     return message;
   },
 
@@ -162,15 +112,6 @@ export const RateStrategyParams = {
       (obj.variableRateSlope1 = message.variableRateSlope1);
     message.variableRateSlope2 !== undefined &&
       (obj.variableRateSlope2 = message.variableRateSlope2);
-    message.baseStableBorrowRate !== undefined &&
-      (obj.baseStableBorrowRate = message.baseStableBorrowRate);
-    message.stableRateSlope1 !== undefined &&
-      (obj.stableRateSlope1 = message.stableRateSlope1);
-    message.stableRateSlope2 !== undefined &&
-      (obj.stableRateSlope2 = message.stableRateSlope2);
-    message.optimalStableToTotalDebtRatio !== undefined &&
-      (obj.optimalStableToTotalDebtRatio =
-        message.optimalStableToTotalDebtRatio);
     return obj;
   },
 
@@ -181,11 +122,6 @@ export const RateStrategyParams = {
     message.baseVariableBorrowRate = object.baseVariableBorrowRate ?? "";
     message.variableRateSlope1 = object.variableRateSlope1 ?? "";
     message.variableRateSlope2 = object.variableRateSlope2 ?? "";
-    message.baseStableBorrowRate = object.baseStableBorrowRate ?? "";
-    message.stableRateSlope1 = object.stableRateSlope1 ?? "";
-    message.stableRateSlope2 = object.stableRateSlope2 ?? "";
-    message.optimalStableToTotalDebtRatio =
-      object.optimalStableToTotalDebtRatio ?? "";
     return message;
   },
 };
