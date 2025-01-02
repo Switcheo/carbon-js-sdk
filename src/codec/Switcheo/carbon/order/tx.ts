@@ -31,7 +31,9 @@ export interface MsgCreateOrder {
   referralKickback: number;
 }
 
-export interface MsgCreateOrderResponse {}
+export interface MsgCreateOrderResponse {
+  orderId: string;
+}
 
 export interface MsgEditOrder {
   creator: string;
@@ -441,13 +443,16 @@ export const MsgCreateOrder = {
   },
 };
 
-const baseMsgCreateOrderResponse: object = {};
+const baseMsgCreateOrderResponse: object = { orderId: "" };
 
 export const MsgCreateOrderResponse = {
   encode(
-    _: MsgCreateOrderResponse,
+    message: MsgCreateOrderResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.orderId !== "") {
+      writer.uint32(10).string(message.orderId);
+    }
     return writer;
   },
 
@@ -461,6 +466,9 @@ export const MsgCreateOrderResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.orderId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -469,18 +477,26 @@ export const MsgCreateOrderResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgCreateOrderResponse {
+  fromJSON(object: any): MsgCreateOrderResponse {
     const message = { ...baseMsgCreateOrderResponse } as MsgCreateOrderResponse;
+    message.orderId =
+      object.orderId !== undefined && object.orderId !== null
+        ? String(object.orderId)
+        : "";
     return message;
   },
 
-  toJSON(_: MsgCreateOrderResponse): unknown {
+  toJSON(message: MsgCreateOrderResponse): unknown {
     const obj: any = {};
+    message.orderId !== undefined && (obj.orderId = message.orderId);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgCreateOrderResponse>): MsgCreateOrderResponse {
+  fromPartial(
+    object: DeepPartial<MsgCreateOrderResponse>
+  ): MsgCreateOrderResponse {
     const message = { ...baseMsgCreateOrderResponse } as MsgCreateOrderResponse;
+    message.orderId = object.orderId ?? "";
     return message;
   },
 };

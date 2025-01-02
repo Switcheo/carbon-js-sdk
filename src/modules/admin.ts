@@ -452,10 +452,6 @@ export class AdminModule extends BaseModule {
         baseVariableBorrowRate: params.rateStrategy.baseVariableBorrowRate.toString(10),
         variableRateSlope1: params.rateStrategy.variableRateSlope1.toString(10),
         variableRateSlope2: params.rateStrategy.variableRateSlope2.toString(10),
-        baseStableBorrowRate: params.rateStrategy.baseStableBorrowRate.toString(10),
-        stableRateSlope1: params.rateStrategy.stableRateSlope1.toString(10),
-        stableRateSlope2: params.rateStrategy.stableRateSlope2.toString(10),
-        optimalStableToTotalDebtRatio: params.rateStrategy.optimalStableToTotalDebtRatio.toString(10),
       },
     });
 
@@ -479,10 +475,6 @@ export class AdminModule extends BaseModule {
         baseVariableBorrowRate: params.rateStrategy.baseVariableBorrowRate.toString(10),
         variableRateSlope1: params.rateStrategy.variableRateSlope1.toString(10),
         variableRateSlope2: params.rateStrategy.variableRateSlope2.toString(10),
-        baseStableBorrowRate: params.rateStrategy.baseStableBorrowRate.toString(10),
-        stableRateSlope1: params.rateStrategy.stableRateSlope1.toString(10),
-        stableRateSlope2: params.rateStrategy.stableRateSlope2.toString(10),
-        optimalStableToTotalDebtRatio: params.rateStrategy.optimalStableToTotalDebtRatio.toString(10),
       },
     });
 

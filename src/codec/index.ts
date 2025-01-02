@@ -479,6 +479,10 @@ registry.register("/Switcheo.carbon.lockproxy.MsgSetWrapperMapping", PolyNetwork
 registry.register("/Switcheo.carbon.lockproxy.MsgSetWrapperMappingResponse", PolyNetwork.Lockproxy.MsgSetWrapperMappingResponse);
 registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMapping", PolyNetwork.Lockproxy.MsgDeleteWrapperMapping);
 registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMappingResponse", PolyNetwork.Lockproxy.MsgDeleteWrapperMappingResponse);
+registry.register("/Switcheo.carbon.lockproxy.MsgAddExtension", PolyNetwork.Lockproxy.MsgAddExtension);
+registry.register("/Switcheo.carbon.lockproxy.MsgAddExtensionResponse", PolyNetwork.Lockproxy.MsgAddExtensionResponse);
+registry.register("/Switcheo.carbon.lockproxy.MsgRemoveExtension", PolyNetwork.Lockproxy.MsgRemoveExtension);
+registry.register("/Switcheo.carbon.lockproxy.MsgRemoveExtensionResponse", PolyNetwork.Lockproxy.MsgRemoveExtensionResponse);
 
 registry.register("/alliance.alliance.MsgDelegate", Carbon.Alliance.MsgDelegate);
 registry.register("/alliance.alliance.MsgDelegateResponse", Carbon.Alliance.MsgDelegateResponse);
@@ -1170,6 +1174,10 @@ export const TxTypes = {
   "MsgSetWrapperMappingResponse": "/Switcheo.carbon.lockproxy.MsgSetWrapperMappingResponse",
   "MsgDeleteWrapperMapping": "/Switcheo.carbon.lockproxy.MsgDeleteWrapperMapping",
   "MsgDeleteWrapperMappingResponse": "/Switcheo.carbon.lockproxy.MsgDeleteWrapperMappingResponse",
+  "MsgAddExtension": "/Switcheo.carbon.lockproxy.MsgAddExtension",
+  "MsgAddExtensionResponse": "/Switcheo.carbon.lockproxy.MsgAddExtensionResponse",
+  "MsgRemoveExtension": "/Switcheo.carbon.lockproxy.MsgRemoveExtension",
+  "MsgRemoveExtensionResponse": "/Switcheo.carbon.lockproxy.MsgRemoveExtensionResponse",
   "MsgAllianceDelegate": "/alliance.alliance.MsgDelegate",
   "MsgAllianceDelegateResponse": "/alliance.alliance.MsgDelegateResponse",
   "MsgAllianceUndelegate": "/alliance.alliance.MsgUndelegate",
@@ -5168,22 +5176,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "variable_rate_slope_2",
-        "type": "string"
-      },
-      {
-        "name": "base_stable_borrow_rate",
-        "type": "string"
-      },
-      {
-        "name": "stable_rate_slope_1",
-        "type": "string"
-      },
-      {
-        "name": "stable_rate_slope_2",
-        "type": "string"
-      },
-      {
-        "name": "optimal_stable_to_total_debt_ratio",
         "type": "string"
       }
     ],
@@ -10240,7 +10232,12 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint32"
       }
     ],
-    "MsgCreateOrderResponse": [],
+    "MsgCreateOrderResponse": [
+      {
+        "name": "order_id",
+        "type": "string"
+      }
+    ],
     "MsgEditOrder": [
       {
         "name": "creator",
@@ -12070,7 +12067,45 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgDeleteWrapperMappingResponse": []
+    "MsgDeleteWrapperMappingResponse": [],
+    "MsgAddExtension": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "lockproxy_address",
+        "type": "string"
+      },
+      {
+        "name": "extension_address",
+        "type": "string"
+      }
+    ],
+    "MsgAddExtensionResponse": [],
+    "MsgRemoveExtension": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "lockproxy_address",
+        "type": "string"
+      },
+      {
+        "name": "extension_address",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveExtensionResponse": []
   },
   "/Switcheo.carbon.market": {
     "Params": [
