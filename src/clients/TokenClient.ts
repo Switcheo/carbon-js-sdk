@@ -117,18 +117,18 @@ class TokenClient {
 
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
     if (!denom) return undefined
-    const token = this.tokens[denom]
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupedToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       return 'Native'
     }
 
+    const token = this.tokenForDenom(denom)
     if (this.isBridgedToken(denom)) {
       // brdg tokens will all be chain_id 0 which will also be deprecated in future
       // hence for brdg tokens cannot use chain_id to differentiate between blockchains
       const bridgeList = this.bridges.axelar
-      const chainName = bridgeList.find((bridge) => bridge.bridgeAddress === token.bridgeAddress)?.chainName
+      const chainName = bridgeList.find((bridge) => bridge.bridgeAddress === token?.bridgeAddress)?.chainName
       return chainName
     }
     const bridge = this.getBridgeFromToken(token)
@@ -664,7 +664,7 @@ class TokenClient {
     return bridgeList.find(bridge => bridge.chainId.toNumber() === chainId)?.chainName ?? undefined
   }
 
-  public getBridgeFromToken(token: Carbon.Coin.Token | null): Carbon.Coin.Bridge | IbcBridge | undefined {
+  public getBridgeFromToken(token: Carbon.Coin.Token | null | undefined): Carbon.Coin.Bridge | IbcBridge | undefined {
     if (!token || !token.bridgeId) return undefined
     const bridgeList = this.getBridgesFromBridgeId(token.bridgeId.toNumber())
     return bridgeList.find(bridge => token.chainId.equals(bridge.chainId))
