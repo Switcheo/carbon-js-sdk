@@ -1,5 +1,6 @@
 export * from "./balance";
 export * from "./common";
+export * from "./crosschain";
 export * from "./node";
 export * from "./pool";
 export * from "./position";
