@@ -3523,6 +3523,10 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "relay_details",
         "type": "RelayDetails",
         "packageName": "/Switcheo.carbon.bridge"
+      },
+      {
+        "name": "method",
+        "type": "string"
       }
     ],
     "QueryParamsRequest": [],
@@ -4586,7 +4590,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       },
       {
-        "name": "MinMaxBoundary",
+        "name": "min_max_boundary",
         "type": "MinMaxBoundary",
         "packageName": "/Switcheo.carbon.broker"
       },
@@ -6917,7 +6921,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "cdpPaused",
+        "name": "cdp_paused",
         "type": "bool"
       }
     ],
@@ -14487,6 +14491,22 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "depositor",
         "type": "string"
+      },
+      {
+        "name": "fee_to_pool_denom",
+        "type": "string"
+      },
+      {
+        "name": "fee_to_pool_amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_to_pool_commission_denom",
+        "type": "string"
+      },
+      {
+        "name": "fee_to_pool_commission_amount",
+        "type": "string"
       }
     ],
     "WithdrawFromPoolEvent": [
@@ -14512,6 +14532,22 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "withdrawer",
+        "type": "string"
+      },
+      {
+        "name": "fee_to_pool_denom",
+        "type": "string"
+      },
+      {
+        "name": "fee_to_pool_amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_to_commission_denom",
+        "type": "string"
+      },
+      {
+        "name": "fee_to_commission_amount",
         "type": "string"
       }
     ],
@@ -14553,6 +14589,18 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "index_last_updated_at_threshold",
         "type": "string"
+      },
+      {
+        "name": "trade_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "fee_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "pool_commission_address",
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -14582,6 +14630,18 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "index_last_updated_at_threshold",
+        "type": "string"
+      },
+      {
+        "name": "trade_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "fee_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "pool_commission_address",
         "type": "string"
       }
     ],
@@ -14989,6 +15049,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "opened_block_height",
         "type": "uint64"
+      },
+      {
+        "name": "allocated_margin_amount",
+        "type": "string"
       }
     ],
     "Positions": [

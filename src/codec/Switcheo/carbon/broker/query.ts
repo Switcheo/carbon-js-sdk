@@ -35,7 +35,7 @@ export interface QueryTradesRequest {
 
 export interface QueryTradesResponse {
   trades: TradeEvent[];
-  MinMaxBoundary?: MinMaxBoundary;
+  minMaxBoundary?: MinMaxBoundary;
   pagination?: PageResponse;
 }
 
@@ -419,9 +419,9 @@ export const QueryTradesResponse = {
     for (const v of message.trades) {
       TradeEvent.encode(v!, writer.uint32(10).fork()).ldelim();
     }
-    if (message.MinMaxBoundary !== undefined) {
+    if (message.minMaxBoundary !== undefined) {
       MinMaxBoundary.encode(
-        message.MinMaxBoundary,
+        message.minMaxBoundary,
         writer.uint32(18).fork()
       ).ldelim();
     }
@@ -446,7 +446,7 @@ export const QueryTradesResponse = {
           message.trades.push(TradeEvent.decode(reader, reader.uint32()));
           break;
         case 2:
-          message.MinMaxBoundary = MinMaxBoundary.decode(
+          message.minMaxBoundary = MinMaxBoundary.decode(
             reader,
             reader.uint32()
           );
@@ -467,9 +467,9 @@ export const QueryTradesResponse = {
     message.trades = (object.trades ?? []).map((e: any) =>
       TradeEvent.fromJSON(e)
     );
-    message.MinMaxBoundary =
-      object.MinMaxBoundary !== undefined && object.MinMaxBoundary !== null
-        ? MinMaxBoundary.fromJSON(object.MinMaxBoundary)
+    message.minMaxBoundary =
+      object.minMaxBoundary !== undefined && object.minMaxBoundary !== null
+        ? MinMaxBoundary.fromJSON(object.minMaxBoundary)
         : undefined;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -487,9 +487,9 @@ export const QueryTradesResponse = {
     } else {
       obj.trades = [];
     }
-    message.MinMaxBoundary !== undefined &&
-      (obj.MinMaxBoundary = message.MinMaxBoundary
-        ? MinMaxBoundary.toJSON(message.MinMaxBoundary)
+    message.minMaxBoundary !== undefined &&
+      (obj.minMaxBoundary = message.minMaxBoundary
+        ? MinMaxBoundary.toJSON(message.minMaxBoundary)
         : undefined);
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -503,9 +503,9 @@ export const QueryTradesResponse = {
     message.trades = (object.trades ?? []).map((e) =>
       TradeEvent.fromPartial(e)
     );
-    message.MinMaxBoundary =
-      object.MinMaxBoundary !== undefined && object.MinMaxBoundary !== null
-        ? MinMaxBoundary.fromPartial(object.MinMaxBoundary)
+    message.minMaxBoundary =
+      object.minMaxBoundary !== undefined && object.minMaxBoundary !== null
+        ? MinMaxBoundary.fromPartial(object.minMaxBoundary)
         : undefined;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null

@@ -54,6 +54,7 @@ export interface PendingWithdrawAndExecute {
   coin?: Coin;
   executionBytes: Uint8Array;
   relayDetails?: RelayDetails;
+  method: string;
 }
 
 const basePendingRegisterToken: object = {
@@ -684,6 +685,7 @@ const basePendingWithdrawAndExecute: object = {
   connectionId: "",
   sender: "",
   executionContract: "",
+  method: "",
 };
 
 export const PendingWithdrawAndExecute = {
@@ -711,6 +713,9 @@ export const PendingWithdrawAndExecute = {
         message.relayDetails,
         writer.uint32(50).fork()
       ).ldelim();
+    }
+    if (message.method !== "") {
+      writer.uint32(58).string(message.method);
     }
     return writer;
   },
@@ -745,6 +750,9 @@ export const PendingWithdrawAndExecute = {
           break;
         case 6:
           message.relayDetails = RelayDetails.decode(reader, reader.uint32());
+          break;
+        case 7:
+          message.method = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -783,6 +791,10 @@ export const PendingWithdrawAndExecute = {
       object.relayDetails !== undefined && object.relayDetails !== null
         ? RelayDetails.fromJSON(object.relayDetails)
         : undefined;
+    message.method =
+      object.method !== undefined && object.method !== null
+        ? String(object.method)
+        : "";
     return message;
   },
 
@@ -805,6 +817,7 @@ export const PendingWithdrawAndExecute = {
       (obj.relayDetails = message.relayDetails
         ? RelayDetails.toJSON(message.relayDetails)
         : undefined);
+    message.method !== undefined && (obj.method = message.method);
     return obj;
   },
 
@@ -826,6 +839,7 @@ export const PendingWithdrawAndExecute = {
       object.relayDetails !== undefined && object.relayDetails !== null
         ? RelayDetails.fromPartial(object.relayDetails)
         : undefined;
+    message.method = object.method ?? "";
     return message;
   },
 };

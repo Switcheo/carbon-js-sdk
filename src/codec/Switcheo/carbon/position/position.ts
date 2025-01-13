@@ -14,6 +14,7 @@ export interface Position {
   realizedPnl: string;
   allocatedMargin?: Coin;
   openedBlockHeight: Long;
+  allocatedMarginAmount: string;
 }
 
 export interface Positions {
@@ -59,6 +60,7 @@ const basePosition: object = {
   entryPrice: "",
   realizedPnl: "",
   openedBlockHeight: Long.UZERO,
+  allocatedMarginAmount: "",
 };
 
 export const Position = {
@@ -86,6 +88,9 @@ export const Position = {
     }
     if (!message.openedBlockHeight.isZero()) {
       writer.uint32(56).uint64(message.openedBlockHeight);
+    }
+    if (message.allocatedMarginAmount !== "") {
+      writer.uint32(66).string(message.allocatedMarginAmount);
     }
     return writer;
   },
@@ -117,6 +122,9 @@ export const Position = {
           break;
         case 7:
           message.openedBlockHeight = reader.uint64() as Long;
+          break;
+        case 8:
+          message.allocatedMarginAmount = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -157,6 +165,11 @@ export const Position = {
       object.openedBlockHeight !== null
         ? Long.fromString(object.openedBlockHeight)
         : Long.UZERO;
+    message.allocatedMarginAmount =
+      object.allocatedMarginAmount !== undefined &&
+      object.allocatedMarginAmount !== null
+        ? String(object.allocatedMarginAmount)
+        : "";
     return message;
   },
 
@@ -176,6 +189,8 @@ export const Position = {
       (obj.openedBlockHeight = (
         message.openedBlockHeight || Long.UZERO
       ).toString());
+    message.allocatedMarginAmount !== undefined &&
+      (obj.allocatedMarginAmount = message.allocatedMarginAmount);
     return obj;
   },
 
@@ -195,6 +210,7 @@ export const Position = {
       object.openedBlockHeight !== null
         ? Long.fromValue(object.openedBlockHeight)
         : Long.UZERO;
+    message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
     return message;
   },
 };

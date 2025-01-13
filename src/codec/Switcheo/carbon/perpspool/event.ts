@@ -33,6 +33,10 @@ export interface DepositToPoolEvent {
   shareAmount: string;
   initialShareAmountBurnt: string;
   depositor: string;
+  feeToPoolDenom: string;
+  feeToPoolAmount: string;
+  feeToPoolCommissionDenom: string;
+  feeToPoolCommissionAmount: string;
 }
 
 export interface WithdrawFromPoolEvent {
@@ -42,6 +46,10 @@ export interface WithdrawFromPoolEvent {
   shareDenom: string;
   shareAmount: string;
   withdrawer: string;
+  feeToPoolDenom: string;
+  feeToPoolAmount: string;
+  feeToCommissionDenom: string;
+  feeToCommissionAmount: string;
 }
 
 export interface UpdateMarketLiquidityUsageMultiplierEvent {
@@ -343,6 +351,10 @@ const baseDepositToPoolEvent: object = {
   shareAmount: "",
   initialShareAmountBurnt: "",
   depositor: "",
+  feeToPoolDenom: "",
+  feeToPoolAmount: "",
+  feeToPoolCommissionDenom: "",
+  feeToPoolCommissionAmount: "",
 };
 
 export const DepositToPoolEvent = {
@@ -370,6 +382,18 @@ export const DepositToPoolEvent = {
     }
     if (message.depositor !== "") {
       writer.uint32(58).string(message.depositor);
+    }
+    if (message.feeToPoolDenom !== "") {
+      writer.uint32(66).string(message.feeToPoolDenom);
+    }
+    if (message.feeToPoolAmount !== "") {
+      writer.uint32(74).string(message.feeToPoolAmount);
+    }
+    if (message.feeToPoolCommissionDenom !== "") {
+      writer.uint32(82).string(message.feeToPoolCommissionDenom);
+    }
+    if (message.feeToPoolCommissionAmount !== "") {
+      writer.uint32(90).string(message.feeToPoolCommissionAmount);
     }
     return writer;
   },
@@ -401,6 +425,18 @@ export const DepositToPoolEvent = {
           break;
         case 7:
           message.depositor = reader.string();
+          break;
+        case 8:
+          message.feeToPoolDenom = reader.string();
+          break;
+        case 9:
+          message.feeToPoolAmount = reader.string();
+          break;
+        case 10:
+          message.feeToPoolCommissionDenom = reader.string();
+          break;
+        case 11:
+          message.feeToPoolCommissionAmount = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -441,6 +477,24 @@ export const DepositToPoolEvent = {
       object.depositor !== undefined && object.depositor !== null
         ? String(object.depositor)
         : "";
+    message.feeToPoolDenom =
+      object.feeToPoolDenom !== undefined && object.feeToPoolDenom !== null
+        ? String(object.feeToPoolDenom)
+        : "";
+    message.feeToPoolAmount =
+      object.feeToPoolAmount !== undefined && object.feeToPoolAmount !== null
+        ? String(object.feeToPoolAmount)
+        : "";
+    message.feeToPoolCommissionDenom =
+      object.feeToPoolCommissionDenom !== undefined &&
+      object.feeToPoolCommissionDenom !== null
+        ? String(object.feeToPoolCommissionDenom)
+        : "";
+    message.feeToPoolCommissionAmount =
+      object.feeToPoolCommissionAmount !== undefined &&
+      object.feeToPoolCommissionAmount !== null
+        ? String(object.feeToPoolCommissionAmount)
+        : "";
     return message;
   },
 
@@ -456,6 +510,14 @@ export const DepositToPoolEvent = {
     message.initialShareAmountBurnt !== undefined &&
       (obj.initialShareAmountBurnt = message.initialShareAmountBurnt);
     message.depositor !== undefined && (obj.depositor = message.depositor);
+    message.feeToPoolDenom !== undefined &&
+      (obj.feeToPoolDenom = message.feeToPoolDenom);
+    message.feeToPoolAmount !== undefined &&
+      (obj.feeToPoolAmount = message.feeToPoolAmount);
+    message.feeToPoolCommissionDenom !== undefined &&
+      (obj.feeToPoolCommissionDenom = message.feeToPoolCommissionDenom);
+    message.feeToPoolCommissionAmount !== undefined &&
+      (obj.feeToPoolCommissionAmount = message.feeToPoolCommissionAmount);
     return obj;
   },
 
@@ -471,6 +533,10 @@ export const DepositToPoolEvent = {
     message.shareAmount = object.shareAmount ?? "";
     message.initialShareAmountBurnt = object.initialShareAmountBurnt ?? "";
     message.depositor = object.depositor ?? "";
+    message.feeToPoolDenom = object.feeToPoolDenom ?? "";
+    message.feeToPoolAmount = object.feeToPoolAmount ?? "";
+    message.feeToPoolCommissionDenom = object.feeToPoolCommissionDenom ?? "";
+    message.feeToPoolCommissionAmount = object.feeToPoolCommissionAmount ?? "";
     return message;
   },
 };
@@ -482,6 +548,10 @@ const baseWithdrawFromPoolEvent: object = {
   shareDenom: "",
   shareAmount: "",
   withdrawer: "",
+  feeToPoolDenom: "",
+  feeToPoolAmount: "",
+  feeToCommissionDenom: "",
+  feeToCommissionAmount: "",
 };
 
 export const WithdrawFromPoolEvent = {
@@ -506,6 +576,18 @@ export const WithdrawFromPoolEvent = {
     }
     if (message.withdrawer !== "") {
       writer.uint32(50).string(message.withdrawer);
+    }
+    if (message.feeToPoolDenom !== "") {
+      writer.uint32(58).string(message.feeToPoolDenom);
+    }
+    if (message.feeToPoolAmount !== "") {
+      writer.uint32(66).string(message.feeToPoolAmount);
+    }
+    if (message.feeToCommissionDenom !== "") {
+      writer.uint32(74).string(message.feeToCommissionDenom);
+    }
+    if (message.feeToCommissionAmount !== "") {
+      writer.uint32(82).string(message.feeToCommissionAmount);
     }
     return writer;
   },
@@ -537,6 +619,18 @@ export const WithdrawFromPoolEvent = {
           break;
         case 6:
           message.withdrawer = reader.string();
+          break;
+        case 7:
+          message.feeToPoolDenom = reader.string();
+          break;
+        case 8:
+          message.feeToPoolAmount = reader.string();
+          break;
+        case 9:
+          message.feeToCommissionDenom = reader.string();
+          break;
+        case 10:
+          message.feeToCommissionAmount = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -572,6 +666,24 @@ export const WithdrawFromPoolEvent = {
       object.withdrawer !== undefined && object.withdrawer !== null
         ? String(object.withdrawer)
         : "";
+    message.feeToPoolDenom =
+      object.feeToPoolDenom !== undefined && object.feeToPoolDenom !== null
+        ? String(object.feeToPoolDenom)
+        : "";
+    message.feeToPoolAmount =
+      object.feeToPoolAmount !== undefined && object.feeToPoolAmount !== null
+        ? String(object.feeToPoolAmount)
+        : "";
+    message.feeToCommissionDenom =
+      object.feeToCommissionDenom !== undefined &&
+      object.feeToCommissionDenom !== null
+        ? String(object.feeToCommissionDenom)
+        : "";
+    message.feeToCommissionAmount =
+      object.feeToCommissionAmount !== undefined &&
+      object.feeToCommissionAmount !== null
+        ? String(object.feeToCommissionAmount)
+        : "";
     return message;
   },
 
@@ -585,6 +697,14 @@ export const WithdrawFromPoolEvent = {
     message.shareAmount !== undefined &&
       (obj.shareAmount = message.shareAmount);
     message.withdrawer !== undefined && (obj.withdrawer = message.withdrawer);
+    message.feeToPoolDenom !== undefined &&
+      (obj.feeToPoolDenom = message.feeToPoolDenom);
+    message.feeToPoolAmount !== undefined &&
+      (obj.feeToPoolAmount = message.feeToPoolAmount);
+    message.feeToCommissionDenom !== undefined &&
+      (obj.feeToCommissionDenom = message.feeToCommissionDenom);
+    message.feeToCommissionAmount !== undefined &&
+      (obj.feeToCommissionAmount = message.feeToCommissionAmount);
     return obj;
   },
 
@@ -601,6 +721,10 @@ export const WithdrawFromPoolEvent = {
     message.shareDenom = object.shareDenom ?? "";
     message.shareAmount = object.shareAmount ?? "";
     message.withdrawer = object.withdrawer ?? "";
+    message.feeToPoolDenom = object.feeToPoolDenom ?? "";
+    message.feeToPoolAmount = object.feeToPoolAmount ?? "";
+    message.feeToCommissionDenom = object.feeToCommissionDenom ?? "";
+    message.feeToCommissionAmount = object.feeToCommissionAmount ?? "";
     return message;
   },
 };
