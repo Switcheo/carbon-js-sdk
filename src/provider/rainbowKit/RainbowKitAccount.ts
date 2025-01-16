@@ -1,5 +1,5 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
-import { BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EVMChain, MANTLE_MAINNET, MANTLE_TESTNET, Network, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
@@ -17,7 +17,7 @@ import { StdFee } from "@cosmjs/stargate";
 import { DirectSignResponse } from "@keplr-wallet/types";
 import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
-import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
+import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BASE_MAINNET, BASE_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, MANTLE_MAINNET, MANTLE_TESTNET, OKC_MAINNET, OKC_TESTNET, OP_MAINNET, OP_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET, AVALANCHE_MAINNET, AVALANCHE_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "../metamask/error";
 
@@ -223,8 +223,10 @@ class RainbowKitAccount extends Eip6963Provider {
         return isMainnet ? 137 : 80001;
       case 'OKC':
         return isMainnet ? 66 : 65;
-      case 'OP':
+      case 'Optimism':
         return isMainnet ? 10 : 11155420;
+      case 'Avalanche':
+        return isMainnet ? 43114 : 43113;
       case 'Base':
         return isMainnet ? 8453 : 84532;
       default:
@@ -264,7 +266,9 @@ class RainbowKitAccount extends Eip6963Provider {
         return isMainnet ? OKC_MAINNET : OKC_TESTNET
       case 'Mantle':
         return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
-      case 'OP':
+      case 'Avalanche':
+        return isMainnet ? AVALANCHE_MAINNET : AVALANCHE_TESTNET
+      case 'Optimism':
         return isMainnet ? OP_MAINNET : OP_TESTNET
       case 'Base':
         return isMainnet ? BASE_MAINNET : BASE_TESTNET

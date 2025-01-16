@@ -220,6 +220,34 @@ export const OP_TESTNET: ChangeNetworkParam = {
   },
 }
 
+export const AVALANCHE_MAINNET: ChangeNetworkParam = {
+  chainId: "0xa86a",  // Avalanche Mainnet Chain ID (hex of 43114)
+  blockExplorerUrls: ["https://snowtrace.io"],
+  chainName: "Avalanche C-Chain",
+  rpcUrls: [
+    "https://avalanche-c-chain-rpc.publicnode.com",
+  ],
+  nativeCurrency: {
+    "name": "Avalanche",
+    "symbol": "AVAX",
+    "decimals": 18,
+  },
+}
+
+export const AVALANCHE_TESTNET: ChangeNetworkParam = {
+  chainId: "0xa869",  // Avalanche Fuji Chain ID (hex of 43113)
+  blockExplorerUrls: ["https://testnet.snowtrace.io"],
+  chainName: "Avalanche Fuji Testnet",
+  rpcUrls: [
+    "https://avalanche-fuji-c-chain-rpc.publicnode.com",
+  ],
+  nativeCurrency: {
+    "name": "Avalanche",
+    "symbol": "AVAX",
+    "decimals": 18,
+  },
+}
+
 export const BASE_MAINNET: ChangeNetworkParam = {
   chainId: "0x2105",  // Base MainNet Chain ID (hex of 8453)
   blockExplorerUrls: ["https://basescan.org"],
