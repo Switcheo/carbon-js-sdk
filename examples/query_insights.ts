@@ -1,11 +1,12 @@
 import { PositionViewOptions } from "../lib/insights";
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
+import dayjs from "dayjs";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.MainNet,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -117,5 +118,10 @@ import { CarbonSDK } from "./_sdk";
   // Funding History Graph Data
   const fundingHistoryGraphData = await sdk.insights.FundingHistoryGraphData({ market: 'cmkt/117' })
   console.log("fundingHistoryGraphData", fundingHistoryGraphData)
+
+  // Crosschain Volumes Data 
+  const twoWeeksAgoUnix = dayjs().subtract(2, 'weeks').unix().toString()
+  const crosschainVolumesData = await sdk.insights.CrosschainVolumes({ from: twoWeeksAgoUnix })
+  console.log("crosschainVolumesData", crosschainVolumesData)
 
 })().catch(console.error).finally(() => process.exit(0));
