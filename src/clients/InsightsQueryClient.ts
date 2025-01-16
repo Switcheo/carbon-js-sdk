@@ -1,6 +1,6 @@
 import { NetworkConfig } from "@carbon-sdk/constant";
 import { Insights } from "@carbon-sdk/index";
-import { ConnectedWalletParams, ConnectedWalletResponse, InsightsQueryResponse } from "@carbon-sdk/insights";
+import { ConnectedWalletParams, ConnectedWalletResponse, CrossChainVolume, InsightsQueryResponse } from "@carbon-sdk/insights";
 import { APIUtils } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
@@ -620,6 +620,12 @@ class InsightsQueryClient {
     const request = this.apiManager.path("alliances/rewards", {}, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAlliancesRewardsResponse>;
+  }
+
+  async CrosschainVolumes(req: Insights.QueryCrosschainVolumeRequest = {}): Promise<Insights.InsightsQueryResponse<CrossChainVolume[]>> {
+    const request = this.apiManager.path("crosschain/volume", {}, req)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<CrossChainVolume[]>
   }
 }
 
