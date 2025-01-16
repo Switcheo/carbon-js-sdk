@@ -117,7 +117,7 @@ class TokenClient {
 
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
     if (!denom) return undefined
-    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupedToken(denom)) {
+    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupChequeDenom(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       return 'Native'
@@ -379,7 +379,7 @@ class TokenClient {
     return denom === "usc";
   }
 
-  public isGroupedToken(denom: string): boolean {
+  public isGroupChequeDenom(denom: string): boolean {
     const groupedTokenRegex = new RegExp(/^cgt\/\d+$/)
     return groupedTokenRegex.test(denom)
   }

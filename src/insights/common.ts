@@ -82,6 +82,9 @@ export const InsightsEndpoints = {
   "alliances/stake": "/alliances/stake",
   "alliances/rewards": "/alliances/rewards",
 
+  // Crosschain api
+  "crosschain/volume": "/crosschain/volume",
+
   "reward/epoch": "/reward/epoch/:epoch/:unixStart",
   "reward/leaderboard": "/reward/:unixStart/:unixEnd/leaderboard",
 };
