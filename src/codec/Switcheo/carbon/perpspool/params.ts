@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
-import { UInt64Value } from "../../../google/protobuf/wrappers";
+import { UInt64Value, StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -22,6 +22,17 @@ export interface Params {
   navPerShareSnapshots: Long;
   navPerShareSnapshotInterval?: Duration;
   indexLastUpdatedAtThreshold?: Duration;
+  /**
+   * trade commission ratio is the ratio to transfer to the perps commission
+   * account from profitable perps amm trades
+   */
+  tradeCommissionRatio: string;
+  /**
+   * fee commission ratio is the ratio of the fees to transfer to the perps
+   * commission account when depositing and withdrawing from the pool
+   */
+  feeCommissionRatio: string;
+  poolCommissionAddress: string;
 }
 
 export interface ParamsToUpdate {
@@ -32,11 +43,17 @@ export interface ParamsToUpdate {
   navPerShareSnapshots?: Long;
   navPerShareSnapshotInterval?: Duration;
   indexLastUpdatedAtThreshold?: Duration;
+  tradeCommissionRatio: string;
+  feeCommissionRatio: string;
+  poolCommissionAddress?: string;
 }
 
 const baseParams: object = {
   quoteIndexPriceFluctuationToleranceRatio: "",
   navPerShareSnapshots: Long.UZERO,
+  tradeCommissionRatio: "",
+  feeCommissionRatio: "",
+  poolCommissionAddress: "",
 };
 
 export const Params = {
@@ -81,6 +98,15 @@ export const Params = {
         message.indexLastUpdatedAtThreshold,
         writer.uint32(58).fork()
       ).ldelim();
+    }
+    if (message.tradeCommissionRatio !== "") {
+      writer.uint32(66).string(message.tradeCommissionRatio);
+    }
+    if (message.feeCommissionRatio !== "") {
+      writer.uint32(74).string(message.feeCommissionRatio);
+    }
+    if (message.poolCommissionAddress !== "") {
+      writer.uint32(82).string(message.poolCommissionAddress);
     }
     return writer;
   },
@@ -128,6 +154,15 @@ export const Params = {
             reader.uint32()
           );
           break;
+        case 8:
+          message.tradeCommissionRatio = reader.string();
+          break;
+        case 9:
+          message.feeCommissionRatio = reader.string();
+          break;
+        case 10:
+          message.poolCommissionAddress = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -173,6 +208,21 @@ export const Params = {
       object.indexLastUpdatedAtThreshold !== null
         ? Duration.fromJSON(object.indexLastUpdatedAtThreshold)
         : undefined;
+    message.tradeCommissionRatio =
+      object.tradeCommissionRatio !== undefined &&
+      object.tradeCommissionRatio !== null
+        ? String(object.tradeCommissionRatio)
+        : "";
+    message.feeCommissionRatio =
+      object.feeCommissionRatio !== undefined &&
+      object.feeCommissionRatio !== null
+        ? String(object.feeCommissionRatio)
+        : "";
+    message.poolCommissionAddress =
+      object.poolCommissionAddress !== undefined &&
+      object.poolCommissionAddress !== null
+        ? String(object.poolCommissionAddress)
+        : "";
     return message;
   },
 
@@ -207,6 +257,12 @@ export const Params = {
       (obj.indexLastUpdatedAtThreshold = message.indexLastUpdatedAtThreshold
         ? Duration.toJSON(message.indexLastUpdatedAtThreshold)
         : undefined);
+    message.tradeCommissionRatio !== undefined &&
+      (obj.tradeCommissionRatio = message.tradeCommissionRatio);
+    message.feeCommissionRatio !== undefined &&
+      (obj.feeCommissionRatio = message.feeCommissionRatio);
+    message.poolCommissionAddress !== undefined &&
+      (obj.poolCommissionAddress = message.poolCommissionAddress);
     return obj;
   },
 
@@ -244,12 +300,17 @@ export const Params = {
       object.indexLastUpdatedAtThreshold !== null
         ? Duration.fromPartial(object.indexLastUpdatedAtThreshold)
         : undefined;
+    message.tradeCommissionRatio = object.tradeCommissionRatio ?? "";
+    message.feeCommissionRatio = object.feeCommissionRatio ?? "";
+    message.poolCommissionAddress = object.poolCommissionAddress ?? "";
     return message;
   },
 };
 
 const baseParamsToUpdate: object = {
   quoteIndexPriceFluctuationToleranceRatio: "",
+  tradeCommissionRatio: "",
+  feeCommissionRatio: "",
 };
 
 export const ParamsToUpdate = {
@@ -296,6 +357,18 @@ export const ParamsToUpdate = {
       Duration.encode(
         message.indexLastUpdatedAtThreshold,
         writer.uint32(58).fork()
+      ).ldelim();
+    }
+    if (message.tradeCommissionRatio !== "") {
+      writer.uint32(66).string(message.tradeCommissionRatio);
+    }
+    if (message.feeCommissionRatio !== "") {
+      writer.uint32(74).string(message.feeCommissionRatio);
+    }
+    if (message.poolCommissionAddress !== undefined) {
+      StringValue.encode(
+        { value: message.poolCommissionAddress! },
+        writer.uint32(82).fork()
       ).ldelim();
     }
     return writer;
@@ -347,6 +420,18 @@ export const ParamsToUpdate = {
             reader.uint32()
           );
           break;
+        case 8:
+          message.tradeCommissionRatio = reader.string();
+          break;
+        case 9:
+          message.feeCommissionRatio = reader.string();
+          break;
+        case 10:
+          message.poolCommissionAddress = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -392,6 +477,21 @@ export const ParamsToUpdate = {
       object.indexLastUpdatedAtThreshold !== null
         ? Duration.fromJSON(object.indexLastUpdatedAtThreshold)
         : undefined;
+    message.tradeCommissionRatio =
+      object.tradeCommissionRatio !== undefined &&
+      object.tradeCommissionRatio !== null
+        ? String(object.tradeCommissionRatio)
+        : "";
+    message.feeCommissionRatio =
+      object.feeCommissionRatio !== undefined &&
+      object.feeCommissionRatio !== null
+        ? String(object.feeCommissionRatio)
+        : "";
+    message.poolCommissionAddress =
+      object.poolCommissionAddress !== undefined &&
+      object.poolCommissionAddress !== null
+        ? String(object.poolCommissionAddress)
+        : undefined;
     return message;
   },
 
@@ -424,6 +524,12 @@ export const ParamsToUpdate = {
       (obj.indexLastUpdatedAtThreshold = message.indexLastUpdatedAtThreshold
         ? Duration.toJSON(message.indexLastUpdatedAtThreshold)
         : undefined);
+    message.tradeCommissionRatio !== undefined &&
+      (obj.tradeCommissionRatio = message.tradeCommissionRatio);
+    message.feeCommissionRatio !== undefined &&
+      (obj.feeCommissionRatio = message.feeCommissionRatio);
+    message.poolCommissionAddress !== undefined &&
+      (obj.poolCommissionAddress = message.poolCommissionAddress);
     return obj;
   },
 
@@ -461,6 +567,9 @@ export const ParamsToUpdate = {
       object.indexLastUpdatedAtThreshold !== null
         ? Duration.fromPartial(object.indexLastUpdatedAtThreshold)
         : undefined;
+    message.tradeCommissionRatio = object.tradeCommissionRatio ?? "";
+    message.feeCommissionRatio = object.feeCommissionRatio ?? "";
+    message.poolCommissionAddress = object.poolCommissionAddress ?? undefined;
     return message;
   },
 };
