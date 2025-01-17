@@ -225,7 +225,7 @@ export const AVALANCHE_MAINNET: ChangeNetworkParam = {
   blockExplorerUrls: ["https://snowtrace.io"],
   chainName: "Avalanche C-Chain",
   rpcUrls: [
-    "https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc",
+    "https://api.avax.network/ext/bc/C/rpc",
   ],
   nativeCurrency: {
     "name": "Avalanche",

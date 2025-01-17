@@ -71,7 +71,6 @@ import "./_setup";
 
   // query all profiles with pagination
   const profiles = await sdk.query.profile.ProfileAll({
-    username: "",
     pagination: PageRequest.fromPartial({
       limit: new Long(5),
     }),

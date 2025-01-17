@@ -73,7 +73,7 @@ export class ETHClient {
     [Blockchain.Mantle]: 'mantle',
     [Blockchain.Optimism]: 'optimism',
     [Blockchain.Base]: 'base',
-    [Blockchain.Avalanche]: 'avalanche',
+    [Blockchain.Avalanche]: 'avax',
   };
 
   static BLOCKCHAINV2_MAPPING = {

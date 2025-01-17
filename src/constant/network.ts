@@ -81,7 +81,7 @@ export interface NetworkConfig {
   mantle: EthNetworkConfig;
   optimism: EthNetworkConfig;
   base: EthNetworkConfig;
-  avalanche: EthNetworkConfig;
+  avax: EthNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
@@ -203,9 +203,9 @@ export const NetworkConfigs: {
       rpcURL: "https://base-rpc.publicnode.com",
     },
 
-    avalanche: {
+    avax: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc",
+      rpcURL: "https://api.avax.network/ext/bc/C/rpc",
     },
   },
 
@@ -311,7 +311,7 @@ export const NetworkConfigs: {
       rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
 
-    avalanche: {
+    avax: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
@@ -432,7 +432,7 @@ export const NetworkConfigs: {
       rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
 
-    avalanche: {
+    avax: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
@@ -541,7 +541,7 @@ export const NetworkConfigs: {
       rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
 
-    avalanche: {
+    avax: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },

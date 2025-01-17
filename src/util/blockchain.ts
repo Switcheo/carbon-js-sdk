@@ -47,7 +47,7 @@ export enum Blockchain {
   Mantle = "mantle",
   Optimism = 'optimism',
   Base = 'base',
-  Avalanche = 'avalanche',
+  Avalanche = 'avax',
 }
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
