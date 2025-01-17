@@ -1,4 +1,3 @@
-export { default as AxelarBridgeClient } from "./AxelarBridgeClient";
 export { default as BatchQueryClient } from "./BatchQueryClient";
 export { default as BlockchainClient } from "./BlockchainClient";
 export { default as CarbonQueryClient } from "./CarbonQueryClient";
