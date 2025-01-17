@@ -205,7 +205,7 @@ export const NetworkConfigs: {
 
     avalanche: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://avalanche-c-chain-rpc.publicnode.com",
+      rpcURL: "https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 
@@ -313,7 +313,7 @@ export const NetworkConfigs: {
 
     avalanche: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://avalanche-fuji-c-chain-rpc.publicnode.com",
+      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 
@@ -434,7 +434,7 @@ export const NetworkConfigs: {
 
     avalanche: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://avalanche-fuji-c-chain-rpc.publicnode.com",
+      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 
@@ -543,7 +543,7 @@ export const NetworkConfigs: {
 
     avalanche: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://avalanche-fuji-c-chain-rpc.publicnode.com",
+      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 } as const;

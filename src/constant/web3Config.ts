@@ -225,7 +225,7 @@ export const AVALANCHE_MAINNET: ChangeNetworkParam = {
   blockExplorerUrls: ["https://snowtrace.io"],
   chainName: "Avalanche C-Chain",
   rpcUrls: [
-    "https://avalanche-c-chain-rpc.publicnode.com",
+    "https://ava-mainnet.public.blastapi.io/ext/bc/C/rpc",
   ],
   nativeCurrency: {
     "name": "Avalanche",
@@ -239,7 +239,7 @@ export const AVALANCHE_TESTNET: ChangeNetworkParam = {
   blockExplorerUrls: ["https://testnet.snowtrace.io"],
   chainName: "Avalanche Fuji Testnet",
   rpcUrls: [
-    "https://avalanche-fuji-c-chain-rpc.publicnode.com",
+    "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
   nativeCurrency: {
     "name": "Avalanche",
