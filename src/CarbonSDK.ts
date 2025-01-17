@@ -159,6 +159,7 @@ class CarbonSDK {
   op: ETHClient;
   base: ETHClient;
   okc: ETHClient;
+  avax: ETHClient;
   axelarBridgeClient: AxelarBridgeClient;
   zil: ZILClient;
   n3: N3Client;
@@ -282,7 +283,13 @@ class CarbonSDK {
 
     this.op = ETHClient.instance({
       configProvider: this,
-      blockchain: Blockchain.OP,
+      blockchain: Blockchain.Optimism,
+      tokenClient: this.token,
+    });
+
+    this.avax = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Avalanche,
       tokenClient: this.token,
     });
 

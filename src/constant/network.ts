@@ -79,8 +79,9 @@ export interface NetworkConfig {
   n3: N3NetworkConfig;
   zil: ZilNetworkConfig;
   mantle: EthNetworkConfig;
-  op: EthNetworkConfig;
+  optimism: EthNetworkConfig;
   base: EthNetworkConfig;
+  avax: EthNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
@@ -192,7 +193,7 @@ export const NetworkConfigs: {
       rpcURL: "https://rpc.mantle.xyz",
     },
 
-    op: {
+    optimism: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://mainnet.optimism.io",
     },
@@ -200,6 +201,11 @@ export const NetworkConfigs: {
     base: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://base-rpc.publicnode.com",
+    },
+
+    avax: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://api.avax.network/ext/bc/C/rpc",
     },
   },
 
@@ -295,7 +301,7 @@ export const NetworkConfigs: {
       rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
-    op: {
+    optimism: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://sepolia.optimism.io",
     },
@@ -303,6 +309,11 @@ export const NetworkConfigs: {
     base: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://base-sepolia-rpc.publicnode.com",
+    },
+
+    avax: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 
@@ -411,7 +422,7 @@ export const NetworkConfigs: {
       rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
-    op: {
+    optimism: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://sepolia.optimism.io",
     },
@@ -419,6 +430,11 @@ export const NetworkConfigs: {
     base: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://base-sepolia-rpc.publicnode.com",
+    },
+
+    avax: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 
@@ -515,7 +531,7 @@ export const NetworkConfigs: {
       rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
-    op: {
+    optimism: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://sepolia.optimism.io",
     },
@@ -523,6 +539,11 @@ export const NetworkConfigs: {
     base: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://base-sepolia-rpc.publicnode.com",
+    },
+
+    avax: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 } as const;

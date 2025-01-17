@@ -60,10 +60,10 @@ export interface EthersTransactionResponse extends ethers.Transaction {
 
 export const FEE_MULTIPLIER = ethers.BigNumber.from(2);
 
-type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc | Blockchain.Mantle | Blockchain.OP | Blockchain.Base;
+type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc | Blockchain.Mantle | Blockchain.Optimism | Blockchain.Base | Blockchain.Avalanche;
 
 export class ETHClient {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc, Blockchain.Mantle, Blockchain.OP, Blockchain.Base] as const;
+  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc, Blockchain.Mantle, Blockchain.Optimism, Blockchain.Base, Blockchain.Avalanche] as const;
   static BLOCKCHAIN_KEY = {
     [Blockchain.BinanceSmartChain]: "bsc",
     [Blockchain.Ethereum]: "eth",
@@ -71,8 +71,9 @@ export class ETHClient {
     [Blockchain.Polygon]: "polygon",
     [Blockchain.Okc]: "okc",
     [Blockchain.Mantle]: 'mantle',
-    [Blockchain.OP]: 'op',
+    [Blockchain.Optimism]: 'optimism',
     [Blockchain.Base]: 'base',
+    [Blockchain.Avalanche]: 'avax',
   };
 
   static BLOCKCHAINV2_MAPPING = {
@@ -82,8 +83,9 @@ export class ETHClient {
     [Blockchain.Polygon]: "Polygon",
     [Blockchain.Okc]: "OKC",
     [Blockchain.Mantle]: 'Mantle',
-    [Blockchain.OP]: 'OP',
+    [Blockchain.Optimism]: 'Optimism',
     [Blockchain.Base]: 'Base',
+    [Blockchain.Avalanche]: 'Avalanche',
   };
 
   private constructor(
