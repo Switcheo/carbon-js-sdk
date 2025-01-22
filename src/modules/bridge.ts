@@ -1,11 +1,11 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Duration } from "@carbon-sdk/codec";
-import { ABIs } from "@carbon-sdk/eth";
 import BigNumber from "bignumber.js";
 import { Coin } from "cosmjs-types/cosmos/base/v1beta1/coin";
 import { ethers } from "ethers";
 import Long from "long";
 import { CarbonTx, FetchUtils } from "../util";
+import { assembleTxRequest } from "../util/evm";
 import BaseModule from "./base";
 
 export class BridgeModule extends BaseModule {
@@ -13,13 +13,13 @@ export class BridgeModule extends BaseModule {
     const config = this.sdkProvider.getTokenClient().configProvider.getConfig();
     const url = `${config.hydrogenUrl}/bridge_fees?fee_denom=${relayDenom}&connection_id=${connectionId}`;
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-    }
+    };
     const result: BridgeModule.BridgeRelayFees = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
-    return result
+    return result;
   }
 
   public async withdraw(params: BridgeModule.WithdrawParams, opts?: CarbonTx.SignTxOpts) {
@@ -31,21 +31,21 @@ export class BridgeModule extends BaseModule {
       relayDenom,
       relayAmount,
       expirySeconds,
-    } = params
-    const wallet = this.getWallet()
-    const walletAddress = wallet.bech32Address ?? ''
+    } = params;
+    const wallet = this.getWallet();
+    const walletAddress = wallet.bech32Address ?? "";
     const expiryDuration = Duration.fromPartial({
       seconds: new Long(expirySeconds),
-    })
+    });
     const tokens: Coin = {
       denom: tokenDenom,
       amount: tokenAmount.toString(10),
-    }
+    };
 
     const relayFee: Coin = {
       denom: relayDenom,
       amount: relayAmount.toString(10),
-    }
+    };
 
     const value = Carbon.Bridge.MsgWithdrawToken.fromPartial({
       creator: walletAddress,
@@ -54,15 +54,12 @@ export class BridgeModule extends BaseModule {
       tokens: tokens,
       relayFee: relayFee,
       expiryDuration,
-    })
+    });
 
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgWithdrawToken,
-        value,
-      },
-      opts
-    );
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgWithdrawToken,
+      value,
+    }, opts);
   }
 
   // withdrawing + unwrapping to the native token (wETH => ETH)
@@ -76,13 +73,13 @@ export class BridgeModule extends BaseModule {
       relayDenom,
       relayAmount,
       expirySeconds,
-    } = params
-    const method = 'withdraw_native'
-    const wallet = this.getWallet()
-    const walletAddress = wallet.bech32Address
+    } = params;
+    const method = "withdraw_native";
+    const wallet = this.getWallet();
+    const walletAddress = wallet.bech32Address;
     const expiryDuration = Duration.fromPartial({
       seconds: new Long(expirySeconds),
-    })
+    });
     const value = Carbon.Bridge.MsgExecuteFromCarbon.fromPartial({
       creator: walletAddress,
       connectionId,
@@ -98,58 +95,98 @@ export class BridgeModule extends BaseModule {
         amount: relayAmount.toString(10),
       },
       expiryDuration,
-    })
+    });
 
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgExecuteFromCarbon,
-        value,
-      },
-      opts
-    )
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgExecuteFromCarbon,
+      value,
+    }, opts);
   }
 
-  // lock deposit
-  public async deposit(params: BridgeModule.DepositParams): Promise<BridgeModule.EthersTransactionResponse> {
+  // approve allowance
+  public async approve(params: BridgeModule.ApproveParams): Promise<ethers.providers.TransactionResponse> {
+    const {
+      amount,
+      contractAddress,
+      tokenAddress,
+      senderAddress,
+      signer,
+      customGasLimit,
+      customGasPrice,
+      customNonce,
+    } = params;
+    const request: ethers.providers.TransactionRequest = assembleTxRequest({
+      abiFunctionName: "approve",
+      txParams: [contractAddress, amount.toString(10)],
+      contractAddress: tokenAddress,
+      walletAddress: senderAddress,
+
+      customGasLimit,
+      customGasPrice,
+      customNonce,
+    });
+
+    const result = await signer.sendTransaction(request);
+    return result;
+  }
+
+  // deposit native tokens (e.g. ETH on Ethereum)
+  public async depositNativeToken(params: BridgeModule.DepositNativeTokenParams): Promise<ethers.providers.TransactionResponse> {
     const {
       contractAddress,
       senderAddress,
       receiverAddress,
-      depositTokenExternalAddress,
       amount,
       signer,
-      rpcUrl,
-      nonce,
-      gasPriceGwei,
-      gasLimit,
-      isNativeTokenDeposit = false,
+      customGasLimit,
+      customGasPrice,
+      customNonce,
+    } = params
+    const request: ethers.providers.TransactionRequest = assembleTxRequest({
+      abiFunctionName: "deposit",
+      abiFunction: "function deposit(address, string)",
+      txParams: [senderAddress, receiverAddress],
+      contractAddress,
+      walletAddress: senderAddress,
+
+      customGasLimit,
+      customGasPrice,
+      customNonce,
+      value: amount,
+    });
+    return signer.sendTransaction(request);
+  }
+
+  // deposit other tokens (e.g. USDC on Ethereum)
+  public async deposit(params: BridgeModule.DepositParams): Promise<ethers.providers.TransactionResponse> {
+    const {
+      contractAddress,
+      senderAddress,
+      receiverAddress,
+      tokenAddress,
+      amount,
+      signer,
+      customNonce,
+      customGasLimit,
+      customGasPrice,
     } = params;
-    const rpcProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
-    const abi = isNativeTokenDeposit ? ABIs.nativeDepositer : ABIs.axelarBridge;
-    const contract = new ethers.Contract(contractAddress, abi, rpcProvider);
-
-    const txParams = {
-      nonce,
-      ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-      ...(gasLimit && { gasLimit: gasLimit.toString(10) }),
-      ...(isNativeTokenDeposit && { value: amount.toString(10) }),
-    };
-
-    if (isNativeTokenDeposit) {
-      return await contract.connect(signer).deposit(
+    const request: ethers.providers.TransactionRequest = assembleTxRequest({
+      abiFunctionName: "deposit",
+      abiFunction: "function deposit(address, string, address, uint256)",
+      txParams: [
         senderAddress, // tokenSender
         receiverAddress, // carbonReceiver bech32Address
-        txParams
-      );
-    }
+        tokenAddress, // token address
+        amount.toString(10),
+      ],
+      contractAddress,
+      walletAddress: senderAddress,
 
-    return await contract.connect(signer).deposit(
-      senderAddress, // tokenSender
-      receiverAddress, // carbonReceiver bech32Address
-      depositTokenExternalAddress, // asset
-      amount.toString(10),
-      txParams
-    );
+      customGasLimit,
+      customGasPrice,
+      customNonce,
+    });
+    return signer.sendTransaction(request);
   }
 }
 
@@ -185,21 +222,50 @@ export namespace BridgeModule {
     time_quoted_at: string,
   }
 
+  export interface ApproveParams {
+    // tx parameters
+    amount: BigNumber;
+    contractAddress: string;
+    senderAddress: string;
+    tokenAddress: string;
+    // helpers
+    signer: ethers.Signer;
+
+    // custom gas parameters
+    customGasPrice?: ethers.BigNumber;
+    customGasLimit?: ethers.BigNumber;
+    customNonce?: number;
+  }
+
+  export interface DepositNativeTokenParams {
+    // tx parameters
+    amount: BigNumber;
+    contractAddress: string;
+    senderAddress: string;
+    receiverAddress: string;
+    // helpers
+    signer: ethers.Signer;
+
+    // custom gas parameters
+    customGasPrice?: ethers.BigNumber;
+    customGasLimit?: ethers.BigNumber;
+    customNonce?: number;
+  }
+
   export interface DepositParams {
+    // submission params
     contractAddress: string;
     senderAddress: string;
     receiverAddress: string;
     amount: BigNumber;
-    depositTokenExternalAddress?: string;
-    rpcUrl: string;
-    gasPriceGwei?: BigNumber;
-    gasLimit?: BigNumber;
+    tokenAddress: string;
+    // helpers
     signer: ethers.Signer;
-    nonce?: number;
-    isNativeTokenDeposit?: boolean;
-  }
 
-  export interface EthersTransactionResponse extends ethers.Transaction {
-    wait: () => Promise<ethers.Transaction>;
+    // custom gas parameters
+    customGasPrice?: ethers.BigNumber;
+    customGasLimit?: ethers.BigNumber;
+    customNonce?: number;
+    isNativeTokenDeposit?: boolean;
   }
 }
