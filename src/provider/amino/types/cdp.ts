@@ -25,6 +25,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   UpdateEModeCategory: "cdp/UpdateEModeCategory",
   SetAccountEMode: "cdp/SetAccountEMode",
   RemoveAccountEMode: "cdp/RemoveAccountEMode",
+  ConvertTokenInCdpToGroupTokens: "cdp/ConvertTokenInCdpToGroupTokens",
 };
 
 const MsgSupplyAsset: AminoInit = {
