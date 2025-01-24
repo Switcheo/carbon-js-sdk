@@ -33,6 +33,22 @@ export interface MsgCreateTokenResponse {
   denom: string;
 }
 
+export interface MsgCreatePerpetualToken {
+  creator: string;
+  createPerpetualTokenParams?: CreatePerpetualTokenParams;
+}
+
+export interface CreatePerpetualTokenParams {
+  creator: string;
+  name: string;
+  symbol: string;
+  decimals: Long;
+}
+
+export interface MsgCreatePerpetualTokenResponse {
+  denom: string;
+}
+
 export interface MsgSyncToken {
   syncer: string;
   denom: string;
@@ -557,6 +573,269 @@ export const MsgCreateTokenResponse = {
     object: DeepPartial<MsgCreateTokenResponse>
   ): MsgCreateTokenResponse {
     const message = { ...baseMsgCreateTokenResponse } as MsgCreateTokenResponse;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseMsgCreatePerpetualToken: object = { creator: "" };
+
+export const MsgCreatePerpetualToken = {
+  encode(
+    message: MsgCreatePerpetualToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.createPerpetualTokenParams !== undefined) {
+      CreatePerpetualTokenParams.encode(
+        message.createPerpetualTokenParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreatePerpetualToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreatePerpetualToken,
+    } as MsgCreatePerpetualToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.createPerpetualTokenParams =
+            CreatePerpetualTokenParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreatePerpetualToken {
+    const message = {
+      ...baseMsgCreatePerpetualToken,
+    } as MsgCreatePerpetualToken;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.createPerpetualTokenParams =
+      object.createPerpetualTokenParams !== undefined &&
+      object.createPerpetualTokenParams !== null
+        ? CreatePerpetualTokenParams.fromJSON(object.createPerpetualTokenParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreatePerpetualToken): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.createPerpetualTokenParams !== undefined &&
+      (obj.createPerpetualTokenParams = message.createPerpetualTokenParams
+        ? CreatePerpetualTokenParams.toJSON(message.createPerpetualTokenParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreatePerpetualToken>
+  ): MsgCreatePerpetualToken {
+    const message = {
+      ...baseMsgCreatePerpetualToken,
+    } as MsgCreatePerpetualToken;
+    message.creator = object.creator ?? "";
+    message.createPerpetualTokenParams =
+      object.createPerpetualTokenParams !== undefined &&
+      object.createPerpetualTokenParams !== null
+        ? CreatePerpetualTokenParams.fromPartial(
+            object.createPerpetualTokenParams
+          )
+        : undefined;
+    return message;
+  },
+};
+
+const baseCreatePerpetualTokenParams: object = {
+  creator: "",
+  name: "",
+  symbol: "",
+  decimals: Long.ZERO,
+};
+
+export const CreatePerpetualTokenParams = {
+  encode(
+    message: CreatePerpetualTokenParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.symbol !== "") {
+      writer.uint32(26).string(message.symbol);
+    }
+    if (!message.decimals.isZero()) {
+      writer.uint32(32).int64(message.decimals);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreatePerpetualTokenParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseCreatePerpetualTokenParams,
+    } as CreatePerpetualTokenParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.symbol = reader.string();
+          break;
+        case 4:
+          message.decimals = reader.int64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreatePerpetualTokenParams {
+    const message = {
+      ...baseCreatePerpetualTokenParams,
+    } as CreatePerpetualTokenParams;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.symbol =
+      object.symbol !== undefined && object.symbol !== null
+        ? String(object.symbol)
+        : "";
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromString(object.decimals)
+        : Long.ZERO;
+    return message;
+  },
+
+  toJSON(message: CreatePerpetualTokenParams): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.name !== undefined && (obj.name = message.name);
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.decimals !== undefined &&
+      (obj.decimals = (message.decimals || Long.ZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CreatePerpetualTokenParams>
+  ): CreatePerpetualTokenParams {
+    const message = {
+      ...baseCreatePerpetualTokenParams,
+    } as CreatePerpetualTokenParams;
+    message.creator = object.creator ?? "";
+    message.name = object.name ?? "";
+    message.symbol = object.symbol ?? "";
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromValue(object.decimals)
+        : Long.ZERO;
+    return message;
+  },
+};
+
+const baseMsgCreatePerpetualTokenResponse: object = { denom: "" };
+
+export const MsgCreatePerpetualTokenResponse = {
+  encode(
+    message: MsgCreatePerpetualTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreatePerpetualTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreatePerpetualTokenResponse,
+    } as MsgCreatePerpetualTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreatePerpetualTokenResponse {
+    const message = {
+      ...baseMsgCreatePerpetualTokenResponse,
+    } as MsgCreatePerpetualTokenResponse;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgCreatePerpetualTokenResponse): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreatePerpetualTokenResponse>
+  ): MsgCreatePerpetualTokenResponse {
+    const message = {
+      ...baseMsgCreatePerpetualTokenResponse,
+    } as MsgCreatePerpetualTokenResponse;
     message.denom = object.denom ?? "";
     return message;
   },
@@ -4136,6 +4415,9 @@ export const MsgUpdateGroupedTokenConfigResponse = {
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse>;
+  CreatePerpetualToken(
+    request: MsgCreatePerpetualToken
+  ): Promise<MsgCreatePerpetualTokenResponse>;
   SyncToken(request: MsgSyncToken): Promise<MsgSyncTokenResponse>;
   MintToken(request: MsgMintToken): Promise<MsgMintTokenResponse>;
   BindToken(request: MsgBindToken): Promise<MsgBindTokenResponse>;
@@ -4190,6 +4472,7 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.CreateToken = this.CreateToken.bind(this);
+    this.CreatePerpetualToken = this.CreatePerpetualToken.bind(this);
     this.SyncToken = this.SyncToken.bind(this);
     this.MintToken = this.MintToken.bind(this);
     this.BindToken = this.BindToken.bind(this);
@@ -4222,6 +4505,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgCreateTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CreatePerpetualToken(
+    request: MsgCreatePerpetualToken
+  ): Promise<MsgCreatePerpetualTokenResponse> {
+    const data = MsgCreatePerpetualToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "CreatePerpetualToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreatePerpetualTokenResponse.decode(new _m0.Reader(data))
     );
   }
 
