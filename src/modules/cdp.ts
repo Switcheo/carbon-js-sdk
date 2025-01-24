@@ -228,6 +228,22 @@ export class CDPModule extends BaseModule {
     }], opts);
   }
 
+
+  public async convertLentTokenToGroupToken(params: CDPModule.ConvertLentTokenToGroupToken, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = Carbon.Cdp.MsgConvertTokenInCdpToGroupTokens.fromPartial({
+      creator: wallet.bech32Address,
+      denom: params.denom,
+    });
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgConvertTokenInCdpToGroupTokens,
+        value,
+      },
+      opts
+    );
+  }
+
   public async mintStablecoin(params: CDPModule.MintStablecoinParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -1170,6 +1186,10 @@ export namespace CDPModule {
     denom: string;
     amount: BigNumber;
     debtor?: string;
+  }
+
+  export interface ConvertLentTokenToGroupToken {
+    denom: string;
   }
   export interface MintStablecoinParams {
     amount: BigNumber;
