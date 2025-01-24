@@ -28,7 +28,7 @@ export interface Params {
   defaultImpactSizeUsd: string;
   defaultMarkPriceBand: number;
   defaultLastPriceProtectedBand: number;
-  maxActiveMarkets: number;
+  maxUnsettledMarkets: number;
   defaultTradingBandwidth: number;
   fundingRateBand: string;
   defaultLpSpotTakerFee: string;
@@ -60,7 +60,7 @@ export interface ParamsToUpdate {
   defaultImpactSizeUsd: string;
   defaultMarkPriceBand?: number;
   defaultLastPriceProtectedBand?: number;
-  maxActiveMarkets?: number;
+  maxUnsettledMarkets?: number;
   defaultTradingBandwidth?: number;
   fundingRateBand: string;
   defaultLpSpotTakerFee: string;
@@ -86,7 +86,7 @@ const baseParams: object = {
   defaultImpactSizeUsd: "",
   defaultMarkPriceBand: 0,
   defaultLastPriceProtectedBand: 0,
-  maxActiveMarkets: 0,
+  maxUnsettledMarkets: 0,
   defaultTradingBandwidth: 0,
   fundingRateBand: "",
   defaultLpSpotTakerFee: "",
@@ -152,8 +152,8 @@ export const Params = {
     if (message.defaultLastPriceProtectedBand !== 0) {
       writer.uint32(128).uint32(message.defaultLastPriceProtectedBand);
     }
-    if (message.maxActiveMarkets !== 0) {
-      writer.uint32(136).uint32(message.maxActiveMarkets);
+    if (message.maxUnsettledMarkets !== 0) {
+      writer.uint32(136).uint32(message.maxUnsettledMarkets);
     }
     if (message.defaultTradingBandwidth !== 0) {
       writer.uint32(144).uint32(message.defaultTradingBandwidth);
@@ -238,7 +238,7 @@ export const Params = {
           message.defaultLastPriceProtectedBand = reader.uint32();
           break;
         case 17:
-          message.maxActiveMarkets = reader.uint32();
+          message.maxUnsettledMarkets = reader.uint32();
           break;
         case 18:
           message.defaultTradingBandwidth = reader.uint32();
@@ -351,9 +351,10 @@ export const Params = {
       object.defaultLastPriceProtectedBand !== null
         ? Number(object.defaultLastPriceProtectedBand)
         : 0;
-    message.maxActiveMarkets =
-      object.maxActiveMarkets !== undefined && object.maxActiveMarkets !== null
-        ? Number(object.maxActiveMarkets)
+    message.maxUnsettledMarkets =
+      object.maxUnsettledMarkets !== undefined &&
+      object.maxUnsettledMarkets !== null
+        ? Number(object.maxUnsettledMarkets)
         : 0;
     message.defaultTradingBandwidth =
       object.defaultTradingBandwidth !== undefined &&
@@ -432,8 +433,8 @@ export const Params = {
     message.defaultLastPriceProtectedBand !== undefined &&
       (obj.defaultLastPriceProtectedBand =
         message.defaultLastPriceProtectedBand);
-    message.maxActiveMarkets !== undefined &&
-      (obj.maxActiveMarkets = message.maxActiveMarkets);
+    message.maxUnsettledMarkets !== undefined &&
+      (obj.maxUnsettledMarkets = message.maxUnsettledMarkets);
     message.defaultTradingBandwidth !== undefined &&
       (obj.defaultTradingBandwidth = message.defaultTradingBandwidth);
     message.fundingRateBand !== undefined &&
@@ -476,7 +477,7 @@ export const Params = {
     message.defaultMarkPriceBand = object.defaultMarkPriceBand ?? 0;
     message.defaultLastPriceProtectedBand =
       object.defaultLastPriceProtectedBand ?? 0;
-    message.maxActiveMarkets = object.maxActiveMarkets ?? 0;
+    message.maxUnsettledMarkets = object.maxUnsettledMarkets ?? 0;
     message.defaultTradingBandwidth = object.defaultTradingBandwidth ?? 0;
     message.fundingRateBand = object.fundingRateBand ?? "";
     message.defaultLpSpotTakerFee = object.defaultLpSpotTakerFee ?? "";
@@ -572,9 +573,9 @@ export const ParamsToUpdate = {
         writer.uint32(130).fork()
       ).ldelim();
     }
-    if (message.maxActiveMarkets !== undefined) {
+    if (message.maxUnsettledMarkets !== undefined) {
       UInt32Value.encode(
-        { value: message.maxActiveMarkets! },
+        { value: message.maxUnsettledMarkets! },
         writer.uint32(138).fork()
       ).ldelim();
     }
@@ -670,7 +671,7 @@ export const ParamsToUpdate = {
           ).value;
           break;
         case 17:
-          message.maxActiveMarkets = UInt32Value.decode(
+          message.maxUnsettledMarkets = UInt32Value.decode(
             reader,
             reader.uint32()
           ).value;
@@ -789,9 +790,10 @@ export const ParamsToUpdate = {
       object.defaultLastPriceProtectedBand !== null
         ? Number(object.defaultLastPriceProtectedBand)
         : undefined;
-    message.maxActiveMarkets =
-      object.maxActiveMarkets !== undefined && object.maxActiveMarkets !== null
-        ? Number(object.maxActiveMarkets)
+    message.maxUnsettledMarkets =
+      object.maxUnsettledMarkets !== undefined &&
+      object.maxUnsettledMarkets !== null
+        ? Number(object.maxUnsettledMarkets)
         : undefined;
     message.defaultTradingBandwidth =
       object.defaultTradingBandwidth !== undefined &&
@@ -870,8 +872,8 @@ export const ParamsToUpdate = {
     message.defaultLastPriceProtectedBand !== undefined &&
       (obj.defaultLastPriceProtectedBand =
         message.defaultLastPriceProtectedBand);
-    message.maxActiveMarkets !== undefined &&
-      (obj.maxActiveMarkets = message.maxActiveMarkets);
+    message.maxUnsettledMarkets !== undefined &&
+      (obj.maxUnsettledMarkets = message.maxUnsettledMarkets);
     message.defaultTradingBandwidth !== undefined &&
       (obj.defaultTradingBandwidth = message.defaultTradingBandwidth);
     message.fundingRateBand !== undefined &&
@@ -914,7 +916,7 @@ export const ParamsToUpdate = {
     message.defaultMarkPriceBand = object.defaultMarkPriceBand ?? undefined;
     message.defaultLastPriceProtectedBand =
       object.defaultLastPriceProtectedBand ?? undefined;
-    message.maxActiveMarkets = object.maxActiveMarkets ?? undefined;
+    message.maxUnsettledMarkets = object.maxUnsettledMarkets ?? undefined;
     message.defaultTradingBandwidth =
       object.defaultTradingBandwidth ?? undefined;
     message.fundingRateBand = object.fundingRateBand ?? "";
