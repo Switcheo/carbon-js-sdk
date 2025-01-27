@@ -2,10 +2,8 @@ import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Duration } from "@carbon-sdk/codec";
 import BigNumber from "bignumber.js";
 import { Coin } from "cosmjs-types/cosmos/base/v1beta1/coin";
-import { ethers } from "ethers";
 import Long from "long";
 import { CarbonTx, FetchUtils } from "../util";
-import { assembleTxRequest } from "../util/evm";
 import BaseModule from "./base";
 
 export class BridgeModule extends BaseModule {
@@ -102,92 +100,6 @@ export class BridgeModule extends BaseModule {
       value,
     }, opts);
   }
-
-  // approve allowance
-  public async approve(params: BridgeModule.ApproveParams): Promise<ethers.providers.TransactionResponse> {
-    const {
-      amount,
-      contractAddress,
-      tokenAddress,
-      senderAddress,
-      signer,
-      customGasLimit,
-      customGasPrice,
-      customNonce,
-    } = params;
-    const request: ethers.providers.TransactionRequest = assembleTxRequest({
-      abiFunctionName: "approve",
-      txParams: [contractAddress, amount.toString(10)],
-      contractAddress: tokenAddress,
-      walletAddress: senderAddress,
-
-      customGasLimit,
-      customGasPrice,
-      customNonce,
-    });
-
-    const result = await signer.sendTransaction(request);
-    return result;
-  }
-
-  // deposit native tokens (e.g. ETH on Ethereum)
-  public async depositNativeToken(params: BridgeModule.DepositNativeTokenParams): Promise<ethers.providers.TransactionResponse> {
-    const {
-      contractAddress,
-      senderAddress,
-      receiverAddress,
-      amount,
-      signer,
-      customGasLimit,
-      customGasPrice,
-      customNonce,
-    } = params
-    const request: ethers.providers.TransactionRequest = assembleTxRequest({
-      abiFunctionName: "deposit",
-      abiFunction: "function deposit(address, string)",
-      txParams: [senderAddress, receiverAddress],
-      contractAddress,
-      walletAddress: senderAddress,
-
-      customGasLimit,
-      customGasPrice,
-      customNonce,
-      value: amount,
-    });
-    return signer.sendTransaction(request);
-  }
-
-  // deposit other tokens (e.g. USDC on Ethereum)
-  public async deposit(params: BridgeModule.DepositParams): Promise<ethers.providers.TransactionResponse> {
-    const {
-      contractAddress,
-      senderAddress,
-      receiverAddress,
-      tokenAddress,
-      amount,
-      signer,
-      customNonce,
-      customGasLimit,
-      customGasPrice,
-    } = params;
-    const request: ethers.providers.TransactionRequest = assembleTxRequest({
-      abiFunctionName: "deposit",
-      abiFunction: "function deposit(address, string, address, uint256)",
-      txParams: [
-        senderAddress, // tokenSender
-        receiverAddress, // carbonReceiver bech32Address
-        tokenAddress, // token address
-        amount.toString(10),
-      ],
-      contractAddress,
-      walletAddress: senderAddress,
-
-      customGasLimit,
-      customGasPrice,
-      customNonce,
-    });
-    return signer.sendTransaction(request);
-  }
 }
 
 export namespace BridgeModule {
@@ -220,52 +132,5 @@ export namespace BridgeModule {
     register_token: string,
     deregister_token: string,
     time_quoted_at: string,
-  }
-
-  export interface ApproveParams {
-    // tx parameters
-    amount: BigNumber;
-    contractAddress: string;
-    senderAddress: string;
-    tokenAddress: string;
-    // helpers
-    signer: ethers.Signer;
-
-    // custom gas parameters
-    customGasPrice?: ethers.BigNumber;
-    customGasLimit?: ethers.BigNumber;
-    customNonce?: number;
-  }
-
-  export interface DepositNativeTokenParams {
-    // tx parameters
-    amount: BigNumber;
-    contractAddress: string;
-    senderAddress: string;
-    receiverAddress: string;
-    // helpers
-    signer: ethers.Signer;
-
-    // custom gas parameters
-    customGasPrice?: ethers.BigNumber;
-    customGasLimit?: ethers.BigNumber;
-    customNonce?: number;
-  }
-
-  export interface DepositParams {
-    // submission params
-    contractAddress: string;
-    senderAddress: string;
-    receiverAddress: string;
-    amount: BigNumber;
-    tokenAddress: string;
-    // helpers
-    signer: ethers.Signer;
-
-    // custom gas parameters
-    customGasPrice?: ethers.BigNumber;
-    customGasLimit?: ethers.BigNumber;
-    customNonce?: number;
-    isNativeTokenDeposit?: boolean;
   }
 }
