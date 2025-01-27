@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
@@ -16,9 +15,7 @@ export interface SpotAmm {
 /** PerpsAmm exists when there is at least 1 PerpsMarketAmm */
 export interface PerpsAmm {
   poolId: Long;
-  quotingHash: Uint8Array;
   markets: PerpsMarketAmm[];
-  lastQuotedAt?: Date;
 }
 
 /** PerpsMarketAmm exists when it is active/close-only */
@@ -140,17 +137,8 @@ export const PerpsAmm = {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
-    if (message.quotingHash.length !== 0) {
-      writer.uint32(18).bytes(message.quotingHash);
-    }
     for (const v of message.markets) {
       PerpsMarketAmm.encode(v!, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.lastQuotedAt !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.lastQuotedAt),
-        writer.uint32(42).fork()
-      ).ldelim();
     }
     return writer;
   },
@@ -160,23 +148,14 @@ export const PerpsAmm = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...basePerpsAmm } as PerpsAmm;
     message.markets = [];
-    message.quotingHash = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.poolId = reader.uint64() as Long;
           break;
-        case 2:
-          message.quotingHash = reader.bytes();
-          break;
         case 4:
           message.markets.push(PerpsMarketAmm.decode(reader, reader.uint32()));
-          break;
-        case 5:
-          message.lastQuotedAt = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -192,17 +171,9 @@ export const PerpsAmm = {
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromString(object.poolId)
         : Long.UZERO;
-    message.quotingHash =
-      object.quotingHash !== undefined && object.quotingHash !== null
-        ? bytesFromBase64(object.quotingHash)
-        : new Uint8Array();
     message.markets = (object.markets ?? []).map((e: any) =>
       PerpsMarketAmm.fromJSON(e)
     );
-    message.lastQuotedAt =
-      object.lastQuotedAt !== undefined && object.lastQuotedAt !== null
-        ? fromJsonTimestamp(object.lastQuotedAt)
-        : undefined;
     return message;
   },
 
@@ -210,12 +181,6 @@ export const PerpsAmm = {
     const obj: any = {};
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.quotingHash !== undefined &&
-      (obj.quotingHash = base64FromBytes(
-        message.quotingHash !== undefined
-          ? message.quotingHash
-          : new Uint8Array()
-      ));
     if (message.markets) {
       obj.markets = message.markets.map((e) =>
         e ? PerpsMarketAmm.toJSON(e) : undefined
@@ -223,8 +188,6 @@ export const PerpsAmm = {
     } else {
       obj.markets = [];
     }
-    message.lastQuotedAt !== undefined &&
-      (obj.lastQuotedAt = message.lastQuotedAt.toISOString());
     return obj;
   },
 
@@ -234,11 +197,9 @@ export const PerpsAmm = {
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
-    message.quotingHash = object.quotingHash ?? new Uint8Array();
     message.markets = (object.markets ?? []).map((e) =>
       PerpsMarketAmm.fromPartial(e)
     );
-    message.lastQuotedAt = object.lastQuotedAt ?? undefined;
     return message;
   },
 };
@@ -362,32 +323,6 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
-
-function toTimestamp(date: Date): Timestamp {
-  const seconds = numberToLong(date.getTime() / 1_000);
-  const nanos = (date.getTime() % 1_000) * 1_000_000;
-  return { seconds, nanos };
-}
-
-function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
-  return new Date(millis);
-}
-
-function fromJsonTimestamp(o: any): Date {
-  if (o instanceof Date) {
-    return o;
-  } else if (typeof o === "string") {
-    return new Date(o);
-  } else {
-    return fromTimestamp(Timestamp.fromJSON(o));
-  }
-}
-
-function numberToLong(number: number) {
-  return Long.fromNumber(number);
-}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

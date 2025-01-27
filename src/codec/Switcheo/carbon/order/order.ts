@@ -37,6 +37,7 @@ export interface Order {
   poolRoute: Uint8Array;
   cancelReason?: number;
   insertedBlockHeight: Long;
+  isUseBestPrice: boolean;
 }
 
 export interface DBOrder {
@@ -91,6 +92,7 @@ const baseOrder: object = {
   referralCommission: 0,
   referralKickback: 0,
   insertedBlockHeight: Long.ZERO,
+  isUseBestPrice: false,
 };
 
 export const Order = {
@@ -187,6 +189,9 @@ export const Order = {
     }
     if (!message.insertedBlockHeight.isZero()) {
       writer.uint32(232).int64(message.insertedBlockHeight);
+    }
+    if (message.isUseBestPrice === true) {
+      writer.uint32(240).bool(message.isUseBestPrice);
     }
     return writer;
   },
@@ -290,6 +295,9 @@ export const Order = {
           break;
         case 29:
           message.insertedBlockHeight = reader.int64() as Long;
+          break;
+        case 30:
+          message.isUseBestPrice = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -418,6 +426,10 @@ export const Order = {
       object.insertedBlockHeight !== null
         ? Long.fromString(object.insertedBlockHeight)
         : Long.ZERO;
+    message.isUseBestPrice =
+      object.isUseBestPrice !== undefined && object.isUseBestPrice !== null
+        ? Boolean(object.isUseBestPrice)
+        : false;
     return message;
   },
 
@@ -476,6 +488,8 @@ export const Order = {
       (obj.insertedBlockHeight = (
         message.insertedBlockHeight || Long.ZERO
       ).toString());
+    message.isUseBestPrice !== undefined &&
+      (obj.isUseBestPrice = message.isUseBestPrice);
     return obj;
   },
 
@@ -527,6 +541,7 @@ export const Order = {
       object.insertedBlockHeight !== null
         ? Long.fromValue(object.insertedBlockHeight)
         : Long.ZERO;
+    message.isUseBestPrice = object.isUseBestPrice ?? false;
     return message;
   },
 };

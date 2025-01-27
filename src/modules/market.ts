@@ -1,27 +1,34 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
-import { MsgAddFeeTier, MsgCreateMarket, MsgDisableSpotMarket, MsgRemoveFeeTier, MsgSetStakeEquivalence, MsgUpdateFeeTier, MsgUpdateMarket } from "@carbon-sdk/codec/Switcheo/carbon/market/tx";
+import {
+  MsgAddFeeTier,
+  MsgCreateMarket,
+  MsgSettleSpotMarket,
+  MsgRemoveFeeTier,
+  MsgSetStakeEquivalence,
+  MsgUpdateFeeTier,
+  MsgUpdateMarket,
+} from "@carbon-sdk/codec/Switcheo/carbon/market/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
 
 export class MarketModule extends BaseModule {
-
   public async getFeeTiers(marketType: string): Promise<Carbon.Market.FeeTier[]> {
     const fetchDataResponse: Carbon.Market.QueryGetFeeTiersResponse = await this.sdkProvider.query.market.FeeTiers({
       marketType: marketType,
-      marketId: '',
-      userAddress: '',
-    })
-    return fetchDataResponse?.feeTiers ?? []
+      marketId: "",
+      userAddress: "",
+    });
+    return fetchDataResponse?.feeTiers ?? [];
   }
 
   public async getTradingFees(marketId: string, userAddress: string): Promise<Carbon.Market.TradingFees> {
     const fetchDataResponse: Carbon.Market.QueryGetTradingFeesResponse = await this.sdkProvider.query.market.TradingFees({
       marketId: marketId,
       userAddress: userAddress,
-    })
-    return fetchDataResponse?.fees ?? { takerFee: '', makerFee: '' }
+    });
+    return fetchDataResponse?.fees ?? { takerFee: "", makerFee: "" };
   }
 
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
@@ -52,7 +59,7 @@ export class MarketModule extends BaseModule {
       currentQuotePriceUsd: params.currentQuotePriceUsd,
       indexOracleId: params.indexOracleId,
       expiryTime: params.expiryTime,
-    })
+    });
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgCreateMarket,
@@ -64,19 +71,18 @@ export class MarketModule extends BaseModule {
 
   public async disableSpotMarket(params: MarketModule.DisableSpotMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = MsgDisableSpotMarket.fromPartial({
+    const value = MsgSettleSpotMarket.fromPartial({
       creator: params.creator,
       marketId: params.marketId,
-    })
+    });
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgDisableSpotMarket,
+        typeUrl: CarbonTx.Types.MsgSettleSpotMarket,
         value,
       },
       opts
     );
   }
-
 
   public async addFeeTier(params: MarketModule.AddFeeTierParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
@@ -84,7 +90,7 @@ export class MarketModule extends BaseModule {
       creator: params.creator,
       feeCategory: params.feeCategory,
       feeTier: transformFeeTierParams(params.feeTier),
-    })
+    });
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgAddFeeTier,
@@ -96,14 +102,14 @@ export class MarketModule extends BaseModule {
 
   public async updateFeeTier(params: MarketModule.UpdateFeeTierParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const feeTier = transformFeeTierParams(params.feeTier)
+    const feeTier = transformFeeTierParams(params.feeTier);
     const value = MsgUpdateFeeTier.fromPartial({
       updater: params.updater,
       feeCategory: params.feeCategory,
       requiredStake: feeTier.requiredStake,
       takerFee: feeTier.tradingFees?.takerFee,
       makerFee: feeTier.tradingFees?.makerFee,
-    })
+    });
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgUpdateFeeTier,
@@ -119,7 +125,7 @@ export class MarketModule extends BaseModule {
       remover: params.remover,
       feeCategory: params.feeCategory,
       requiredStake: params.requiredStake,
-    })
+    });
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgRemoveFeeTier,
@@ -137,7 +143,7 @@ export class MarketModule extends BaseModule {
         ratio: params.stakeEquivalence.ratio.shiftedBy(18).toString(10),
         denom: params.stakeEquivalence.denom,
       },
-    })
+    });
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgSetStakeEquivalence,
@@ -195,7 +201,7 @@ export namespace MarketModule {
   export interface UpdateFeeTierParams {
     updater: string;
     feeCategory: Carbon.Market.FeeCategory;
-    feeTier: FeeTierParams,
+    feeTier: FeeTierParams;
   }
 
   export interface RemoveFeeTierParams {
@@ -204,17 +210,17 @@ export namespace MarketModule {
     requiredStake: string;
   }
   export interface FeeTierParams {
-    requiredStake: string,
-    makerFee: BigNumber,
-    takerFee: BigNumber,
+    requiredStake: string;
+    makerFee: BigNumber;
+    takerFee: BigNumber;
   }
   export interface SetStakeEquivalenceParams {
     setter: string;
     stakeEquivalence: StakeEquivalenceParams;
   }
   export interface StakeEquivalenceParams {
-    denom: string,
-    ratio: BigNumber
+    denom: string;
+    ratio: BigNumber;
   }
 }
 
@@ -225,7 +231,7 @@ export function transformFeeTierParams(msg: MarketModule.FeeTierParams): Carbon.
       makerFee: msg.makerFee.shiftedBy(18).toString(10),
       takerFee: msg.takerFee.shiftedBy(18).toString(10),
     },
-  }
+  };
 }
 
 export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams) {
@@ -251,5 +257,3 @@ export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams
     tradingBandwidth: msg.tradingBandwidth,
   };
 }
-
-

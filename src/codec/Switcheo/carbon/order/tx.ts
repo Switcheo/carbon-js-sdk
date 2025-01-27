@@ -29,6 +29,7 @@ export interface MsgCreateOrder {
   referralAddress: string;
   referralCommission: number;
   referralKickback: number;
+  isUseBestPrice: boolean;
 }
 
 export interface MsgCreateOrderResponse {
@@ -227,6 +228,7 @@ const baseMsgCreateOrder: object = {
   referralAddress: "",
   referralCommission: 0,
   referralKickback: 0,
+  isUseBestPrice: false,
 };
 
 export const MsgCreateOrder = {
@@ -275,6 +277,9 @@ export const MsgCreateOrder = {
     }
     if (message.referralKickback !== 0) {
       writer.uint32(112).uint32(message.referralKickback);
+    }
+    if (message.isUseBestPrice === true) {
+      writer.uint32(120).bool(message.isUseBestPrice);
     }
     return writer;
   },
@@ -327,6 +332,9 @@ export const MsgCreateOrder = {
           break;
         case 14:
           message.referralKickback = reader.uint32();
+          break;
+        case 15:
+          message.isUseBestPrice = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -395,6 +403,10 @@ export const MsgCreateOrder = {
       object.referralKickback !== undefined && object.referralKickback !== null
         ? Number(object.referralKickback)
         : 0;
+    message.isUseBestPrice =
+      object.isUseBestPrice !== undefined && object.isUseBestPrice !== null
+        ? Boolean(object.isUseBestPrice)
+        : false;
     return message;
   },
 
@@ -420,6 +432,8 @@ export const MsgCreateOrder = {
       (obj.referralCommission = message.referralCommission);
     message.referralKickback !== undefined &&
       (obj.referralKickback = message.referralKickback);
+    message.isUseBestPrice !== undefined &&
+      (obj.isUseBestPrice = message.isUseBestPrice);
     return obj;
   },
 
@@ -439,6 +453,7 @@ export const MsgCreateOrder = {
     message.referralAddress = object.referralAddress ?? "";
     message.referralCommission = object.referralCommission ?? 0;
     message.referralKickback = object.referralKickback ?? 0;
+    message.isUseBestPrice = object.isUseBestPrice ?? false;
     return message;
   },
 };

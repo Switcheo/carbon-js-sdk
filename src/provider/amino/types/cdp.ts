@@ -25,6 +25,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   UpdateEModeCategory: "cdp/UpdateEModeCategory",
   SetAccountEMode: "cdp/SetAccountEMode",
   RemoveAccountEMode: "cdp/RemoveAccountEMode",
+  ConvertTokenInCdpToGroupTokens: "cdp/ConvertTokenInCdpToGroupTokens",
 };
 
 const MsgSupplyAsset: AminoInit = {
@@ -151,6 +152,11 @@ const MsgRemoveAccountEMode: AminoInit = {
   valueMap: {},
 };
 
+const MsgConvertTokenInCdpToGroupTokens: AminoInit = {
+  aminoType: TxTypes.ConvertTokenInCdpToGroupTokens,
+  valueMap: {},
+};
+
 const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSupplyAsset]: generateAminoType(MsgSupplyAsset),
   [CarbonTx.Types.MsgWithdrawAsset]: generateAminoType(MsgWithdrawAsset),
@@ -173,6 +179,7 @@ const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateEModeCategory]: generateAminoType(MsgUpdateEModeCategory),
   [CarbonTx.Types.MsgSetAccountEMode]: generateAminoType(MsgSetAccountEMode),
   [CarbonTx.Types.MsgRemoveAccountEMode]: generateAminoType(MsgRemoveAccountEMode),
+  [CarbonTx.Types.MsgConvertTokenInCdpToGroupTokens]: generateAminoType(MsgConvertTokenInCdpToGroupTokens),
 };
 
 export default CdpAmino;
