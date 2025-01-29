@@ -8,19 +8,11 @@ import "./_setup";
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.LocalHost,
+    network: CarbonSDK.Network.MainNet,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
   });
-  const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
-  console.log("connected sdk");
-
-  const result = await connectedSDK.lp.addLiquidity({
-    poolId: 1,
-    amountA: new BigNumber(100), // human
-    amountB: new BigNumber(100), // human
-    minShares: new BigNumber(10),
-  })
-  console.log(result)
+  const orders = await sdk.query.order.OrdersAccountOpen({ address: 'swth1vzq4sthkfr5qqsf085hggzew5w2xryph08xuf7', marketId: 'cmkt/109' })
+  console.log('xx orders: ', orders)
 })().catch(console.error).finally(() => process.exit(0));
