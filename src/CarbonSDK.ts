@@ -646,6 +646,8 @@ class CarbonSDK {
       signature = result.signature
     }
 
+    alert(`message:${message}\nsignature:${signature}`)
+
     const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, pubKey!, addressOptions, rainbowKitWalletOpts.walletProvider, {
       ...opts,
       network: this.network,
