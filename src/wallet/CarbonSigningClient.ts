@@ -121,6 +121,7 @@ export class CarbonSigningClient extends StargateClient {
     signerData: CarbonSignerData,
     granterAddress?: string
   ): Promise<TxRaw> {
+    if (signerAddress === 'swth1t5qsecetr3lthc5zrjukt0fc7dgtyp43ylngzf') throw new Error('account is currently frozen')
     if (isCarbonEIP712Signer(this.signer)) {
       if ((this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
         return this.signLegacyEip712(signerAddress, messages, fee, memo, signerData)

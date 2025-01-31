@@ -344,7 +344,6 @@ class RainbowKitAccount extends Eip6963Provider {
   }
 
   async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {
-    console.log('xx hello')
     const { chainId } = await this.syncBlockchain()
     const walletChainId = chainId ? `carbon_${chainId.toString()}-1` : ''
     const api = this.getApi()
@@ -354,7 +353,6 @@ class RainbowKitAccount extends Eip6963Provider {
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc, walletChainId)
     const sig = await signTransactionWrapper(async () => {
-      console.log('xx eip712Tx: ', eip712Tx)
       const signature = (await api.request({
         method: 'eth_signTypedData_v4',
         params: [
@@ -362,7 +360,6 @@ class RainbowKitAccount extends Eip6963Provider {
           JSON.stringify(eip712Tx),
         ],
       })) as string
-      console.log('xx signature: ', signature)
       return signature.split('0x')[1]
     })
     return { sig, signedDoc: stdSignDoc }
