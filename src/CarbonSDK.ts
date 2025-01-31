@@ -646,7 +646,6 @@ class CarbonSDK {
       signature = result.signature
     }
 
-    alert(`message:${message}\nsignature:${signature}`)
 
     const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, pubKey!, addressOptions, rainbowKitWalletOpts.walletProvider, {
       ...opts,
@@ -663,6 +662,9 @@ class CarbonSDK {
       }
       await wallet.reloadJwtToken(authRequest)
     }
+    const address = wallet.bech32Address
+    alert(`address:${address}m\n\nmessage:${message}\n\nsignature:${signature}`)
+
 
     return this.connect(wallet, opts);
   }
