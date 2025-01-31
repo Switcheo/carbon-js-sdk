@@ -57,6 +57,8 @@ export interface CarbonWalletGenericOpts {
    */
   onRequestSign?: CarbonWallet.OnRequestSignCallback;
 
+  onSignJwtComplete?: CarbonWallet.OnSignJwtCallback;
+
   /**
    * Optional callback that will be called when signing is complete.
    */
@@ -171,6 +173,7 @@ export class CarbonWallet {
   networkConfig: NetworkConfig;
 
   onRequestSign?: CarbonWallet.OnRequestSignCallback;
+  onSignJwtComplete?: CarbonWallet.OnSignJwtCallback;
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
   onBroadcastTxSuccess?: CarbonWallet.OnBroadcastTxSuccessCallback;
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
@@ -240,6 +243,7 @@ export class CarbonWallet {
     this.isRainbowKit = opts.isRainbowKit ?? false
 
     this.onRequestSign = opts.onRequestSign;
+    this.onSignJwtComplete = opts.onSignJwtComplete;
     this.onSignComplete = opts.onSignComplete;
     this.onBroadcastTxSuccess = opts.onBroadcastTxSuccess;
     this.onBroadcastTxFail = opts.onBroadcastTxFail;
@@ -1102,6 +1106,7 @@ export namespace CarbonWallet {
   export type SendTxWithoutConfirmResponse = BroadcastTxAsyncResponse;
   export type OnRequestAuthCallback = () => void | Promise<void>;
   export type OnAuthComplete = () => void | Promise<void>;
+  export type OnSignJwtCallback = (address: string, signature: string, message: string) => void | Promise<void>;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
   export type OnBroadcastTxFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;

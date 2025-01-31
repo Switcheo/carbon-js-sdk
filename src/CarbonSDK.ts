@@ -663,9 +663,7 @@ class CarbonSDK {
       await wallet.reloadJwtToken(authRequest)
     }
     const address = wallet.bech32Address
-    alert(`address:${address}m\n\nmessage:${message}\n\nsignature:${signature}`)
-
-
+    wallet?.onSignJwtComplete?.(address, signature!, message!)
     return this.connect(wallet, opts);
   }
 
