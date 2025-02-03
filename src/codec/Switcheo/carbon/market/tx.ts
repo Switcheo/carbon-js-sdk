@@ -9,12 +9,20 @@ import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
-export interface MsgDisableSpotMarket {
+export interface MsgSettleSpotMarket {
   creator: string;
   marketId: string;
 }
 
-export interface MsgDisableSpotMarketResponse {}
+export interface MsgSettleSpotMarketResponse {}
+
+export interface MsgExpirePerpsMarket {
+  authority: string;
+  marketId: string;
+  expiryTime?: Date;
+}
+
+export interface MsgExpirePerpsMarketResponse {}
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateMarket {
@@ -138,11 +146,11 @@ export interface MsgDeleteFeeStructure {
 
 export interface MsgDeleteFeeStructureResponse {}
 
-const baseMsgDisableSpotMarket: object = { creator: "", marketId: "" };
+const baseMsgSettleSpotMarket: object = { creator: "", marketId: "" };
 
-export const MsgDisableSpotMarket = {
+export const MsgSettleSpotMarket = {
   encode(
-    message: MsgDisableSpotMarket,
+    message: MsgSettleSpotMarket,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -154,13 +162,10 @@ export const MsgDisableSpotMarket = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDisableSpotMarket {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSettleSpotMarket {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgDisableSpotMarket } as MsgDisableSpotMarket;
+    const message = { ...baseMsgSettleSpotMarket } as MsgSettleSpotMarket;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -178,8 +183,8 @@ export const MsgDisableSpotMarket = {
     return message;
   },
 
-  fromJSON(object: any): MsgDisableSpotMarket {
-    const message = { ...baseMsgDisableSpotMarket } as MsgDisableSpotMarket;
+  fromJSON(object: any): MsgSettleSpotMarket {
+    const message = { ...baseMsgSettleSpotMarket } as MsgSettleSpotMarket;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -191,26 +196,26 @@ export const MsgDisableSpotMarket = {
     return message;
   },
 
-  toJSON(message: MsgDisableSpotMarket): unknown {
+  toJSON(message: MsgSettleSpotMarket): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgDisableSpotMarket>): MsgDisableSpotMarket {
-    const message = { ...baseMsgDisableSpotMarket } as MsgDisableSpotMarket;
+  fromPartial(object: DeepPartial<MsgSettleSpotMarket>): MsgSettleSpotMarket {
+    const message = { ...baseMsgSettleSpotMarket } as MsgSettleSpotMarket;
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseMsgDisableSpotMarketResponse: object = {};
+const baseMsgSettleSpotMarketResponse: object = {};
 
-export const MsgDisableSpotMarketResponse = {
+export const MsgSettleSpotMarketResponse = {
   encode(
-    _: MsgDisableSpotMarketResponse,
+    _: MsgSettleSpotMarketResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -219,12 +224,12 @@ export const MsgDisableSpotMarketResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDisableSpotMarketResponse {
+  ): MsgSettleSpotMarketResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgDisableSpotMarketResponse,
-    } as MsgDisableSpotMarketResponse;
+      ...baseMsgSettleSpotMarketResponse,
+    } as MsgSettleSpotMarketResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -236,24 +241,162 @@ export const MsgDisableSpotMarketResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgDisableSpotMarketResponse {
+  fromJSON(_: any): MsgSettleSpotMarketResponse {
     const message = {
-      ...baseMsgDisableSpotMarketResponse,
-    } as MsgDisableSpotMarketResponse;
+      ...baseMsgSettleSpotMarketResponse,
+    } as MsgSettleSpotMarketResponse;
     return message;
   },
 
-  toJSON(_: MsgDisableSpotMarketResponse): unknown {
+  toJSON(_: MsgSettleSpotMarketResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgDisableSpotMarketResponse>
-  ): MsgDisableSpotMarketResponse {
+    _: DeepPartial<MsgSettleSpotMarketResponse>
+  ): MsgSettleSpotMarketResponse {
     const message = {
-      ...baseMsgDisableSpotMarketResponse,
-    } as MsgDisableSpotMarketResponse;
+      ...baseMsgSettleSpotMarketResponse,
+    } as MsgSettleSpotMarketResponse;
+    return message;
+  },
+};
+
+const baseMsgExpirePerpsMarket: object = { authority: "", marketId: "" };
+
+export const MsgExpirePerpsMarket = {
+  encode(
+    message: MsgExpirePerpsMarket,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
+    }
+    if (message.expiryTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.expiryTime),
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgExpirePerpsMarket {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgExpirePerpsMarket } as MsgExpirePerpsMarket;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.marketId = reader.string();
+          break;
+        case 3:
+          message.expiryTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgExpirePerpsMarket {
+    const message = { ...baseMsgExpirePerpsMarket } as MsgExpirePerpsMarket;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.expiryTime =
+      object.expiryTime !== undefined && object.expiryTime !== null
+        ? fromJsonTimestamp(object.expiryTime)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgExpirePerpsMarket): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    message.expiryTime !== undefined &&
+      (obj.expiryTime = message.expiryTime.toISOString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgExpirePerpsMarket>): MsgExpirePerpsMarket {
+    const message = { ...baseMsgExpirePerpsMarket } as MsgExpirePerpsMarket;
+    message.authority = object.authority ?? "";
+    message.marketId = object.marketId ?? "";
+    message.expiryTime = object.expiryTime ?? undefined;
+    return message;
+  },
+};
+
+const baseMsgExpirePerpsMarketResponse: object = {};
+
+export const MsgExpirePerpsMarketResponse = {
+  encode(
+    _: MsgExpirePerpsMarketResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgExpirePerpsMarketResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgExpirePerpsMarketResponse,
+    } as MsgExpirePerpsMarketResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgExpirePerpsMarketResponse {
+    const message = {
+      ...baseMsgExpirePerpsMarketResponse,
+    } as MsgExpirePerpsMarketResponse;
+    return message;
+  },
+
+  toJSON(_: MsgExpirePerpsMarketResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgExpirePerpsMarketResponse>
+  ): MsgExpirePerpsMarketResponse {
+    const message = {
+      ...baseMsgExpirePerpsMarketResponse,
+    } as MsgExpirePerpsMarketResponse;
     return message;
   },
 };
@@ -2076,9 +2219,12 @@ export interface Msg {
   UpdatePerpetualsFundingInterval(
     request: MsgUpdatePerpetualsFundingInterval
   ): Promise<MsgUpdatePerpetualsFundingIntervalResponse>;
-  DisableSpotMarket(
-    request: MsgDisableSpotMarket
-  ): Promise<MsgDisableSpotMarketResponse>;
+  SettleSpotMarket(
+    request: MsgSettleSpotMarket
+  ): Promise<MsgSettleSpotMarketResponse>;
+  ExpirePerpsMarket(
+    request: MsgExpirePerpsMarket
+  ): Promise<MsgExpirePerpsMarketResponse>;
   AddFeeTier(request: MsgAddFeeTier): Promise<MsgAddFeeTierResponse>;
   UpdateFeeTier(request: MsgUpdateFeeTier): Promise<MsgUpdateFeeTierResponse>;
   RemoveFeeTier(request: MsgRemoveFeeTier): Promise<MsgRemoveFeeTierResponse>;
@@ -2111,7 +2257,8 @@ export class MsgClientImpl implements Msg {
     this.UpdateMarket = this.UpdateMarket.bind(this);
     this.UpdatePerpetualsFundingInterval =
       this.UpdatePerpetualsFundingInterval.bind(this);
-    this.DisableSpotMarket = this.DisableSpotMarket.bind(this);
+    this.SettleSpotMarket = this.SettleSpotMarket.bind(this);
+    this.ExpirePerpsMarket = this.ExpirePerpsMarket.bind(this);
     this.AddFeeTier = this.AddFeeTier.bind(this);
     this.UpdateFeeTier = this.UpdateFeeTier.bind(this);
     this.RemoveFeeTier = this.RemoveFeeTier.bind(this);
@@ -2160,17 +2307,31 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  DisableSpotMarket(
-    request: MsgDisableSpotMarket
-  ): Promise<MsgDisableSpotMarketResponse> {
-    const data = MsgDisableSpotMarket.encode(request).finish();
+  SettleSpotMarket(
+    request: MsgSettleSpotMarket
+  ): Promise<MsgSettleSpotMarketResponse> {
+    const data = MsgSettleSpotMarket.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.market.Msg",
-      "DisableSpotMarket",
+      "SettleSpotMarket",
       data
     );
     return promise.then((data) =>
-      MsgDisableSpotMarketResponse.decode(new _m0.Reader(data))
+      MsgSettleSpotMarketResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ExpirePerpsMarket(
+    request: MsgExpirePerpsMarket
+  ): Promise<MsgExpirePerpsMarketResponse> {
+    const data = MsgExpirePerpsMarket.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Msg",
+      "ExpirePerpsMarket",
+      data
+    );
+    return promise.then((data) =>
+      MsgExpirePerpsMarketResponse.decode(new _m0.Reader(data))
     );
   }
 

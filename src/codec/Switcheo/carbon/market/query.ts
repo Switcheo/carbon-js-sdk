@@ -24,6 +24,7 @@ export interface QueryGetMarketResponse {
 export interface QueryAllMarketRequest {
   pagination?: PageRequest;
   isActive?: boolean;
+  isSettled?: boolean;
 }
 
 export interface QueryAllMarketResponse {
@@ -253,6 +254,12 @@ export const QueryAllMarketRequest = {
         writer.uint32(18).fork()
       ).ldelim();
     }
+    if (message.isSettled !== undefined) {
+      BoolValue.encode(
+        { value: message.isSettled! },
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -272,6 +279,9 @@ export const QueryAllMarketRequest = {
         case 2:
           message.isActive = BoolValue.decode(reader, reader.uint32()).value;
           break;
+        case 3:
+          message.isSettled = BoolValue.decode(reader, reader.uint32()).value;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -290,6 +300,10 @@ export const QueryAllMarketRequest = {
       object.isActive !== undefined && object.isActive !== null
         ? Boolean(object.isActive)
         : undefined;
+    message.isSettled =
+      object.isSettled !== undefined && object.isSettled !== null
+        ? Boolean(object.isSettled)
+        : undefined;
     return message;
   },
 
@@ -300,6 +314,7 @@ export const QueryAllMarketRequest = {
         ? PageRequest.toJSON(message.pagination)
         : undefined);
     message.isActive !== undefined && (obj.isActive = message.isActive);
+    message.isSettled !== undefined && (obj.isSettled = message.isSettled);
     return obj;
   },
 
@@ -312,6 +327,7 @@ export const QueryAllMarketRequest = {
         ? PageRequest.fromPartial(object.pagination)
         : undefined;
     message.isActive = object.isActive ?? undefined;
+    message.isSettled = object.isSettled ?? undefined;
     return message;
   },
 };
