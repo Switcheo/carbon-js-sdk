@@ -11,9 +11,9 @@ export class BridgeModule extends BaseModule {
     const config = this.sdkProvider.getTokenClient().configProvider.getConfig();
     const url = `${config.hydrogenUrl}/bridge_fees?fee_denom=${relayDenom}&connection_id=${connectionId}`;
     const requestOptions = {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
     const result: BridgeModule.BridgeRelayFees = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
@@ -31,7 +31,7 @@ export class BridgeModule extends BaseModule {
       expirySeconds,
     } = params;
     const wallet = this.getWallet();
-    const walletAddress = wallet.bech32Address ?? "";
+    const walletAddress = wallet.bech32Address ?? '';
     const expiryDuration = Duration.fromPartial({
       seconds: new Long(expirySeconds),
     });
@@ -72,7 +72,7 @@ export class BridgeModule extends BaseModule {
       relayAmount,
       expirySeconds,
     } = params;
-    const method = "withdraw_native";
+    const method = 'withdraw_native';
     const wallet = this.getWallet();
     const walletAddress = wallet.bech32Address;
     const expiryDuration = Duration.fromPartial({
