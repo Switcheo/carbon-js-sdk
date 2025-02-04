@@ -478,7 +478,6 @@ export class CarbonWallet {
     const evmChainId = this.evmChainId
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
-      await this.checkWalletSignatureCompatibility()
       const signerData: CarbonSignerData = {
         accountNumber: accountNumber ?? this.accountInfo!.accountNumber,
         chainId: this.getChainId(),
@@ -511,25 +510,6 @@ export class CarbonWallet {
     }
   }
 
-  /**
-  * Non EVM wallets (Keplr, Leap, Ledger, Legacy Metamask, Encrypted Key) current mode of signing
-  * does not support submiting transaction with only eth accounts.
-  * This method assumes that if a transaction is carried out by a non evm wallet with only funds in eth address
-  * as submitting the msg with an eth address as the signer because it is impossible to get the signer field at this stage.
-  *
-  * Keplr technically can support submiting transaction with only eth accounts via EIP-712 eth signature but is blocked by
-  * keplr wallet extension due to incompability of carbon's chain-id. Keplr requires EIP-712 signing chains to have a chain id of {chainname_XXXX-X}
-  */
-  async checkWalletSignatureCompatibility() {
-    const query = this.getQueryClient()
-    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address, resolveDenom: false })).balances.length > 0
-    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address, resolveDenom: false })).balances.length > 0
-    const isEvmWallet = this.isEvmWallet()
-    if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
-      this.sequenceInvalidated = true;
-      throw new Error(`Transaction is not allowed from a non-evm wallet for an account with only funds in evm address: evmAddress: ${this.evmBech32Address}, carbonAddress: ${this.bech32Address}`)
-    }
-  }
 
   /**
    * broadcast TX and wait for block confirmation
