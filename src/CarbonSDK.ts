@@ -14,7 +14,7 @@ import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import BigNumber from "bignumber.js";
 import * as clients from "./clients";
-import { AxelarBridgeClient, CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import GasFee from "./clients/GasFee";
 import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
@@ -160,7 +160,6 @@ class CarbonSDK {
   base: ETHClient;
   okc: ETHClient;
   avax: ETHClient;
-  axelarBridgeClient: AxelarBridgeClient;
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
@@ -270,10 +269,6 @@ class CarbonSDK {
       blockchain: Blockchain.Okc,
       tokenClient: this.token,
     });
-
-    this.axelarBridgeClient = AxelarBridgeClient.instance({
-      configProvider: this,
-    })
 
     this.mantle = ETHClient.instance({
       configProvider: this,

@@ -15,9 +15,9 @@ export class BridgeModule extends BaseModule {
       headers: {
         'Content-Type': 'application/json',
       },
-    }
+    };
     const result: BridgeModule.BridgeRelayFees = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
-    return result
+    return result;
   }
 
   public async withdraw(params: BridgeModule.WithdrawParams, opts?: CarbonTx.SignTxOpts) {
@@ -29,21 +29,21 @@ export class BridgeModule extends BaseModule {
       relayDenom,
       relayAmount,
       expirySeconds,
-    } = params
-    const wallet = this.getWallet()
-    const walletAddress = wallet.bech32Address ?? ''
+    } = params;
+    const wallet = this.getWallet();
+    const walletAddress = wallet.bech32Address ?? '';
     const expiryDuration = Duration.fromPartial({
       seconds: new Long(expirySeconds),
-    })
+    });
     const tokens: Coin = {
       denom: tokenDenom,
       amount: tokenAmount.toString(10),
-    }
+    };
 
     const relayFee: Coin = {
       denom: relayDenom,
       amount: relayAmount.toString(10),
-    }
+    };
 
     const value = Carbon.Bridge.MsgWithdrawToken.fromPartial({
       creator: walletAddress,
@@ -52,15 +52,12 @@ export class BridgeModule extends BaseModule {
       tokens: tokens,
       relayFee: relayFee,
       expiryDuration,
-    })
+    });
 
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgWithdrawToken,
-        value,
-      },
-      opts
-    );
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgWithdrawToken,
+      value,
+    }, opts);
   }
 
   // withdrawing + unwrapping to the native token (wETH => ETH)
@@ -74,13 +71,13 @@ export class BridgeModule extends BaseModule {
       relayDenom,
       relayAmount,
       expirySeconds,
-    } = params
-    const method = 'withdraw_native'
-    const wallet = this.getWallet()
-    const walletAddress = wallet.bech32Address
+    } = params;
+    const method = 'withdraw_native';
+    const wallet = this.getWallet();
+    const walletAddress = wallet.bech32Address;
     const expiryDuration = Duration.fromPartial({
       seconds: new Long(expirySeconds),
-    })
+    });
     const value = Carbon.Bridge.MsgExecuteFromCarbon.fromPartial({
       creator: walletAddress,
       connectionId,
@@ -96,15 +93,12 @@ export class BridgeModule extends BaseModule {
         amount: relayAmount.toString(10),
       },
       expiryDuration,
-    })
+    });
 
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgExecuteFromCarbon,
-        value,
-      },
-      opts
-    )
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgExecuteFromCarbon,
+      value,
+    }, opts);
   }
 }
 

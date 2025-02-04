@@ -3,6 +3,7 @@ export * as AllianceUtils from "./alliance";
 export * as APIUtils from "./api";
 export * as AuthUtils from "./auth";
 export * as BlockchainUtils from "./blockchain";
+export * as EvmUtils from "./evm";
 export * as ExternalUtils from "./external";
 export * as FetchUtils from "./fetch";
 export * as GenericUtils from "./generic";
@@ -16,5 +17,3 @@ export * as TokenUtils from "./token";
 export * as TransferUtils from "./transferfees";
 export * as CarbonTx from "./tx";
 export * as TypeUtils from "./type";
-export * as EvmUtils from "./evm";
-
