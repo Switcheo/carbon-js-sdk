@@ -15,6 +15,7 @@ export type AccessTokenResponse = {
 export enum GrantType {
   SignatureCosmos = 'signature_cosmos',
   SignatureEth = 'signature_eth',
+  SignatureEip712 = 'signature_eip712',
   RefreshToken = 'refresh_token',
 }
 

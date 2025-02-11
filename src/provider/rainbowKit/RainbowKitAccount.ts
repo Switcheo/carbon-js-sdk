@@ -1,5 +1,6 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
 import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { DEFAULT_CARBON_DOMAIN_FIELDS, EIP_712_DOMAIN_TYPES } from "@carbon-sdk/constant/eip712";
 import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
@@ -17,7 +18,7 @@ import { StdFee } from "@cosmjs/stargate";
 import { DirectSignResponse } from "@keplr-wallet/types";
 import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
-import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BASE_MAINNET, BASE_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, MANTLE_MAINNET, MANTLE_TESTNET, OKC_MAINNET, OKC_TESTNET, OP_MAINNET, OP_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET, AVALANCHE_MAINNET, AVALANCHE_TESTNET } from "../../constant";
+import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, AVALANCHE_MAINNET, AVALANCHE_TESTNET, BASE_MAINNET, BASE_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, MANTLE_MAINNET, MANTLE_TESTNET, OKC_MAINNET, OKC_TESTNET, OP_MAINNET, OP_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "../metamask/error";
 
@@ -50,7 +51,7 @@ class RainbowKitAccount extends Eip6963Provider {
         gas: authInfo.fee?.gasLimit.toString() ?? "0",
       }
       const aminoMsgs = msgs.map(msg => AminoTypesMap.toAmino(msg))
-      const { sig, signedDoc } = await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712Tx(
         evmHexAddress,
         doc.accountNumber.toString(),
         evmChainId,
@@ -85,7 +86,7 @@ class RainbowKitAccount extends Eip6963Provider {
 
     const signAmino = async (_: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, msgs, fee, memo, sequence } = doc
-      const { sig, signedDoc } = await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712Tx(
         evmHexAddress,
         account_number,
         evmChainId,
@@ -115,7 +116,7 @@ class RainbowKitAccount extends Eip6963Provider {
       // FeePayer here is only used for legacy EIP-712
       const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
 
-      const { sig, signedDoc } = await rainbowKit.signEip712(
+      const { sig, signedDoc } = await rainbowKit.signEip712Tx(
         evmHexAddress,
         account_number,
         chain_id,
@@ -165,6 +166,18 @@ class RainbowKitAccount extends Eip6963Provider {
       return rainbowKit.personalSign(address, message)
     }
 
+    const signEip712Message = async (address: string, message: string) => {
+      const { chainId } = await rainbowKit.syncBlockchain()
+      if (!chainId) throw new Error('chain-id not found')
+        const eip712Tx = {
+        types: { ...EIP_712_DOMAIN_TYPES, Message: { name: 'authentication', type: 'string' } },
+        primaryType: 'Authentication',
+        domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId },
+        message: { authentication: message },
+      }
+      return rainbowKit.signEip712(address, eip712Tx)
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       legacyEip712SignMode: rainbowKit.legacyEip712SignMode,
@@ -174,6 +187,7 @@ class RainbowKitAccount extends Eip6963Provider {
       signLegacyEip712,
       sendEvmTransaction,
       signMessage,
+      signEip712Message,
     }
   }
 
@@ -343,27 +357,31 @@ class RainbowKitAccount extends Eip6963Provider {
     return ethers.utils.computePublicKey(uncompressedPublicKey, true).split('0x')[1]
   }
 
-  async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {
+  async signEip712Tx(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {
     const { chainId } = await this.syncBlockchain()
     const walletChainId = chainId ? `carbon_${chainId.toString()}-1` : ''
-    const api = this.getApi()
     if (walletChainId !== evmChainId) {
       memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + walletChainId + ";" + "carbon-chain-id:" + evmChainId
     }
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc, walletChainId)
-    const sig = await signTransactionWrapper(async () => {
-      const signature = (await api.request({
-        method: 'eth_signTypedData_v4',
-        params: [
-          evmHexAddress,
-          JSON.stringify(eip712Tx),
-        ],
-      })) as string
-      return signature.split('0x')[1]
-    })
+    const sig = await signTransactionWrapper(async () => ((await this.signEip712(evmHexAddress, eip712Tx)).split('0x')[1]))
     return { sig, signedDoc: stdSignDoc }
   }
+
+  async signEip712<T>(address: string, content: T) {
+    const api = await this.getApi();
+    const signature = (await api.request({
+      method: 'eth_signTypedData_v4',
+      params: [
+        address,
+        JSON.stringify(content),
+      ],
+    })) as string
+    return signature
+  }
+
+
 
   async personalSign(address: string, message: string): Promise<string> {
     const api = this.getApi();

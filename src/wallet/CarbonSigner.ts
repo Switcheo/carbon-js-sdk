@@ -27,6 +27,7 @@ export interface ArbitraryMessageSigner {
 export interface EIP712Signer extends EvmSigner {
   legacyEip712SignMode: boolean
   readonly signLegacyEip712: (signerAddress: string, signDoc: StdSignDoc) => Promise<LegacyEIP712AminoSignResponse>;
+  readonly signEip712Message: (signerAddress: string, message: string) => Promise<string>
 }
 export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner | CarbonEIP712Signer;
 export type CarbonEIP712Signer = (DirectCarbonSigner | AminoCarbonSigner) & EIP712Signer & ArbitraryMessageSigner

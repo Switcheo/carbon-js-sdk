@@ -1,11 +1,12 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { AVALANCHE_MAINNET, AVALANCHE_TESTNET, BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { DEFAULT_CARBON_DOMAIN_FIELDS, EIP_712_DOMAIN_TYPES } from "@carbon-sdk/constant/eip712";
 import { ABIs } from "@carbon-sdk/eth";
 import { AminoTypesMap, AuthUtils, CarbonSDK, EvmUtils, Models, ProviderAgent, SupportedEip6963Provider } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx } from "@carbon-sdk/util";
 import { ETHAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
-import { BlockchainV2, BLOCKCHAIN_V2_TO_V1_MAPPING, ChainNames, EVMChain, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
+import { BLOCKCHAIN_V2_TO_V1_MAPPING, BlockchainV2, ChainNames, EVMChain, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 import { ETH_SECP256K1_TYPE, parseChainId, populateEvmTransactionDetails, PUBLIC_KEY_SIGNING_TEXT } from "@carbon-sdk/util/ethermint";
 import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
@@ -22,7 +23,7 @@ import { StdFee } from "@cosmjs/stargate";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import * as ethSignUtils from "eth-sig-util";
 import { ethers } from "ethers";
-import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
+import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "./error";
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
@@ -179,7 +180,7 @@ export class MetaMask extends Eip6963Provider {
         gas: authInfo.fee?.gasLimit.toString() ?? "0",
       }
       const aminoMsgs = msgs.map(msg => AminoTypesMap.toAmino(msg))
-      const { sig, signedDoc } = await metamask.signEip712(
+      const { sig, signedDoc } = await metamask.signEip712Tx(
         evmHexAddress,
         doc.accountNumber.toString(),
         evmChainId,
@@ -212,7 +213,7 @@ export class MetaMask extends Eip6963Provider {
     };
     const signAmino = async (_: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, msgs, fee, memo, sequence } = doc
-      const { sig, signedDoc } = await metamask.signEip712(
+      const { sig, signedDoc } = await metamask.signEip712Tx(
         evmHexAddress,
         account_number,
         evmChainId,
@@ -252,7 +253,7 @@ export class MetaMask extends Eip6963Provider {
       // FeePayer here is only used for legacy EIP-712
       const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
 
-      const { sig, signedDoc } = await metamask.signEip712(
+      const { sig, signedDoc } = await metamask.signEip712Tx(
         evmHexAddress,
         account_number,
         chain_id,
@@ -290,6 +291,19 @@ export class MetaMask extends Eip6963Provider {
       return metamask.personalSign(address, message)
     }
 
+    const signEip712Message = async (address: string, message: string) => {
+      const { chainId } = await metamask.syncBlockchain()
+      if (!chainId) throw new Error('chain-id not found')
+      const eip712Tx = {
+        types: { ...EIP_712_DOMAIN_TYPES, Message: { name: 'authentication', type: 'string' } },
+        primaryType: 'Authentication',
+        domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId },
+        message: { authentication: message },
+      }
+      return metamask.signEip712(address, eip712Tx)
+    }
+
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       legacyEip712SignMode: metamask.legacyEip712SignMode,
@@ -299,6 +313,7 @@ export class MetaMask extends Eip6963Provider {
       signLegacyEip712,
       sendEvmTransaction,
       signMessage,
+      signEip712Message,
     };
   }
 
@@ -606,26 +621,28 @@ export class MetaMask extends Eip6963Provider {
     return publicKey;
   }
 
-  async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {
+  async signEip712Tx(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<{ sig: string, signedDoc: CarbonTx.StdSignDoc }> {
     const metamaskNetwork = await this.syncBlockchain()
     const metamaskChainId = metamaskNetwork.chainId ? `carbon_${metamaskNetwork.chainId.toString()}-1` : ''
-    const metamaskAPI = await this.getConnectedAPI();
     if (metamaskChainId !== evmChainId) {
       memo += "|CROSSCHAIN-SIGNING|signed-chain-id:" + metamaskChainId + ";" + "carbon-chain-id:" + evmChainId
     }
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc, metamaskChainId)
-    const sig = await signTransactionWrapper(async () => {
-      const signature = (await metamaskAPI.request({
-        method: 'eth_signTypedData_v4',
-        params: [
-          evmHexAddress,
-          JSON.stringify(eip712Tx),
-        ],
-      })) as string
-      return signature.split('0x')[1]
-    })
+    const sig = await signTransactionWrapper(async () => ((await this.signEip712(evmHexAddress, eip712Tx)).split('0x')[1]))
     return { sig, signedDoc: stdSignDoc }
+  }
+
+  async signEip712<T>(address: string, content: T) {
+    const metamaskAPI = await this.getConnectedAPI();
+    const signature = (await metamaskAPI.request({
+      method: 'eth_signTypedData_v4',
+      params: [
+        address,
+        JSON.stringify(content),
+      ],
+    })) as string
+    return signature
   }
 
   async sendEvmTransaction(req: ethers.providers.TransactionRequest) {

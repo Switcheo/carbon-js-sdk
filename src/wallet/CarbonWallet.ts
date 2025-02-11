@@ -425,11 +425,12 @@ export class CarbonWallet {
   private async constructGrantRequest() {
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestAuth?.())
+      const isEvmWallet = this.isEvmWallet()
       const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
       const message = AuthUtils.getAuthMessage()
-      const signature = await this.signer.signMessage(address, message)
+      const signature = isEvmWallet ? await (this.signer as CarbonEIP712Signer).signEip712Message(address, message) : await this.signer.signMessage(address, message)
       return {
-        grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
+        grant_type: isEvmWallet ? GrantType.SignatureEip712 : GrantType.SignatureCosmos,
         message,
         public_key: this.publicKey.toString('hex'),
         signature,
