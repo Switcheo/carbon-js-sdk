@@ -387,6 +387,8 @@ registry.register("/Switcheo.carbon.market.MsgUpdateFeeStructure", Carbon.Market
 registry.register("/Switcheo.carbon.market.MsgUpdateFeeStructureResponse", Carbon.Market.MsgUpdateFeeStructureResponse);
 registry.register("/Switcheo.carbon.market.MsgDeleteFeeStructure", Carbon.Market.MsgDeleteFeeStructure);
 registry.register("/Switcheo.carbon.market.MsgDeleteFeeStructureResponse", Carbon.Market.MsgDeleteFeeStructureResponse);
+registry.register("/Switcheo.carbon.market.MsgCreatePerpMarket", Carbon.Market.MsgCreatePerpMarket);
+registry.register("/Switcheo.carbon.market.MsgCreatePerpMarketResponse", Carbon.Market.MsgCreatePerpMarketResponse);
 registry.register("/Switcheo.carbon.market.CreateMarketProposal", Carbon.Market.CreateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdateMarketProposal", Carbon.Market.UpdateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal", Carbon.Market.UpdatePerpetualsFundingIntervalProposal);
@@ -1092,6 +1094,8 @@ export const TxTypes = {
   "MsgUpdateFeeStructureResponse": "/Switcheo.carbon.market.MsgUpdateFeeStructureResponse",
   "MsgDeleteFeeStructure": "/Switcheo.carbon.market.MsgDeleteFeeStructure",
   "MsgDeleteFeeStructureResponse": "/Switcheo.carbon.market.MsgDeleteFeeStructureResponse",
+  "MsgCreatePerpMarket": "/Switcheo.carbon.market.MsgCreatePerpMarket",
+  "MsgCreatePerpMarketResponse": "/Switcheo.carbon.market.MsgCreatePerpMarketResponse",
   "CreateMarketProposal": "/Switcheo.carbon.market.CreateMarketProposal",
   "UpdateMarketProposal": "/Switcheo.carbon.market.UpdateMarketProposal",
   "UpdatePerpetualsFundingIntervalProposal": "/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal",
@@ -12257,6 +12261,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "default_max_open_interest_usd",
         "type": "string"
+      },
+      {
+        "name": "default_stale_index_price_allowance",
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -12354,6 +12362,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "default_max_open_interest_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_stale_index_price_allowance",
         "type": "string"
       }
     ],
@@ -12475,6 +12487,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "max_open_interest",
         "type": "string"
+      },
+      {
+        "name": "stale_index_price_allowance",
+        "type": "string"
       }
     ],
     "MarketParams": [
@@ -12552,6 +12568,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "max_open_interest",
+        "type": "string"
+      },
+      {
+        "name": "stale_index_price_allowance",
         "type": "string"
       }
     ],
@@ -13151,76 +13171,29 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       }
     ],
-    "MsgDeleteFeeStructureResponse": []
-  },
-  "/Switcheo.carbon.marketstats": {
-    "GenesisState": [],
-    "MarketStats": [
+    "MsgDeleteFeeStructureResponse": [],
+    "MsgCreatePerpMarket": [
       {
-        "name": "market_id",
+        "name": "authority",
         "type": "string"
       },
       {
-        "name": "market_type",
-        "type": "string"
+        "name": "token_params",
+        "type": "CreatePerpetualTokenParams",
+        "packageName": "/Switcheo.carbon.coin"
       },
       {
-        "name": "day_open",
-        "type": "string"
+        "name": "market_params",
+        "type": "MsgCreateMarket",
+        "packageName": "/Switcheo.carbon.market"
       },
       {
-        "name": "day_high",
-        "type": "string"
-      },
-      {
-        "name": "day_low",
-        "type": "string"
-      },
-      {
-        "name": "day_close",
-        "type": "string"
-      },
-      {
-        "name": "day_volume",
-        "type": "string"
-      },
-      {
-        "name": "day_quote_volume",
-        "type": "string"
-      },
-      {
-        "name": "index_price",
-        "type": "string"
-      },
-      {
-        "name": "mark_price",
-        "type": "string"
-      },
-      {
-        "name": "last_price",
-        "type": "string"
-      },
-      {
-        "name": "premium_rate",
-        "type": "string"
-      },
-      {
-        "name": "last_funding_at",
-        "type": "string"
-      },
-      {
-        "name": "open_interest",
-        "type": "string"
+        "name": "oracle_params",
+        "type": "CreateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
       }
     ],
-    "QueryMarketStatsRequest": [],
-    "QueryMarketStatsResponse": [
-      {
-        "name": "marketstats",
-        "type": "MarketStats[]",
-        "packageName": "/Switcheo.carbon.marketstats"
-      }
-    ]
+    "MsgCreatePerpMarketResponse": []
   },
   "/Switcheo.carbon.oracle": {
     "Oracle": [
@@ -13287,83 +13260,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "contract_address",
         "type": "string"
-      }
-    ],
-    "ResultEvent": [
-      {
-        "name": "result",
-        "type": "Result",
-        "packageName": "/Switcheo.carbon.oracle"
-      },
-      {
-        "name": "result_id",
-        "type": "string"
-      },
-      {
-        "name": "type",
-        "type": "string"
-      }
-    ],
-    "OracleSlashEvent": [
-      {
-        "name": "validator",
-        "type": "string"
-      },
-      {
-        "name": "cons_address",
-        "type": "string"
-      },
-      {
-        "name": "slash_count",
-        "type": "uint64"
-      },
-      {
-        "name": "infraction_height",
-        "type": "uint64"
-      },
-      {
-        "name": "power",
-        "type": "uint64"
-      },
-      {
-        "name": "slash_factor",
-        "type": "string"
-      },
-      {
-        "name": "burned_coins",
-        "type": "string"
-      }
-    ],
-    "OracleVotesWindow": [
-      {
-        "name": "validator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "vote_count",
-        "type": "uint64"
-      }
-    ],
-    "SlashCounter": [
-      {
-        "name": "validator",
-        "type": "string"
-      },
-      {
-        "name": "slash_count",
-        "type": "uint64"
-      },
-      {
-        "name": "prev_slash_count",
-        "type": "uint64"
-      },
-      {
-        "name": "newly_bonded_window_allowance",
-        "type": "uint64"
       }
     ],
     "Params": [
@@ -13448,6 +13344,315 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "evm_oracle_enabled",
         "type": "bool"
+      }
+    ],
+    "MsgCreateOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "create_oracle_params",
+        "type": "CreateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "CreateOracleParams": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "min_turnout_percentage",
+        "type": "int64"
+      },
+      {
+        "name": "max_result_age",
+        "type": "int64"
+      },
+      {
+        "name": "security_type",
+        "type": "string"
+      },
+      {
+        "name": "result_strategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "MsgCreateOracleResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracle": [
+      {
+        "name": "updater",
+        "type": "string"
+      },
+      {
+        "name": "update_oracle_params",
+        "type": "UpdateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "UpdateOracleParams": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "minTurnoutPercentage",
+        "type": "int64"
+      },
+      {
+        "name": "maxResultAge",
+        "type": "int64"
+      },
+      {
+        "name": "securityType",
+        "type": "string"
+      },
+      {
+        "name": "resultStrategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracleResponse": [],
+    "MsgRemoveOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveOracleResponse": [],
+    "MsgSetOracleSlashEnabled": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgSetOracleSlashEnabledResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "MsgUpdateOracleContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracleContractResponse": [],
+    "MsgDeployOracleContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "MsgDeployOracleContractResponse": [],
+    "ValidatorSignature": [
+      {
+        "name": "pub_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validator_index",
+        "type": "int32"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "signed_timestamp",
+        "type": "int64"
+      }
+    ],
+    "VotesForOracle": [
+      {
+        "name": "oracle_index",
+        "type": "int32"
+      },
+      {
+        "name": "votes_for_data",
+        "type": "VotesForData[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "VotesForData": [
+      {
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "name": "votes_for_timestamps",
+        "type": "VotesForTimestamp[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "VotesForTimestamp": [
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "validator_indexes",
+        "type": "int32[]"
+      }
+    ],
+    "MsgCreateResult": [
+      {
+        "name": "proposer",
+        "type": "string"
+      },
+      {
+        "name": "validator_signatures",
+        "type": "ValidatorSignature[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "votes_for_oracles",
+        "type": "VotesForOracle[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgCreateResultResponse": [],
+    "ResultEvent": [
+      {
+        "name": "result",
+        "type": "Result",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "result_id",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "OracleSlashEvent": [
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "cons_address",
+        "type": "string"
+      },
+      {
+        "name": "slash_count",
+        "type": "uint64"
+      },
+      {
+        "name": "infraction_height",
+        "type": "uint64"
+      },
+      {
+        "name": "power",
+        "type": "uint64"
+      },
+      {
+        "name": "slash_factor",
+        "type": "string"
+      },
+      {
+        "name": "burned_coins",
+        "type": "string"
+      }
+    ],
+    "OracleVotesWindow": [
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "vote_count",
+        "type": "uint64"
+      }
+    ],
+    "SlashCounter": [
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "slash_count",
+        "type": "uint64"
+      },
+      {
+        "name": "prev_slash_count",
+        "type": "uint64"
+      },
+      {
+        "name": "newly_bonded_window_allowance",
+        "type": "uint64"
       }
     ],
     "GenesisState": [
@@ -13692,239 +13897,76 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "data",
         "type": "string"
       }
-    ],
-    "MsgCreateOracle": [
+    ]
+  },
+  "/Switcheo.carbon.marketstats": {
+    "GenesisState": [],
+    "MarketStats": [
       {
-        "name": "creator",
+        "name": "market_id",
         "type": "string"
       },
       {
-        "name": "create_oracle_params",
-        "type": "CreateOracleParams",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "CreateOracleParams": [
-      {
-        "name": "creator",
+        "name": "market_type",
         "type": "string"
       },
       {
-        "name": "id",
+        "name": "day_open",
         "type": "string"
       },
       {
-        "name": "description",
+        "name": "day_high",
         "type": "string"
       },
       {
-        "name": "min_turnout_percentage",
-        "type": "int64"
-      },
-      {
-        "name": "max_result_age",
-        "type": "int64"
-      },
-      {
-        "name": "security_type",
+        "name": "day_low",
         "type": "string"
       },
       {
-        "name": "result_strategy",
+        "name": "day_close",
         "type": "string"
       },
       {
-        "name": "resolution",
-        "type": "int64"
-      },
-      {
-        "name": "spec",
-        "type": "string"
-      }
-    ],
-    "MsgCreateOracleResponse": [
-      {
-        "name": "id",
-        "type": "string"
-      }
-    ],
-    "MsgUpdateOracle": [
-      {
-        "name": "updater",
+        "name": "day_volume",
         "type": "string"
       },
       {
-        "name": "update_oracle_params",
-        "type": "UpdateOracleParams",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "UpdateOracleParams": [
-      {
-        "name": "id",
+        "name": "day_quote_volume",
         "type": "string"
       },
       {
-        "name": "description",
+        "name": "index_price",
         "type": "string"
       },
       {
-        "name": "status",
+        "name": "mark_price",
         "type": "string"
       },
       {
-        "name": "minTurnoutPercentage",
-        "type": "int64"
-      },
-      {
-        "name": "maxResultAge",
-        "type": "int64"
-      },
-      {
-        "name": "securityType",
+        "name": "last_price",
         "type": "string"
       },
       {
-        "name": "resultStrategy",
+        "name": "premium_rate",
         "type": "string"
       },
       {
-        "name": "resolution",
-        "type": "int64"
+        "name": "last_funding_at",
+        "type": "string"
       },
       {
-        "name": "spec",
+        "name": "open_interest",
         "type": "string"
       }
     ],
-    "MsgUpdateOracleResponse": [],
-    "MsgRemoveOracle": [
+    "QueryMarketStatsRequest": [],
+    "QueryMarketStatsResponse": [
       {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
+        "name": "marketstats",
+        "type": "MarketStats[]",
+        "packageName": "/Switcheo.carbon.marketstats"
       }
-    ],
-    "MsgRemoveOracleResponse": [],
-    "MsgSetOracleSlashEnabled": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "enabled",
-        "type": "bool"
-      }
-    ],
-    "MsgSetOracleSlashEnabledResponse": [],
-    "MsgUpdateParams": [
-      {
-        "name": "authority",
-        "type": "string"
-      },
-      {
-        "name": "params",
-        "type": "ParamsToUpdate",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "MsgUpdateParamsResponse": [],
-    "MsgUpdateOracleContract": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      },
-      {
-        "name": "contract_address",
-        "type": "string"
-      }
-    ],
-    "MsgUpdateOracleContractResponse": [],
-    "MsgDeployOracleContract": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "oracle_id",
-        "type": "string"
-      }
-    ],
-    "MsgDeployOracleContractResponse": [],
-    "ValidatorSignature": [
-      {
-        "name": "pub_key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "validator_index",
-        "type": "int32"
-      },
-      {
-        "name": "signature",
-        "type": "uint8[]"
-      },
-      {
-        "name": "signed_timestamp",
-        "type": "int64"
-      }
-    ],
-    "VotesForOracle": [
-      {
-        "name": "oracle_index",
-        "type": "int32"
-      },
-      {
-        "name": "votes_for_data",
-        "type": "VotesForData[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "VotesForData": [
-      {
-        "name": "data",
-        "type": "string"
-      },
-      {
-        "name": "votes_for_timestamps",
-        "type": "VotesForTimestamp[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "VotesForTimestamp": [
-      {
-        "name": "timestamp",
-        "type": "int64"
-      },
-      {
-        "name": "validator_indexes",
-        "type": "int32[]"
-      }
-    ],
-    "MsgCreateResult": [
-      {
-        "name": "proposer",
-        "type": "string"
-      },
-      {
-        "name": "validator_signatures",
-        "type": "ValidatorSignature[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      },
-      {
-        "name": "votes_for_oracles",
-        "type": "VotesForOracle[]",
-        "packageName": "/Switcheo.carbon.oracle"
-      }
-    ],
-    "MsgCreateResultResponse": []
+    ]
   },
   "/Switcheo.carbon.otc": {
     "Rfq": [

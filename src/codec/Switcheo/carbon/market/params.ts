@@ -36,6 +36,7 @@ export interface Params {
   defaultLpFuturesTakerFee: string;
   defaultLpFuturesMakerFee: string;
   defaultMaxOpenInterestUsd: string;
+  defaultStaleIndexPriceAllowance?: Duration;
 }
 
 /** ParamsToUpdate allows optional fields for Params. */
@@ -68,6 +69,7 @@ export interface ParamsToUpdate {
   defaultLpFuturesTakerFee: string;
   defaultLpFuturesMakerFee: string;
   defaultMaxOpenInterestUsd: string;
+  defaultStaleIndexPriceAllowance?: Duration;
 }
 
 const baseParams: object = {
@@ -176,6 +178,12 @@ export const Params = {
     if (message.defaultMaxOpenInterestUsd !== "") {
       writer.uint32(194).string(message.defaultMaxOpenInterestUsd);
     }
+    if (message.defaultStaleIndexPriceAllowance !== undefined) {
+      Duration.encode(
+        message.defaultStaleIndexPriceAllowance,
+        writer.uint32(202).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -260,6 +268,12 @@ export const Params = {
           break;
         case 24:
           message.defaultMaxOpenInterestUsd = reader.string();
+          break;
+        case 25:
+          message.defaultStaleIndexPriceAllowance = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -390,6 +404,11 @@ export const Params = {
       object.defaultMaxOpenInterestUsd !== null
         ? String(object.defaultMaxOpenInterestUsd)
         : "";
+    message.defaultStaleIndexPriceAllowance =
+      object.defaultStaleIndexPriceAllowance !== undefined &&
+      object.defaultStaleIndexPriceAllowance !== null
+        ? Duration.fromJSON(object.defaultStaleIndexPriceAllowance)
+        : undefined;
     return message;
   },
 
@@ -449,6 +468,11 @@ export const Params = {
       (obj.defaultLpFuturesMakerFee = message.defaultLpFuturesMakerFee);
     message.defaultMaxOpenInterestUsd !== undefined &&
       (obj.defaultMaxOpenInterestUsd = message.defaultMaxOpenInterestUsd);
+    message.defaultStaleIndexPriceAllowance !== undefined &&
+      (obj.defaultStaleIndexPriceAllowance =
+        message.defaultStaleIndexPriceAllowance
+          ? Duration.toJSON(message.defaultStaleIndexPriceAllowance)
+          : undefined);
     return obj;
   },
 
@@ -485,6 +509,11 @@ export const Params = {
     message.defaultLpFuturesTakerFee = object.defaultLpFuturesTakerFee ?? "";
     message.defaultLpFuturesMakerFee = object.defaultLpFuturesMakerFee ?? "";
     message.defaultMaxOpenInterestUsd = object.defaultMaxOpenInterestUsd ?? "";
+    message.defaultStaleIndexPriceAllowance =
+      object.defaultStaleIndexPriceAllowance !== undefined &&
+      object.defaultStaleIndexPriceAllowance !== null
+        ? Duration.fromPartial(object.defaultStaleIndexPriceAllowance)
+        : undefined;
     return message;
   },
 };
@@ -603,6 +632,12 @@ export const ParamsToUpdate = {
     if (message.defaultMaxOpenInterestUsd !== "") {
       writer.uint32(194).string(message.defaultMaxOpenInterestUsd);
     }
+    if (message.defaultStaleIndexPriceAllowance !== undefined) {
+      Duration.encode(
+        message.defaultStaleIndexPriceAllowance,
+        writer.uint32(202).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -699,6 +734,12 @@ export const ParamsToUpdate = {
           break;
         case 24:
           message.defaultMaxOpenInterestUsd = reader.string();
+          break;
+        case 25:
+          message.defaultStaleIndexPriceAllowance = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -829,6 +870,11 @@ export const ParamsToUpdate = {
       object.defaultMaxOpenInterestUsd !== null
         ? String(object.defaultMaxOpenInterestUsd)
         : "";
+    message.defaultStaleIndexPriceAllowance =
+      object.defaultStaleIndexPriceAllowance !== undefined &&
+      object.defaultStaleIndexPriceAllowance !== null
+        ? Duration.fromJSON(object.defaultStaleIndexPriceAllowance)
+        : undefined;
     return message;
   },
 
@@ -888,6 +934,11 @@ export const ParamsToUpdate = {
       (obj.defaultLpFuturesMakerFee = message.defaultLpFuturesMakerFee);
     message.defaultMaxOpenInterestUsd !== undefined &&
       (obj.defaultMaxOpenInterestUsd = message.defaultMaxOpenInterestUsd);
+    message.defaultStaleIndexPriceAllowance !== undefined &&
+      (obj.defaultStaleIndexPriceAllowance =
+        message.defaultStaleIndexPriceAllowance
+          ? Duration.toJSON(message.defaultStaleIndexPriceAllowance)
+          : undefined);
     return obj;
   },
 
@@ -925,6 +976,11 @@ export const ParamsToUpdate = {
     message.defaultLpFuturesTakerFee = object.defaultLpFuturesTakerFee ?? "";
     message.defaultLpFuturesMakerFee = object.defaultLpFuturesMakerFee ?? "";
     message.defaultMaxOpenInterestUsd = object.defaultMaxOpenInterestUsd ?? "";
+    message.defaultStaleIndexPriceAllowance =
+      object.defaultStaleIndexPriceAllowance !== undefined &&
+      object.defaultStaleIndexPriceAllowance !== null
+        ? Duration.fromPartial(object.defaultStaleIndexPriceAllowance)
+        : undefined;
     return message;
   },
 };

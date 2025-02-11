@@ -41,10 +41,24 @@ export interface Market {
   indexOracleId: string;
   expiryTime?: Date;
   isActive: boolean;
+  /**
+   * is_settled is a final state flag for the market and cannot be revert after
+   * the market is deemed settled
+   */
   isSettled: boolean;
   closedBlockHeight: Long;
+  /**
+   * trading_bandwidth is the price range that the market can trade from the
+   * index/mark price in bps
+   */
   tradingBandwidth: number;
   maxOpenInterest: string;
+  /**
+   * stale_index_price_allowance is the duration that the index price is allowed
+   * to remain stale before trading is paused
+   * 0 means that this feature is disabled
+   */
+  staleIndexPriceAllowance?: Duration;
 }
 
 export interface MarketParams {
@@ -68,6 +82,7 @@ export interface MarketParams {
   tradingBandwidth?: number;
   expiryTime?: Date;
   maxOpenInterest: string;
+  staleIndexPriceAllowance?: Duration;
 }
 
 export interface IncomingSpotMarketsToDisable {
@@ -265,6 +280,12 @@ export const Market = {
     if (message.maxOpenInterest !== "") {
       writer.uint32(922).string(message.maxOpenInterest);
     }
+    if (message.staleIndexPriceAllowance !== undefined) {
+      Duration.encode(
+        message.staleIndexPriceAllowance,
+        writer.uint32(930).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -363,6 +384,12 @@ export const Market = {
           break;
         case 115:
           message.maxOpenInterest = reader.string();
+          break;
+        case 116:
+          message.staleIndexPriceAllowance = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -492,6 +519,11 @@ export const Market = {
       object.maxOpenInterest !== undefined && object.maxOpenInterest !== null
         ? String(object.maxOpenInterest)
         : "";
+    message.staleIndexPriceAllowance =
+      object.staleIndexPriceAllowance !== undefined &&
+      object.staleIndexPriceAllowance !== null
+        ? Duration.fromJSON(object.staleIndexPriceAllowance)
+        : undefined;
     return message;
   },
 
@@ -550,6 +582,10 @@ export const Market = {
       (obj.tradingBandwidth = message.tradingBandwidth);
     message.maxOpenInterest !== undefined &&
       (obj.maxOpenInterest = message.maxOpenInterest);
+    message.staleIndexPriceAllowance !== undefined &&
+      (obj.staleIndexPriceAllowance = message.staleIndexPriceAllowance
+        ? Duration.toJSON(message.staleIndexPriceAllowance)
+        : undefined);
     return obj;
   },
 
@@ -601,6 +637,11 @@ export const Market = {
         : Long.UZERO;
     message.tradingBandwidth = object.tradingBandwidth ?? 0;
     message.maxOpenInterest = object.maxOpenInterest ?? "";
+    message.staleIndexPriceAllowance =
+      object.staleIndexPriceAllowance !== undefined &&
+      object.staleIndexPriceAllowance !== null
+        ? Duration.fromPartial(object.staleIndexPriceAllowance)
+        : undefined;
     return message;
   },
 };
@@ -705,6 +746,12 @@ export const MarketParams = {
     if (message.maxOpenInterest !== "") {
       writer.uint32(930).string(message.maxOpenInterest);
     }
+    if (message.staleIndexPriceAllowance !== undefined) {
+      Duration.encode(
+        message.staleIndexPriceAllowance,
+        writer.uint32(938).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -791,6 +838,12 @@ export const MarketParams = {
           break;
         case 116:
           message.maxOpenInterest = reader.string();
+          break;
+        case 117:
+          message.staleIndexPriceAllowance = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -882,6 +935,11 @@ export const MarketParams = {
       object.maxOpenInterest !== undefined && object.maxOpenInterest !== null
         ? String(object.maxOpenInterest)
         : "";
+    message.staleIndexPriceAllowance =
+      object.staleIndexPriceAllowance !== undefined &&
+      object.staleIndexPriceAllowance !== null
+        ? Duration.fromJSON(object.staleIndexPriceAllowance)
+        : undefined;
     return message;
   },
 
@@ -922,6 +980,10 @@ export const MarketParams = {
       (obj.expiryTime = message.expiryTime.toISOString());
     message.maxOpenInterest !== undefined &&
       (obj.maxOpenInterest = message.maxOpenInterest);
+    message.staleIndexPriceAllowance !== undefined &&
+      (obj.staleIndexPriceAllowance = message.staleIndexPriceAllowance
+        ? Duration.toJSON(message.staleIndexPriceAllowance)
+        : undefined);
     return obj;
   },
 
@@ -950,6 +1012,11 @@ export const MarketParams = {
     message.tradingBandwidth = object.tradingBandwidth ?? undefined;
     message.expiryTime = object.expiryTime ?? undefined;
     message.maxOpenInterest = object.maxOpenInterest ?? "";
+    message.staleIndexPriceAllowance =
+      object.staleIndexPriceAllowance !== undefined &&
+      object.staleIndexPriceAllowance !== null
+        ? Duration.fromPartial(object.staleIndexPriceAllowance)
+        : undefined;
     return message;
   },
 };
