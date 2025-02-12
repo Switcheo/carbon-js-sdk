@@ -5,6 +5,8 @@ import { MarketParams } from "./market";
 import { Duration } from "../../../google/protobuf/duration";
 import { FeeCategory, FeeTier, StakeEquivalence, FeeStructure } from "./fee";
 import { ParamsToUpdate } from "./params";
+import { CreatePerpetualTokenParams } from "../coin/tx";
+import { CreateOracleParams } from "../oracle/tx";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.market";
@@ -145,6 +147,15 @@ export interface MsgDeleteFeeStructure {
 }
 
 export interface MsgDeleteFeeStructureResponse {}
+
+export interface MsgCreatePerpMarket {
+  authority: string;
+  tokenParams?: CreatePerpetualTokenParams;
+  marketParams?: MsgCreateMarket;
+  oracleParams?: CreateOracleParams;
+}
+
+export interface MsgCreatePerpMarketResponse {}
 
 const baseMsgSettleSpotMarket: object = { creator: "", marketId: "" };
 
@@ -2212,10 +2223,190 @@ export const MsgDeleteFeeStructureResponse = {
   },
 };
 
+const baseMsgCreatePerpMarket: object = { authority: "" };
+
+export const MsgCreatePerpMarket = {
+  encode(
+    message: MsgCreatePerpMarket,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.tokenParams !== undefined) {
+      CreatePerpetualTokenParams.encode(
+        message.tokenParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    if (message.marketParams !== undefined) {
+      MsgCreateMarket.encode(
+        message.marketParams,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.oracleParams !== undefined) {
+      CreateOracleParams.encode(
+        message.oracleParams,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePerpMarket {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreatePerpMarket } as MsgCreatePerpMarket;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.tokenParams = CreatePerpetualTokenParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 3:
+          message.marketParams = MsgCreateMarket.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.oracleParams = CreateOracleParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreatePerpMarket {
+    const message = { ...baseMsgCreatePerpMarket } as MsgCreatePerpMarket;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.tokenParams =
+      object.tokenParams !== undefined && object.tokenParams !== null
+        ? CreatePerpetualTokenParams.fromJSON(object.tokenParams)
+        : undefined;
+    message.marketParams =
+      object.marketParams !== undefined && object.marketParams !== null
+        ? MsgCreateMarket.fromJSON(object.marketParams)
+        : undefined;
+    message.oracleParams =
+      object.oracleParams !== undefined && object.oracleParams !== null
+        ? CreateOracleParams.fromJSON(object.oracleParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreatePerpMarket): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.tokenParams !== undefined &&
+      (obj.tokenParams = message.tokenParams
+        ? CreatePerpetualTokenParams.toJSON(message.tokenParams)
+        : undefined);
+    message.marketParams !== undefined &&
+      (obj.marketParams = message.marketParams
+        ? MsgCreateMarket.toJSON(message.marketParams)
+        : undefined);
+    message.oracleParams !== undefined &&
+      (obj.oracleParams = message.oracleParams
+        ? CreateOracleParams.toJSON(message.oracleParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreatePerpMarket>): MsgCreatePerpMarket {
+    const message = { ...baseMsgCreatePerpMarket } as MsgCreatePerpMarket;
+    message.authority = object.authority ?? "";
+    message.tokenParams =
+      object.tokenParams !== undefined && object.tokenParams !== null
+        ? CreatePerpetualTokenParams.fromPartial(object.tokenParams)
+        : undefined;
+    message.marketParams =
+      object.marketParams !== undefined && object.marketParams !== null
+        ? MsgCreateMarket.fromPartial(object.marketParams)
+        : undefined;
+    message.oracleParams =
+      object.oracleParams !== undefined && object.oracleParams !== null
+        ? CreateOracleParams.fromPartial(object.oracleParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgCreatePerpMarketResponse: object = {};
+
+export const MsgCreatePerpMarketResponse = {
+  encode(
+    _: MsgCreatePerpMarketResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreatePerpMarketResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreatePerpMarketResponse,
+    } as MsgCreatePerpMarketResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCreatePerpMarketResponse {
+    const message = {
+      ...baseMsgCreatePerpMarketResponse,
+    } as MsgCreatePerpMarketResponse;
+    return message;
+  },
+
+  toJSON(_: MsgCreatePerpMarketResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgCreatePerpMarketResponse>
+  ): MsgCreatePerpMarketResponse {
+    const message = {
+      ...baseMsgCreatePerpMarketResponse,
+    } as MsgCreatePerpMarketResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse>;
   UpdateMarket(request: MsgUpdateMarket): Promise<MsgUpdateMarketResponse>;
+  CreatePerpMarket(
+    request: MsgCreatePerpMarket
+  ): Promise<MsgCreatePerpMarketResponse>;
   UpdatePerpetualsFundingInterval(
     request: MsgUpdatePerpetualsFundingInterval
   ): Promise<MsgUpdatePerpetualsFundingIntervalResponse>;
@@ -2255,6 +2446,7 @@ export class MsgClientImpl implements Msg {
     this.rpc = rpc;
     this.CreateMarket = this.CreateMarket.bind(this);
     this.UpdateMarket = this.UpdateMarket.bind(this);
+    this.CreatePerpMarket = this.CreatePerpMarket.bind(this);
     this.UpdatePerpetualsFundingInterval =
       this.UpdatePerpetualsFundingInterval.bind(this);
     this.SettleSpotMarket = this.SettleSpotMarket.bind(this);
@@ -2290,6 +2482,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateMarketResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CreatePerpMarket(
+    request: MsgCreatePerpMarket
+  ): Promise<MsgCreatePerpMarketResponse> {
+    const data = MsgCreatePerpMarket.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Msg",
+      "CreatePerpMarket",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreatePerpMarketResponse.decode(new _m0.Reader(data))
     );
   }
 
