@@ -450,10 +450,6 @@ class TokenClient {
         this.cdpTokens[token.denom] = token;
         this.symbols[token.denom] = token.symbol;
       } else {
-        if (this.isNativeToken(token.denom)) {
-          // Change token name to Carbon
-          token.name = "Carbon";
-        }
         this.tokens[token.denom] = token;
         this.symbols[token.denom] = token.symbol;
       }
