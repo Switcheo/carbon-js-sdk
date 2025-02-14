@@ -1,7 +1,7 @@
+import { Network } from '@carbon-sdk/constant'
 import dayjs from 'dayjs'
 
 import { DEFAULT_PUBLIC_KEY_MESSAGE } from './evm'
-
 export const expirybufferSeconds = 30
 
 export type AccessTokenResponse = {
@@ -49,4 +49,16 @@ export const hasRefreshTokenExpired = (refreshToken: string) => {
   return hasExpired(payload.exp)
 }
 
-export const isValidIssuer = (iss?: string) => iss === 'demex-auth'
+export const isValidIssuer = (iss: string = '', network: Network) => {
+  switch (network) {
+    case Network.MainNet:
+      return iss === 'demex-auth'
+    case Network.DevNet:
+      return iss === 'demex-auth-dev'
+    case Network.TestNet:
+      return iss === 'demex-auth-test'
+    default:
+      return iss === 'demex-auth-local'
+
+  }
+}
