@@ -394,9 +394,10 @@ export class CarbonWallet {
   }
 
   public async reloadJwtToken(request?: GrantRequest) {
+    const network = this.network;
     if (this.jwt) {
       const { iss, exp } = jwtDecode(this.jwt.access_token)
-      if (!isValidIssuer(iss)) return this.getNewJwtToken(request)
+      if (!isValidIssuer(iss, network)) return this.getNewJwtToken(request)
       const accessTokenExpired = hasExpired(exp)
       if (accessTokenExpired) {
         if (!hasRefreshTokenExpired(this.jwt.refresh_token)) return this.refreshJwtToken(this.jwt.refresh_token)
