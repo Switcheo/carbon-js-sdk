@@ -306,7 +306,7 @@ export class N3Client {
     }
   }
 
-  public async formatWithdrawalAddress(address: string): Promise<string> {
+  public formatWithdrawalAddress(address: string): string {
     const isValidAddress = wallet.isAddress(address);
     if (!isValidAddress) {
       throw new Error("invalid address");
