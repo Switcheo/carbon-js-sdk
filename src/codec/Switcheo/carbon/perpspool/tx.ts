@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Pool, UpdatePoolParams } from "./pool";
 import { UpdateMarketConfigParams, MarketConfig } from "./market";
+import { UserVault, UpdateUserVaultParams } from "./user_vault";
 import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
@@ -21,6 +22,8 @@ export interface MsgCreatePool {
   withdrawalFee: string;
   /** borrow fee in decimal per time period to charge on use of liquidity in pool */
   baseBorrowFeePerFundingInterval: string;
+  /** type of the pool */
+  vaultType: string;
 }
 
 export interface MsgCreatePoolResponse {
@@ -85,6 +88,84 @@ export interface MsgUpdateMarketConfigResponse {
   marketConfig?: MarketConfig;
 }
 
+export interface MsgCreateUserVault {
+  creator: string;
+  name: string;
+  description: string;
+  depositAmount: string;
+  profitShare: string;
+  depositFee: string;
+  withdrawFee: string;
+}
+
+export interface MsgCreateUserVaultResponse {
+  userVault?: UserVault;
+}
+
+export interface MsgCloseUserVault {
+  creator: string;
+  id: Long;
+}
+
+export interface MsgCloseUserVaultResponse {}
+
+export interface MsgUpdateUserVault {
+  creator: string;
+  id: Long;
+  updateUserVaultParams?: UpdateUserVaultParams;
+}
+
+export interface MsgUpdateUserVaultResponse {}
+
+export interface MsgAddControllerToVault {
+  creator: string;
+  poolId: Long;
+  controller: string;
+}
+
+export interface MsgAddControllerToVaultResponse {}
+
+export interface MsgRemoveControllerFromVault {
+  creator: string;
+  poolId: Long;
+  controller: string;
+}
+
+export interface MsgRemoveControllerFromVaultResponse {}
+
+export interface MsgDepositToUserVault {
+  creator: string;
+  id: Long;
+  depositAmount: string;
+  minSharesToReceive: string;
+}
+
+export interface MsgDepositToUserVaultResponse {}
+
+export interface MsgWithdrawFromUserVault {
+  creator: string;
+  id: Long;
+  sharesAmount: string;
+}
+
+export interface MsgWithdrawFromUserVaultResponse {}
+
+export interface MsgReleaseUserVaultWithdrawal {
+  creator: string;
+  vaultId: Long;
+  processId: Long;
+}
+
+export interface MsgReleaseUserVaultWithdrawalResponse {}
+
+export interface MsgCancelUserVaultWithdrawal {
+  creator: string;
+  vaultId: Long;
+  processId: Long;
+}
+
+export interface MsgCancelUserVaultWithdrawalResponse {}
+
 /**
  * MsgUpdateParams is the Msg/UpdateParams request type.
  *
@@ -113,6 +194,7 @@ const baseMsgCreatePool: object = {
   depositFee: "",
   withdrawalFee: "",
   baseBorrowFeePerFundingInterval: "",
+  vaultType: "",
 };
 
 export const MsgCreatePool = {
@@ -140,6 +222,9 @@ export const MsgCreatePool = {
     }
     if (message.baseBorrowFeePerFundingInterval !== "") {
       writer.uint32(58).string(message.baseBorrowFeePerFundingInterval);
+    }
+    if (message.vaultType !== "") {
+      writer.uint32(66).string(message.vaultType);
     }
     return writer;
   },
@@ -171,6 +256,9 @@ export const MsgCreatePool = {
           break;
         case 7:
           message.baseBorrowFeePerFundingInterval = reader.string();
+          break;
+        case 8:
+          message.vaultType = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -211,6 +299,10 @@ export const MsgCreatePool = {
       object.baseBorrowFeePerFundingInterval !== null
         ? String(object.baseBorrowFeePerFundingInterval)
         : "";
+    message.vaultType =
+      object.vaultType !== undefined && object.vaultType !== null
+        ? String(object.vaultType)
+        : "";
     return message;
   },
 
@@ -227,6 +319,7 @@ export const MsgCreatePool = {
     message.baseBorrowFeePerFundingInterval !== undefined &&
       (obj.baseBorrowFeePerFundingInterval =
         message.baseBorrowFeePerFundingInterval);
+    message.vaultType !== undefined && (obj.vaultType = message.vaultType);
     return obj;
   },
 
@@ -240,6 +333,7 @@ export const MsgCreatePool = {
     message.withdrawalFee = object.withdrawalFee ?? "";
     message.baseBorrowFeePerFundingInterval =
       object.baseBorrowFeePerFundingInterval ?? "";
+    message.vaultType = object.vaultType ?? "";
     return message;
   },
 };
@@ -1219,6 +1313,1388 @@ export const MsgUpdateMarketConfigResponse = {
   },
 };
 
+const baseMsgCreateUserVault: object = {
+  creator: "",
+  name: "",
+  description: "",
+  depositAmount: "",
+  profitShare: "",
+  depositFee: "",
+  withdrawFee: "",
+};
+
+export const MsgCreateUserVault = {
+  encode(
+    message: MsgCreateUserVault,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(26).string(message.description);
+    }
+    if (message.depositAmount !== "") {
+      writer.uint32(34).string(message.depositAmount);
+    }
+    if (message.profitShare !== "") {
+      writer.uint32(42).string(message.profitShare);
+    }
+    if (message.depositFee !== "") {
+      writer.uint32(50).string(message.depositFee);
+    }
+    if (message.withdrawFee !== "") {
+      writer.uint32(58).string(message.withdrawFee);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateUserVault {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateUserVault } as MsgCreateUserVault;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.description = reader.string();
+          break;
+        case 4:
+          message.depositAmount = reader.string();
+          break;
+        case 5:
+          message.profitShare = reader.string();
+          break;
+        case 6:
+          message.depositFee = reader.string();
+          break;
+        case 7:
+          message.withdrawFee = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateUserVault {
+    const message = { ...baseMsgCreateUserVault } as MsgCreateUserVault;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.depositAmount =
+      object.depositAmount !== undefined && object.depositAmount !== null
+        ? String(object.depositAmount)
+        : "";
+    message.profitShare =
+      object.profitShare !== undefined && object.profitShare !== null
+        ? String(object.profitShare)
+        : "";
+    message.depositFee =
+      object.depositFee !== undefined && object.depositFee !== null
+        ? String(object.depositFee)
+        : "";
+    message.withdrawFee =
+      object.withdrawFee !== undefined && object.withdrawFee !== null
+        ? String(object.withdrawFee)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgCreateUserVault): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.name !== undefined && (obj.name = message.name);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.depositAmount !== undefined &&
+      (obj.depositAmount = message.depositAmount);
+    message.profitShare !== undefined &&
+      (obj.profitShare = message.profitShare);
+    message.depositFee !== undefined && (obj.depositFee = message.depositFee);
+    message.withdrawFee !== undefined &&
+      (obj.withdrawFee = message.withdrawFee);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateUserVault>): MsgCreateUserVault {
+    const message = { ...baseMsgCreateUserVault } as MsgCreateUserVault;
+    message.creator = object.creator ?? "";
+    message.name = object.name ?? "";
+    message.description = object.description ?? "";
+    message.depositAmount = object.depositAmount ?? "";
+    message.profitShare = object.profitShare ?? "";
+    message.depositFee = object.depositFee ?? "";
+    message.withdrawFee = object.withdrawFee ?? "";
+    return message;
+  },
+};
+
+const baseMsgCreateUserVaultResponse: object = {};
+
+export const MsgCreateUserVaultResponse = {
+  encode(
+    message: MsgCreateUserVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.userVault !== undefined) {
+      UserVault.encode(message.userVault, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateUserVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateUserVaultResponse,
+    } as MsgCreateUserVaultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userVault = UserVault.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateUserVaultResponse {
+    const message = {
+      ...baseMsgCreateUserVaultResponse,
+    } as MsgCreateUserVaultResponse;
+    message.userVault =
+      object.userVault !== undefined && object.userVault !== null
+        ? UserVault.fromJSON(object.userVault)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreateUserVaultResponse): unknown {
+    const obj: any = {};
+    message.userVault !== undefined &&
+      (obj.userVault = message.userVault
+        ? UserVault.toJSON(message.userVault)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateUserVaultResponse>
+  ): MsgCreateUserVaultResponse {
+    const message = {
+      ...baseMsgCreateUserVaultResponse,
+    } as MsgCreateUserVaultResponse;
+    message.userVault =
+      object.userVault !== undefined && object.userVault !== null
+        ? UserVault.fromPartial(object.userVault)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgCloseUserVault: object = { creator: "", id: Long.UZERO };
+
+export const MsgCloseUserVault = {
+  encode(
+    message: MsgCloseUserVault,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.id.isZero()) {
+      writer.uint32(16).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCloseUserVault {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCloseUserVault } as MsgCloseUserVault;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCloseUserVault {
+    const message = { ...baseMsgCloseUserVault } as MsgCloseUserVault;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgCloseUserVault): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCloseUserVault>): MsgCloseUserVault {
+    const message = { ...baseMsgCloseUserVault } as MsgCloseUserVault;
+    message.creator = object.creator ?? "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgCloseUserVaultResponse: object = {};
+
+export const MsgCloseUserVaultResponse = {
+  encode(
+    _: MsgCloseUserVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCloseUserVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCloseUserVaultResponse,
+    } as MsgCloseUserVaultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCloseUserVaultResponse {
+    const message = {
+      ...baseMsgCloseUserVaultResponse,
+    } as MsgCloseUserVaultResponse;
+    return message;
+  },
+
+  toJSON(_: MsgCloseUserVaultResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgCloseUserVaultResponse>
+  ): MsgCloseUserVaultResponse {
+    const message = {
+      ...baseMsgCloseUserVaultResponse,
+    } as MsgCloseUserVaultResponse;
+    return message;
+  },
+};
+
+const baseMsgUpdateUserVault: object = { creator: "", id: Long.UZERO };
+
+export const MsgUpdateUserVault = {
+  encode(
+    message: MsgUpdateUserVault,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.id.isZero()) {
+      writer.uint32(16).uint64(message.id);
+    }
+    if (message.updateUserVaultParams !== undefined) {
+      UpdateUserVaultParams.encode(
+        message.updateUserVaultParams,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateUserVault {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateUserVault } as MsgUpdateUserVault;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = reader.uint64() as Long;
+          break;
+        case 3:
+          message.updateUserVaultParams = UpdateUserVaultParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateUserVault {
+    const message = { ...baseMsgUpdateUserVault } as MsgUpdateUserVault;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.updateUserVaultParams =
+      object.updateUserVaultParams !== undefined &&
+      object.updateUserVaultParams !== null
+        ? UpdateUserVaultParams.fromJSON(object.updateUserVaultParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateUserVault): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    message.updateUserVaultParams !== undefined &&
+      (obj.updateUserVaultParams = message.updateUserVaultParams
+        ? UpdateUserVaultParams.toJSON(message.updateUserVaultParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateUserVault>): MsgUpdateUserVault {
+    const message = { ...baseMsgUpdateUserVault } as MsgUpdateUserVault;
+    message.creator = object.creator ?? "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    message.updateUserVaultParams =
+      object.updateUserVaultParams !== undefined &&
+      object.updateUserVaultParams !== null
+        ? UpdateUserVaultParams.fromPartial(object.updateUserVaultParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateUserVaultResponse: object = {};
+
+export const MsgUpdateUserVaultResponse = {
+  encode(
+    _: MsgUpdateUserVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateUserVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateUserVaultResponse,
+    } as MsgUpdateUserVaultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateUserVaultResponse {
+    const message = {
+      ...baseMsgUpdateUserVaultResponse,
+    } as MsgUpdateUserVaultResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateUserVaultResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateUserVaultResponse>
+  ): MsgUpdateUserVaultResponse {
+    const message = {
+      ...baseMsgUpdateUserVaultResponse,
+    } as MsgUpdateUserVaultResponse;
+    return message;
+  },
+};
+
+const baseMsgAddControllerToVault: object = {
+  creator: "",
+  poolId: Long.UZERO,
+  controller: "",
+};
+
+export const MsgAddControllerToVault = {
+  encode(
+    message: MsgAddControllerToVault,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.poolId.isZero()) {
+      writer.uint32(16).uint64(message.poolId);
+    }
+    if (message.controller !== "") {
+      writer.uint32(26).string(message.controller);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddControllerToVault {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddControllerToVault,
+    } as MsgAddControllerToVault;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.controller = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddControllerToVault {
+    const message = {
+      ...baseMsgAddControllerToVault,
+    } as MsgAddControllerToVault;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.controller =
+      object.controller !== undefined && object.controller !== null
+        ? String(object.controller)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgAddControllerToVault): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.controller !== undefined && (obj.controller = message.controller);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgAddControllerToVault>
+  ): MsgAddControllerToVault {
+    const message = {
+      ...baseMsgAddControllerToVault,
+    } as MsgAddControllerToVault;
+    message.creator = object.creator ?? "";
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.controller = object.controller ?? "";
+    return message;
+  },
+};
+
+const baseMsgAddControllerToVaultResponse: object = {};
+
+export const MsgAddControllerToVaultResponse = {
+  encode(
+    _: MsgAddControllerToVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddControllerToVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddControllerToVaultResponse,
+    } as MsgAddControllerToVaultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAddControllerToVaultResponse {
+    const message = {
+      ...baseMsgAddControllerToVaultResponse,
+    } as MsgAddControllerToVaultResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAddControllerToVaultResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgAddControllerToVaultResponse>
+  ): MsgAddControllerToVaultResponse {
+    const message = {
+      ...baseMsgAddControllerToVaultResponse,
+    } as MsgAddControllerToVaultResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveControllerFromVault: object = {
+  creator: "",
+  poolId: Long.UZERO,
+  controller: "",
+};
+
+export const MsgRemoveControllerFromVault = {
+  encode(
+    message: MsgRemoveControllerFromVault,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.poolId.isZero()) {
+      writer.uint32(16).uint64(message.poolId);
+    }
+    if (message.controller !== "") {
+      writer.uint32(26).string(message.controller);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveControllerFromVault {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveControllerFromVault,
+    } as MsgRemoveControllerFromVault;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.controller = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveControllerFromVault {
+    const message = {
+      ...baseMsgRemoveControllerFromVault,
+    } as MsgRemoveControllerFromVault;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.controller =
+      object.controller !== undefined && object.controller !== null
+        ? String(object.controller)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveControllerFromVault): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.controller !== undefined && (obj.controller = message.controller);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveControllerFromVault>
+  ): MsgRemoveControllerFromVault {
+    const message = {
+      ...baseMsgRemoveControllerFromVault,
+    } as MsgRemoveControllerFromVault;
+    message.creator = object.creator ?? "";
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.controller = object.controller ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveControllerFromVaultResponse: object = {};
+
+export const MsgRemoveControllerFromVaultResponse = {
+  encode(
+    _: MsgRemoveControllerFromVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveControllerFromVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveControllerFromVaultResponse,
+    } as MsgRemoveControllerFromVaultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveControllerFromVaultResponse {
+    const message = {
+      ...baseMsgRemoveControllerFromVaultResponse,
+    } as MsgRemoveControllerFromVaultResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveControllerFromVaultResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveControllerFromVaultResponse>
+  ): MsgRemoveControllerFromVaultResponse {
+    const message = {
+      ...baseMsgRemoveControllerFromVaultResponse,
+    } as MsgRemoveControllerFromVaultResponse;
+    return message;
+  },
+};
+
+const baseMsgDepositToUserVault: object = {
+  creator: "",
+  id: Long.UZERO,
+  depositAmount: "",
+  minSharesToReceive: "",
+};
+
+export const MsgDepositToUserVault = {
+  encode(
+    message: MsgDepositToUserVault,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.id.isZero()) {
+      writer.uint32(16).uint64(message.id);
+    }
+    if (message.depositAmount !== "") {
+      writer.uint32(26).string(message.depositAmount);
+    }
+    if (message.minSharesToReceive !== "") {
+      writer.uint32(34).string(message.minSharesToReceive);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDepositToUserVault {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDepositToUserVault } as MsgDepositToUserVault;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = reader.uint64() as Long;
+          break;
+        case 3:
+          message.depositAmount = reader.string();
+          break;
+        case 4:
+          message.minSharesToReceive = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDepositToUserVault {
+    const message = { ...baseMsgDepositToUserVault } as MsgDepositToUserVault;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.depositAmount =
+      object.depositAmount !== undefined && object.depositAmount !== null
+        ? String(object.depositAmount)
+        : "";
+    message.minSharesToReceive =
+      object.minSharesToReceive !== undefined &&
+      object.minSharesToReceive !== null
+        ? String(object.minSharesToReceive)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgDepositToUserVault): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    message.depositAmount !== undefined &&
+      (obj.depositAmount = message.depositAmount);
+    message.minSharesToReceive !== undefined &&
+      (obj.minSharesToReceive = message.minSharesToReceive);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDepositToUserVault>
+  ): MsgDepositToUserVault {
+    const message = { ...baseMsgDepositToUserVault } as MsgDepositToUserVault;
+    message.creator = object.creator ?? "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    message.depositAmount = object.depositAmount ?? "";
+    message.minSharesToReceive = object.minSharesToReceive ?? "";
+    return message;
+  },
+};
+
+const baseMsgDepositToUserVaultResponse: object = {};
+
+export const MsgDepositToUserVaultResponse = {
+  encode(
+    _: MsgDepositToUserVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDepositToUserVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDepositToUserVaultResponse,
+    } as MsgDepositToUserVaultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDepositToUserVaultResponse {
+    const message = {
+      ...baseMsgDepositToUserVaultResponse,
+    } as MsgDepositToUserVaultResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDepositToUserVaultResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDepositToUserVaultResponse>
+  ): MsgDepositToUserVaultResponse {
+    const message = {
+      ...baseMsgDepositToUserVaultResponse,
+    } as MsgDepositToUserVaultResponse;
+    return message;
+  },
+};
+
+const baseMsgWithdrawFromUserVault: object = {
+  creator: "",
+  id: Long.UZERO,
+  sharesAmount: "",
+};
+
+export const MsgWithdrawFromUserVault = {
+  encode(
+    message: MsgWithdrawFromUserVault,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.id.isZero()) {
+      writer.uint32(16).uint64(message.id);
+    }
+    if (message.sharesAmount !== "") {
+      writer.uint32(26).string(message.sharesAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgWithdrawFromUserVault {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgWithdrawFromUserVault,
+    } as MsgWithdrawFromUserVault;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = reader.uint64() as Long;
+          break;
+        case 3:
+          message.sharesAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdrawFromUserVault {
+    const message = {
+      ...baseMsgWithdrawFromUserVault,
+    } as MsgWithdrawFromUserVault;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.sharesAmount =
+      object.sharesAmount !== undefined && object.sharesAmount !== null
+        ? String(object.sharesAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgWithdrawFromUserVault): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    message.sharesAmount !== undefined &&
+      (obj.sharesAmount = message.sharesAmount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgWithdrawFromUserVault>
+  ): MsgWithdrawFromUserVault {
+    const message = {
+      ...baseMsgWithdrawFromUserVault,
+    } as MsgWithdrawFromUserVault;
+    message.creator = object.creator ?? "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    message.sharesAmount = object.sharesAmount ?? "";
+    return message;
+  },
+};
+
+const baseMsgWithdrawFromUserVaultResponse: object = {};
+
+export const MsgWithdrawFromUserVaultResponse = {
+  encode(
+    _: MsgWithdrawFromUserVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgWithdrawFromUserVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgWithdrawFromUserVaultResponse,
+    } as MsgWithdrawFromUserVaultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgWithdrawFromUserVaultResponse {
+    const message = {
+      ...baseMsgWithdrawFromUserVaultResponse,
+    } as MsgWithdrawFromUserVaultResponse;
+    return message;
+  },
+
+  toJSON(_: MsgWithdrawFromUserVaultResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgWithdrawFromUserVaultResponse>
+  ): MsgWithdrawFromUserVaultResponse {
+    const message = {
+      ...baseMsgWithdrawFromUserVaultResponse,
+    } as MsgWithdrawFromUserVaultResponse;
+    return message;
+  },
+};
+
+const baseMsgReleaseUserVaultWithdrawal: object = {
+  creator: "",
+  vaultId: Long.UZERO,
+  processId: Long.UZERO,
+};
+
+export const MsgReleaseUserVaultWithdrawal = {
+  encode(
+    message: MsgReleaseUserVaultWithdrawal,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.vaultId.isZero()) {
+      writer.uint32(16).uint64(message.vaultId);
+    }
+    if (!message.processId.isZero()) {
+      writer.uint32(24).uint64(message.processId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgReleaseUserVaultWithdrawal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgReleaseUserVaultWithdrawal,
+    } as MsgReleaseUserVaultWithdrawal;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.vaultId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.processId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgReleaseUserVaultWithdrawal {
+    const message = {
+      ...baseMsgReleaseUserVaultWithdrawal,
+    } as MsgReleaseUserVaultWithdrawal;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.vaultId =
+      object.vaultId !== undefined && object.vaultId !== null
+        ? Long.fromString(object.vaultId)
+        : Long.UZERO;
+    message.processId =
+      object.processId !== undefined && object.processId !== null
+        ? Long.fromString(object.processId)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgReleaseUserVaultWithdrawal): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.vaultId !== undefined &&
+      (obj.vaultId = (message.vaultId || Long.UZERO).toString());
+    message.processId !== undefined &&
+      (obj.processId = (message.processId || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgReleaseUserVaultWithdrawal>
+  ): MsgReleaseUserVaultWithdrawal {
+    const message = {
+      ...baseMsgReleaseUserVaultWithdrawal,
+    } as MsgReleaseUserVaultWithdrawal;
+    message.creator = object.creator ?? "";
+    message.vaultId =
+      object.vaultId !== undefined && object.vaultId !== null
+        ? Long.fromValue(object.vaultId)
+        : Long.UZERO;
+    message.processId =
+      object.processId !== undefined && object.processId !== null
+        ? Long.fromValue(object.processId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgReleaseUserVaultWithdrawalResponse: object = {};
+
+export const MsgReleaseUserVaultWithdrawalResponse = {
+  encode(
+    _: MsgReleaseUserVaultWithdrawalResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgReleaseUserVaultWithdrawalResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgReleaseUserVaultWithdrawalResponse,
+    } as MsgReleaseUserVaultWithdrawalResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgReleaseUserVaultWithdrawalResponse {
+    const message = {
+      ...baseMsgReleaseUserVaultWithdrawalResponse,
+    } as MsgReleaseUserVaultWithdrawalResponse;
+    return message;
+  },
+
+  toJSON(_: MsgReleaseUserVaultWithdrawalResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgReleaseUserVaultWithdrawalResponse>
+  ): MsgReleaseUserVaultWithdrawalResponse {
+    const message = {
+      ...baseMsgReleaseUserVaultWithdrawalResponse,
+    } as MsgReleaseUserVaultWithdrawalResponse;
+    return message;
+  },
+};
+
+const baseMsgCancelUserVaultWithdrawal: object = {
+  creator: "",
+  vaultId: Long.UZERO,
+  processId: Long.UZERO,
+};
+
+export const MsgCancelUserVaultWithdrawal = {
+  encode(
+    message: MsgCancelUserVaultWithdrawal,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.vaultId.isZero()) {
+      writer.uint32(16).uint64(message.vaultId);
+    }
+    if (!message.processId.isZero()) {
+      writer.uint32(24).uint64(message.processId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCancelUserVaultWithdrawal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCancelUserVaultWithdrawal,
+    } as MsgCancelUserVaultWithdrawal;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.vaultId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.processId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCancelUserVaultWithdrawal {
+    const message = {
+      ...baseMsgCancelUserVaultWithdrawal,
+    } as MsgCancelUserVaultWithdrawal;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.vaultId =
+      object.vaultId !== undefined && object.vaultId !== null
+        ? Long.fromString(object.vaultId)
+        : Long.UZERO;
+    message.processId =
+      object.processId !== undefined && object.processId !== null
+        ? Long.fromString(object.processId)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgCancelUserVaultWithdrawal): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.vaultId !== undefined &&
+      (obj.vaultId = (message.vaultId || Long.UZERO).toString());
+    message.processId !== undefined &&
+      (obj.processId = (message.processId || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCancelUserVaultWithdrawal>
+  ): MsgCancelUserVaultWithdrawal {
+    const message = {
+      ...baseMsgCancelUserVaultWithdrawal,
+    } as MsgCancelUserVaultWithdrawal;
+    message.creator = object.creator ?? "";
+    message.vaultId =
+      object.vaultId !== undefined && object.vaultId !== null
+        ? Long.fromValue(object.vaultId)
+        : Long.UZERO;
+    message.processId =
+      object.processId !== undefined && object.processId !== null
+        ? Long.fromValue(object.processId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgCancelUserVaultWithdrawalResponse: object = {};
+
+export const MsgCancelUserVaultWithdrawalResponse = {
+  encode(
+    _: MsgCancelUserVaultWithdrawalResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCancelUserVaultWithdrawalResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCancelUserVaultWithdrawalResponse,
+    } as MsgCancelUserVaultWithdrawalResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCancelUserVaultWithdrawalResponse {
+    const message = {
+      ...baseMsgCancelUserVaultWithdrawalResponse,
+    } as MsgCancelUserVaultWithdrawalResponse;
+    return message;
+  },
+
+  toJSON(_: MsgCancelUserVaultWithdrawalResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgCancelUserVaultWithdrawalResponse>
+  ): MsgCancelUserVaultWithdrawalResponse {
+    const message = {
+      ...baseMsgCancelUserVaultWithdrawalResponse,
+    } as MsgCancelUserVaultWithdrawalResponse;
+    return message;
+  },
+};
+
 const baseMsgUpdateParams: object = { authority: "" };
 
 export const MsgUpdateParams = {
@@ -1344,6 +2820,7 @@ export const MsgUpdateParamsResponse = {
 
 /** Msg defines the Msg service. */
 export interface Msg {
+  /** * perps pool ** // */
   CreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse>;
   UpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse>;
   RegisterToPool(
@@ -1359,6 +2836,34 @@ export interface Msg {
   UpdateMarketConfig(
     request: MsgUpdateMarketConfig
   ): Promise<MsgUpdateMarketConfigResponse>;
+  /** * user vaults ** // */
+  CreateUserVault(
+    request: MsgCreateUserVault
+  ): Promise<MsgCreateUserVaultResponse>;
+  CloseUserVault(
+    request: MsgCloseUserVault
+  ): Promise<MsgCloseUserVaultResponse>;
+  UpdateUserVault(
+    request: MsgUpdateUserVault
+  ): Promise<MsgUpdateUserVaultResponse>;
+  AddControllerToUserVault(
+    request: MsgAddControllerToVault
+  ): Promise<MsgAddControllerToVaultResponse>;
+  RemoveControllerFromUserVault(
+    request: MsgRemoveControllerFromVault
+  ): Promise<MsgRemoveControllerFromVaultResponse>;
+  DepositToUserVault(
+    request: MsgDepositToUserVault
+  ): Promise<MsgDepositToUserVaultResponse>;
+  WithdrawFromUserVault(
+    request: MsgWithdrawFromUserVault
+  ): Promise<MsgWithdrawFromUserVaultResponse>;
+  ReleaseUserVaultWithdrawal(
+    request: MsgReleaseUserVaultWithdrawal
+  ): Promise<MsgReleaseUserVaultWithdrawalResponse>;
+  CancelUserVaultWithdrawal(
+    request: MsgCancelUserVaultWithdrawal
+  ): Promise<MsgCancelUserVaultWithdrawalResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -1379,6 +2884,17 @@ export class MsgClientImpl implements Msg {
     this.DepositToPool = this.DepositToPool.bind(this);
     this.WithdrawFromPool = this.WithdrawFromPool.bind(this);
     this.UpdateMarketConfig = this.UpdateMarketConfig.bind(this);
+    this.CreateUserVault = this.CreateUserVault.bind(this);
+    this.CloseUserVault = this.CloseUserVault.bind(this);
+    this.UpdateUserVault = this.UpdateUserVault.bind(this);
+    this.AddControllerToUserVault = this.AddControllerToUserVault.bind(this);
+    this.RemoveControllerFromUserVault =
+      this.RemoveControllerFromUserVault.bind(this);
+    this.DepositToUserVault = this.DepositToUserVault.bind(this);
+    this.WithdrawFromUserVault = this.WithdrawFromUserVault.bind(this);
+    this.ReleaseUserVaultWithdrawal =
+      this.ReleaseUserVaultWithdrawal.bind(this);
+    this.CancelUserVaultWithdrawal = this.CancelUserVaultWithdrawal.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
   }
   CreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
@@ -1470,6 +2986,132 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateMarketConfigResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CreateUserVault(
+    request: MsgCreateUserVault
+  ): Promise<MsgCreateUserVaultResponse> {
+    const data = MsgCreateUserVault.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "CreateUserVault",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateUserVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CloseUserVault(
+    request: MsgCloseUserVault
+  ): Promise<MsgCloseUserVaultResponse> {
+    const data = MsgCloseUserVault.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "CloseUserVault",
+      data
+    );
+    return promise.then((data) =>
+      MsgCloseUserVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateUserVault(
+    request: MsgUpdateUserVault
+  ): Promise<MsgUpdateUserVaultResponse> {
+    const data = MsgUpdateUserVault.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "UpdateUserVault",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateUserVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AddControllerToUserVault(
+    request: MsgAddControllerToVault
+  ): Promise<MsgAddControllerToVaultResponse> {
+    const data = MsgAddControllerToVault.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "AddControllerToUserVault",
+      data
+    );
+    return promise.then((data) =>
+      MsgAddControllerToVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveControllerFromUserVault(
+    request: MsgRemoveControllerFromVault
+  ): Promise<MsgRemoveControllerFromVaultResponse> {
+    const data = MsgRemoveControllerFromVault.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "RemoveControllerFromUserVault",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveControllerFromVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DepositToUserVault(
+    request: MsgDepositToUserVault
+  ): Promise<MsgDepositToUserVaultResponse> {
+    const data = MsgDepositToUserVault.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "DepositToUserVault",
+      data
+    );
+    return promise.then((data) =>
+      MsgDepositToUserVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  WithdrawFromUserVault(
+    request: MsgWithdrawFromUserVault
+  ): Promise<MsgWithdrawFromUserVaultResponse> {
+    const data = MsgWithdrawFromUserVault.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "WithdrawFromUserVault",
+      data
+    );
+    return promise.then((data) =>
+      MsgWithdrawFromUserVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ReleaseUserVaultWithdrawal(
+    request: MsgReleaseUserVaultWithdrawal
+  ): Promise<MsgReleaseUserVaultWithdrawalResponse> {
+    const data = MsgReleaseUserVaultWithdrawal.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "ReleaseUserVaultWithdrawal",
+      data
+    );
+    return promise.then((data) =>
+      MsgReleaseUserVaultWithdrawalResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CancelUserVaultWithdrawal(
+    request: MsgCancelUserVaultWithdrawal
+  ): Promise<MsgCancelUserVaultWithdrawalResponse> {
+    const data = MsgCancelUserVaultWithdrawal.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "CancelUserVaultWithdrawal",
+      data
+    );
+    return promise.then((data) =>
+      MsgCancelUserVaultWithdrawalResponse.decode(new _m0.Reader(data))
     );
   }
 

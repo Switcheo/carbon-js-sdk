@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ParamsToUpdate } from "./params";
+import { StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -30,6 +31,7 @@ export interface MsgCreateOrder {
   referralCommission: number;
   referralKickback: number;
   isUseBestPrice: boolean;
+  onBehalfOf?: string;
 }
 
 export interface MsgCreateOrderResponse {
@@ -281,6 +283,12 @@ export const MsgCreateOrder = {
     if (message.isUseBestPrice === true) {
       writer.uint32(120).bool(message.isUseBestPrice);
     }
+    if (message.onBehalfOf !== undefined) {
+      StringValue.encode(
+        { value: message.onBehalfOf! },
+        writer.uint32(130).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -335,6 +343,12 @@ export const MsgCreateOrder = {
           break;
         case 15:
           message.isUseBestPrice = reader.bool();
+          break;
+        case 16:
+          message.onBehalfOf = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -407,6 +421,10 @@ export const MsgCreateOrder = {
       object.isUseBestPrice !== undefined && object.isUseBestPrice !== null
         ? Boolean(object.isUseBestPrice)
         : false;
+    message.onBehalfOf =
+      object.onBehalfOf !== undefined && object.onBehalfOf !== null
+        ? String(object.onBehalfOf)
+        : undefined;
     return message;
   },
 
@@ -434,6 +452,7 @@ export const MsgCreateOrder = {
       (obj.referralKickback = message.referralKickback);
     message.isUseBestPrice !== undefined &&
       (obj.isUseBestPrice = message.isUseBestPrice);
+    message.onBehalfOf !== undefined && (obj.onBehalfOf = message.onBehalfOf);
     return obj;
   },
 
@@ -454,6 +473,7 @@ export const MsgCreateOrder = {
     message.referralCommission = object.referralCommission ?? 0;
     message.referralKickback = object.referralKickback ?? 0;
     message.isUseBestPrice = object.isUseBestPrice ?? false;
+    message.onBehalfOf = object.onBehalfOf ?? undefined;
     return message;
   },
 };

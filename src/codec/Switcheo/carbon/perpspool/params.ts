@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { UInt64Value, StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
@@ -26,13 +27,28 @@ export interface Params {
    * trade commission ratio is the ratio to transfer to the perps commission
    * account from profitable perps amm trades
    */
-  tradeCommissionRatio: string;
+  poolTradeCommissionRatio: string;
   /**
    * fee commission ratio is the ratio of the fees to transfer to the perps
    * commission account when depositing and withdrawing from the pool
    */
-  feeCommissionRatio: string;
+  poolFeeCommissionRatio: string;
   poolCommissionAddress: string;
+  /**
+   * cooldown duration before the next update to the user vault's market
+   * can be made
+   */
+  updateVaultMarketCooldownDuration?: Duration;
+  /** max length of the user vault's description */
+  vaultDescriptionMaxLength: Long;
+  vaultDepositLockUpDuration?: Duration;
+  minUserVaultOwnerDeposit?: Coin;
+  minUserVaultOwnerRatio: string;
+  userVaultProfitShareCap: string;
+  userVaultDepositFeeCap: string;
+  userVaultWithdrawalFeeCap: string;
+  userVaultTradeCommissionRatio: string;
+  userVaultFeeCommissionRatio: string;
 }
 
 export interface ParamsToUpdate {
@@ -43,17 +59,34 @@ export interface ParamsToUpdate {
   navPerShareSnapshots?: Long;
   navPerShareSnapshotInterval?: Duration;
   indexLastUpdatedAtThreshold?: Duration;
-  tradeCommissionRatio: string;
-  feeCommissionRatio: string;
+  poolTradeCommissionRatio: string;
+  poolFeeCommissionRatio: string;
   poolCommissionAddress?: string;
+  updateVaultMarketCooldownDuration?: Duration;
+  vaultDescriptionMaxLength?: Long;
+  vaultDepositLockUpDuration?: Duration;
+  minUserVaultOwnerDeposit?: Coin;
+  minUserVaultOwnerRatio: string;
+  userVaultProfitShareCap: string;
+  userVaultDepositFeeCap: string;
+  userVaultWithdrawalFeeCap: string;
+  userVaultTradeCommissionRatio: string;
+  userVaultFeeCommissionRatio: string;
 }
 
 const baseParams: object = {
   quoteIndexPriceFluctuationToleranceRatio: "",
   navPerShareSnapshots: Long.UZERO,
-  tradeCommissionRatio: "",
-  feeCommissionRatio: "",
+  poolTradeCommissionRatio: "",
+  poolFeeCommissionRatio: "",
   poolCommissionAddress: "",
+  vaultDescriptionMaxLength: Long.UZERO,
+  minUserVaultOwnerRatio: "",
+  userVaultProfitShareCap: "",
+  userVaultDepositFeeCap: "",
+  userVaultWithdrawalFeeCap: "",
+  userVaultTradeCommissionRatio: "",
+  userVaultFeeCommissionRatio: "",
 };
 
 export const Params = {
@@ -99,14 +132,53 @@ export const Params = {
         writer.uint32(58).fork()
       ).ldelim();
     }
-    if (message.tradeCommissionRatio !== "") {
-      writer.uint32(66).string(message.tradeCommissionRatio);
+    if (message.poolTradeCommissionRatio !== "") {
+      writer.uint32(66).string(message.poolTradeCommissionRatio);
     }
-    if (message.feeCommissionRatio !== "") {
-      writer.uint32(74).string(message.feeCommissionRatio);
+    if (message.poolFeeCommissionRatio !== "") {
+      writer.uint32(74).string(message.poolFeeCommissionRatio);
     }
     if (message.poolCommissionAddress !== "") {
       writer.uint32(82).string(message.poolCommissionAddress);
+    }
+    if (message.updateVaultMarketCooldownDuration !== undefined) {
+      Duration.encode(
+        message.updateVaultMarketCooldownDuration,
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
+    if (!message.vaultDescriptionMaxLength.isZero()) {
+      writer.uint32(96).uint64(message.vaultDescriptionMaxLength);
+    }
+    if (message.vaultDepositLockUpDuration !== undefined) {
+      Duration.encode(
+        message.vaultDepositLockUpDuration,
+        writer.uint32(106).fork()
+      ).ldelim();
+    }
+    if (message.minUserVaultOwnerDeposit !== undefined) {
+      Coin.encode(
+        message.minUserVaultOwnerDeposit,
+        writer.uint32(114).fork()
+      ).ldelim();
+    }
+    if (message.minUserVaultOwnerRatio !== "") {
+      writer.uint32(122).string(message.minUserVaultOwnerRatio);
+    }
+    if (message.userVaultProfitShareCap !== "") {
+      writer.uint32(130).string(message.userVaultProfitShareCap);
+    }
+    if (message.userVaultDepositFeeCap !== "") {
+      writer.uint32(138).string(message.userVaultDepositFeeCap);
+    }
+    if (message.userVaultWithdrawalFeeCap !== "") {
+      writer.uint32(146).string(message.userVaultWithdrawalFeeCap);
+    }
+    if (message.userVaultTradeCommissionRatio !== "") {
+      writer.uint32(154).string(message.userVaultTradeCommissionRatio);
+    }
+    if (message.userVaultFeeCommissionRatio !== "") {
+      writer.uint32(162).string(message.userVaultFeeCommissionRatio);
     }
     return writer;
   },
@@ -155,13 +227,52 @@ export const Params = {
           );
           break;
         case 8:
-          message.tradeCommissionRatio = reader.string();
+          message.poolTradeCommissionRatio = reader.string();
           break;
         case 9:
-          message.feeCommissionRatio = reader.string();
+          message.poolFeeCommissionRatio = reader.string();
           break;
         case 10:
           message.poolCommissionAddress = reader.string();
+          break;
+        case 11:
+          message.updateVaultMarketCooldownDuration = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 12:
+          message.vaultDescriptionMaxLength = reader.uint64() as Long;
+          break;
+        case 13:
+          message.vaultDepositLockUpDuration = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 14:
+          message.minUserVaultOwnerDeposit = Coin.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 15:
+          message.minUserVaultOwnerRatio = reader.string();
+          break;
+        case 16:
+          message.userVaultProfitShareCap = reader.string();
+          break;
+        case 17:
+          message.userVaultDepositFeeCap = reader.string();
+          break;
+        case 18:
+          message.userVaultWithdrawalFeeCap = reader.string();
+          break;
+        case 19:
+          message.userVaultTradeCommissionRatio = reader.string();
+          break;
+        case 20:
+          message.userVaultFeeCommissionRatio = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -208,20 +319,70 @@ export const Params = {
       object.indexLastUpdatedAtThreshold !== null
         ? Duration.fromJSON(object.indexLastUpdatedAtThreshold)
         : undefined;
-    message.tradeCommissionRatio =
-      object.tradeCommissionRatio !== undefined &&
-      object.tradeCommissionRatio !== null
-        ? String(object.tradeCommissionRatio)
+    message.poolTradeCommissionRatio =
+      object.poolTradeCommissionRatio !== undefined &&
+      object.poolTradeCommissionRatio !== null
+        ? String(object.poolTradeCommissionRatio)
         : "";
-    message.feeCommissionRatio =
-      object.feeCommissionRatio !== undefined &&
-      object.feeCommissionRatio !== null
-        ? String(object.feeCommissionRatio)
+    message.poolFeeCommissionRatio =
+      object.poolFeeCommissionRatio !== undefined &&
+      object.poolFeeCommissionRatio !== null
+        ? String(object.poolFeeCommissionRatio)
         : "";
     message.poolCommissionAddress =
       object.poolCommissionAddress !== undefined &&
       object.poolCommissionAddress !== null
         ? String(object.poolCommissionAddress)
+        : "";
+    message.updateVaultMarketCooldownDuration =
+      object.updateVaultMarketCooldownDuration !== undefined &&
+      object.updateVaultMarketCooldownDuration !== null
+        ? Duration.fromJSON(object.updateVaultMarketCooldownDuration)
+        : undefined;
+    message.vaultDescriptionMaxLength =
+      object.vaultDescriptionMaxLength !== undefined &&
+      object.vaultDescriptionMaxLength !== null
+        ? Long.fromString(object.vaultDescriptionMaxLength)
+        : Long.UZERO;
+    message.vaultDepositLockUpDuration =
+      object.vaultDepositLockUpDuration !== undefined &&
+      object.vaultDepositLockUpDuration !== null
+        ? Duration.fromJSON(object.vaultDepositLockUpDuration)
+        : undefined;
+    message.minUserVaultOwnerDeposit =
+      object.minUserVaultOwnerDeposit !== undefined &&
+      object.minUserVaultOwnerDeposit !== null
+        ? Coin.fromJSON(object.minUserVaultOwnerDeposit)
+        : undefined;
+    message.minUserVaultOwnerRatio =
+      object.minUserVaultOwnerRatio !== undefined &&
+      object.minUserVaultOwnerRatio !== null
+        ? String(object.minUserVaultOwnerRatio)
+        : "";
+    message.userVaultProfitShareCap =
+      object.userVaultProfitShareCap !== undefined &&
+      object.userVaultProfitShareCap !== null
+        ? String(object.userVaultProfitShareCap)
+        : "";
+    message.userVaultDepositFeeCap =
+      object.userVaultDepositFeeCap !== undefined &&
+      object.userVaultDepositFeeCap !== null
+        ? String(object.userVaultDepositFeeCap)
+        : "";
+    message.userVaultWithdrawalFeeCap =
+      object.userVaultWithdrawalFeeCap !== undefined &&
+      object.userVaultWithdrawalFeeCap !== null
+        ? String(object.userVaultWithdrawalFeeCap)
+        : "";
+    message.userVaultTradeCommissionRatio =
+      object.userVaultTradeCommissionRatio !== undefined &&
+      object.userVaultTradeCommissionRatio !== null
+        ? String(object.userVaultTradeCommissionRatio)
+        : "";
+    message.userVaultFeeCommissionRatio =
+      object.userVaultFeeCommissionRatio !== undefined &&
+      object.userVaultFeeCommissionRatio !== null
+        ? String(object.userVaultFeeCommissionRatio)
         : "";
     return message;
   },
@@ -257,12 +418,42 @@ export const Params = {
       (obj.indexLastUpdatedAtThreshold = message.indexLastUpdatedAtThreshold
         ? Duration.toJSON(message.indexLastUpdatedAtThreshold)
         : undefined);
-    message.tradeCommissionRatio !== undefined &&
-      (obj.tradeCommissionRatio = message.tradeCommissionRatio);
-    message.feeCommissionRatio !== undefined &&
-      (obj.feeCommissionRatio = message.feeCommissionRatio);
+    message.poolTradeCommissionRatio !== undefined &&
+      (obj.poolTradeCommissionRatio = message.poolTradeCommissionRatio);
+    message.poolFeeCommissionRatio !== undefined &&
+      (obj.poolFeeCommissionRatio = message.poolFeeCommissionRatio);
     message.poolCommissionAddress !== undefined &&
       (obj.poolCommissionAddress = message.poolCommissionAddress);
+    message.updateVaultMarketCooldownDuration !== undefined &&
+      (obj.updateVaultMarketCooldownDuration =
+        message.updateVaultMarketCooldownDuration
+          ? Duration.toJSON(message.updateVaultMarketCooldownDuration)
+          : undefined);
+    message.vaultDescriptionMaxLength !== undefined &&
+      (obj.vaultDescriptionMaxLength = (
+        message.vaultDescriptionMaxLength || Long.UZERO
+      ).toString());
+    message.vaultDepositLockUpDuration !== undefined &&
+      (obj.vaultDepositLockUpDuration = message.vaultDepositLockUpDuration
+        ? Duration.toJSON(message.vaultDepositLockUpDuration)
+        : undefined);
+    message.minUserVaultOwnerDeposit !== undefined &&
+      (obj.minUserVaultOwnerDeposit = message.minUserVaultOwnerDeposit
+        ? Coin.toJSON(message.minUserVaultOwnerDeposit)
+        : undefined);
+    message.minUserVaultOwnerRatio !== undefined &&
+      (obj.minUserVaultOwnerRatio = message.minUserVaultOwnerRatio);
+    message.userVaultProfitShareCap !== undefined &&
+      (obj.userVaultProfitShareCap = message.userVaultProfitShareCap);
+    message.userVaultDepositFeeCap !== undefined &&
+      (obj.userVaultDepositFeeCap = message.userVaultDepositFeeCap);
+    message.userVaultWithdrawalFeeCap !== undefined &&
+      (obj.userVaultWithdrawalFeeCap = message.userVaultWithdrawalFeeCap);
+    message.userVaultTradeCommissionRatio !== undefined &&
+      (obj.userVaultTradeCommissionRatio =
+        message.userVaultTradeCommissionRatio);
+    message.userVaultFeeCommissionRatio !== undefined &&
+      (obj.userVaultFeeCommissionRatio = message.userVaultFeeCommissionRatio);
     return obj;
   },
 
@@ -300,17 +491,51 @@ export const Params = {
       object.indexLastUpdatedAtThreshold !== null
         ? Duration.fromPartial(object.indexLastUpdatedAtThreshold)
         : undefined;
-    message.tradeCommissionRatio = object.tradeCommissionRatio ?? "";
-    message.feeCommissionRatio = object.feeCommissionRatio ?? "";
+    message.poolTradeCommissionRatio = object.poolTradeCommissionRatio ?? "";
+    message.poolFeeCommissionRatio = object.poolFeeCommissionRatio ?? "";
     message.poolCommissionAddress = object.poolCommissionAddress ?? "";
+    message.updateVaultMarketCooldownDuration =
+      object.updateVaultMarketCooldownDuration !== undefined &&
+      object.updateVaultMarketCooldownDuration !== null
+        ? Duration.fromPartial(object.updateVaultMarketCooldownDuration)
+        : undefined;
+    message.vaultDescriptionMaxLength =
+      object.vaultDescriptionMaxLength !== undefined &&
+      object.vaultDescriptionMaxLength !== null
+        ? Long.fromValue(object.vaultDescriptionMaxLength)
+        : Long.UZERO;
+    message.vaultDepositLockUpDuration =
+      object.vaultDepositLockUpDuration !== undefined &&
+      object.vaultDepositLockUpDuration !== null
+        ? Duration.fromPartial(object.vaultDepositLockUpDuration)
+        : undefined;
+    message.minUserVaultOwnerDeposit =
+      object.minUserVaultOwnerDeposit !== undefined &&
+      object.minUserVaultOwnerDeposit !== null
+        ? Coin.fromPartial(object.minUserVaultOwnerDeposit)
+        : undefined;
+    message.minUserVaultOwnerRatio = object.minUserVaultOwnerRatio ?? "";
+    message.userVaultProfitShareCap = object.userVaultProfitShareCap ?? "";
+    message.userVaultDepositFeeCap = object.userVaultDepositFeeCap ?? "";
+    message.userVaultWithdrawalFeeCap = object.userVaultWithdrawalFeeCap ?? "";
+    message.userVaultTradeCommissionRatio =
+      object.userVaultTradeCommissionRatio ?? "";
+    message.userVaultFeeCommissionRatio =
+      object.userVaultFeeCommissionRatio ?? "";
     return message;
   },
 };
 
 const baseParamsToUpdate: object = {
   quoteIndexPriceFluctuationToleranceRatio: "",
-  tradeCommissionRatio: "",
-  feeCommissionRatio: "",
+  poolTradeCommissionRatio: "",
+  poolFeeCommissionRatio: "",
+  minUserVaultOwnerRatio: "",
+  userVaultProfitShareCap: "",
+  userVaultDepositFeeCap: "",
+  userVaultWithdrawalFeeCap: "",
+  userVaultTradeCommissionRatio: "",
+  userVaultFeeCommissionRatio: "",
 };
 
 export const ParamsToUpdate = {
@@ -359,17 +584,59 @@ export const ParamsToUpdate = {
         writer.uint32(58).fork()
       ).ldelim();
     }
-    if (message.tradeCommissionRatio !== "") {
-      writer.uint32(66).string(message.tradeCommissionRatio);
+    if (message.poolTradeCommissionRatio !== "") {
+      writer.uint32(66).string(message.poolTradeCommissionRatio);
     }
-    if (message.feeCommissionRatio !== "") {
-      writer.uint32(74).string(message.feeCommissionRatio);
+    if (message.poolFeeCommissionRatio !== "") {
+      writer.uint32(74).string(message.poolFeeCommissionRatio);
     }
     if (message.poolCommissionAddress !== undefined) {
       StringValue.encode(
         { value: message.poolCommissionAddress! },
         writer.uint32(82).fork()
       ).ldelim();
+    }
+    if (message.updateVaultMarketCooldownDuration !== undefined) {
+      Duration.encode(
+        message.updateVaultMarketCooldownDuration,
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
+    if (message.vaultDescriptionMaxLength !== undefined) {
+      UInt64Value.encode(
+        { value: message.vaultDescriptionMaxLength! },
+        writer.uint32(98).fork()
+      ).ldelim();
+    }
+    if (message.vaultDepositLockUpDuration !== undefined) {
+      Duration.encode(
+        message.vaultDepositLockUpDuration,
+        writer.uint32(106).fork()
+      ).ldelim();
+    }
+    if (message.minUserVaultOwnerDeposit !== undefined) {
+      Coin.encode(
+        message.minUserVaultOwnerDeposit,
+        writer.uint32(114).fork()
+      ).ldelim();
+    }
+    if (message.minUserVaultOwnerRatio !== "") {
+      writer.uint32(122).string(message.minUserVaultOwnerRatio);
+    }
+    if (message.userVaultProfitShareCap !== "") {
+      writer.uint32(130).string(message.userVaultProfitShareCap);
+    }
+    if (message.userVaultDepositFeeCap !== "") {
+      writer.uint32(138).string(message.userVaultDepositFeeCap);
+    }
+    if (message.userVaultWithdrawalFeeCap !== "") {
+      writer.uint32(146).string(message.userVaultWithdrawalFeeCap);
+    }
+    if (message.userVaultTradeCommissionRatio !== "") {
+      writer.uint32(154).string(message.userVaultTradeCommissionRatio);
+    }
+    if (message.userVaultFeeCommissionRatio !== "") {
+      writer.uint32(162).string(message.userVaultFeeCommissionRatio);
     }
     return writer;
   },
@@ -421,16 +688,58 @@ export const ParamsToUpdate = {
           );
           break;
         case 8:
-          message.tradeCommissionRatio = reader.string();
+          message.poolTradeCommissionRatio = reader.string();
           break;
         case 9:
-          message.feeCommissionRatio = reader.string();
+          message.poolFeeCommissionRatio = reader.string();
           break;
         case 10:
           message.poolCommissionAddress = StringValue.decode(
             reader,
             reader.uint32()
           ).value;
+          break;
+        case 11:
+          message.updateVaultMarketCooldownDuration = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 12:
+          message.vaultDescriptionMaxLength = UInt64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 13:
+          message.vaultDepositLockUpDuration = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 14:
+          message.minUserVaultOwnerDeposit = Coin.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 15:
+          message.minUserVaultOwnerRatio = reader.string();
+          break;
+        case 16:
+          message.userVaultProfitShareCap = reader.string();
+          break;
+        case 17:
+          message.userVaultDepositFeeCap = reader.string();
+          break;
+        case 18:
+          message.userVaultWithdrawalFeeCap = reader.string();
+          break;
+        case 19:
+          message.userVaultTradeCommissionRatio = reader.string();
+          break;
+        case 20:
+          message.userVaultFeeCommissionRatio = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -477,21 +786,71 @@ export const ParamsToUpdate = {
       object.indexLastUpdatedAtThreshold !== null
         ? Duration.fromJSON(object.indexLastUpdatedAtThreshold)
         : undefined;
-    message.tradeCommissionRatio =
-      object.tradeCommissionRatio !== undefined &&
-      object.tradeCommissionRatio !== null
-        ? String(object.tradeCommissionRatio)
+    message.poolTradeCommissionRatio =
+      object.poolTradeCommissionRatio !== undefined &&
+      object.poolTradeCommissionRatio !== null
+        ? String(object.poolTradeCommissionRatio)
         : "";
-    message.feeCommissionRatio =
-      object.feeCommissionRatio !== undefined &&
-      object.feeCommissionRatio !== null
-        ? String(object.feeCommissionRatio)
+    message.poolFeeCommissionRatio =
+      object.poolFeeCommissionRatio !== undefined &&
+      object.poolFeeCommissionRatio !== null
+        ? String(object.poolFeeCommissionRatio)
         : "";
     message.poolCommissionAddress =
       object.poolCommissionAddress !== undefined &&
       object.poolCommissionAddress !== null
         ? String(object.poolCommissionAddress)
         : undefined;
+    message.updateVaultMarketCooldownDuration =
+      object.updateVaultMarketCooldownDuration !== undefined &&
+      object.updateVaultMarketCooldownDuration !== null
+        ? Duration.fromJSON(object.updateVaultMarketCooldownDuration)
+        : undefined;
+    message.vaultDescriptionMaxLength =
+      object.vaultDescriptionMaxLength !== undefined &&
+      object.vaultDescriptionMaxLength !== null
+        ? Long.fromValue(object.vaultDescriptionMaxLength)
+        : undefined;
+    message.vaultDepositLockUpDuration =
+      object.vaultDepositLockUpDuration !== undefined &&
+      object.vaultDepositLockUpDuration !== null
+        ? Duration.fromJSON(object.vaultDepositLockUpDuration)
+        : undefined;
+    message.minUserVaultOwnerDeposit =
+      object.minUserVaultOwnerDeposit !== undefined &&
+      object.minUserVaultOwnerDeposit !== null
+        ? Coin.fromJSON(object.minUserVaultOwnerDeposit)
+        : undefined;
+    message.minUserVaultOwnerRatio =
+      object.minUserVaultOwnerRatio !== undefined &&
+      object.minUserVaultOwnerRatio !== null
+        ? String(object.minUserVaultOwnerRatio)
+        : "";
+    message.userVaultProfitShareCap =
+      object.userVaultProfitShareCap !== undefined &&
+      object.userVaultProfitShareCap !== null
+        ? String(object.userVaultProfitShareCap)
+        : "";
+    message.userVaultDepositFeeCap =
+      object.userVaultDepositFeeCap !== undefined &&
+      object.userVaultDepositFeeCap !== null
+        ? String(object.userVaultDepositFeeCap)
+        : "";
+    message.userVaultWithdrawalFeeCap =
+      object.userVaultWithdrawalFeeCap !== undefined &&
+      object.userVaultWithdrawalFeeCap !== null
+        ? String(object.userVaultWithdrawalFeeCap)
+        : "";
+    message.userVaultTradeCommissionRatio =
+      object.userVaultTradeCommissionRatio !== undefined &&
+      object.userVaultTradeCommissionRatio !== null
+        ? String(object.userVaultTradeCommissionRatio)
+        : "";
+    message.userVaultFeeCommissionRatio =
+      object.userVaultFeeCommissionRatio !== undefined &&
+      object.userVaultFeeCommissionRatio !== null
+        ? String(object.userVaultFeeCommissionRatio)
+        : "";
     return message;
   },
 
@@ -524,12 +883,40 @@ export const ParamsToUpdate = {
       (obj.indexLastUpdatedAtThreshold = message.indexLastUpdatedAtThreshold
         ? Duration.toJSON(message.indexLastUpdatedAtThreshold)
         : undefined);
-    message.tradeCommissionRatio !== undefined &&
-      (obj.tradeCommissionRatio = message.tradeCommissionRatio);
-    message.feeCommissionRatio !== undefined &&
-      (obj.feeCommissionRatio = message.feeCommissionRatio);
+    message.poolTradeCommissionRatio !== undefined &&
+      (obj.poolTradeCommissionRatio = message.poolTradeCommissionRatio);
+    message.poolFeeCommissionRatio !== undefined &&
+      (obj.poolFeeCommissionRatio = message.poolFeeCommissionRatio);
     message.poolCommissionAddress !== undefined &&
       (obj.poolCommissionAddress = message.poolCommissionAddress);
+    message.updateVaultMarketCooldownDuration !== undefined &&
+      (obj.updateVaultMarketCooldownDuration =
+        message.updateVaultMarketCooldownDuration
+          ? Duration.toJSON(message.updateVaultMarketCooldownDuration)
+          : undefined);
+    message.vaultDescriptionMaxLength !== undefined &&
+      (obj.vaultDescriptionMaxLength = message.vaultDescriptionMaxLength);
+    message.vaultDepositLockUpDuration !== undefined &&
+      (obj.vaultDepositLockUpDuration = message.vaultDepositLockUpDuration
+        ? Duration.toJSON(message.vaultDepositLockUpDuration)
+        : undefined);
+    message.minUserVaultOwnerDeposit !== undefined &&
+      (obj.minUserVaultOwnerDeposit = message.minUserVaultOwnerDeposit
+        ? Coin.toJSON(message.minUserVaultOwnerDeposit)
+        : undefined);
+    message.minUserVaultOwnerRatio !== undefined &&
+      (obj.minUserVaultOwnerRatio = message.minUserVaultOwnerRatio);
+    message.userVaultProfitShareCap !== undefined &&
+      (obj.userVaultProfitShareCap = message.userVaultProfitShareCap);
+    message.userVaultDepositFeeCap !== undefined &&
+      (obj.userVaultDepositFeeCap = message.userVaultDepositFeeCap);
+    message.userVaultWithdrawalFeeCap !== undefined &&
+      (obj.userVaultWithdrawalFeeCap = message.userVaultWithdrawalFeeCap);
+    message.userVaultTradeCommissionRatio !== undefined &&
+      (obj.userVaultTradeCommissionRatio =
+        message.userVaultTradeCommissionRatio);
+    message.userVaultFeeCommissionRatio !== undefined &&
+      (obj.userVaultFeeCommissionRatio = message.userVaultFeeCommissionRatio);
     return obj;
   },
 
@@ -567,9 +954,37 @@ export const ParamsToUpdate = {
       object.indexLastUpdatedAtThreshold !== null
         ? Duration.fromPartial(object.indexLastUpdatedAtThreshold)
         : undefined;
-    message.tradeCommissionRatio = object.tradeCommissionRatio ?? "";
-    message.feeCommissionRatio = object.feeCommissionRatio ?? "";
+    message.poolTradeCommissionRatio = object.poolTradeCommissionRatio ?? "";
+    message.poolFeeCommissionRatio = object.poolFeeCommissionRatio ?? "";
     message.poolCommissionAddress = object.poolCommissionAddress ?? undefined;
+    message.updateVaultMarketCooldownDuration =
+      object.updateVaultMarketCooldownDuration !== undefined &&
+      object.updateVaultMarketCooldownDuration !== null
+        ? Duration.fromPartial(object.updateVaultMarketCooldownDuration)
+        : undefined;
+    message.vaultDescriptionMaxLength =
+      object.vaultDescriptionMaxLength !== undefined &&
+      object.vaultDescriptionMaxLength !== null
+        ? Long.fromValue(object.vaultDescriptionMaxLength)
+        : undefined;
+    message.vaultDepositLockUpDuration =
+      object.vaultDepositLockUpDuration !== undefined &&
+      object.vaultDepositLockUpDuration !== null
+        ? Duration.fromPartial(object.vaultDepositLockUpDuration)
+        : undefined;
+    message.minUserVaultOwnerDeposit =
+      object.minUserVaultOwnerDeposit !== undefined &&
+      object.minUserVaultOwnerDeposit !== null
+        ? Coin.fromPartial(object.minUserVaultOwnerDeposit)
+        : undefined;
+    message.minUserVaultOwnerRatio = object.minUserVaultOwnerRatio ?? "";
+    message.userVaultProfitShareCap = object.userVaultProfitShareCap ?? "";
+    message.userVaultDepositFeeCap = object.userVaultDepositFeeCap ?? "";
+    message.userVaultWithdrawalFeeCap = object.userVaultWithdrawalFeeCap ?? "";
+    message.userVaultTradeCommissionRatio =
+      object.userVaultTradeCommissionRatio ?? "";
+    message.userVaultFeeCommissionRatio =
+      object.userVaultFeeCommissionRatio ?? "";
     return message;
   },
 };

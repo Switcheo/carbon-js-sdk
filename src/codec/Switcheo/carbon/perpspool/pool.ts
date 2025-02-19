@@ -30,6 +30,8 @@ export interface Pool {
   withdrawalFee: string;
   /** borrow fee in decimal per time period to charge on use of liquidity in pool */
   baseBorrowFeePerFundingInterval: string;
+  /** defines the type of the pool, user vault or perps pool */
+  vaultType: Long;
 }
 
 export interface UpdatePoolParams {
@@ -38,6 +40,8 @@ export interface UpdatePoolParams {
   depositFee: string;
   withdrawalFee: string;
   baseBorrowFeePerFundingInterval: string;
+  /** user vault specific params to update */
+  description?: string;
 }
 
 /**
@@ -81,6 +85,7 @@ const basePool: object = {
   depositFee: "",
   withdrawalFee: "",
   baseBorrowFeePerFundingInterval: "",
+  vaultType: Long.UZERO,
 };
 
 export const Pool = {
@@ -111,6 +116,9 @@ export const Pool = {
     }
     if (message.baseBorrowFeePerFundingInterval !== "") {
       writer.uint32(74).string(message.baseBorrowFeePerFundingInterval);
+    }
+    if (!message.vaultType.isZero()) {
+      writer.uint32(80).uint64(message.vaultType);
     }
     return writer;
   },
@@ -148,6 +156,9 @@ export const Pool = {
           break;
         case 9:
           message.baseBorrowFeePerFundingInterval = reader.string();
+          break;
+        case 10:
+          message.vaultType = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -196,6 +207,10 @@ export const Pool = {
       object.baseBorrowFeePerFundingInterval !== null
         ? String(object.baseBorrowFeePerFundingInterval)
         : "";
+    message.vaultType =
+      object.vaultType !== undefined && object.vaultType !== null
+        ? Long.fromString(object.vaultType)
+        : Long.UZERO;
     return message;
   },
 
@@ -216,6 +231,8 @@ export const Pool = {
     message.baseBorrowFeePerFundingInterval !== undefined &&
       (obj.baseBorrowFeePerFundingInterval =
         message.baseBorrowFeePerFundingInterval);
+    message.vaultType !== undefined &&
+      (obj.vaultType = (message.vaultType || Long.UZERO).toString());
     return obj;
   },
 
@@ -234,6 +251,10 @@ export const Pool = {
     message.withdrawalFee = object.withdrawalFee ?? "";
     message.baseBorrowFeePerFundingInterval =
       object.baseBorrowFeePerFundingInterval ?? "";
+    message.vaultType =
+      object.vaultType !== undefined && object.vaultType !== null
+        ? Long.fromValue(object.vaultType)
+        : Long.UZERO;
     return message;
   },
 };
@@ -268,6 +289,12 @@ export const UpdatePoolParams = {
     if (message.baseBorrowFeePerFundingInterval !== "") {
       writer.uint32(42).string(message.baseBorrowFeePerFundingInterval);
     }
+    if (message.description !== undefined) {
+      StringValue.encode(
+        { value: message.description! },
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -292,6 +319,12 @@ export const UpdatePoolParams = {
           break;
         case 5:
           message.baseBorrowFeePerFundingInterval = reader.string();
+          break;
+        case 6:
+          message.description = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -324,6 +357,10 @@ export const UpdatePoolParams = {
       object.baseBorrowFeePerFundingInterval !== null
         ? String(object.baseBorrowFeePerFundingInterval)
         : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : undefined;
     return message;
   },
 
@@ -337,6 +374,8 @@ export const UpdatePoolParams = {
     message.baseBorrowFeePerFundingInterval !== undefined &&
       (obj.baseBorrowFeePerFundingInterval =
         message.baseBorrowFeePerFundingInterval);
+    message.description !== undefined &&
+      (obj.description = message.description);
     return obj;
   },
 
@@ -348,6 +387,7 @@ export const UpdatePoolParams = {
     message.withdrawalFee = object.withdrawalFee ?? "";
     message.baseBorrowFeePerFundingInterval =
       object.baseBorrowFeePerFundingInterval ?? "";
+    message.description = object.description ?? undefined;
     return message;
   },
 };
