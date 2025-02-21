@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Pool } from "./pool";
 import { MarketConfig } from "./market";
+import { UserVault } from "./user_vault";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
@@ -24,6 +25,11 @@ export interface DeregisterFromPoolEvent {
 
 export interface SetMarketConfigEvent {
   marketConfig?: MarketConfig;
+}
+
+export interface UpdateMarketLiquidityUsageMultiplierEvent {
+  marketId: string;
+  multiplier: string;
 }
 
 export interface DepositToVaultEvent {
@@ -55,11 +61,6 @@ export interface WithdrawFromVaultEvent {
   vaultType: Long;
 }
 
-export interface UpdateMarketLiquidityUsageMultiplierEvent {
-  marketId: string;
-  multiplier: string;
-}
-
 export interface UserVaultWithdrawalPending {
   vaultId: Long;
   address: string;
@@ -78,6 +79,10 @@ export interface UserVaultWithdrawalReleased {
   receivedAmount: string;
   requestTime?: Date;
   completionTime?: Date;
+}
+
+export interface UserVaultEvent {
+  vault?: UserVault;
 }
 
 const basePoolEvent: object = { type: "" };
@@ -362,6 +367,85 @@ export const SetMarketConfigEvent = {
       object.marketConfig !== undefined && object.marketConfig !== null
         ? MarketConfig.fromPartial(object.marketConfig)
         : undefined;
+    return message;
+  },
+};
+
+const baseUpdateMarketLiquidityUsageMultiplierEvent: object = {
+  marketId: "",
+  multiplier: "",
+};
+
+export const UpdateMarketLiquidityUsageMultiplierEvent = {
+  encode(
+    message: UpdateMarketLiquidityUsageMultiplierEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
+    }
+    if (message.multiplier !== "") {
+      writer.uint32(18).string(message.multiplier);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateMarketLiquidityUsageMultiplierEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
+    } as UpdateMarketLiquidityUsageMultiplierEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketId = reader.string();
+          break;
+        case 2:
+          message.multiplier = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateMarketLiquidityUsageMultiplierEvent {
+    const message = {
+      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
+    } as UpdateMarketLiquidityUsageMultiplierEvent;
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.multiplier =
+      object.multiplier !== undefined && object.multiplier !== null
+        ? String(object.multiplier)
+        : "";
+    return message;
+  },
+
+  toJSON(message: UpdateMarketLiquidityUsageMultiplierEvent): unknown {
+    const obj: any = {};
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    message.multiplier !== undefined && (obj.multiplier = message.multiplier);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateMarketLiquidityUsageMultiplierEvent>
+  ): UpdateMarketLiquidityUsageMultiplierEvent {
+    const message = {
+      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
+    } as UpdateMarketLiquidityUsageMultiplierEvent;
+    message.marketId = object.marketId ?? "";
+    message.multiplier = object.multiplier ?? "";
     return message;
   },
 };
@@ -786,85 +870,6 @@ export const WithdrawFromVaultEvent = {
   },
 };
 
-const baseUpdateMarketLiquidityUsageMultiplierEvent: object = {
-  marketId: "",
-  multiplier: "",
-};
-
-export const UpdateMarketLiquidityUsageMultiplierEvent = {
-  encode(
-    message: UpdateMarketLiquidityUsageMultiplierEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.marketId !== "") {
-      writer.uint32(10).string(message.marketId);
-    }
-    if (message.multiplier !== "") {
-      writer.uint32(18).string(message.multiplier);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateMarketLiquidityUsageMultiplierEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
-    } as UpdateMarketLiquidityUsageMultiplierEvent;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.marketId = reader.string();
-          break;
-        case 2:
-          message.multiplier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UpdateMarketLiquidityUsageMultiplierEvent {
-    const message = {
-      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
-    } as UpdateMarketLiquidityUsageMultiplierEvent;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.multiplier =
-      object.multiplier !== undefined && object.multiplier !== null
-        ? String(object.multiplier)
-        : "";
-    return message;
-  },
-
-  toJSON(message: UpdateMarketLiquidityUsageMultiplierEvent): unknown {
-    const obj: any = {};
-    message.marketId !== undefined && (obj.marketId = message.marketId);
-    message.multiplier !== undefined && (obj.multiplier = message.multiplier);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<UpdateMarketLiquidityUsageMultiplierEvent>
-  ): UpdateMarketLiquidityUsageMultiplierEvent {
-    const message = {
-      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
-    } as UpdateMarketLiquidityUsageMultiplierEvent;
-    message.marketId = object.marketId ?? "";
-    message.multiplier = object.multiplier ?? "";
-    return message;
-  },
-};
-
 const baseUserVaultWithdrawalPending: object = {
   vaultId: Long.UZERO,
   address: "",
@@ -1185,6 +1190,63 @@ export const UserVaultWithdrawalReleased = {
     message.receivedAmount = object.receivedAmount ?? "";
     message.requestTime = object.requestTime ?? undefined;
     message.completionTime = object.completionTime ?? undefined;
+    return message;
+  },
+};
+
+const baseUserVaultEvent: object = {};
+
+export const UserVaultEvent = {
+  encode(
+    message: UserVaultEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.vault !== undefined) {
+      UserVault.encode(message.vault, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserVaultEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUserVaultEvent } as UserVaultEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.vault = UserVault.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserVaultEvent {
+    const message = { ...baseUserVaultEvent } as UserVaultEvent;
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? UserVault.fromJSON(object.vault)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: UserVaultEvent): unknown {
+    const obj: any = {};
+    message.vault !== undefined &&
+      (obj.vault = message.vault ? UserVault.toJSON(message.vault) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UserVaultEvent>): UserVaultEvent {
+    const message = { ...baseUserVaultEvent } as UserVaultEvent;
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? UserVault.fromPartial(object.vault)
+        : undefined;
     return message;
   },
 };

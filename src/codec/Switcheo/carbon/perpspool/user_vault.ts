@@ -20,9 +20,8 @@ export interface UserVault {
   shareDenom: string;
   /** auto-created address of the vault that stores the tokens */
   vaultAddress: string;
-  /** defines the type of the pool, user vault or perps pool */
+  /** defines the type of the pool */
   vaultType: Long;
-  /** optional fields for user vault */
   owner: string;
   description: string;
   /** profit share to charge on a profitable trade to vault in decimal */

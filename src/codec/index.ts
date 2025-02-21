@@ -14519,10 +14519,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "base_borrow_fee_per_funding_interval",
         "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
       }
     ],
     "PoolDetails": [
@@ -14587,6 +14583,120 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "UserVault": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "deposit_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "vault_address",
+        "type": "string"
+      },
+      {
+        "name": "vault_type",
+        "type": "uint64"
+      },
+      {
+        "name": "owner",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "profit_share",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee",
+        "type": "string"
+      },
+      {
+        "name": "controllers",
+        "type": "string[]"
+      }
+    ],
+    "UpdateUserVaultParams": [
+      {
+        "name": "deposit_fee",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee",
+        "type": "string"
+      },
+      {
+        "name": "profit_share",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "UserVaultUserRecord": [
+      {
+        "name": "vault_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "last_deposit_time",
+        "type": "string"
+      }
+    ],
+    "AddressToUserVaultsMapping": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "UserVaultWithdrawalRecord": [
+      {
+        "name": "vault_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "shares_amount",
+        "type": "string"
+      },
+      {
+        "name": "process_id",
+        "type": "uint64"
+      },
+      {
+        "name": "request_time",
+        "type": "string"
+      }
+    ],
     "PoolEvent": [
       {
         "name": "pool",
@@ -14623,6 +14733,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "market_config",
         "type": "MarketConfig",
         "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "UpdateMarketLiquidityUsageMultiplierEvent": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "multiplier",
+        "type": "string"
       }
     ],
     "DepositToVaultEvent": [
@@ -14721,16 +14841,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
-    "UpdateMarketLiquidityUsageMultiplierEvent": [
-      {
-        "name": "market_id",
-        "type": "string"
-      },
-      {
-        "name": "multiplier",
-        "type": "string"
-      }
-    ],
     "UserVaultWithdrawalPending": [
       {
         "name": "vault_id",
@@ -14789,6 +14899,13 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "completion_time",
         "type": "string"
+      }
+    ],
+    "UserVaultEvent": [
+      {
+        "name": "vault",
+        "type": "UserVault",
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "Params": [
@@ -14954,120 +15071,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "user_vault_fee_commission_ratio",
-        "type": "string"
-      }
-    ],
-    "UserVault": [
-      {
-        "name": "id",
-        "type": "uint64"
-      },
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "deposit_denom",
-        "type": "string"
-      },
-      {
-        "name": "share_denom",
-        "type": "string"
-      },
-      {
-        "name": "vault_address",
-        "type": "string"
-      },
-      {
-        "name": "vault_type",
-        "type": "uint64"
-      },
-      {
-        "name": "owner",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "name": "profit_share",
-        "type": "string"
-      },
-      {
-        "name": "deposit_fee",
-        "type": "string"
-      },
-      {
-        "name": "withdrawal_fee",
-        "type": "string"
-      },
-      {
-        "name": "controllers",
-        "type": "string[]"
-      }
-    ],
-    "UpdateUserVaultParams": [
-      {
-        "name": "deposit_fee",
-        "type": "string"
-      },
-      {
-        "name": "withdrawal_fee",
-        "type": "string"
-      },
-      {
-        "name": "profit_share",
-        "type": "string"
-      },
-      {
-        "name": "description",
-        "type": "string"
-      }
-    ],
-    "UserVaultUserRecord": [
-      {
-        "name": "vault_id",
-        "type": "uint64"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      },
-      {
-        "name": "last_deposit_time",
-        "type": "string"
-      }
-    ],
-    "AddressToUserVaultsMapping": [
-      {
-        "name": "id",
-        "type": "uint64"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      }
-    ],
-    "UserVaultWithdrawalRecord": [
-      {
-        "name": "vault_id",
-        "type": "uint64"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      },
-      {
-        "name": "shares_amount",
-        "type": "string"
-      },
-      {
-        "name": "process_id",
-        "type": "uint64"
-      },
-      {
-        "name": "request_time",
         "type": "string"
       }
     ],
@@ -15268,28 +15271,9 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryPoolInfoResponse": [
       {
-        "name": "pool_id",
-        "type": "uint64"
-      },
-      {
-        "name": "total_share_amount",
-        "type": "string"
-      },
-      {
-        "name": "total_nav_amount",
-        "type": "string"
-      },
-      {
-        "name": "available_amount",
-        "type": "string"
-      },
-      {
-        "name": "total_in_position_amount",
-        "type": "string"
-      },
-      {
-        "name": "total_upnl_amount",
-        "type": "string"
+        "name": "vault",
+        "type": "VaultInfo",
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "QueryAllPoolInfoRequest": [
@@ -15301,8 +15285,8 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryAllPoolInfoResponse": [
       {
-        "name": "pools",
-        "type": "QueryPoolInfoResponse[]",
+        "name": "vaults",
+        "type": "VaultInfo[]",
         "packageName": "/Switcheo.carbon.perpspool"
       },
       {
@@ -15410,6 +15394,64 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryUserVaultInfoRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryUserVaultInfoResponse": [
+      {
+        "name": "vault",
+        "type": "VaultInfo",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "QueryAllUserVaultInfoRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllUserVaultInfoResponse": [
+      {
+        "name": "vaults",
+        "type": "VaultInfo[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "VaultInfo": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "total_share_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_nav_amount",
+        "type": "string"
+      },
+      {
+        "name": "available_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_in_position_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_upnl_amount",
+        "type": "string"
       }
     ],
     "MsgCreatePool": [

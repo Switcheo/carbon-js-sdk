@@ -40,8 +40,6 @@ export interface UpdatePoolParams {
   depositFee: string;
   withdrawalFee: string;
   baseBorrowFeePerFundingInterval: string;
-  /** user vault specific params to update */
-  description?: string;
 }
 
 /**
@@ -289,12 +287,6 @@ export const UpdatePoolParams = {
     if (message.baseBorrowFeePerFundingInterval !== "") {
       writer.uint32(42).string(message.baseBorrowFeePerFundingInterval);
     }
-    if (message.description !== undefined) {
-      StringValue.encode(
-        { value: message.description! },
-        writer.uint32(50).fork()
-      ).ldelim();
-    }
     return writer;
   },
 
@@ -319,12 +311,6 @@ export const UpdatePoolParams = {
           break;
         case 5:
           message.baseBorrowFeePerFundingInterval = reader.string();
-          break;
-        case 6:
-          message.description = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -357,10 +343,6 @@ export const UpdatePoolParams = {
       object.baseBorrowFeePerFundingInterval !== null
         ? String(object.baseBorrowFeePerFundingInterval)
         : "";
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? String(object.description)
-        : undefined;
     return message;
   },
 
@@ -374,8 +356,6 @@ export const UpdatePoolParams = {
     message.baseBorrowFeePerFundingInterval !== undefined &&
       (obj.baseBorrowFeePerFundingInterval =
         message.baseBorrowFeePerFundingInterval);
-    message.description !== undefined &&
-      (obj.description = message.description);
     return obj;
   },
 
@@ -387,7 +367,6 @@ export const UpdatePoolParams = {
     message.withdrawalFee = object.withdrawalFee ?? "";
     message.baseBorrowFeePerFundingInterval =
       object.baseBorrowFeePerFundingInterval ?? "";
-    message.description = object.description ?? undefined;
     return message;
   },
 };
