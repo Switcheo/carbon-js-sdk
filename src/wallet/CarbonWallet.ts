@@ -35,6 +35,7 @@ import utc from "dayjs/plugin/utc";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { jwtDecode } from "jwt-decode";
+import { utils } from "ethers";
 
 dayjs.extend(utc)
 
@@ -387,6 +388,9 @@ export class CarbonWallet {
     if (opts?.enableJwtAuth && !this.isViewOnlyWallet())
       promises.push(this.reloadJwtToken());
 
+    if (this.isViewOnlyWallet())
+      promises.push(this.queryViewOnlyEvmHexAddress())
+
     await Promise.all(promises);
 
     this.initialized = true;
@@ -406,6 +410,18 @@ export class CarbonWallet {
       return
     }
     return this.getNewJwtToken(request)
+  }
+
+  public async queryViewOnlyEvmHexAddress() {
+    const queryClient = this.getQueryClient();
+    const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address });
+    const evmBech32Address = response.mappedAddress
+    this.evmBech32Address = evmBech32Address
+    const addressBytes = SWTHAddress.getAddressBytes(evmBech32Address, this.network)
+    if (addressBytes.length === 20) {
+      const lowerCaseAddress = '0x' + Buffer.from(addressBytes).toString('hex')
+      this.evmHexAddress = utils.getAddress(lowerCaseAddress)
+    }
   }
 
   private async refreshJwtToken(refreshToken: string) {
