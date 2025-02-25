@@ -61,6 +61,7 @@ export interface MsgMintToken {
   denom: string;
   amount: string;
   to: string;
+  toFuturesAccount: boolean;
 }
 
 export interface MsgMintTokenResponse {}
@@ -959,7 +960,13 @@ export const MsgSyncTokenResponse = {
   },
 };
 
-const baseMsgMintToken: object = { creator: "", denom: "", amount: "", to: "" };
+const baseMsgMintToken: object = {
+  creator: "",
+  denom: "",
+  amount: "",
+  to: "",
+  toFuturesAccount: false,
+};
 
 export const MsgMintToken = {
   encode(
@@ -977,6 +984,9 @@ export const MsgMintToken = {
     }
     if (message.to !== "") {
       writer.uint32(34).string(message.to);
+    }
+    if (message.toFuturesAccount === true) {
+      writer.uint32(40).bool(message.toFuturesAccount);
     }
     return writer;
   },
@@ -999,6 +1009,9 @@ export const MsgMintToken = {
           break;
         case 4:
           message.to = reader.string();
+          break;
+        case 5:
+          message.toFuturesAccount = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1024,6 +1037,10 @@ export const MsgMintToken = {
         : "";
     message.to =
       object.to !== undefined && object.to !== null ? String(object.to) : "";
+    message.toFuturesAccount =
+      object.toFuturesAccount !== undefined && object.toFuturesAccount !== null
+        ? Boolean(object.toFuturesAccount)
+        : false;
     return message;
   },
 
@@ -1033,6 +1050,8 @@ export const MsgMintToken = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.to !== undefined && (obj.to = message.to);
+    message.toFuturesAccount !== undefined &&
+      (obj.toFuturesAccount = message.toFuturesAccount);
     return obj;
   },
 
@@ -1042,6 +1061,7 @@ export const MsgMintToken = {
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.to = object.to ?? "";
+    message.toFuturesAccount = object.toFuturesAccount ?? false;
     return message;
   },
 };

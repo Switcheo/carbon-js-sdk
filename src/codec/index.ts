@@ -7525,6 +7525,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "to",
         "type": "string"
+      },
+      {
+        "name": "to_futures_account",
+        "type": "bool"
       }
     ],
     "MsgMintTokenResponse": [],
