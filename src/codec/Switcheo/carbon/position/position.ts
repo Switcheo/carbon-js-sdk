@@ -53,6 +53,12 @@ export interface PositionAllocatedMargin {
   amount: string;
 }
 
+export interface CrossMaintenanceMargin {
+  marketId: string;
+  marketDisplayName: string;
+  maintenanceMargin?: Coin;
+}
+
 const basePosition: object = {
   marketId: "",
   address: "",
@@ -756,6 +762,101 @@ export const PositionAllocatedMargin = {
     } as PositionAllocatedMargin;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseCrossMaintenanceMargin: object = {
+  marketId: "",
+  marketDisplayName: "",
+};
+
+export const CrossMaintenanceMargin = {
+  encode(
+    message: CrossMaintenanceMargin,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
+    }
+    if (message.marketDisplayName !== "") {
+      writer.uint32(18).string(message.marketDisplayName);
+    }
+    if (message.maintenanceMargin !== undefined) {
+      Coin.encode(message.maintenanceMargin, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CrossMaintenanceMargin {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCrossMaintenanceMargin } as CrossMaintenanceMargin;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketId = reader.string();
+          break;
+        case 2:
+          message.marketDisplayName = reader.string();
+          break;
+        case 3:
+          message.maintenanceMargin = Coin.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CrossMaintenanceMargin {
+    const message = { ...baseCrossMaintenanceMargin } as CrossMaintenanceMargin;
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.marketDisplayName =
+      object.marketDisplayName !== undefined &&
+      object.marketDisplayName !== null
+        ? String(object.marketDisplayName)
+        : "";
+    message.maintenanceMargin =
+      object.maintenanceMargin !== undefined &&
+      object.maintenanceMargin !== null
+        ? Coin.fromJSON(object.maintenanceMargin)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: CrossMaintenanceMargin): unknown {
+    const obj: any = {};
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    message.marketDisplayName !== undefined &&
+      (obj.marketDisplayName = message.marketDisplayName);
+    message.maintenanceMargin !== undefined &&
+      (obj.maintenanceMargin = message.maintenanceMargin
+        ? Coin.toJSON(message.maintenanceMargin)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CrossMaintenanceMargin>
+  ): CrossMaintenanceMargin {
+    const message = { ...baseCrossMaintenanceMargin } as CrossMaintenanceMargin;
+    message.marketId = object.marketId ?? "";
+    message.marketDisplayName = object.marketDisplayName ?? "";
+    message.maintenanceMargin =
+      object.maintenanceMargin !== undefined &&
+      object.maintenanceMargin !== null
+        ? Coin.fromPartial(object.maintenanceMargin)
+        : undefined;
     return message;
   },
 };

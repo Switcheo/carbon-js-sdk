@@ -57,6 +57,7 @@ export interface TokenBalance {
   order: string;
   position: string;
   denom: string;
+  futures: string;
 }
 
 const baseToken: object = {
@@ -713,6 +714,7 @@ const baseTokenBalance: object = {
   order: "",
   position: "",
   denom: "",
+  futures: "",
 };
 
 export const TokenBalance = {
@@ -731,6 +733,9 @@ export const TokenBalance = {
     }
     if (message.denom !== "") {
       writer.uint32(34).string(message.denom);
+    }
+    if (message.futures !== "") {
+      writer.uint32(42).string(message.futures);
     }
     return writer;
   },
@@ -753,6 +758,9 @@ export const TokenBalance = {
           break;
         case 4:
           message.denom = reader.string();
+          break;
+        case 5:
+          message.futures = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -780,6 +788,10 @@ export const TokenBalance = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
+    message.futures =
+      object.futures !== undefined && object.futures !== null
+        ? String(object.futures)
+        : "";
     return message;
   },
 
@@ -789,6 +801,7 @@ export const TokenBalance = {
     message.order !== undefined && (obj.order = message.order);
     message.position !== undefined && (obj.position = message.position);
     message.denom !== undefined && (obj.denom = message.denom);
+    message.futures !== undefined && (obj.futures = message.futures);
     return obj;
   },
 
@@ -798,6 +811,7 @@ export const TokenBalance = {
     message.order = object.order ?? "";
     message.position = object.position ?? "";
     message.denom = object.denom ?? "";
+    message.futures = object.futures ?? "";
     return message;
   },
 };

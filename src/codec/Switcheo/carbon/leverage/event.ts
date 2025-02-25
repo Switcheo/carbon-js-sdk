@@ -9,6 +9,7 @@ export interface LeverageEvent {
   type: string;
   marketId: string;
   address: string;
+  isCross: boolean;
 }
 
 const baseLeverageEvent: object = {
@@ -16,6 +17,7 @@ const baseLeverageEvent: object = {
   type: "",
   marketId: "",
   address: "",
+  isCross: false,
 };
 
 export const LeverageEvent = {
@@ -34,6 +36,9 @@ export const LeverageEvent = {
     }
     if (message.address !== "") {
       writer.uint32(34).string(message.address);
+    }
+    if (message.isCross === true) {
+      writer.uint32(40).bool(message.isCross);
     }
     return writer;
   },
@@ -56,6 +61,9 @@ export const LeverageEvent = {
           break;
         case 4:
           message.address = reader.string();
+          break;
+        case 5:
+          message.isCross = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -83,6 +91,10 @@ export const LeverageEvent = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
+    message.isCross =
+      object.isCross !== undefined && object.isCross !== null
+        ? Boolean(object.isCross)
+        : false;
     return message;
   },
 
@@ -92,6 +104,7 @@ export const LeverageEvent = {
     message.type !== undefined && (obj.type = message.type);
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.address !== undefined && (obj.address = message.address);
+    message.isCross !== undefined && (obj.isCross = message.isCross);
     return obj;
   },
 
@@ -101,6 +114,7 @@ export const LeverageEvent = {
     message.type = object.type ?? "";
     message.marketId = object.marketId ?? "";
     message.address = object.address ?? "";
+    message.isCross = object.isCross ?? false;
     return message;
   },
 };
