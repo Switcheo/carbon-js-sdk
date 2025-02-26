@@ -4,11 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
 import { MarketConfig } from "./market";
 import { NavPerShareLastRecorded, Pool } from "./pool";
-import {
-  UserVault,
-  UserVaultUserRecord,
-  AddressToUserVaultsMapping,
-} from "./user_vault";
+import { UserVault, AddressToUserVaultsMapping } from "./user_vault";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -20,7 +16,6 @@ export interface GenesisState {
   navPerShares: NavPerShareRecord[];
   allNavPerShareLastRecorded: NavPerShareLastRecordedWithPoolId[];
   userVaults: UserVault[];
-  userVaultUserRecords: UserVaultUserRecord[];
   /** this line is used by starport scaffolding # genesis/proto/state */
   addressToUserVaults: AddressToUserVaultsMapping[];
 }
@@ -75,11 +70,8 @@ export const GenesisState = {
     for (const v of message.userVaults) {
       UserVault.encode(v!, writer.uint32(50).fork()).ldelim();
     }
-    for (const v of message.userVaultUserRecords) {
-      UserVaultUserRecord.encode(v!, writer.uint32(58).fork()).ldelim();
-    }
     for (const v of message.addressToUserVaults) {
-      AddressToUserVaultsMapping.encode(v!, writer.uint32(66).fork()).ldelim();
+      AddressToUserVaultsMapping.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -93,7 +85,6 @@ export const GenesisState = {
     message.navPerShares = [];
     message.allNavPerShareLastRecorded = [];
     message.userVaults = [];
-    message.userVaultUserRecords = [];
     message.addressToUserVaults = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -123,11 +114,6 @@ export const GenesisState = {
           message.userVaults.push(UserVault.decode(reader, reader.uint32()));
           break;
         case 7:
-          message.userVaultUserRecords.push(
-            UserVaultUserRecord.decode(reader, reader.uint32())
-          );
-          break;
-        case 8:
           message.addressToUserVaults.push(
             AddressToUserVaultsMapping.decode(reader, reader.uint32())
           );
@@ -158,9 +144,6 @@ export const GenesisState = {
     ).map((e: any) => NavPerShareLastRecordedWithPoolId.fromJSON(e));
     message.userVaults = (object.userVaults ?? []).map((e: any) =>
       UserVault.fromJSON(e)
-    );
-    message.userVaultUserRecords = (object.userVaultUserRecords ?? []).map(
-      (e: any) => UserVaultUserRecord.fromJSON(e)
     );
     message.addressToUserVaults = (object.addressToUserVaults ?? []).map(
       (e: any) => AddressToUserVaultsMapping.fromJSON(e)
@@ -205,13 +188,6 @@ export const GenesisState = {
     } else {
       obj.userVaults = [];
     }
-    if (message.userVaultUserRecords) {
-      obj.userVaultUserRecords = message.userVaultUserRecords.map((e) =>
-        e ? UserVaultUserRecord.toJSON(e) : undefined
-      );
-    } else {
-      obj.userVaultUserRecords = [];
-    }
     if (message.addressToUserVaults) {
       obj.addressToUserVaults = message.addressToUserVaults.map((e) =>
         e ? AddressToUserVaultsMapping.toJSON(e) : undefined
@@ -240,9 +216,6 @@ export const GenesisState = {
     ).map((e) => NavPerShareLastRecordedWithPoolId.fromPartial(e));
     message.userVaults = (object.userVaults ?? []).map((e) =>
       UserVault.fromPartial(e)
-    );
-    message.userVaultUserRecords = (object.userVaultUserRecords ?? []).map(
-      (e) => UserVaultUserRecord.fromPartial(e)
     );
     message.addressToUserVaults = (object.addressToUserVaults ?? []).map((e) =>
       AddressToUserVaultsMapping.fromPartial(e)

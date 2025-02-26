@@ -30,8 +30,6 @@ export interface Pool {
   withdrawalFee: string;
   /** borrow fee in decimal per time period to charge on use of liquidity in pool */
   baseBorrowFeePerFundingInterval: string;
-  /** defines the type of the pool, user vault or perps pool */
-  vaultType: Long;
 }
 
 export interface UpdatePoolParams {
@@ -83,7 +81,6 @@ const basePool: object = {
   depositFee: "",
   withdrawalFee: "",
   baseBorrowFeePerFundingInterval: "",
-  vaultType: Long.UZERO,
 };
 
 export const Pool = {
@@ -114,9 +111,6 @@ export const Pool = {
     }
     if (message.baseBorrowFeePerFundingInterval !== "") {
       writer.uint32(74).string(message.baseBorrowFeePerFundingInterval);
-    }
-    if (!message.vaultType.isZero()) {
-      writer.uint32(80).uint64(message.vaultType);
     }
     return writer;
   },
@@ -154,9 +148,6 @@ export const Pool = {
           break;
         case 9:
           message.baseBorrowFeePerFundingInterval = reader.string();
-          break;
-        case 10:
-          message.vaultType = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -205,10 +196,6 @@ export const Pool = {
       object.baseBorrowFeePerFundingInterval !== null
         ? String(object.baseBorrowFeePerFundingInterval)
         : "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? Long.fromString(object.vaultType)
-        : Long.UZERO;
     return message;
   },
 
@@ -229,8 +216,6 @@ export const Pool = {
     message.baseBorrowFeePerFundingInterval !== undefined &&
       (obj.baseBorrowFeePerFundingInterval =
         message.baseBorrowFeePerFundingInterval);
-    message.vaultType !== undefined &&
-      (obj.vaultType = (message.vaultType || Long.UZERO).toString());
     return obj;
   },
 
@@ -249,10 +234,6 @@ export const Pool = {
     message.withdrawalFee = object.withdrawalFee ?? "";
     message.baseBorrowFeePerFundingInterval =
       object.baseBorrowFeePerFundingInterval ?? "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? Long.fromValue(object.vaultType)
-        : Long.UZERO;
     return message;
   },
 };

@@ -61,7 +61,7 @@ export interface WithdrawFromVaultEvent {
   vaultType: Long;
 }
 
-export interface UserVaultWithdrawalPending {
+export interface UserVaultWithdrawalPendingEvent {
   vaultId: Long;
   address: string;
   sharesAmount: string;
@@ -69,7 +69,7 @@ export interface UserVaultWithdrawalPending {
   requestTime?: Date;
 }
 
-export interface UserVaultWithdrawalReleased {
+export interface UserVaultWithdrawalReleasedEvent {
   vaultId: Long;
   processId: Long;
   address: string;
@@ -870,16 +870,16 @@ export const WithdrawFromVaultEvent = {
   },
 };
 
-const baseUserVaultWithdrawalPending: object = {
+const baseUserVaultWithdrawalPendingEvent: object = {
   vaultId: Long.UZERO,
   address: "",
   sharesAmount: "",
   processId: Long.UZERO,
 };
 
-export const UserVaultWithdrawalPending = {
+export const UserVaultWithdrawalPendingEvent = {
   encode(
-    message: UserVaultWithdrawalPending,
+    message: UserVaultWithdrawalPendingEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (!message.vaultId.isZero()) {
@@ -906,12 +906,12 @@ export const UserVaultWithdrawalPending = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): UserVaultWithdrawalPending {
+  ): UserVaultWithdrawalPendingEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseUserVaultWithdrawalPending,
-    } as UserVaultWithdrawalPending;
+      ...baseUserVaultWithdrawalPendingEvent,
+    } as UserVaultWithdrawalPendingEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -940,10 +940,10 @@ export const UserVaultWithdrawalPending = {
     return message;
   },
 
-  fromJSON(object: any): UserVaultWithdrawalPending {
+  fromJSON(object: any): UserVaultWithdrawalPendingEvent {
     const message = {
-      ...baseUserVaultWithdrawalPending,
-    } as UserVaultWithdrawalPending;
+      ...baseUserVaultWithdrawalPendingEvent,
+    } as UserVaultWithdrawalPendingEvent;
     message.vaultId =
       object.vaultId !== undefined && object.vaultId !== null
         ? Long.fromString(object.vaultId)
@@ -967,7 +967,7 @@ export const UserVaultWithdrawalPending = {
     return message;
   },
 
-  toJSON(message: UserVaultWithdrawalPending): unknown {
+  toJSON(message: UserVaultWithdrawalPendingEvent): unknown {
     const obj: any = {};
     message.vaultId !== undefined &&
       (obj.vaultId = (message.vaultId || Long.UZERO).toString());
@@ -982,11 +982,11 @@ export const UserVaultWithdrawalPending = {
   },
 
   fromPartial(
-    object: DeepPartial<UserVaultWithdrawalPending>
-  ): UserVaultWithdrawalPending {
+    object: DeepPartial<UserVaultWithdrawalPendingEvent>
+  ): UserVaultWithdrawalPendingEvent {
     const message = {
-      ...baseUserVaultWithdrawalPending,
-    } as UserVaultWithdrawalPending;
+      ...baseUserVaultWithdrawalPendingEvent,
+    } as UserVaultWithdrawalPendingEvent;
     message.vaultId =
       object.vaultId !== undefined && object.vaultId !== null
         ? Long.fromValue(object.vaultId)
@@ -1002,7 +1002,7 @@ export const UserVaultWithdrawalPending = {
   },
 };
 
-const baseUserVaultWithdrawalReleased: object = {
+const baseUserVaultWithdrawalReleasedEvent: object = {
   vaultId: Long.UZERO,
   processId: Long.UZERO,
   address: "",
@@ -1012,9 +1012,9 @@ const baseUserVaultWithdrawalReleased: object = {
   receivedAmount: "",
 };
 
-export const UserVaultWithdrawalReleased = {
+export const UserVaultWithdrawalReleasedEvent = {
   encode(
-    message: UserVaultWithdrawalReleased,
+    message: UserVaultWithdrawalReleasedEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (!message.vaultId.isZero()) {
@@ -1056,12 +1056,12 @@ export const UserVaultWithdrawalReleased = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): UserVaultWithdrawalReleased {
+  ): UserVaultWithdrawalReleasedEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseUserVaultWithdrawalReleased,
-    } as UserVaultWithdrawalReleased;
+      ...baseUserVaultWithdrawalReleasedEvent,
+    } as UserVaultWithdrawalReleasedEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1104,10 +1104,10 @@ export const UserVaultWithdrawalReleased = {
     return message;
   },
 
-  fromJSON(object: any): UserVaultWithdrawalReleased {
+  fromJSON(object: any): UserVaultWithdrawalReleasedEvent {
     const message = {
-      ...baseUserVaultWithdrawalReleased,
-    } as UserVaultWithdrawalReleased;
+      ...baseUserVaultWithdrawalReleasedEvent,
+    } as UserVaultWithdrawalReleasedEvent;
     message.vaultId =
       object.vaultId !== undefined && object.vaultId !== null
         ? Long.fromString(object.vaultId)
@@ -1147,7 +1147,7 @@ export const UserVaultWithdrawalReleased = {
     return message;
   },
 
-  toJSON(message: UserVaultWithdrawalReleased): unknown {
+  toJSON(message: UserVaultWithdrawalReleasedEvent): unknown {
     const obj: any = {};
     message.vaultId !== undefined &&
       (obj.vaultId = (message.vaultId || Long.UZERO).toString());
@@ -1170,11 +1170,11 @@ export const UserVaultWithdrawalReleased = {
   },
 
   fromPartial(
-    object: DeepPartial<UserVaultWithdrawalReleased>
-  ): UserVaultWithdrawalReleased {
+    object: DeepPartial<UserVaultWithdrawalReleasedEvent>
+  ): UserVaultWithdrawalReleasedEvent {
     const message = {
-      ...baseUserVaultWithdrawalReleased,
-    } as UserVaultWithdrawalReleased;
+      ...baseUserVaultWithdrawalReleasedEvent,
+    } as UserVaultWithdrawalReleasedEvent;
     message.vaultId =
       object.vaultId !== undefined && object.vaultId !== null
         ? Long.fromValue(object.vaultId)

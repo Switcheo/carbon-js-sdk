@@ -20,9 +20,8 @@ export interface UserVault {
   shareDenom: string;
   /** auto-created address of the vault that stores the tokens */
   vaultAddress: string;
-  /** defines the type of the pool */
-  vaultType: Long;
   owner: string;
+  ownerLocker: string;
   description: string;
   /** profit share to charge on a profitable trade to vault in decimal */
   profitShare: string;
@@ -31,6 +30,7 @@ export interface UserVault {
   /** withdrawal fee to charge on a successful withdrawal from pool in decimal */
   withdrawalFee: string;
   controllers: string[];
+  isClosed: boolean;
 }
 
 export interface UpdateUserVaultParams {
@@ -38,16 +38,6 @@ export interface UpdateUserVaultParams {
   withdrawalFee: string;
   profitShare: string;
   description?: string;
-}
-
-/**
- * UserVaultUserRecord used to store information specific to user vault features
- * for a user like the last deposit time for the withdrawal cooldown
- */
-export interface UserVaultUserRecord {
-  vaultId: Long;
-  address: string;
-  lastDepositTime?: Date;
 }
 
 export interface AddressToUserVaultsMapping {
@@ -69,13 +59,14 @@ const baseUserVault: object = {
   depositDenom: "",
   shareDenom: "",
   vaultAddress: "",
-  vaultType: Long.UZERO,
   owner: "",
+  ownerLocker: "",
   description: "",
   profitShare: "",
   depositFee: "",
   withdrawalFee: "",
   controllers: "",
+  isClosed: false,
 };
 
 export const UserVault = {
@@ -98,11 +89,11 @@ export const UserVault = {
     if (message.vaultAddress !== "") {
       writer.uint32(42).string(message.vaultAddress);
     }
-    if (!message.vaultType.isZero()) {
-      writer.uint32(48).uint64(message.vaultType);
-    }
     if (message.owner !== "") {
-      writer.uint32(58).string(message.owner);
+      writer.uint32(50).string(message.owner);
+    }
+    if (message.ownerLocker !== "") {
+      writer.uint32(58).string(message.ownerLocker);
     }
     if (message.description !== "") {
       writer.uint32(66).string(message.description);
@@ -118,6 +109,9 @@ export const UserVault = {
     }
     for (const v of message.controllers) {
       writer.uint32(98).string(v!);
+    }
+    if (message.isClosed === true) {
+      writer.uint32(104).bool(message.isClosed);
     }
     return writer;
   },
@@ -146,10 +140,10 @@ export const UserVault = {
           message.vaultAddress = reader.string();
           break;
         case 6:
-          message.vaultType = reader.uint64() as Long;
+          message.owner = reader.string();
           break;
         case 7:
-          message.owner = reader.string();
+          message.ownerLocker = reader.string();
           break;
         case 8:
           message.description = reader.string();
@@ -165,6 +159,9 @@ export const UserVault = {
           break;
         case 12:
           message.controllers.push(reader.string());
+          break;
+        case 13:
+          message.isClosed = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -196,13 +193,13 @@ export const UserVault = {
       object.vaultAddress !== undefined && object.vaultAddress !== null
         ? String(object.vaultAddress)
         : "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? Long.fromString(object.vaultType)
-        : Long.UZERO;
     message.owner =
       object.owner !== undefined && object.owner !== null
         ? String(object.owner)
+        : "";
+    message.ownerLocker =
+      object.ownerLocker !== undefined && object.ownerLocker !== null
+        ? String(object.ownerLocker)
         : "";
     message.description =
       object.description !== undefined && object.description !== null
@@ -221,6 +218,10 @@ export const UserVault = {
         ? String(object.withdrawalFee)
         : "";
     message.controllers = (object.controllers ?? []).map((e: any) => String(e));
+    message.isClosed =
+      object.isClosed !== undefined && object.isClosed !== null
+        ? Boolean(object.isClosed)
+        : false;
     return message;
   },
 
@@ -234,9 +235,9 @@ export const UserVault = {
     message.shareDenom !== undefined && (obj.shareDenom = message.shareDenom);
     message.vaultAddress !== undefined &&
       (obj.vaultAddress = message.vaultAddress);
-    message.vaultType !== undefined &&
-      (obj.vaultType = (message.vaultType || Long.UZERO).toString());
     message.owner !== undefined && (obj.owner = message.owner);
+    message.ownerLocker !== undefined &&
+      (obj.ownerLocker = message.ownerLocker);
     message.description !== undefined &&
       (obj.description = message.description);
     message.profitShare !== undefined &&
@@ -249,6 +250,7 @@ export const UserVault = {
     } else {
       obj.controllers = [];
     }
+    message.isClosed !== undefined && (obj.isClosed = message.isClosed);
     return obj;
   },
 
@@ -262,16 +264,14 @@ export const UserVault = {
     message.depositDenom = object.depositDenom ?? "";
     message.shareDenom = object.shareDenom ?? "";
     message.vaultAddress = object.vaultAddress ?? "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? Long.fromValue(object.vaultType)
-        : Long.UZERO;
     message.owner = object.owner ?? "";
+    message.ownerLocker = object.ownerLocker ?? "";
     message.description = object.description ?? "";
     message.profitShare = object.profitShare ?? "";
     message.depositFee = object.depositFee ?? "";
     message.withdrawalFee = object.withdrawalFee ?? "";
     message.controllers = (object.controllers ?? []).map((e) => e);
+    message.isClosed = object.isClosed ?? false;
     return message;
   },
 };
@@ -379,93 +379,6 @@ export const UpdateUserVaultParams = {
     message.withdrawalFee = object.withdrawalFee ?? "";
     message.profitShare = object.profitShare ?? "";
     message.description = object.description ?? undefined;
-    return message;
-  },
-};
-
-const baseUserVaultUserRecord: object = { vaultId: Long.UZERO, address: "" };
-
-export const UserVaultUserRecord = {
-  encode(
-    message: UserVaultUserRecord,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.vaultId.isZero()) {
-      writer.uint32(8).uint64(message.vaultId);
-    }
-    if (message.address !== "") {
-      writer.uint32(18).string(message.address);
-    }
-    if (message.lastDepositTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.lastDepositTime),
-        writer.uint32(26).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UserVaultUserRecord {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUserVaultUserRecord } as UserVaultUserRecord;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.vaultId = reader.uint64() as Long;
-          break;
-        case 2:
-          message.address = reader.string();
-          break;
-        case 3:
-          message.lastDepositTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UserVaultUserRecord {
-    const message = { ...baseUserVaultUserRecord } as UserVaultUserRecord;
-    message.vaultId =
-      object.vaultId !== undefined && object.vaultId !== null
-        ? Long.fromString(object.vaultId)
-        : Long.UZERO;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.lastDepositTime =
-      object.lastDepositTime !== undefined && object.lastDepositTime !== null
-        ? fromJsonTimestamp(object.lastDepositTime)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: UserVaultUserRecord): unknown {
-    const obj: any = {};
-    message.vaultId !== undefined &&
-      (obj.vaultId = (message.vaultId || Long.UZERO).toString());
-    message.address !== undefined && (obj.address = message.address);
-    message.lastDepositTime !== undefined &&
-      (obj.lastDepositTime = message.lastDepositTime.toISOString());
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<UserVaultUserRecord>): UserVaultUserRecord {
-    const message = { ...baseUserVaultUserRecord } as UserVaultUserRecord;
-    message.vaultId =
-      object.vaultId !== undefined && object.vaultId !== null
-        ? Long.fromValue(object.vaultId)
-        : Long.UZERO;
-    message.address = object.address ?? "";
-    message.lastDepositTime = object.lastDepositTime ?? undefined;
     return message;
   },
 };

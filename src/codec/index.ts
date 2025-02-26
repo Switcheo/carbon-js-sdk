@@ -10381,6 +10381,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "market_id",
         "type": "string"
+      },
+      {
+        "name": "on_behalf_of",
+        "type": "string"
       }
     ],
     "MsgCancelAllResponse": [],
@@ -14493,10 +14497,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "base_borrow_fee_per_funding_interval",
         "type": "string"
-      },
-      {
-        "name": "vault_type",
-        "type": "uint64"
       }
     ],
     "UpdatePoolParams": [
@@ -14605,11 +14605,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "vault_type",
-        "type": "uint64"
+        "name": "owner",
+        "type": "string"
       },
       {
-        "name": "owner",
+        "name": "owner_locker",
         "type": "string"
       },
       {
@@ -14631,6 +14631,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "controllers",
         "type": "string[]"
+      },
+      {
+        "name": "is_closed",
+        "type": "bool"
       }
     ],
     "UpdateUserVaultParams": [
@@ -14648,20 +14652,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "description",
-        "type": "string"
-      }
-    ],
-    "UserVaultUserRecord": [
-      {
-        "name": "vault_id",
-        "type": "uint64"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      },
-      {
-        "name": "last_deposit_time",
         "type": "string"
       }
     ],
@@ -14841,7 +14831,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
-    "UserVaultWithdrawalPending": [
+    "UserVaultWithdrawalPendingEvent": [
       {
         "name": "vault_id",
         "type": "uint64"
@@ -14863,7 +14853,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "UserVaultWithdrawalReleased": [
+    "UserVaultWithdrawalReleasedEvent": [
       {
         "name": "vault_id",
         "type": "uint64"
@@ -14958,10 +14948,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "vault_deposit_lock_up_duration",
-        "type": "string"
-      },
-      {
         "name": "min_user_vault_owner_deposit",
         "type": "Coin",
         "packageName": "/cosmos.base.v1beta1"
@@ -14988,6 +14974,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "user_vault_fee_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "stale_price_allowance",
         "type": "string"
       }
     ],
@@ -15041,10 +15031,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "vault_deposit_lock_up_duration",
-        "type": "string"
-      },
-      {
         "name": "min_user_vault_owner_deposit",
         "type": "Coin",
         "packageName": "/cosmos.base.v1beta1"
@@ -15071,6 +15057,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "user_vault_fee_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "stale_price_allowance",
         "type": "string"
       }
     ],
@@ -15103,11 +15093,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "user_vaults",
         "type": "UserVault[]",
-        "packageName": "/Switcheo.carbon.perpspool"
-      },
-      {
-        "name": "user_vault_user_records",
-        "type": "UserVaultUserRecord[]",
         "packageName": "/Switcheo.carbon.perpspool"
       },
       {
@@ -15319,33 +15304,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "user_vaults",
         "type": "UserVault[]",
-        "packageName": "/Switcheo.carbon.perpspool"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryUserVaultUserRecordsRequest": [
-      {
-        "name": "id",
-        "type": "uint64"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      },
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryUserVaultUserRecordsResponse": [
-      {
-        "name": "records",
-        "type": "UserVaultUserRecord[]",
         "packageName": "/Switcheo.carbon.perpspool"
       },
       {

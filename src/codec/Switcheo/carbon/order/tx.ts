@@ -58,6 +58,7 @@ export interface MsgCancelOrderResponse {}
 export interface MsgCancelAll {
   creator: string;
   marketId: string;
+  onBehalfOf?: string;
 }
 
 export interface MsgCancelAllResponse {}
@@ -805,6 +806,12 @@ export const MsgCancelAll = {
     if (message.marketId !== "") {
       writer.uint32(18).string(message.marketId);
     }
+    if (message.onBehalfOf !== undefined) {
+      StringValue.encode(
+        { value: message.onBehalfOf! },
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -820,6 +827,12 @@ export const MsgCancelAll = {
           break;
         case 2:
           message.marketId = reader.string();
+          break;
+        case 3:
+          message.onBehalfOf = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -839,6 +852,10 @@ export const MsgCancelAll = {
       object.marketId !== undefined && object.marketId !== null
         ? String(object.marketId)
         : "";
+    message.onBehalfOf =
+      object.onBehalfOf !== undefined && object.onBehalfOf !== null
+        ? String(object.onBehalfOf)
+        : undefined;
     return message;
   },
 
@@ -846,6 +863,7 @@ export const MsgCancelAll = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.marketId !== undefined && (obj.marketId = message.marketId);
+    message.onBehalfOf !== undefined && (obj.onBehalfOf = message.onBehalfOf);
     return obj;
   },
 
@@ -853,6 +871,7 @@ export const MsgCancelAll = {
     const message = { ...baseMsgCancelAll } as MsgCancelAll;
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
+    message.onBehalfOf = object.onBehalfOf ?? undefined;
     return message;
   },
 };
