@@ -218,7 +218,7 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>;
   }
 
-  async VaultApy(
+  async UserVaultApy(
     query: Insights.QueryPerpPoolAPY
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>> {
     const routeParams = { id: query.id };
