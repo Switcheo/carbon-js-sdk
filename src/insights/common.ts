@@ -29,6 +29,7 @@ export const InsightsEndpoints = {
   "pool/history": "/pool/history",
   "pool/perp/history": "/pool/perp/history",
   "pool/perp/apy": "/pool/perp/:id/apy",
+  "pool/vault/apy": "/pool/vault/:id/apy",
   "user/pool/rewards": "/user/:address/pool/rewards",
 
   //market

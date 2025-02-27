@@ -218,6 +218,22 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>;
   }
 
+  async VaultApy(
+    query: Insights.QueryPerpPoolAPY
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>> {
+    const routeParams = { id: query.id };
+    const request = this.apiManager.path(
+      "pool/vault/apy",
+      routeParams,
+      {
+        limit: query.limit ?? 10,
+        offset: query.offset ?? 0,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>;
+  }
+
   async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
     const routeParams = { poolId: req.poolId };
     const queryParams = {
