@@ -415,7 +415,8 @@ export class CarbonWallet {
   public async queryViewOnlyEvmHexAddress() {
     const queryClient = this.getQueryClient();
     const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address });
-    const evmBech32Address = response.mappedAddress
+    const evmBech32Address = response?.mappedAddress
+    if (!evmBech32Address) return
     this.evmBech32Address = evmBech32Address
     const addressBytes = SWTHAddress.getAddressBytes(evmBech32Address, this.network)
     if (addressBytes.length === 20) {
