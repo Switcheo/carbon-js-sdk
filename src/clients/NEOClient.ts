@@ -353,7 +353,7 @@ export class NEOClient {
     return response;
   }
 
-  public formatWithdrawalAddress(address: string): string {
+  public async formatWithdrawalAddress(address: string): Promise<string> {
     const isValidAddress = Neon.wallet.isAddress(address);
     if (!isValidAddress) {
       throw new Error("invalid address");
