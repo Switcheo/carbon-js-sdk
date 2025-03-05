@@ -54,6 +54,7 @@ class TokenClient {
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
+  public initialized: boolean = false;
 
   public initialUsdValuesLoaded: boolean = false;
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
@@ -79,6 +80,7 @@ class TokenClient {
         this.reloadUSDValues().catch(onError);
       });
     }
+    this.initialized = true
   }
 
   public registerGeckoIdMap(map: TypeUtils.SimpleMap<string>) {
