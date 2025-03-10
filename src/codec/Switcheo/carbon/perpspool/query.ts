@@ -7,6 +7,7 @@ import {
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { Params } from "./params";
 import { PoolDetails } from "./pool";
+import { UserVaultAPI, UserVaultWithdrawalRecord } from "./user_vault";
 import { MarketLiquidityUsageMultiplier } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
@@ -79,12 +80,7 @@ export interface QueryPoolInfoRequest {
 }
 
 export interface QueryPoolInfoResponse {
-  poolId: Long;
-  totalShareAmount: string;
-  totalNavAmount: string;
-  availableAmount: string;
-  totalInPositionAmount: string;
-  totalUpnlAmount: string;
+  vault?: VaultInfo;
 }
 
 export interface QueryAllPoolInfoRequest {
@@ -92,8 +88,70 @@ export interface QueryAllPoolInfoRequest {
 }
 
 export interface QueryAllPoolInfoResponse {
-  pools: QueryPoolInfoResponse[];
+  vaults: VaultInfo[];
   pagination?: PageResponse;
+}
+
+export interface QueryUserVaultRequest {
+  id: Long;
+}
+
+export interface QueryUserVaultResponse {
+  userVault?: UserVaultAPI;
+}
+
+export interface QueryAllUserVaultRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllUserVaultResponse {
+  userVaults: UserVaultAPI[];
+  pagination?: PageResponse;
+}
+
+export interface QueryAllUserVaultPendingWithdrawalsRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllUserVaultPendingWithdrawalsResponse {
+  withdrawals: UserVaultWithdrawalRecord[];
+  pagination?: PageResponse;
+}
+
+export interface QueryUserVaultPendingWithdrawalsRequest {
+  id: Long;
+  pagination?: PageRequest;
+}
+
+export interface QueryUserVaultPendingWithdrawalsResponse {
+  withdrawals: UserVaultWithdrawalRecord[];
+  pagination?: PageResponse;
+}
+
+export interface QueryUserVaultInfoRequest {
+  id: string;
+}
+
+export interface QueryUserVaultInfoResponse {
+  vault?: VaultInfo;
+}
+
+export interface QueryAllUserVaultInfoRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllUserVaultInfoResponse {
+  vaults: VaultInfo[];
+  pagination?: PageResponse;
+}
+
+export interface VaultInfo {
+  id: Long;
+  totalShareAmount: string;
+  totalNavAmount: string;
+  availableAmount: string;
+  totalInPositionAmount: string;
+  totalUpnlAmount: string;
 }
 
 const baseQueryAllPoolMarketLiquidityUsageMultiplierRequest: object = {};
@@ -1195,37 +1253,15 @@ export const QueryPoolInfoRequest = {
   },
 };
 
-const baseQueryPoolInfoResponse: object = {
-  poolId: Long.UZERO,
-  totalShareAmount: "",
-  totalNavAmount: "",
-  availableAmount: "",
-  totalInPositionAmount: "",
-  totalUpnlAmount: "",
-};
+const baseQueryPoolInfoResponse: object = {};
 
 export const QueryPoolInfoResponse = {
   encode(
     message: QueryPoolInfoResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.poolId.isZero()) {
-      writer.uint32(8).uint64(message.poolId);
-    }
-    if (message.totalShareAmount !== "") {
-      writer.uint32(18).string(message.totalShareAmount);
-    }
-    if (message.totalNavAmount !== "") {
-      writer.uint32(26).string(message.totalNavAmount);
-    }
-    if (message.availableAmount !== "") {
-      writer.uint32(34).string(message.availableAmount);
-    }
-    if (message.totalInPositionAmount !== "") {
-      writer.uint32(42).string(message.totalInPositionAmount);
-    }
-    if (message.totalUpnlAmount !== "") {
-      writer.uint32(50).string(message.totalUpnlAmount);
+    if (message.vault !== undefined) {
+      VaultInfo.encode(message.vault, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -1241,22 +1277,7 @@ export const QueryPoolInfoResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.poolId = reader.uint64() as Long;
-          break;
-        case 2:
-          message.totalShareAmount = reader.string();
-          break;
-        case 3:
-          message.totalNavAmount = reader.string();
-          break;
-        case 4:
-          message.availableAmount = reader.string();
-          break;
-        case 5:
-          message.totalInPositionAmount = reader.string();
-          break;
-        case 6:
-          message.totalUpnlAmount = reader.string();
+          message.vault = VaultInfo.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1268,48 +1289,17 @@ export const QueryPoolInfoResponse = {
 
   fromJSON(object: any): QueryPoolInfoResponse {
     const message = { ...baseQueryPoolInfoResponse } as QueryPoolInfoResponse;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.totalShareAmount =
-      object.totalShareAmount !== undefined && object.totalShareAmount !== null
-        ? String(object.totalShareAmount)
-        : "";
-    message.totalNavAmount =
-      object.totalNavAmount !== undefined && object.totalNavAmount !== null
-        ? String(object.totalNavAmount)
-        : "";
-    message.availableAmount =
-      object.availableAmount !== undefined && object.availableAmount !== null
-        ? String(object.availableAmount)
-        : "";
-    message.totalInPositionAmount =
-      object.totalInPositionAmount !== undefined &&
-      object.totalInPositionAmount !== null
-        ? String(object.totalInPositionAmount)
-        : "";
-    message.totalUpnlAmount =
-      object.totalUpnlAmount !== undefined && object.totalUpnlAmount !== null
-        ? String(object.totalUpnlAmount)
-        : "";
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? VaultInfo.fromJSON(object.vault)
+        : undefined;
     return message;
   },
 
   toJSON(message: QueryPoolInfoResponse): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.totalShareAmount !== undefined &&
-      (obj.totalShareAmount = message.totalShareAmount);
-    message.totalNavAmount !== undefined &&
-      (obj.totalNavAmount = message.totalNavAmount);
-    message.availableAmount !== undefined &&
-      (obj.availableAmount = message.availableAmount);
-    message.totalInPositionAmount !== undefined &&
-      (obj.totalInPositionAmount = message.totalInPositionAmount);
-    message.totalUpnlAmount !== undefined &&
-      (obj.totalUpnlAmount = message.totalUpnlAmount);
+    message.vault !== undefined &&
+      (obj.vault = message.vault ? VaultInfo.toJSON(message.vault) : undefined);
     return obj;
   },
 
@@ -1317,15 +1307,10 @@ export const QueryPoolInfoResponse = {
     object: DeepPartial<QueryPoolInfoResponse>
   ): QueryPoolInfoResponse {
     const message = { ...baseQueryPoolInfoResponse } as QueryPoolInfoResponse;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    message.totalShareAmount = object.totalShareAmount ?? "";
-    message.totalNavAmount = object.totalNavAmount ?? "";
-    message.availableAmount = object.availableAmount ?? "";
-    message.totalInPositionAmount = object.totalInPositionAmount ?? "";
-    message.totalUpnlAmount = object.totalUpnlAmount ?? "";
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? VaultInfo.fromPartial(object.vault)
+        : undefined;
     return message;
   },
 };
@@ -1407,8 +1392,8 @@ export const QueryAllPoolInfoResponse = {
     message: QueryAllPoolInfoResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.pools) {
-      QueryPoolInfoResponse.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.vaults) {
+      VaultInfo.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -1428,14 +1413,12 @@ export const QueryAllPoolInfoResponse = {
     const message = {
       ...baseQueryAllPoolInfoResponse,
     } as QueryAllPoolInfoResponse;
-    message.pools = [];
+    message.vaults = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pools.push(
-            QueryPoolInfoResponse.decode(reader, reader.uint32())
-          );
+          message.vaults.push(VaultInfo.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -1452,8 +1435,8 @@ export const QueryAllPoolInfoResponse = {
     const message = {
       ...baseQueryAllPoolInfoResponse,
     } as QueryAllPoolInfoResponse;
-    message.pools = (object.pools ?? []).map((e: any) =>
-      QueryPoolInfoResponse.fromJSON(e)
+    message.vaults = (object.vaults ?? []).map((e: any) =>
+      VaultInfo.fromJSON(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1464,12 +1447,12 @@ export const QueryAllPoolInfoResponse = {
 
   toJSON(message: QueryAllPoolInfoResponse): unknown {
     const obj: any = {};
-    if (message.pools) {
-      obj.pools = message.pools.map((e) =>
-        e ? QueryPoolInfoResponse.toJSON(e) : undefined
+    if (message.vaults) {
+      obj.vaults = message.vaults.map((e) =>
+        e ? VaultInfo.toJSON(e) : undefined
       );
     } else {
-      obj.pools = [];
+      obj.vaults = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -1484,8 +1467,295 @@ export const QueryAllPoolInfoResponse = {
     const message = {
       ...baseQueryAllPoolInfoResponse,
     } as QueryAllPoolInfoResponse;
-    message.pools = (object.pools ?? []).map((e) =>
-      QueryPoolInfoResponse.fromPartial(e)
+    message.vaults = (object.vaults ?? []).map((e) => VaultInfo.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryUserVaultRequest: object = { id: Long.UZERO };
+
+export const QueryUserVaultRequest = {
+  encode(
+    message: QueryUserVaultRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.id.isZero()) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserVaultRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryUserVaultRequest } as QueryUserVaultRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserVaultRequest {
+    const message = { ...baseQueryUserVaultRequest } as QueryUserVaultRequest;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: QueryUserVaultRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserVaultRequest>
+  ): QueryUserVaultRequest {
+    const message = { ...baseQueryUserVaultRequest } as QueryUserVaultRequest;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseQueryUserVaultResponse: object = {};
+
+export const QueryUserVaultResponse = {
+  encode(
+    message: QueryUserVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.userVault !== undefined) {
+      UserVaultAPI.encode(message.userVault, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryUserVaultResponse } as QueryUserVaultResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userVault = UserVaultAPI.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserVaultResponse {
+    const message = { ...baseQueryUserVaultResponse } as QueryUserVaultResponse;
+    message.userVault =
+      object.userVault !== undefined && object.userVault !== null
+        ? UserVaultAPI.fromJSON(object.userVault)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryUserVaultResponse): unknown {
+    const obj: any = {};
+    message.userVault !== undefined &&
+      (obj.userVault = message.userVault
+        ? UserVaultAPI.toJSON(message.userVault)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserVaultResponse>
+  ): QueryUserVaultResponse {
+    const message = { ...baseQueryUserVaultResponse } as QueryUserVaultResponse;
+    message.userVault =
+      object.userVault !== undefined && object.userVault !== null
+        ? UserVaultAPI.fromPartial(object.userVault)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllUserVaultRequest: object = {};
+
+export const QueryAllUserVaultRequest = {
+  encode(
+    message: QueryAllUserVaultRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllUserVaultRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllUserVaultRequest,
+    } as QueryAllUserVaultRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllUserVaultRequest {
+    const message = {
+      ...baseQueryAllUserVaultRequest,
+    } as QueryAllUserVaultRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllUserVaultRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllUserVaultRequest>
+  ): QueryAllUserVaultRequest {
+    const message = {
+      ...baseQueryAllUserVaultRequest,
+    } as QueryAllUserVaultRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllUserVaultResponse: object = {};
+
+export const QueryAllUserVaultResponse = {
+  encode(
+    message: QueryAllUserVaultResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.userVaults) {
+      UserVaultAPI.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllUserVaultResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllUserVaultResponse,
+    } as QueryAllUserVaultResponse;
+    message.userVaults = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userVaults.push(UserVaultAPI.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllUserVaultResponse {
+    const message = {
+      ...baseQueryAllUserVaultResponse,
+    } as QueryAllUserVaultResponse;
+    message.userVaults = (object.userVaults ?? []).map((e: any) =>
+      UserVaultAPI.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllUserVaultResponse): unknown {
+    const obj: any = {};
+    if (message.userVaults) {
+      obj.userVaults = message.userVaults.map((e) =>
+        e ? UserVaultAPI.toJSON(e) : undefined
+      );
+    } else {
+      obj.userVaults = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllUserVaultResponse>
+  ): QueryAllUserVaultResponse {
+    const message = {
+      ...baseQueryAllUserVaultResponse,
+    } as QueryAllUserVaultResponse;
+    message.userVaults = (object.userVaults ?? []).map((e) =>
+      UserVaultAPI.fromPartial(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1495,11 +1765,781 @@ export const QueryAllPoolInfoResponse = {
   },
 };
 
+const baseQueryAllUserVaultPendingWithdrawalsRequest: object = {};
+
+export const QueryAllUserVaultPendingWithdrawalsRequest = {
+  encode(
+    message: QueryAllUserVaultPendingWithdrawalsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllUserVaultPendingWithdrawalsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllUserVaultPendingWithdrawalsRequest,
+    } as QueryAllUserVaultPendingWithdrawalsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllUserVaultPendingWithdrawalsRequest {
+    const message = {
+      ...baseQueryAllUserVaultPendingWithdrawalsRequest,
+    } as QueryAllUserVaultPendingWithdrawalsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllUserVaultPendingWithdrawalsRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllUserVaultPendingWithdrawalsRequest>
+  ): QueryAllUserVaultPendingWithdrawalsRequest {
+    const message = {
+      ...baseQueryAllUserVaultPendingWithdrawalsRequest,
+    } as QueryAllUserVaultPendingWithdrawalsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllUserVaultPendingWithdrawalsResponse: object = {};
+
+export const QueryAllUserVaultPendingWithdrawalsResponse = {
+  encode(
+    message: QueryAllUserVaultPendingWithdrawalsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.withdrawals) {
+      UserVaultWithdrawalRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllUserVaultPendingWithdrawalsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllUserVaultPendingWithdrawalsResponse,
+    } as QueryAllUserVaultPendingWithdrawalsResponse;
+    message.withdrawals = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.withdrawals.push(
+            UserVaultWithdrawalRecord.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllUserVaultPendingWithdrawalsResponse {
+    const message = {
+      ...baseQueryAllUserVaultPendingWithdrawalsResponse,
+    } as QueryAllUserVaultPendingWithdrawalsResponse;
+    message.withdrawals = (object.withdrawals ?? []).map((e: any) =>
+      UserVaultWithdrawalRecord.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllUserVaultPendingWithdrawalsResponse): unknown {
+    const obj: any = {};
+    if (message.withdrawals) {
+      obj.withdrawals = message.withdrawals.map((e) =>
+        e ? UserVaultWithdrawalRecord.toJSON(e) : undefined
+      );
+    } else {
+      obj.withdrawals = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllUserVaultPendingWithdrawalsResponse>
+  ): QueryAllUserVaultPendingWithdrawalsResponse {
+    const message = {
+      ...baseQueryAllUserVaultPendingWithdrawalsResponse,
+    } as QueryAllUserVaultPendingWithdrawalsResponse;
+    message.withdrawals = (object.withdrawals ?? []).map((e) =>
+      UserVaultWithdrawalRecord.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryUserVaultPendingWithdrawalsRequest: object = { id: Long.UZERO };
+
+export const QueryUserVaultPendingWithdrawalsRequest = {
+  encode(
+    message: QueryUserVaultPendingWithdrawalsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.id.isZero()) {
+      writer.uint32(8).uint64(message.id);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserVaultPendingWithdrawalsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryUserVaultPendingWithdrawalsRequest,
+    } as QueryUserVaultPendingWithdrawalsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.uint64() as Long;
+          break;
+        case 2:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserVaultPendingWithdrawalsRequest {
+    const message = {
+      ...baseQueryUserVaultPendingWithdrawalsRequest,
+    } as QueryUserVaultPendingWithdrawalsRequest;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryUserVaultPendingWithdrawalsRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserVaultPendingWithdrawalsRequest>
+  ): QueryUserVaultPendingWithdrawalsRequest {
+    const message = {
+      ...baseQueryUserVaultPendingWithdrawalsRequest,
+    } as QueryUserVaultPendingWithdrawalsRequest;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryUserVaultPendingWithdrawalsResponse: object = {};
+
+export const QueryUserVaultPendingWithdrawalsResponse = {
+  encode(
+    message: QueryUserVaultPendingWithdrawalsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.withdrawals) {
+      UserVaultWithdrawalRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserVaultPendingWithdrawalsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryUserVaultPendingWithdrawalsResponse,
+    } as QueryUserVaultPendingWithdrawalsResponse;
+    message.withdrawals = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.withdrawals.push(
+            UserVaultWithdrawalRecord.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserVaultPendingWithdrawalsResponse {
+    const message = {
+      ...baseQueryUserVaultPendingWithdrawalsResponse,
+    } as QueryUserVaultPendingWithdrawalsResponse;
+    message.withdrawals = (object.withdrawals ?? []).map((e: any) =>
+      UserVaultWithdrawalRecord.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryUserVaultPendingWithdrawalsResponse): unknown {
+    const obj: any = {};
+    if (message.withdrawals) {
+      obj.withdrawals = message.withdrawals.map((e) =>
+        e ? UserVaultWithdrawalRecord.toJSON(e) : undefined
+      );
+    } else {
+      obj.withdrawals = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserVaultPendingWithdrawalsResponse>
+  ): QueryUserVaultPendingWithdrawalsResponse {
+    const message = {
+      ...baseQueryUserVaultPendingWithdrawalsResponse,
+    } as QueryUserVaultPendingWithdrawalsResponse;
+    message.withdrawals = (object.withdrawals ?? []).map((e) =>
+      UserVaultWithdrawalRecord.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryUserVaultInfoRequest: object = { id: "" };
+
+export const QueryUserVaultInfoRequest = {
+  encode(
+    message: QueryUserVaultInfoRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserVaultInfoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryUserVaultInfoRequest,
+    } as QueryUserVaultInfoRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserVaultInfoRequest {
+    const message = {
+      ...baseQueryUserVaultInfoRequest,
+    } as QueryUserVaultInfoRequest;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    return message;
+  },
+
+  toJSON(message: QueryUserVaultInfoRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserVaultInfoRequest>
+  ): QueryUserVaultInfoRequest {
+    const message = {
+      ...baseQueryUserVaultInfoRequest,
+    } as QueryUserVaultInfoRequest;
+    message.id = object.id ?? "";
+    return message;
+  },
+};
+
+const baseQueryUserVaultInfoResponse: object = {};
+
+export const QueryUserVaultInfoResponse = {
+  encode(
+    message: QueryUserVaultInfoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.vault !== undefined) {
+      VaultInfo.encode(message.vault, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserVaultInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryUserVaultInfoResponse,
+    } as QueryUserVaultInfoResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.vault = VaultInfo.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserVaultInfoResponse {
+    const message = {
+      ...baseQueryUserVaultInfoResponse,
+    } as QueryUserVaultInfoResponse;
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? VaultInfo.fromJSON(object.vault)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryUserVaultInfoResponse): unknown {
+    const obj: any = {};
+    message.vault !== undefined &&
+      (obj.vault = message.vault ? VaultInfo.toJSON(message.vault) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserVaultInfoResponse>
+  ): QueryUserVaultInfoResponse {
+    const message = {
+      ...baseQueryUserVaultInfoResponse,
+    } as QueryUserVaultInfoResponse;
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? VaultInfo.fromPartial(object.vault)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllUserVaultInfoRequest: object = {};
+
+export const QueryAllUserVaultInfoRequest = {
+  encode(
+    message: QueryAllUserVaultInfoRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllUserVaultInfoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllUserVaultInfoRequest,
+    } as QueryAllUserVaultInfoRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllUserVaultInfoRequest {
+    const message = {
+      ...baseQueryAllUserVaultInfoRequest,
+    } as QueryAllUserVaultInfoRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllUserVaultInfoRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllUserVaultInfoRequest>
+  ): QueryAllUserVaultInfoRequest {
+    const message = {
+      ...baseQueryAllUserVaultInfoRequest,
+    } as QueryAllUserVaultInfoRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllUserVaultInfoResponse: object = {};
+
+export const QueryAllUserVaultInfoResponse = {
+  encode(
+    message: QueryAllUserVaultInfoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.vaults) {
+      VaultInfo.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllUserVaultInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllUserVaultInfoResponse,
+    } as QueryAllUserVaultInfoResponse;
+    message.vaults = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.vaults.push(VaultInfo.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllUserVaultInfoResponse {
+    const message = {
+      ...baseQueryAllUserVaultInfoResponse,
+    } as QueryAllUserVaultInfoResponse;
+    message.vaults = (object.vaults ?? []).map((e: any) =>
+      VaultInfo.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllUserVaultInfoResponse): unknown {
+    const obj: any = {};
+    if (message.vaults) {
+      obj.vaults = message.vaults.map((e) =>
+        e ? VaultInfo.toJSON(e) : undefined
+      );
+    } else {
+      obj.vaults = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllUserVaultInfoResponse>
+  ): QueryAllUserVaultInfoResponse {
+    const message = {
+      ...baseQueryAllUserVaultInfoResponse,
+    } as QueryAllUserVaultInfoResponse;
+    message.vaults = (object.vaults ?? []).map((e) => VaultInfo.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseVaultInfo: object = {
+  id: Long.UZERO,
+  totalShareAmount: "",
+  totalNavAmount: "",
+  availableAmount: "",
+  totalInPositionAmount: "",
+  totalUpnlAmount: "",
+};
+
+export const VaultInfo = {
+  encode(
+    message: VaultInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.id.isZero()) {
+      writer.uint32(8).uint64(message.id);
+    }
+    if (message.totalShareAmount !== "") {
+      writer.uint32(18).string(message.totalShareAmount);
+    }
+    if (message.totalNavAmount !== "") {
+      writer.uint32(26).string(message.totalNavAmount);
+    }
+    if (message.availableAmount !== "") {
+      writer.uint32(34).string(message.availableAmount);
+    }
+    if (message.totalInPositionAmount !== "") {
+      writer.uint32(42).string(message.totalInPositionAmount);
+    }
+    if (message.totalUpnlAmount !== "") {
+      writer.uint32(50).string(message.totalUpnlAmount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): VaultInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseVaultInfo } as VaultInfo;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.uint64() as Long;
+          break;
+        case 2:
+          message.totalShareAmount = reader.string();
+          break;
+        case 3:
+          message.totalNavAmount = reader.string();
+          break;
+        case 4:
+          message.availableAmount = reader.string();
+          break;
+        case 5:
+          message.totalInPositionAmount = reader.string();
+          break;
+        case 6:
+          message.totalUpnlAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): VaultInfo {
+    const message = { ...baseVaultInfo } as VaultInfo;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.totalShareAmount =
+      object.totalShareAmount !== undefined && object.totalShareAmount !== null
+        ? String(object.totalShareAmount)
+        : "";
+    message.totalNavAmount =
+      object.totalNavAmount !== undefined && object.totalNavAmount !== null
+        ? String(object.totalNavAmount)
+        : "";
+    message.availableAmount =
+      object.availableAmount !== undefined && object.availableAmount !== null
+        ? String(object.availableAmount)
+        : "";
+    message.totalInPositionAmount =
+      object.totalInPositionAmount !== undefined &&
+      object.totalInPositionAmount !== null
+        ? String(object.totalInPositionAmount)
+        : "";
+    message.totalUpnlAmount =
+      object.totalUpnlAmount !== undefined && object.totalUpnlAmount !== null
+        ? String(object.totalUpnlAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: VaultInfo): unknown {
+    const obj: any = {};
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    message.totalShareAmount !== undefined &&
+      (obj.totalShareAmount = message.totalShareAmount);
+    message.totalNavAmount !== undefined &&
+      (obj.totalNavAmount = message.totalNavAmount);
+    message.availableAmount !== undefined &&
+      (obj.availableAmount = message.availableAmount);
+    message.totalInPositionAmount !== undefined &&
+      (obj.totalInPositionAmount = message.totalInPositionAmount);
+    message.totalUpnlAmount !== undefined &&
+      (obj.totalUpnlAmount = message.totalUpnlAmount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<VaultInfo>): VaultInfo {
+    const message = { ...baseVaultInfo } as VaultInfo;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    message.totalShareAmount = object.totalShareAmount ?? "";
+    message.totalNavAmount = object.totalNavAmount ?? "";
+    message.availableAmount = object.availableAmount ?? "";
+    message.totalInPositionAmount = object.totalInPositionAmount ?? "";
+    message.totalUpnlAmount = object.totalUpnlAmount ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Params queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-  /** Get statistical amounts for a particular pool id */
+  /**
+   * * PerpsPool Queries ** //
+   * Get statistical amounts for a particular pool id
+   */
   PoolInfo(request: QueryPoolInfoRequest): Promise<QueryPoolInfoResponse>;
   /**
    * This route needs to be before Pool to get matched first
@@ -1524,6 +2564,31 @@ export interface Query {
   PoolMappings(
     request: QueryPoolMappingsRequest
   ): Promise<QueryPoolMappingsResponse>;
+  /**
+   * * UserVault Queries ** //
+   * Get user vault by id
+   */
+  UserVault(request: QueryUserVaultRequest): Promise<QueryUserVaultResponse>;
+  /** Get all user vaults */
+  UserVaultAll(
+    request: QueryAllUserVaultRequest
+  ): Promise<QueryAllUserVaultResponse>;
+  /** Get all pending user vault withdrawals waiting for release */
+  UserVaultPendingWithdrawals(
+    request: QueryAllUserVaultPendingWithdrawalsRequest
+  ): Promise<QueryAllUserVaultPendingWithdrawalsResponse>;
+  /** Get pending user vault withdrawals for a user vault */
+  UserVaultPendingWithdrawalsByVault(
+    request: QueryUserVaultPendingWithdrawalsRequest
+  ): Promise<QueryUserVaultPendingWithdrawalsResponse>;
+  /** Get user vault info by id */
+  UserVaultInfo(
+    request: QueryUserVaultInfoRequest
+  ): Promise<QueryUserVaultInfoResponse>;
+  /** Get all user vault infos */
+  UserVaultInfoAll(
+    request: QueryAllUserVaultInfoRequest
+  ): Promise<QueryAllUserVaultInfoResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1539,6 +2604,14 @@ export class QueryClientImpl implements Query {
     this.Pool = this.Pool.bind(this);
     this.PoolAll = this.PoolAll.bind(this);
     this.PoolMappings = this.PoolMappings.bind(this);
+    this.UserVault = this.UserVault.bind(this);
+    this.UserVaultAll = this.UserVaultAll.bind(this);
+    this.UserVaultPendingWithdrawals =
+      this.UserVaultPendingWithdrawals.bind(this);
+    this.UserVaultPendingWithdrawalsByVault =
+      this.UserVaultPendingWithdrawalsByVault.bind(this);
+    this.UserVaultInfo = this.UserVaultInfo.bind(this);
+    this.UserVaultInfoAll = this.UserVaultInfoAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1646,6 +2719,90 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryPoolMappingsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UserVault(request: QueryUserVaultRequest): Promise<QueryUserVaultResponse> {
+    const data = QueryUserVaultRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Query",
+      "UserVault",
+      data
+    );
+    return promise.then((data) =>
+      QueryUserVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UserVaultAll(
+    request: QueryAllUserVaultRequest
+  ): Promise<QueryAllUserVaultResponse> {
+    const data = QueryAllUserVaultRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Query",
+      "UserVaultAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllUserVaultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UserVaultPendingWithdrawals(
+    request: QueryAllUserVaultPendingWithdrawalsRequest
+  ): Promise<QueryAllUserVaultPendingWithdrawalsResponse> {
+    const data =
+      QueryAllUserVaultPendingWithdrawalsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Query",
+      "UserVaultPendingWithdrawals",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllUserVaultPendingWithdrawalsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UserVaultPendingWithdrawalsByVault(
+    request: QueryUserVaultPendingWithdrawalsRequest
+  ): Promise<QueryUserVaultPendingWithdrawalsResponse> {
+    const data =
+      QueryUserVaultPendingWithdrawalsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Query",
+      "UserVaultPendingWithdrawalsByVault",
+      data
+    );
+    return promise.then((data) =>
+      QueryUserVaultPendingWithdrawalsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UserVaultInfo(
+    request: QueryUserVaultInfoRequest
+  ): Promise<QueryUserVaultInfoResponse> {
+    const data = QueryUserVaultInfoRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Query",
+      "UserVaultInfo",
+      data
+    );
+    return promise.then((data) =>
+      QueryUserVaultInfoResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UserVaultInfoAll(
+    request: QueryAllUserVaultInfoRequest
+  ): Promise<QueryAllUserVaultInfoResponse> {
+    const data = QueryAllUserVaultInfoRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Query",
+      "UserVaultInfoAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllUserVaultInfoResponse.decode(new _m0.Reader(data))
     );
   }
 }

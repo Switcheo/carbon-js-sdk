@@ -407,6 +407,21 @@ registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromPool", Carbon.Perps
 registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromPoolResponse", Carbon.Perpspool.MsgWithdrawFromPoolResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfig", Carbon.Perpspool.MsgUpdateMarketConfig);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse", Carbon.Perpspool.MsgUpdateMarketConfigResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgCreateUserVault", Carbon.Perpspool.MsgCreateUserVault);
+registry.register("/Switcheo.carbon.perpspool.MsgCreateUserVaultResponse", Carbon.Perpspool.MsgCreateUserVaultResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgCloseUserVault", Carbon.Perpspool.MsgCloseUserVault);
+registry.register("/Switcheo.carbon.perpspool.MsgCloseUserVaultResponse", Carbon.Perpspool.MsgCloseUserVaultResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdateUserVault", Carbon.Perpspool.MsgUpdateUserVault);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdateUserVaultResponse", Carbon.Perpspool.MsgUpdateUserVaultResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgAddControllerToVault", Carbon.Perpspool.MsgAddControllerToVault);
+registry.register("/Switcheo.carbon.perpspool.MsgAddControllerToVaultResponse", Carbon.Perpspool.MsgAddControllerToVaultResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgRemoveControllerFromVault", Carbon.Perpspool.MsgRemoveControllerFromVault);
+registry.register("/Switcheo.carbon.perpspool.MsgRemoveControllerFromVaultResponse", Carbon.Perpspool.MsgRemoveControllerFromVaultResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgDepositToUserVault", Carbon.Perpspool.MsgDepositToUserVault);
+registry.register("/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawal", Carbon.Perpspool.MsgReleaseUserVaultWithdrawal);
+registry.register("/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawalResponse", Carbon.Perpspool.MsgReleaseUserVaultWithdrawalResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawal", Carbon.Perpspool.MsgCancelUserVaultWithdrawal);
+registry.register("/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawalResponse", Carbon.Perpspool.MsgCancelUserVaultWithdrawalResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateParams", Carbon.Perpspool.MsgUpdateParams);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateParamsResponse", Carbon.Perpspool.MsgUpdateParamsResponse);
 
@@ -1113,6 +1128,21 @@ export const TxTypes = {
   "MsgWithdrawFromPoolResponse": "/Switcheo.carbon.perpspool.MsgWithdrawFromPoolResponse",
   "MsgUpdateMarketConfig": "/Switcheo.carbon.perpspool.MsgUpdateMarketConfig",
   "MsgUpdateMarketConfigResponse": "/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse",
+  "MsgCreateUserVault": "/Switcheo.carbon.perpspool.MsgCreateUserVault",
+  "MsgCreateUserVaultResponse": "/Switcheo.carbon.perpspool.MsgCreateUserVaultResponse",
+  "MsgCloseUserVault": "/Switcheo.carbon.perpspool.MsgCloseUserVault",
+  "MsgCloseUserVaultResponse": "/Switcheo.carbon.perpspool.MsgCloseUserVaultResponse",
+  "MsgUpdateUserVault": "/Switcheo.carbon.perpspool.MsgUpdateUserVault",
+  "MsgUpdateUserVaultResponse": "/Switcheo.carbon.perpspool.MsgUpdateUserVaultResponse",
+  "MsgAddControllerToVault": "/Switcheo.carbon.perpspool.MsgAddControllerToVault",
+  "MsgAddControllerToVaultResponse": "/Switcheo.carbon.perpspool.MsgAddControllerToVaultResponse",
+  "MsgRemoveControllerFromVault": "/Switcheo.carbon.perpspool.MsgRemoveControllerFromVault",
+  "MsgRemoveControllerFromVaultResponse": "/Switcheo.carbon.perpspool.MsgRemoveControllerFromVaultResponse",
+  "MsgDepositToUserVault": "/Switcheo.carbon.perpspool.MsgDepositToUserVault",
+  "MsgReleaseUserVaultWithdrawal": "/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawal",
+  "MsgReleaseUserVaultWithdrawalResponse": "/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawalResponse",
+  "MsgCancelUserVaultWithdrawal": "/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawal",
+  "MsgCancelUserVaultWithdrawalResponse": "/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawalResponse",
   "MsgPerpspoolUpdateParams": "/Switcheo.carbon.perpspool.MsgUpdateParams",
   "MsgPerpspoolUpdateParamsResponse": "/Switcheo.carbon.perpspool.MsgUpdateParamsResponse",
   "MsgSetSequence": "/Switcheo.carbon.sequence.MsgSetSequence",
@@ -2201,7 +2231,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int32"
       }
     ],
-    "Empty": [],
     "Any": [
       {
         "name": "type_url",
@@ -2211,7 +2240,8 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "value",
         "type": "uint8[]"
       }
-    ]
+    ],
+    "Empty": []
   },
   "/Switcheo.carbon.adl": {
     "GenesisState": []
@@ -14535,6 +14565,117 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "UserVault": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "deposit_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "vault_address",
+        "type": "string"
+      },
+      {
+        "name": "owner",
+        "type": "string"
+      },
+      {
+        "name": "owner_locker",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "profit_share",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee",
+        "type": "string"
+      },
+      {
+        "name": "is_closed",
+        "type": "bool"
+      }
+    ],
+    "UserVaultAPI": [
+      {
+        "name": "vault",
+        "type": "UserVault",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "controllers",
+        "type": "string[]"
+      }
+    ],
+    "UpdateUserVaultParams": [
+      {
+        "name": "deposit_fee",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee",
+        "type": "string"
+      },
+      {
+        "name": "profit_share",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "AddressToUserVaultsMapping": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "UserVaultWithdrawalRecord": [
+      {
+        "name": "vault_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "shares_amount",
+        "type": "string"
+      },
+      {
+        "name": "process_id",
+        "type": "uint64"
+      },
+      {
+        "name": "request_time",
+        "type": "string"
+      }
+    ],
     "PoolEvent": [
       {
         "name": "pool",
@@ -14573,7 +14714,17 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
-    "DepositToPoolEvent": [
+    "UpdateMarketLiquidityUsageMultiplierEvent": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "multiplier",
+        "type": "string"
+      }
+    ],
+    "DepositToVaultEvent": [
       {
         "name": "pool_id",
         "type": "uint64"
@@ -14603,23 +14754,27 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "fee_to_pool_denom",
+        "name": "fee_to_vault_denom",
         "type": "string"
       },
       {
-        "name": "fee_to_pool_amount",
+        "name": "fee_to_vault_amount",
         "type": "string"
       },
       {
-        "name": "fee_to_pool_commission_denom",
+        "name": "fee_commission_denom",
         "type": "string"
       },
       {
-        "name": "fee_to_pool_commission_amount",
+        "name": "fee_commission_amount",
         "type": "string"
+      },
+      {
+        "name": "vault_type",
+        "type": "uint64"
       }
     ],
-    "WithdrawFromPoolEvent": [
+    "WithdrawFromVaultEvent": [
       {
         "name": "pool_id",
         "type": "uint64"
@@ -14645,30 +14800,97 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "fee_to_pool_denom",
+        "name": "fee_to_vault_denom",
         "type": "string"
       },
       {
-        "name": "fee_to_pool_amount",
+        "name": "fee_to_vault_amount",
         "type": "string"
       },
       {
-        "name": "fee_to_commission_denom",
+        "name": "fee_commission_denom",
         "type": "string"
       },
       {
-        "name": "fee_to_commission_amount",
+        "name": "fee_commission_amount",
+        "type": "string"
+      },
+      {
+        "name": "vault_type",
+        "type": "uint64"
+      }
+    ],
+    "UserVaultWithdrawalPendingEvent": [
+      {
+        "name": "vault_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "shares_amount",
+        "type": "string"
+      },
+      {
+        "name": "process_id",
+        "type": "uint64"
+      },
+      {
+        "name": "request_time",
         "type": "string"
       }
     ],
-    "UpdateMarketLiquidityUsageMultiplierEvent": [
+    "UserVaultWithdrawalReleasedEvent": [
       {
-        "name": "market_id",
+        "name": "vault_id",
+        "type": "uint64"
+      },
+      {
+        "name": "process_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
         "type": "string"
       },
       {
-        "name": "multiplier",
+        "name": "shares_denom",
         "type": "string"
+      },
+      {
+        "name": "shares_amount",
+        "type": "string"
+      },
+      {
+        "name": "received_denom",
+        "type": "string"
+      },
+      {
+        "name": "received_amount",
+        "type": "string"
+      },
+      {
+        "name": "request_time",
+        "type": "string"
+      },
+      {
+        "name": "completion_time",
+        "type": "string"
+      }
+    ],
+    "UserVaultEvent": [
+      {
+        "name": "vault",
+        "type": "UserVault",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "UserVaultClosedEvent": [
+      {
+        "name": "id",
+        "type": "uint64"
       }
     ],
     "Params": [
@@ -14701,15 +14923,52 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "trade_commission_ratio",
+        "name": "pool_trade_commission_ratio",
         "type": "string"
       },
       {
-        "name": "fee_commission_ratio",
+        "name": "pool_fee_commission_ratio",
         "type": "string"
       },
       {
         "name": "pool_commission_address",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_description_max_length",
+        "type": "uint64"
+      },
+      {
+        "name": "user_vault_min_owner_deposit",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "user_vault_min_owner_ratio",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_profit_share_cap",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_deposit_fee_cap",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_withdrawal_fee_cap",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_trade_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_fee_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "stale_price_allowance",
         "type": "string"
       }
     ],
@@ -14743,15 +15002,52 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "trade_commission_ratio",
+        "name": "pool_trade_commission_ratio",
         "type": "string"
       },
       {
-        "name": "fee_commission_ratio",
+        "name": "pool_fee_commission_ratio",
         "type": "string"
       },
       {
         "name": "pool_commission_address",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_description_max_length",
+        "type": "uint64"
+      },
+      {
+        "name": "user_vault_min_owner_deposit",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "user_vault_min_owner_ratio",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_profit_share_cap",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_deposit_fee_cap",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_withdrawal_fee_cap",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_trade_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_fee_commission_ratio",
+        "type": "string"
+      },
+      {
+        "name": "stale_price_allowance",
         "type": "string"
       }
     ],
@@ -14780,6 +15076,30 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "all_nav_per_share_last_recorded",
         "type": "NavPerShareLastRecordedWithPoolId[]",
         "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "user_vaults",
+        "type": "UserVault[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "address_to_user_vaults",
+        "type": "AddressToUserVaultsMapping[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "MarketToUserVaultMappingRecord": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "user_vault_address",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
       }
     ],
     "MarketConfigRecord": [
@@ -14923,7 +15243,139 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryPoolInfoResponse": [
       {
-        "name": "pool_id",
+        "name": "vault",
+        "type": "VaultInfo",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "QueryAllPoolInfoRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPoolInfoResponse": [
+      {
+        "name": "vaults",
+        "type": "VaultInfo[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryUserVaultRequest": [
+      {
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
+    "QueryUserVaultResponse": [
+      {
+        "name": "user_vault",
+        "type": "UserVaultAPI",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "QueryAllUserVaultRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllUserVaultResponse": [
+      {
+        "name": "user_vaults",
+        "type": "UserVaultAPI[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllUserVaultPendingWithdrawalsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllUserVaultPendingWithdrawalsResponse": [
+      {
+        "name": "withdrawals",
+        "type": "UserVaultWithdrawalRecord[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryUserVaultPendingWithdrawalsRequest": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryUserVaultPendingWithdrawalsResponse": [
+      {
+        "name": "withdrawals",
+        "type": "UserVaultWithdrawalRecord[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryUserVaultInfoRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryUserVaultInfoResponse": [
+      {
+        "name": "vault",
+        "type": "VaultInfo",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "QueryAllUserVaultInfoRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllUserVaultInfoResponse": [
+      {
+        "name": "vaults",
+        "type": "VaultInfo[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "VaultInfo": [
+      {
+        "name": "id",
         "type": "uint64"
       },
       {
@@ -14945,25 +15397,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "total_upnl_amount",
         "type": "string"
-      }
-    ],
-    "QueryAllPoolInfoRequest": [
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryAllPoolInfoResponse": [
-      {
-        "name": "pools",
-        "type": "QueryPoolInfoResponse[]",
-        "packageName": "/Switcheo.carbon.perpspool"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "MsgCreatePool": [
@@ -15116,6 +15549,148 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
+    "MsgCreateUserVault": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "deposit_amount",
+        "type": "string"
+      },
+      {
+        "name": "profit_share",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee",
+        "type": "string"
+      },
+      {
+        "name": "withdraw_fee",
+        "type": "string"
+      }
+    ],
+    "MsgCreateUserVaultResponse": [
+      {
+        "name": "user_vault",
+        "type": "UserVault",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "MsgCloseUserVault": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
+    "MsgCloseUserVaultResponse": [],
+    "MsgUpdateUserVault": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "update_user_vault_params",
+        "type": "UpdateUserVaultParams",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "MsgUpdateUserVaultResponse": [],
+    "MsgAddControllerToVault": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "controller",
+        "type": "string"
+      }
+    ],
+    "MsgAddControllerToVaultResponse": [],
+    "MsgRemoveControllerFromVault": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "controller",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveControllerFromVaultResponse": [],
+    "MsgDepositToUserVault": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "deposit_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_shares_to_receive",
+        "type": "string"
+      }
+    ],
+    "MsgReleaseUserVaultWithdrawal": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "vault_id",
+        "type": "uint64"
+      },
+      {
+        "name": "process_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgReleaseUserVaultWithdrawalResponse": [],
+    "MsgCancelUserVaultWithdrawal": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "vault_id",
+        "type": "uint64"
+      },
+      {
+        "name": "process_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgCancelUserVaultWithdrawalResponse": [],
     "MsgUpdateParams": [
       {
         "name": "authority",
@@ -15150,11 +15725,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "realized_pnl",
         "type": "string"
-      },
-      {
-        "name": "allocated_margin",
-        "type": "Coin",
-        "packageName": "/cosmos.base.v1beta1"
       },
       {
         "name": "opened_block_height",
