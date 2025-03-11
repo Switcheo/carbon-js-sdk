@@ -2,7 +2,12 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ParamsToUpdate } from "./params";
-import { StringValue, Int64Value } from "../../../google/protobuf/wrappers";
+import { Duration } from "../../../google/protobuf/duration";
+import {
+  StringValue,
+  Int64Value,
+  BoolValue,
+} from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -22,6 +27,7 @@ export interface CreateOracleParams {
   resultStrategy: string;
   resolution: Long;
   spec: string;
+  enableHistoricalResults: boolean;
 }
 
 export interface MsgCreateOracleResponse {
@@ -43,6 +49,7 @@ export interface UpdateOracleParams {
   resultStrategy?: string;
   resolution?: Long;
   spec?: string;
+  enableHistoricalResults?: boolean;
 }
 
 export interface MsgUpdateOracleResponse {}
@@ -130,6 +137,20 @@ export interface MsgCreateResult {
 }
 
 export interface MsgCreateResultResponse {}
+
+export interface MsgCreateHistoricalBucketInfo {
+  creator: string;
+  duration?: Duration;
+}
+
+export interface MsgCreateHistoricalBucketInfoResponse {}
+
+export interface MsgRemoveHistoricalBucketInfo {
+  creator: string;
+  duration?: Duration;
+}
+
+export interface MsgRemoveHistoricalBucketInfoResponse {}
 
 const baseMsgCreateOracle: object = { creator: "" };
 
@@ -220,6 +241,7 @@ const baseCreateOracleParams: object = {
   resultStrategy: "",
   resolution: Long.ZERO,
   spec: "",
+  enableHistoricalResults: false,
 };
 
 export const CreateOracleParams = {
@@ -253,6 +275,9 @@ export const CreateOracleParams = {
     }
     if (message.spec !== "") {
       writer.uint32(74).string(message.spec);
+    }
+    if (message.enableHistoricalResults === true) {
+      writer.uint32(80).bool(message.enableHistoricalResults);
     }
     return writer;
   },
@@ -290,6 +315,9 @@ export const CreateOracleParams = {
           break;
         case 9:
           message.spec = reader.string();
+          break;
+        case 10:
+          message.enableHistoricalResults = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -336,6 +364,11 @@ export const CreateOracleParams = {
       object.spec !== undefined && object.spec !== null
         ? String(object.spec)
         : "";
+    message.enableHistoricalResults =
+      object.enableHistoricalResults !== undefined &&
+      object.enableHistoricalResults !== null
+        ? Boolean(object.enableHistoricalResults)
+        : false;
     return message;
   },
 
@@ -358,6 +391,8 @@ export const CreateOracleParams = {
     message.resolution !== undefined &&
       (obj.resolution = (message.resolution || Long.ZERO).toString());
     message.spec !== undefined && (obj.spec = message.spec);
+    message.enableHistoricalResults !== undefined &&
+      (obj.enableHistoricalResults = message.enableHistoricalResults);
     return obj;
   },
 
@@ -382,6 +417,7 @@ export const CreateOracleParams = {
         ? Long.fromValue(object.resolution)
         : Long.ZERO;
     message.spec = object.spec ?? "";
+    message.enableHistoricalResults = object.enableHistoricalResults ?? false;
     return message;
   },
 };
@@ -585,6 +621,12 @@ export const UpdateOracleParams = {
         writer.uint32(74).fork()
       ).ldelim();
     }
+    if (message.enableHistoricalResults !== undefined) {
+      BoolValue.encode(
+        { value: message.enableHistoricalResults! },
+        writer.uint32(82).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -637,6 +679,12 @@ export const UpdateOracleParams = {
         case 9:
           message.spec = StringValue.decode(reader, reader.uint32()).value;
           break;
+        case 10:
+          message.enableHistoricalResults = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -682,6 +730,11 @@ export const UpdateOracleParams = {
       object.spec !== undefined && object.spec !== null
         ? String(object.spec)
         : undefined;
+    message.enableHistoricalResults =
+      object.enableHistoricalResults !== undefined &&
+      object.enableHistoricalResults !== null
+        ? Boolean(object.enableHistoricalResults)
+        : undefined;
     return message;
   },
 
@@ -701,6 +754,8 @@ export const UpdateOracleParams = {
       (obj.resultStrategy = message.resultStrategy);
     message.resolution !== undefined && (obj.resolution = message.resolution);
     message.spec !== undefined && (obj.spec = message.spec);
+    message.enableHistoricalResults !== undefined &&
+      (obj.enableHistoricalResults = message.enableHistoricalResults);
     return obj;
   },
 
@@ -725,6 +780,8 @@ export const UpdateOracleParams = {
         ? Long.fromValue(object.resolution)
         : undefined;
     message.spec = object.spec ?? undefined;
+    message.enableHistoricalResults =
+      object.enableHistoricalResults ?? undefined;
     return message;
   },
 };
@@ -1912,6 +1969,274 @@ export const MsgCreateResultResponse = {
   },
 };
 
+const baseMsgCreateHistoricalBucketInfo: object = { creator: "" };
+
+export const MsgCreateHistoricalBucketInfo = {
+  encode(
+    message: MsgCreateHistoricalBucketInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.duration !== undefined) {
+      Duration.encode(message.duration, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateHistoricalBucketInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateHistoricalBucketInfo,
+    } as MsgCreateHistoricalBucketInfo;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.duration = Duration.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateHistoricalBucketInfo {
+    const message = {
+      ...baseMsgCreateHistoricalBucketInfo,
+    } as MsgCreateHistoricalBucketInfo;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.duration =
+      object.duration !== undefined && object.duration !== null
+        ? Duration.fromJSON(object.duration)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreateHistoricalBucketInfo): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.duration !== undefined &&
+      (obj.duration = message.duration
+        ? Duration.toJSON(message.duration)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateHistoricalBucketInfo>
+  ): MsgCreateHistoricalBucketInfo {
+    const message = {
+      ...baseMsgCreateHistoricalBucketInfo,
+    } as MsgCreateHistoricalBucketInfo;
+    message.creator = object.creator ?? "";
+    message.duration =
+      object.duration !== undefined && object.duration !== null
+        ? Duration.fromPartial(object.duration)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgCreateHistoricalBucketInfoResponse: object = {};
+
+export const MsgCreateHistoricalBucketInfoResponse = {
+  encode(
+    _: MsgCreateHistoricalBucketInfoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateHistoricalBucketInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateHistoricalBucketInfoResponse,
+    } as MsgCreateHistoricalBucketInfoResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCreateHistoricalBucketInfoResponse {
+    const message = {
+      ...baseMsgCreateHistoricalBucketInfoResponse,
+    } as MsgCreateHistoricalBucketInfoResponse;
+    return message;
+  },
+
+  toJSON(_: MsgCreateHistoricalBucketInfoResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgCreateHistoricalBucketInfoResponse>
+  ): MsgCreateHistoricalBucketInfoResponse {
+    const message = {
+      ...baseMsgCreateHistoricalBucketInfoResponse,
+    } as MsgCreateHistoricalBucketInfoResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveHistoricalBucketInfo: object = { creator: "" };
+
+export const MsgRemoveHistoricalBucketInfo = {
+  encode(
+    message: MsgRemoveHistoricalBucketInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.duration !== undefined) {
+      Duration.encode(message.duration, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveHistoricalBucketInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveHistoricalBucketInfo,
+    } as MsgRemoveHistoricalBucketInfo;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.duration = Duration.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveHistoricalBucketInfo {
+    const message = {
+      ...baseMsgRemoveHistoricalBucketInfo,
+    } as MsgRemoveHistoricalBucketInfo;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.duration =
+      object.duration !== undefined && object.duration !== null
+        ? Duration.fromJSON(object.duration)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgRemoveHistoricalBucketInfo): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.duration !== undefined &&
+      (obj.duration = message.duration
+        ? Duration.toJSON(message.duration)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveHistoricalBucketInfo>
+  ): MsgRemoveHistoricalBucketInfo {
+    const message = {
+      ...baseMsgRemoveHistoricalBucketInfo,
+    } as MsgRemoveHistoricalBucketInfo;
+    message.creator = object.creator ?? "";
+    message.duration =
+      object.duration !== undefined && object.duration !== null
+        ? Duration.fromPartial(object.duration)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgRemoveHistoricalBucketInfoResponse: object = {};
+
+export const MsgRemoveHistoricalBucketInfoResponse = {
+  encode(
+    _: MsgRemoveHistoricalBucketInfoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveHistoricalBucketInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveHistoricalBucketInfoResponse,
+    } as MsgRemoveHistoricalBucketInfoResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveHistoricalBucketInfoResponse {
+    const message = {
+      ...baseMsgRemoveHistoricalBucketInfoResponse,
+    } as MsgRemoveHistoricalBucketInfoResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveHistoricalBucketInfoResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveHistoricalBucketInfoResponse>
+  ): MsgRemoveHistoricalBucketInfoResponse {
+    const message = {
+      ...baseMsgRemoveHistoricalBucketInfoResponse,
+    } as MsgRemoveHistoricalBucketInfoResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -1935,6 +2260,12 @@ export interface Msg {
    */
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
   CreateResult(request: MsgCreateResult): Promise<MsgCreateResultResponse>;
+  CreateHistoricalBucketInfo(
+    request: MsgCreateHistoricalBucketInfo
+  ): Promise<MsgCreateHistoricalBucketInfoResponse>;
+  RemoveHistoricalBucketInfo(
+    request: MsgRemoveHistoricalBucketInfo
+  ): Promise<MsgRemoveHistoricalBucketInfoResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1949,6 +2280,10 @@ export class MsgClientImpl implements Msg {
     this.DeployOracleContract = this.DeployOracleContract.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.CreateResult = this.CreateResult.bind(this);
+    this.CreateHistoricalBucketInfo =
+      this.CreateHistoricalBucketInfo.bind(this);
+    this.RemoveHistoricalBucketInfo =
+      this.RemoveHistoricalBucketInfo.bind(this);
   }
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse> {
     const data = MsgCreateOracle.encode(request).finish();
@@ -2049,6 +2384,34 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgCreateResultResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CreateHistoricalBucketInfo(
+    request: MsgCreateHistoricalBucketInfo
+  ): Promise<MsgCreateHistoricalBucketInfoResponse> {
+    const data = MsgCreateHistoricalBucketInfo.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Msg",
+      "CreateHistoricalBucketInfo",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateHistoricalBucketInfoResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveHistoricalBucketInfo(
+    request: MsgRemoveHistoricalBucketInfo
+  ): Promise<MsgRemoveHistoricalBucketInfoResponse> {
+    const data = MsgRemoveHistoricalBucketInfo.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Msg",
+      "RemoveHistoricalBucketInfo",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveHistoricalBucketInfoResponse.decode(new _m0.Reader(data))
     );
   }
 }

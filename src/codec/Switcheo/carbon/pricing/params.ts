@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
-import { UInt32Value } from "../../../google/protobuf/wrappers";
+import { UInt32Value, StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
@@ -12,6 +12,7 @@ export interface Params {
   staleIndexAllowance?: Duration;
   backfillTimeInterval?: Duration;
   futurePricesAllowance?: Duration;
+  volatilitySpec: string;
 }
 
 export interface ParamsToUpdate {
@@ -20,9 +21,14 @@ export interface ParamsToUpdate {
   staleIndexAllowance?: Duration;
   backfillTimeInterval?: Duration;
   futurePricesAllowance?: Duration;
+  volatilitySpec?: string;
 }
 
-const baseParams: object = { smoothenBand: 0, impactBand: 0 };
+const baseParams: object = {
+  smoothenBand: 0,
+  impactBand: 0,
+  volatilitySpec: "",
+};
 
 export const Params = {
   encode(
@@ -52,6 +58,9 @@ export const Params = {
         message.futurePricesAllowance,
         writer.uint32(42).fork()
       ).ldelim();
+    }
+    if (message.volatilitySpec !== "") {
+      writer.uint32(50).string(message.volatilitySpec);
     }
     return writer;
   },
@@ -87,6 +96,9 @@ export const Params = {
             reader.uint32()
           );
           break;
+        case 6:
+          message.volatilitySpec = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -120,6 +132,10 @@ export const Params = {
       object.futurePricesAllowance !== null
         ? Duration.fromJSON(object.futurePricesAllowance)
         : undefined;
+    message.volatilitySpec =
+      object.volatilitySpec !== undefined && object.volatilitySpec !== null
+        ? String(object.volatilitySpec)
+        : "";
     return message;
   },
 
@@ -140,6 +156,8 @@ export const Params = {
       (obj.futurePricesAllowance = message.futurePricesAllowance
         ? Duration.toJSON(message.futurePricesAllowance)
         : undefined);
+    message.volatilitySpec !== undefined &&
+      (obj.volatilitySpec = message.volatilitySpec);
     return obj;
   },
 
@@ -162,6 +180,7 @@ export const Params = {
       object.futurePricesAllowance !== null
         ? Duration.fromPartial(object.futurePricesAllowance)
         : undefined;
+    message.volatilitySpec = object.volatilitySpec ?? "";
     return message;
   },
 };
@@ -201,6 +220,12 @@ export const ParamsToUpdate = {
       Duration.encode(
         message.futurePricesAllowance,
         writer.uint32(42).fork()
+      ).ldelim();
+    }
+    if (message.volatilitySpec !== undefined) {
+      StringValue.encode(
+        { value: message.volatilitySpec! },
+        writer.uint32(50).fork()
       ).ldelim();
     }
     return writer;
@@ -243,6 +268,12 @@ export const ParamsToUpdate = {
             reader.uint32()
           );
           break;
+        case 6:
+          message.volatilitySpec = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -276,6 +307,10 @@ export const ParamsToUpdate = {
       object.futurePricesAllowance !== null
         ? Duration.fromJSON(object.futurePricesAllowance)
         : undefined;
+    message.volatilitySpec =
+      object.volatilitySpec !== undefined && object.volatilitySpec !== null
+        ? String(object.volatilitySpec)
+        : undefined;
     return message;
   },
 
@@ -296,6 +331,8 @@ export const ParamsToUpdate = {
       (obj.futurePricesAllowance = message.futurePricesAllowance
         ? Duration.toJSON(message.futurePricesAllowance)
         : undefined);
+    message.volatilitySpec !== undefined &&
+      (obj.volatilitySpec = message.volatilitySpec);
     return obj;
   },
 
@@ -318,6 +355,7 @@ export const ParamsToUpdate = {
       object.futurePricesAllowance !== null
         ? Duration.fromPartial(object.futurePricesAllowance)
         : undefined;
+    message.volatilitySpec = object.volatilitySpec ?? undefined;
     return message;
   },
 };

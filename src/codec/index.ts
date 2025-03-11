@@ -262,6 +262,10 @@ registry.register("/Switcheo.carbon.oracle.MsgDeployOracleContract", Carbon.Orac
 registry.register("/Switcheo.carbon.oracle.MsgDeployOracleContractResponse", Carbon.Oracle.MsgDeployOracleContractResponse);
 registry.register("/Switcheo.carbon.oracle.MsgCreateResult", Carbon.Oracle.MsgCreateResult);
 registry.register("/Switcheo.carbon.oracle.MsgCreateResultResponse", Carbon.Oracle.MsgCreateResultResponse);
+registry.register("/Switcheo.carbon.oracle.MsgCreateHistoricalBucketInfo", Carbon.Oracle.MsgCreateHistoricalBucketInfo);
+registry.register("/Switcheo.carbon.oracle.MsgCreateHistoricalBucketInfoResponse", Carbon.Oracle.MsgCreateHistoricalBucketInfoResponse);
+registry.register("/Switcheo.carbon.oracle.MsgRemoveHistoricalBucketInfo", Carbon.Oracle.MsgRemoveHistoricalBucketInfo);
+registry.register("/Switcheo.carbon.oracle.MsgRemoveHistoricalBucketInfoResponse", Carbon.Oracle.MsgRemoveHistoricalBucketInfoResponse);
 
 registry.register("/Switcheo.carbon.otc.MsgCreateRfq", Carbon.Otc.MsgCreateRfq);
 registry.register("/Switcheo.carbon.otc.MsgCreateRfqResponse", Carbon.Otc.MsgCreateRfqResponse);
@@ -326,6 +330,8 @@ registry.register("/Switcheo.carbon.coin.MsgRemoveBridge", Carbon.Coin.MsgRemove
 registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeResponse", Carbon.Coin.MsgRemoveBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgUpdateToken", Carbon.Coin.MsgUpdateToken);
 registry.register("/Switcheo.carbon.coin.MsgUpdateTokenResponse", Carbon.Coin.MsgUpdateTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgDeprecateToken", Carbon.Coin.MsgDeprecateToken);
+registry.register("/Switcheo.carbon.coin.MsgDeprecateTokenResponse", Carbon.Coin.MsgDeprecateTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgAddBridgeAddress", Carbon.Coin.MsgAddBridgeAddress);
 registry.register("/Switcheo.carbon.coin.MsgAddBridgeAddressResponse", Carbon.Coin.MsgAddBridgeAddressResponse);
 registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeAddress", Carbon.Coin.MsgRemoveBridgeAddress);
@@ -993,6 +999,10 @@ export const TxTypes = {
   "MsgDeployOracleContractResponse": "/Switcheo.carbon.oracle.MsgDeployOracleContractResponse",
   "MsgCreateResult": "/Switcheo.carbon.oracle.MsgCreateResult",
   "MsgCreateResultResponse": "/Switcheo.carbon.oracle.MsgCreateResultResponse",
+  "MsgCreateHistoricalBucketInfo": "/Switcheo.carbon.oracle.MsgCreateHistoricalBucketInfo",
+  "MsgCreateHistoricalBucketInfoResponse": "/Switcheo.carbon.oracle.MsgCreateHistoricalBucketInfoResponse",
+  "MsgRemoveHistoricalBucketInfo": "/Switcheo.carbon.oracle.MsgRemoveHistoricalBucketInfo",
+  "MsgRemoveHistoricalBucketInfoResponse": "/Switcheo.carbon.oracle.MsgRemoveHistoricalBucketInfoResponse",
   "MsgCreateRfq": "/Switcheo.carbon.otc.MsgCreateRfq",
   "MsgCreateRfqResponse": "/Switcheo.carbon.otc.MsgCreateRfqResponse",
   "MsgCancelRfq": "/Switcheo.carbon.otc.MsgCancelRfq",
@@ -1052,6 +1062,8 @@ export const TxTypes = {
   "MsgRemoveBridgeResponse": "/Switcheo.carbon.coin.MsgRemoveBridgeResponse",
   "MsgUpdateToken": "/Switcheo.carbon.coin.MsgUpdateToken",
   "MsgUpdateTokenResponse": "/Switcheo.carbon.coin.MsgUpdateTokenResponse",
+  "MsgDeprecateToken": "/Switcheo.carbon.coin.MsgDeprecateToken",
+  "MsgDeprecateTokenResponse": "/Switcheo.carbon.coin.MsgDeprecateTokenResponse",
   "MsgAddBridgeAddress": "/Switcheo.carbon.coin.MsgAddBridgeAddress",
   "MsgAddBridgeAddressResponse": "/Switcheo.carbon.coin.MsgAddBridgeAddressResponse",
   "MsgRemoveBridgeAddress": "/Switcheo.carbon.coin.MsgRemoveBridgeAddress",
@@ -2759,26 +2771,45 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBookEvent": [
       {
-        "name": "market_id",
+        "name": "m",
         "type": "string"
       },
       {
-        "name": "side",
+        "name": "s",
         "type": "string"
       },
       {
-        "name": "price",
+        "name": "p",
         "type": "string"
       },
       {
-        "name": "quantity",
+        "name": "q",
+        "type": "string"
+      }
+    ],
+    "Quote": [
+      {
+        "name": "p",
+        "type": "string"
+      },
+      {
+        "name": "q",
         "type": "string"
       }
     ],
     "VirtualOrderBookEvent": [
       {
-        "name": "book",
-        "type": "OrderBookEvent",
+        "name": "m",
+        "type": "string"
+      },
+      {
+        "name": "b",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.book"
+      },
+      {
+        "name": "a",
+        "type": "Quote[]",
         "packageName": "/Switcheo.carbon.book"
       }
     ],
@@ -7177,6 +7208,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "created_block_height",
         "type": "uint64"
+      },
+      {
+        "name": "is_deprecated",
+        "type": "bool"
       }
     ],
     "BalanceChange": [
@@ -7786,6 +7821,17 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdateTokenResponse": [],
+    "MsgDeprecateToken": [
+      {
+        "name": "deprecator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgDeprecateTokenResponse": [],
     "MsgAddBridgeAddress": [
       {
         "name": "creator",
@@ -9964,17 +10010,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int64"
       }
     ],
-    "OrdersForMarket": [
-      {
-        "name": "market_id",
-        "type": "string"
-      },
-      {
-        "name": "orders",
-        "type": "Order[]",
-        "packageName": "/Switcheo.carbon.order"
-      }
-    ],
     "OrderIdsForMarket": [
       {
         "name": "market_id",
@@ -10086,12 +10121,20 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "max_referral_commission",
         "type": "uint32"
+      },
+      {
+        "name": "futures_order_block_delay",
+        "type": "int64"
       }
     ],
     "ParamsToUpdate": [
       {
         "name": "max_referral_commission",
         "type": "uint32"
+      },
+      {
+        "name": "futures_order_block_delay",
+        "type": "int64"
       }
     ],
     "GenesisState": [
@@ -10202,6 +10245,23 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAccountOrdersRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "QueryAccountOrdersResponse": [
+      {
+        "name": "orders",
+        "type": "Order[]",
+        "packageName": "/Switcheo.carbon.order"
       }
     ],
     "QueryAccountOpenOrdersRequest": [
@@ -10348,6 +10408,24 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgEditOrderResponse": [],
+    "EditOrders": [
+      {
+        "name": "edit_orders",
+        "type": "MsgEditOrder[]",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "EditOrdersForMarket": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "edit_orders",
+        "type": "MsgEditOrder[]",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
     "MsgCancelOrder": [
       {
         "name": "creator",
@@ -12521,6 +12599,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "stale_index_price_allowance",
         "type": "string"
+      },
+      {
+        "name": "creator",
+        "type": "string"
       }
     ],
     "MarketParams": [
@@ -13266,6 +13348,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "spec",
         "type": "string"
+      },
+      {
+        "name": "enable_historical_results",
+        "type": "bool"
       }
     ],
     "Result": [
@@ -13332,6 +13418,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "evm_oracle_enabled",
         "type": "bool"
+      },
+      {
+        "name": "historical_results_per_bucket",
+        "type": "uint64"
       }
     ],
     "ParamsToUpdate": [
@@ -13374,6 +13464,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "evm_oracle_enabled",
         "type": "bool"
+      },
+      {
+        "name": "historical_results_per_bucket",
+        "type": "uint64"
       }
     ],
     "MsgCreateOracle": [
@@ -13423,6 +13517,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "spec",
         "type": "string"
+      },
+      {
+        "name": "enable_historical_results",
+        "type": "bool"
       }
     ],
     "MsgCreateOracleResponse": [
@@ -13478,6 +13576,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "spec",
         "type": "string"
+      },
+      {
+        "name": "enable_historical_results",
+        "type": "bool"
       }
     ],
     "MsgUpdateOracleResponse": [],
@@ -13608,6 +13710,28 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgCreateResultResponse": [],
+    "MsgCreateHistoricalBucketInfo": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "duration",
+        "type": "string"
+      }
+    ],
+    "MsgCreateHistoricalBucketInfoResponse": [],
+    "MsgRemoveHistoricalBucketInfo": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "duration",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveHistoricalBucketInfoResponse": [],
     "ResultEvent": [
       {
         "name": "result",
@@ -13685,6 +13809,41 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
+    "HistoricalBucketInfo": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "duration",
+        "type": "string"
+      }
+    ],
+    "HistoricalResults": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "bucket_id",
+        "type": "uint64"
+      },
+      {
+        "name": "all_data",
+        "type": "HistoricalData[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "HistoricalData": [
+      {
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      }
+    ],
     "GenesisState": [
       {
         "name": "oracles",
@@ -13709,6 +13868,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "slash_counters",
         "type": "SlashCounter[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "all_historical_bucket_info",
+        "type": "HistoricalBucketInfo[]",
         "packageName": "/Switcheo.carbon.oracle"
       }
     ],
@@ -13864,6 +14028,52 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "oracle_votes_windows",
         "type": "OracleVotesWindow[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllHistoricalBucketInfoRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllHistoricalBucketInfoResponse": [
+      {
+        "name": "all_historical_bucket_info",
+        "type": "HistoricalBucketInfo[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryHistoricalResultsRequest": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "bucket_id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryHistoricalResultsResponse": [
+      {
+        "name": "historical_results_for_buckets",
+        "type": "HistoricalResults[]",
         "packageName": "/Switcheo.carbon.oracle"
       },
       {
@@ -15373,6 +15583,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
+    "QueryUserVaultsByControllerRequest": [
+      {
+        "name": "controller",
+        "type": "string"
+      }
+    ],
+    "QueryUserVaultsByControllerResponse": [
+      {
+        "name": "user_vaults",
+        "type": "UserVault[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
     "VaultInfo": [
       {
         "name": "id",
@@ -16073,6 +16296,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "last_funding_at",
         "type": "string"
+      },
+      {
+        "name": "volatility_score",
+        "type": "string"
       }
     ],
     "TokenPrice": [
@@ -16178,6 +16405,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "future_prices_allowance",
         "type": "string"
+      },
+      {
+        "name": "volatility_spec",
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -16199,6 +16430,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "future_prices_allowance",
+        "type": "string"
+      },
+      {
+        "name": "volatility_spec",
         "type": "string"
       }
     ],
