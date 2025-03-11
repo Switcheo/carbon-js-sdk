@@ -1,5 +1,5 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
-import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EVMChain, getChangeNetworkParams, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
@@ -17,7 +17,7 @@ import { StdFee } from "@cosmjs/stargate";
 import { DirectSignResponse } from "@keplr-wallet/types";
 import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
-import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BASE_MAINNET, BASE_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, MANTLE_MAINNET, MANTLE_TESTNET, OKC_MAINNET, OKC_TESTNET, OP_MAINNET, OP_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET, AVALANCHE_MAINNET, AVALANCHE_TESTNET } from "../../constant";
+import { CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "../metamask/error";
 
@@ -248,34 +248,13 @@ class RainbowKitAccount extends Eip6963Provider {
     }
   }
 
-  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): ChangeNetworkParam {
+  static async getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): Promise<ChangeNetworkParam> {
     if (blockchain === 'Carbon') {
       return RainbowKitAccount.getCarbonEvmNetworkParams(network)
     }
 
-    const isMainnet = network === Network.MainNet
-
-    switch (blockchain) {
-      case 'Binance Smart Chain':
-        return isMainnet ? BSC_MAINNET : BSC_TESTNET
-      case 'Arbitrum':
-        return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET
-      case 'Polygon':
-        return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET
-      case 'OKC':
-        return isMainnet ? OKC_MAINNET : OKC_TESTNET
-      case 'Mantle':
-        return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
-      case 'Avalanche':
-        return isMainnet ? AVALANCHE_MAINNET : AVALANCHE_TESTNET
-      case 'Optimism':
-        return isMainnet ? OP_MAINNET : OP_TESTNET
-      case 'Base':
-        return isMainnet ? BASE_MAINNET : BASE_TESTNET
-      default:
-        // metamask should come with Ethereum configs
-        return isMainnet ? ETH_MAINNET : ETH_TESTNET
-    }
+    const chainId = this.getRequiredChainId(network, blockchain)
+    return await getChangeNetworkParams(chainId)
   }
 
   async isChangeNetworkRequired(blockchain: EVMChain, network: CarbonSDK.Network): Promise<boolean> {
@@ -296,9 +275,10 @@ class RainbowKitAccount extends Eip6963Provider {
     } catch (err) {
       // This error code indicates that the chain has not been added.
       try {
+        const networkParams = await RainbowKitAccount.getNetworkParams(network, blockchain)
         await rainbowKitApi.request({
           method: 'wallet_addEthereumChain',
-          params: [RainbowKitAccount.getNetworkParams(network, blockchain)],
+          params: [networkParams],
         });
         await this.syncBlockchain();
       } catch (err) {
