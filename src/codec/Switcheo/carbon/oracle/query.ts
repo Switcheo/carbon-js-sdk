@@ -8,6 +8,7 @@ import {
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { SlashCounter, OracleVotesWindow } from "./slashing";
 import { Params } from "./params";
+import { HistoricalBucketInfo, HistoricalResults } from "./historical";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -89,6 +90,26 @@ export interface QueryOracleVotesWindowRequest {
 
 export interface QueryOracleVotesWindowResponse {
   oracleVotesWindows: OracleVotesWindow[];
+  pagination?: PageResponse;
+}
+
+export interface QueryAllHistoricalBucketInfoRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllHistoricalBucketInfoResponse {
+  allHistoricalBucketInfo: HistoricalBucketInfo[];
+  pagination?: PageResponse;
+}
+
+export interface QueryHistoricalResultsRequest {
+  oracleId: string;
+  bucketId: Long;
+  pagination?: PageRequest;
+}
+
+export interface QueryHistoricalResultsResponse {
+  historicalResultsForBuckets: HistoricalResults[];
   pagination?: PageResponse;
 }
 
@@ -1469,6 +1490,367 @@ export const QueryOracleVotesWindowResponse = {
   },
 };
 
+const baseQueryAllHistoricalBucketInfoRequest: object = {};
+
+export const QueryAllHistoricalBucketInfoRequest = {
+  encode(
+    message: QueryAllHistoricalBucketInfoRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllHistoricalBucketInfoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllHistoricalBucketInfoRequest,
+    } as QueryAllHistoricalBucketInfoRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllHistoricalBucketInfoRequest {
+    const message = {
+      ...baseQueryAllHistoricalBucketInfoRequest,
+    } as QueryAllHistoricalBucketInfoRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllHistoricalBucketInfoRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllHistoricalBucketInfoRequest>
+  ): QueryAllHistoricalBucketInfoRequest {
+    const message = {
+      ...baseQueryAllHistoricalBucketInfoRequest,
+    } as QueryAllHistoricalBucketInfoRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllHistoricalBucketInfoResponse: object = {};
+
+export const QueryAllHistoricalBucketInfoResponse = {
+  encode(
+    message: QueryAllHistoricalBucketInfoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.allHistoricalBucketInfo) {
+      HistoricalBucketInfo.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllHistoricalBucketInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllHistoricalBucketInfoResponse,
+    } as QueryAllHistoricalBucketInfoResponse;
+    message.allHistoricalBucketInfo = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.allHistoricalBucketInfo.push(
+            HistoricalBucketInfo.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllHistoricalBucketInfoResponse {
+    const message = {
+      ...baseQueryAllHistoricalBucketInfoResponse,
+    } as QueryAllHistoricalBucketInfoResponse;
+    message.allHistoricalBucketInfo = (
+      object.allHistoricalBucketInfo ?? []
+    ).map((e: any) => HistoricalBucketInfo.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllHistoricalBucketInfoResponse): unknown {
+    const obj: any = {};
+    if (message.allHistoricalBucketInfo) {
+      obj.allHistoricalBucketInfo = message.allHistoricalBucketInfo.map((e) =>
+        e ? HistoricalBucketInfo.toJSON(e) : undefined
+      );
+    } else {
+      obj.allHistoricalBucketInfo = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllHistoricalBucketInfoResponse>
+  ): QueryAllHistoricalBucketInfoResponse {
+    const message = {
+      ...baseQueryAllHistoricalBucketInfoResponse,
+    } as QueryAllHistoricalBucketInfoResponse;
+    message.allHistoricalBucketInfo = (
+      object.allHistoricalBucketInfo ?? []
+    ).map((e) => HistoricalBucketInfo.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryHistoricalResultsRequest: object = {
+  oracleId: "",
+  bucketId: Long.UZERO,
+};
+
+export const QueryHistoricalResultsRequest = {
+  encode(
+    message: QueryHistoricalResultsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.oracleId !== "") {
+      writer.uint32(10).string(message.oracleId);
+    }
+    if (!message.bucketId.isZero()) {
+      writer.uint32(16).uint64(message.bucketId);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryHistoricalResultsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryHistoricalResultsRequest,
+    } as QueryHistoricalResultsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.oracleId = reader.string();
+          break;
+        case 2:
+          message.bucketId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryHistoricalResultsRequest {
+    const message = {
+      ...baseQueryHistoricalResultsRequest,
+    } as QueryHistoricalResultsRequest;
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    message.bucketId =
+      object.bucketId !== undefined && object.bucketId !== null
+        ? Long.fromString(object.bucketId)
+        : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryHistoricalResultsRequest): unknown {
+    const obj: any = {};
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
+    message.bucketId !== undefined &&
+      (obj.bucketId = (message.bucketId || Long.UZERO).toString());
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryHistoricalResultsRequest>
+  ): QueryHistoricalResultsRequest {
+    const message = {
+      ...baseQueryHistoricalResultsRequest,
+    } as QueryHistoricalResultsRequest;
+    message.oracleId = object.oracleId ?? "";
+    message.bucketId =
+      object.bucketId !== undefined && object.bucketId !== null
+        ? Long.fromValue(object.bucketId)
+        : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryHistoricalResultsResponse: object = {};
+
+export const QueryHistoricalResultsResponse = {
+  encode(
+    message: QueryHistoricalResultsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.historicalResultsForBuckets) {
+      HistoricalResults.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryHistoricalResultsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryHistoricalResultsResponse,
+    } as QueryHistoricalResultsResponse;
+    message.historicalResultsForBuckets = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.historicalResultsForBuckets.push(
+            HistoricalResults.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryHistoricalResultsResponse {
+    const message = {
+      ...baseQueryHistoricalResultsResponse,
+    } as QueryHistoricalResultsResponse;
+    message.historicalResultsForBuckets = (
+      object.historicalResultsForBuckets ?? []
+    ).map((e: any) => HistoricalResults.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryHistoricalResultsResponse): unknown {
+    const obj: any = {};
+    if (message.historicalResultsForBuckets) {
+      obj.historicalResultsForBuckets = message.historicalResultsForBuckets.map(
+        (e) => (e ? HistoricalResults.toJSON(e) : undefined)
+      );
+    } else {
+      obj.historicalResultsForBuckets = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryHistoricalResultsResponse>
+  ): QueryHistoricalResultsResponse {
+    const message = {
+      ...baseQueryHistoricalResultsResponse,
+    } as QueryHistoricalResultsResponse;
+    message.historicalResultsForBuckets = (
+      object.historicalResultsForBuckets ?? []
+    ).map((e) => HistoricalResults.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -2038,6 +2420,12 @@ export interface Query {
   OracleContractParams(
     request: QueryContractParamsRequest
   ): Promise<QueryContractParamsResponse>;
+  AllHistoricalBucketInfo(
+    request: QueryAllHistoricalBucketInfoRequest
+  ): Promise<QueryAllHistoricalBucketInfoResponse>;
+  HistoricalResults(
+    request: QueryHistoricalResultsRequest
+  ): Promise<QueryHistoricalResultsResponse>;
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
 
@@ -2057,6 +2445,8 @@ export class QueryClientImpl implements Query {
     this.OracleContractAddress = this.OracleContractAddress.bind(this);
     this.OracleContractAll = this.OracleContractAll.bind(this);
     this.OracleContractParams = this.OracleContractParams.bind(this);
+    this.AllHistoricalBucketInfo = this.AllHistoricalBucketInfo.bind(this);
+    this.HistoricalResults = this.HistoricalResults.bind(this);
     this.Params = this.Params.bind(this);
   }
   Oracle(request: QueryOracleRequest): Promise<QueryOracleResponse> {
@@ -2218,6 +2608,34 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryContractParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AllHistoricalBucketInfo(
+    request: QueryAllHistoricalBucketInfoRequest
+  ): Promise<QueryAllHistoricalBucketInfoResponse> {
+    const data = QueryAllHistoricalBucketInfoRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "AllHistoricalBucketInfo",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllHistoricalBucketInfoResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  HistoricalResults(
+    request: QueryHistoricalResultsRequest
+  ): Promise<QueryHistoricalResultsResponse> {
+    const data = QueryHistoricalResultsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "HistoricalResults",
+      data
+    );
+    return promise.then((data) =>
+      QueryHistoricalResultsResponse.decode(new _m0.Reader(data))
     );
   }
 

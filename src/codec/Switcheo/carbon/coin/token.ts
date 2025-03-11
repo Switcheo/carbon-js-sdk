@@ -19,6 +19,7 @@ export interface Token {
   bridgeAddress: string;
   isActive: boolean;
   createdBlockHeight: Long;
+  isDeprecated: boolean;
 }
 
 export interface BalanceChange {
@@ -72,6 +73,7 @@ const baseToken: object = {
   bridgeAddress: "",
   isActive: false,
   createdBlockHeight: Long.UZERO,
+  isDeprecated: false,
 };
 
 export const Token = {
@@ -111,6 +113,9 @@ export const Token = {
     }
     if (!message.createdBlockHeight.isZero()) {
       writer.uint32(104).uint64(message.createdBlockHeight);
+    }
+    if (message.isDeprecated === true) {
+      writer.uint32(112).bool(message.isDeprecated);
     }
     return writer;
   },
@@ -157,6 +162,9 @@ export const Token = {
           break;
         case 13:
           message.createdBlockHeight = reader.uint64() as Long;
+          break;
+        case 14:
+          message.isDeprecated = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -215,6 +223,10 @@ export const Token = {
       object.createdBlockHeight !== null
         ? Long.fromString(object.createdBlockHeight)
         : Long.UZERO;
+    message.isDeprecated =
+      object.isDeprecated !== undefined && object.isDeprecated !== null
+        ? Boolean(object.isDeprecated)
+        : false;
     return message;
   },
 
@@ -240,6 +252,8 @@ export const Token = {
       (obj.createdBlockHeight = (
         message.createdBlockHeight || Long.UZERO
       ).toString());
+    message.isDeprecated !== undefined &&
+      (obj.isDeprecated = message.isDeprecated);
     return obj;
   },
 
@@ -270,6 +284,7 @@ export const Token = {
       object.createdBlockHeight !== null
         ? Long.fromValue(object.createdBlockHeight)
         : Long.UZERO;
+    message.isDeprecated = object.isDeprecated ?? false;
     return message;
   },
 };
