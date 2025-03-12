@@ -424,9 +424,6 @@ registry.register("/Switcheo.carbon.perpspool.MsgAddControllerToVaultResponse", 
 registry.register("/Switcheo.carbon.perpspool.MsgRemoveControllerFromVault", Carbon.Perpspool.MsgRemoveControllerFromVault);
 registry.register("/Switcheo.carbon.perpspool.MsgRemoveControllerFromVaultResponse", Carbon.Perpspool.MsgRemoveControllerFromVaultResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgDepositToUserVault", Carbon.Perpspool.MsgDepositToUserVault);
-registry.register("/Switcheo.carbon.perpspool.MsgDepositToUserVaultResponse", Carbon.Perpspool.MsgDepositToUserVaultResponse);
-registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromUserVault", Carbon.Perpspool.MsgWithdrawFromUserVault);
-registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromUserVaultResponse", Carbon.Perpspool.MsgWithdrawFromUserVaultResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawal", Carbon.Perpspool.MsgReleaseUserVaultWithdrawal);
 registry.register("/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawalResponse", Carbon.Perpspool.MsgReleaseUserVaultWithdrawalResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawal", Carbon.Perpspool.MsgCancelUserVaultWithdrawal);
@@ -1154,9 +1151,6 @@ export const TxTypes = {
   "MsgRemoveControllerFromVault": "/Switcheo.carbon.perpspool.MsgRemoveControllerFromVault",
   "MsgRemoveControllerFromVaultResponse": "/Switcheo.carbon.perpspool.MsgRemoveControllerFromVaultResponse",
   "MsgDepositToUserVault": "/Switcheo.carbon.perpspool.MsgDepositToUserVault",
-  "MsgDepositToUserVaultResponse": "/Switcheo.carbon.perpspool.MsgDepositToUserVaultResponse",
-  "MsgWithdrawFromUserVault": "/Switcheo.carbon.perpspool.MsgWithdrawFromUserVault",
-  "MsgWithdrawFromUserVaultResponse": "/Switcheo.carbon.perpspool.MsgWithdrawFromUserVaultResponse",
   "MsgReleaseUserVaultWithdrawal": "/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawal",
   "MsgReleaseUserVaultWithdrawalResponse": "/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawalResponse",
   "MsgCancelUserVaultWithdrawal": "/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawal",
@@ -2777,19 +2771,19 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBookEvent": [
       {
-        "name": "market_id",
+        "name": "m",
         "type": "string"
       },
       {
-        "name": "side",
+        "name": "s",
         "type": "string"
       },
       {
-        "name": "price",
+        "name": "p",
         "type": "string"
       },
       {
-        "name": "quantity",
+        "name": "q",
         "type": "string"
       }
     ],
@@ -9434,10 +9428,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "leverage",
         "type": "string"
-      },
-      {
-        "name": "on_behalf_of",
-        "type": "string"
       }
     ],
     "MsgSetLeverageResponse": []
@@ -10387,10 +10377,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "is_use_best_price",
         "type": "bool"
-      },
-      {
-        "name": "on_behalf_of",
-        "type": "string"
       }
     ],
     "MsgCreateOrderResponse": [
@@ -10458,10 +10444,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "market_id",
-        "type": "string"
-      },
-      {
-        "name": "on_behalf_of",
         "type": "string"
       }
     ],
@@ -14839,12 +14821,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "controllers",
-        "type": "string[]"
-      },
-      {
         "name": "is_closed",
         "type": "bool"
+      }
+    ],
+    "UserVaultAPI": [
+      {
+        "name": "vault",
+        "type": "UserVault",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "controllers",
+        "type": "string[]"
       }
     ],
     "UpdateUserVaultParams": [
@@ -15108,6 +15097,12 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
+    "UserVaultClosedEvent": [
+      {
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
     "Params": [
       {
         "name": "quote_index_price_fluctuation_tolerance_ratio",
@@ -15150,20 +15145,16 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "update_vault_market_cooldown_duration",
-        "type": "string"
-      },
-      {
-        "name": "vault_description_max_length",
+        "name": "user_vault_description_max_length",
         "type": "uint64"
       },
       {
-        "name": "min_user_vault_owner_deposit",
+        "name": "user_vault_min_owner_deposit",
         "type": "Coin",
         "packageName": "/cosmos.base.v1beta1"
       },
       {
-        "name": "min_user_vault_owner_ratio",
+        "name": "user_vault_min_owner_ratio",
         "type": "string"
       },
       {
@@ -15233,20 +15224,16 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "update_vault_market_cooldown_duration",
-        "type": "string"
-      },
-      {
-        "name": "vault_description_max_length",
+        "name": "user_vault_description_max_length",
         "type": "uint64"
       },
       {
-        "name": "min_user_vault_owner_deposit",
+        "name": "user_vault_min_owner_deposit",
         "type": "Coin",
         "packageName": "/cosmos.base.v1beta1"
       },
       {
-        "name": "min_user_vault_owner_ratio",
+        "name": "user_vault_min_owner_ratio",
         "type": "string"
       },
       {
@@ -15499,7 +15486,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryUserVaultResponse": [
       {
         "name": "user_vault",
-        "type": "UserVault",
+        "type": "UserVaultAPI",
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
@@ -15513,7 +15500,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryAllUserVaultResponse": [
       {
         "name": "user_vaults",
-        "type": "UserVault[]",
+        "type": "UserVaultAPI[]",
         "packageName": "/Switcheo.carbon.perpspool"
       },
       {
@@ -15596,6 +15583,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
+    "QueryUserVaultsByControllerRequest": [
+      {
+        "name": "controller",
+        "type": "string"
+      }
+    ],
+    "QueryUserVaultsByControllerResponse": [
+      {
+        "name": "user_vaults",
+        "type": "UserVault[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
     "VaultInfo": [
       {
         "name": "id",
@@ -15649,10 +15649,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "base_borrow_fee_per_funding_interval",
-        "type": "string"
-      },
-      {
-        "name": "vault_type",
         "type": "string"
       }
     ],
@@ -15846,7 +15842,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "pool_id",
+        "name": "id",
         "type": "uint64"
       },
       {
@@ -15861,7 +15857,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "pool_id",
+        "name": "id",
         "type": "uint64"
       },
       {
@@ -15888,22 +15884,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgDepositToUserVaultResponse": [],
-    "MsgWithdrawFromUserVault": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "id",
-        "type": "uint64"
-      },
-      {
-        "name": "shares_amount",
-        "type": "string"
-      }
-    ],
-    "MsgWithdrawFromUserVaultResponse": [],
     "MsgReleaseUserVaultWithdrawal": [
       {
         "name": "creator",
@@ -16254,10 +16234,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "margin",
-        "type": "string"
-      },
-      {
-        "name": "on_behalf_of",
         "type": "string"
       }
     ],

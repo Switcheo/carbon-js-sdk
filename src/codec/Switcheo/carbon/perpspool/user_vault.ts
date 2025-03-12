@@ -29,8 +29,12 @@ export interface UserVault {
   depositFee: string;
   /** withdrawal fee to charge on a successful withdrawal from pool in decimal */
   withdrawalFee: string;
-  controllers: string[];
   isClosed: boolean;
+}
+
+export interface UserVaultAPI {
+  vault?: UserVault;
+  controllers: string[];
 }
 
 export interface UpdateUserVaultParams {
@@ -65,7 +69,6 @@ const baseUserVault: object = {
   profitShare: "",
   depositFee: "",
   withdrawalFee: "",
-  controllers: "",
   isClosed: false,
 };
 
@@ -107,11 +110,8 @@ export const UserVault = {
     if (message.withdrawalFee !== "") {
       writer.uint32(90).string(message.withdrawalFee);
     }
-    for (const v of message.controllers) {
-      writer.uint32(98).string(v!);
-    }
     if (message.isClosed === true) {
-      writer.uint32(104).bool(message.isClosed);
+      writer.uint32(96).bool(message.isClosed);
     }
     return writer;
   },
@@ -120,7 +120,6 @@ export const UserVault = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseUserVault } as UserVault;
-    message.controllers = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -158,9 +157,6 @@ export const UserVault = {
           message.withdrawalFee = reader.string();
           break;
         case 12:
-          message.controllers.push(reader.string());
-          break;
-        case 13:
           message.isClosed = reader.bool();
           break;
         default:
@@ -217,7 +213,6 @@ export const UserVault = {
       object.withdrawalFee !== undefined && object.withdrawalFee !== null
         ? String(object.withdrawalFee)
         : "";
-    message.controllers = (object.controllers ?? []).map((e: any) => String(e));
     message.isClosed =
       object.isClosed !== undefined && object.isClosed !== null
         ? Boolean(object.isClosed)
@@ -245,11 +240,6 @@ export const UserVault = {
     message.depositFee !== undefined && (obj.depositFee = message.depositFee);
     message.withdrawalFee !== undefined &&
       (obj.withdrawalFee = message.withdrawalFee);
-    if (message.controllers) {
-      obj.controllers = message.controllers.map((e) => e);
-    } else {
-      obj.controllers = [];
-    }
     message.isClosed !== undefined && (obj.isClosed = message.isClosed);
     return obj;
   },
@@ -270,8 +260,78 @@ export const UserVault = {
     message.profitShare = object.profitShare ?? "";
     message.depositFee = object.depositFee ?? "";
     message.withdrawalFee = object.withdrawalFee ?? "";
-    message.controllers = (object.controllers ?? []).map((e) => e);
     message.isClosed = object.isClosed ?? false;
+    return message;
+  },
+};
+
+const baseUserVaultAPI: object = { controllers: "" };
+
+export const UserVaultAPI = {
+  encode(
+    message: UserVaultAPI,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.vault !== undefined) {
+      UserVault.encode(message.vault, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.controllers) {
+      writer.uint32(18).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserVaultAPI {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUserVaultAPI } as UserVaultAPI;
+    message.controllers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.vault = UserVault.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.controllers.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserVaultAPI {
+    const message = { ...baseUserVaultAPI } as UserVaultAPI;
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? UserVault.fromJSON(object.vault)
+        : undefined;
+    message.controllers = (object.controllers ?? []).map((e: any) => String(e));
+    return message;
+  },
+
+  toJSON(message: UserVaultAPI): unknown {
+    const obj: any = {};
+    message.vault !== undefined &&
+      (obj.vault = message.vault ? UserVault.toJSON(message.vault) : undefined);
+    if (message.controllers) {
+      obj.controllers = message.controllers.map((e) => e);
+    } else {
+      obj.controllers = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UserVaultAPI>): UserVaultAPI {
+    const message = { ...baseUserVaultAPI } as UserVaultAPI;
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? UserVault.fromPartial(object.vault)
+        : undefined;
+    message.controllers = (object.controllers ?? []).map((e) => e);
     return message;
   },
 };

@@ -7,7 +7,11 @@ import {
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { Params } from "./params";
 import { PoolDetails } from "./pool";
-import { UserVault, UserVaultWithdrawalRecord } from "./user_vault";
+import {
+  UserVaultAPI,
+  UserVaultWithdrawalRecord,
+  UserVault,
+} from "./user_vault";
 import { MarketLiquidityUsageMultiplier } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
@@ -97,7 +101,7 @@ export interface QueryUserVaultRequest {
 }
 
 export interface QueryUserVaultResponse {
-  userVault?: UserVault;
+  userVault?: UserVaultAPI;
 }
 
 export interface QueryAllUserVaultRequest {
@@ -105,7 +109,7 @@ export interface QueryAllUserVaultRequest {
 }
 
 export interface QueryAllUserVaultResponse {
-  userVaults: UserVault[];
+  userVaults: UserVaultAPI[];
   pagination?: PageResponse;
 }
 
@@ -143,6 +147,14 @@ export interface QueryAllUserVaultInfoRequest {
 export interface QueryAllUserVaultInfoResponse {
   vaults: VaultInfo[];
   pagination?: PageResponse;
+}
+
+export interface QueryUserVaultsByControllerRequest {
+  controller: string;
+}
+
+export interface QueryUserVaultsByControllerResponse {
+  userVaults: UserVault[];
 }
 
 export interface VaultInfo {
@@ -1546,7 +1558,7 @@ export const QueryUserVaultResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.userVault !== undefined) {
-      UserVault.encode(message.userVault, writer.uint32(10).fork()).ldelim();
+      UserVaultAPI.encode(message.userVault, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -1562,7 +1574,7 @@ export const QueryUserVaultResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.userVault = UserVault.decode(reader, reader.uint32());
+          message.userVault = UserVaultAPI.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1576,7 +1588,7 @@ export const QueryUserVaultResponse = {
     const message = { ...baseQueryUserVaultResponse } as QueryUserVaultResponse;
     message.userVault =
       object.userVault !== undefined && object.userVault !== null
-        ? UserVault.fromJSON(object.userVault)
+        ? UserVaultAPI.fromJSON(object.userVault)
         : undefined;
     return message;
   },
@@ -1585,7 +1597,7 @@ export const QueryUserVaultResponse = {
     const obj: any = {};
     message.userVault !== undefined &&
       (obj.userVault = message.userVault
-        ? UserVault.toJSON(message.userVault)
+        ? UserVaultAPI.toJSON(message.userVault)
         : undefined);
     return obj;
   },
@@ -1596,7 +1608,7 @@ export const QueryUserVaultResponse = {
     const message = { ...baseQueryUserVaultResponse } as QueryUserVaultResponse;
     message.userVault =
       object.userVault !== undefined && object.userVault !== null
-        ? UserVault.fromPartial(object.userVault)
+        ? UserVaultAPI.fromPartial(object.userVault)
         : undefined;
     return message;
   },
@@ -1680,7 +1692,7 @@ export const QueryAllUserVaultResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.userVaults) {
-      UserVault.encode(v!, writer.uint32(10).fork()).ldelim();
+      UserVaultAPI.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -1705,7 +1717,7 @@ export const QueryAllUserVaultResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.userVaults.push(UserVault.decode(reader, reader.uint32()));
+          message.userVaults.push(UserVaultAPI.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -1723,7 +1735,7 @@ export const QueryAllUserVaultResponse = {
       ...baseQueryAllUserVaultResponse,
     } as QueryAllUserVaultResponse;
     message.userVaults = (object.userVaults ?? []).map((e: any) =>
-      UserVault.fromJSON(e)
+      UserVaultAPI.fromJSON(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1736,7 +1748,7 @@ export const QueryAllUserVaultResponse = {
     const obj: any = {};
     if (message.userVaults) {
       obj.userVaults = message.userVaults.map((e) =>
-        e ? UserVault.toJSON(e) : undefined
+        e ? UserVaultAPI.toJSON(e) : undefined
       );
     } else {
       obj.userVaults = [];
@@ -1755,7 +1767,7 @@ export const QueryAllUserVaultResponse = {
       ...baseQueryAllUserVaultResponse,
     } as QueryAllUserVaultResponse;
     message.userVaults = (object.userVaults ?? []).map((e) =>
-      UserVault.fromPartial(e)
+      UserVaultAPI.fromPartial(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -2402,6 +2414,142 @@ export const QueryAllUserVaultInfoResponse = {
   },
 };
 
+const baseQueryUserVaultsByControllerRequest: object = { controller: "" };
+
+export const QueryUserVaultsByControllerRequest = {
+  encode(
+    message: QueryUserVaultsByControllerRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.controller !== "") {
+      writer.uint32(10).string(message.controller);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserVaultsByControllerRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryUserVaultsByControllerRequest,
+    } as QueryUserVaultsByControllerRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.controller = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserVaultsByControllerRequest {
+    const message = {
+      ...baseQueryUserVaultsByControllerRequest,
+    } as QueryUserVaultsByControllerRequest;
+    message.controller =
+      object.controller !== undefined && object.controller !== null
+        ? String(object.controller)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryUserVaultsByControllerRequest): unknown {
+    const obj: any = {};
+    message.controller !== undefined && (obj.controller = message.controller);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserVaultsByControllerRequest>
+  ): QueryUserVaultsByControllerRequest {
+    const message = {
+      ...baseQueryUserVaultsByControllerRequest,
+    } as QueryUserVaultsByControllerRequest;
+    message.controller = object.controller ?? "";
+    return message;
+  },
+};
+
+const baseQueryUserVaultsByControllerResponse: object = {};
+
+export const QueryUserVaultsByControllerResponse = {
+  encode(
+    message: QueryUserVaultsByControllerResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.userVaults) {
+      UserVault.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserVaultsByControllerResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryUserVaultsByControllerResponse,
+    } as QueryUserVaultsByControllerResponse;
+    message.userVaults = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userVaults.push(UserVault.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserVaultsByControllerResponse {
+    const message = {
+      ...baseQueryUserVaultsByControllerResponse,
+    } as QueryUserVaultsByControllerResponse;
+    message.userVaults = (object.userVaults ?? []).map((e: any) =>
+      UserVault.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryUserVaultsByControllerResponse): unknown {
+    const obj: any = {};
+    if (message.userVaults) {
+      obj.userVaults = message.userVaults.map((e) =>
+        e ? UserVault.toJSON(e) : undefined
+      );
+    } else {
+      obj.userVaults = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserVaultsByControllerResponse>
+  ): QueryUserVaultsByControllerResponse {
+    const message = {
+      ...baseQueryUserVaultsByControllerResponse,
+    } as QueryUserVaultsByControllerResponse;
+    message.userVaults = (object.userVaults ?? []).map((e) =>
+      UserVault.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 const baseVaultInfo: object = {
   id: Long.UZERO,
   totalShareAmount: "",
@@ -2581,12 +2729,18 @@ export interface Query {
   UserVaultPendingWithdrawalsByVault(
     request: QueryUserVaultPendingWithdrawalsRequest
   ): Promise<QueryUserVaultPendingWithdrawalsResponse>;
+  /** Get user vault info by id */
   UserVaultInfo(
     request: QueryUserVaultInfoRequest
   ): Promise<QueryUserVaultInfoResponse>;
+  /** Get all user vault infos */
   UserVaultInfoAll(
     request: QueryAllUserVaultInfoRequest
   ): Promise<QueryAllUserVaultInfoResponse>;
+  /** Get all user vaults that the user is a controller for */
+  UserVaultsByController(
+    request: QueryUserVaultsByControllerRequest
+  ): Promise<QueryUserVaultsByControllerResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2610,6 +2764,7 @@ export class QueryClientImpl implements Query {
       this.UserVaultPendingWithdrawalsByVault.bind(this);
     this.UserVaultInfo = this.UserVaultInfo.bind(this);
     this.UserVaultInfoAll = this.UserVaultInfoAll.bind(this);
+    this.UserVaultsByController = this.UserVaultsByController.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -2801,6 +2956,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllUserVaultInfoResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UserVaultsByController(
+    request: QueryUserVaultsByControllerRequest
+  ): Promise<QueryUserVaultsByControllerResponse> {
+    const data = QueryUserVaultsByControllerRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Query",
+      "UserVaultsByController",
+      data
+    );
+    return promise.then((data) =>
+      QueryUserVaultsByControllerResponse.decode(new _m0.Reader(data))
     );
   }
 }

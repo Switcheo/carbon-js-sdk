@@ -22,8 +22,6 @@ export interface MsgCreatePool {
   withdrawalFee: string;
   /** borrow fee in decimal per time period to charge on use of liquidity in pool */
   baseBorrowFeePerFundingInterval: string;
-  /** type of the pool */
-  vaultType: string;
 }
 
 export interface MsgCreatePoolResponse {
@@ -119,7 +117,7 @@ export interface MsgUpdateUserVaultResponse {}
 
 export interface MsgAddControllerToVault {
   creator: string;
-  poolId: Long;
+  id: Long;
   controller: string;
 }
 
@@ -127,7 +125,7 @@ export interface MsgAddControllerToVaultResponse {}
 
 export interface MsgRemoveControllerFromVault {
   creator: string;
-  poolId: Long;
+  id: Long;
   controller: string;
 }
 
@@ -139,16 +137,6 @@ export interface MsgDepositToUserVault {
   depositAmount: string;
   minSharesToReceive: string;
 }
-
-export interface MsgDepositToUserVaultResponse {}
-
-export interface MsgWithdrawFromUserVault {
-  creator: string;
-  id: Long;
-  sharesAmount: string;
-}
-
-export interface MsgWithdrawFromUserVaultResponse {}
 
 export interface MsgReleaseUserVaultWithdrawal {
   creator: string;
@@ -194,7 +182,6 @@ const baseMsgCreatePool: object = {
   depositFee: "",
   withdrawalFee: "",
   baseBorrowFeePerFundingInterval: "",
-  vaultType: "",
 };
 
 export const MsgCreatePool = {
@@ -222,9 +209,6 @@ export const MsgCreatePool = {
     }
     if (message.baseBorrowFeePerFundingInterval !== "") {
       writer.uint32(58).string(message.baseBorrowFeePerFundingInterval);
-    }
-    if (message.vaultType !== "") {
-      writer.uint32(66).string(message.vaultType);
     }
     return writer;
   },
@@ -256,9 +240,6 @@ export const MsgCreatePool = {
           break;
         case 7:
           message.baseBorrowFeePerFundingInterval = reader.string();
-          break;
-        case 8:
-          message.vaultType = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -299,10 +280,6 @@ export const MsgCreatePool = {
       object.baseBorrowFeePerFundingInterval !== null
         ? String(object.baseBorrowFeePerFundingInterval)
         : "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? String(object.vaultType)
-        : "";
     return message;
   },
 
@@ -319,7 +296,6 @@ export const MsgCreatePool = {
     message.baseBorrowFeePerFundingInterval !== undefined &&
       (obj.baseBorrowFeePerFundingInterval =
         message.baseBorrowFeePerFundingInterval);
-    message.vaultType !== undefined && (obj.vaultType = message.vaultType);
     return obj;
   },
 
@@ -333,7 +309,6 @@ export const MsgCreatePool = {
     message.withdrawalFee = object.withdrawalFee ?? "";
     message.baseBorrowFeePerFundingInterval =
       object.baseBorrowFeePerFundingInterval ?? "";
-    message.vaultType = object.vaultType ?? "";
     return message;
   },
 };
@@ -1790,7 +1765,7 @@ export const MsgUpdateUserVaultResponse = {
 
 const baseMsgAddControllerToVault: object = {
   creator: "",
-  poolId: Long.UZERO,
+  id: Long.UZERO,
   controller: "",
 };
 
@@ -1802,8 +1777,8 @@ export const MsgAddControllerToVault = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.poolId.isZero()) {
-      writer.uint32(16).uint64(message.poolId);
+    if (!message.id.isZero()) {
+      writer.uint32(16).uint64(message.id);
     }
     if (message.controller !== "") {
       writer.uint32(26).string(message.controller);
@@ -1827,7 +1802,7 @@ export const MsgAddControllerToVault = {
           message.creator = reader.string();
           break;
         case 2:
-          message.poolId = reader.uint64() as Long;
+          message.id = reader.uint64() as Long;
           break;
         case 3:
           message.controller = reader.string();
@@ -1848,9 +1823,9 @@ export const MsgAddControllerToVault = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
         : Long.UZERO;
     message.controller =
       object.controller !== undefined && object.controller !== null
@@ -1862,8 +1837,8 @@ export const MsgAddControllerToVault = {
   toJSON(message: MsgAddControllerToVault): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     message.controller !== undefined && (obj.controller = message.controller);
     return obj;
   },
@@ -1875,9 +1850,9 @@ export const MsgAddControllerToVault = {
       ...baseMsgAddControllerToVault,
     } as MsgAddControllerToVault;
     message.creator = object.creator ?? "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
         : Long.UZERO;
     message.controller = object.controller ?? "";
     return message;
@@ -1938,7 +1913,7 @@ export const MsgAddControllerToVaultResponse = {
 
 const baseMsgRemoveControllerFromVault: object = {
   creator: "",
-  poolId: Long.UZERO,
+  id: Long.UZERO,
   controller: "",
 };
 
@@ -1950,8 +1925,8 @@ export const MsgRemoveControllerFromVault = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.poolId.isZero()) {
-      writer.uint32(16).uint64(message.poolId);
+    if (!message.id.isZero()) {
+      writer.uint32(16).uint64(message.id);
     }
     if (message.controller !== "") {
       writer.uint32(26).string(message.controller);
@@ -1975,7 +1950,7 @@ export const MsgRemoveControllerFromVault = {
           message.creator = reader.string();
           break;
         case 2:
-          message.poolId = reader.uint64() as Long;
+          message.id = reader.uint64() as Long;
           break;
         case 3:
           message.controller = reader.string();
@@ -1996,9 +1971,9 @@ export const MsgRemoveControllerFromVault = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
         : Long.UZERO;
     message.controller =
       object.controller !== undefined && object.controller !== null
@@ -2010,8 +1985,8 @@ export const MsgRemoveControllerFromVault = {
   toJSON(message: MsgRemoveControllerFromVault): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     message.controller !== undefined && (obj.controller = message.controller);
     return obj;
   },
@@ -2023,9 +1998,9 @@ export const MsgRemoveControllerFromVault = {
       ...baseMsgRemoveControllerFromVault,
     } as MsgRemoveControllerFromVault;
     message.creator = object.creator ?? "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
         : Long.UZERO;
     message.controller = object.controller ?? "";
     return message;
@@ -2186,207 +2161,6 @@ export const MsgDepositToUserVault = {
         : Long.UZERO;
     message.depositAmount = object.depositAmount ?? "";
     message.minSharesToReceive = object.minSharesToReceive ?? "";
-    return message;
-  },
-};
-
-const baseMsgDepositToUserVaultResponse: object = {};
-
-export const MsgDepositToUserVaultResponse = {
-  encode(
-    _: MsgDepositToUserVaultResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDepositToUserVaultResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDepositToUserVaultResponse,
-    } as MsgDepositToUserVaultResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgDepositToUserVaultResponse {
-    const message = {
-      ...baseMsgDepositToUserVaultResponse,
-    } as MsgDepositToUserVaultResponse;
-    return message;
-  },
-
-  toJSON(_: MsgDepositToUserVaultResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgDepositToUserVaultResponse>
-  ): MsgDepositToUserVaultResponse {
-    const message = {
-      ...baseMsgDepositToUserVaultResponse,
-    } as MsgDepositToUserVaultResponse;
-    return message;
-  },
-};
-
-const baseMsgWithdrawFromUserVault: object = {
-  creator: "",
-  id: Long.UZERO,
-  sharesAmount: "",
-};
-
-export const MsgWithdrawFromUserVault = {
-  encode(
-    message: MsgWithdrawFromUserVault,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (!message.id.isZero()) {
-      writer.uint32(16).uint64(message.id);
-    }
-    if (message.sharesAmount !== "") {
-      writer.uint32(26).string(message.sharesAmount);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgWithdrawFromUserVault {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgWithdrawFromUserVault,
-    } as MsgWithdrawFromUserVault;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.id = reader.uint64() as Long;
-          break;
-        case 3:
-          message.sharesAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgWithdrawFromUserVault {
-    const message = {
-      ...baseMsgWithdrawFromUserVault,
-    } as MsgWithdrawFromUserVault;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.sharesAmount =
-      object.sharesAmount !== undefined && object.sharesAmount !== null
-        ? String(object.sharesAmount)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgWithdrawFromUserVault): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
-    message.sharesAmount !== undefined &&
-      (obj.sharesAmount = message.sharesAmount);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgWithdrawFromUserVault>
-  ): MsgWithdrawFromUserVault {
-    const message = {
-      ...baseMsgWithdrawFromUserVault,
-    } as MsgWithdrawFromUserVault;
-    message.creator = object.creator ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
-    message.sharesAmount = object.sharesAmount ?? "";
-    return message;
-  },
-};
-
-const baseMsgWithdrawFromUserVaultResponse: object = {};
-
-export const MsgWithdrawFromUserVaultResponse = {
-  encode(
-    _: MsgWithdrawFromUserVaultResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgWithdrawFromUserVaultResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgWithdrawFromUserVaultResponse,
-    } as MsgWithdrawFromUserVaultResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgWithdrawFromUserVaultResponse {
-    const message = {
-      ...baseMsgWithdrawFromUserVaultResponse,
-    } as MsgWithdrawFromUserVaultResponse;
-    return message;
-  },
-
-  toJSON(_: MsgWithdrawFromUserVaultResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgWithdrawFromUserVaultResponse>
-  ): MsgWithdrawFromUserVaultResponse {
-    const message = {
-      ...baseMsgWithdrawFromUserVaultResponse,
-    } as MsgWithdrawFromUserVaultResponse;
     return message;
   },
 };
@@ -2852,12 +2626,6 @@ export interface Msg {
   RemoveControllerFromUserVault(
     request: MsgRemoveControllerFromVault
   ): Promise<MsgRemoveControllerFromVaultResponse>;
-  DepositToUserVault(
-    request: MsgDepositToUserVault
-  ): Promise<MsgDepositToUserVaultResponse>;
-  WithdrawFromUserVault(
-    request: MsgWithdrawFromUserVault
-  ): Promise<MsgWithdrawFromUserVaultResponse>;
   ReleaseUserVaultWithdrawal(
     request: MsgReleaseUserVaultWithdrawal
   ): Promise<MsgReleaseUserVaultWithdrawalResponse>;
@@ -2890,8 +2658,6 @@ export class MsgClientImpl implements Msg {
     this.AddControllerToUserVault = this.AddControllerToUserVault.bind(this);
     this.RemoveControllerFromUserVault =
       this.RemoveControllerFromUserVault.bind(this);
-    this.DepositToUserVault = this.DepositToUserVault.bind(this);
-    this.WithdrawFromUserVault = this.WithdrawFromUserVault.bind(this);
     this.ReleaseUserVaultWithdrawal =
       this.ReleaseUserVaultWithdrawal.bind(this);
     this.CancelUserVaultWithdrawal = this.CancelUserVaultWithdrawal.bind(this);
@@ -3056,34 +2822,6 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRemoveControllerFromVaultResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  DepositToUserVault(
-    request: MsgDepositToUserVault
-  ): Promise<MsgDepositToUserVaultResponse> {
-    const data = MsgDepositToUserVault.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.perpspool.Msg",
-      "DepositToUserVault",
-      data
-    );
-    return promise.then((data) =>
-      MsgDepositToUserVaultResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  WithdrawFromUserVault(
-    request: MsgWithdrawFromUserVault
-  ): Promise<MsgWithdrawFromUserVaultResponse> {
-    const data = MsgWithdrawFromUserVault.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.perpspool.Msg",
-      "WithdrawFromUserVault",
-      data
-    );
-    return promise.then((data) =>
-      MsgWithdrawFromUserVaultResponse.decode(new _m0.Reader(data))
     );
   }
 
