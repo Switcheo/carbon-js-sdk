@@ -16,8 +16,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   UpdateUserVault: "perpspool/UpdateUserVault",
   AddControllerToVault: "perpspool/AddControllerToVault",
   RemoveControllerFromVault: "perpspool/RemoveControllerFromVault",
-  DepositToUserVault: "perpspool/DepositToUserVault",
-  WithdrawFromUserVault: "perpspool/WithdrawFromUserVault",
   ReleaseUserVaultWithdrawal: "perpspool/ReleaseUserVaultWithdrawal",
   CancelUserVaultWithdrawal: "perpspool/CancelUserVaultWithdrawal",
 };
@@ -92,20 +90,6 @@ const MsgRemoveControllerFromVault: AminoInit = {
   },
 };
 
-const MsgDepositToUserVault: AminoInit = {
-  aminoType: TxTypes.DepositToUserVault,
-  valueMap: {
-    id: ConvertEncType.Long,
-  },
-};
-
-const MsgWithdrawFromUserVault: AminoInit = {
-  aminoType: TxTypes.WithdrawFromUserVault,
-  valueMap: {
-    id: ConvertEncType.Long,
-  },
-};
-
 const MsgReleaseUserVaultWithdrawal: AminoInit = {
   aminoType: TxTypes.ReleaseUserVaultWithdrawal,
   valueMap: {
@@ -134,8 +118,6 @@ const PerpspoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateUserVault]: generateAminoType(MsgUpdateUserVault),
   [CarbonTx.Types.MsgAddControllerToVault]: generateAminoType(MsgAddControllerToVault),
   [CarbonTx.Types.MsgRemoveControllerFromVault]: generateAminoType(MsgRemoveControllerFromVault),
-  [CarbonTx.Types.MsgDepositToUserVault]: generateAminoType(MsgDepositToUserVault),
-  [CarbonTx.Types.MsgWithdrawFromUserVault]: generateAminoType(MsgWithdrawFromUserVault),
   [CarbonTx.Types.MsgReleaseUserVaultWithdrawal]: generateAminoType(MsgReleaseUserVaultWithdrawal),
   [CarbonTx.Types.MsgCancelUserVaultWithdrawal]: generateAminoType(MsgCancelUserVaultWithdrawal),
 };

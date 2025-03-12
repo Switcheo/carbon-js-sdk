@@ -1,5 +1,5 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
-import { MsgAddControllerToVault, MsgCancelUserVaultWithdrawal, MsgCloseUserVault, MsgCreateUserVault, MsgDepositToUserVault, MsgReleaseUserVaultWithdrawal, MsgRemoveControllerFromVault, MsgUpdateUserVault, MsgWithdrawFromUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
+import { MsgAddControllerToVault, MsgCancelUserVaultWithdrawal, MsgCloseUserVault, MsgCreateUserVault, MsgReleaseUserVaultWithdrawal, MsgRemoveControllerFromVault, MsgUpdateUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
 import { OmitCreator } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
@@ -212,39 +212,6 @@ export class PerpspoolModule extends BaseModule {
     );
   }
 
-  public async depositToUserVault(params: PerpspoolModule.DepositToUserVaultParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = Carbon.Perpspool.MsgDepositToUserVault.fromPartial({
-      creator: wallet.bech32Address,
-      ...params,
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgDepositToUserVault,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async withdrawFromUserVault(params: PerpspoolModule.WithdrawFromUserVaultParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = Carbon.Perpspool.MsgWithdrawFromUserVault.fromPartial({
-      creator: wallet.bech32Address,
-      ...params,
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgWithdrawFromUserVault,
-        value,
-      },
-      opts
-    );
-  }
 
   public async releaseUserVaultWithdrawal(params: PerpspoolModule.ReleaseUserVaultWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
@@ -327,8 +294,6 @@ export namespace PerpspoolModule {
   export type UpdateUserVaultParams = OmitCreator<MsgUpdateUserVault>
   export type AddControllerToUserVaultParams = OmitCreator<MsgAddControllerToVault>
   export type RemoveControllerFromUserVaultParams = OmitCreator<MsgRemoveControllerFromVault>
-  export type DepositToUserVaultParams = OmitCreator<MsgDepositToUserVault>
-  export type WithdrawFromUserVaultParams = OmitCreator<MsgWithdrawFromUserVault>
   export type ReleaseUserVaultWithdrawalParams = OmitCreator<MsgReleaseUserVaultWithdrawal>
   export type CancelUserVaultWithdrawalParams = OmitCreator<MsgCancelUserVaultWithdrawal>
 }
