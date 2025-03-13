@@ -131,13 +131,6 @@ export interface MsgRemoveControllerFromVault {
 
 export interface MsgRemoveControllerFromVaultResponse {}
 
-export interface MsgDepositToUserVault {
-  creator: string;
-  id: Long;
-  depositAmount: string;
-  minSharesToReceive: string;
-}
-
 export interface MsgReleaseUserVaultWithdrawal {
   creator: string;
   vaultId: Long;
@@ -2055,112 +2048,6 @@ export const MsgRemoveControllerFromVaultResponse = {
     const message = {
       ...baseMsgRemoveControllerFromVaultResponse,
     } as MsgRemoveControllerFromVaultResponse;
-    return message;
-  },
-};
-
-const baseMsgDepositToUserVault: object = {
-  creator: "",
-  id: Long.UZERO,
-  depositAmount: "",
-  minSharesToReceive: "",
-};
-
-export const MsgDepositToUserVault = {
-  encode(
-    message: MsgDepositToUserVault,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (!message.id.isZero()) {
-      writer.uint32(16).uint64(message.id);
-    }
-    if (message.depositAmount !== "") {
-      writer.uint32(26).string(message.depositAmount);
-    }
-    if (message.minSharesToReceive !== "") {
-      writer.uint32(34).string(message.minSharesToReceive);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDepositToUserVault {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgDepositToUserVault } as MsgDepositToUserVault;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.id = reader.uint64() as Long;
-          break;
-        case 3:
-          message.depositAmount = reader.string();
-          break;
-        case 4:
-          message.minSharesToReceive = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgDepositToUserVault {
-    const message = { ...baseMsgDepositToUserVault } as MsgDepositToUserVault;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.depositAmount =
-      object.depositAmount !== undefined && object.depositAmount !== null
-        ? String(object.depositAmount)
-        : "";
-    message.minSharesToReceive =
-      object.minSharesToReceive !== undefined &&
-      object.minSharesToReceive !== null
-        ? String(object.minSharesToReceive)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgDepositToUserVault): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
-    message.depositAmount !== undefined &&
-      (obj.depositAmount = message.depositAmount);
-    message.minSharesToReceive !== undefined &&
-      (obj.minSharesToReceive = message.minSharesToReceive);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgDepositToUserVault>
-  ): MsgDepositToUserVault {
-    const message = { ...baseMsgDepositToUserVault } as MsgDepositToUserVault;
-    message.creator = object.creator ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
-    message.depositAmount = object.depositAmount ?? "";
-    message.minSharesToReceive = object.minSharesToReceive ?? "";
     return message;
   },
 };
