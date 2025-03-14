@@ -423,7 +423,6 @@ registry.register("/Switcheo.carbon.perpspool.MsgAddControllerToVault", Carbon.P
 registry.register("/Switcheo.carbon.perpspool.MsgAddControllerToVaultResponse", Carbon.Perpspool.MsgAddControllerToVaultResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgRemoveControllerFromVault", Carbon.Perpspool.MsgRemoveControllerFromVault);
 registry.register("/Switcheo.carbon.perpspool.MsgRemoveControllerFromVaultResponse", Carbon.Perpspool.MsgRemoveControllerFromVaultResponse);
-registry.register("/Switcheo.carbon.perpspool.MsgDepositToUserVault", Carbon.Perpspool.MsgDepositToUserVault);
 registry.register("/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawal", Carbon.Perpspool.MsgReleaseUserVaultWithdrawal);
 registry.register("/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawalResponse", Carbon.Perpspool.MsgReleaseUserVaultWithdrawalResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawal", Carbon.Perpspool.MsgCancelUserVaultWithdrawal);
@@ -1150,7 +1149,6 @@ export const TxTypes = {
   "MsgAddControllerToVaultResponse": "/Switcheo.carbon.perpspool.MsgAddControllerToVaultResponse",
   "MsgRemoveControllerFromVault": "/Switcheo.carbon.perpspool.MsgRemoveControllerFromVault",
   "MsgRemoveControllerFromVaultResponse": "/Switcheo.carbon.perpspool.MsgRemoveControllerFromVaultResponse",
-  "MsgDepositToUserVault": "/Switcheo.carbon.perpspool.MsgDepositToUserVault",
   "MsgReleaseUserVaultWithdrawal": "/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawal",
   "MsgReleaseUserVaultWithdrawalResponse": "/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawalResponse",
   "MsgCancelUserVaultWithdrawal": "/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawal",
@@ -15866,24 +15864,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgRemoveControllerFromVaultResponse": [],
-    "MsgDepositToUserVault": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "id",
-        "type": "uint64"
-      },
-      {
-        "name": "deposit_amount",
-        "type": "string"
-      },
-      {
-        "name": "min_shares_to_receive",
-        "type": "string"
-      }
-    ],
     "MsgReleaseUserVaultWithdrawal": [
       {
         "name": "creator",
