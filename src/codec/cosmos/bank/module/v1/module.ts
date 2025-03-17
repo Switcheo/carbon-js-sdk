@@ -14,9 +14,20 @@ export interface Module {
   blockedModuleAccountsOverride: string[];
   /** authority defines the custom module authority. If not set, defaults to the governance module. */
   authority: string;
+  /**
+   * restrictions_order specifies the order of send restrictions and should be
+   * a list of module names which provide a send restriction instance. If no
+   * order is provided, then restrictions will be applied in alphabetical order
+   * of module names.
+   */
+  restrictionsOrder: string[];
 }
 
-const baseModule: object = { blockedModuleAccountsOverride: "", authority: "" };
+const baseModule: object = {
+  blockedModuleAccountsOverride: "",
+  authority: "",
+  restrictionsOrder: "",
+};
 
 export const Module = {
   encode(
@@ -29,6 +40,9 @@ export const Module = {
     if (message.authority !== "") {
       writer.uint32(18).string(message.authority);
     }
+    for (const v of message.restrictionsOrder) {
+      writer.uint32(26).string(v!);
+    }
     return writer;
   },
 
@@ -37,6 +51,7 @@ export const Module = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseModule } as Module;
     message.blockedModuleAccountsOverride = [];
+    message.restrictionsOrder = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -45,6 +60,9 @@ export const Module = {
           break;
         case 2:
           message.authority = reader.string();
+          break;
+        case 3:
+          message.restrictionsOrder.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -63,6 +81,9 @@ export const Module = {
       object.authority !== undefined && object.authority !== null
         ? String(object.authority)
         : "";
+    message.restrictionsOrder = (object.restrictionsOrder ?? []).map((e: any) =>
+      String(e)
+    );
     return message;
   },
 
@@ -75,6 +96,11 @@ export const Module = {
       obj.blockedModuleAccountsOverride = [];
     }
     message.authority !== undefined && (obj.authority = message.authority);
+    if (message.restrictionsOrder) {
+      obj.restrictionsOrder = message.restrictionsOrder.map((e) => e);
+    } else {
+      obj.restrictionsOrder = [];
+    }
     return obj;
   },
 
@@ -84,6 +110,7 @@ export const Module = {
       object.blockedModuleAccountsOverride ?? []
     ).map((e) => e);
     message.authority = object.authority ?? "";
+    message.restrictionsOrder = (object.restrictionsOrder ?? []).map((e) => e);
     return message;
   },
 };
