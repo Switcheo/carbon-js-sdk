@@ -175,6 +175,13 @@ export interface UpdateTokenParams {
 
 export interface MsgUpdateTokenResponse {}
 
+export interface MsgDeprecateToken {
+  deprecator: string;
+  denom: string;
+}
+
+export interface MsgDeprecateTokenResponse {}
+
 export interface MsgAddBridgeAddress {
   creator: string;
   chainId: Long;
@@ -2786,6 +2793,123 @@ export const MsgUpdateTokenResponse = {
   },
 };
 
+const baseMsgDeprecateToken: object = { deprecator: "", denom: "" };
+
+export const MsgDeprecateToken = {
+  encode(
+    message: MsgDeprecateToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.deprecator !== "") {
+      writer.uint32(10).string(message.deprecator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeprecateToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeprecateToken } as MsgDeprecateToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.deprecator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeprecateToken {
+    const message = { ...baseMsgDeprecateToken } as MsgDeprecateToken;
+    message.deprecator =
+      object.deprecator !== undefined && object.deprecator !== null
+        ? String(object.deprecator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgDeprecateToken): unknown {
+    const obj: any = {};
+    message.deprecator !== undefined && (obj.deprecator = message.deprecator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgDeprecateToken>): MsgDeprecateToken {
+    const message = { ...baseMsgDeprecateToken } as MsgDeprecateToken;
+    message.deprecator = object.deprecator ?? "";
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseMsgDeprecateTokenResponse: object = {};
+
+export const MsgDeprecateTokenResponse = {
+  encode(
+    _: MsgDeprecateTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeprecateTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeprecateTokenResponse,
+    } as MsgDeprecateTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeprecateTokenResponse {
+    const message = {
+      ...baseMsgDeprecateTokenResponse,
+    } as MsgDeprecateTokenResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeprecateTokenResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeprecateTokenResponse>
+  ): MsgDeprecateTokenResponse {
+    const message = {
+      ...baseMsgDeprecateTokenResponse,
+    } as MsgDeprecateTokenResponse;
+    return message;
+  },
+};
+
 const baseMsgAddBridgeAddress: object = {
   creator: "",
   chainId: Long.UZERO,
@@ -4441,6 +4565,9 @@ export interface Msg {
   ): Promise<MsgEditBridgeNameResponse>;
   RemoveBridge(request: MsgRemoveBridge): Promise<MsgRemoveBridgeResponse>;
   UpdateToken(request: MsgUpdateToken): Promise<MsgUpdateTokenResponse>;
+  DeprecateToken(
+    request: MsgDeprecateToken
+  ): Promise<MsgDeprecateTokenResponse>;
   AddBridgeAddress(
     request: MsgAddBridgeAddress
   ): Promise<MsgAddBridgeAddressResponse>;
@@ -4486,6 +4613,7 @@ export class MsgClientImpl implements Msg {
     this.EditBridgeName = this.EditBridgeName.bind(this);
     this.RemoveBridge = this.RemoveBridge.bind(this);
     this.UpdateToken = this.UpdateToken.bind(this);
+    this.DeprecateToken = this.DeprecateToken.bind(this);
     this.AddBridgeAddress = this.AddBridgeAddress.bind(this);
     this.RemoveBridgeAddress = this.RemoveBridgeAddress.bind(this);
     this.CreateGroup = this.CreateGroup.bind(this);
@@ -4685,6 +4813,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeprecateToken(
+    request: MsgDeprecateToken
+  ): Promise<MsgDeprecateTokenResponse> {
+    const data = MsgDeprecateToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "DeprecateToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeprecateTokenResponse.decode(new _m0.Reader(data))
     );
   }
 

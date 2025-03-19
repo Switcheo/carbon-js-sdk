@@ -15,6 +15,7 @@ export interface Oracle {
   resultStrategy: string;
   resolution: Long;
   spec: string;
+  enableHistoricalResults: boolean;
 }
 
 export interface Result {
@@ -39,6 +40,7 @@ const baseOracle: object = {
   resultStrategy: "",
   resolution: Long.ZERO,
   spec: "",
+  enableHistoricalResults: false,
 };
 
 export const Oracle = {
@@ -75,6 +77,9 @@ export const Oracle = {
     }
     if (message.spec !== "") {
       writer.uint32(82).string(message.spec);
+    }
+    if (message.enableHistoricalResults === true) {
+      writer.uint32(88).bool(message.enableHistoricalResults);
     }
     return writer;
   },
@@ -115,6 +120,9 @@ export const Oracle = {
           break;
         case 10:
           message.spec = reader.string();
+          break;
+        case 11:
+          message.enableHistoricalResults = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -165,6 +173,11 @@ export const Oracle = {
       object.spec !== undefined && object.spec !== null
         ? String(object.spec)
         : "";
+    message.enableHistoricalResults =
+      object.enableHistoricalResults !== undefined &&
+      object.enableHistoricalResults !== null
+        ? Boolean(object.enableHistoricalResults)
+        : false;
     return message;
   },
 
@@ -188,6 +201,8 @@ export const Oracle = {
     message.resolution !== undefined &&
       (obj.resolution = (message.resolution || Long.ZERO).toString());
     message.spec !== undefined && (obj.spec = message.spec);
+    message.enableHistoricalResults !== undefined &&
+      (obj.enableHistoricalResults = message.enableHistoricalResults);
     return obj;
   },
 
@@ -213,6 +228,7 @@ export const Oracle = {
         ? Long.fromValue(object.resolution)
         : Long.ZERO;
     message.spec = object.spec ?? "";
+    message.enableHistoricalResults = object.enableHistoricalResults ?? false;
     return message;
   },
 };

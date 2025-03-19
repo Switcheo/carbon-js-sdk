@@ -32,11 +32,22 @@ export interface QueryAllOrderResponse {
   pagination?: PageResponse;
 }
 
+export interface QueryAccountOrdersRequest {
+  address: string;
+  marketId: string;
+}
+
+export interface QueryAccountOrdersResponse {
+  orders: Order[];
+}
+
+/** TODO: remove this once frontend has replaced it with query OrdersAccount */
 export interface QueryAccountOpenOrdersRequest {
   address: string;
   marketId: string;
 }
 
+/** TODO: remove this once frontend has replaced it with query OrdersAccount */
 export interface QueryAccountOpenOrdersResponse {
   orders: Order[];
 }
@@ -367,6 +378,148 @@ export const QueryAllOrderResponse = {
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
         : undefined;
+    return message;
+  },
+};
+
+const baseQueryAccountOrdersRequest: object = { address: "", marketId: "" };
+
+export const QueryAccountOrdersRequest = {
+  encode(
+    message: QueryAccountOrdersRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountOrdersRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountOrdersRequest,
+    } as QueryAccountOrdersRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.marketId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountOrdersRequest {
+    const message = {
+      ...baseQueryAccountOrdersRequest,
+    } as QueryAccountOrdersRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAccountOrdersRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountOrdersRequest>
+  ): QueryAccountOrdersRequest {
+    const message = {
+      ...baseQueryAccountOrdersRequest,
+    } as QueryAccountOrdersRequest;
+    message.address = object.address ?? "";
+    message.marketId = object.marketId ?? "";
+    return message;
+  },
+};
+
+const baseQueryAccountOrdersResponse: object = {};
+
+export const QueryAccountOrdersResponse = {
+  encode(
+    message: QueryAccountOrdersResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.orders) {
+      Order.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountOrdersResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountOrdersResponse,
+    } as QueryAccountOrdersResponse;
+    message.orders = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.orders.push(Order.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountOrdersResponse {
+    const message = {
+      ...baseQueryAccountOrdersResponse,
+    } as QueryAccountOrdersResponse;
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: QueryAccountOrdersResponse): unknown {
+    const obj: any = {};
+    if (message.orders) {
+      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
+    } else {
+      obj.orders = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountOrdersResponse>
+  ): QueryAccountOrdersResponse {
+    const message = {
+      ...baseQueryAccountOrdersResponse,
+    } as QueryAccountOrdersResponse;
+    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
     return message;
   },
 };
@@ -750,7 +903,14 @@ export interface Query {
   Order(request: QueryGetOrderRequest): Promise<QueryGetOrderResponse>;
   /** Get details for all orders */
   OrderAll(request: QueryAllOrderRequest): Promise<QueryAllOrderResponse>;
-  /** Get open orders for an address and market */
+  /** Get orders for an address and market */
+  AccountOrders(
+    request: QueryAccountOrdersRequest
+  ): Promise<QueryAccountOrdersResponse>;
+  /**
+   * TODO: remove this once frontend has replaced it with query OrdersAccount
+   * Get open orders for an address and market
+   */
   OrdersAccountOpen(
     request: QueryAccountOpenOrdersRequest
   ): Promise<QueryAccountOpenOrdersResponse>;
@@ -767,6 +927,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Order = this.Order.bind(this);
     this.OrderAll = this.OrderAll.bind(this);
+    this.AccountOrders = this.AccountOrders.bind(this);
     this.OrdersAccountOpen = this.OrdersAccountOpen.bind(this);
     this.Params = this.Params.bind(this);
     this.OrderAllocatedMargin = this.OrderAllocatedMargin.bind(this);
@@ -792,6 +953,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllOrderResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AccountOrders(
+    request: QueryAccountOrdersRequest
+  ): Promise<QueryAccountOrdersResponse> {
+    const data = QueryAccountOrdersRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.order.Query",
+      "AccountOrders",
+      data
+    );
+    return promise.then((data) =>
+      QueryAccountOrdersResponse.decode(new _m0.Reader(data))
     );
   }
 

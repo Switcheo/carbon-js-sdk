@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
 import { Oracle, Result } from "./oracle";
 import { OracleVotesWindow, SlashCounter } from "./slashing";
+import { HistoricalBucketInfo } from "./historical";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -16,6 +17,7 @@ export interface GenesisState {
   params?: Params;
   allOracleVotesWindow: OracleVotesWindow[];
   slashCounters: SlashCounter[];
+  allHistoricalBucketInfo: HistoricalBucketInfo[];
 }
 
 const baseGenesisState: object = {};
@@ -40,6 +42,9 @@ export const GenesisState = {
     for (const v of message.slashCounters) {
       SlashCounter.encode(v!, writer.uint32(42).fork()).ldelim();
     }
+    for (const v of message.allHistoricalBucketInfo) {
+      HistoricalBucketInfo.encode(v!, writer.uint32(50).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -51,6 +56,7 @@ export const GenesisState = {
     message.results = [];
     message.allOracleVotesWindow = [];
     message.slashCounters = [];
+    message.allHistoricalBucketInfo = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -71,6 +77,11 @@ export const GenesisState = {
         case 5:
           message.slashCounters.push(
             SlashCounter.decode(reader, reader.uint32())
+          );
+          break;
+        case 6:
+          message.allHistoricalBucketInfo.push(
+            HistoricalBucketInfo.decode(reader, reader.uint32())
           );
           break;
         default:
@@ -99,6 +110,9 @@ export const GenesisState = {
     message.slashCounters = (object.slashCounters ?? []).map((e: any) =>
       SlashCounter.fromJSON(e)
     );
+    message.allHistoricalBucketInfo = (
+      object.allHistoricalBucketInfo ?? []
+    ).map((e: any) => HistoricalBucketInfo.fromJSON(e));
     return message;
   },
 
@@ -134,6 +148,13 @@ export const GenesisState = {
     } else {
       obj.slashCounters = [];
     }
+    if (message.allHistoricalBucketInfo) {
+      obj.allHistoricalBucketInfo = message.allHistoricalBucketInfo.map((e) =>
+        e ? HistoricalBucketInfo.toJSON(e) : undefined
+      );
+    } else {
+      obj.allHistoricalBucketInfo = [];
+    }
     return obj;
   },
 
@@ -151,6 +172,9 @@ export const GenesisState = {
     message.slashCounters = (object.slashCounters ?? []).map((e) =>
       SlashCounter.fromPartial(e)
     );
+    message.allHistoricalBucketInfo = (
+      object.allHistoricalBucketInfo ?? []
+    ).map((e) => HistoricalBucketInfo.fromPartial(e));
     return message;
   },
 };

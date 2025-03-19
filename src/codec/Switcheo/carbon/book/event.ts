@@ -11,8 +11,24 @@ export interface OrderBookEvent {
   quantity: string;
 }
 
+/**
+ * Message fields below are shortened to reduce size of messages,
+ * but use gogoproto customnames to provide descriptive names
+ * for referencing and use in the code.
+ */
+export interface Quote {
+  /** price in formatted string */
+  p: string;
+  /** quantity in formatted string */
+  q: string;
+}
+
 export interface VirtualOrderBookEvent {
-  book?: OrderBookEvent;
+  m: string;
+  /** bids as one or more Quotes */
+  b: Quote[];
+  /** asks as one or more Quotes */
+  a: Quote[];
 }
 
 export interface ClearVirtualOrderBookEvent {
@@ -113,15 +129,79 @@ export const OrderBookEvent = {
   },
 };
 
-const baseVirtualOrderBookEvent: object = {};
+const baseQuote: object = { p: "", q: "" };
+
+export const Quote = {
+  encode(message: Quote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.p !== "") {
+      writer.uint32(10).string(message.p);
+    }
+    if (message.q !== "") {
+      writer.uint32(18).string(message.q);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Quote {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQuote } as Quote;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.p = reader.string();
+          break;
+        case 2:
+          message.q = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Quote {
+    const message = { ...baseQuote } as Quote;
+    message.p =
+      object.p !== undefined && object.p !== null ? String(object.p) : "";
+    message.q =
+      object.q !== undefined && object.q !== null ? String(object.q) : "";
+    return message;
+  },
+
+  toJSON(message: Quote): unknown {
+    const obj: any = {};
+    message.p !== undefined && (obj.p = message.p);
+    message.q !== undefined && (obj.q = message.q);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Quote>): Quote {
+    const message = { ...baseQuote } as Quote;
+    message.p = object.p ?? "";
+    message.q = object.q ?? "";
+    return message;
+  },
+};
+
+const baseVirtualOrderBookEvent: object = { m: "" };
 
 export const VirtualOrderBookEvent = {
   encode(
     message: VirtualOrderBookEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.book !== undefined) {
-      OrderBookEvent.encode(message.book, writer.uint32(10).fork()).ldelim();
+    if (message.m !== "") {
+      writer.uint32(10).string(message.m);
+    }
+    for (const v of message.b) {
+      Quote.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.a) {
+      Quote.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -133,11 +213,19 @@ export const VirtualOrderBookEvent = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
+    message.b = [];
+    message.a = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.book = OrderBookEvent.decode(reader, reader.uint32());
+          message.m = reader.string();
+          break;
+        case 2:
+          message.b.push(Quote.decode(reader, reader.uint32()));
+          break;
+        case 3:
+          message.a.push(Quote.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -149,19 +237,26 @@ export const VirtualOrderBookEvent = {
 
   fromJSON(object: any): VirtualOrderBookEvent {
     const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
-    message.book =
-      object.book !== undefined && object.book !== null
-        ? OrderBookEvent.fromJSON(object.book)
-        : undefined;
+    message.m =
+      object.m !== undefined && object.m !== null ? String(object.m) : "";
+    message.b = (object.b ?? []).map((e: any) => Quote.fromJSON(e));
+    message.a = (object.a ?? []).map((e: any) => Quote.fromJSON(e));
     return message;
   },
 
   toJSON(message: VirtualOrderBookEvent): unknown {
     const obj: any = {};
-    message.book !== undefined &&
-      (obj.book = message.book
-        ? OrderBookEvent.toJSON(message.book)
-        : undefined);
+    message.m !== undefined && (obj.m = message.m);
+    if (message.b) {
+      obj.b = message.b.map((e) => (e ? Quote.toJSON(e) : undefined));
+    } else {
+      obj.b = [];
+    }
+    if (message.a) {
+      obj.a = message.a.map((e) => (e ? Quote.toJSON(e) : undefined));
+    } else {
+      obj.a = [];
+    }
     return obj;
   },
 
@@ -169,10 +264,9 @@ export const VirtualOrderBookEvent = {
     object: DeepPartial<VirtualOrderBookEvent>
   ): VirtualOrderBookEvent {
     const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
-    message.book =
-      object.book !== undefined && object.book !== null
-        ? OrderBookEvent.fromPartial(object.book)
-        : undefined;
+    message.m = object.m ?? "";
+    message.b = (object.b ?? []).map((e) => Quote.fromPartial(e));
+    message.a = (object.a ?? []).map((e) => Quote.fromPartial(e));
     return message;
   },
 };
