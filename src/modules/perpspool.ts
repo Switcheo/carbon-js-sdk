@@ -3,7 +3,6 @@ import { QueryClientImpl as FeeGrantQueryClient } from "@carbon-sdk/codec/cosmos
 import { MsgCloseUserVault, MsgCreateUserVault, MsgReleaseUserVaultWithdrawal, MsgUpdateUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
 import { OmitCreator } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
-import { EncodeObject } from "@cosmjs/proto-signing";
 import BaseModule from "./base";
 import { GrantModule } from "./grant";
 
@@ -230,11 +229,6 @@ export class PerpspoolModule extends BaseModule {
     return await wallet.sendTxs(messages, opts)
   }
 
-  public async execute(msg: EncodeObject, opts?: CarbonTx.SignTxOpts) {
-    const { value, typeUrl } = msg
-    // wrap in a msgexec where the creator is wallet address
-
-  }
 }
 
 export namespace PerpspoolModule {

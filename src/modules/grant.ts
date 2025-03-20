@@ -1,6 +1,7 @@
-import { MsgGrant, MsgRevoke } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
+import { MsgExec, MsgGrant, MsgRevoke } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 
+import { registry } from "@carbon-sdk/codec";
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
 import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { QueryClientImpl as FeeGrantQueryClient } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
@@ -8,16 +9,17 @@ import { MsgGrantAllowance, MsgRevokeAllowance } from "@carbon-sdk/codec/cosmos/
 import { GrantTypes } from "@carbon-sdk/provider/amino/types/grant";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import BaseModule from "./base";
-interface GrantMessages {
-  typeUrl: string,
-  value: MsgGrant | MsgRevokeAllowance | MsgGrantAllowance
-}
-
-interface RevokeMessages {
-  typeUrl: string,
-  value: MsgRevoke | MsgRevokeAllowance
-}
 export class GrantModule extends BaseModule {
+
+  public static wrapInMsgExec(grantee: string, msgs: readonly EncodeObject[]): EncodeObject[] {
+    return [{
+      typeUrl: CarbonTx.Types.MsgExec,
+      value: MsgExec.fromPartial({
+        grantee,
+        msgs: msgs.map((m) => registry.encodeAsAny({ ...m })),
+      }),
+    }]
+  }
 
   public static getGenericAuthorizationMsg(granter: string, grantee: string, expiry: Date | undefined, msgs: string[]): EncodeObject[] {
     return msgs?.map((msg) => {
@@ -87,28 +89,25 @@ export class GrantModule extends BaseModule {
     }
   }
 
-
   public static async getGrantMsgs(params: GrantModule.GrantParams, client: FeeGrantQueryClient) {
     const { msgs = [], granter, grantee, expiry } = params
-    let messages: GrantMessages[] = this.getGenericAuthorizationMsg(granter, grantee, expiry, msgs)
+    const messages = this.getGenericAuthorizationMsg(granter, grantee, expiry, msgs)
     const existingGrantee = await client.Allowance({ granter, grantee })
 
     // can only have one existing grant between granter and grantee
     // to 'extend' have to revoke existing fee-grant and approve new fee-grant with new expiration
-    if (!!existingGrantee) messages = messages.concat(this.getRevokeAllowanceMsg(granter, grantee))
+    if (existingGrantee) messages.push(this.getRevokeAllowanceMsg(granter, grantee))
 
     const encodedAllowanceMsg = this.getMsgExecAllowanceMsg(granter, grantee, expiry)
-    messages = messages.concat(encodedAllowanceMsg)
+    messages.push(encodedAllowanceMsg)
 
     return messages
   }
 
   public static getRevokeMsgs(params: GrantModule.RevokeGrantParams) {
     const { msgs = [], granter, grantee } = params
-    const encodedRevokeGrantMsgs = this.getRevokeGrantMsg(granter, grantee, msgs)
-    let messages: RevokeMessages[] = encodedRevokeGrantMsgs
-
-    return messages.concat(this.getRevokeAllowanceMsg(granter, params.grantee))
+    return this.getRevokeGrantMsg(granter, grantee, msgs)
+      .concat(this.getRevokeAllowanceMsg(granter, params.grantee))
   }
 
   public async grantAuthAndAllowance(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
@@ -122,6 +121,13 @@ export class GrantModule extends BaseModule {
     const messages = GrantModule.getRevokeMsgs(params)
     return await wallet.sendTxs(messages, opts)
   }
+
+  public async execute(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const execMsgs = GrantModule.wrapInMsgExec(wallet.bech32Address, msgs)
+    return await wallet.sendTxs(execMsgs, opts)
+  }
+
 }
 
 export namespace GrantModule {
