@@ -129,55 +129,6 @@ export class GrantModule extends BaseModule {
 
     return result
   }
-
-  public async grantAllowance(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet()
-    const granter = params.granter ?? wallet.bech32Address
-    const { grantee, expiry, existingGrantee } = params
-    const encodedAllowanceMsg = this.getMsgExecAllowanceMsg(granter, grantee, expiry)
-    let messages = [encodedAllowanceMsg]
-    if (existingGrantee) {
-      const encodedRevokeAllowanceMsg = this.getRevokeAllowanceMsg(granter, grantee)
-      messages = messages.concat(encodedRevokeAllowanceMsg)
-    }
-    const result = await wallet.sendTxs(messages, opts)
-    return result
-  }
-
-  public async grantAuth(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet()
-    const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
-    const msgs = params.selectedMsgs ?? authorizedSignlessMsgs
-    const granter = params.granter ?? wallet.bech32Address
-    const { grantee, expiry } = params
-
-    const encodedGrantMsgs = this.getGenericAuthorizationMsg(granter, grantee, expiry, msgs)
-
-    const result = await wallet.sendTxs(encodedGrantMsgs, opts)
-
-    return result
-  }
-
-  public async queryGranteeDetails(params: GrantModule.QueryGrantParams) {
-    const wallet = this.getWallet()
-    const queryParams: QueryGrantsRequest = {
-      grantee: params.grantee ?? '',
-      granter: params.granter ?? wallet.bech32Address,
-      msgTypeUrl: params.msgTypeUrl ?? '',
-    }
-    const response = await this.sdkProvider.query.grant.Grants(queryParams)
-    return response
-  }
-
-  public async queryGranteeAllowance(params: GrantModule.QueryAllowanceParams) {
-    const wallet = this.getWallet()
-    const queryParams: QueryAllowanceRequest = {
-      grantee: params.grantee ?? '',
-      granter: params.granter ?? wallet.bech32Address,
-    }
-    const response = await this.sdkProvider.query.feegrant.Allowance(queryParams)
-    return response
-  }
 }
 
 export namespace GrantModule {
