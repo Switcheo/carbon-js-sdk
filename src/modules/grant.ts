@@ -22,7 +22,7 @@ export class GrantModule extends BaseModule {
   }
 
   public static getGenericAuthorizationMsg(granter: string, grantee: string, expiry: Date | undefined, msgs: string[]): EncodeObject[] {
-    return msgs?.map((msg) => {
+    return msgs.map((msg) => {
       const grantMsg = MsgGrant.fromPartial({
         granter,
         grantee,
@@ -90,7 +90,7 @@ export class GrantModule extends BaseModule {
   }
 
   public static async getGrantMsgs(params: GrantModule.GrantParams, client: FeeGrantQueryClient) {
-    const { msgs = [], granter, grantee, expiry } = params
+    const { msgs, granter, grantee, expiry } = params
     const messages = this.getGenericAuthorizationMsg(granter, grantee, expiry, msgs)
     const existingGrantee = await client.Allowance({ granter, grantee })
 
@@ -98,8 +98,8 @@ export class GrantModule extends BaseModule {
     // to 'extend' have to revoke existing fee-grant and approve new fee-grant with new expiration
     if (existingGrantee) messages.push(this.getRevokeAllowanceMsg(granter, grantee))
 
-    const encodedAllowanceMsg = this.getMsgExecAllowanceMsg(granter, grantee, expiry)
-    messages.push(encodedAllowanceMsg)
+    const allowanceMsg = this.getMsgExecAllowanceMsg(granter, grantee, expiry)
+    messages.push(allowanceMsg)
 
     return messages
   }
@@ -135,7 +135,7 @@ export namespace GrantModule {
     grantee: string,
     granter: string,
     expiry?: Date,
-    msgs?: string[]
+    msgs: string[]
   }
   export interface RevokeGrantParams {
     grantee: string,
