@@ -1,5 +1,5 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
-import { MsgAddControllerToVault, MsgCancelUserVaultWithdrawal, MsgCloseUserVault, MsgCreateUserVault, MsgReleaseUserVaultWithdrawal, MsgRemoveControllerFromVault, MsgUpdateUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
+import { MsgCloseUserVault, MsgCreateUserVault, MsgReleaseUserVaultWithdrawal, MsgUpdateUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
 import { OmitCreator } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
@@ -178,76 +178,6 @@ export class PerpspoolModule extends BaseModule {
     );
   }
 
-  public async addControllerToUserVault(params: PerpspoolModule.AddControllerToUserVaultParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = Carbon.Perpspool.MsgAddControllerToVault.fromPartial({
-      creator: wallet.bech32Address,
-      ...params,
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgAddControllerToVault,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async addControllersToUserVault(params: PerpspoolModule.AddControllerToUserVaultParams[], opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const msgs = params.map((p) => {
-      const value = Carbon.Perpspool.MsgAddControllerToVault.fromPartial({
-        creator: wallet.bech32Address,
-        ...p,
-      });
-
-      return {
-        typeUrl: CarbonTx.Types.MsgAddControllerToVault,
-        value,
-      };
-    });
-
-    return await wallet.sendTxs(msgs, opts);
-  }
-
-  public async removeControllerFromUserVault(params: PerpspoolModule.RemoveControllerFromUserVaultParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = Carbon.Perpspool.MsgRemoveControllerFromVault.fromPartial({
-      creator: wallet.bech32Address,
-      ...params,
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgRemoveControllerFromVault,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async removeControllersFromUserVault(params: PerpspoolModule.RemoveControllerFromUserVaultParams[], opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const msgs = params.map((p) => {
-      const value = Carbon.Perpspool.MsgRemoveControllerFromVault.fromPartial({
-        creator: wallet.bech32Address,
-        ...p,
-      });
-
-      return {
-        typeUrl: CarbonTx.Types.MsgRemoveControllerFromVault,
-        value,
-      };
-    });
-
-    return await wallet.sendTxs(msgs, opts);
-  }
-
   public async releaseUserVaultWithdrawal(params: PerpspoolModule.ReleaseUserVaultWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -327,8 +257,5 @@ export namespace PerpspoolModule {
   export type CreateUserVaultParams = OmitCreator<MsgCreateUserVault>
   export type CloseUserVaultParams = OmitCreator<MsgCloseUserVault>
   export type UpdateUserVaultParams = OmitCreator<MsgUpdateUserVault>
-  export type AddControllerToUserVaultParams = OmitCreator<MsgAddControllerToVault>
-  export type RemoveControllerFromUserVaultParams = OmitCreator<MsgRemoveControllerFromVault>
   export type ReleaseUserVaultWithdrawalParams = OmitCreator<MsgReleaseUserVaultWithdrawal>
-  export type CancelUserVaultWithdrawalParams = OmitCreator<MsgCancelUserVaultWithdrawal>
 }
