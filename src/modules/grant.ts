@@ -7,6 +7,7 @@ import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/fe
 import { QueryAllowanceRequest } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
 import { MsgGrantAllowance, MsgRevokeAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import { GrantTypes } from "@carbon-sdk/provider/amino/types/grant";
+import { EncodeObject } from "@cosmjs/proto-signing";
 import BaseModule from "./base";
 
 interface GrantMessages {
@@ -19,14 +20,12 @@ interface RevokeMessages {
   value: MsgRevoke | MsgRevokeAllowance
 }
 export class GrantModule extends BaseModule {
-  public async grantAuthAndAllowance(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet()
-    const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
 
-    const encodedGrantMsgs = authorizedSignlessMsgs?.map((msg) => {
+  public getGenericAuthorizationMsg(granter: string, grantee: string, expiry: Date | undefined, msgs: string[]): EncodeObject[] {
+    return msgs?.map((msg) => {
       const grantMsg = MsgGrant.fromPartial({
-        granter: params.granter ?? wallet.bech32Address,
-        grantee: params.grantee,
+        granter,
+        grantee,
         grant: {
           authorization: {
             typeUrl: GrantTypes.GenericAuthorization,
@@ -34,62 +33,43 @@ export class GrantModule extends BaseModule {
               msg,
             })).finish(),
           },
-          expiration: params.expiry,
+          expiration: expiry,
         },
       })
       return {
         typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
       }
     })
-    let messages: GrantMessages[] = encodedGrantMsgs
+  }
 
-    // can only have one existing grant between granter and grantee
-    // to 'extend' have to revoke existing fee-grant and approve new fee-grant with new expiration
-    if (params.existingGrantee) {
-      const encodedRevokeAllowanceMsg = [{
-        typeUrl: CarbonTx.Types.MsgRevokeAllowance,
-        value: MsgRevokeAllowance.fromPartial({
-          granter: params.granter ?? wallet.bech32Address,
-          grantee: params.grantee,
-        }),
-      }]
-      messages = messages.concat(encodedRevokeAllowanceMsg)
-    }
-    const encodedAllowanceMsg = [{
+  public getMsgExecAllowanceMsg(granter: string, grantee: string, expiry: Date | undefined): EncodeObject {
+    return {
       typeUrl: CarbonTx.Types.MsgGrantAllowance,
       value: MsgGrantAllowance.fromPartial({
-        granter: params.granter ?? wallet.bech32Address,
-        grantee: params.grantee,
+        granter,
+        grantee,
         allowance: {
           typeUrl: GrantTypes.AllowedMsgAllowance,
           value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
             allowance: {
               typeUrl: GrantTypes.BasicAllowance,
               value: BasicAllowance.encode(BasicAllowance.fromPartial({
-                expiration: params.expiry,
+                expiration: expiry,
               })).finish(),
             },
             allowedMessages: [CarbonTx.Types.MsgExec],
           })).finish(),
         },
       }),
-    }]
-    messages = messages.concat(encodedAllowanceMsg)
-
-    const result = await wallet.sendTxs(messages, opts)
-
-    return result
+    }
   }
 
-  public async revokeAuthAndAllowance(params: GrantModule.RevokeGrantParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet()
-    const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
 
-
-    const encodedRevokeGrantMsgs = authorizedSignlessMsgs.map((msg: string) => {
+  public getRevokeGrantMsg(granter: string, grantee: string, msgs: string[]): EncodeObject[] {
+    return msgs.map((msg: string) => {
       const revokeMsg = MsgRevoke.fromPartial({
-        granter: params.granter ?? wallet.bech32Address,
-        grantee: params.grantee,
+        granter,
+        grantee,
         msgTypeUrl: msg,
       })
       return {
@@ -97,17 +77,53 @@ export class GrantModule extends BaseModule {
         value: revokeMsg,
       }
     })
+  }
 
-    let messages: RevokeMessages[] = encodedRevokeGrantMsgs
-    const encodedRevokeAllowanceMsg = [{
+  public getRevokeAllowanceMsg(granter: string, grantee: string): EncodeObject {
+    return {
       typeUrl: CarbonTx.Types.MsgRevokeAllowance,
       value: MsgRevokeAllowance.fromPartial({
-        granter: params.granter ?? wallet.bech32Address,
-        grantee: params.grantee,
+        granter,
+        grantee,
       }),
-    }]
+    }
+  }
 
-    messages = messages.concat(encodedRevokeAllowanceMsg)
+  public async grantAuthAndAllowance(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
+
+    const granter = params.granter ?? wallet.bech32Address
+    const { grantee, expiry, existingGrantee } = params
+
+    let messages: GrantMessages[] = this.getGenericAuthorizationMsg(granter, grantee, expiry, authorizedSignlessMsgs)
+
+    // can only have one existing grant between granter and grantee
+    // to 'extend' have to revoke existing fee-grant and approve new fee-grant with new expiration
+    if (existingGrantee) messages = messages.concat(this.getRevokeAllowanceMsg(granter, grantee))
+
+    const encodedAllowanceMsg = this.getMsgExecAllowanceMsg(granter, grantee, expiry)
+    messages = messages.concat(encodedAllowanceMsg)
+
+    const result = await wallet.sendTxs(messages, opts)
+
+    return result
+  }
+
+
+  public async revokeAuthAndAllowance(params: GrantModule.RevokeGrantParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
+
+    const granter = params.granter ?? wallet.bech32Address
+    const grantee = params.grantee
+
+    const encodedRevokeGrantMsgs = this.getRevokeGrantMsg(granter, grantee, authorizedSignlessMsgs)
+
+    let messages: RevokeMessages[] = encodedRevokeGrantMsgs
+
+
+    messages = messages.concat(this.getRevokeAllowanceMsg(granter, params.grantee))
 
     const result = await wallet.sendTxs(messages, opts)
 
@@ -116,35 +132,13 @@ export class GrantModule extends BaseModule {
 
   public async grantAllowance(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
-    const encodedAllowanceMsg = [{
-      typeUrl: CarbonTx.Types.MsgGrantAllowance,
-      value: MsgGrantAllowance.fromPartial({
-        granter: params.granter ?? wallet.bech32Address,
-        grantee: params.grantee,
-        allowance: {
-          typeUrl: GrantTypes.AllowedMsgAllowance,
-          value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
-            allowance: {
-              typeUrl: GrantTypes.BasicAllowance,
-              value: BasicAllowance.encode(BasicAllowance.fromPartial({
-                expiration: params.expiry,
-              })).finish(),
-            },
-            allowedMessages: [CarbonTx.Types.MsgExec],
-          })).finish(),
-        },
-      }),
-    }]
-    let messages = encodedAllowanceMsg
-    if (params.existingGrantee) {
-      const encodedRevokeAllowanceMsg = [{
-        typeUrl: CarbonTx.Types.MsgRevokeAllowance,
-        value: MsgRevokeAllowance.fromPartial({
-          granter: params.granter ?? wallet.bech32Address,
-          grantee: params.grantee,
-        }),
-      }]
-      messages = encodedRevokeAllowanceMsg.concat(messages)
+    const granter = params.granter ?? wallet.bech32Address
+    const { grantee, expiry, existingGrantee } = params
+    const encodedAllowanceMsg = this.getMsgExecAllowanceMsg(granter, grantee, expiry)
+    let messages = [encodedAllowanceMsg]
+    if (existingGrantee) {
+      const encodedRevokeAllowanceMsg = this.getRevokeAllowanceMsg(granter, grantee)
+      messages = messages.concat(encodedRevokeAllowanceMsg)
     }
     const result = await wallet.sendTxs(messages, opts)
     return result
@@ -153,25 +147,11 @@ export class GrantModule extends BaseModule {
   public async grantAuth(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
     const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
+    const msgs = params.selectedMsgs ?? authorizedSignlessMsgs
+    const granter = params.granter ?? wallet.bech32Address
+    const { grantee, expiry } = params
 
-    const encodedGrantMsgs = (params.selectedMsgs ?? authorizedSignlessMsgs)?.map((msg) => {
-      const grantMsg = MsgGrant.fromPartial({
-        granter: params.granter ?? wallet.bech32Address,
-        grantee: params.grantee,
-        grant: {
-          authorization: {
-            typeUrl: GrantTypes.GenericAuthorization,
-            value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
-              msg,
-            })).finish(),
-          },
-          expiration: params.expiry,
-        },
-      })
-      return {
-        typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
-      }
-    })
+    const encodedGrantMsgs = this.getGenericAuthorizationMsg(granter, grantee, expiry, msgs)
 
     const result = await wallet.sendTxs(encodedGrantMsgs, opts)
 
