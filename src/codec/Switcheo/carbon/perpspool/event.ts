@@ -79,6 +79,7 @@ export interface UserVaultWithdrawalReleasedEvent {
   receivedAmount: string;
   requestTime?: Date;
   completionTime?: Date;
+  error: string;
 }
 
 export interface UserVaultEvent {
@@ -1014,6 +1015,7 @@ const baseUserVaultWithdrawalReleasedEvent: object = {
   sharesAmount: "",
   receivedDenom: "",
   receivedAmount: "",
+  error: "",
 };
 
 export const UserVaultWithdrawalReleasedEvent = {
@@ -1053,6 +1055,9 @@ export const UserVaultWithdrawalReleasedEvent = {
         toTimestamp(message.completionTime),
         writer.uint32(74).fork()
       ).ldelim();
+    }
+    if (message.error !== "") {
+      writer.uint32(82).string(message.error);
     }
     return writer;
   },
@@ -1099,6 +1104,9 @@ export const UserVaultWithdrawalReleasedEvent = {
           message.completionTime = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 10:
+          message.error = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1148,6 +1156,10 @@ export const UserVaultWithdrawalReleasedEvent = {
       object.completionTime !== undefined && object.completionTime !== null
         ? fromJsonTimestamp(object.completionTime)
         : undefined;
+    message.error =
+      object.error !== undefined && object.error !== null
+        ? String(object.error)
+        : "";
     return message;
   },
 
@@ -1170,6 +1182,7 @@ export const UserVaultWithdrawalReleasedEvent = {
       (obj.requestTime = message.requestTime.toISOString());
     message.completionTime !== undefined &&
       (obj.completionTime = message.completionTime.toISOString());
+    message.error !== undefined && (obj.error = message.error);
     return obj;
   },
 
@@ -1194,6 +1207,7 @@ export const UserVaultWithdrawalReleasedEvent = {
     message.receivedAmount = object.receivedAmount ?? "";
     message.requestTime = object.requestTime ?? undefined;
     message.completionTime = object.completionTime ?? undefined;
+    message.error = object.error ?? "";
     return message;
   },
 };

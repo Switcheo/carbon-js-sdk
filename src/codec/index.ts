@@ -419,14 +419,8 @@ registry.register("/Switcheo.carbon.perpspool.MsgCloseUserVault", Carbon.Perpspo
 registry.register("/Switcheo.carbon.perpspool.MsgCloseUserVaultResponse", Carbon.Perpspool.MsgCloseUserVaultResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateUserVault", Carbon.Perpspool.MsgUpdateUserVault);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateUserVaultResponse", Carbon.Perpspool.MsgUpdateUserVaultResponse);
-registry.register("/Switcheo.carbon.perpspool.MsgAddControllerToVault", Carbon.Perpspool.MsgAddControllerToVault);
-registry.register("/Switcheo.carbon.perpspool.MsgAddControllerToVaultResponse", Carbon.Perpspool.MsgAddControllerToVaultResponse);
-registry.register("/Switcheo.carbon.perpspool.MsgRemoveControllerFromVault", Carbon.Perpspool.MsgRemoveControllerFromVault);
-registry.register("/Switcheo.carbon.perpspool.MsgRemoveControllerFromVaultResponse", Carbon.Perpspool.MsgRemoveControllerFromVaultResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawal", Carbon.Perpspool.MsgReleaseUserVaultWithdrawal);
 registry.register("/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawalResponse", Carbon.Perpspool.MsgReleaseUserVaultWithdrawalResponse);
-registry.register("/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawal", Carbon.Perpspool.MsgCancelUserVaultWithdrawal);
-registry.register("/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawalResponse", Carbon.Perpspool.MsgCancelUserVaultWithdrawalResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateParams", Carbon.Perpspool.MsgUpdateParams);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateParamsResponse", Carbon.Perpspool.MsgUpdateParamsResponse);
 
@@ -1145,14 +1139,8 @@ export const TxTypes = {
   "MsgCloseUserVaultResponse": "/Switcheo.carbon.perpspool.MsgCloseUserVaultResponse",
   "MsgUpdateUserVault": "/Switcheo.carbon.perpspool.MsgUpdateUserVault",
   "MsgUpdateUserVaultResponse": "/Switcheo.carbon.perpspool.MsgUpdateUserVaultResponse",
-  "MsgAddControllerToVault": "/Switcheo.carbon.perpspool.MsgAddControllerToVault",
-  "MsgAddControllerToVaultResponse": "/Switcheo.carbon.perpspool.MsgAddControllerToVaultResponse",
-  "MsgRemoveControllerFromVault": "/Switcheo.carbon.perpspool.MsgRemoveControllerFromVault",
-  "MsgRemoveControllerFromVaultResponse": "/Switcheo.carbon.perpspool.MsgRemoveControllerFromVaultResponse",
   "MsgReleaseUserVaultWithdrawal": "/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawal",
   "MsgReleaseUserVaultWithdrawalResponse": "/Switcheo.carbon.perpspool.MsgReleaseUserVaultWithdrawalResponse",
-  "MsgCancelUserVaultWithdrawal": "/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawal",
-  "MsgCancelUserVaultWithdrawalResponse": "/Switcheo.carbon.perpspool.MsgCancelUserVaultWithdrawalResponse",
   "MsgPerpspoolUpdateParams": "/Switcheo.carbon.perpspool.MsgUpdateParams",
   "MsgPerpspoolUpdateParamsResponse": "/Switcheo.carbon.perpspool.MsgUpdateParamsResponse",
   "MsgSetSequence": "/Switcheo.carbon.sequence.MsgSetSequence",
@@ -14823,17 +14811,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       }
     ],
-    "UserVaultAPI": [
-      {
-        "name": "vault",
-        "type": "UserVault",
-        "packageName": "/Switcheo.carbon.perpspool"
-      },
-      {
-        "name": "controllers",
-        "type": "string[]"
-      }
-    ],
     "UpdateUserVaultParams": [
       {
         "name": "deposit_fee",
@@ -15086,6 +15063,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "completion_time",
         "type": "string"
+      },
+      {
+        "name": "error",
+        "type": "string"
       }
     ],
     "UserVaultEvent": [
@@ -15141,6 +15122,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool_commission_address",
         "type": "string"
+      },
+      {
+        "name": "user_vault_name_max_length",
+        "type": "uint64"
       },
       {
         "name": "user_vault_description_max_length",
@@ -15220,6 +15205,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool_commission_address",
         "type": "string"
+      },
+      {
+        "name": "user_vault_name_max_length",
+        "type": "uint64"
       },
       {
         "name": "user_vault_description_max_length",
@@ -15484,7 +15473,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryUserVaultResponse": [
       {
         "name": "user_vault",
-        "type": "UserVaultAPI",
+        "type": "UserVault",
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
@@ -15498,7 +15487,7 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryAllUserVaultResponse": [
       {
         "name": "user_vaults",
-        "type": "UserVaultAPI[]",
+        "type": "UserVault[]",
         "packageName": "/Switcheo.carbon.perpspool"
       },
       {
@@ -15834,36 +15823,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdateUserVaultResponse": [],
-    "MsgAddControllerToVault": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "id",
-        "type": "uint64"
-      },
-      {
-        "name": "controller",
-        "type": "string"
-      }
-    ],
-    "MsgAddControllerToVaultResponse": [],
-    "MsgRemoveControllerFromVault": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "id",
-        "type": "uint64"
-      },
-      {
-        "name": "controller",
-        "type": "string"
-      }
-    ],
-    "MsgRemoveControllerFromVaultResponse": [],
     "MsgReleaseUserVaultWithdrawal": [
       {
         "name": "creator",
@@ -15878,22 +15837,12 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
-    "MsgReleaseUserVaultWithdrawalResponse": [],
-    "MsgCancelUserVaultWithdrawal": [
+    "MsgReleaseUserVaultWithdrawalResponse": [
       {
-        "name": "creator",
+        "name": "error",
         "type": "string"
-      },
-      {
-        "name": "vault_id",
-        "type": "uint64"
-      },
-      {
-        "name": "process_id",
-        "type": "uint64"
       }
     ],
-    "MsgCancelUserVaultWithdrawalResponse": [],
     "MsgUpdateParams": [
       {
         "name": "authority",
@@ -18815,6 +18764,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "authority",
         "type": "string"
+      },
+      {
+        "name": "restrictions_order",
+        "type": "string[]"
       }
     ]
   },
