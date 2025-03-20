@@ -1,8 +1,11 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
+import { QueryClientImpl as FeeGrantQueryClient } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
 import { MsgCloseUserVault, MsgCreateUserVault, MsgReleaseUserVaultWithdrawal, MsgUpdateUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
 import { OmitCreator } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
+import { EncodeObject } from "@cosmjs/proto-signing";
 import BaseModule from "./base";
+import { GrantModule } from "./grant";
 
 export class PerpspoolModule extends BaseModule {
   public async createPerpertualsPool(params: PerpspoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -193,6 +196,45 @@ export class PerpspoolModule extends BaseModule {
       opts
     );
   }
+
+  public async addControllers(params: PerpspoolModule.AddControllersParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+
+    const { controllers, msgs: authorizedMsgs, expiry } = params
+
+    const grants: GrantModule.GrantParams[] = controllers.map((controller) => ({
+      grantee: controller,
+      granter: wallet.bech32Address,
+      expiry,
+      msgs: authorizedMsgs,
+    }))
+    const client: FeeGrantQueryClient = this.sdkProvider.query.feegrant
+
+    const messages = (await Promise.all(grants.map(async (g) => await GrantModule.getGrantMsgs(g, client)))).flat()
+    return await wallet.sendTxs(messages, opts)
+  }
+
+
+  public async removeControllers(params: PerpspoolModule.RemoveControllersParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+
+    const { controllers, msgs: authorizedMsgs } = params
+
+    const grants: GrantModule.RevokeGrantParams[] = controllers.map((controller) => ({
+      grantee: controller,
+      granter: wallet.bech32Address,
+      msgs: authorizedMsgs,
+    }))
+
+    const messages = (await Promise.all(grants.map(async (g) => await GrantModule.getRevokeMsgs(g)))).flat()
+    return await wallet.sendTxs(messages, opts)
+  }
+
+  public async execute(msg: EncodeObject, opts?: CarbonTx.SignTxOpts) {
+    const { value, typeUrl } = msg
+    // wrap in a msgexec where the creator is wallet address
+
+  }
 }
 
 export namespace PerpspoolModule {
@@ -236,6 +278,17 @@ export namespace PerpspoolModule {
 
   export interface DeregisterFromPoolParams {
     marketId: string;
+  }
+
+  export interface AddControllersParams {
+    controllers: string[];
+    expiry?: Date;
+    msgs: string[]
+  }
+
+  export interface RemoveControllersParams {
+    controllers: string[];
+    msgs: string[]
   }
 
   export type CreateUserVaultParams = OmitCreator<MsgCreateUserVault>
