@@ -183,11 +183,7 @@ export class ZILClient {
     return TokensWithExternalBalance;
   }
 
-  public async formatWithdrawalAddress(bech32Address: string): Promise<string> {
-    // const isValidAddress = isValidChecksumAddress(bech32Address)
-    // if (!isValidAddress) {
-    //   throw new Error("invalid address")
-    // }
+  public formatWithdrawalAddress(bech32Address: string): string {
     return fromBech32Address(bech32Address).toLowerCase().substr(2);
   }
 
