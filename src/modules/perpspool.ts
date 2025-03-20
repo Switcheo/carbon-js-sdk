@@ -193,24 +193,8 @@ export class PerpspoolModule extends BaseModule {
       opts
     );
   }
-
-  public async cancelUserVaultWithdrawal(params: PerpspoolModule.CancelUserVaultWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = Carbon.Perpspool.MsgCancelUserVaultWithdrawal.fromPartial({
-      creator: wallet.bech32Address,
-      ...params,
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgCancelUserVaultWithdrawal,
-        value,
-      },
-      opts
-    );
-  }
 }
+
 export namespace PerpspoolModule {
   export interface CreatePoolParams {
     name: string;
