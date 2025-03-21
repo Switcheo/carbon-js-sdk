@@ -90,7 +90,7 @@ export class GrantModule extends BaseModule {
   }
 
   public static async getGrantMsgs(params: GrantModule.GrantParams, client: FeeGrantQueryClient) {
-    const { msgs, granter, grantee, expiry } = params
+    const { msgs = [], granter, grantee, expiry } = params
     const messages = this.getGenericAuthorizationMsg(granter, grantee, expiry, msgs)
     const existingGrantee = await client.Allowance({ granter, grantee })
 
@@ -135,7 +135,7 @@ export namespace GrantModule {
     grantee: string,
     granter: string,
     expiry?: Date,
-    msgs: string[]
+    msgs?: string[]
   }
   export interface RevokeGrantParams {
     grantee: string,

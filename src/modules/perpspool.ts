@@ -199,13 +199,12 @@ export class PerpspoolModule extends BaseModule {
   public async addControllers(params: PerpspoolModule.AddControllersParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
 
-    const { controllers, msgs: authorizedMsgs, expiry } = params
+    const { controllers, expiry } = params
 
     const grants: GrantModule.GrantParams[] = controllers.map((controller) => ({
       grantee: controller,
       granter: wallet.bech32Address,
       expiry,
-      msgs: authorizedMsgs,
     }))
     const client: FeeGrantQueryClient = this.sdkProvider.query.feegrant
 
@@ -217,12 +216,11 @@ export class PerpspoolModule extends BaseModule {
   public async removeControllers(params: PerpspoolModule.RemoveControllersParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
 
-    const { controllers, msgs: authorizedMsgs } = params
+    const { controllers } = params
 
     const grants: GrantModule.RevokeGrantParams[] = controllers.map((controller) => ({
       grantee: controller,
       granter: wallet.bech32Address,
-      msgs: authorizedMsgs,
     }))
 
     const messages = (await Promise.all(grants.map(async (g) => await GrantModule.getRevokeMsgs(g)))).flat()
@@ -277,12 +275,10 @@ export namespace PerpspoolModule {
   export interface AddControllersParams {
     controllers: string[];
     expiry?: Date;
-    msgs: string[]
   }
 
   export interface RemoveControllersParams {
     controllers: string[];
-    msgs: string[]
   }
 
   export type CreateUserVaultParams = OmitCreator<MsgCreateUserVault>
