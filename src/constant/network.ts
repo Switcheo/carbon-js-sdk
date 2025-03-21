@@ -122,7 +122,7 @@ export const NetworkConfigs: {
     feeAddress: "08d8f59e475830d9a1bb97d74285c4d34c6dac08", // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
 
     eth: {
-      rpcURL: "https://ethereum-rpc.publicnode.com",
+      rpcURL: "",
       wsURL: "wss://mainnet.dagger.matic.network",
       payerURL: "https://payer.carbon.network",
       bridgeEntranceAddr: "0x93fd29ff3b662c9e5e15681bb3b139d6ce2ca9c5",
@@ -132,7 +132,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://bsc-dataseed2.binance.org/",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://payer.carbon.network",
       bridgeEntranceAddr: "0x93fd29ff3b662c9e5e15681bb3b139d6ce2ca9c5",
@@ -142,7 +142,7 @@ export const NetworkConfigs: {
     },
 
     arbitrum: {
-      rpcURL: "https://arb1.arbitrum.io/rpc",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://payer.carbon.network",
       bridgeEntranceAddr: "0x7b1c7216c117cc62d875e3086518b238392cf04d",
@@ -152,7 +152,7 @@ export const NetworkConfigs: {
     },
 
     polygon: {
-      rpcURL: "https://polygon-rpc.com",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://payer.carbon.network",
       bridgeEntranceAddr: "0x75d302266926CB34B7564AAF3102c258234A35F2",
@@ -162,7 +162,7 @@ export const NetworkConfigs: {
     },
 
     okc: {
-      rpcURL: "https://exchainrpc.okex.org",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://payer.carbon.network",
       bridgeEntranceAddr: "0x7b1c7216c117cc62d875e3086518b238392cf04d",
@@ -190,22 +190,18 @@ export const NetworkConfigs: {
 
     mantle: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://rpc.mantle.xyz",
     },
 
     optimism: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://mainnet.optimism.io",
     },
 
     base: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://base-rpc.publicnode.com",
     },
 
     avax: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://api.avax.network/ext/bc/C/rpc",
     },
   },
 
@@ -230,7 +226,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
-      rpcURL: "https://sepolia.drpc.org",
+      rpcURL: "",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0xa06569e48fed18ed840c3f064ffd9bbf95debce7",
@@ -240,7 +236,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
+      rpcURL: "",
       wsURL: "",
       payerURL: `https://test-payer.carbon.network`,
       bridgeEntranceAddr: "",
@@ -250,7 +246,7 @@ export const NetworkConfigs: {
     },
 
     arbitrum: {
-      rpcURL: "https://rinkeby.arbitrum.io/rpc",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -260,7 +256,7 @@ export const NetworkConfigs: {
     },
 
     polygon: {
-      rpcURL: "https://rpc-mumbai.maticvigil.com",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -270,7 +266,7 @@ export const NetworkConfigs: {
     },
 
     okc: {
-      rpcURL: "https://exchaintestrpc.okex.org",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -298,22 +294,18 @@ export const NetworkConfigs: {
 
     mantle: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     optimism: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://sepolia.optimism.io",
     },
 
     base: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
 
     avax: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 
@@ -350,7 +342,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
-      rpcURL: "https://sepolia.drpc.org",
+      rpcURL: "",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0x7f7317167e90afa38972e46b031bb4da0b1f6f73",
@@ -360,7 +352,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
+      rpcURL: "",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       bridgeEntranceAddr: "",
@@ -370,7 +362,7 @@ export const NetworkConfigs: {
     },
 
     arbitrum: {
-      rpcURL: "https://rinkeby.arbitrum.io/rpc",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -380,7 +372,7 @@ export const NetworkConfigs: {
     },
 
     polygon: {
-      rpcURL: "https://rpc-mumbai.maticvigil.com",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -390,7 +382,7 @@ export const NetworkConfigs: {
     },
 
     okc: {
-      rpcURL: "https://exchaintestrpc.okex.org",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -419,22 +411,18 @@ export const NetworkConfigs: {
 
     mantle: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     optimism: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://sepolia.optimism.io",
     },
 
     base: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
 
     avax: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 
@@ -459,7 +447,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
     eth: {
-      rpcURL: "https://sepolia.drpc.org",
+      rpcURL: "",
       wsURL: "wss://ropsten.dagger.matic.network",
       payerURL: `http://localhost:8001`,
       bridgeEntranceAddr: "",
@@ -469,7 +457,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
+      rpcURL: "",
       wsURL: "",
       payerURL: `http://localhost:8001`,
       bridgeEntranceAddr: "",
@@ -479,7 +467,7 @@ export const NetworkConfigs: {
     },
 
     arbitrum: {
-      rpcURL: "https://rinkeby.arbitrum.io/rpc",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -489,7 +477,7 @@ export const NetworkConfigs: {
     },
 
     polygon: {
-      rpcURL: "https://rpc-mumbai.maticvigil.com",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -499,7 +487,7 @@ export const NetworkConfigs: {
     },
 
     okc: {
-      rpcURL: "https://exchaintestrpc.okex.org",
+      rpcURL: "",
       wsURL: "",
       payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
@@ -528,22 +516,18 @@ export const NetworkConfigs: {
 
     mantle: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://rpc.sepolia.mantle.xyz",
     },
 
     optimism: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://sepolia.optimism.io",
     },
 
     base: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://base-sepolia-rpc.publicnode.com",
     },
 
     avax: {
       ...EthNetworkConfigFallback,
-      rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
   },
 } as const;

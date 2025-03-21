@@ -16,6 +16,7 @@ export interface ETHClientOpts {
   configProvider: NetworkConfigProvider;
   tokenClient: TokenClient;
   blockchain: typeof ETHClient.SUPPORTED_BLOCKCHAINS[number];
+  rpcURL: string;
 }
 
 interface ETHTxParams {
@@ -91,15 +92,16 @@ export class ETHClient {
   private constructor(
     public readonly configProvider: NetworkConfigProvider,
     public readonly blockchain: typeof ETHClient.SUPPORTED_BLOCKCHAINS[number],
-    public readonly tokenClient: TokenClient
+    public readonly tokenClient: TokenClient,
+    public readonly rpcURL: string,
   ) { }
 
   public static instance(opts: ETHClientOpts) {
-    const { configProvider, blockchain, tokenClient } = opts;
+    const { configProvider, blockchain, tokenClient, rpcURL } = opts;
 
     if (!ETHClient.SUPPORTED_BLOCKCHAINS.includes(blockchain)) throw new Error(`unsupported blockchain - ${blockchain}`);
 
-    return new ETHClient(configProvider, blockchain, tokenClient);
+    return new ETHClient(configProvider, blockchain, tokenClient, rpcURL);
   }
 
   public async getExternalBalances(api: CarbonSDK, address: string, whitelistDenoms?: string[], version = "V1"): Promise<TokensWithExternalBalance[]> {
@@ -470,7 +472,7 @@ export class ETHClient {
   }
 
   public getProviderUrl() {
-    return this.getConfig().rpcURL;
+    return this.rpcURL;
   }
 
   public getLockProxyAddress() {
