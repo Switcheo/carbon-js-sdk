@@ -29,7 +29,7 @@ export class PositionModule extends BaseModule {
     const msgs = params.map((param) => {
       const creator = param.creator ?? wallet.bech32Address
       const value = MsgSetMargin.fromPartial({
-        creator: wallet.bech32Address,
+        creator,
         marketId: param.marketId,
         margin: param.margin.toString(10),
       });
