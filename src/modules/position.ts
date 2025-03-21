@@ -6,9 +6,10 @@ import BaseModule from "./base";
 export class PositionModule extends BaseModule {
   public async editMargin(params: PositionModule.SetMarginParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    const creator = params.creator ?? wallet.bech32Address
 
     const value = MsgSetMargin.fromPartial({
-      creator: wallet.bech32Address,
+      creator,
       marketId: params.marketId,
       margin: params.margin.toString(10),
     });
@@ -26,8 +27,9 @@ export class PositionModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map((param) => {
+      const creator = param.creator ?? wallet.bech32Address
       const value = MsgSetMargin.fromPartial({
-        creator: wallet.bech32Address,
+        creator,
         marketId: param.marketId,
         margin: param.margin.toString(10),
       });
@@ -44,6 +46,7 @@ export class PositionModule extends BaseModule {
 
 export namespace PositionModule {
   export interface SetMarginParams {
+    creator?: string;
     marketId: string;
     margin: BigNumber;
   }
