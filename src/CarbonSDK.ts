@@ -240,12 +240,14 @@ class CarbonSDK {
       configProvider: this,
       blockchain: Blockchain.Ethereum,
       tokenClient: this.token,
+      rpcURL: "",
     });
 
     this.bsc = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.BinanceSmartChain,
       tokenClient: this.token,
+      rpcURL: "",
     });
 
     this.zil = ZILClient.instance({
@@ -257,42 +259,49 @@ class CarbonSDK {
       configProvider: this,
       blockchain: Blockchain.Arbitrum,
       tokenClient: this.token,
+      rpcURL: "",
     });
 
     this.polygon = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Polygon,
       tokenClient: this.token,
+      rpcURL: "",
     });
 
     this.okc = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Okc,
       tokenClient: this.token,
+      rpcURL: "",
     });
 
     this.mantle = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Mantle,
       tokenClient: this.token,
+      rpcURL: "",
     });
 
     this.op = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Optimism,
       tokenClient: this.token,
+      rpcURL: "",
     });
 
     this.avax = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Avalanche,
       tokenClient: this.token,
+      rpcURL: "",
     });
 
     this.base = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Base,
       tokenClient: this.token,
+      rpcURL: "",
     });
   }
 
