@@ -1,6 +1,6 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { QueryClientImpl as FeeGrantQueryClient } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
-import { MsgCloseUserVault, MsgCreateUserVault, MsgReleaseUserVaultWithdrawal, MsgUpdateUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
+import { MsgCloseUserVault, MsgCreateUserVault, MsgUpdateUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
 import { OmitCreator } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
@@ -182,9 +182,10 @@ export class PerpspoolModule extends BaseModule {
 
   public async releaseUserVaultWithdrawal(params: PerpspoolModule.ReleaseUserVaultWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    const creator = params.creator ?? wallet.bech32Address
 
     const value = Carbon.Perpspool.MsgReleaseUserVaultWithdrawal.fromPartial({
-      creator: wallet.bech32Address,
+      creator,
       ...params,
     });
     return await wallet.sendTx(
@@ -205,6 +206,7 @@ export class PerpspoolModule extends BaseModule {
       grantee: controller,
       granter: wallet.bech32Address,
       expiry,
+      msgs: [],
     }))
     const client: FeeGrantQueryClient = this.sdkProvider.query.feegrant
 
@@ -284,5 +286,9 @@ export namespace PerpspoolModule {
   export type CreateUserVaultParams = OmitCreator<MsgCreateUserVault>
   export type CloseUserVaultParams = OmitCreator<MsgCloseUserVault>
   export type UpdateUserVaultParams = OmitCreator<MsgUpdateUserVault>
-  export type ReleaseUserVaultWithdrawalParams = OmitCreator<MsgReleaseUserVaultWithdrawal>
+  export interface ReleaseUserVaultWithdrawalParams {
+    creator?: string;
+    vaultId: Long;
+    processId: Long;
+  }
 }
