@@ -20,6 +20,7 @@ export interface PriceSet {
   premiumRate: string;
   premiumRateCounter: string;
   lastFundingAt?: Date;
+  volatilityScore: string;
 }
 
 export interface TokenPrice {
@@ -43,6 +44,7 @@ const basePriceSet: object = {
   settlementCounter: "",
   premiumRate: "",
   premiumRateCounter: "",
+  volatilityScore: "",
 };
 
 export const PriceSet = {
@@ -97,6 +99,9 @@ export const PriceSet = {
         toTimestamp(message.lastFundingAt),
         writer.uint32(122).fork()
       ).ldelim();
+    }
+    if (message.volatilityScore !== "") {
+      writer.uint32(130).string(message.volatilityScore);
     }
     return writer;
   },
@@ -153,6 +158,9 @@ export const PriceSet = {
           message.lastFundingAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 16:
+          message.volatilityScore = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -223,6 +231,10 @@ export const PriceSet = {
       object.lastFundingAt !== undefined && object.lastFundingAt !== null
         ? fromJsonTimestamp(object.lastFundingAt)
         : undefined;
+    message.volatilityScore =
+      object.volatilityScore !== undefined && object.volatilityScore !== null
+        ? String(object.volatilityScore)
+        : "";
     return message;
   },
 
@@ -249,6 +261,8 @@ export const PriceSet = {
       (obj.premiumRateCounter = message.premiumRateCounter);
     message.lastFundingAt !== undefined &&
       (obj.lastFundingAt = message.lastFundingAt.toISOString());
+    message.volatilityScore !== undefined &&
+      (obj.volatilityScore = message.volatilityScore);
     return obj;
   },
 
@@ -268,6 +282,7 @@ export const PriceSet = {
     message.premiumRate = object.premiumRate ?? "";
     message.premiumRateCounter = object.premiumRateCounter ?? "";
     message.lastFundingAt = object.lastFundingAt ?? undefined;
+    message.volatilityScore = object.volatilityScore ?? "";
     return message;
   },
 };

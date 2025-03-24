@@ -1,19 +1,24 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { UInt32Value } from "../../../google/protobuf/wrappers";
+import { UInt32Value, Int64Value } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
 export interface Params {
   maxReferralCommission: number;
+  futuresOrderBlockDelay: Long;
 }
 
 export interface ParamsToUpdate {
   maxReferralCommission?: number;
+  futuresOrderBlockDelay?: Long;
 }
 
-const baseParams: object = { maxReferralCommission: 0 };
+const baseParams: object = {
+  maxReferralCommission: 0,
+  futuresOrderBlockDelay: Long.ZERO,
+};
 
 export const Params = {
   encode(
@@ -22,6 +27,9 @@ export const Params = {
   ): _m0.Writer {
     if (message.maxReferralCommission !== 0) {
       writer.uint32(8).uint32(message.maxReferralCommission);
+    }
+    if (!message.futuresOrderBlockDelay.isZero()) {
+      writer.uint32(16).int64(message.futuresOrderBlockDelay);
     }
     return writer;
   },
@@ -35,6 +43,9 @@ export const Params = {
       switch (tag >>> 3) {
         case 1:
           message.maxReferralCommission = reader.uint32();
+          break;
+        case 2:
+          message.futuresOrderBlockDelay = reader.int64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -51,6 +62,11 @@ export const Params = {
       object.maxReferralCommission !== null
         ? Number(object.maxReferralCommission)
         : 0;
+    message.futuresOrderBlockDelay =
+      object.futuresOrderBlockDelay !== undefined &&
+      object.futuresOrderBlockDelay !== null
+        ? Long.fromString(object.futuresOrderBlockDelay)
+        : Long.ZERO;
     return message;
   },
 
@@ -58,12 +74,21 @@ export const Params = {
     const obj: any = {};
     message.maxReferralCommission !== undefined &&
       (obj.maxReferralCommission = message.maxReferralCommission);
+    message.futuresOrderBlockDelay !== undefined &&
+      (obj.futuresOrderBlockDelay = (
+        message.futuresOrderBlockDelay || Long.ZERO
+      ).toString());
     return obj;
   },
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
     message.maxReferralCommission = object.maxReferralCommission ?? 0;
+    message.futuresOrderBlockDelay =
+      object.futuresOrderBlockDelay !== undefined &&
+      object.futuresOrderBlockDelay !== null
+        ? Long.fromValue(object.futuresOrderBlockDelay)
+        : Long.ZERO;
     return message;
   },
 };
@@ -81,6 +106,12 @@ export const ParamsToUpdate = {
         writer.uint32(10).fork()
       ).ldelim();
     }
+    if (message.futuresOrderBlockDelay !== undefined) {
+      Int64Value.encode(
+        { value: message.futuresOrderBlockDelay! },
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -93,6 +124,12 @@ export const ParamsToUpdate = {
       switch (tag >>> 3) {
         case 1:
           message.maxReferralCommission = UInt32Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 2:
+          message.futuresOrderBlockDelay = Int64Value.decode(
             reader,
             reader.uint32()
           ).value;
@@ -112,6 +149,11 @@ export const ParamsToUpdate = {
       object.maxReferralCommission !== null
         ? Number(object.maxReferralCommission)
         : undefined;
+    message.futuresOrderBlockDelay =
+      object.futuresOrderBlockDelay !== undefined &&
+      object.futuresOrderBlockDelay !== null
+        ? Long.fromValue(object.futuresOrderBlockDelay)
+        : undefined;
     return message;
   },
 
@@ -119,12 +161,19 @@ export const ParamsToUpdate = {
     const obj: any = {};
     message.maxReferralCommission !== undefined &&
       (obj.maxReferralCommission = message.maxReferralCommission);
+    message.futuresOrderBlockDelay !== undefined &&
+      (obj.futuresOrderBlockDelay = message.futuresOrderBlockDelay);
     return obj;
   },
 
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
     message.maxReferralCommission = object.maxReferralCommission ?? undefined;
+    message.futuresOrderBlockDelay =
+      object.futuresOrderBlockDelay !== undefined &&
+      object.futuresOrderBlockDelay !== null
+        ? Long.fromValue(object.futuresOrderBlockDelay)
+        : undefined;
     return message;
   },
 };

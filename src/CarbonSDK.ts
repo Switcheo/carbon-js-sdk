@@ -108,6 +108,7 @@ const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
 class CarbonSDK {
   public static DEFAULT_NETWORK = DEFAULT_NETWORK;
   public static DenomPrefix = DenomPrefix;
+  public initialized: boolean = false;
 
   public readonly query: CarbonQueryClient;
   public readonly useTmAbciQuery: boolean;
@@ -423,7 +424,7 @@ class CarbonSDK {
     if (this.wallet) {
       await this.wallet.initialize(this.query, fees);
     }
-
+    this.initialized = true;
     return this;
   }
 

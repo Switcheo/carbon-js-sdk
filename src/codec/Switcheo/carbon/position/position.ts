@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.position";
@@ -12,7 +11,6 @@ export interface Position {
   lots: string;
   entryPrice: string;
   realizedPnl: string;
-  allocatedMargin?: Coin;
   openedBlockHeight: Long;
   allocatedMarginAmount: string;
 }
@@ -89,9 +87,6 @@ export const Position = {
     if (message.realizedPnl !== "") {
       writer.uint32(42).string(message.realizedPnl);
     }
-    if (message.allocatedMargin !== undefined) {
-      Coin.encode(message.allocatedMargin, writer.uint32(50).fork()).ldelim();
-    }
     if (!message.openedBlockHeight.isZero()) {
       writer.uint32(56).uint64(message.openedBlockHeight);
     }
@@ -122,9 +117,6 @@ export const Position = {
           break;
         case 5:
           message.realizedPnl = reader.string();
-          break;
-        case 6:
-          message.allocatedMargin = Coin.decode(reader, reader.uint32());
           break;
         case 7:
           message.openedBlockHeight = reader.uint64() as Long;
@@ -162,10 +154,6 @@ export const Position = {
       object.realizedPnl !== undefined && object.realizedPnl !== null
         ? String(object.realizedPnl)
         : "";
-    message.allocatedMargin =
-      object.allocatedMargin !== undefined && object.allocatedMargin !== null
-        ? Coin.fromJSON(object.allocatedMargin)
-        : undefined;
     message.openedBlockHeight =
       object.openedBlockHeight !== undefined &&
       object.openedBlockHeight !== null
@@ -187,10 +175,6 @@ export const Position = {
     message.entryPrice !== undefined && (obj.entryPrice = message.entryPrice);
     message.realizedPnl !== undefined &&
       (obj.realizedPnl = message.realizedPnl);
-    message.allocatedMargin !== undefined &&
-      (obj.allocatedMargin = message.allocatedMargin
-        ? Coin.toJSON(message.allocatedMargin)
-        : undefined);
     message.openedBlockHeight !== undefined &&
       (obj.openedBlockHeight = (
         message.openedBlockHeight || Long.UZERO
@@ -207,10 +191,6 @@ export const Position = {
     message.lots = object.lots ?? "";
     message.entryPrice = object.entryPrice ?? "";
     message.realizedPnl = object.realizedPnl ?? "";
-    message.allocatedMargin =
-      object.allocatedMargin !== undefined && object.allocatedMargin !== null
-        ? Coin.fromPartial(object.allocatedMargin)
-        : undefined;
     message.openedBlockHeight =
       object.openedBlockHeight !== undefined &&
       object.openedBlockHeight !== null

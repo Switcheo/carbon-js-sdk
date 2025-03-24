@@ -59,6 +59,7 @@ export interface Market {
    * 0 means that this feature is disabled
    */
   staleIndexPriceAllowance?: Duration;
+  creator: string;
 }
 
 export interface MarketParams {
@@ -183,6 +184,7 @@ const baseMarket: object = {
   closedBlockHeight: Long.UZERO,
   tradingBandwidth: 0,
   maxOpenInterest: "",
+  creator: "",
 };
 
 export const Market = {
@@ -285,6 +287,9 @@ export const Market = {
         message.staleIndexPriceAllowance,
         writer.uint32(930).fork()
       ).ldelim();
+    }
+    if (message.creator !== "") {
+      writer.uint32(938).string(message.creator);
     }
     return writer;
   },
@@ -390,6 +395,9 @@ export const Market = {
             reader,
             reader.uint32()
           );
+          break;
+        case 117:
+          message.creator = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -524,6 +532,10 @@ export const Market = {
       object.staleIndexPriceAllowance !== null
         ? Duration.fromJSON(object.staleIndexPriceAllowance)
         : undefined;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
     return message;
   },
 
@@ -586,6 +598,7 @@ export const Market = {
       (obj.staleIndexPriceAllowance = message.staleIndexPriceAllowance
         ? Duration.toJSON(message.staleIndexPriceAllowance)
         : undefined);
+    message.creator !== undefined && (obj.creator = message.creator);
     return obj;
   },
 
@@ -642,6 +655,7 @@ export const Market = {
       object.staleIndexPriceAllowance !== null
         ? Duration.fromPartial(object.staleIndexPriceAllowance)
         : undefined;
+    message.creator = object.creator ?? "";
     return message;
   },
 };

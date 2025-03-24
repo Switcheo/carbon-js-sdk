@@ -46,6 +46,15 @@ export interface MsgEditOrder {
 
 export interface MsgEditOrderResponse {}
 
+export interface EditOrders {
+  editOrders: MsgEditOrder[];
+}
+
+export interface EditOrdersForMarket {
+  marketId: string;
+  editOrders: MsgEditOrder[];
+}
+
 export interface MsgCancelOrder {
   creator: string;
   id: string;
@@ -661,6 +670,140 @@ export const MsgEditOrderResponse = {
 
   fromPartial(_: DeepPartial<MsgEditOrderResponse>): MsgEditOrderResponse {
     const message = { ...baseMsgEditOrderResponse } as MsgEditOrderResponse;
+    return message;
+  },
+};
+
+const baseEditOrders: object = {};
+
+export const EditOrders = {
+  encode(
+    message: EditOrders,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.editOrders) {
+      MsgEditOrder.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EditOrders {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseEditOrders } as EditOrders;
+    message.editOrders = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.editOrders.push(MsgEditOrder.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EditOrders {
+    const message = { ...baseEditOrders } as EditOrders;
+    message.editOrders = (object.editOrders ?? []).map((e: any) =>
+      MsgEditOrder.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: EditOrders): unknown {
+    const obj: any = {};
+    if (message.editOrders) {
+      obj.editOrders = message.editOrders.map((e) =>
+        e ? MsgEditOrder.toJSON(e) : undefined
+      );
+    } else {
+      obj.editOrders = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<EditOrders>): EditOrders {
+    const message = { ...baseEditOrders } as EditOrders;
+    message.editOrders = (object.editOrders ?? []).map((e) =>
+      MsgEditOrder.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseEditOrdersForMarket: object = { marketId: "" };
+
+export const EditOrdersForMarket = {
+  encode(
+    message: EditOrdersForMarket,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
+    }
+    for (const v of message.editOrders) {
+      MsgEditOrder.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EditOrdersForMarket {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseEditOrdersForMarket } as EditOrdersForMarket;
+    message.editOrders = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketId = reader.string();
+          break;
+        case 2:
+          message.editOrders.push(MsgEditOrder.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EditOrdersForMarket {
+    const message = { ...baseEditOrdersForMarket } as EditOrdersForMarket;
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.editOrders = (object.editOrders ?? []).map((e: any) =>
+      MsgEditOrder.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: EditOrdersForMarket): unknown {
+    const obj: any = {};
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    if (message.editOrders) {
+      obj.editOrders = message.editOrders.map((e) =>
+        e ? MsgEditOrder.toJSON(e) : undefined
+      );
+    } else {
+      obj.editOrders = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<EditOrdersForMarket>): EditOrdersForMarket {
+    const message = { ...baseEditOrdersForMarket } as EditOrdersForMarket;
+    message.marketId = object.marketId ?? "";
+    message.editOrders = (object.editOrders ?? []).map((e) =>
+      MsgEditOrder.fromPartial(e)
+    );
     return message;
   },
 };

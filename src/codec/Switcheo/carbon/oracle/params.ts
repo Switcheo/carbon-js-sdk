@@ -2,7 +2,11 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
-import { BoolValue, UInt32Value } from "../../../google/protobuf/wrappers";
+import {
+  BoolValue,
+  UInt32Value,
+  UInt64Value,
+} from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -17,6 +21,7 @@ export interface Params {
   oracleMinVoteFactor: string;
   maxPowerToSlashFactor: string;
   evmOracleEnabled: boolean;
+  historicalResultsPerBucket: Long;
 }
 
 export interface ParamsToUpdate {
@@ -30,6 +35,7 @@ export interface ParamsToUpdate {
   oracleMinVoteFactor: string;
   maxPowerToSlashFactor: string;
   evmOracleEnabled?: boolean;
+  historicalResultsPerBucket?: Long;
 }
 
 const baseParams: object = {
@@ -42,6 +48,7 @@ const baseParams: object = {
   oracleMinVoteFactor: "",
   maxPowerToSlashFactor: "",
   evmOracleEnabled: false,
+  historicalResultsPerBucket: Long.UZERO,
 };
 
 export const Params = {
@@ -81,6 +88,9 @@ export const Params = {
     }
     if (message.evmOracleEnabled === true) {
       writer.uint32(80).bool(message.evmOracleEnabled);
+    }
+    if (!message.historicalResultsPerBucket.isZero()) {
+      writer.uint32(88).uint64(message.historicalResultsPerBucket);
     }
     return writer;
   },
@@ -124,6 +134,9 @@ export const Params = {
           break;
         case 10:
           message.evmOracleEnabled = reader.bool();
+          break;
+        case 11:
+          message.historicalResultsPerBucket = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -184,6 +197,11 @@ export const Params = {
       object.evmOracleEnabled !== undefined && object.evmOracleEnabled !== null
         ? Boolean(object.evmOracleEnabled)
         : false;
+    message.historicalResultsPerBucket =
+      object.historicalResultsPerBucket !== undefined &&
+      object.historicalResultsPerBucket !== null
+        ? Long.fromString(object.historicalResultsPerBucket)
+        : Long.UZERO;
     return message;
   },
 
@@ -211,6 +229,10 @@ export const Params = {
       (obj.maxPowerToSlashFactor = message.maxPowerToSlashFactor);
     message.evmOracleEnabled !== undefined &&
       (obj.evmOracleEnabled = message.evmOracleEnabled);
+    message.historicalResultsPerBucket !== undefined &&
+      (obj.historicalResultsPerBucket = (
+        message.historicalResultsPerBucket || Long.UZERO
+      ).toString());
     return obj;
   },
 
@@ -230,6 +252,11 @@ export const Params = {
     message.oracleMinVoteFactor = object.oracleMinVoteFactor ?? "";
     message.maxPowerToSlashFactor = object.maxPowerToSlashFactor ?? "";
     message.evmOracleEnabled = object.evmOracleEnabled ?? false;
+    message.historicalResultsPerBucket =
+      object.historicalResultsPerBucket !== undefined &&
+      object.historicalResultsPerBucket !== null
+        ? Long.fromValue(object.historicalResultsPerBucket)
+        : Long.UZERO;
     return message;
   },
 };
@@ -294,6 +321,12 @@ export const ParamsToUpdate = {
         writer.uint32(82).fork()
       ).ldelim();
     }
+    if (message.historicalResultsPerBucket !== undefined) {
+      UInt64Value.encode(
+        { value: message.historicalResultsPerBucket! },
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -348,6 +381,12 @@ export const ParamsToUpdate = {
           break;
         case 10:
           message.evmOracleEnabled = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 11:
+          message.historicalResultsPerBucket = UInt64Value.decode(
             reader,
             reader.uint32()
           ).value;
@@ -411,6 +450,11 @@ export const ParamsToUpdate = {
       object.evmOracleEnabled !== undefined && object.evmOracleEnabled !== null
         ? Boolean(object.evmOracleEnabled)
         : undefined;
+    message.historicalResultsPerBucket =
+      object.historicalResultsPerBucket !== undefined &&
+      object.historicalResultsPerBucket !== null
+        ? Long.fromValue(object.historicalResultsPerBucket)
+        : undefined;
     return message;
   },
 
@@ -438,6 +482,8 @@ export const ParamsToUpdate = {
       (obj.maxPowerToSlashFactor = message.maxPowerToSlashFactor);
     message.evmOracleEnabled !== undefined &&
       (obj.evmOracleEnabled = message.evmOracleEnabled);
+    message.historicalResultsPerBucket !== undefined &&
+      (obj.historicalResultsPerBucket = message.historicalResultsPerBucket);
     return obj;
   },
 
@@ -459,6 +505,11 @@ export const ParamsToUpdate = {
     message.oracleMinVoteFactor = object.oracleMinVoteFactor ?? "";
     message.maxPowerToSlashFactor = object.maxPowerToSlashFactor ?? "";
     message.evmOracleEnabled = object.evmOracleEnabled ?? undefined;
+    message.historicalResultsPerBucket =
+      object.historicalResultsPerBucket !== undefined &&
+      object.historicalResultsPerBucket !== null
+        ? Long.fromValue(object.historicalResultsPerBucket)
+        : undefined;
     return message;
   },
 };
