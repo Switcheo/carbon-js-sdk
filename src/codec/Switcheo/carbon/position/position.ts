@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.position";
@@ -17,6 +18,11 @@ export interface Position {
 
 export interface Positions {
   positions: Position[];
+}
+
+export interface OpenPositionIndex {
+  address: Uint8Array;
+  marketIds: string[];
 }
 
 export interface OpenInterest {
@@ -258,6 +264,77 @@ export const Positions = {
     message.positions = (object.positions ?? []).map((e) =>
       Position.fromPartial(e)
     );
+    return message;
+  },
+};
+
+const baseOpenPositionIndex: object = { marketIds: "" };
+
+export const OpenPositionIndex = {
+  encode(
+    message: OpenPositionIndex,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address.length !== 0) {
+      writer.uint32(10).bytes(message.address);
+    }
+    for (const v of message.marketIds) {
+      writer.uint32(18).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OpenPositionIndex {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseOpenPositionIndex } as OpenPositionIndex;
+    message.marketIds = [];
+    message.address = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.bytes();
+          break;
+        case 2:
+          message.marketIds.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OpenPositionIndex {
+    const message = { ...baseOpenPositionIndex } as OpenPositionIndex;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? bytesFromBase64(object.address)
+        : new Uint8Array();
+    message.marketIds = (object.marketIds ?? []).map((e: any) => String(e));
+    return message;
+  },
+
+  toJSON(message: OpenPositionIndex): unknown {
+    const obj: any = {};
+    message.address !== undefined &&
+      (obj.address = base64FromBytes(
+        message.address !== undefined ? message.address : new Uint8Array()
+      ));
+    if (message.marketIds) {
+      obj.marketIds = message.marketIds.map((e) => e);
+    } else {
+      obj.marketIds = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<OpenPositionIndex>): OpenPositionIndex {
+    const message = { ...baseOpenPositionIndex } as OpenPositionIndex;
+    message.address = object.address ?? new Uint8Array();
+    message.marketIds = (object.marketIds ?? []).map((e) => e);
     return message;
   },
 };
@@ -840,6 +917,40 @@ export const CrossMaintenanceMargin = {
     return message;
   },
 };
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (const byte of arr) {
+    bin.push(String.fromCharCode(byte));
+  }
+  return btoa(bin.join(""));
+}
 
 type Builtin =
   | Date

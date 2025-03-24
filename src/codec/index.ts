@@ -2743,19 +2743,19 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBookEvent": [
       {
-        "name": "market_id",
+        "name": "m",
         "type": "string"
       },
       {
-        "name": "side",
+        "name": "s",
         "type": "string"
       },
       {
-        "name": "price",
+        "name": "p",
         "type": "string"
       },
       {
-        "name": "quantity",
+        "name": "q",
         "type": "string"
       }
     ],
@@ -15439,6 +15439,16 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.position"
       }
     ],
+    "OpenPositionIndex": [
+      {
+        "name": "address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "market_ids",
+        "type": "string[]"
+      }
+    ],
     "OpenInterest": [
       {
         "name": "market_id",
@@ -16454,10 +16464,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "address",
         "type": "string"
-      },
-      {
-        "name": "role",
-        "type": "string"
       }
     ],
     "QueryGetPendingSubAccountRequest": [
@@ -16475,6 +16481,13 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryGetSubAccountResponse": [
+      {
+        "name": "subaccount",
+        "type": "SubAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "QueryGetPendingSubAccountResponse": [
       {
         "name": "subaccount",
         "type": "SubAccount",
@@ -16551,10 +16564,17 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "QueryMainAccountAllRequest": [
+    "QueryMainAccountGivenSubAccountRequest": [
       {
         "name": "sub_address",
         "type": "string"
+      }
+    ],
+    "QueryMainAccountAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryMainAccountAllResponse": [
@@ -16562,22 +16582,23 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "main_accounts",
         "type": "MainAccount[]",
         "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryMainAccountRequest": [
       {
-        "name": "sub_address",
-        "type": "string"
-      },
-      {
-        "name": "role",
+        "name": "main_address",
         "type": "string"
       }
     ],
     "QueryMainAccountResponse": [
       {
         "name": "main_account",
-        "type": "MainAccount",
+        "type": "MainAccount[]",
         "packageName": "/Switcheo.carbon.subaccount"
       }
     ],
@@ -18354,6 +18375,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "authority",
         "type": "string"
+      },
+      {
+        "name": "restrictions_order",
+        "type": "string[]"
       }
     ]
   },
@@ -23765,6 +23790,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "tally_result",
         "type": "TallyResult",
         "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "EventTallyError": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "error_message",
+        "type": "string"
       }
     ],
     "GenesisState": [
