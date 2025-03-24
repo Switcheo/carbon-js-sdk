@@ -15,7 +15,6 @@ export const protobufPackage = "Switcheo.carbon.subaccount";
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetSubAccountRequest {
   address: string;
-  role: string;
 }
 
 export interface QueryGetPendingSubAccountRequest {
@@ -25,6 +24,10 @@ export interface QueryGetPendingSubAccountRequest {
 }
 
 export interface QueryGetSubAccountResponse {
+  subaccount: SubAccount[];
+}
+
+export interface QueryGetPendingSubAccountResponse {
   subaccount?: SubAccount;
 }
 
@@ -59,21 +62,25 @@ export interface QuerySubAccountPowerResponse {
   power: string;
 }
 
-export interface QueryMainAccountAllRequest {
+export interface QueryMainAccountGivenSubAccountRequest {
   subAddress: string;
+}
+
+export interface QueryMainAccountAllRequest {
+  pagination?: PageRequest;
 }
 
 export interface QueryMainAccountAllResponse {
   mainAccounts: MainAccount[];
+  pagination?: PageResponse;
 }
 
 export interface QueryMainAccountRequest {
-  subAddress: string;
-  role: string;
+  mainAddress: string;
 }
 
 export interface QueryMainAccountResponse {
-  mainAccount?: MainAccount;
+  mainAccount: MainAccount[];
 }
 
 export interface QueryParamsRequest {}
@@ -91,7 +98,7 @@ export interface QueryCreationCooldownResponse {
   cooldownDuration?: Duration;
 }
 
-const baseQueryGetSubAccountRequest: object = { address: "", role: "" };
+const baseQueryGetSubAccountRequest: object = { address: "" };
 
 export const QueryGetSubAccountRequest = {
   encode(
@@ -100,9 +107,6 @@ export const QueryGetSubAccountRequest = {
   ): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
-    }
-    if (message.role !== "") {
-      writer.uint32(18).string(message.role);
     }
     return writer;
   },
@@ -122,9 +126,6 @@ export const QueryGetSubAccountRequest = {
         case 1:
           message.address = reader.string();
           break;
-        case 2:
-          message.role = reader.string();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -141,17 +142,12 @@ export const QueryGetSubAccountRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.role =
-      object.role !== undefined && object.role !== null
-        ? String(object.role)
-        : "";
     return message;
   },
 
   toJSON(message: QueryGetSubAccountRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.role !== undefined && (obj.role = message.role);
     return obj;
   },
 
@@ -162,7 +158,6 @@ export const QueryGetSubAccountRequest = {
       ...baseQueryGetSubAccountRequest,
     } as QueryGetSubAccountRequest;
     message.address = object.address ?? "";
-    message.role = object.role ?? "";
     return message;
   },
 };
@@ -267,8 +262,8 @@ export const QueryGetSubAccountResponse = {
     message: QueryGetSubAccountResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.subaccount !== undefined) {
-      SubAccount.encode(message.subaccount, writer.uint32(10).fork()).ldelim();
+    for (const v of message.subaccount) {
+      SubAccount.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -282,6 +277,78 @@ export const QueryGetSubAccountResponse = {
     const message = {
       ...baseQueryGetSubAccountResponse,
     } as QueryGetSubAccountResponse;
+    message.subaccount = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.subaccount.push(SubAccount.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetSubAccountResponse {
+    const message = {
+      ...baseQueryGetSubAccountResponse,
+    } as QueryGetSubAccountResponse;
+    message.subaccount = (object.subaccount ?? []).map((e: any) =>
+      SubAccount.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryGetSubAccountResponse): unknown {
+    const obj: any = {};
+    if (message.subaccount) {
+      obj.subaccount = message.subaccount.map((e) =>
+        e ? SubAccount.toJSON(e) : undefined
+      );
+    } else {
+      obj.subaccount = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetSubAccountResponse>
+  ): QueryGetSubAccountResponse {
+    const message = {
+      ...baseQueryGetSubAccountResponse,
+    } as QueryGetSubAccountResponse;
+    message.subaccount = (object.subaccount ?? []).map((e) =>
+      SubAccount.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryGetPendingSubAccountResponse: object = {};
+
+export const QueryGetPendingSubAccountResponse = {
+  encode(
+    message: QueryGetPendingSubAccountResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.subaccount !== undefined) {
+      SubAccount.encode(message.subaccount, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetPendingSubAccountResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetPendingSubAccountResponse,
+    } as QueryGetPendingSubAccountResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -296,10 +363,10 @@ export const QueryGetSubAccountResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetSubAccountResponse {
+  fromJSON(object: any): QueryGetPendingSubAccountResponse {
     const message = {
-      ...baseQueryGetSubAccountResponse,
-    } as QueryGetSubAccountResponse;
+      ...baseQueryGetPendingSubAccountResponse,
+    } as QueryGetPendingSubAccountResponse;
     message.subaccount =
       object.subaccount !== undefined && object.subaccount !== null
         ? SubAccount.fromJSON(object.subaccount)
@@ -307,7 +374,7 @@ export const QueryGetSubAccountResponse = {
     return message;
   },
 
-  toJSON(message: QueryGetSubAccountResponse): unknown {
+  toJSON(message: QueryGetPendingSubAccountResponse): unknown {
     const obj: any = {};
     message.subaccount !== undefined &&
       (obj.subaccount = message.subaccount
@@ -317,11 +384,11 @@ export const QueryGetSubAccountResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryGetSubAccountResponse>
-  ): QueryGetSubAccountResponse {
+    object: DeepPartial<QueryGetPendingSubAccountResponse>
+  ): QueryGetPendingSubAccountResponse {
     const message = {
-      ...baseQueryGetSubAccountResponse,
-    } as QueryGetSubAccountResponse;
+      ...baseQueryGetPendingSubAccountResponse,
+    } as QueryGetPendingSubAccountResponse;
     message.subaccount =
       object.subaccount !== undefined && object.subaccount !== null
         ? SubAccount.fromPartial(object.subaccount)
@@ -853,15 +920,79 @@ export const QuerySubAccountPowerResponse = {
   },
 };
 
-const baseQueryMainAccountAllRequest: object = { subAddress: "" };
+const baseQueryMainAccountGivenSubAccountRequest: object = { subAddress: "" };
+
+export const QueryMainAccountGivenSubAccountRequest = {
+  encode(
+    message: QueryMainAccountGivenSubAccountRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.subAddress !== "") {
+      writer.uint32(10).string(message.subAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryMainAccountGivenSubAccountRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryMainAccountGivenSubAccountRequest,
+    } as QueryMainAccountGivenSubAccountRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.subAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryMainAccountGivenSubAccountRequest {
+    const message = {
+      ...baseQueryMainAccountGivenSubAccountRequest,
+    } as QueryMainAccountGivenSubAccountRequest;
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryMainAccountGivenSubAccountRequest): unknown {
+    const obj: any = {};
+    message.subAddress !== undefined && (obj.subAddress = message.subAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryMainAccountGivenSubAccountRequest>
+  ): QueryMainAccountGivenSubAccountRequest {
+    const message = {
+      ...baseQueryMainAccountGivenSubAccountRequest,
+    } as QueryMainAccountGivenSubAccountRequest;
+    message.subAddress = object.subAddress ?? "";
+    return message;
+  },
+};
+
+const baseQueryMainAccountAllRequest: object = {};
 
 export const QueryMainAccountAllRequest = {
   encode(
     message: QueryMainAccountAllRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.subAddress !== "") {
-      writer.uint32(10).string(message.subAddress);
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -879,7 +1010,7 @@ export const QueryMainAccountAllRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.subAddress = reader.string();
+          message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -893,16 +1024,19 @@ export const QueryMainAccountAllRequest = {
     const message = {
       ...baseQueryMainAccountAllRequest,
     } as QueryMainAccountAllRequest;
-    message.subAddress =
-      object.subAddress !== undefined && object.subAddress !== null
-        ? String(object.subAddress)
-        : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
   toJSON(message: QueryMainAccountAllRequest): unknown {
     const obj: any = {};
-    message.subAddress !== undefined && (obj.subAddress = message.subAddress);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -912,7 +1046,10 @@ export const QueryMainAccountAllRequest = {
     const message = {
       ...baseQueryMainAccountAllRequest,
     } as QueryMainAccountAllRequest;
-    message.subAddress = object.subAddress ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -926,6 +1063,12 @@ export const QueryMainAccountAllResponse = {
   ): _m0.Writer {
     for (const v of message.mainAccounts) {
       MainAccount.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -948,6 +1091,9 @@ export const QueryMainAccountAllResponse = {
             MainAccount.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -963,6 +1109,10 @@ export const QueryMainAccountAllResponse = {
     message.mainAccounts = (object.mainAccounts ?? []).map((e: any) =>
       MainAccount.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -975,6 +1125,10 @@ export const QueryMainAccountAllResponse = {
     } else {
       obj.mainAccounts = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -987,22 +1141,23 @@ export const QueryMainAccountAllResponse = {
     message.mainAccounts = (object.mainAccounts ?? []).map((e) =>
       MainAccount.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
 
-const baseQueryMainAccountRequest: object = { subAddress: "", role: "" };
+const baseQueryMainAccountRequest: object = { mainAddress: "" };
 
 export const QueryMainAccountRequest = {
   encode(
     message: QueryMainAccountRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.subAddress !== "") {
-      writer.uint32(10).string(message.subAddress);
-    }
-    if (message.role !== "") {
-      writer.uint32(18).string(message.role);
+    if (message.mainAddress !== "") {
+      writer.uint32(10).string(message.mainAddress);
     }
     return writer;
   },
@@ -1020,10 +1175,7 @@ export const QueryMainAccountRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.subAddress = reader.string();
-          break;
-        case 2:
-          message.role = reader.string();
+          message.mainAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1037,21 +1189,17 @@ export const QueryMainAccountRequest = {
     const message = {
       ...baseQueryMainAccountRequest,
     } as QueryMainAccountRequest;
-    message.subAddress =
-      object.subAddress !== undefined && object.subAddress !== null
-        ? String(object.subAddress)
-        : "";
-    message.role =
-      object.role !== undefined && object.role !== null
-        ? String(object.role)
+    message.mainAddress =
+      object.mainAddress !== undefined && object.mainAddress !== null
+        ? String(object.mainAddress)
         : "";
     return message;
   },
 
   toJSON(message: QueryMainAccountRequest): unknown {
     const obj: any = {};
-    message.subAddress !== undefined && (obj.subAddress = message.subAddress);
-    message.role !== undefined && (obj.role = message.role);
+    message.mainAddress !== undefined &&
+      (obj.mainAddress = message.mainAddress);
     return obj;
   },
 
@@ -1061,8 +1209,7 @@ export const QueryMainAccountRequest = {
     const message = {
       ...baseQueryMainAccountRequest,
     } as QueryMainAccountRequest;
-    message.subAddress = object.subAddress ?? "";
-    message.role = object.role ?? "";
+    message.mainAddress = object.mainAddress ?? "";
     return message;
   },
 };
@@ -1074,11 +1221,8 @@ export const QueryMainAccountResponse = {
     message: QueryMainAccountResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.mainAccount !== undefined) {
-      MainAccount.encode(
-        message.mainAccount,
-        writer.uint32(10).fork()
-      ).ldelim();
+    for (const v of message.mainAccount) {
+      MainAccount.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -1092,11 +1236,12 @@ export const QueryMainAccountResponse = {
     const message = {
       ...baseQueryMainAccountResponse,
     } as QueryMainAccountResponse;
+    message.mainAccount = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.mainAccount = MainAccount.decode(reader, reader.uint32());
+          message.mainAccount.push(MainAccount.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -1110,19 +1255,21 @@ export const QueryMainAccountResponse = {
     const message = {
       ...baseQueryMainAccountResponse,
     } as QueryMainAccountResponse;
-    message.mainAccount =
-      object.mainAccount !== undefined && object.mainAccount !== null
-        ? MainAccount.fromJSON(object.mainAccount)
-        : undefined;
+    message.mainAccount = (object.mainAccount ?? []).map((e: any) =>
+      MainAccount.fromJSON(e)
+    );
     return message;
   },
 
   toJSON(message: QueryMainAccountResponse): unknown {
     const obj: any = {};
-    message.mainAccount !== undefined &&
-      (obj.mainAccount = message.mainAccount
-        ? MainAccount.toJSON(message.mainAccount)
-        : undefined);
+    if (message.mainAccount) {
+      obj.mainAccount = message.mainAccount.map((e) =>
+        e ? MainAccount.toJSON(e) : undefined
+      );
+    } else {
+      obj.mainAccount = [];
+    }
     return obj;
   },
 
@@ -1132,10 +1279,9 @@ export const QueryMainAccountResponse = {
     const message = {
       ...baseQueryMainAccountResponse,
     } as QueryMainAccountResponse;
-    message.mainAccount =
-      object.mainAccount !== undefined && object.mainAccount !== null
-        ? MainAccount.fromPartial(object.mainAccount)
-        : undefined;
+    message.mainAccount = (object.mainAccount ?? []).map((e) =>
+      MainAccount.fromPartial(e)
+    );
     return message;
   },
 };
@@ -1396,7 +1542,7 @@ export interface Query {
   /** Get pending subaccount details */
   PendingSubAccount(
     request: QueryGetPendingSubAccountRequest
-  ): Promise<QueryGetSubAccountResponse>;
+  ): Promise<QueryGetPendingSubAccountResponse>;
   /** Get all subaccount details */
   SubAccountAll(
     request: QueryAllSubAccountRequest
@@ -1409,11 +1555,15 @@ export interface Query {
   SubAccountPower(
     request: QuerySubAccountPowerRequest
   ): Promise<QuerySubAccountPowerResponse>;
-  /** Get all main accounts based on sub account */
+  /** Get all main accounts */
   MainAccountAll(
     request: QueryMainAccountAllRequest
   ): Promise<QueryMainAccountAllResponse>;
-  /** Get main account based on sub account and role */
+  /** Get all main accounts based on subaccount */
+  MainAccountGivenSubAccount(
+    request: QueryMainAccountGivenSubAccountRequest
+  ): Promise<QueryMainAccountAllResponse>;
+  /** Get main account based on main account address */
   MainAccount(
     request: QueryMainAccountRequest
   ): Promise<QueryMainAccountResponse>;
@@ -1435,6 +1585,8 @@ export class QueryClientImpl implements Query {
     this.PendingSubAccountAll = this.PendingSubAccountAll.bind(this);
     this.SubAccountPower = this.SubAccountPower.bind(this);
     this.MainAccountAll = this.MainAccountAll.bind(this);
+    this.MainAccountGivenSubAccount =
+      this.MainAccountGivenSubAccount.bind(this);
     this.MainAccount = this.MainAccount.bind(this);
     this.Params = this.Params.bind(this);
     this.Cooldown = this.Cooldown.bind(this);
@@ -1455,7 +1607,7 @@ export class QueryClientImpl implements Query {
 
   PendingSubAccount(
     request: QueryGetPendingSubAccountRequest
-  ): Promise<QueryGetSubAccountResponse> {
+  ): Promise<QueryGetPendingSubAccountResponse> {
     const data = QueryGetPendingSubAccountRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.subaccount.Query",
@@ -1463,7 +1615,7 @@ export class QueryClientImpl implements Query {
       data
     );
     return promise.then((data) =>
-      QueryGetSubAccountResponse.decode(new _m0.Reader(data))
+      QueryGetPendingSubAccountResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -1516,6 +1668,21 @@ export class QueryClientImpl implements Query {
     const promise = this.rpc.request(
       "Switcheo.carbon.subaccount.Query",
       "MainAccountAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryMainAccountAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  MainAccountGivenSubAccount(
+    request: QueryMainAccountGivenSubAccountRequest
+  ): Promise<QueryMainAccountAllResponse> {
+    const data =
+      QueryMainAccountGivenSubAccountRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.subaccount.Query",
+      "MainAccountGivenSubAccount",
       data
     );
     return promise.then((data) =>
