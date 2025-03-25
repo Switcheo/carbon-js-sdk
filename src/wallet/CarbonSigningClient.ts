@@ -154,7 +154,7 @@ export class CarbonSigningClient extends StargateClient {
     }
     const pubKeyBz = accountFromSigner ? accountFromSigner.pubkey : (await this.signer.getAccounts())[0].pubkey
     const pubkey = isCarbonEIP712Signer(this.signer) ? encodeAnyEthSecp256k1PubKey(pubKeyBz) : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
-    const txBodyEncodeObject: TxBodyEncodeObject = {
+    const txBodyEncodeObject: EncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
       value: {
         messages: messages,
@@ -203,7 +203,7 @@ export class CarbonSigningClient extends StargateClient {
         timeoutHeight: Long.fromNumber(timeoutHeight),
       }),
     };
-    const signedTxBodyEncodeObject: TxBodyEncodeObject = {
+    const signedTxBodyEncodeObject: EncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
       value: signedTxBody,
     };
