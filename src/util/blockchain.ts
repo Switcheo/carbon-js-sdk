@@ -48,6 +48,7 @@ export enum Blockchain {
   Optimism = 'optimism',
   Base = 'base',
   Avalanche = 'avax',
+  Monad = 'monad'
 }
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
@@ -127,6 +128,7 @@ export const ChainNames: SimpleMap<string> = {
   43113: "Avalanche Fuji Testnet",
   8453: "Base",
   84532: "Base Sepolia TestNet",
+  10143: "Monad TestNet",
 } as const
 
 export const CHAIN_IDS: ChainIds = {
@@ -506,6 +508,8 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
           return "Avalanche"
         case 84532:
           return "Base"
+        case 10143:
+          return "Monad"
         default:
           return undefined
       }
@@ -532,6 +536,8 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
           return "Avalanche"
         case 84532:
           return "Base"
+        case 10143:
+          return "Monad"
         default:
           return undefined
       }
@@ -581,12 +587,13 @@ export const blockchainForChainName: { [key: string]: string } = {
   [Blockchain.Optimism]: "Optimism",
   [Blockchain.Base]: "Base",
   [Blockchain.Avalanche]: "Avalanche",
+  [Blockchain.Monad]: "Monad",
 }
 
 export const getFormattedBlockchainName = (chain: string): BlockchainV2 | undefined => {
   return blockchainForChainName[chain]
 }
 
-export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon', 'Mantle', 'Base', 'Avalanche', 'Optimism'] as const;
+export const EvmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon', 'Mantle', 'Base', 'Avalanche', 'Optimism', 'Monad'] as const;
 export type EVMChain = (typeof EvmChains)[number];
 export const isEvmChain = (chain: string): chain is EVMChain => EvmChains.includes(chain as any);
