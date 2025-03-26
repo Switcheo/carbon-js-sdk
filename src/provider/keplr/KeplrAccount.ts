@@ -10,6 +10,8 @@ import { ethers } from "ethers";
 import { PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { parseEvmError } from "../metamask/error";
+import { SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import Long from "long";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -29,11 +31,18 @@ class KeplrAccount {
   } as const;
 
   static createKeplrSigner(keplr: Keplr, chainInfo: ChainInfo, account: Key): CarbonSigner {
-    const signDirect = async (signerAddress: string, doc: Models.Tx.SignDoc) => {
+    const signDirect = async (signerAddress: string, doc: SignDoc) => {
       return await signTransactionWrapper(
         async () => {
           const signOpts = { preferNoSetFee: true };
-          return await keplr!.signDirect(chainInfo.chainId, signerAddress, doc, signOpts);
+          const { bodyBytes, authInfoBytes, chainId, accountNumber } = doc
+          const parsedDoc: Models.Tx.SignDoc = {
+            bodyBytes,
+            authInfoBytes,
+            chainId,
+            accountNumber: new Long(Number(accountNumber)),
+          }
+          return await keplr!.signDirect(chainInfo.chainId, signerAddress, parsedDoc, signOpts);
         })
     };
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
@@ -71,7 +80,7 @@ class KeplrAccount {
         throw (parseEvmError(error as Error))
       }
     }
-    const signMessage = async (address: string, message: string): Promise<string> => { 
+    const signMessage = async (address: string, message: string): Promise<string> => {
       const chainId = chainInfo.chainId
       const { signature } = await keplr.signArbitrary(chainId, address, message)
       return Buffer.from(signature, 'base64').toString('hex')
@@ -123,7 +132,7 @@ class KeplrAccount {
       }
     }
 
-    const signMessage = async (address: string, message: string): Promise<string> => { 
+    const signMessage = async (address: string, message: string): Promise<string> => {
       const chainId = chainInfo.chainId
       const { signature } = await keplr.signArbitrary(chainId, address, message)
       return Buffer.from(signature, 'base64').toString('hex')

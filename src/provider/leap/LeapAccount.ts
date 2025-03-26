@@ -5,13 +5,14 @@ import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
 import { Leap } from "@cosmos-kit/leap-extension";
-
+import { SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { AppCurrency, ChainInfo, EthSignType, FeeCurrency } from "@keplr-wallet/types";
 import { ethers } from "ethers";
 import { parseEvmError } from "../metamask/error";
 import SDKProvider from "../sdk";
+import Long from "long";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -30,10 +31,17 @@ class LeapAccount {
   } as const;
 
   static createLeapSigner(leap: Leap, chainId: string): CarbonSigner {
-    const signDirect = async (signerAddress: string, doc: Models.Tx.SignDoc) => {
+    const signDirect = async (signerAddress: string, doc: SignDoc) => {
       return await signTransactionWrapper(async () => {
         const signOpts = { preferNoSetFee: true };
-        return await leap!.signDirect(chainId, signerAddress, doc, signOpts);
+        const { bodyBytes, authInfoBytes, chainId, accountNumber } = doc
+        const parsedDoc: Models.Tx.SignDoc = {
+          bodyBytes,
+          authInfoBytes,
+          chainId,
+          accountNumber: new Long(Number(accountNumber)),
+        }
+        return await leap!.signDirect(chainId, signerAddress, parsedDoc, signOpts);
       })
     };
 
