@@ -373,6 +373,9 @@ export class MetaMask extends Eip6963Provider {
       return Number(parseChainId(CarbonEvmChainIDs[network]))
     }
     const isMainnet = network === Network.MainNet
+    if (blockchain === 'Monad' && !isMainnet) {
+      return 10143
+    }
     switch (blockchain) {
       case 'Binance Smart Chain':
         return isMainnet ? 56 : 97;
@@ -758,6 +761,11 @@ export class MetaMask extends Eip6963Provider {
   private getRequiredChain(network: Network, currentChainId: number): number {
     const isMainnet = network === Network.MainNet;
 
+    if (!isMainnet && currentChainId === 10143) {
+      this.blockchain = 'Monad'
+      return 10143
+    }
+
     switch (currentChainId) {
       case 1:  // Ethereum Mainnet
       case 5:  // Ethereum Goerli Testnet
@@ -803,7 +811,6 @@ export class MetaMask extends Eip6963Provider {
       case 84532:
         this.blockchain = 'Base';
         return isMainnet ? 8453 : 84532;
-
       default:
         // Default fallback for Ethereum if no specific match found
         return isMainnet ? 1 : 5;

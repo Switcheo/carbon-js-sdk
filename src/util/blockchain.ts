@@ -67,6 +67,7 @@ export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
   "Optimism": Blockchain.Optimism,
   "Avalanche": Blockchain.Avalanche,
   "Base": Blockchain.Base,
+  "Monad": Blockchain.Monad,
 };
 
 export const BRIDGE_IDS = {
@@ -324,6 +325,8 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return Blockchain.Avalanche
         case 84532:
           return Blockchain.Base
+        case 10143:
+          return Blockchain.Monad
         default:
           return undefined
       }
@@ -350,6 +353,8 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return Blockchain.Avalanche
         case 84532:
           return Blockchain.Base
+        case 10143:
+          return Blockchain.Monad
         default:
           return undefined
       }
@@ -394,6 +399,8 @@ export const getBlockchainFromChainV2 = (chainId?: number) => {
     case 8453:
     case 84532:
       return 'Base'
+    case 10143:
+      return 'Monad'
     case Number(parseChainId((CarbonEvmChainIDs[Network.LocalHost]))):
     case Number(parseChainId((CarbonEvmChainIDs[Network.DevNet]))):
     case Number(parseChainId((CarbonEvmChainIDs[Network.TestNet]))):
