@@ -1,14 +1,18 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Token, LockedCoins, TokenBalance } from "./token";
+import {
+  Token,
+  LockedCoins,
+  TokenBalance,
+  FuturesBalanceRecord,
+} from "./token";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { Bridge } from "./bridge";
 import { TokenGroupDetails } from "./group";
-import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { BoolValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.coin";
@@ -126,7 +130,7 @@ export interface QueryFuturesBalanceRequest {
 }
 
 export interface QueryFuturesBalanceResponse {
-  balances: Coin[];
+  futuresBalance: FuturesBalanceRecord[];
 }
 
 const baseQueryGetTokenRequest: object = { denom: "" };
@@ -2047,8 +2051,8 @@ export const QueryFuturesBalanceResponse = {
     message: QueryFuturesBalanceResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.balances) {
-      Coin.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.futuresBalance) {
+      FuturesBalanceRecord.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -2062,12 +2066,14 @@ export const QueryFuturesBalanceResponse = {
     const message = {
       ...baseQueryFuturesBalanceResponse,
     } as QueryFuturesBalanceResponse;
-    message.balances = [];
+    message.futuresBalance = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.balances.push(Coin.decode(reader, reader.uint32()));
+          message.futuresBalance.push(
+            FuturesBalanceRecord.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -2081,20 +2087,20 @@ export const QueryFuturesBalanceResponse = {
     const message = {
       ...baseQueryFuturesBalanceResponse,
     } as QueryFuturesBalanceResponse;
-    message.balances = (object.balances ?? []).map((e: any) =>
-      Coin.fromJSON(e)
+    message.futuresBalance = (object.futuresBalance ?? []).map((e: any) =>
+      FuturesBalanceRecord.fromJSON(e)
     );
     return message;
   },
 
   toJSON(message: QueryFuturesBalanceResponse): unknown {
     const obj: any = {};
-    if (message.balances) {
-      obj.balances = message.balances.map((e) =>
-        e ? Coin.toJSON(e) : undefined
+    if (message.futuresBalance) {
+      obj.futuresBalance = message.futuresBalance.map((e) =>
+        e ? FuturesBalanceRecord.toJSON(e) : undefined
       );
     } else {
-      obj.balances = [];
+      obj.futuresBalance = [];
     }
     return obj;
   },
@@ -2105,7 +2111,9 @@ export const QueryFuturesBalanceResponse = {
     const message = {
       ...baseQueryFuturesBalanceResponse,
     } as QueryFuturesBalanceResponse;
-    message.balances = (object.balances ?? []).map((e) => Coin.fromPartial(e));
+    message.futuresBalance = (object.futuresBalance ?? []).map((e) =>
+      FuturesBalanceRecord.fromPartial(e)
+    );
     return message;
   },
 };

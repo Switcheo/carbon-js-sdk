@@ -7237,6 +7237,32 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "FuturesBalanceRecord": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "available",
+        "type": "string"
+      },
+      {
+        "name": "order_margin",
+        "type": "string"
+      },
+      {
+        "name": "iso_margin",
+        "type": "string"
+      },
+      {
+        "name": "cross_margin",
+        "type": "string"
+      },
+      {
+        "name": "cross_unrealised_loss",
+        "type": "string"
+      }
+    ],
     "LockedCoinsRecord": [
       {
         "name": "address",
@@ -8269,9 +8295,9 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryFuturesBalanceResponse": [
       {
-        "name": "balances",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
+        "name": "futures_balance",
+        "type": "FuturesBalanceRecord[]",
+        "packageName": "/Switcheo.carbon.coin"
       }
     ]
   },
