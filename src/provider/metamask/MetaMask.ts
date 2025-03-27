@@ -1,6 +1,6 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
-import { AVALANCHE_MAINNET, AVALANCHE_TESTNET, BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { AVALANCHE_MAINNET, AVALANCHE_TESTNET, BASE_MAINNET, BASE_TESTNET, CarbonEvmChainIDs, EthNetworkConfig, MANTLE_MAINNET, MANTLE_TESTNET, MONAD_MAINNET, MONAD_TESTNET, Network, NetworkConfigs, OP_MAINNET, OP_TESTNET, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { AminoTypesMap, AuthUtils, CarbonSDK, EvmUtils, Models, ProviderAgent, SupportedEip6963Provider } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx } from "@carbon-sdk/util";
@@ -74,6 +74,14 @@ const CONTRACT_HASH: {
     [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
   Mantle: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const,
+  Monad: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -338,6 +346,8 @@ export class MetaMask extends Eip6963Provider {
         return isMainnet ? AVALANCHE_MAINNET : AVALANCHE_TESTNET
       case 'Base':
         return isMainnet ? BASE_MAINNET : BASE_TESTNET
+      case 'Monad':
+        return isMainnet ? MONAD_MAINNET : MONAD_TESTNET
       default:
         // metamask should come with Ethereum configs
         return isMainnet ? ETH_MAINNET : ETH_TESTNET
@@ -791,6 +801,11 @@ export class MetaMask extends Eip6963Provider {
       case 84532:
         this.blockchain = 'Base';
         return isMainnet ? 8453 : 84532;
+
+      case 143:  // Monad Mainnet
+      case 10143: // Monad Testnet
+        this.blockchain = 'Monad';
+        return isMainnet ? 143 : 10143;
 
       default:
         // Default fallback for Ethereum if no specific match found

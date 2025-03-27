@@ -229,6 +229,8 @@ class RainbowKitAccount extends Eip6963Provider {
         return isMainnet ? 43114 : 43113;
       case 'Base':
         return isMainnet ? 8453 : 84532;
+      case 'Monad':
+        return isMainnet ? 143 : 10143;
       default:
         // Fallback to Ethereum chain ID
         return isMainnet ? 1 : 5;

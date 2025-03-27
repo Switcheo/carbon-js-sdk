@@ -82,6 +82,7 @@ export interface NetworkConfig {
   optimism: EthNetworkConfig;
   base: EthNetworkConfig;
   avax: EthNetworkConfig;
+  monad: EthNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
@@ -207,6 +208,9 @@ export const NetworkConfigs: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://api.avax.network/ext/bc/C/rpc",
     },
+    monad: {
+      ...EthNetworkConfigFallback,
+    },
   },
 
   [Network.TestNet]: {
@@ -314,6 +318,10 @@ export const NetworkConfigs: {
     avax: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
+    },
+    monad: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://testnet-rpc.monad.xyz",
     },
   },
 
@@ -436,6 +444,10 @@ export const NetworkConfigs: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     },
+    monad: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://testnet-rpc.monad.xyz",
+    },
   },
 
   [Network.LocalHost]: {
@@ -544,6 +556,10 @@ export const NetworkConfigs: {
     avax: {
       ...EthNetworkConfigFallback,
       rpcURL: "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
+    },
+    monad: {
+      ...EthNetworkConfigFallback,
+      rpcURL: "https://testnet-rpc.monad.xyz",
     },
   },
 } as const;

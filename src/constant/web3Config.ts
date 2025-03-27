@@ -275,3 +275,29 @@ export const BASE_TESTNET: ChangeNetworkParam = {
     symbol: "ETH",
   },
 }
+
+export const MONAD_MAINNET: ChangeNetworkParam = {
+  chainId: "0x8f",  // Monad MainNet Chain ID (hex of 143)
+  blockExplorerUrls: ["https://explorer.monad.xyz"],
+  chainName: "Monad Mainnet",
+  rpcUrls: [],
+  nativeCurrency: {
+    decimals: 18,
+    name: "MON",
+    symbol: "MON",
+  },
+}
+
+export const MONAD_TESTNET: ChangeNetworkParam = {
+  chainId: "0x279f",  // Monad MainNet Chain ID (hex of 10143)
+  blockExplorerUrls: ["https://explorer.monad.xyz"],
+  chainName: "Monad Testnet",
+  rpcUrls: [
+    "https://testnet-rpc.monad.xyz",
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "MON",
+    symbol: "MON",
+  },
+}
