@@ -110,6 +110,7 @@ export interface SignTxOpts {
   sequence?: number;
   accountNumber?: number;
   explicitSignerData?: Partial<CarbonSignerData>;
+  transformMsgs?: (messages: readonly EncodeObject[]) => readonly EncodeObject[];
   triggerMerge?: boolean; // stack merge account tx if user account is unmerged
 }
 

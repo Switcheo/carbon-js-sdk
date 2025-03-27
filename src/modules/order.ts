@@ -28,11 +28,13 @@ export class OrderModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs: EncodeObject[] = params.map((param) => {
+      const creator = param.creator ?? wallet.bech32Address
+
       if ("leverage" in param) {
         return {
           typeUrl: CarbonTx.Types.MsgSetLeverage,
           value: MsgSetLeverage.fromPartial({
-            creator: wallet.bech32Address,
+            creator,
             marketId: param.marketId,
             leverage: param.leverage.shiftedBy(18).toString(10),
           }),
@@ -42,7 +44,7 @@ export class OrderModule extends BaseModule {
       return {
         typeUrl: CarbonTx.Types.MsgCreateOrder,
         value: MsgCreateOrder.fromPartial({
-          creator: wallet.bech32Address,
+          creator,
           isPostOnly: param.isPostOnly,
           isReduceOnly: param.isReduceOnly,
           marketId: param.marketId,
@@ -63,12 +65,13 @@ export class OrderModule extends BaseModule {
     return await wallet.sendTxs(msgs, opts);
   }
 
-  public async cancel(orderId: string, opts?: CarbonTx.SignTxOpts) {
+  public async cancel(params: OrderModule.CancelOrderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-
+    const creator = params.creator ?? wallet.bech32Address
+    const id = params.id
     const value: MsgCancelOrder = {
-      creator: wallet.bech32Address,
-      id: orderId,
+      creator,
+      id,
     };
 
     return await wallet.sendTx(
@@ -80,13 +83,14 @@ export class OrderModule extends BaseModule {
     );
   }
 
-  public async cancelOrders(orderIds: string[], opts?: CarbonTx.SignTxOpts) {
+  public async cancelOrders(params: OrderModule.CancelOrderParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const msgs = orderIds.map((id) => {
+    const msgs = params.map((p) => {
+      const creator = p.creator ?? wallet.bech32Address
       const value: MsgCancelOrder = {
-        creator: wallet.bech32Address,
-        id,
+        creator,
+        id: p.id,
       };
 
       return {
@@ -100,9 +104,10 @@ export class OrderModule extends BaseModule {
 
   public async edit(params: OrderModule.EditOrderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    const creator = params.creator ?? wallet.bech32Address
 
     const value = MsgEditOrder.fromPartial({
-      creator: wallet.bech32Address,
+      creator,
       id: params.id,
       price: params.price.shiftedBy(18).toString(10),
       quantity: params.quantity.toString(10),
@@ -122,8 +127,9 @@ export class OrderModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map((param) => {
+      const creator = param.creator ?? wallet.bech32Address
       const value = MsgEditOrder.fromPartial({
-        creator: wallet.bech32Address,
+        creator,
         id: param.id,
         price: param.price.shiftedBy(18).toString(10),
         quantity: param.quantity.toString(10),
@@ -141,9 +147,10 @@ export class OrderModule extends BaseModule {
 
   public async cancelAll(params: OrderModule.CancelAllParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    const creator = params.creator ?? wallet.bech32Address
 
     const value = MsgCancelAll.fromPartial({
-      creator: wallet.bech32Address,
+      creator,
       marketId: params.marketId,
     });
 
@@ -159,6 +166,7 @@ export class OrderModule extends BaseModule {
 
 export namespace OrderModule {
   export interface CreateOrderParams {
+    creator?: string;
     marketId: string;
 
     side: OrderSide;
@@ -181,6 +189,7 @@ export namespace OrderModule {
   }
 
   export interface SetLeverageParams {
+    creator?: string;
     marketId: string;
     leverage: BigNumber;
   }
@@ -190,14 +199,19 @@ export namespace OrderModule {
   }
 
   export interface EditOrderParams {
+    creator?: string;
     id: string;
     quantity: BigNumber;
     price: BigNumber;
     timeInForce?: OrderModule.TimeInForce;
     stopPrice?: BigNumber;
   }
-
+  export interface CancelOrderParams {
+    creator?: string;
+    id: string;
+  }
   export interface CancelAllParams {
+    creator?: string;
     marketId: string;
   }
 
