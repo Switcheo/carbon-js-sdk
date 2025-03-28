@@ -14,7 +14,7 @@ import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { AminoMsg, makeSignDoc } from "@cosmjs/amino";
 import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
 import { StdFee } from "@cosmjs/stargate";
-import { DirectSignResponse } from "@cosmjs/proto-signing";
+import { DirectSignResponse } from "@keplr-wallet/types";
 import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
 import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BASE_MAINNET, BASE_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, MANTLE_MAINNET, MANTLE_TESTNET, OKC_MAINNET, OKC_TESTNET, OP_MAINNET, OP_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET, AVALANCHE_MAINNET, AVALANCHE_TESTNET } from "../../constant";
