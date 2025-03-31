@@ -5,6 +5,9 @@ import { OmitCreator } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { GrantModule } from "./grant";
+import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
+import { GrantTypes } from "@carbon-sdk/provider/amino/types/grant";
+import { MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 
 export class PerpspoolModule extends BaseModule {
   public async createPerpertualsPool(params: PerpspoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -73,6 +76,44 @@ export class PerpspoolModule extends BaseModule {
       },
       opts
     );
+  }
+
+  public async depositToVault(params: PerpspoolModule.DepositToVaultParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const encodedGrantMsgs = [CarbonTx.Types.MsgCreateOrder, CarbonTx.Types.MsgReleaseUserVaultWithdrawal].map((msg) => {
+      const grantMsg = MsgGrant.fromPartial({
+        granter: wallet.bech32Address,
+        grantee: params.grantee,
+        grant: {
+          authorization: {
+            typeUrl: GrantTypes.GenericAuthorization,
+            value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
+              msg,
+            })).finish(),
+          },
+          expiration: params.expiry,
+        },
+      })
+      return {
+        typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
+      }
+    })
+
+    const msgs =[
+      ...encodedGrantMsgs,
+      {
+        typeUrl: CarbonTx.Types.MsgDepositToPool,
+        value: Carbon.Perpspool.MsgDepositToPool.fromPartial({
+          creator: wallet.bech32Address,
+          poolId: params.poolId,
+          depositAmount: params.depositAmount,
+          minShareAmount: params.minShareAmount,
+        }),
+      },
+    ]
+
+    return await wallet.sendTxs(msgs, opts);
   }
 
   public async withdrawFromPool(params: PerpspoolModule.WithdrawFromPoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -257,6 +298,11 @@ export namespace PerpspoolModule {
     poolId: Long;
     depositAmount: string;
     minShareAmount: string;
+  }
+
+  export interface DepositToVaultParams extends DepositToPoolParams {
+    grantee: string;
+    expiry: Date;
   }
 
   export interface WithdrawFromPoolParams {
