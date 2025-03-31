@@ -60,10 +60,10 @@ export interface EthersTransactionResponse extends ethers.Transaction {
 
 export const FEE_MULTIPLIER = ethers.BigNumber.from(2);
 
-type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc | Blockchain.Mantle | Blockchain.Optimism | Blockchain.Base | Blockchain.Avalanche;
+type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc | Blockchain.Mantle | Blockchain.Optimism | Blockchain.Base | Blockchain.Avalanche | Blockchain.Monad;
 
 export class ETHClient {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc, Blockchain.Mantle, Blockchain.Optimism, Blockchain.Base, Blockchain.Avalanche] as const;
+  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc, Blockchain.Mantle, Blockchain.Optimism, Blockchain.Base, Blockchain.Avalanche, Blockchain.Monad] as const;
   static BLOCKCHAIN_KEY = {
     [Blockchain.BinanceSmartChain]: "bsc",
     [Blockchain.Ethereum]: "eth",
@@ -74,6 +74,7 @@ export class ETHClient {
     [Blockchain.Optimism]: 'optimism',
     [Blockchain.Base]: 'base',
     [Blockchain.Avalanche]: 'avax',
+    [Blockchain.Monad]: 'monad',
   };
 
   static BLOCKCHAINV2_MAPPING = {
@@ -86,6 +87,7 @@ export class ETHClient {
     [Blockchain.Optimism]: 'Optimism',
     [Blockchain.Base]: 'Base',
     [Blockchain.Avalanche]: 'Avalanche',
+    [Blockchain.Monad]: 'Monad',
   };
 
   private constructor(

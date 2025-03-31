@@ -1,5 +1,5 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
-import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EVMChain, MONAD_TESTNET, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
@@ -212,6 +212,9 @@ class RainbowKitAccount extends Eip6963Provider {
       return Number(parseChainId(CarbonEvmChainIDs[network]))
     }
     const isMainnet = network === Network.MainNet
+    if (blockchain === 'Monad' && !isMainnet) {
+      return 10143;
+    }
     switch (blockchain) {
       case 'Binance Smart Chain':
         return isMainnet ? 56 : 97;
@@ -254,6 +257,10 @@ class RainbowKitAccount extends Eip6963Provider {
     }
 
     const isMainnet = network === Network.MainNet
+
+    if (blockchain === 'Monad' && !isMainnet) {
+      return MONAD_TESTNET
+    }
 
     switch (blockchain) {
       case 'Binance Smart Chain':
