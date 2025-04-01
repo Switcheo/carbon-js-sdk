@@ -1,10 +1,9 @@
-import CarbonSDK from "@carbon-sdk/CarbonSDK";
+import CarbonSDK, { Carbon } from "@carbon-sdk/CarbonSDK";
 import { EthNetworkConfig, NativeTokenHash, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Carbon } from "@carbon-sdk/CarbonSDK";
-import { AddressUtils } from "@carbon-sdk/util";
+import { AddressUtils, BlockchainUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
-import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
+import { blockchainForChainId, BlockchainV2, EVMChain, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external";
 import { appendHexPrefix, stripHexPrefix } from "@carbon-sdk/util/generic";
 import { BN_ZERO } from "@carbon-sdk/util/number";
@@ -15,7 +14,7 @@ import TokenClient from "./TokenClient";
 export interface ETHClientOpts {
   configProvider: NetworkConfigProvider;
   tokenClient: TokenClient;
-  blockchain: typeof ETHClient.SUPPORTED_BLOCKCHAINS[number];
+  blockchain: BlockchainV2;
   rpcURL: string;
 }
 
@@ -61,37 +60,11 @@ export interface EthersTransactionResponse extends ethers.Transaction {
 
 export const FEE_MULTIPLIER = ethers.BigNumber.from(2);
 
-type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc | Blockchain.Mantle | Blockchain.Optimism | Blockchain.Base | Blockchain.Avalanche;
-
 export class ETHClient {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc, Blockchain.Mantle, Blockchain.Optimism, Blockchain.Base, Blockchain.Avalanche] as const;
-  static BLOCKCHAIN_KEY = {
-    [Blockchain.BinanceSmartChain]: "bsc",
-    [Blockchain.Ethereum]: "eth",
-    [Blockchain.Arbitrum]: "arbitrum",
-    [Blockchain.Polygon]: "polygon",
-    [Blockchain.Okc]: "okc",
-    [Blockchain.Mantle]: 'mantle',
-    [Blockchain.Optimism]: 'optimism',
-    [Blockchain.Base]: 'base',
-    [Blockchain.Avalanche]: 'avax',
-  };
-
-  static BLOCKCHAINV2_MAPPING = {
-    [Blockchain.BinanceSmartChain]: "Binance Smart Chain",
-    [Blockchain.Ethereum]: "Ethereum",
-    [Blockchain.Arbitrum]: "Arbitrum",
-    [Blockchain.Polygon]: "Polygon",
-    [Blockchain.Okc]: "OKC",
-    [Blockchain.Mantle]: 'Mantle',
-    [Blockchain.Optimism]: 'Optimism',
-    [Blockchain.Base]: 'Base',
-    [Blockchain.Avalanche]: 'Avalanche',
-  };
 
   private constructor(
     public readonly configProvider: NetworkConfigProvider,
-    public readonly blockchain: typeof ETHClient.SUPPORTED_BLOCKCHAINS[number],
+    public readonly blockchain: EVMChain,
     public readonly tokenClient: TokenClient,
     public readonly rpcURL: string,
   ) { }
@@ -99,7 +72,9 @@ export class ETHClient {
   public static instance(opts: ETHClientOpts) {
     const { configProvider, blockchain, tokenClient, rpcURL } = opts;
 
-    if (!ETHClient.SUPPORTED_BLOCKCHAINS.includes(blockchain)) throw new Error(`unsupported blockchain - ${blockchain}`);
+    if (!BlockchainUtils.isEvmChain(blockchain) || blockchain === 'Carbon') {
+      throw new Error(`unsupported blockchain - ${blockchain}`);
+    }
 
     return new ETHClient(configProvider, blockchain, tokenClient, rpcURL);
   }
@@ -112,9 +87,9 @@ export class ETHClient {
         const isCorrectBlockchain =
           version === "V2"
             ?
-            this.tokenClient.getBlockchainV2(token.denom) == ETHClient.BLOCKCHAINV2_MAPPING[this.blockchain]
+            this.tokenClient.getBlockchainV2(token.denom) == this.blockchain
             :
-            blockchainForChainId(token.chainId.toNumber(), api.network) == this.blockchain
+            blockchainForChainId(token.chainId.toNumber(), api.network) == BLOCKCHAIN_V2_TO_V1_MAPPING[this.blockchain]
         return isCorrectBlockchain &&
           token.tokenAddress.length == 40 &&
           token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
@@ -387,7 +362,7 @@ export class ETHClient {
     if (!feeInfo.deposit_fee) {
       throw new Error("unsupported token");
     }
-    if (blockchainForChainId(token.chainId.toNumber(), this.configProvider.getConfig().network) !== this.blockchain) {
+    if (blockchainForChainId(token.chainId.toNumber(), this.configProvider.getConfig().network) !== BLOCKCHAIN_V2_TO_V1_MAPPING[this.blockchain]) {
       throw new Error("unsupported token");
     }
 
@@ -417,7 +392,7 @@ export class ETHClient {
     return { address, decimals, name, symbol };
   }
 
-  public formatWithdrawalAddress(address: string): string {
+  public static formatWithdrawalAddress(address: string): string {
     const isValidAddress = ethers.utils.isAddress(address);
     if (!isValidAddress) {
       throw new Error("invalid address");
@@ -463,8 +438,8 @@ export class ETHClient {
 
   public getConfig(): EthNetworkConfig {
     const networkConfig = this.getNetworkConfig();
-    const blockchain = this.blockchain as SupportedBlockchains;
-    return networkConfig[ETHClient.BLOCKCHAIN_KEY[blockchain] as SupportedBlockchains];
+    const blockchainKey = BLOCKCHAIN_V2_TO_V1_MAPPING[this.blockchain] as keyof NetworkConfig;
+    return networkConfig[blockchainKey] as EthNetworkConfig;
   }
 
   public getPayerUrl() {

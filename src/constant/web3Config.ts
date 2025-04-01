@@ -58,17 +58,3 @@ export const ETH_TESTNET: ChangeNetworkParam = {
   chainId: "0x5",
   rpcUrls: ["https://goerli.infura.io/v3/"],
 };
-
-export const MANTLE_MAINNET: ChangeNetworkParam = {
-  chainId: "0x1388",
-  blockExplorerUrls: ["https://explorer.mantle.xyz"],
-  chainName: "Mantle Mainnet",
-  rpcUrls: [
-    "https://rpc.mantle.xyz/",
-  ],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Mantle",
-    symbol: "MNT",
-  },
-}
