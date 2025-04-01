@@ -599,6 +599,8 @@ export class CarbonWallet {
     const messages = signOpts?.processMsgs?.(txRequest.messages) ?? txRequest.messages
     console.log('xx messages:', messages)
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
+    console.log('xx granteeValid?:', this.isGranteeValid())
+    console.log('xx isAuthorized:', isAuthorized)
     if (this.isGranteeValid() && isAuthorized) {
       await this.signWithGrantee(txRequest)
     } else {
