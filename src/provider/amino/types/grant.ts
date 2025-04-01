@@ -242,13 +242,14 @@ const feegrantAminoProcess: AminoProcess = {
 const msgExecProcess: AminoProcess = {
   toAminoProcess: (amino: AminoValueMap, input: any) => {
     const { msgs } = input as MsgExecAuthz
+    console.log('xx amino: ', amino)
     console.log('xx toAmino input: ', input)
     console.log('xx toAminoMsgs: ', msgs)
     const newMsgs = msgs.map((msg) => registry.decode(msg))
     console.log('xx toAmino newMsgs: ', newMsgs)
     return { amino, input: newMsgs }
   },
-  
+
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
     const newInput = input;
     console.log('xx fromAmino input: ', newInput)
