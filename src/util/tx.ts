@@ -103,6 +103,8 @@ export interface CarbonSignerData extends SignerData {
   evmChainId?: string;
 }
 
+export type ProcessMsgsCallback = (messages: readonly EncodeObject[]) => readonly EncodeObject[];
+
 export interface SignTxOpts {
   fee?: StdFee;
   feeDenom?: string;
@@ -110,7 +112,7 @@ export interface SignTxOpts {
   sequence?: number;
   accountNumber?: number;
   explicitSignerData?: Partial<CarbonSignerData>;
-  transformMsgs?: (messages: readonly EncodeObject[]) => readonly EncodeObject[];
+  processMsgs?: ProcessMsgsCallback;
   triggerMerge?: boolean; // stack merge account tx if user account is unmerged
 }
 
