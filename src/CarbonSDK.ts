@@ -157,6 +157,7 @@ class CarbonSDK {
   arbitrum: ETHClient;
   polygon: ETHClient;
   mantle: ETHClient;
+  monad: ETHClient;
   op: ETHClient;
   base: ETHClient;
   okc: ETHClient;
@@ -292,6 +293,12 @@ class CarbonSDK {
     this.base = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Base,
+      tokenClient: this.token,
+    });
+
+    this.monad = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Monad,
       tokenClient: this.token,
     });
   }
