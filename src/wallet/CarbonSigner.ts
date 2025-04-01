@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { SignDoc } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { NetworkConfigs } from "@carbon-sdk/constant";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
@@ -45,7 +45,7 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSi
   wallet?: DirectSecp256k1Wallet;
   aminoWallet?: Secp256k1Wallet;
 
-  constructor(readonly privateKey: Uint8Array, readonly prefix: string) { }
+  constructor(readonly privateKey: Buffer, readonly prefix: string) { }
 
   async initWallet() {
     if (!this.wallet) this.wallet = await DirectSecp256k1Wallet.fromKey(this.privateKey, this.prefix);

@@ -1,6 +1,6 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
 import { CarbonEvmChainIDs, EVMChain, MONAD_TESTNET, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
-import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils } from "@carbon-sdk/index";
+import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
@@ -35,7 +35,7 @@ class RainbowKitAccount extends Eip6963Provider {
   static createRainbowKitSigner(rainbowKit: RainbowKitAccount, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const evmHexAddress = AddressUtils.ETHAddress.publicKeyToAddress(Buffer.from(pubKeyBase64, "base64"), addressOptions)
 
-    const signDirect = async (_: string, doc: SignDoc): Promise<DirectSignResponse> => {
+    const signDirect = async (_: string, doc: Models.Tx.SignDoc): Promise<DirectSignResponse> => {
       const txBody = TxBody.decode(doc.bodyBytes)
       const authInfo = AuthInfo.decode(doc.authInfoBytes)
       const msgs: EncodeObject[] = txBody.messages.map(message => {
