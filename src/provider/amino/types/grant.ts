@@ -6,6 +6,7 @@ import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType, mapEachIndiv } from "../utils";
 import { registry } from "@carbon-sdk/codec";
+import AminoTypesMap from "../AminoTypesMap";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   GrantAuthz: "cosmos-sdk/MsgGrant",
@@ -245,9 +246,9 @@ const msgExecProcess: AminoProcess = {
     console.log('xx amino: ', amino)
     console.log('xx toAmino input: ', input)
     console.log('xx toAminoMsgs: ', msgs)
-    const newMsgs = msgs.map((msg) => registry.decode(msg))
+    const newMsgs = msgs.map((msg) => AminoTypesMap.toAmino(msg))
     console.log('xx toAmino newMsgs: ', newMsgs)
-    return { amino, input: newMsgs }
+    return { amino, input: { ...input, msgs: newMsgs } }
   },
 
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
