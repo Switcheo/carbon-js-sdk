@@ -1,5 +1,5 @@
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
-import { MsgExec, MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
+import { MsgExec as MsgExecAuthz, MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import { GrantUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
@@ -241,13 +241,14 @@ const feegrantAminoProcess: AminoProcess = {
 
 const msgExecProcess: AminoProcess = {
   toAminoProcess: (amino: AminoValueMap, input: any) => {
-    const { msgs } = input as MsgExec
+    const { msgs } = input as MsgExecAuthz
     console.log('xx toAmino input: ', input)
     console.log('xx toAminoMsgs: ', msgs)
     const newMsgs = msgs.map((msg) => registry.decode(msg))
     console.log('xx toAmino newMsgs: ', newMsgs)
     return { amino, input: newMsgs }
   },
+  
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
     const newInput = input;
     console.log('xx fromAmino input: ', newInput)
