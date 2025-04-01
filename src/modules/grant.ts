@@ -92,7 +92,7 @@ export class GrantModule extends BaseModule {
   public static async getGrantMsgs(params: GrantModule.GrantParams, client: FeeGrantQueryClient) {
     const { msgs, granter, grantee, expiry } = params
     const messages = this.getGenericAuthorizationMsg(granter, grantee, expiry, msgs)
-    const existingGrantee = await client.Allowance({ granter, grantee })
+    const existingGrantee = await hasExistingGrantee(granter, grantee, client)
 
     // can only have one existing grant between granter and grantee
     // to 'extend' have to revoke existing fee-grant and approve new fee-grant with new expiration
@@ -128,6 +128,22 @@ export class GrantModule extends BaseModule {
     return await wallet.sendTxs(execMsgs, opts)
   }
 
+}
+
+const hasExistingGrantee = async (granter: string, grantee: string, client: FeeGrantQueryClient) => {
+  try {
+    const existingGrantee = await client.Allowance({ granter, grantee })
+    return !!existingGrantee
+  } catch (e) {
+    const err = e as Error
+    if (isFeeGrantNotFound(err)) return false
+    throw e
+  }
+}
+
+const isFeeGrantNotFound = (error: Error) => {
+  const errorMessage = 'fee-grant not found'
+  return error?.message.includes(errorMessage)
 }
 
 export namespace GrantModule {
