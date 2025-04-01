@@ -1,10 +1,11 @@
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
-import { MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
+import { MsgExec, MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import { GrantUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType, mapEachIndiv } from "../utils";
+import { registry } from "@carbon-sdk/codec";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   GrantAuthz: "cosmos-sdk/MsgGrant",
@@ -236,6 +237,23 @@ const feegrantAminoProcess: AminoProcess = {
     };
   },
 }
+
+
+const msgExecProcess: AminoProcess = {
+  toAminoProcess: (amino: AminoValueMap, input: any) => {
+    const { msgs } = input as MsgExec
+    console.log('xx toAmino input: ', input)
+    console.log('xx toAminoMsgs: ', msgs)
+    const newMsgs = msgs.map((msg) => registry.decode(msg))
+    console.log('xx toAmino newMsgs: ', newMsgs)
+    return { amino, input: newMsgs }
+  },
+  fromAminoProcess: (amino: AminoValueMap, input: any) => {
+    const newInput = input;
+    console.log('xx fromAmino input: ', newInput)
+    return { amino, input: newInput };
+  },
+};
 
 const GrantAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgGrant]: generateAminoType(MsgGrantAuthz, grantAuthzAminoProcess),
