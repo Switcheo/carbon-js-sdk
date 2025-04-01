@@ -260,7 +260,7 @@ const GrantAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgRevoke]: generateAminoType(MsgRevokeAuthz),
   [CarbonTx.Types.MsgGrantAllowance]: generateAminoType(MsgFeeGrantAllowance, feegrantAminoProcess),
   [CarbonTx.Types.MsgRevokeAllowance]: generateAminoType(MsgRevokeAllowance),
-  [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec),
+  [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec, msgExecProcess),
   [GrantTypes.GenericAuthorization]: generateAminoType(GenericAuthorizationAminoType),
   [GrantTypes.AllowedMsgAllowance]: generateAminoType(AllowedMsgAllowanceAminoType),
   [GrantTypes.BasicAllowance]: generateAminoType(BasicAllowanceAminoType),
