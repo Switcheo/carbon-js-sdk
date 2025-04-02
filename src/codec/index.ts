@@ -316,10 +316,6 @@ registry.register("/Switcheo.carbon.coin.MsgLinkToken", Carbon.Coin.MsgLinkToken
 registry.register("/Switcheo.carbon.coin.MsgLinkTokenResponse", Carbon.Coin.MsgLinkTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgWithdraw", Carbon.Coin.MsgWithdraw);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", Carbon.Coin.MsgWithdrawResponse);
-registry.register("/Switcheo.carbon.coin.MsgMigratePolyToken", Carbon.Coin.MsgMigratePolyToken);
-registry.register("/Switcheo.carbon.coin.MsgMigratePolyTokenResponse", Carbon.Coin.MsgMigratePolyTokenResponse);
-registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawPoly", Carbon.Coin.MsgAdminWithdrawPoly);
-registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawPolyResponse", Carbon.Coin.MsgAdminWithdrawPolyResponse);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", Carbon.Coin.MsgAuthorizeBridge);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", Carbon.Coin.MsgAuthorizeBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", Carbon.Coin.MsgDeauthorizeBridge);
@@ -1041,10 +1037,6 @@ export const TxTypes = {
   "MsgLinkTokenResponse": "/Switcheo.carbon.coin.MsgLinkTokenResponse",
   "MsgWithdraw": "/Switcheo.carbon.coin.MsgWithdraw",
   "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
-  "MsgMigratePolyToken": "/Switcheo.carbon.coin.MsgMigratePolyToken",
-  "MsgMigratePolyTokenResponse": "/Switcheo.carbon.coin.MsgMigratePolyTokenResponse",
-  "MsgAdminWithdrawPoly": "/Switcheo.carbon.coin.MsgAdminWithdrawPoly",
-  "MsgAdminWithdrawPolyResponse": "/Switcheo.carbon.coin.MsgAdminWithdrawPolyResponse",
   "MsgAuthorizeBridge": "/Switcheo.carbon.coin.MsgAuthorizeBridge",
   "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
   "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
@@ -5879,12 +5871,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MigrateCdpDbEvent": [
-      {
-        "name": "should_migrate",
-        "type": "bool"
-      }
-    ],
     "Params": [
       {
         "name": "interest_fee",
@@ -7645,36 +7631,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgWithdrawResponse": [],
-    "MsgMigratePolyToken": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      }
-    ],
-    "MsgMigratePolyTokenResponse": [],
-    "MsgAdminWithdrawPoly": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      }
-    ],
-    "MsgAdminWithdrawPolyResponse": [],
     "MsgAuthorizeBridge": [
       {
         "name": "creator",
@@ -16864,10 +16820,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "address",
         "type": "string"
-      },
-      {
-        "name": "role",
-        "type": "string"
       }
     ],
     "QueryGetPendingSubAccountRequest": [
@@ -16885,6 +16837,13 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryGetSubAccountResponse": [
+      {
+        "name": "subaccount",
+        "type": "SubAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "QueryGetPendingSubAccountResponse": [
       {
         "name": "subaccount",
         "type": "SubAccount",
@@ -16961,10 +16920,17 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "QueryMainAccountAllRequest": [
+    "QueryMainAccountGivenSubAccountRequest": [
       {
         "name": "sub_address",
         "type": "string"
+      }
+    ],
+    "QueryMainAccountAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryMainAccountAllResponse": [
@@ -16972,22 +16938,23 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "main_accounts",
         "type": "MainAccount[]",
         "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryMainAccountRequest": [
       {
-        "name": "sub_address",
-        "type": "string"
-      },
-      {
-        "name": "role",
+        "name": "main_address",
         "type": "string"
       }
     ],
     "QueryMainAccountResponse": [
       {
         "name": "main_account",
-        "type": "MainAccount",
+        "type": "MainAccount[]",
         "packageName": "/Switcheo.carbon.subaccount"
       }
     ],
@@ -24179,6 +24146,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "tally_result",
         "type": "TallyResult",
         "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "EventTallyError": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "error_message",
+        "type": "string"
       }
     ],
     "GenesisState": [
