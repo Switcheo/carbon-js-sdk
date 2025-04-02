@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.position";
 
@@ -9,7 +8,6 @@ export interface MsgSetMargin {
   creator: string;
   marketId: string;
   margin: string;
-  onBehalfOf?: string;
 }
 
 export interface MsgSetMarginResponse {}
@@ -30,12 +28,6 @@ export const MsgSetMargin = {
     if (message.margin !== "") {
       writer.uint32(26).string(message.margin);
     }
-    if (message.onBehalfOf !== undefined) {
-      StringValue.encode(
-        { value: message.onBehalfOf! },
-        writer.uint32(34).fork()
-      ).ldelim();
-    }
     return writer;
   },
 
@@ -54,12 +46,6 @@ export const MsgSetMargin = {
           break;
         case 3:
           message.margin = reader.string();
-          break;
-        case 4:
-          message.onBehalfOf = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -83,10 +69,6 @@ export const MsgSetMargin = {
       object.margin !== undefined && object.margin !== null
         ? String(object.margin)
         : "";
-    message.onBehalfOf =
-      object.onBehalfOf !== undefined && object.onBehalfOf !== null
-        ? String(object.onBehalfOf)
-        : undefined;
     return message;
   },
 
@@ -95,7 +77,6 @@ export const MsgSetMargin = {
     message.creator !== undefined && (obj.creator = message.creator);
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.margin !== undefined && (obj.margin = message.margin);
-    message.onBehalfOf !== undefined && (obj.onBehalfOf = message.onBehalfOf);
     return obj;
   },
 
@@ -104,7 +85,6 @@ export const MsgSetMargin = {
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
     message.margin = object.margin ?? "";
-    message.onBehalfOf = object.onBehalfOf ?? undefined;
     return message;
   },
 };

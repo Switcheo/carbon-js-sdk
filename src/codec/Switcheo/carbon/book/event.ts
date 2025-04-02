@@ -23,18 +23,6 @@ export interface Quote {
   q: string;
 }
 
-/**
- * Message fields below are shortened to reduce size of messages,
- * but use gogoproto customnames to provide descriptive names
- * for referencing and use in the code.
- */
-export interface Quote {
-  /** price in formatted string */
-  p: string;
-  /** quantity in formatted string */
-  q: string;
-}
-
 export interface VirtualOrderBookEvent {
   m: string;
   /** bids as one or more Quotes */

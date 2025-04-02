@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.leverage";
 
@@ -10,7 +9,6 @@ export interface MsgSetLeverage {
   creator: string;
   marketId: string;
   leverage: string;
-  onBehalfOf?: string;
 }
 
 export interface MsgSetLeverageResponse {}
@@ -31,12 +29,6 @@ export const MsgSetLeverage = {
     if (message.leverage !== "") {
       writer.uint32(26).string(message.leverage);
     }
-    if (message.onBehalfOf !== undefined) {
-      StringValue.encode(
-        { value: message.onBehalfOf! },
-        writer.uint32(34).fork()
-      ).ldelim();
-    }
     return writer;
   },
 
@@ -55,12 +47,6 @@ export const MsgSetLeverage = {
           break;
         case 3:
           message.leverage = reader.string();
-          break;
-        case 4:
-          message.onBehalfOf = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -84,10 +70,6 @@ export const MsgSetLeverage = {
       object.leverage !== undefined && object.leverage !== null
         ? String(object.leverage)
         : "";
-    message.onBehalfOf =
-      object.onBehalfOf !== undefined && object.onBehalfOf !== null
-        ? String(object.onBehalfOf)
-        : undefined;
     return message;
   },
 
@@ -96,7 +78,6 @@ export const MsgSetLeverage = {
     message.creator !== undefined && (obj.creator = message.creator);
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.leverage !== undefined && (obj.leverage = message.leverage);
-    message.onBehalfOf !== undefined && (obj.onBehalfOf = message.onBehalfOf);
     return obj;
   },
 
@@ -105,7 +86,6 @@ export const MsgSetLeverage = {
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
     message.leverage = object.leverage ?? "";
-    message.onBehalfOf = object.onBehalfOf ?? undefined;
     return message;
   },
 };
