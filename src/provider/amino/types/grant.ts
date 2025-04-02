@@ -241,13 +241,17 @@ const feegrantAminoProcess: AminoProcess = {
 
 const msgExecProcess: AminoProcess = {
   toAminoProcess: (amino: AminoValueMap, input: any) => {
-    const { msgs } = input as MsgExecAuthz
-    console.log('xx amino: ', amino)
     console.log('xx toAmino input: ', input)
-    console.log('xx toAminoMsgs: ', msgs)
-    const newMsgs = msgs.map((msg) => AminoTypesMap.toAmino(msg))
-    console.log('xx toAmino newMsgs: ', newMsgs)
-    return { amino, input: { ...input, msgs: newMsgs } }
+    console.log('xx amino types map:', AminoTypesMap)
+    const { grantee, msgs } = input as MsgExecAuthz
+    const output = {
+      typeUrl: TxTypes.MsgExec,
+      value: {
+        grantee,
+        msgs: msgs.map((msg) => AminoTypesMap.toAmino(msg)),
+      },
+    }
+    return { amino, input: output }
   },
 
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
