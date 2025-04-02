@@ -3,9 +3,9 @@ import { QueryClientImpl as FeeGrantQueryClient } from "@carbon-sdk/codec/cosmos
 import { MsgCloseUserVault, MsgCreateUserVault, MsgUpdateUserVault } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/tx";
 import { OmitCreator } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
+import { EncodeObject } from "@cosmjs/proto-signing";
 import BaseModule from "./base";
 import { GrantModule } from "./grant";
-
 export class PerpspoolModule extends BaseModule {
   public async createPerpertualsPool(params: PerpspoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
@@ -195,6 +195,21 @@ export class PerpspoolModule extends BaseModule {
       },
       opts
     );
+  }
+
+  public async releaseUserVaultWithdrawals(params: PerpspoolModule.ReleaseUserVaultWithdrawalParams[], opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const msgs: EncodeObject[] = params.map(p => {
+      return {
+        typeUrl: CarbonTx.Types.MsgReleaseUserVaultWithdrawal,
+        value: Carbon.Perpspool.MsgReleaseUserVaultWithdrawal.fromPartial({
+          creator: p.creator ?? wallet.bech32Address,
+          ...p,
+        }),
+      }
+    })
+    return await wallet.sendTxs(msgs, opts)
   }
 
   public async addControllers(params: PerpspoolModule.AddControllersParams, opts?: CarbonTx.SignTxOpts) {
