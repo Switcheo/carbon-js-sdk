@@ -182,7 +182,7 @@ export const TxGasCostTypeMap = {
 
 const LibPackages: string[] = ['ibc', 'cosmos', 'alliance']
 
-const BacklistedMessages: string[] = []
+const BacklistedMessages: string[] = ['/cosmos.authz.v1beta1.MsgExec']
 
 
 // to use signDirect for metamask signing if messages are from libraries (cosmos-sdk, ibc, alliance).

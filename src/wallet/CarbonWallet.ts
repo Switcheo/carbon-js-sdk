@@ -597,7 +597,6 @@ export class CarbonWallet {
       handler: { resolve, reject },
     } = txRequest;
     const messages = signOpts?.processMsgs?.(txRequest.messages) ?? txRequest.messages
-    console.log('xx messages:', messages)
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
     if (this.isGranteeValid() && isAuthorized) {
       await this.signWithGrantee(txRequest)
@@ -632,7 +631,6 @@ export class CarbonWallet {
           },
         };
         const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
-
         this.txDispatchManager.enqueue({
           reattempts,
           signerAddress,
@@ -674,7 +672,6 @@ export class CarbonWallet {
       }
 
       const msgExecMessages = GrantModule.wrapInMsgExec(granteeAddress, messages)
-      console.log('xx msgExecMessages:', (msgExecMessages))
 
       const timeoutHeight = await this.getTimeoutHeight();
       const fee = signOpts?.fee ?? this.estimateTxFee(msgExecMessages, signOpts?.feeDenom);

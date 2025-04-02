@@ -1,11 +1,12 @@
+import { registry } from "@carbon-sdk/codec";
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
 import { MsgExec as MsgExecAuthz, MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import { GrantUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
-import { AminoConverter } from "@cosmjs/stargate";
+import { AminoMsg } from "@cosmjs/amino";
+import { AminoConverter, AminoTypes } from "@cosmjs/stargate";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType, mapEachIndiv } from "../utils";
-import AminoTypesMap from "../AminoTypesMap";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   GrantAuthz: "cosmos-sdk/MsgGrant",
@@ -240,24 +241,31 @@ const feegrantAminoProcess: AminoProcess = {
 
 
 const msgExecProcess: AminoProcess = {
-  toAminoProcess: (amino: AminoValueMap, input: any) => {
-    console.log('xx toAmino input: ', input)
-    console.log('xx amino types map:', AminoTypesMap)
-    const { grantee, msgs } = input as MsgExecAuthz
-    const output = {
-      typeUrl: TxTypes.MsgExec,
-      value: {
-        grantee,
-        msgs: msgs.map((msg) => AminoTypesMap.toAmino(msg)),
-      },
+  toAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
+    const { msgs } = input as MsgExecAuthz;
+    const newInput = {
+      ...input,
+      msgs: msgs.map((msg) => aminoTypesMap.toAmino({ typeUrl: msg.typeUrl, value: registry.decode(msg) })),
     }
-    return { amino, input: output }
+    return {
+      amino,
+      input: newInput,
+    };
   },
 
-  fromAminoProcess: (amino: AminoValueMap, input: any) => {
-    const newInput = input;
-    console.log('xx fromAmino input: ', newInput)
-    return { amino, input: newInput };
+  fromAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
+    const msgs = input.msgs as AminoMsg[];
+    const newInput = {
+      ...input,
+      msgs: msgs.map((msg) => {
+        const m = aminoTypesMap.fromAmino(msg)
+        return { typeUrl: m.typeUrl, value: registry.encode(m) }
+      }),
+    }
+    return {
+      amino,
+      input: newInput,
+    };
   },
 };
 
