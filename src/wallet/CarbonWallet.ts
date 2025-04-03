@@ -576,9 +576,10 @@ export class CarbonWallet {
     broadcastOpts?: CarbonTx.BroadcastTxOpts
   ): Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse> {
     const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse>((resolve, reject) => {
+      const msgs = signOpts?.processMsgs?.(messages) ?? messages
       this.txSignManager.enqueue({
         signerAddress: this.bech32Address,
-        messages,
+        messages: msgs,
         broadcastOpts,
         signOpts,
         handler: { resolve, reject },
@@ -594,9 +595,9 @@ export class CarbonWallet {
       signerAddress,
       signOpts,
       broadcastOpts,
+      messages,
       handler: { resolve, reject },
     } = txRequest;
-    const messages = signOpts?.processMsgs?.(txRequest.messages) ?? txRequest.messages
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
     if (this.isGranteeValid() && isAuthorized) {
       await this.signWithGrantee(txRequest)
