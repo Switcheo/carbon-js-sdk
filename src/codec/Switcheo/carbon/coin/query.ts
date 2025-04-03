@@ -1,12 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  Token,
-  LockedCoins,
-  TokenBalance,
-  FuturesBalanceRecord,
-} from "./token";
+import { Token, LockedCoins, TokenBalance } from "./token";
 import {
   PageRequest,
   PageResponse,
@@ -123,14 +118,6 @@ export interface QueryTokenGroupMappingsResponse {
 export interface QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry {
   key: string;
   value: Long;
-}
-
-export interface QueryFuturesBalanceRequest {
-  address: string;
-}
-
-export interface QueryFuturesBalanceResponse {
-  futuresBalance: FuturesBalanceRecord[];
 }
 
 const baseQueryGetTokenRequest: object = { denom: "" };
@@ -1980,144 +1967,6 @@ export const QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry = {
   },
 };
 
-const baseQueryFuturesBalanceRequest: object = { address: "" };
-
-export const QueryFuturesBalanceRequest = {
-  encode(
-    message: QueryFuturesBalanceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.address !== "") {
-      writer.uint32(10).string(message.address);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryFuturesBalanceRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryFuturesBalanceRequest,
-    } as QueryFuturesBalanceRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryFuturesBalanceRequest {
-    const message = {
-      ...baseQueryFuturesBalanceRequest,
-    } as QueryFuturesBalanceRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryFuturesBalanceRequest): unknown {
-    const obj: any = {};
-    message.address !== undefined && (obj.address = message.address);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryFuturesBalanceRequest>
-  ): QueryFuturesBalanceRequest {
-    const message = {
-      ...baseQueryFuturesBalanceRequest,
-    } as QueryFuturesBalanceRequest;
-    message.address = object.address ?? "";
-    return message;
-  },
-};
-
-const baseQueryFuturesBalanceResponse: object = {};
-
-export const QueryFuturesBalanceResponse = {
-  encode(
-    message: QueryFuturesBalanceResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.futuresBalance) {
-      FuturesBalanceRecord.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryFuturesBalanceResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryFuturesBalanceResponse,
-    } as QueryFuturesBalanceResponse;
-    message.futuresBalance = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.futuresBalance.push(
-            FuturesBalanceRecord.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryFuturesBalanceResponse {
-    const message = {
-      ...baseQueryFuturesBalanceResponse,
-    } as QueryFuturesBalanceResponse;
-    message.futuresBalance = (object.futuresBalance ?? []).map((e: any) =>
-      FuturesBalanceRecord.fromJSON(e)
-    );
-    return message;
-  },
-
-  toJSON(message: QueryFuturesBalanceResponse): unknown {
-    const obj: any = {};
-    if (message.futuresBalance) {
-      obj.futuresBalance = message.futuresBalance.map((e) =>
-        e ? FuturesBalanceRecord.toJSON(e) : undefined
-      );
-    } else {
-      obj.futuresBalance = [];
-    }
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryFuturesBalanceResponse>
-  ): QueryFuturesBalanceResponse {
-    const message = {
-      ...baseQueryFuturesBalanceResponse,
-    } as QueryFuturesBalanceResponse;
-    message.futuresBalance = (object.futuresBalance ?? []).map((e) =>
-      FuturesBalanceRecord.fromPartial(e)
-    );
-    return message;
-  },
-};
-
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get token details for a denom */
@@ -2154,10 +2003,6 @@ export interface Query {
   TokenGroupMappings(
     request: QueryTokenGroupMappingsRequest
   ): Promise<QueryTokenGroupMappingsResponse>;
-  /** Get futures balances for a particular address */
-  FuturesBalance(
-    request: QueryFuturesBalanceRequest
-  ): Promise<QueryFuturesBalanceResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2175,7 +2020,6 @@ export class QueryClientImpl implements Query {
     this.TokenGroup = this.TokenGroup.bind(this);
     this.TokenGroupAll = this.TokenGroupAll.bind(this);
     this.TokenGroupMappings = this.TokenGroupMappings.bind(this);
-    this.FuturesBalance = this.FuturesBalance.bind(this);
   }
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
@@ -2320,20 +2164,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryTokenGroupMappingsResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  FuturesBalance(
-    request: QueryFuturesBalanceRequest
-  ): Promise<QueryFuturesBalanceResponse> {
-    const data = QueryFuturesBalanceRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.coin.Query",
-      "FuturesBalance",
-      data
-    );
-    return promise.then((data) =>
-      QueryFuturesBalanceResponse.decode(new _m0.Reader(data))
     );
   }
 }

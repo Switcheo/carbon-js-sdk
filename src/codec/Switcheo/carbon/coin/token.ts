@@ -38,17 +38,9 @@ export interface Metadata {
 
 export interface LockedCoins {
   denom: string;
-  orderMargin: string;
+  spotOrderMargin: string;
   positionMargin: string;
-}
-
-export interface FuturesBalanceRecord {
-  denom: string;
-  available: string;
-  orderMargin: string;
-  isoMargin: string;
-  crossMargin: string;
-  crossUnrealisedLoss: string;
+  futuresOrderMargin: string;
 }
 
 export interface LockedCoinsRecord {
@@ -64,10 +56,11 @@ export interface PositionPool {
 
 export interface TokenBalance {
   available: string;
-  order: string;
+  spotOrder: string;
   position: string;
   denom: string;
   futures: string;
+  futuresOrder: string;
 }
 
 const baseToken: object = {
@@ -499,8 +492,9 @@ export const Metadata = {
 
 const baseLockedCoins: object = {
   denom: "",
-  orderMargin: "",
+  spotOrderMargin: "",
   positionMargin: "",
+  futuresOrderMargin: "",
 };
 
 export const LockedCoins = {
@@ -511,11 +505,14 @@ export const LockedCoins = {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.orderMargin !== "") {
-      writer.uint32(18).string(message.orderMargin);
+    if (message.spotOrderMargin !== "") {
+      writer.uint32(18).string(message.spotOrderMargin);
     }
     if (message.positionMargin !== "") {
       writer.uint32(26).string(message.positionMargin);
+    }
+    if (message.futuresOrderMargin !== "") {
+      writer.uint32(42).string(message.futuresOrderMargin);
     }
     return writer;
   },
@@ -531,10 +528,13 @@ export const LockedCoins = {
           message.denom = reader.string();
           break;
         case 2:
-          message.orderMargin = reader.string();
+          message.spotOrderMargin = reader.string();
           break;
         case 3:
           message.positionMargin = reader.string();
+          break;
+        case 5:
+          message.futuresOrderMargin = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -550,13 +550,18 @@ export const LockedCoins = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
-    message.orderMargin =
-      object.orderMargin !== undefined && object.orderMargin !== null
-        ? String(object.orderMargin)
+    message.spotOrderMargin =
+      object.spotOrderMargin !== undefined && object.spotOrderMargin !== null
+        ? String(object.spotOrderMargin)
         : "";
     message.positionMargin =
       object.positionMargin !== undefined && object.positionMargin !== null
         ? String(object.positionMargin)
+        : "";
+    message.futuresOrderMargin =
+      object.futuresOrderMargin !== undefined &&
+      object.futuresOrderMargin !== null
+        ? String(object.futuresOrderMargin)
         : "";
     return message;
   },
@@ -564,145 +569,21 @@ export const LockedCoins = {
   toJSON(message: LockedCoins): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.orderMargin !== undefined &&
-      (obj.orderMargin = message.orderMargin);
+    message.spotOrderMargin !== undefined &&
+      (obj.spotOrderMargin = message.spotOrderMargin);
     message.positionMargin !== undefined &&
       (obj.positionMargin = message.positionMargin);
+    message.futuresOrderMargin !== undefined &&
+      (obj.futuresOrderMargin = message.futuresOrderMargin);
     return obj;
   },
 
   fromPartial(object: DeepPartial<LockedCoins>): LockedCoins {
     const message = { ...baseLockedCoins } as LockedCoins;
     message.denom = object.denom ?? "";
-    message.orderMargin = object.orderMargin ?? "";
+    message.spotOrderMargin = object.spotOrderMargin ?? "";
     message.positionMargin = object.positionMargin ?? "";
-    return message;
-  },
-};
-
-const baseFuturesBalanceRecord: object = {
-  denom: "",
-  available: "",
-  orderMargin: "",
-  isoMargin: "",
-  crossMargin: "",
-  crossUnrealisedLoss: "",
-};
-
-export const FuturesBalanceRecord = {
-  encode(
-    message: FuturesBalanceRecord,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.denom !== "") {
-      writer.uint32(10).string(message.denom);
-    }
-    if (message.available !== "") {
-      writer.uint32(18).string(message.available);
-    }
-    if (message.orderMargin !== "") {
-      writer.uint32(26).string(message.orderMargin);
-    }
-    if (message.isoMargin !== "") {
-      writer.uint32(34).string(message.isoMargin);
-    }
-    if (message.crossMargin !== "") {
-      writer.uint32(42).string(message.crossMargin);
-    }
-    if (message.crossUnrealisedLoss !== "") {
-      writer.uint32(50).string(message.crossUnrealisedLoss);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): FuturesBalanceRecord {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFuturesBalanceRecord } as FuturesBalanceRecord;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.denom = reader.string();
-          break;
-        case 2:
-          message.available = reader.string();
-          break;
-        case 3:
-          message.orderMargin = reader.string();
-          break;
-        case 4:
-          message.isoMargin = reader.string();
-          break;
-        case 5:
-          message.crossMargin = reader.string();
-          break;
-        case 6:
-          message.crossUnrealisedLoss = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): FuturesBalanceRecord {
-    const message = { ...baseFuturesBalanceRecord } as FuturesBalanceRecord;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.available =
-      object.available !== undefined && object.available !== null
-        ? String(object.available)
-        : "";
-    message.orderMargin =
-      object.orderMargin !== undefined && object.orderMargin !== null
-        ? String(object.orderMargin)
-        : "";
-    message.isoMargin =
-      object.isoMargin !== undefined && object.isoMargin !== null
-        ? String(object.isoMargin)
-        : "";
-    message.crossMargin =
-      object.crossMargin !== undefined && object.crossMargin !== null
-        ? String(object.crossMargin)
-        : "";
-    message.crossUnrealisedLoss =
-      object.crossUnrealisedLoss !== undefined &&
-      object.crossUnrealisedLoss !== null
-        ? String(object.crossUnrealisedLoss)
-        : "";
-    return message;
-  },
-
-  toJSON(message: FuturesBalanceRecord): unknown {
-    const obj: any = {};
-    message.denom !== undefined && (obj.denom = message.denom);
-    message.available !== undefined && (obj.available = message.available);
-    message.orderMargin !== undefined &&
-      (obj.orderMargin = message.orderMargin);
-    message.isoMargin !== undefined && (obj.isoMargin = message.isoMargin);
-    message.crossMargin !== undefined &&
-      (obj.crossMargin = message.crossMargin);
-    message.crossUnrealisedLoss !== undefined &&
-      (obj.crossUnrealisedLoss = message.crossUnrealisedLoss);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<FuturesBalanceRecord>): FuturesBalanceRecord {
-    const message = { ...baseFuturesBalanceRecord } as FuturesBalanceRecord;
-    message.denom = object.denom ?? "";
-    message.available = object.available ?? "";
-    message.orderMargin = object.orderMargin ?? "";
-    message.isoMargin = object.isoMargin ?? "";
-    message.crossMargin = object.crossMargin ?? "";
-    message.crossUnrealisedLoss = object.crossUnrealisedLoss ?? "";
+    message.futuresOrderMargin = object.futuresOrderMargin ?? "";
     return message;
   },
 };
@@ -862,10 +743,11 @@ export const PositionPool = {
 
 const baseTokenBalance: object = {
   available: "",
-  order: "",
+  spotOrder: "",
   position: "",
   denom: "",
   futures: "",
+  futuresOrder: "",
 };
 
 export const TokenBalance = {
@@ -876,8 +758,8 @@ export const TokenBalance = {
     if (message.available !== "") {
       writer.uint32(10).string(message.available);
     }
-    if (message.order !== "") {
-      writer.uint32(18).string(message.order);
+    if (message.spotOrder !== "") {
+      writer.uint32(18).string(message.spotOrder);
     }
     if (message.position !== "") {
       writer.uint32(26).string(message.position);
@@ -887,6 +769,9 @@ export const TokenBalance = {
     }
     if (message.futures !== "") {
       writer.uint32(42).string(message.futures);
+    }
+    if (message.futuresOrder !== "") {
+      writer.uint32(50).string(message.futuresOrder);
     }
     return writer;
   },
@@ -902,7 +787,7 @@ export const TokenBalance = {
           message.available = reader.string();
           break;
         case 2:
-          message.order = reader.string();
+          message.spotOrder = reader.string();
           break;
         case 3:
           message.position = reader.string();
@@ -912,6 +797,9 @@ export const TokenBalance = {
           break;
         case 5:
           message.futures = reader.string();
+          break;
+        case 6:
+          message.futuresOrder = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -927,9 +815,9 @@ export const TokenBalance = {
       object.available !== undefined && object.available !== null
         ? String(object.available)
         : "";
-    message.order =
-      object.order !== undefined && object.order !== null
-        ? String(object.order)
+    message.spotOrder =
+      object.spotOrder !== undefined && object.spotOrder !== null
+        ? String(object.spotOrder)
         : "";
     message.position =
       object.position !== undefined && object.position !== null
@@ -943,26 +831,33 @@ export const TokenBalance = {
       object.futures !== undefined && object.futures !== null
         ? String(object.futures)
         : "";
+    message.futuresOrder =
+      object.futuresOrder !== undefined && object.futuresOrder !== null
+        ? String(object.futuresOrder)
+        : "";
     return message;
   },
 
   toJSON(message: TokenBalance): unknown {
     const obj: any = {};
     message.available !== undefined && (obj.available = message.available);
-    message.order !== undefined && (obj.order = message.order);
+    message.spotOrder !== undefined && (obj.spotOrder = message.spotOrder);
     message.position !== undefined && (obj.position = message.position);
     message.denom !== undefined && (obj.denom = message.denom);
     message.futures !== undefined && (obj.futures = message.futures);
+    message.futuresOrder !== undefined &&
+      (obj.futuresOrder = message.futuresOrder);
     return obj;
   },
 
   fromPartial(object: DeepPartial<TokenBalance>): TokenBalance {
     const message = { ...baseTokenBalance } as TokenBalance;
     message.available = object.available ?? "";
-    message.order = object.order ?? "";
+    message.spotOrder = object.spotOrder ?? "";
     message.position = object.position ?? "";
     message.denom = object.denom ?? "";
     message.futures = object.futures ?? "";
+    message.futuresOrder = object.futuresOrder ?? "";
     return message;
   },
 };

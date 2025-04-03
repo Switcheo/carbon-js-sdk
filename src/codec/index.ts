@@ -7229,37 +7229,15 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "order_margin",
+        "name": "spot_order_margin",
         "type": "string"
       },
       {
         "name": "position_margin",
         "type": "string"
-      }
-    ],
-    "FuturesBalanceRecord": [
-      {
-        "name": "denom",
-        "type": "string"
       },
       {
-        "name": "available",
-        "type": "string"
-      },
-      {
-        "name": "order_margin",
-        "type": "string"
-      },
-      {
-        "name": "iso_margin",
-        "type": "string"
-      },
-      {
-        "name": "cross_margin",
-        "type": "string"
-      },
-      {
-        "name": "cross_unrealised_loss",
+        "name": "futures_order_margin",
         "type": "string"
       }
     ],
@@ -7295,7 +7273,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "order",
+        "name": "spot_order",
         "type": "string"
       },
       {
@@ -7308,6 +7286,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "futures",
+        "type": "string"
+      },
+      {
+        "name": "futures_order",
         "type": "string"
       }
     ],
@@ -8285,19 +8267,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryFuturesBalanceRequest": [
-      {
-        "name": "address",
-        "type": "string"
-      }
-    ],
-    "QueryFuturesBalanceResponse": [
-      {
-        "name": "futures_balance",
-        "type": "FuturesBalanceRecord[]",
-        "packageName": "/Switcheo.carbon.coin"
       }
     ]
   },
