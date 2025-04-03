@@ -1,4 +1,4 @@
-import { MsgSetLeverage } from "@carbon-sdk/codec/Switcheo/carbon/leverage/tx";
+import { MsgSetLeverage, MsgToggleMarginMode } from "@carbon-sdk/codec/Switcheo/carbon/leverage/tx";
 import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/Switcheo/carbon/order/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BN_ZERO } from "@carbon-sdk/util/number";
@@ -155,6 +155,22 @@ export class OrderModule extends BaseModule {
       opts
     );
   }
+
+  public async toggleMarginMode(params: OrderModule.ToggleMarginModeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const value = MsgToggleMarginMode.fromPartial({
+      creator: wallet.bech32Address,
+      marketId: params.marketId,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgToggleMarginMode,
+        value,
+      },
+      opts
+    );
+  }
 }
 
 export namespace OrderModule {
@@ -226,5 +242,9 @@ export namespace OrderModule {
     Gtc = "gtc",
     Fok = "fok",
     Ioc = "ioc",
+  }
+
+  export interface ToggleMarginModeParams {
+    marketId: string,
   }
 }

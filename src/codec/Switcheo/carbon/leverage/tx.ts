@@ -13,6 +13,13 @@ export interface MsgSetLeverage {
 
 export interface MsgSetLeverageResponse {}
 
+export interface MsgToggleMarginMode {
+  creator: string;
+  marketId: string;
+}
+
+export interface MsgToggleMarginModeResponse {}
+
 const baseMsgSetLeverage: object = { creator: "", marketId: "", leverage: "" };
 
 export const MsgSetLeverage = {
@@ -134,10 +141,130 @@ export const MsgSetLeverageResponse = {
   },
 };
 
+const baseMsgToggleMarginMode: object = { creator: "", marketId: "" };
+
+export const MsgToggleMarginMode = {
+  encode(
+    message: MsgToggleMarginMode,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgToggleMarginMode {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgToggleMarginMode } as MsgToggleMarginMode;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.marketId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgToggleMarginMode {
+    const message = { ...baseMsgToggleMarginMode } as MsgToggleMarginMode;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgToggleMarginMode): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgToggleMarginMode>): MsgToggleMarginMode {
+    const message = { ...baseMsgToggleMarginMode } as MsgToggleMarginMode;
+    message.creator = object.creator ?? "";
+    message.marketId = object.marketId ?? "";
+    return message;
+  },
+};
+
+const baseMsgToggleMarginModeResponse: object = {};
+
+export const MsgToggleMarginModeResponse = {
+  encode(
+    _: MsgToggleMarginModeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgToggleMarginModeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgToggleMarginModeResponse,
+    } as MsgToggleMarginModeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgToggleMarginModeResponse {
+    const message = {
+      ...baseMsgToggleMarginModeResponse,
+    } as MsgToggleMarginModeResponse;
+    return message;
+  },
+
+  toJSON(_: MsgToggleMarginModeResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgToggleMarginModeResponse>
+  ): MsgToggleMarginModeResponse {
+    const message = {
+      ...baseMsgToggleMarginModeResponse,
+    } as MsgToggleMarginModeResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   SetLeverage(request: MsgSetLeverage): Promise<MsgSetLeverageResponse>;
+  ToggleMarginMode(
+    request: MsgToggleMarginMode
+  ): Promise<MsgToggleMarginModeResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -145,6 +272,7 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.SetLeverage = this.SetLeverage.bind(this);
+    this.ToggleMarginMode = this.ToggleMarginMode.bind(this);
   }
   SetLeverage(request: MsgSetLeverage): Promise<MsgSetLeverageResponse> {
     const data = MsgSetLeverage.encode(request).finish();
@@ -155,6 +283,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSetLeverageResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ToggleMarginMode(
+    request: MsgToggleMarginMode
+  ): Promise<MsgToggleMarginModeResponse> {
+    const data = MsgToggleMarginMode.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.leverage.Msg",
+      "ToggleMarginMode",
+      data
+    );
+    return promise.then((data) =>
+      MsgToggleMarginModeResponse.decode(new _m0.Reader(data))
     );
   }
 }

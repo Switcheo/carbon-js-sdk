@@ -61,6 +61,7 @@ export interface MsgMintToken {
   denom: string;
   amount: string;
   to: string;
+  toFuturesAccount: boolean;
 }
 
 export interface MsgMintTokenResponse {}
@@ -273,6 +274,15 @@ export interface MsgWithdrawFromGroupResponse {
   tokensBurnt?: Coin;
   tokensWithdrawn?: Coin;
 }
+
+export interface MsgTransferCoinsWithinAccount {
+  creator: string;
+  from: string;
+  to: string;
+  amount: Coin[];
+}
+
+export interface MsgTransferCoinsWithinAccountResponse {}
 
 export interface MsgUpdateGroupedTokenConfig {
   creator: string;
@@ -957,7 +967,13 @@ export const MsgSyncTokenResponse = {
   },
 };
 
-const baseMsgMintToken: object = { creator: "", denom: "", amount: "", to: "" };
+const baseMsgMintToken: object = {
+  creator: "",
+  denom: "",
+  amount: "",
+  to: "",
+  toFuturesAccount: false,
+};
 
 export const MsgMintToken = {
   encode(
@@ -975,6 +991,9 @@ export const MsgMintToken = {
     }
     if (message.to !== "") {
       writer.uint32(34).string(message.to);
+    }
+    if (message.toFuturesAccount === true) {
+      writer.uint32(40).bool(message.toFuturesAccount);
     }
     return writer;
   },
@@ -997,6 +1016,9 @@ export const MsgMintToken = {
           break;
         case 4:
           message.to = reader.string();
+          break;
+        case 5:
+          message.toFuturesAccount = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1022,6 +1044,10 @@ export const MsgMintToken = {
         : "";
     message.to =
       object.to !== undefined && object.to !== null ? String(object.to) : "";
+    message.toFuturesAccount =
+      object.toFuturesAccount !== undefined && object.toFuturesAccount !== null
+        ? Boolean(object.toFuturesAccount)
+        : false;
     return message;
   },
 
@@ -1031,6 +1057,8 @@ export const MsgMintToken = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.to !== undefined && (obj.to = message.to);
+    message.toFuturesAccount !== undefined &&
+      (obj.toFuturesAccount = message.toFuturesAccount);
     return obj;
   },
 
@@ -1040,6 +1068,7 @@ export const MsgMintToken = {
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.to = object.to ?? "";
+    message.toFuturesAccount = object.toFuturesAccount ?? false;
     return message;
   },
 };
@@ -4284,6 +4313,162 @@ export const MsgWithdrawFromGroupResponse = {
   },
 };
 
+const baseMsgTransferCoinsWithinAccount: object = {
+  creator: "",
+  from: "",
+  to: "",
+};
+
+export const MsgTransferCoinsWithinAccount = {
+  encode(
+    message: MsgTransferCoinsWithinAccount,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.from !== "") {
+      writer.uint32(18).string(message.from);
+    }
+    if (message.to !== "") {
+      writer.uint32(26).string(message.to);
+    }
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgTransferCoinsWithinAccount {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgTransferCoinsWithinAccount,
+    } as MsgTransferCoinsWithinAccount;
+    message.amount = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.from = reader.string();
+          break;
+        case 3:
+          message.to = reader.string();
+          break;
+        case 4:
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgTransferCoinsWithinAccount {
+    const message = {
+      ...baseMsgTransferCoinsWithinAccount,
+    } as MsgTransferCoinsWithinAccount;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.from =
+      object.from !== undefined && object.from !== null
+        ? String(object.from)
+        : "";
+    message.to =
+      object.to !== undefined && object.to !== null ? String(object.to) : "";
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: MsgTransferCoinsWithinAccount): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    if (message.amount) {
+      obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.amount = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgTransferCoinsWithinAccount>
+  ): MsgTransferCoinsWithinAccount {
+    const message = {
+      ...baseMsgTransferCoinsWithinAccount,
+    } as MsgTransferCoinsWithinAccount;
+    message.creator = object.creator ?? "";
+    message.from = object.from ?? "";
+    message.to = object.to ?? "";
+    message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
+const baseMsgTransferCoinsWithinAccountResponse: object = {};
+
+export const MsgTransferCoinsWithinAccountResponse = {
+  encode(
+    _: MsgTransferCoinsWithinAccountResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgTransferCoinsWithinAccountResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgTransferCoinsWithinAccountResponse,
+    } as MsgTransferCoinsWithinAccountResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgTransferCoinsWithinAccountResponse {
+    const message = {
+      ...baseMsgTransferCoinsWithinAccountResponse,
+    } as MsgTransferCoinsWithinAccountResponse;
+    return message;
+  },
+
+  toJSON(_: MsgTransferCoinsWithinAccountResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgTransferCoinsWithinAccountResponse>
+  ): MsgTransferCoinsWithinAccountResponse {
+    const message = {
+      ...baseMsgTransferCoinsWithinAccountResponse,
+    } as MsgTransferCoinsWithinAccountResponse;
+    return message;
+  },
+};
+
 const baseMsgUpdateGroupedTokenConfig: object = { creator: "", denom: "" };
 
 export const MsgUpdateGroupedTokenConfig = {
@@ -4588,10 +4773,13 @@ export interface Msg {
   WithdrawFromGroup(
     request: MsgWithdrawFromGroup
   ): Promise<MsgWithdrawFromGroupResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   UpdateGroupedTokenConfig(
     request: MsgUpdateGroupedTokenConfig
   ): Promise<MsgUpdateGroupedTokenConfigResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  TransferCoinsWithinAccount(
+    request: MsgTransferCoinsWithinAccount
+  ): Promise<MsgTransferCoinsWithinAccountResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -4623,6 +4811,8 @@ export class MsgClientImpl implements Msg {
     this.DepositToGroup = this.DepositToGroup.bind(this);
     this.WithdrawFromGroup = this.WithdrawFromGroup.bind(this);
     this.UpdateGroupedTokenConfig = this.UpdateGroupedTokenConfig.bind(this);
+    this.TransferCoinsWithinAccount =
+      this.TransferCoinsWithinAccount.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -4949,6 +5139,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateGroupedTokenConfigResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TransferCoinsWithinAccount(
+    request: MsgTransferCoinsWithinAccount
+  ): Promise<MsgTransferCoinsWithinAccountResponse> {
+    const data = MsgTransferCoinsWithinAccount.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "TransferCoinsWithinAccount",
+      data
+    );
+    return promise.then((data) =>
+      MsgTransferCoinsWithinAccountResponse.decode(new _m0.Reader(data))
     );
   }
 }

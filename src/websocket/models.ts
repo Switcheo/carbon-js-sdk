@@ -149,6 +149,7 @@ export interface PriceLevelEvent extends PriceLevel {
 export interface Leverage {
   market_id?: string;
   leverage: string; // string representation of number
+  is_cross: boolean;
 }
 
 export interface Pool {
