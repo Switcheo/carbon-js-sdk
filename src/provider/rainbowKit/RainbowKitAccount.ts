@@ -1,5 +1,5 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
-import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EVMChain, MONAD_TESTNET, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
@@ -12,12 +12,11 @@ import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { AminoMsg, makeSignDoc } from "@cosmjs/amino";
-import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
+import { Algo, DirectSignResponse, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
 import { StdFee } from "@cosmjs/stargate";
-import { DirectSignResponse } from "@keplr-wallet/types";
 import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
-import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BASE_MAINNET, BASE_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, MANTLE_MAINNET, MANTLE_TESTNET, OKC_MAINNET, OKC_TESTNET, OP_MAINNET, OP_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET, AVALANCHE_MAINNET, AVALANCHE_TESTNET } from "../../constant";
+import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, AVALANCHE_MAINNET, AVALANCHE_TESTNET, BASE_MAINNET, BASE_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, MANTLE_MAINNET, MANTLE_TESTNET, OKC_MAINNET, OKC_TESTNET, OP_MAINNET, OP_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "../metamask/error";
 
@@ -212,6 +211,9 @@ class RainbowKitAccount extends Eip6963Provider {
       return Number(parseChainId(CarbonEvmChainIDs[network]))
     }
     const isMainnet = network === Network.MainNet
+    if (blockchain === 'Monad' && !isMainnet) {
+      return 10143;
+    }
     switch (blockchain) {
       case 'Binance Smart Chain':
         return isMainnet ? 56 : 97;
@@ -254,6 +256,10 @@ class RainbowKitAccount extends Eip6963Provider {
     }
 
     const isMainnet = network === Network.MainNet
+
+    if (blockchain === 'Monad' && !isMainnet) {
+      return MONAD_TESTNET
+    }
 
     switch (blockchain) {
       case 'Binance Smart Chain':
