@@ -343,7 +343,8 @@ export class MetaMask extends Eip6963Provider {
     }
     const isMainnet = network === Network.MainNet
     // Fallback to Ethereum chain ID
-    return isMainnet ? 1 : 5;
+    const chainId = isMainnet ? ETH_MAINNET.chainId : ETH_TESTNET.chainId
+    return Number(chainId);
   }
 
   constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) {
