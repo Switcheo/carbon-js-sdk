@@ -1,5 +1,5 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
-import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EVMChain, MONAD_TESTNET, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
@@ -12,9 +12,8 @@ import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { AminoMsg, makeSignDoc } from "@cosmjs/amino";
-import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
+import { Algo, DirectSignResponse, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
 import { StdFee } from "@cosmjs/stargate";
-import { DirectSignResponse } from "@keplr-wallet/types";
 import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
 import { CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET } from "../../constant";

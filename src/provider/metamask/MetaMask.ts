@@ -105,6 +105,14 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "",
   } as const,
+  Monad: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const,
   Carbon: {
     //Carbon does not support Metamask legacy mnemonic sign in
     [Network.TestNet]: "",
@@ -709,6 +717,11 @@ export class MetaMask extends Eip6963Provider {
   private getRequiredChain(network: Network, currentChainId: number): number {
     const isMainnet = network === Network.MainNet;
 
+    if (!isMainnet && currentChainId === 10143) {
+      this.blockchain = 'Monad'
+      return 10143
+    }
+
     switch (currentChainId) {
       case 1:  // Ethereum Mainnet
       case 5:  // Ethereum Goerli Testnet
@@ -754,7 +767,6 @@ export class MetaMask extends Eip6963Provider {
       case 84532:
         this.blockchain = 'Base';
         return isMainnet ? 8453 : 84532;
-
       default:
         // Default fallback for Ethereum if no specific match found
         return isMainnet ? 1 : 5;

@@ -5,10 +5,10 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.book";
 
 export interface OrderBookEvent {
-  marketId: string;
-  side: string;
-  price: string;
-  quantity: string;
+  m: string;
+  s: string;
+  p: string;
+  q: string;
 }
 
 /**
@@ -35,29 +35,24 @@ export interface ClearVirtualOrderBookEvent {
   marketId: string;
 }
 
-const baseOrderBookEvent: object = {
-  marketId: "",
-  side: "",
-  price: "",
-  quantity: "",
-};
+const baseOrderBookEvent: object = { m: "", s: "", p: "", q: "" };
 
 export const OrderBookEvent = {
   encode(
     message: OrderBookEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.marketId !== "") {
-      writer.uint32(18).string(message.marketId);
+    if (message.m !== "") {
+      writer.uint32(18).string(message.m);
     }
-    if (message.side !== "") {
-      writer.uint32(26).string(message.side);
+    if (message.s !== "") {
+      writer.uint32(26).string(message.s);
     }
-    if (message.price !== "") {
-      writer.uint32(34).string(message.price);
+    if (message.p !== "") {
+      writer.uint32(34).string(message.p);
     }
-    if (message.quantity !== "") {
-      writer.uint32(42).string(message.quantity);
+    if (message.q !== "") {
+      writer.uint32(42).string(message.q);
     }
     return writer;
   },
@@ -70,16 +65,16 @@ export const OrderBookEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
-          message.marketId = reader.string();
+          message.m = reader.string();
           break;
         case 3:
-          message.side = reader.string();
+          message.s = reader.string();
           break;
         case 4:
-          message.price = reader.string();
+          message.p = reader.string();
           break;
         case 5:
-          message.quantity = reader.string();
+          message.q = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -91,40 +86,32 @@ export const OrderBookEvent = {
 
   fromJSON(object: any): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.side =
-      object.side !== undefined && object.side !== null
-        ? String(object.side)
-        : "";
-    message.price =
-      object.price !== undefined && object.price !== null
-        ? String(object.price)
-        : "";
-    message.quantity =
-      object.quantity !== undefined && object.quantity !== null
-        ? String(object.quantity)
-        : "";
+    message.m =
+      object.m !== undefined && object.m !== null ? String(object.m) : "";
+    message.s =
+      object.s !== undefined && object.s !== null ? String(object.s) : "";
+    message.p =
+      object.p !== undefined && object.p !== null ? String(object.p) : "";
+    message.q =
+      object.q !== undefined && object.q !== null ? String(object.q) : "";
     return message;
   },
 
   toJSON(message: OrderBookEvent): unknown {
     const obj: any = {};
-    message.marketId !== undefined && (obj.marketId = message.marketId);
-    message.side !== undefined && (obj.side = message.side);
-    message.price !== undefined && (obj.price = message.price);
-    message.quantity !== undefined && (obj.quantity = message.quantity);
+    message.m !== undefined && (obj.m = message.m);
+    message.s !== undefined && (obj.s = message.s);
+    message.p !== undefined && (obj.p = message.p);
+    message.q !== undefined && (obj.q = message.q);
     return obj;
   },
 
   fromPartial(object: DeepPartial<OrderBookEvent>): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.marketId = object.marketId ?? "";
-    message.side = object.side ?? "";
-    message.price = object.price ?? "";
-    message.quantity = object.quantity ?? "";
+    message.m = object.m ?? "";
+    message.s = object.s ?? "";
+    message.p = object.p ?? "";
+    message.q = object.q ?? "";
     return message;
   },
 };
