@@ -10,18 +10,8 @@ import BaseModule from "./base";
 
 export class OrderModule extends BaseModule {
 
-  public async create(param: OrderModule.SetLeverageAndCreateOrderParams, opts?: CarbonTx.SignTxOpts) {
-    const { setLeverage, ...createOrderParam } = param;
-
-    const params: (OrderModule.CreateOrderParams | OrderModule.SetLeverageParams)[] = [createOrderParam];
-    if (setLeverage) {
-      params.unshift({
-        leverage: setLeverage,
-        marketId: param.marketId,
-      });
-    }
-
-    return this.createOrders(params, opts);
+  public async create(param: OrderModule.CreateOrderParams, opts?: CarbonTx.SignTxOpts) {
+    return this.createOrders([param], opts);
   }
 
   public async createOrders(params: (OrderModule.CreateOrderParams | OrderModule.SetLeverageParams)[], opts?: CarbonTx.SignTxOpts) {
