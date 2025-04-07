@@ -159,6 +159,7 @@ export interface VaultInfo {
   totalNavAmount: string;
   availableAmount: string;
   totalInPositionAmount: string;
+  totalInOrderAmount: string;
   totalUpnlAmount: string;
 }
 
@@ -2552,6 +2553,7 @@ const baseVaultInfo: object = {
   totalNavAmount: "",
   availableAmount: "",
   totalInPositionAmount: "",
+  totalInOrderAmount: "",
   totalUpnlAmount: "",
 };
 
@@ -2575,8 +2577,11 @@ export const VaultInfo = {
     if (message.totalInPositionAmount !== "") {
       writer.uint32(42).string(message.totalInPositionAmount);
     }
+    if (message.totalInOrderAmount !== "") {
+      writer.uint32(50).string(message.totalInOrderAmount);
+    }
     if (message.totalUpnlAmount !== "") {
-      writer.uint32(50).string(message.totalUpnlAmount);
+      writer.uint32(58).string(message.totalUpnlAmount);
     }
     return writer;
   },
@@ -2604,6 +2609,9 @@ export const VaultInfo = {
           message.totalInPositionAmount = reader.string();
           break;
         case 6:
+          message.totalInOrderAmount = reader.string();
+          break;
+        case 7:
           message.totalUpnlAmount = reader.string();
           break;
         default:
@@ -2637,6 +2645,11 @@ export const VaultInfo = {
       object.totalInPositionAmount !== null
         ? String(object.totalInPositionAmount)
         : "";
+    message.totalInOrderAmount =
+      object.totalInOrderAmount !== undefined &&
+      object.totalInOrderAmount !== null
+        ? String(object.totalInOrderAmount)
+        : "";
     message.totalUpnlAmount =
       object.totalUpnlAmount !== undefined && object.totalUpnlAmount !== null
         ? String(object.totalUpnlAmount)
@@ -2656,6 +2669,8 @@ export const VaultInfo = {
       (obj.availableAmount = message.availableAmount);
     message.totalInPositionAmount !== undefined &&
       (obj.totalInPositionAmount = message.totalInPositionAmount);
+    message.totalInOrderAmount !== undefined &&
+      (obj.totalInOrderAmount = message.totalInOrderAmount);
     message.totalUpnlAmount !== undefined &&
       (obj.totalUpnlAmount = message.totalUpnlAmount);
     return obj;
@@ -2671,6 +2686,7 @@ export const VaultInfo = {
     message.totalNavAmount = object.totalNavAmount ?? "";
     message.availableAmount = object.availableAmount ?? "";
     message.totalInPositionAmount = object.totalInPositionAmount ?? "";
+    message.totalInOrderAmount = object.totalInOrderAmount ?? "";
     message.totalUpnlAmount = object.totalUpnlAmount ?? "";
     return message;
   },

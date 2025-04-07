@@ -15561,6 +15561,10 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
+        "name": "total_in_order_amount",
+        "type": "string"
+      },
+      {
         "name": "total_upnl_amount",
         "type": "string"
       }
