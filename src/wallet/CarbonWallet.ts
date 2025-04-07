@@ -1,9 +1,7 @@
 import { Carbon, OverrideConfig } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
-import { registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
-import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs, SupportedEip6963Provider } from "@carbon-sdk/constant";
 import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
@@ -36,6 +34,7 @@ import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateK
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { jwtDecode } from "jwt-decode";
 import { utils } from "ethers";
+import { GrantModule } from "@carbon-sdk/modules/grant";
 
 dayjs.extend(utc)
 
@@ -577,9 +576,10 @@ export class CarbonWallet {
     broadcastOpts?: CarbonTx.BroadcastTxOpts
   ): Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse> {
     const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse>((resolve, reject) => {
+      const msgs = signOpts?.processMsgs?.(messages) ?? messages
       this.txSignManager.enqueue({
         signerAddress: this.bech32Address,
-        messages,
+        messages: msgs,
         broadcastOpts,
         signOpts,
         handler: { resolve, reject },
@@ -594,11 +594,10 @@ export class CarbonWallet {
       reattempts,
       signerAddress,
       signOpts,
-      messages,
       broadcastOpts,
+      messages,
       handler: { resolve, reject },
     } = txRequest;
-
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
     if (this.isGranteeValid() && isAuthorized) {
       await this.signWithGrantee(txRequest)
@@ -633,7 +632,6 @@ export class CarbonWallet {
           },
         };
         const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
-
         this.txDispatchManager.enqueue({
           reattempts,
           signerAddress,
@@ -674,15 +672,7 @@ export class CarbonWallet {
         throw new Error("grantee account not initialized");
       }
 
-      const msgs = messages.map((message) => registry.encodeAsAny({ ...message }))
-
-      const msgExecMessages: EncodeObject[] = [{
-        typeUrl: CarbonTx.Types.MsgExec,
-        value: MsgExec.fromPartial({
-          grantee: granteeAddress,
-          msgs,
-        }),
-      }]
+      const msgExecMessages = GrantModule.wrapInMsgExec(granteeAddress, messages)
 
       const timeoutHeight = await this.getTimeoutHeight();
       const fee = signOpts?.fee ?? this.estimateTxFee(msgExecMessages, signOpts?.feeDenom);

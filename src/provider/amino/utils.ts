@@ -1,6 +1,7 @@
 import { NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { AminoConverter } from "@cosmjs/stargate";
+import { AminoTypesMap } from "@carbon-sdk/index";
+import { AminoConverter, AminoTypes } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
 import Long from "long";
 
@@ -36,8 +37,8 @@ export interface AminoProcessOutput {
 }
 
 export interface AminoProcess {
-  toAminoProcess?: (amino: AminoValueMap, input: any) => AminoProcessOutput;
-  fromAminoProcess?: (amino: AminoValueMap, input: any) => AminoProcessOutput;
+  toAminoProcess?: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => AminoProcessOutput;
+  fromAminoProcess?: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => AminoProcessOutput;
 }
 
 /**
@@ -182,7 +183,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
   return {
     ...amino,
     toAmino: (input: TypeUtils.SimpleMap<any>) => {
-      const processRes: AminoProcessOutput | undefined = aminoProcess?.toAminoProcess ? aminoProcess.toAminoProcess(valueMap, input) : {};
+      const processRes: AminoProcessOutput | undefined = aminoProcess?.toAminoProcess ? aminoProcess.toAminoProcess(valueMap, input, AminoTypesMap) : {};
       const { input: newInput = input, amino: newAminoMap = valueMap } = processRes;
 
       const aminoObj: TypeUtils.SimpleMap<any> = {};
@@ -216,7 +217,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
     },
     fromAmino: (input: TypeUtils.SimpleMap<any>) => {
       const processRes: AminoProcessOutput | undefined = aminoProcess?.fromAminoProcess
-        ? aminoProcess.fromAminoProcess(valueMap, input)
+        ? aminoProcess.fromAminoProcess(valueMap, input, AminoTypesMap)
         : {};
       const { input: newInput = input, amino: newAminoMap = valueMap } = processRes;
       const aminoObj: TypeUtils.SimpleMap<any> = {};

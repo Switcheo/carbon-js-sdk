@@ -1,9 +1,11 @@
+import { registry } from "@carbon-sdk/codec";
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
-import { MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
+import { MsgExec as MsgExecAuthz, MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import { GrantUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
-import { AminoConverter } from "@cosmjs/stargate";
+import { AminoMsg } from "@cosmjs/amino";
+import { AminoConverter, AminoTypes } from "@cosmjs/stargate";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType, mapEachIndiv } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
@@ -237,12 +239,42 @@ const feegrantAminoProcess: AminoProcess = {
   },
 }
 
+
+const msgExecProcess: AminoProcess = {
+  toAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
+    const { msgs } = input as MsgExecAuthz;
+    const newInput = {
+      ...input,
+      msgs: msgs.map((msg) => aminoTypesMap.toAmino({ typeUrl: msg.typeUrl, value: registry.decode(msg) })),
+    }
+    return {
+      amino,
+      input: newInput,
+    };
+  },
+
+  fromAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
+    const msgs = input.msgs as AminoMsg[];
+    const newInput = {
+      ...input,
+      msgs: msgs.map((msg) => {
+        const m = aminoTypesMap.fromAmino(msg)
+        return { typeUrl: m.typeUrl, value: registry.encode(m) }
+      }),
+    }
+    return {
+      amino,
+      input: newInput,
+    };
+  },
+};
+
 const GrantAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgGrant]: generateAminoType(MsgGrantAuthz, grantAuthzAminoProcess),
   [CarbonTx.Types.MsgRevoke]: generateAminoType(MsgRevokeAuthz),
   [CarbonTx.Types.MsgGrantAllowance]: generateAminoType(MsgFeeGrantAllowance, feegrantAminoProcess),
   [CarbonTx.Types.MsgRevokeAllowance]: generateAminoType(MsgRevokeAllowance),
-  [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec),
+  [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec, msgExecProcess),
   [GrantTypes.GenericAuthorization]: generateAminoType(GenericAuthorizationAminoType),
   [GrantTypes.AllowedMsgAllowance]: generateAminoType(AllowedMsgAllowanceAminoType),
   [GrantTypes.BasicAllowance]: generateAminoType(BasicAllowanceAminoType),
