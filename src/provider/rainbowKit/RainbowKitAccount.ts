@@ -1,5 +1,5 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
-import { CarbonEvmChainIDs, EVMChain, MONAD_TESTNET, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EVMChain, Network, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { AddressUtils, AminoTypesMap, AuthUtils, CarbonSDK, CarbonTx, EvmUtils, Models } from "@carbon-sdk/index";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
@@ -16,7 +16,7 @@ import { Algo, DirectSignResponse, EncodeObject, makeSignDoc as makeProtoSignDoc
 import { StdFee } from "@cosmjs/stargate";
 import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
-import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, AVALANCHE_MAINNET, AVALANCHE_TESTNET, BASE_MAINNET, BASE_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET, MANTLE_MAINNET, MANTLE_TESTNET, OKC_MAINNET, OKC_TESTNET, OP_MAINNET, OP_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
+import { CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "../metamask/error";
 
@@ -211,30 +211,9 @@ class RainbowKitAccount extends Eip6963Provider {
       return Number(parseChainId(CarbonEvmChainIDs[network]))
     }
     const isMainnet = network === Network.MainNet
-    if (blockchain === 'Monad' && !isMainnet) {
-      return 10143;
-    }
-    switch (blockchain) {
-      case 'Binance Smart Chain':
-        return isMainnet ? 56 : 97;
-      case 'Mantle':
-        return isMainnet ? 5000 : 5003;
-      case 'Arbitrum':
-        return isMainnet ? 42161 : 421611;
-      case 'Polygon':
-        return isMainnet ? 137 : 80001;
-      case 'OKC':
-        return isMainnet ? 66 : 65;
-      case 'Optimism':
-        return isMainnet ? 10 : 11155420;
-      case 'Avalanche':
-        return isMainnet ? 43114 : 43113;
-      case 'Base':
-        return isMainnet ? 8453 : 84532;
-      default:
-        // Fallback to Ethereum chain ID
-        return isMainnet ? 1 : 5;
-    }
+    // Fallback to Ethereum chain ID
+    const chainId = isMainnet ? ETH_MAINNET.chainId : ETH_TESTNET.chainId
+    return Number(chainId)
   }
 
   static getCarbonEvmNetworkParams(network: Network): ChangeNetworkParam {
@@ -256,32 +235,8 @@ class RainbowKitAccount extends Eip6963Provider {
     }
 
     const isMainnet = network === Network.MainNet
-
-    if (blockchain === 'Monad' && !isMainnet) {
-      return MONAD_TESTNET
-    }
-
-    switch (blockchain) {
-      case 'Binance Smart Chain':
-        return isMainnet ? BSC_MAINNET : BSC_TESTNET
-      case 'Arbitrum':
-        return isMainnet ? ARBITRUM_MAINNET : ARBITRUM_TESTNET
-      case 'Polygon':
-        return isMainnet ? POLYGON_MAINNET : POLYGON_TESTNET
-      case 'OKC':
-        return isMainnet ? OKC_MAINNET : OKC_TESTNET
-      case 'Mantle':
-        return isMainnet ? MANTLE_MAINNET : MANTLE_TESTNET
-      case 'Avalanche':
-        return isMainnet ? AVALANCHE_MAINNET : AVALANCHE_TESTNET
-      case 'Optimism':
-        return isMainnet ? OP_MAINNET : OP_TESTNET
-      case 'Base':
-        return isMainnet ? BASE_MAINNET : BASE_TESTNET
-      default:
-        // metamask should come with Ethereum configs
-        return isMainnet ? ETH_MAINNET : ETH_TESTNET
-    }
+    // metamask should come with Ethereum configs
+    return isMainnet ? ETH_MAINNET : ETH_TESTNET
   }
 
   async isChangeNetworkRequired(blockchain: EVMChain, network: CarbonSDK.Network): Promise<boolean> {
