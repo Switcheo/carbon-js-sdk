@@ -2,7 +2,7 @@ import { registry, TxTypes } from "@carbon-sdk/codec";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs, RequestArguments, SyncResult } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { AminoTypesMap, AuthUtils, CarbonSDK, EvmUtils, Models, ProviderAgent, SupportedEip6963Provider } from "@carbon-sdk/index";
+import { AminoTypesMap, AuthUtils, CarbonSDK, EvmUtils, ProviderAgent, SupportedEip6963Provider } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx } from "@carbon-sdk/util";
 import { ETHAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { BlockchainV2, BLOCKCHAIN_V2_TO_V1_MAPPING, ChainNames, EVMChain, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
@@ -26,6 +26,7 @@ import { CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "./error";
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
+import { SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 
 type ChainContracts = {
   [key in Network]: string;
@@ -172,7 +173,7 @@ export class MetaMask extends Eip6963Provider {
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const evmHexAddress = AddressUtils.ETHAddress.publicKeyToAddress(Buffer.from(pubKeyBase64, "base64"), addressOptions)
-    const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
+    const signDirect = async (_: string, doc: SignDoc) => {
       const txBody = TxBody.decode(doc.bodyBytes)
       const authInfo = AuthInfo.decode(doc.authInfoBytes)
       const msgs: EncodeObject[] = txBody.messages.map(message => {
