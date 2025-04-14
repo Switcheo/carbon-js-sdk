@@ -149,6 +149,7 @@ export interface PriceLevelEvent extends PriceLevel {
 export interface Leverage {
   market_id?: string;
   leverage: string; // string representation of number
+  is_cross: boolean;
 }
 
 export interface Pool {
@@ -372,4 +373,13 @@ export interface RewardDebt {
 export interface CDPTokenSupply {
   cibt_denom: string;
   amount: string; // string representation of number
+}
+
+export interface TokenBalance {
+  available: string; // string representation of number
+  spot_order: string; // string representation of number
+  position: string; // string representation of number
+  denom: string;
+  futures: string; // string representation of number
+  futures_order: string; // string representation of number
 }
