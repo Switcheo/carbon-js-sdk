@@ -168,6 +168,7 @@ export interface Pool {
     amp_bps: string;
     v_amount_a: string;
     v_amount_b: string;
+    is_deprecated: boolean;
   };
   rewards_weight: string; // string representation of number
   total_commitment: string; // string representation of number
