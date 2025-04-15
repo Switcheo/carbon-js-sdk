@@ -316,10 +316,6 @@ registry.register("/Switcheo.carbon.coin.MsgLinkToken", Carbon.Coin.MsgLinkToken
 registry.register("/Switcheo.carbon.coin.MsgLinkTokenResponse", Carbon.Coin.MsgLinkTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgWithdraw", Carbon.Coin.MsgWithdraw);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", Carbon.Coin.MsgWithdrawResponse);
-registry.register("/Switcheo.carbon.coin.MsgMigratePolyToken", Carbon.Coin.MsgMigratePolyToken);
-registry.register("/Switcheo.carbon.coin.MsgMigratePolyTokenResponse", Carbon.Coin.MsgMigratePolyTokenResponse);
-registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawPoly", Carbon.Coin.MsgAdminWithdrawPoly);
-registry.register("/Switcheo.carbon.coin.MsgAdminWithdrawPolyResponse", Carbon.Coin.MsgAdminWithdrawPolyResponse);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", Carbon.Coin.MsgAuthorizeBridge);
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", Carbon.Coin.MsgAuthorizeBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", Carbon.Coin.MsgDeauthorizeBridge);
@@ -441,6 +437,8 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve", Carbon
 registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse", Carbon.Liquiditypool.MsgSetCommitmentCurveResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePool", Carbon.Liquiditypool.MsgUpdatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse", Carbon.Liquiditypool.MsgUpdatePoolResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgDeprecatePool", Carbon.Liquiditypool.MsgDeprecatePool);
+registry.register("/Switcheo.carbon.liquiditypool.MsgDeprecatePoolResponse", Carbon.Liquiditypool.MsgDeprecatePoolResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute", Carbon.Liquiditypool.MsgCreatePoolRoute);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse", Carbon.Liquiditypool.MsgCreatePoolRouteResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute", Carbon.Liquiditypool.MsgRemovePoolRoute);
@@ -1033,10 +1031,6 @@ export const TxTypes = {
   "MsgLinkTokenResponse": "/Switcheo.carbon.coin.MsgLinkTokenResponse",
   "MsgWithdraw": "/Switcheo.carbon.coin.MsgWithdraw",
   "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
-  "MsgMigratePolyToken": "/Switcheo.carbon.coin.MsgMigratePolyToken",
-  "MsgMigratePolyTokenResponse": "/Switcheo.carbon.coin.MsgMigratePolyTokenResponse",
-  "MsgAdminWithdrawPoly": "/Switcheo.carbon.coin.MsgAdminWithdrawPoly",
-  "MsgAdminWithdrawPolyResponse": "/Switcheo.carbon.coin.MsgAdminWithdrawPolyResponse",
   "MsgAuthorizeBridge": "/Switcheo.carbon.coin.MsgAuthorizeBridge",
   "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
   "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
@@ -1151,6 +1145,8 @@ export const TxTypes = {
   "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
   "MsgLiquiditypoolUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
   "MsgLiquiditypoolUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
+  "MsgDeprecatePool": "/Switcheo.carbon.liquiditypool.MsgDeprecatePool",
+  "MsgDeprecatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgDeprecatePoolResponse",
   "MsgCreatePoolRoute": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute",
   "MsgCreatePoolRouteResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse",
   "MsgRemovePoolRoute": "/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute",
@@ -5863,12 +5859,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MigrateCdpDbEvent": [
-      {
-        "name": "should_migrate",
-        "type": "bool"
-      }
-    ],
     "Params": [
       {
         "name": "interest_fee",
@@ -7629,36 +7619,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgWithdrawResponse": [],
-    "MsgMigratePolyToken": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      }
-    ],
-    "MsgMigratePolyTokenResponse": [],
-    "MsgAdminWithdrawPoly": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      }
-    ],
-    "MsgAdminWithdrawPolyResponse": [],
     "MsgAuthorizeBridge": [
       {
         "name": "creator",
@@ -10492,6 +10452,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "v_amount_b",
         "type": "string"
+      },
+      {
+        "name": "is_deprecated",
+        "type": "bool"
       }
     ],
     "Pools": [
@@ -11465,6 +11429,17 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdatePoolResponse": [],
+    "MsgDeprecatePool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgDeprecatePoolResponse": [],
     "MsgCreatePoolRoute": [
       {
         "name": "creator",
@@ -15733,6 +15708,20 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "IndexPriceForMarket": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
         "type": "string"
       }
     ],
