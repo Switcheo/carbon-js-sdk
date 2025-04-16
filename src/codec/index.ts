@@ -445,6 +445,8 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve", Carbon
 registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse", Carbon.Liquiditypool.MsgSetCommitmentCurveResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePool", Carbon.Liquiditypool.MsgUpdatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse", Carbon.Liquiditypool.MsgUpdatePoolResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgDeprecatePool", Carbon.Liquiditypool.MsgDeprecatePool);
+registry.register("/Switcheo.carbon.liquiditypool.MsgDeprecatePoolResponse", Carbon.Liquiditypool.MsgDeprecatePoolResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute", Carbon.Liquiditypool.MsgCreatePoolRoute);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse", Carbon.Liquiditypool.MsgCreatePoolRouteResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute", Carbon.Liquiditypool.MsgRemovePoolRoute);
@@ -1159,6 +1161,8 @@ export const TxTypes = {
   "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
   "MsgLiquiditypoolUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
   "MsgLiquiditypoolUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
+  "MsgDeprecatePool": "/Switcheo.carbon.liquiditypool.MsgDeprecatePool",
+  "MsgDeprecatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgDeprecatePoolResponse",
   "MsgCreatePoolRoute": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute",
   "MsgCreatePoolRouteResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse",
   "MsgRemovePoolRoute": "/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute",
@@ -10464,6 +10468,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "v_amount_b",
         "type": "string"
+      },
+      {
+        "name": "is_deprecated",
+        "type": "bool"
       }
     ],
     "Pools": [
@@ -11437,6 +11445,17 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdatePoolResponse": [],
+    "MsgDeprecatePool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgDeprecatePoolResponse": [],
     "MsgCreatePoolRoute": [
       {
         "name": "creator",
@@ -16210,6 +16229,20 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "IndexPriceForMarket": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
         "type": "string"
       }
     ],

@@ -1,11 +1,14 @@
 import { Carbon, OverrideConfig } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
+import { TxTypes } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
+import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs, SupportedEip6963Provider } from "@carbon-sdk/constant";
 import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
+import { GrantModule } from "@carbon-sdk/modules/grant";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
@@ -30,11 +33,10 @@ import axios from "axios";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { utils } from "ethers";
+import { jwtDecode } from "jwt-decode";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
-import { jwtDecode } from "jwt-decode";
-import { utils } from "ethers";
-import { GrantModule } from "@carbon-sdk/modules/grant";
 
 dayjs.extend(utc)
 
@@ -1032,12 +1034,9 @@ export class CarbonWallet {
     return this.signer.type === CarbonSignerTypes.PublicKey
   }
 
-  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
+  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM,) {
     const denomGasPrice = this.gasFee?.getGasPrice(feeDenom);
-    const totalGasCost = messages.reduce((result, message) => {
-      const gasCost = this.gasFee?.getGasCost(message.typeUrl);
-      return result.plus(gasCost ?? BN_ZERO);
-    }, BN_ZERO);
+    const totalGasCost = this.getTotalGasCost(messages);
     let totalFees = totalGasCost.times(denomGasPrice ?? BN_ZERO);
 
     // override zero gas cost tx with some gas for tx execution
@@ -1055,6 +1054,28 @@ export class CarbonWallet {
       ],
       gas: DEFAULT_GAS.toString(10),
     };
+  }
+
+  private getTotalGasCost(messages: readonly EncodeObject[]) {
+    let totalGasCost = BN_ZERO;
+    for (const message of messages) {
+      const gasCost = this.gasFee?.getGasCost(message.typeUrl);
+      const additionalGasCost = this.addAdditionalGasCost(message);
+      totalGasCost = totalGasCost.plus(gasCost ?? BN_ZERO).plus(additionalGasCost);
+    }
+    return totalGasCost;
+  }
+
+  private addAdditionalGasCost(message: EncodeObject) {
+    switch (message.typeUrl) {
+      case TxTypes.MsgExec: return this.getExecGasCost(message.value as MsgExec);
+    }
+    return BN_ZERO;
+  }
+
+  private getExecGasCost(message: MsgExec) {
+    const { msgs } = message;
+    return this.getTotalGasCost(msgs);
   }
 
   private isAccountNotFoundError = (error: Error, address: string) => {
