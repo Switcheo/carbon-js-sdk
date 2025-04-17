@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Pool } from "./pool";
 import { MarketConfig } from "./market";
 import { UserVault } from "./user_vault";
+import { QuoteStrategy } from "./quote";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
@@ -40,10 +41,10 @@ export interface DepositToVaultEvent {
   shareAmount: string;
   initialShareAmountBurnt: string;
   depositor: string;
-  feeToVaultDenom: string;
-  feeToVaultAmount: string;
-  feeCommissionDenom: string;
-  feeCommissionAmount: string;
+  vaultFeeDenom: string;
+  vaultFeeAmount: string;
+  commissionFeeDenom: string;
+  commissionFeeAmount: string;
   vaultType: Long;
 }
 
@@ -54,10 +55,10 @@ export interface WithdrawFromVaultEvent {
   shareDenom: string;
   shareAmount: string;
   withdrawer: string;
-  feeToVaultDenom: string;
-  feeToVaultAmount: string;
-  feeCommissionDenom: string;
-  feeCommissionAmount: string;
+  vaultFeeDenom: string;
+  vaultFeeAmount: string;
+  commissionFeeDenom: string;
+  commissionFeeAmount: string;
   vaultType: Long;
 }
 
@@ -88,6 +89,10 @@ export interface UserVaultEvent {
 
 export interface UserVaultClosedEvent {
   id: Long;
+}
+
+export interface SetQuoteStrategyEvent {
+  quoteStrategy?: QuoteStrategy;
 }
 
 const basePoolEvent: object = { type: "" };
@@ -463,10 +468,10 @@ const baseDepositToVaultEvent: object = {
   shareAmount: "",
   initialShareAmountBurnt: "",
   depositor: "",
-  feeToVaultDenom: "",
-  feeToVaultAmount: "",
-  feeCommissionDenom: "",
-  feeCommissionAmount: "",
+  vaultFeeDenom: "",
+  vaultFeeAmount: "",
+  commissionFeeDenom: "",
+  commissionFeeAmount: "",
   vaultType: Long.UZERO,
 };
 
@@ -496,17 +501,17 @@ export const DepositToVaultEvent = {
     if (message.depositor !== "") {
       writer.uint32(58).string(message.depositor);
     }
-    if (message.feeToVaultDenom !== "") {
-      writer.uint32(66).string(message.feeToVaultDenom);
+    if (message.vaultFeeDenom !== "") {
+      writer.uint32(66).string(message.vaultFeeDenom);
     }
-    if (message.feeToVaultAmount !== "") {
-      writer.uint32(74).string(message.feeToVaultAmount);
+    if (message.vaultFeeAmount !== "") {
+      writer.uint32(74).string(message.vaultFeeAmount);
     }
-    if (message.feeCommissionDenom !== "") {
-      writer.uint32(82).string(message.feeCommissionDenom);
+    if (message.commissionFeeDenom !== "") {
+      writer.uint32(82).string(message.commissionFeeDenom);
     }
-    if (message.feeCommissionAmount !== "") {
-      writer.uint32(90).string(message.feeCommissionAmount);
+    if (message.commissionFeeAmount !== "") {
+      writer.uint32(90).string(message.commissionFeeAmount);
     }
     if (!message.vaultType.isZero()) {
       writer.uint32(96).uint64(message.vaultType);
@@ -543,16 +548,16 @@ export const DepositToVaultEvent = {
           message.depositor = reader.string();
           break;
         case 8:
-          message.feeToVaultDenom = reader.string();
+          message.vaultFeeDenom = reader.string();
           break;
         case 9:
-          message.feeToVaultAmount = reader.string();
+          message.vaultFeeAmount = reader.string();
           break;
         case 10:
-          message.feeCommissionDenom = reader.string();
+          message.commissionFeeDenom = reader.string();
           break;
         case 11:
-          message.feeCommissionAmount = reader.string();
+          message.commissionFeeAmount = reader.string();
           break;
         case 12:
           message.vaultType = reader.uint64() as Long;
@@ -596,23 +601,23 @@ export const DepositToVaultEvent = {
       object.depositor !== undefined && object.depositor !== null
         ? String(object.depositor)
         : "";
-    message.feeToVaultDenom =
-      object.feeToVaultDenom !== undefined && object.feeToVaultDenom !== null
-        ? String(object.feeToVaultDenom)
+    message.vaultFeeDenom =
+      object.vaultFeeDenom !== undefined && object.vaultFeeDenom !== null
+        ? String(object.vaultFeeDenom)
         : "";
-    message.feeToVaultAmount =
-      object.feeToVaultAmount !== undefined && object.feeToVaultAmount !== null
-        ? String(object.feeToVaultAmount)
+    message.vaultFeeAmount =
+      object.vaultFeeAmount !== undefined && object.vaultFeeAmount !== null
+        ? String(object.vaultFeeAmount)
         : "";
-    message.feeCommissionDenom =
-      object.feeCommissionDenom !== undefined &&
-      object.feeCommissionDenom !== null
-        ? String(object.feeCommissionDenom)
+    message.commissionFeeDenom =
+      object.commissionFeeDenom !== undefined &&
+      object.commissionFeeDenom !== null
+        ? String(object.commissionFeeDenom)
         : "";
-    message.feeCommissionAmount =
-      object.feeCommissionAmount !== undefined &&
-      object.feeCommissionAmount !== null
-        ? String(object.feeCommissionAmount)
+    message.commissionFeeAmount =
+      object.commissionFeeAmount !== undefined &&
+      object.commissionFeeAmount !== null
+        ? String(object.commissionFeeAmount)
         : "";
     message.vaultType =
       object.vaultType !== undefined && object.vaultType !== null
@@ -633,14 +638,14 @@ export const DepositToVaultEvent = {
     message.initialShareAmountBurnt !== undefined &&
       (obj.initialShareAmountBurnt = message.initialShareAmountBurnt);
     message.depositor !== undefined && (obj.depositor = message.depositor);
-    message.feeToVaultDenom !== undefined &&
-      (obj.feeToVaultDenom = message.feeToVaultDenom);
-    message.feeToVaultAmount !== undefined &&
-      (obj.feeToVaultAmount = message.feeToVaultAmount);
-    message.feeCommissionDenom !== undefined &&
-      (obj.feeCommissionDenom = message.feeCommissionDenom);
-    message.feeCommissionAmount !== undefined &&
-      (obj.feeCommissionAmount = message.feeCommissionAmount);
+    message.vaultFeeDenom !== undefined &&
+      (obj.vaultFeeDenom = message.vaultFeeDenom);
+    message.vaultFeeAmount !== undefined &&
+      (obj.vaultFeeAmount = message.vaultFeeAmount);
+    message.commissionFeeDenom !== undefined &&
+      (obj.commissionFeeDenom = message.commissionFeeDenom);
+    message.commissionFeeAmount !== undefined &&
+      (obj.commissionFeeAmount = message.commissionFeeAmount);
     message.vaultType !== undefined &&
       (obj.vaultType = (message.vaultType || Long.UZERO).toString());
     return obj;
@@ -658,10 +663,10 @@ export const DepositToVaultEvent = {
     message.shareAmount = object.shareAmount ?? "";
     message.initialShareAmountBurnt = object.initialShareAmountBurnt ?? "";
     message.depositor = object.depositor ?? "";
-    message.feeToVaultDenom = object.feeToVaultDenom ?? "";
-    message.feeToVaultAmount = object.feeToVaultAmount ?? "";
-    message.feeCommissionDenom = object.feeCommissionDenom ?? "";
-    message.feeCommissionAmount = object.feeCommissionAmount ?? "";
+    message.vaultFeeDenom = object.vaultFeeDenom ?? "";
+    message.vaultFeeAmount = object.vaultFeeAmount ?? "";
+    message.commissionFeeDenom = object.commissionFeeDenom ?? "";
+    message.commissionFeeAmount = object.commissionFeeAmount ?? "";
     message.vaultType =
       object.vaultType !== undefined && object.vaultType !== null
         ? Long.fromValue(object.vaultType)
@@ -677,10 +682,10 @@ const baseWithdrawFromVaultEvent: object = {
   shareDenom: "",
   shareAmount: "",
   withdrawer: "",
-  feeToVaultDenom: "",
-  feeToVaultAmount: "",
-  feeCommissionDenom: "",
-  feeCommissionAmount: "",
+  vaultFeeDenom: "",
+  vaultFeeAmount: "",
+  commissionFeeDenom: "",
+  commissionFeeAmount: "",
   vaultType: Long.UZERO,
 };
 
@@ -707,17 +712,17 @@ export const WithdrawFromVaultEvent = {
     if (message.withdrawer !== "") {
       writer.uint32(50).string(message.withdrawer);
     }
-    if (message.feeToVaultDenom !== "") {
-      writer.uint32(58).string(message.feeToVaultDenom);
+    if (message.vaultFeeDenom !== "") {
+      writer.uint32(58).string(message.vaultFeeDenom);
     }
-    if (message.feeToVaultAmount !== "") {
-      writer.uint32(66).string(message.feeToVaultAmount);
+    if (message.vaultFeeAmount !== "") {
+      writer.uint32(66).string(message.vaultFeeAmount);
     }
-    if (message.feeCommissionDenom !== "") {
-      writer.uint32(74).string(message.feeCommissionDenom);
+    if (message.commissionFeeDenom !== "") {
+      writer.uint32(74).string(message.commissionFeeDenom);
     }
-    if (message.feeCommissionAmount !== "") {
-      writer.uint32(82).string(message.feeCommissionAmount);
+    if (message.commissionFeeAmount !== "") {
+      writer.uint32(82).string(message.commissionFeeAmount);
     }
     if (!message.vaultType.isZero()) {
       writer.uint32(88).uint64(message.vaultType);
@@ -754,16 +759,16 @@ export const WithdrawFromVaultEvent = {
           message.withdrawer = reader.string();
           break;
         case 7:
-          message.feeToVaultDenom = reader.string();
+          message.vaultFeeDenom = reader.string();
           break;
         case 8:
-          message.feeToVaultAmount = reader.string();
+          message.vaultFeeAmount = reader.string();
           break;
         case 9:
-          message.feeCommissionDenom = reader.string();
+          message.commissionFeeDenom = reader.string();
           break;
         case 10:
-          message.feeCommissionAmount = reader.string();
+          message.commissionFeeAmount = reader.string();
           break;
         case 11:
           message.vaultType = reader.uint64() as Long;
@@ -802,23 +807,23 @@ export const WithdrawFromVaultEvent = {
       object.withdrawer !== undefined && object.withdrawer !== null
         ? String(object.withdrawer)
         : "";
-    message.feeToVaultDenom =
-      object.feeToVaultDenom !== undefined && object.feeToVaultDenom !== null
-        ? String(object.feeToVaultDenom)
+    message.vaultFeeDenom =
+      object.vaultFeeDenom !== undefined && object.vaultFeeDenom !== null
+        ? String(object.vaultFeeDenom)
         : "";
-    message.feeToVaultAmount =
-      object.feeToVaultAmount !== undefined && object.feeToVaultAmount !== null
-        ? String(object.feeToVaultAmount)
+    message.vaultFeeAmount =
+      object.vaultFeeAmount !== undefined && object.vaultFeeAmount !== null
+        ? String(object.vaultFeeAmount)
         : "";
-    message.feeCommissionDenom =
-      object.feeCommissionDenom !== undefined &&
-      object.feeCommissionDenom !== null
-        ? String(object.feeCommissionDenom)
+    message.commissionFeeDenom =
+      object.commissionFeeDenom !== undefined &&
+      object.commissionFeeDenom !== null
+        ? String(object.commissionFeeDenom)
         : "";
-    message.feeCommissionAmount =
-      object.feeCommissionAmount !== undefined &&
-      object.feeCommissionAmount !== null
-        ? String(object.feeCommissionAmount)
+    message.commissionFeeAmount =
+      object.commissionFeeAmount !== undefined &&
+      object.commissionFeeAmount !== null
+        ? String(object.commissionFeeAmount)
         : "";
     message.vaultType =
       object.vaultType !== undefined && object.vaultType !== null
@@ -837,14 +842,14 @@ export const WithdrawFromVaultEvent = {
     message.shareAmount !== undefined &&
       (obj.shareAmount = message.shareAmount);
     message.withdrawer !== undefined && (obj.withdrawer = message.withdrawer);
-    message.feeToVaultDenom !== undefined &&
-      (obj.feeToVaultDenom = message.feeToVaultDenom);
-    message.feeToVaultAmount !== undefined &&
-      (obj.feeToVaultAmount = message.feeToVaultAmount);
-    message.feeCommissionDenom !== undefined &&
-      (obj.feeCommissionDenom = message.feeCommissionDenom);
-    message.feeCommissionAmount !== undefined &&
-      (obj.feeCommissionAmount = message.feeCommissionAmount);
+    message.vaultFeeDenom !== undefined &&
+      (obj.vaultFeeDenom = message.vaultFeeDenom);
+    message.vaultFeeAmount !== undefined &&
+      (obj.vaultFeeAmount = message.vaultFeeAmount);
+    message.commissionFeeDenom !== undefined &&
+      (obj.commissionFeeDenom = message.commissionFeeDenom);
+    message.commissionFeeAmount !== undefined &&
+      (obj.commissionFeeAmount = message.commissionFeeAmount);
     message.vaultType !== undefined &&
       (obj.vaultType = (message.vaultType || Long.UZERO).toString());
     return obj;
@@ -863,10 +868,10 @@ export const WithdrawFromVaultEvent = {
     message.shareDenom = object.shareDenom ?? "";
     message.shareAmount = object.shareAmount ?? "";
     message.withdrawer = object.withdrawer ?? "";
-    message.feeToVaultDenom = object.feeToVaultDenom ?? "";
-    message.feeToVaultAmount = object.feeToVaultAmount ?? "";
-    message.feeCommissionDenom = object.feeCommissionDenom ?? "";
-    message.feeCommissionAmount = object.feeCommissionAmount ?? "";
+    message.vaultFeeDenom = object.vaultFeeDenom ?? "";
+    message.vaultFeeAmount = object.vaultFeeAmount ?? "";
+    message.commissionFeeDenom = object.commissionFeeDenom ?? "";
+    message.commissionFeeAmount = object.commissionFeeAmount ?? "";
     message.vaultType =
       object.vaultType !== undefined && object.vaultType !== null
         ? Long.fromValue(object.vaultType)
@@ -1325,6 +1330,73 @@ export const UserVaultClosedEvent = {
       object.id !== undefined && object.id !== null
         ? Long.fromValue(object.id)
         : Long.UZERO;
+    return message;
+  },
+};
+
+const baseSetQuoteStrategyEvent: object = {};
+
+export const SetQuoteStrategyEvent = {
+  encode(
+    message: SetQuoteStrategyEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.quoteStrategy !== undefined) {
+      QuoteStrategy.encode(
+        message.quoteStrategy,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SetQuoteStrategyEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSetQuoteStrategyEvent } as SetQuoteStrategyEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.quoteStrategy = QuoteStrategy.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetQuoteStrategyEvent {
+    const message = { ...baseSetQuoteStrategyEvent } as SetQuoteStrategyEvent;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromJSON(object.quoteStrategy)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: SetQuoteStrategyEvent): unknown {
+    const obj: any = {};
+    message.quoteStrategy !== undefined &&
+      (obj.quoteStrategy = message.quoteStrategy
+        ? QuoteStrategy.toJSON(message.quoteStrategy)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SetQuoteStrategyEvent>
+  ): SetQuoteStrategyEvent {
+    const message = { ...baseSetQuoteStrategyEvent } as SetQuoteStrategyEvent;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromPartial(object.quoteStrategy)
+        : undefined;
     return message;
   },
 };

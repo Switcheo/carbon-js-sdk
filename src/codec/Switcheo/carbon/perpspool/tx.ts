@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Pool, UpdatePoolParams } from "./pool";
 import { UpdateMarketConfigParams, MarketConfig } from "./market";
+import { QuoteStrategy, UpdateQuoteStrategyParams, Quote } from "./quote";
 import { UserVault, UpdateUserVaultParams } from "./user_vault";
 import { ParamsToUpdate } from "./params";
 
@@ -85,6 +86,33 @@ export interface MsgUpdateMarketConfig {
 export interface MsgUpdateMarketConfigResponse {
   marketConfig?: MarketConfig;
 }
+
+export interface MsgCreateQuoteStrategy {
+  creator: string;
+  name: string;
+  quoteShape: Quote[];
+}
+
+export interface MsgCreateQuoteStrategyResponse {
+  quoteStrategy?: QuoteStrategy;
+}
+
+export interface MsgUpdateQuoteStrategy {
+  creator: string;
+  quoteStrategyId: Long;
+  updateQuoteStrategyParams?: UpdateQuoteStrategyParams;
+}
+
+export interface MsgUpdateQuoteStrategyResponse {
+  quoteStrategy?: QuoteStrategy;
+}
+
+export interface MsgDeleteQuoteStrategy {
+  creator: string;
+  quoteStrategyId: Long;
+}
+
+export interface MsgDeleteQuoteStrategyResponse {}
 
 export interface MsgCreateUserVault {
   creator: string;
@@ -1259,6 +1287,480 @@ export const MsgUpdateMarketConfigResponse = {
   },
 };
 
+const baseMsgCreateQuoteStrategy: object = { creator: "", name: "" };
+
+export const MsgCreateQuoteStrategy = {
+  encode(
+    message: MsgCreateQuoteStrategy,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    for (const v of message.quoteShape) {
+      Quote.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateQuoteStrategy {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateQuoteStrategy } as MsgCreateQuoteStrategy;
+    message.quoteShape = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.quoteShape.push(Quote.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateQuoteStrategy {
+    const message = { ...baseMsgCreateQuoteStrategy } as MsgCreateQuoteStrategy;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.quoteShape = (object.quoteShape ?? []).map((e: any) =>
+      Quote.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: MsgCreateQuoteStrategy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.name !== undefined && (obj.name = message.name);
+    if (message.quoteShape) {
+      obj.quoteShape = message.quoteShape.map((e) =>
+        e ? Quote.toJSON(e) : undefined
+      );
+    } else {
+      obj.quoteShape = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateQuoteStrategy>
+  ): MsgCreateQuoteStrategy {
+    const message = { ...baseMsgCreateQuoteStrategy } as MsgCreateQuoteStrategy;
+    message.creator = object.creator ?? "";
+    message.name = object.name ?? "";
+    message.quoteShape = (object.quoteShape ?? []).map((e) =>
+      Quote.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseMsgCreateQuoteStrategyResponse: object = {};
+
+export const MsgCreateQuoteStrategyResponse = {
+  encode(
+    message: MsgCreateQuoteStrategyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.quoteStrategy !== undefined) {
+      QuoteStrategy.encode(
+        message.quoteStrategy,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateQuoteStrategyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateQuoteStrategyResponse,
+    } as MsgCreateQuoteStrategyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.quoteStrategy = QuoteStrategy.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateQuoteStrategyResponse {
+    const message = {
+      ...baseMsgCreateQuoteStrategyResponse,
+    } as MsgCreateQuoteStrategyResponse;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromJSON(object.quoteStrategy)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreateQuoteStrategyResponse): unknown {
+    const obj: any = {};
+    message.quoteStrategy !== undefined &&
+      (obj.quoteStrategy = message.quoteStrategy
+        ? QuoteStrategy.toJSON(message.quoteStrategy)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateQuoteStrategyResponse>
+  ): MsgCreateQuoteStrategyResponse {
+    const message = {
+      ...baseMsgCreateQuoteStrategyResponse,
+    } as MsgCreateQuoteStrategyResponse;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromPartial(object.quoteStrategy)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateQuoteStrategy: object = {
+  creator: "",
+  quoteStrategyId: Long.UZERO,
+};
+
+export const MsgUpdateQuoteStrategy = {
+  encode(
+    message: MsgUpdateQuoteStrategy,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.quoteStrategyId.isZero()) {
+      writer.uint32(16).uint64(message.quoteStrategyId);
+    }
+    if (message.updateQuoteStrategyParams !== undefined) {
+      UpdateQuoteStrategyParams.encode(
+        message.updateQuoteStrategyParams,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateQuoteStrategy {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateQuoteStrategy } as MsgUpdateQuoteStrategy;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.quoteStrategyId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.updateQuoteStrategyParams = UpdateQuoteStrategyParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateQuoteStrategy {
+    const message = { ...baseMsgUpdateQuoteStrategy } as MsgUpdateQuoteStrategy;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.quoteStrategyId =
+      object.quoteStrategyId !== undefined && object.quoteStrategyId !== null
+        ? Long.fromString(object.quoteStrategyId)
+        : Long.UZERO;
+    message.updateQuoteStrategyParams =
+      object.updateQuoteStrategyParams !== undefined &&
+      object.updateQuoteStrategyParams !== null
+        ? UpdateQuoteStrategyParams.fromJSON(object.updateQuoteStrategyParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateQuoteStrategy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.quoteStrategyId !== undefined &&
+      (obj.quoteStrategyId = (
+        message.quoteStrategyId || Long.UZERO
+      ).toString());
+    message.updateQuoteStrategyParams !== undefined &&
+      (obj.updateQuoteStrategyParams = message.updateQuoteStrategyParams
+        ? UpdateQuoteStrategyParams.toJSON(message.updateQuoteStrategyParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateQuoteStrategy>
+  ): MsgUpdateQuoteStrategy {
+    const message = { ...baseMsgUpdateQuoteStrategy } as MsgUpdateQuoteStrategy;
+    message.creator = object.creator ?? "";
+    message.quoteStrategyId =
+      object.quoteStrategyId !== undefined && object.quoteStrategyId !== null
+        ? Long.fromValue(object.quoteStrategyId)
+        : Long.UZERO;
+    message.updateQuoteStrategyParams =
+      object.updateQuoteStrategyParams !== undefined &&
+      object.updateQuoteStrategyParams !== null
+        ? UpdateQuoteStrategyParams.fromPartial(
+            object.updateQuoteStrategyParams
+          )
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateQuoteStrategyResponse: object = {};
+
+export const MsgUpdateQuoteStrategyResponse = {
+  encode(
+    message: MsgUpdateQuoteStrategyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.quoteStrategy !== undefined) {
+      QuoteStrategy.encode(
+        message.quoteStrategy,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateQuoteStrategyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateQuoteStrategyResponse,
+    } as MsgUpdateQuoteStrategyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.quoteStrategy = QuoteStrategy.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateQuoteStrategyResponse {
+    const message = {
+      ...baseMsgUpdateQuoteStrategyResponse,
+    } as MsgUpdateQuoteStrategyResponse;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromJSON(object.quoteStrategy)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateQuoteStrategyResponse): unknown {
+    const obj: any = {};
+    message.quoteStrategy !== undefined &&
+      (obj.quoteStrategy = message.quoteStrategy
+        ? QuoteStrategy.toJSON(message.quoteStrategy)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateQuoteStrategyResponse>
+  ): MsgUpdateQuoteStrategyResponse {
+    const message = {
+      ...baseMsgUpdateQuoteStrategyResponse,
+    } as MsgUpdateQuoteStrategyResponse;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromPartial(object.quoteStrategy)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgDeleteQuoteStrategy: object = {
+  creator: "",
+  quoteStrategyId: Long.UZERO,
+};
+
+export const MsgDeleteQuoteStrategy = {
+  encode(
+    message: MsgDeleteQuoteStrategy,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.quoteStrategyId.isZero()) {
+      writer.uint32(16).uint64(message.quoteStrategyId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteQuoteStrategy {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeleteQuoteStrategy } as MsgDeleteQuoteStrategy;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.quoteStrategyId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteQuoteStrategy {
+    const message = { ...baseMsgDeleteQuoteStrategy } as MsgDeleteQuoteStrategy;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.quoteStrategyId =
+      object.quoteStrategyId !== undefined && object.quoteStrategyId !== null
+        ? Long.fromString(object.quoteStrategyId)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgDeleteQuoteStrategy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.quoteStrategyId !== undefined &&
+      (obj.quoteStrategyId = (
+        message.quoteStrategyId || Long.UZERO
+      ).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeleteQuoteStrategy>
+  ): MsgDeleteQuoteStrategy {
+    const message = { ...baseMsgDeleteQuoteStrategy } as MsgDeleteQuoteStrategy;
+    message.creator = object.creator ?? "";
+    message.quoteStrategyId =
+      object.quoteStrategyId !== undefined && object.quoteStrategyId !== null
+        ? Long.fromValue(object.quoteStrategyId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgDeleteQuoteStrategyResponse: object = {};
+
+export const MsgDeleteQuoteStrategyResponse = {
+  encode(
+    _: MsgDeleteQuoteStrategyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteQuoteStrategyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteQuoteStrategyResponse,
+    } as MsgDeleteQuoteStrategyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeleteQuoteStrategyResponse {
+    const message = {
+      ...baseMsgDeleteQuoteStrategyResponse,
+    } as MsgDeleteQuoteStrategyResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeleteQuoteStrategyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeleteQuoteStrategyResponse>
+  ): MsgDeleteQuoteStrategyResponse {
+    const message = {
+      ...baseMsgDeleteQuoteStrategyResponse,
+    } as MsgDeleteQuoteStrategyResponse;
+    return message;
+  },
+};
+
 const baseMsgCreateUserVault: object = {
   creator: "",
   name: "",
@@ -2039,6 +2541,16 @@ export interface Msg {
   UpdateMarketConfig(
     request: MsgUpdateMarketConfig
   ): Promise<MsgUpdateMarketConfigResponse>;
+  /** * quote strategies ** // */
+  CreateQuoteStrategy(
+    request: MsgCreateQuoteStrategy
+  ): Promise<MsgCreateQuoteStrategyResponse>;
+  UpdateQuoteStrategy(
+    request: MsgUpdateQuoteStrategy
+  ): Promise<MsgUpdateQuoteStrategyResponse>;
+  DeleteQuoteStrategy(
+    request: MsgDeleteQuoteStrategy
+  ): Promise<MsgDeleteQuoteStrategyResponse>;
   /** * user vaults ** // */
   CreateUserVault(
     request: MsgCreateUserVault
@@ -2072,6 +2584,9 @@ export class MsgClientImpl implements Msg {
     this.DepositToPool = this.DepositToPool.bind(this);
     this.WithdrawFromPool = this.WithdrawFromPool.bind(this);
     this.UpdateMarketConfig = this.UpdateMarketConfig.bind(this);
+    this.CreateQuoteStrategy = this.CreateQuoteStrategy.bind(this);
+    this.UpdateQuoteStrategy = this.UpdateQuoteStrategy.bind(this);
+    this.DeleteQuoteStrategy = this.DeleteQuoteStrategy.bind(this);
     this.CreateUserVault = this.CreateUserVault.bind(this);
     this.CloseUserVault = this.CloseUserVault.bind(this);
     this.UpdateUserVault = this.UpdateUserVault.bind(this);
@@ -2168,6 +2683,48 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateMarketConfigResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CreateQuoteStrategy(
+    request: MsgCreateQuoteStrategy
+  ): Promise<MsgCreateQuoteStrategyResponse> {
+    const data = MsgCreateQuoteStrategy.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "CreateQuoteStrategy",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateQuoteStrategyResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateQuoteStrategy(
+    request: MsgUpdateQuoteStrategy
+  ): Promise<MsgUpdateQuoteStrategyResponse> {
+    const data = MsgUpdateQuoteStrategy.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "UpdateQuoteStrategy",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateQuoteStrategyResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeleteQuoteStrategy(
+    request: MsgDeleteQuoteStrategy
+  ): Promise<MsgDeleteQuoteStrategyResponse> {
+    const data = MsgDeleteQuoteStrategy.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpspool.Msg",
+      "DeleteQuoteStrategy",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeleteQuoteStrategyResponse.decode(new _m0.Reader(data))
     );
   }
 

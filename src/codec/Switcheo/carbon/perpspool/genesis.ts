@@ -5,6 +5,7 @@ import { Params } from "./params";
 import { MarketConfig } from "./market";
 import { NavPerShareLastRecorded, Pool } from "./pool";
 import { UserVault, AddressToUserVaultsMapping } from "./user_vault";
+import { QuoteStrategy } from "./quote";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -16,8 +17,9 @@ export interface GenesisState {
   navPerShares: NavPerShareRecord[];
   allNavPerShareLastRecorded: NavPerShareLastRecordedWithPoolId[];
   userVaults: UserVault[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   addressToUserVaults: AddressToUserVaultsMapping[];
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  quoteStrategies: QuoteStrategy[];
 }
 
 export interface MarketToUserVaultMappingRecord {
@@ -73,6 +75,9 @@ export const GenesisState = {
     for (const v of message.addressToUserVaults) {
       AddressToUserVaultsMapping.encode(v!, writer.uint32(58).fork()).ldelim();
     }
+    for (const v of message.quoteStrategies) {
+      QuoteStrategy.encode(v!, writer.uint32(66).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -86,6 +91,7 @@ export const GenesisState = {
     message.allNavPerShareLastRecorded = [];
     message.userVaults = [];
     message.addressToUserVaults = [];
+    message.quoteStrategies = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -118,6 +124,11 @@ export const GenesisState = {
             AddressToUserVaultsMapping.decode(reader, reader.uint32())
           );
           break;
+        case 8:
+          message.quoteStrategies.push(
+            QuoteStrategy.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -147,6 +158,9 @@ export const GenesisState = {
     );
     message.addressToUserVaults = (object.addressToUserVaults ?? []).map(
       (e: any) => AddressToUserVaultsMapping.fromJSON(e)
+    );
+    message.quoteStrategies = (object.quoteStrategies ?? []).map((e: any) =>
+      QuoteStrategy.fromJSON(e)
     );
     return message;
   },
@@ -195,6 +209,13 @@ export const GenesisState = {
     } else {
       obj.addressToUserVaults = [];
     }
+    if (message.quoteStrategies) {
+      obj.quoteStrategies = message.quoteStrategies.map((e) =>
+        e ? QuoteStrategy.toJSON(e) : undefined
+      );
+    } else {
+      obj.quoteStrategies = [];
+    }
     return obj;
   },
 
@@ -219,6 +240,9 @@ export const GenesisState = {
     );
     message.addressToUserVaults = (object.addressToUserVaults ?? []).map((e) =>
       AddressToUserVaultsMapping.fromPartial(e)
+    );
+    message.quoteStrategies = (object.quoteStrategies ?? []).map((e) =>
+      QuoteStrategy.fromPartial(e)
     );
     return message;
   },

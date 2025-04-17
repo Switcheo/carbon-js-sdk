@@ -8,7 +8,10 @@ import {
 import { Params } from "./params";
 import { PoolDetails } from "./pool";
 import { UserVault, UserVaultWithdrawalRecord } from "./user_vault";
-import { MarketLiquidityUsageMultiplier } from "./market";
+import {
+  MarketLiquidityUsageMultiplier,
+  DetailedQuoteStrategy,
+} from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -145,14 +148,6 @@ export interface QueryAllUserVaultInfoResponse {
   pagination?: PageResponse;
 }
 
-export interface QueryUserVaultsByControllerRequest {
-  controller: string;
-}
-
-export interface QueryUserVaultsByControllerResponse {
-  userVaults: UserVault[];
-}
-
 export interface VaultInfo {
   id: Long;
   totalShareAmount: string;
@@ -161,6 +156,15 @@ export interface VaultInfo {
   totalInPositionAmount: string;
   totalInOrderAmount: string;
   totalUpnlAmount: string;
+}
+
+export interface QueryAllQuoteStrategyRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllQuoteStrategyResponse {
+  quoteStrategies: DetailedQuoteStrategy[];
+  pagination?: PageResponse;
 }
 
 const baseQueryAllPoolMarketLiquidityUsageMultiplierRequest: object = {};
@@ -2411,142 +2415,6 @@ export const QueryAllUserVaultInfoResponse = {
   },
 };
 
-const baseQueryUserVaultsByControllerRequest: object = { controller: "" };
-
-export const QueryUserVaultsByControllerRequest = {
-  encode(
-    message: QueryUserVaultsByControllerRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.controller !== "") {
-      writer.uint32(10).string(message.controller);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryUserVaultsByControllerRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryUserVaultsByControllerRequest,
-    } as QueryUserVaultsByControllerRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.controller = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryUserVaultsByControllerRequest {
-    const message = {
-      ...baseQueryUserVaultsByControllerRequest,
-    } as QueryUserVaultsByControllerRequest;
-    message.controller =
-      object.controller !== undefined && object.controller !== null
-        ? String(object.controller)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryUserVaultsByControllerRequest): unknown {
-    const obj: any = {};
-    message.controller !== undefined && (obj.controller = message.controller);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryUserVaultsByControllerRequest>
-  ): QueryUserVaultsByControllerRequest {
-    const message = {
-      ...baseQueryUserVaultsByControllerRequest,
-    } as QueryUserVaultsByControllerRequest;
-    message.controller = object.controller ?? "";
-    return message;
-  },
-};
-
-const baseQueryUserVaultsByControllerResponse: object = {};
-
-export const QueryUserVaultsByControllerResponse = {
-  encode(
-    message: QueryUserVaultsByControllerResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.userVaults) {
-      UserVault.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryUserVaultsByControllerResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryUserVaultsByControllerResponse,
-    } as QueryUserVaultsByControllerResponse;
-    message.userVaults = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.userVaults.push(UserVault.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryUserVaultsByControllerResponse {
-    const message = {
-      ...baseQueryUserVaultsByControllerResponse,
-    } as QueryUserVaultsByControllerResponse;
-    message.userVaults = (object.userVaults ?? []).map((e: any) =>
-      UserVault.fromJSON(e)
-    );
-    return message;
-  },
-
-  toJSON(message: QueryUserVaultsByControllerResponse): unknown {
-    const obj: any = {};
-    if (message.userVaults) {
-      obj.userVaults = message.userVaults.map((e) =>
-        e ? UserVault.toJSON(e) : undefined
-      );
-    } else {
-      obj.userVaults = [];
-    }
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryUserVaultsByControllerResponse>
-  ): QueryUserVaultsByControllerResponse {
-    const message = {
-      ...baseQueryUserVaultsByControllerResponse,
-    } as QueryUserVaultsByControllerResponse;
-    message.userVaults = (object.userVaults ?? []).map((e) =>
-      UserVault.fromPartial(e)
-    );
-    return message;
-  },
-};
-
 const baseVaultInfo: object = {
   id: Long.UZERO,
   totalShareAmount: "",
@@ -2692,6 +2560,171 @@ export const VaultInfo = {
   },
 };
 
+const baseQueryAllQuoteStrategyRequest: object = {};
+
+export const QueryAllQuoteStrategyRequest = {
+  encode(
+    message: QueryAllQuoteStrategyRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllQuoteStrategyRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllQuoteStrategyRequest,
+    } as QueryAllQuoteStrategyRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllQuoteStrategyRequest {
+    const message = {
+      ...baseQueryAllQuoteStrategyRequest,
+    } as QueryAllQuoteStrategyRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllQuoteStrategyRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllQuoteStrategyRequest>
+  ): QueryAllQuoteStrategyRequest {
+    const message = {
+      ...baseQueryAllQuoteStrategyRequest,
+    } as QueryAllQuoteStrategyRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllQuoteStrategyResponse: object = {};
+
+export const QueryAllQuoteStrategyResponse = {
+  encode(
+    message: QueryAllQuoteStrategyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.quoteStrategies) {
+      DetailedQuoteStrategy.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllQuoteStrategyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllQuoteStrategyResponse,
+    } as QueryAllQuoteStrategyResponse;
+    message.quoteStrategies = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.quoteStrategies.push(
+            DetailedQuoteStrategy.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllQuoteStrategyResponse {
+    const message = {
+      ...baseQueryAllQuoteStrategyResponse,
+    } as QueryAllQuoteStrategyResponse;
+    message.quoteStrategies = (object.quoteStrategies ?? []).map((e: any) =>
+      DetailedQuoteStrategy.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllQuoteStrategyResponse): unknown {
+    const obj: any = {};
+    if (message.quoteStrategies) {
+      obj.quoteStrategies = message.quoteStrategies.map((e) =>
+        e ? DetailedQuoteStrategy.toJSON(e) : undefined
+      );
+    } else {
+      obj.quoteStrategies = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllQuoteStrategyResponse>
+  ): QueryAllQuoteStrategyResponse {
+    const message = {
+      ...baseQueryAllQuoteStrategyResponse,
+    } as QueryAllQuoteStrategyResponse;
+    message.quoteStrategies = (object.quoteStrategies ?? []).map((e) =>
+      DetailedQuoteStrategy.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Params queries the parameters of the module. */
@@ -2745,10 +2778,10 @@ export interface Query {
   UserVaultInfoAll(
     request: QueryAllUserVaultInfoRequest
   ): Promise<QueryAllUserVaultInfoResponse>;
-  /** Get all user vaults that the user is a controller for */
-  UserVaultsByController(
-    request: QueryUserVaultsByControllerRequest
-  ): Promise<QueryUserVaultsByControllerResponse>;
+  /** Get all quote strategies */
+  QuoteStrategyAll(
+    request: QueryAllQuoteStrategyRequest
+  ): Promise<QueryAllQuoteStrategyResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2771,7 +2804,7 @@ export class QueryClientImpl implements Query {
     this.UserVaultPendingWithdrawalsByVault =
       this.UserVaultPendingWithdrawalsByVault.bind(this);
     this.UserVaultInfoAll = this.UserVaultInfoAll.bind(this);
-    this.UserVaultsByController = this.UserVaultsByController.bind(this);
+    this.QuoteStrategyAll = this.QuoteStrategyAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -2952,17 +2985,17 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  UserVaultsByController(
-    request: QueryUserVaultsByControllerRequest
-  ): Promise<QueryUserVaultsByControllerResponse> {
-    const data = QueryUserVaultsByControllerRequest.encode(request).finish();
+  QuoteStrategyAll(
+    request: QueryAllQuoteStrategyRequest
+  ): Promise<QueryAllQuoteStrategyResponse> {
+    const data = QueryAllQuoteStrategyRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpspool.Query",
-      "UserVaultsByController",
+      "QuoteStrategyAll",
       data
     );
     return promise.then((data) =>
-      QueryUserVaultsByControllerResponse.decode(new _m0.Reader(data))
+      QueryAllQuoteStrategyResponse.decode(new _m0.Reader(data))
     );
   }
 }

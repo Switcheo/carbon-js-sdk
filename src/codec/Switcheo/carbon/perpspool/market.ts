@@ -1,16 +1,11 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { QuoteStrategy, Quote } from "./quote";
 import { Timestamp } from "../../../google/protobuf/timestamp";
-import { StringValue } from "../../../google/protobuf/wrappers";
+import { StringValue, UInt64Value } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
-
-export interface Quote {
-  quotePriceType: string;
-  quotePriceValue: string;
-  quoteAmountRatio: string;
-}
 
 /** MarketConfig config for each market in the Pool */
 export interface MarketConfig {
@@ -37,15 +32,32 @@ export interface MarketConfig {
   /**
    * represents the shape of quoting for each side against [0] index price, [1+]
    * prev quotes
+   * TODO: Deprecate after migration of Migrate3to4 in perpspool and FE have
+   * migrated to use quote_strategy, currently this is still used for backward
+   * compatibility
+   *
+   * @deprecated
    */
   quoteShape: Quote[];
+  /**
+   * represents the quote strategy of quoting for each side against [0] index
+   * price, [1+] prev quotes
+   */
+  quoteStrategyId: Long;
+}
+
+/** Same as MarketConfig but with QuoteStrategy */
+export interface DetailedMarketConfig {
+  marketConfig?: MarketConfig;
+  quoteStrategy?: QuoteStrategy;
 }
 
 export interface UpdateMarketConfigParams {
   maxLiquidityRatio: string;
   borrowFeeMultiplier: string;
   mode?: string;
-  quoteShape: Quote[];
+  /** (gogoproto.nullable) = false ]; */
+  quoteStrategyId?: Long;
 }
 
 /**
@@ -71,92 +83,17 @@ export interface MarketLiquidityUsageMultiplier {
   multiplier: string;
 }
 
-const baseQuote: object = {
-  quotePriceType: "",
-  quotePriceValue: "",
-  quoteAmountRatio: "",
-};
-
-export const Quote = {
-  encode(message: Quote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.quotePriceType !== "") {
-      writer.uint32(10).string(message.quotePriceType);
-    }
-    if (message.quotePriceValue !== "") {
-      writer.uint32(18).string(message.quotePriceValue);
-    }
-    if (message.quoteAmountRatio !== "") {
-      writer.uint32(26).string(message.quoteAmountRatio);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): Quote {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQuote } as Quote;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.quotePriceType = reader.string();
-          break;
-        case 2:
-          message.quotePriceValue = reader.string();
-          break;
-        case 3:
-          message.quoteAmountRatio = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Quote {
-    const message = { ...baseQuote } as Quote;
-    message.quotePriceType =
-      object.quotePriceType !== undefined && object.quotePriceType !== null
-        ? String(object.quotePriceType)
-        : "";
-    message.quotePriceValue =
-      object.quotePriceValue !== undefined && object.quotePriceValue !== null
-        ? String(object.quotePriceValue)
-        : "";
-    message.quoteAmountRatio =
-      object.quoteAmountRatio !== undefined && object.quoteAmountRatio !== null
-        ? String(object.quoteAmountRatio)
-        : "";
-    return message;
-  },
-
-  toJSON(message: Quote): unknown {
-    const obj: any = {};
-    message.quotePriceType !== undefined &&
-      (obj.quotePriceType = message.quotePriceType);
-    message.quotePriceValue !== undefined &&
-      (obj.quotePriceValue = message.quotePriceValue);
-    message.quoteAmountRatio !== undefined &&
-      (obj.quoteAmountRatio = message.quoteAmountRatio);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<Quote>): Quote {
-    const message = { ...baseQuote } as Quote;
-    message.quotePriceType = object.quotePriceType ?? "";
-    message.quotePriceValue = object.quotePriceValue ?? "";
-    message.quoteAmountRatio = object.quoteAmountRatio ?? "";
-    return message;
-  },
-};
+export interface DetailedQuoteStrategy {
+  quoteStrategy?: QuoteStrategy;
+  marketConfigs: MarketConfig[];
+}
 
 const baseMarketConfig: object = {
   marketId: "",
   maxLiquidityRatio: "",
   borrowFeeMultiplier: "",
   mode: "",
+  quoteStrategyId: Long.UZERO,
 };
 
 export const MarketConfig = {
@@ -178,6 +115,9 @@ export const MarketConfig = {
     }
     for (const v of message.quoteShape) {
       Quote.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    if (!message.quoteStrategyId.isZero()) {
+      writer.uint32(48).uint64(message.quoteStrategyId);
     }
     return writer;
   },
@@ -204,6 +144,9 @@ export const MarketConfig = {
           break;
         case 5:
           message.quoteShape.push(Quote.decode(reader, reader.uint32()));
+          break;
+        case 6:
+          message.quoteStrategyId = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -236,6 +179,10 @@ export const MarketConfig = {
     message.quoteShape = (object.quoteShape ?? []).map((e: any) =>
       Quote.fromJSON(e)
     );
+    message.quoteStrategyId =
+      object.quoteStrategyId !== undefined && object.quoteStrategyId !== null
+        ? Long.fromString(object.quoteStrategyId)
+        : Long.UZERO;
     return message;
   },
 
@@ -254,6 +201,10 @@ export const MarketConfig = {
     } else {
       obj.quoteShape = [];
     }
+    message.quoteStrategyId !== undefined &&
+      (obj.quoteStrategyId = (
+        message.quoteStrategyId || Long.UZERO
+      ).toString());
     return obj;
   },
 
@@ -266,6 +217,96 @@ export const MarketConfig = {
     message.quoteShape = (object.quoteShape ?? []).map((e) =>
       Quote.fromPartial(e)
     );
+    message.quoteStrategyId =
+      object.quoteStrategyId !== undefined && object.quoteStrategyId !== null
+        ? Long.fromValue(object.quoteStrategyId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseDetailedMarketConfig: object = {};
+
+export const DetailedMarketConfig = {
+  encode(
+    message: DetailedMarketConfig,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketConfig !== undefined) {
+      MarketConfig.encode(
+        message.marketConfig,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.quoteStrategy !== undefined) {
+      QuoteStrategy.encode(
+        message.quoteStrategy,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DetailedMarketConfig {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDetailedMarketConfig } as DetailedMarketConfig;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketConfig = MarketConfig.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.quoteStrategy = QuoteStrategy.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DetailedMarketConfig {
+    const message = { ...baseDetailedMarketConfig } as DetailedMarketConfig;
+    message.marketConfig =
+      object.marketConfig !== undefined && object.marketConfig !== null
+        ? MarketConfig.fromJSON(object.marketConfig)
+        : undefined;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromJSON(object.quoteStrategy)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: DetailedMarketConfig): unknown {
+    const obj: any = {};
+    message.marketConfig !== undefined &&
+      (obj.marketConfig = message.marketConfig
+        ? MarketConfig.toJSON(message.marketConfig)
+        : undefined);
+    message.quoteStrategy !== undefined &&
+      (obj.quoteStrategy = message.quoteStrategy
+        ? QuoteStrategy.toJSON(message.quoteStrategy)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DetailedMarketConfig>): DetailedMarketConfig {
+    const message = { ...baseDetailedMarketConfig } as DetailedMarketConfig;
+    message.marketConfig =
+      object.marketConfig !== undefined && object.marketConfig !== null
+        ? MarketConfig.fromPartial(object.marketConfig)
+        : undefined;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromPartial(object.quoteStrategy)
+        : undefined;
     return message;
   },
 };
@@ -292,8 +333,11 @@ export const UpdateMarketConfigParams = {
         writer.uint32(26).fork()
       ).ldelim();
     }
-    for (const v of message.quoteShape) {
-      Quote.encode(v!, writer.uint32(34).fork()).ldelim();
+    if (message.quoteStrategyId !== undefined) {
+      UInt64Value.encode(
+        { value: message.quoteStrategyId! },
+        writer.uint32(42).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -307,7 +351,6 @@ export const UpdateMarketConfigParams = {
     const message = {
       ...baseUpdateMarketConfigParams,
     } as UpdateMarketConfigParams;
-    message.quoteShape = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -320,8 +363,11 @@ export const UpdateMarketConfigParams = {
         case 3:
           message.mode = StringValue.decode(reader, reader.uint32()).value;
           break;
-        case 4:
-          message.quoteShape.push(Quote.decode(reader, reader.uint32()));
+        case 5:
+          message.quoteStrategyId = UInt64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -349,9 +395,10 @@ export const UpdateMarketConfigParams = {
       object.mode !== undefined && object.mode !== null
         ? String(object.mode)
         : undefined;
-    message.quoteShape = (object.quoteShape ?? []).map((e: any) =>
-      Quote.fromJSON(e)
-    );
+    message.quoteStrategyId =
+      object.quoteStrategyId !== undefined && object.quoteStrategyId !== null
+        ? Long.fromValue(object.quoteStrategyId)
+        : undefined;
     return message;
   },
 
@@ -362,13 +409,8 @@ export const UpdateMarketConfigParams = {
     message.borrowFeeMultiplier !== undefined &&
       (obj.borrowFeeMultiplier = message.borrowFeeMultiplier);
     message.mode !== undefined && (obj.mode = message.mode);
-    if (message.quoteShape) {
-      obj.quoteShape = message.quoteShape.map((e) =>
-        e ? Quote.toJSON(e) : undefined
-      );
-    } else {
-      obj.quoteShape = [];
-    }
+    message.quoteStrategyId !== undefined &&
+      (obj.quoteStrategyId = message.quoteStrategyId);
     return obj;
   },
 
@@ -381,9 +423,10 @@ export const UpdateMarketConfigParams = {
     message.maxLiquidityRatio = object.maxLiquidityRatio ?? "";
     message.borrowFeeMultiplier = object.borrowFeeMultiplier ?? "";
     message.mode = object.mode ?? undefined;
-    message.quoteShape = (object.quoteShape ?? []).map((e) =>
-      Quote.fromPartial(e)
-    );
+    message.quoteStrategyId =
+      object.quoteStrategyId !== undefined && object.quoteStrategyId !== null
+        ? Long.fromValue(object.quoteStrategyId)
+        : undefined;
     return message;
   },
 };
@@ -630,6 +673,95 @@ export const MarketLiquidityUsageMultiplier = {
     } as MarketLiquidityUsageMultiplier;
     message.marketId = object.marketId ?? "";
     message.multiplier = object.multiplier ?? "";
+    return message;
+  },
+};
+
+const baseDetailedQuoteStrategy: object = {};
+
+export const DetailedQuoteStrategy = {
+  encode(
+    message: DetailedQuoteStrategy,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.quoteStrategy !== undefined) {
+      QuoteStrategy.encode(
+        message.quoteStrategy,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    for (const v of message.marketConfigs) {
+      MarketConfig.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DetailedQuoteStrategy {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDetailedQuoteStrategy } as DetailedQuoteStrategy;
+    message.marketConfigs = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.quoteStrategy = QuoteStrategy.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.marketConfigs.push(
+            MarketConfig.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DetailedQuoteStrategy {
+    const message = { ...baseDetailedQuoteStrategy } as DetailedQuoteStrategy;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromJSON(object.quoteStrategy)
+        : undefined;
+    message.marketConfigs = (object.marketConfigs ?? []).map((e: any) =>
+      MarketConfig.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: DetailedQuoteStrategy): unknown {
+    const obj: any = {};
+    message.quoteStrategy !== undefined &&
+      (obj.quoteStrategy = message.quoteStrategy
+        ? QuoteStrategy.toJSON(message.quoteStrategy)
+        : undefined);
+    if (message.marketConfigs) {
+      obj.marketConfigs = message.marketConfigs.map((e) =>
+        e ? MarketConfig.toJSON(e) : undefined
+      );
+    } else {
+      obj.marketConfigs = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<DetailedQuoteStrategy>
+  ): DetailedQuoteStrategy {
+    const message = { ...baseDetailedQuoteStrategy } as DetailedQuoteStrategy;
+    message.quoteStrategy =
+      object.quoteStrategy !== undefined && object.quoteStrategy !== null
+        ? QuoteStrategy.fromPartial(object.quoteStrategy)
+        : undefined;
+    message.marketConfigs = (object.marketConfigs ?? []).map((e) =>
+      MarketConfig.fromPartial(e)
+    );
     return message;
   },
 };

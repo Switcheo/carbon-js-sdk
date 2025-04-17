@@ -409,6 +409,12 @@ registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromPool", Carbon.Perps
 registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromPoolResponse", Carbon.Perpspool.MsgWithdrawFromPoolResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfig", Carbon.Perpspool.MsgUpdateMarketConfig);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse", Carbon.Perpspool.MsgUpdateMarketConfigResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgCreateQuoteStrategy", Carbon.Perpspool.MsgCreateQuoteStrategy);
+registry.register("/Switcheo.carbon.perpspool.MsgCreateQuoteStrategyResponse", Carbon.Perpspool.MsgCreateQuoteStrategyResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdateQuoteStrategy", Carbon.Perpspool.MsgUpdateQuoteStrategy);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdateQuoteStrategyResponse", Carbon.Perpspool.MsgUpdateQuoteStrategyResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgDeleteQuoteStrategy", Carbon.Perpspool.MsgDeleteQuoteStrategy);
+registry.register("/Switcheo.carbon.perpspool.MsgDeleteQuoteStrategyResponse", Carbon.Perpspool.MsgDeleteQuoteStrategyResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgCreateUserVault", Carbon.Perpspool.MsgCreateUserVault);
 registry.register("/Switcheo.carbon.perpspool.MsgCreateUserVaultResponse", Carbon.Perpspool.MsgCreateUserVaultResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgCloseUserVault", Carbon.Perpspool.MsgCloseUserVault);
@@ -1127,6 +1133,12 @@ export const TxTypes = {
   "MsgWithdrawFromPoolResponse": "/Switcheo.carbon.perpspool.MsgWithdrawFromPoolResponse",
   "MsgUpdateMarketConfig": "/Switcheo.carbon.perpspool.MsgUpdateMarketConfig",
   "MsgUpdateMarketConfigResponse": "/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse",
+  "MsgCreateQuoteStrategy": "/Switcheo.carbon.perpspool.MsgCreateQuoteStrategy",
+  "MsgCreateQuoteStrategyResponse": "/Switcheo.carbon.perpspool.MsgCreateQuoteStrategyResponse",
+  "MsgUpdateQuoteStrategy": "/Switcheo.carbon.perpspool.MsgUpdateQuoteStrategy",
+  "MsgUpdateQuoteStrategyResponse": "/Switcheo.carbon.perpspool.MsgUpdateQuoteStrategyResponse",
+  "MsgDeleteQuoteStrategy": "/Switcheo.carbon.perpspool.MsgDeleteQuoteStrategy",
+  "MsgDeleteQuoteStrategyResponse": "/Switcheo.carbon.perpspool.MsgDeleteQuoteStrategyResponse",
   "MsgCreateUserVault": "/Switcheo.carbon.perpspool.MsgCreateUserVault",
   "MsgCreateUserVaultResponse": "/Switcheo.carbon.perpspool.MsgCreateUserVaultResponse",
   "MsgCloseUserVault": "/Switcheo.carbon.perpspool.MsgCloseUserVault",
@@ -14542,6 +14554,32 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "QuoteStrategy": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "UpdateQuoteStrategyParams": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
     "MarketConfig": [
       {
         "name": "market_id",
@@ -14563,6 +14601,22 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "quote_shape",
         "type": "Quote[]",
         "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "quote_strategy_id",
+        "type": "uint64"
+      }
+    ],
+    "DetailedMarketConfig": [
+      {
+        "name": "market_config",
+        "type": "MarketConfig",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "quote_strategy",
+        "type": "QuoteStrategy",
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "UpdateMarketConfigParams": [
@@ -14579,9 +14633,8 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "quote_shape",
-        "type": "Quote[]",
-        "packageName": "/Switcheo.carbon.perpspool"
+        "name": "quote_strategy_id",
+        "type": "uint64"
       }
     ],
     "MarketUtilizationRateSnapshot": [
@@ -14612,6 +14665,18 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "multiplier",
         "type": "string"
+      }
+    ],
+    "DetailedQuoteStrategy": [
+      {
+        "name": "quote_strategy",
+        "type": "QuoteStrategy",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "market_configs",
+        "type": "MarketConfig[]",
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "Pool": [
@@ -14683,6 +14748,18 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "registered_markets",
         "type": "MarketConfig[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "DetailedPool": [
+      {
+        "name": "pool",
+        "type": "Pool",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "detailed_market_configs",
+        "type": "DetailedMarketConfig[]",
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
@@ -14914,19 +14991,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "fee_to_vault_denom",
+        "name": "vault_fee_denom",
         "type": "string"
       },
       {
-        "name": "fee_to_vault_amount",
+        "name": "vault_fee_amount",
         "type": "string"
       },
       {
-        "name": "fee_commission_denom",
+        "name": "commission_fee_denom",
         "type": "string"
       },
       {
-        "name": "fee_commission_amount",
+        "name": "commission_fee_amount",
         "type": "string"
       },
       {
@@ -14960,19 +15037,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "fee_to_vault_denom",
+        "name": "vault_fee_denom",
         "type": "string"
       },
       {
-        "name": "fee_to_vault_amount",
+        "name": "vault_fee_amount",
         "type": "string"
       },
       {
-        "name": "fee_commission_denom",
+        "name": "commission_fee_denom",
         "type": "string"
       },
       {
-        "name": "fee_commission_amount",
+        "name": "commission_fee_amount",
         "type": "string"
       },
       {
@@ -15057,6 +15134,13 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
+    "SetQuoteStrategyEvent": [
+      {
+        "name": "quote_strategy",
+        "type": "QuoteStrategy",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
     "Params": [
       {
         "name": "quote_index_price_fluctuation_tolerance_ratio",
@@ -15097,14 +15181,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool_commission_address",
         "type": "string"
-      },
-      {
-        "name": "user_vault_name_max_length",
-        "type": "uint64"
-      },
-      {
-        "name": "user_vault_description_max_length",
-        "type": "uint64"
       },
       {
         "name": "user_vault_min_owner_deposit",
@@ -15182,14 +15258,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "user_vault_name_max_length",
-        "type": "uint64"
-      },
-      {
-        "name": "user_vault_description_max_length",
-        "type": "uint64"
-      },
-      {
         "name": "user_vault_min_owner_deposit",
         "type": "Coin",
         "packageName": "/cosmos.base.v1beta1"
@@ -15257,6 +15325,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "address_to_user_vaults",
         "type": "AddressToUserVaultsMapping[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "quote_strategies",
+        "type": "QuoteStrategy[]",
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
@@ -15545,19 +15618,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryUserVaultsByControllerRequest": [
-      {
-        "name": "controller",
-        "type": "string"
-      }
-    ],
-    "QueryUserVaultsByControllerResponse": [
-      {
-        "name": "user_vaults",
-        "type": "UserVault[]",
-        "packageName": "/Switcheo.carbon.perpspool"
-      }
-    ],
     "VaultInfo": [
       {
         "name": "id",
@@ -15586,6 +15646,25 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "total_upnl_amount",
         "type": "string"
+      }
+    ],
+    "QueryAllQuoteStrategyRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllQuoteStrategyResponse": [
+      {
+        "name": "quote_strategies",
+        "type": "DetailedQuoteStrategy[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "MsgCreatePool": [
@@ -15738,6 +15817,61 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
+    "MsgCreateQuoteStrategy": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "MsgCreateQuoteStrategyResponse": [
+      {
+        "name": "quote_strategy",
+        "type": "QuoteStrategy",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "MsgUpdateQuoteStrategy": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "quote_strategy_id",
+        "type": "uint64"
+      },
+      {
+        "name": "update_quote_strategy_params",
+        "type": "UpdateQuoteStrategyParams",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "MsgUpdateQuoteStrategyResponse": [
+      {
+        "name": "quote_strategy",
+        "type": "QuoteStrategy",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "MsgDeleteQuoteStrategy": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "quote_strategy_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgDeleteQuoteStrategyResponse": [],
     "MsgCreateUserVault": [
       {
         "name": "creator",
