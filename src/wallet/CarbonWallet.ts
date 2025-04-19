@@ -1,7 +1,7 @@
 import { Carbon, OverrideConfig } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
-import { TxTypes } from "@carbon-sdk/codec";
+import { registry, TxTypes } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
@@ -21,7 +21,7 @@ import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
-import { EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
+import { DecodeObject, EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
@@ -1075,8 +1075,18 @@ export class CarbonWallet {
   }
 
   private getExecGasCost(message: MsgExec) {
-    const { msgs } = message;
-    return this.getTotalGasCost(msgs);
+    const msgs: DecodeObject[] = message.msgs;
+    const encodedMsgs: EncodeObject[] = msgs.map(m => {
+      const decoded = registry.decode(m);
+      return {
+        typeUrl: m.typeUrl,
+        value: decoded,
+      };
+    });
+
+    console.log("encodedMsgs", encodedMsgs);
+
+    return this.getTotalGasCost(encodedMsgs);
   }
 
   private isAccountNotFoundError = (error: Error, address: string) => {
