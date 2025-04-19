@@ -105,6 +105,8 @@ class TokenClient {
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
+
+      console.log('yy denom this.isNativeToken(denom),this.isNativeStablecoin(denom), TokenClient.isPoolToken(denom),TokenClient.isCdpToken(denom):', denom, this.isNativeToken(denom),this.isNativeStablecoin(denom), TokenClient.isPoolToken(denom),TokenClient.isCdpToken(denom))
       chainId = 0;
     }
     if (TokenClient.isIBCDenom(denom)) {
