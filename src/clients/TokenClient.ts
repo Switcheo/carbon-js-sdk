@@ -102,11 +102,10 @@ class TokenClient {
 
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = tokenData?.chainId?.toNumber() ?? 3;
+    console.log('yy denom,chainId', denom, tokenData?.chainId?.toNumber())
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
-
-      console.log('yy denom this.isNativeToken(denom),this.isNativeStablecoin(denom), TokenClient.isPoolToken(denom),TokenClient.isCdpToken(denom):', denom, this.isNativeToken(denom),this.isNativeStablecoin(denom), TokenClient.isPoolToken(denom),TokenClient.isCdpToken(denom))
       chainId = 0;
     }
     if (TokenClient.isIBCDenom(denom)) {
