@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../../../google/protobuf/timestamp";
-import { MarketConfig } from "./market";
+import { MarketConfig, DetailedMarketConfig } from "./market";
 import { StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
@@ -43,10 +43,20 @@ export interface UpdatePoolParams {
 /**
  * PoolDetails used for for querying. same as Pool but appended with
  * registered_markets
+ * Deprecated: Use DetailedPool instead.
  */
 export interface PoolDetails {
   pool?: Pool;
   registeredMarkets: MarketConfig[];
+}
+
+/**
+ * PoolDetails used for for querying. same as Pool but appended with
+ * MarketConfigWithQuoteStrategy
+ */
+export interface DetailedPool {
+  pool?: Pool;
+  detailedMarketConfigs: DetailedMarketConfig[];
 }
 
 /** DepositParams params required for enqueuing into deposit transient store */
@@ -426,6 +436,85 @@ export const PoolDetails = {
         : undefined;
     message.registeredMarkets = (object.registeredMarkets ?? []).map((e) =>
       MarketConfig.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseDetailedPool: object = {};
+
+export const DetailedPool = {
+  encode(
+    message: DetailedPool,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pool !== undefined) {
+      Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.detailedMarketConfigs) {
+      DetailedMarketConfig.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DetailedPool {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDetailedPool } as DetailedPool;
+    message.detailedMarketConfigs = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pool = Pool.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.detailedMarketConfigs.push(
+            DetailedMarketConfig.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DetailedPool {
+    const message = { ...baseDetailedPool } as DetailedPool;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? Pool.fromJSON(object.pool)
+        : undefined;
+    message.detailedMarketConfigs = (object.detailedMarketConfigs ?? []).map(
+      (e: any) => DetailedMarketConfig.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: DetailedPool): unknown {
+    const obj: any = {};
+    message.pool !== undefined &&
+      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
+    if (message.detailedMarketConfigs) {
+      obj.detailedMarketConfigs = message.detailedMarketConfigs.map((e) =>
+        e ? DetailedMarketConfig.toJSON(e) : undefined
+      );
+    } else {
+      obj.detailedMarketConfigs = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DetailedPool>): DetailedPool {
+    const message = { ...baseDetailedPool } as DetailedPool;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? Pool.fromPartial(object.pool)
+        : undefined;
+    message.detailedMarketConfigs = (object.detailedMarketConfigs ?? []).map(
+      (e) => DetailedMarketConfig.fromPartial(e)
     );
     return message;
   },

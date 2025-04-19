@@ -6,9 +6,10 @@ import { BigNumber } from "bignumber.js";
 export class LeverageModule extends BaseModule {
   public async set(params: LeverageModule.SetLeverageParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    const creator = params.creator ?? wallet.bech32Address
 
     const value = MsgSetLeverage.fromPartial({
-      creator: wallet.bech32Address,
+      creator,
       marketId: params.marketId,
       leverage: params.leverage.shiftedBy(18).toString(10),
     });
@@ -26,8 +27,9 @@ export class LeverageModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map((param) => {
+      const creator = param.creator ?? wallet.bech32Address
       const value = MsgSetLeverage.fromPartial({
-        creator: wallet.bech32Address,
+        creator,
         marketId: param.marketId,
         leverage: param.leverage.shiftedBy(18).toString(10),
       });
@@ -44,6 +46,7 @@ export class LeverageModule extends BaseModule {
 
 export namespace LeverageModule {
   export interface SetLeverageParams {
+    creator?: string;
     marketId: string;
     leverage: BigNumber;
   }

@@ -4,6 +4,8 @@ import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
 import { MarketConfig } from "./market";
 import { NavPerShareLastRecorded, Pool } from "./pool";
+import { UserVault, AddressToUserVaultsMapping } from "./user_vault";
+import { QuoteStrategy } from "./quote";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -13,8 +15,17 @@ export interface GenesisState {
   pools: Pool[];
   marketConfigRecords: MarketConfigRecord[];
   navPerShares: NavPerShareRecord[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   allNavPerShareLastRecorded: NavPerShareLastRecordedWithPoolId[];
+  userVaults: UserVault[];
+  addressToUserVaults: AddressToUserVaultsMapping[];
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  quoteStrategies: QuoteStrategy[];
+}
+
+export interface MarketToUserVaultMappingRecord {
+  market: string;
+  userVaultAddress: string;
+  poolId: Long;
 }
 
 export interface MarketConfigRecord {
@@ -58,6 +69,15 @@ export const GenesisState = {
         writer.uint32(42).fork()
       ).ldelim();
     }
+    for (const v of message.userVaults) {
+      UserVault.encode(v!, writer.uint32(50).fork()).ldelim();
+    }
+    for (const v of message.addressToUserVaults) {
+      AddressToUserVaultsMapping.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    for (const v of message.quoteStrategies) {
+      QuoteStrategy.encode(v!, writer.uint32(66).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -69,6 +89,9 @@ export const GenesisState = {
     message.marketConfigRecords = [];
     message.navPerShares = [];
     message.allNavPerShareLastRecorded = [];
+    message.userVaults = [];
+    message.addressToUserVaults = [];
+    message.quoteStrategies = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -91,6 +114,19 @@ export const GenesisState = {
         case 5:
           message.allNavPerShareLastRecorded.push(
             NavPerShareLastRecordedWithPoolId.decode(reader, reader.uint32())
+          );
+          break;
+        case 6:
+          message.userVaults.push(UserVault.decode(reader, reader.uint32()));
+          break;
+        case 7:
+          message.addressToUserVaults.push(
+            AddressToUserVaultsMapping.decode(reader, reader.uint32())
+          );
+          break;
+        case 8:
+          message.quoteStrategies.push(
+            QuoteStrategy.decode(reader, reader.uint32())
           );
           break;
         default:
@@ -117,6 +153,15 @@ export const GenesisState = {
     message.allNavPerShareLastRecorded = (
       object.allNavPerShareLastRecorded ?? []
     ).map((e: any) => NavPerShareLastRecordedWithPoolId.fromJSON(e));
+    message.userVaults = (object.userVaults ?? []).map((e: any) =>
+      UserVault.fromJSON(e)
+    );
+    message.addressToUserVaults = (object.addressToUserVaults ?? []).map(
+      (e: any) => AddressToUserVaultsMapping.fromJSON(e)
+    );
+    message.quoteStrategies = (object.quoteStrategies ?? []).map((e: any) =>
+      QuoteStrategy.fromJSON(e)
+    );
     return message;
   },
 
@@ -150,6 +195,27 @@ export const GenesisState = {
     } else {
       obj.allNavPerShareLastRecorded = [];
     }
+    if (message.userVaults) {
+      obj.userVaults = message.userVaults.map((e) =>
+        e ? UserVault.toJSON(e) : undefined
+      );
+    } else {
+      obj.userVaults = [];
+    }
+    if (message.addressToUserVaults) {
+      obj.addressToUserVaults = message.addressToUserVaults.map((e) =>
+        e ? AddressToUserVaultsMapping.toJSON(e) : undefined
+      );
+    } else {
+      obj.addressToUserVaults = [];
+    }
+    if (message.quoteStrategies) {
+      obj.quoteStrategies = message.quoteStrategies.map((e) =>
+        e ? QuoteStrategy.toJSON(e) : undefined
+      );
+    } else {
+      obj.quoteStrategies = [];
+    }
     return obj;
   },
 
@@ -169,6 +235,112 @@ export const GenesisState = {
     message.allNavPerShareLastRecorded = (
       object.allNavPerShareLastRecorded ?? []
     ).map((e) => NavPerShareLastRecordedWithPoolId.fromPartial(e));
+    message.userVaults = (object.userVaults ?? []).map((e) =>
+      UserVault.fromPartial(e)
+    );
+    message.addressToUserVaults = (object.addressToUserVaults ?? []).map((e) =>
+      AddressToUserVaultsMapping.fromPartial(e)
+    );
+    message.quoteStrategies = (object.quoteStrategies ?? []).map((e) =>
+      QuoteStrategy.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseMarketToUserVaultMappingRecord: object = {
+  market: "",
+  userVaultAddress: "",
+  poolId: Long.UZERO,
+};
+
+export const MarketToUserVaultMappingRecord = {
+  encode(
+    message: MarketToUserVaultMappingRecord,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.market !== "") {
+      writer.uint32(10).string(message.market);
+    }
+    if (message.userVaultAddress !== "") {
+      writer.uint32(18).string(message.userVaultAddress);
+    }
+    if (!message.poolId.isZero()) {
+      writer.uint32(24).uint64(message.poolId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MarketToUserVaultMappingRecord {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMarketToUserVaultMappingRecord,
+    } as MarketToUserVaultMappingRecord;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.market = reader.string();
+          break;
+        case 2:
+          message.userVaultAddress = reader.string();
+          break;
+        case 3:
+          message.poolId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MarketToUserVaultMappingRecord {
+    const message = {
+      ...baseMarketToUserVaultMappingRecord,
+    } as MarketToUserVaultMappingRecord;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.userVaultAddress =
+      object.userVaultAddress !== undefined && object.userVaultAddress !== null
+        ? String(object.userVaultAddress)
+        : "";
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MarketToUserVaultMappingRecord): unknown {
+    const obj: any = {};
+    message.market !== undefined && (obj.market = message.market);
+    message.userVaultAddress !== undefined &&
+      (obj.userVaultAddress = message.userVaultAddress);
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MarketToUserVaultMappingRecord>
+  ): MarketToUserVaultMappingRecord {
+    const message = {
+      ...baseMarketToUserVaultMappingRecord,
+    } as MarketToUserVaultMappingRecord;
+    message.market = object.market ?? "";
+    message.userVaultAddress = object.userVaultAddress ?? "";
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     return message;
   },
 };

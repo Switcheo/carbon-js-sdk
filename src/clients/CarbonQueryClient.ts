@@ -48,6 +48,7 @@ import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/Swit
 import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/alliance/query";
 import { QueryClientImpl as PerpspoolQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/query";
 import { QueryClientImpl as ERC20QueryClient } from "@carbon-sdk/codec/Switcheo/carbon/erc20/query";
+import { QueryClientImpl as AdminQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/admin/query";
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
@@ -123,7 +124,7 @@ class CarbonQueryClient {
   evmbank: EvmBankQueryClient;
 
   erc20: ERC20QueryClient;
-
+  admin: AdminQueryClient;
   constructor(opts: CarbonQueryClientOpts) {
     const rpcClient = opts.grpcClient ?? createProtobufRpcClient(new QueryClient(opts.tmClient));
 
@@ -173,7 +174,8 @@ class CarbonQueryClient {
     this.cosmosTm = new CosmosTmClient(rpcClient);
 
     this.alliance = new AllianceClient(rpcClient);
-    this.erc20 = new ERC20QueryClient(rpcClient)
+    this.erc20 = new ERC20QueryClient(rpcClient);
+    this.admin = new AdminQueryClient(rpcClient);
 
     this.ibc = {
       controller: new IBCInterchainControlQueryClient(rpcClient),
