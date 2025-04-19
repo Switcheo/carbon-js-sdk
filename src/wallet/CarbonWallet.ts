@@ -1034,7 +1034,8 @@ export class CarbonWallet {
     return this.signer.type === CarbonSignerTypes.PublicKey
   }
 
-  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM,) {
+  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
+    console.log("estimateTxFee", messages, feeDenom);
     const denomGasPrice = this.gasFee?.getGasPrice(feeDenom);
     const totalGasCost = this.getTotalGasCost(messages);
     let totalFees = totalGasCost.times(denomGasPrice ?? BN_ZERO);
