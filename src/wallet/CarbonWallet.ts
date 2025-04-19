@@ -1035,7 +1035,6 @@ export class CarbonWallet {
   }
 
   private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
-    console.log("estimateTxFee", messages, feeDenom);
     const denomGasPrice = this.gasFee?.getGasPrice(feeDenom);
     const totalGasCost = this.getTotalGasCost(messages);
     let totalFees = totalGasCost.times(denomGasPrice ?? BN_ZERO);
@@ -1083,8 +1082,6 @@ export class CarbonWallet {
         value: decoded,
       };
     });
-
-    console.log("encodedMsgs", encodedMsgs);
 
     return this.getTotalGasCost(encodedMsgs);
   }
