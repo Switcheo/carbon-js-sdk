@@ -174,7 +174,7 @@ const feegrantAminoProcess: AminoProcess = {
   toAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
     const { allowance } = input as MsgGrantAllowance;
     console.log('xx input to amino process: ', input)
-    const innerAllowance: { type_url: string, value: Uint8Array } = registry.decode(allowance!)
+    const innerAllowance: { type_url: string, value: Uint8Array } = registry.decode(allowance!).allowance
     const decodedInnerAllowance = registry.decode({ typeUrl: innerAllowance.type_url, value: innerAllowance.value })
 
     const newInput = {
