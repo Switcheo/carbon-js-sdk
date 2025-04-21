@@ -6,6 +6,7 @@ import { GrantUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoMsg } from "@cosmjs/amino";
 import { AminoConverter, AminoTypes } from "@cosmjs/stargate";
+import { AllowedMsgAllowance } from "cosmjs-types/cosmos/feegrant/v1beta1/feegrant";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType, mapEachIndiv } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
@@ -84,7 +85,7 @@ const GenericAuthorizationAmino: AminoValueMap = {
   },
 }
 
-const MsgFeeGrantAllowanceAmino: AminoValueMap = {
+const AllowanceAmino: AminoValueMap = {
   value: {
     msg: ConvertEncType,
   },
@@ -177,14 +178,12 @@ const grantAuthzAminoProcess: AminoProcess = {
 
 
 const checkEncodeFeegrant = (content: any, amino: AminoValueMap): DirectRes => {
-  const msg = preProcessAmino(content.value, MsgFeeGrantAllowanceAmino.value.msg)
-  const grantAllowance = MsgGrantAllowance.fromPartial({
+  const grantAllowance = AllowedMsgAllowance.fromPartial({
     ...content.value,
-    msg,
   })
   const newContent = {
-    typeUrl: GrantTypes.FeeGrant,
-    value: MsgGrantAllowance.encode(grantAllowance).finish(),
+    typeUrl: GrantTypes.AllowedMsgAllowance,
+    value: AllowedMsgAllowance.encode(grantAllowance).finish(),
   }
   const newAmino = { ...amino }
   return {
@@ -207,7 +206,7 @@ const checkDecodeFeegrant = (content: any, amino: AminoValueMap): AminoRes => {
 
   const newAmino = { ...amino };
 
-  newAmino.content = { ...MsgFeeGrantAllowanceAmino.value }
+  newAmino.content = { ...AllowanceAmino.value }
   return {
     newContent,
     newAmino,
