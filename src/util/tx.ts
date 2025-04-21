@@ -184,9 +184,9 @@ const LibPackages: string[] = ['ibc', 'cosmos', 'alliance']
 
 const BacklistedMessages: string[] = [
   '/cosmos.authz.v1beta1.MsgExec',
+  '/cosmos.authz.v1beta1.MsgGrant',
   '/cosmos.feegrant.v1beta1.MsgGrantAllowance',
   '/cosmos.feegrant.v1beta1.MsgRevokeAllowance',
-  '/cosmos.feegrant.v1beta1.MsgGrant',
 ]
 
 
