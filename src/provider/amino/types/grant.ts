@@ -214,26 +214,29 @@ const checkDecodeFeegrant = (content: any, amino: AminoValueMap): AminoRes => {
 }
 
 const feegrantAminoProcess: AminoProcess = {
-  toAminoProcess: (amino: AminoValueMap, input: any) => {
+  toAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
     const { allowance } = input as MsgGrantAllowance;
-    const propResponse = checkDecodeFeegrant(allowance, amino);
+    const newInput = {
+      ...input,
+      allowance: aminoTypesMap.toAmino({ typeUrl: allowance!.typeUrl, value: registry.decode(allowance!) })
+    }
+
+    console.log('xx newInput to amino process: ', newInput)
     return {
-      amino: propResponse.newAmino,
-      input: {
-        ...input,
-        allowance: propResponse.newContent,
-      },
+      amino,
+      input: newInput,
     }
   },
-  fromAminoProcess: (amino: AminoValueMap, input: any) => {
-    const { allowance } = input as MsgGrantAllowance;
-    const propResponse = checkEncodeFeegrant(allowance, amino)
+  fromAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
+    const allowance = input.allowance as AminoMsg;
+    const newInput = {
+      ...input,
+      allowance: registry.encode(aminoTypesMap.fromAmino(allowance))
+    }
+    console.log('xx newInput from amino process: ', newInput)
     return {
-      amino: propResponse.newAmino,
-      input: {
-        ...input,
-        allowance: propResponse.newContent,
-      },
+      amino,
+      input: newInput,
     };
   },
 }
