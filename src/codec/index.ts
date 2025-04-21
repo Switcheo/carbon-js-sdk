@@ -2,6 +2,7 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { GenericAuthorization } from "cosmjs-types/cosmos/authz/v1beta1/authz";
+import { AllowedMsgAllowance } from "cosmjs-types/cosmos/feegrant/v1beta1/feegrant";
 import { MsgUpdateParams as MsgConsensusUpdateParams, MsgUpdateParamsResponse as MsgConsensusUpdateParamsResponse } from "./cosmos/consensus/v1/tx";
 import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCancelUpgradeResponse } from "./cosmos/upgrade/v1beta1/tx";
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
@@ -791,6 +792,7 @@ registry.register("/ethermint.evm.v1.MsgUpdateParams", MsgEvmUpdateParams);
 registry.register("/ethermint.evm.v1.MsgUpdateParamsResponse", MsgEvmUpdateParamsResponse);
 registry.register("/cosmwasm.wasm.v1.MsgExecuteContract", MsgExecuteContract);
 registry.register("/cosmos.authz.v1beta1.GenericAuthorization", GenericAuthorization);
+registry.register("/cosmos.feegrant.v1beta1.AllowedMsgAllowance", AllowedMsgAllowance);
 
 /* 
 Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
@@ -1477,7 +1479,8 @@ export const TxTypes = {
   "MsgEvmUpdateParams": "/ethermint.evm.v1.MsgUpdateParams",
   "MsgEvmUpdateParamsResponse": "/ethermint.evm.v1.MsgUpdateParamsResponse",
   "MsgExecuteContract": "/cosmwasm.wasm.v1.MsgExecuteContract",
-  "GenericAuthorization": "/cosmos.authz.v1beta1.GenericAuthorization"
+  "GenericAuthorization": "/cosmos.authz.v1beta1.GenericAuthorization",
+  "AllowedMsgAllowance": "/cosmos.feegrant.v1beta1.AllowedMsgAllowance"
 };
 
 
