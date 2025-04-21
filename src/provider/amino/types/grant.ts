@@ -177,48 +177,12 @@ const grantAuthzAminoProcess: AminoProcess = {
 }
 
 
-const checkEncodeFeegrant = (content: any, amino: AminoValueMap): DirectRes => {
-  const grantAllowance = AllowedMsgAllowance.fromPartial({
-    ...content.value,
-  })
-  const newContent = {
-    typeUrl: GrantTypes.AllowedMsgAllowance,
-    value: AllowedMsgAllowance.encode(grantAllowance).finish(),
-  }
-  const newAmino = { ...amino }
-  return {
-    newContent,
-    newAmino,
-  }
-}
-
-const checkDecodeFeegrant = (content: any, amino: AminoValueMap): AminoRes => {
-  const decodedValue = GrantUtils.decodeContent(content);
-  decodedValue.value.allowance = {
-    type: ContentTypes[decodedValue.value.allowance.typeUrl],
-    value: decodedValue.value.allowance.value,
-  }
-
-  const newContent = {
-    type: ContentTypes[content.typeUrl],
-    value: decodedValue.value,
-  }
-
-  const newAmino = { ...amino };
-
-  newAmino.content = { ...AllowanceAmino.value }
-  return {
-    newContent,
-    newAmino,
-  }
-}
-
 const feegrantAminoProcess: AminoProcess = {
   toAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
     const { allowance } = input as MsgGrantAllowance;
     const newInput = {
       ...input,
-      allowance: aminoTypesMap.toAmino({ typeUrl: allowance!.typeUrl, value: registry.decode(allowance!) })
+      allowance: aminoTypesMap.toAmino({ typeUrl: allowance!.typeUrl, value: registry.decode(allowance!) }),
     }
 
     console.log('xx newInput to amino process: ', newInput)
@@ -231,7 +195,7 @@ const feegrantAminoProcess: AminoProcess = {
     const allowance = input.allowance as AminoMsg;
     const newInput = {
       ...input,
-      allowance: registry.encode(aminoTypesMap.fromAmino(allowance))
+      allowance: registry.encode(aminoTypesMap.fromAmino(allowance)),
     }
     console.log('xx newInput from amino process: ', newInput)
     return {
