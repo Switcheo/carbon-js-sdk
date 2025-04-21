@@ -6,7 +6,6 @@ import { GrantUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoMsg } from "@cosmjs/amino";
 import { AminoConverter, AminoTypes } from "@cosmjs/stargate";
-import { AllowedMsgAllowance } from "cosmjs-types/cosmos/feegrant/v1beta1/feegrant";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType, mapEachIndiv } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
@@ -80,12 +79,6 @@ const MsgExec: AminoInit = {
 }
 
 const GenericAuthorizationAmino: AminoValueMap = {
-  value: {
-    msg: ConvertEncType,
-  },
-}
-
-const AllowanceAmino: AminoValueMap = {
   value: {
     msg: ConvertEncType,
   },
