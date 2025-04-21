@@ -20,7 +20,8 @@ const carbonFolders = ['admin', 'bank', 'book', 'bridge', 'broker', 'cdp', 'coin
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
 console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";`);
-console.log(`import { BasicAllowance, PeriodicAllowance, AllowedMsgAllowance } from "cosmjs-types/cosmos/feegrant/v1beta1/feegrant";`);
+console.log(`import { GenericAuthorization } from "cosmjs-types/cosmos/authz/v1beta1/authz";`);
+
 const modules: { [name: string]: string[] } = {};
 for (const moduleFile of codecFiles) {
 
@@ -144,11 +145,9 @@ for (const packageName in modules) {
 }
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
 console.log("registry.register(\"/cosmwasm.wasm.v1.MsgExecuteContract\", MsgExecuteContract);");
-console.log(`registry.register(\"/cosmos.feegrant.v1beta1.BasicAllowance\", BasicAllowance);`);
-console.log(`registry.register(\"/cosmos.feegrant.v1beta1.PeriodicAllowance\", PeriodicAllowance);`);
-console.log(`registry.register(\"/cosmos.feegrant.v1beta1.AllowedMsgAllowance\", AllowedMsgAllowance);`);
+console.log(`registry.register(\"/cosmos.authz.v1beta1.GenericAuthorization\", GenericAuthorization);`);
 typeMap.MsgExecuteContract = "/cosmwasm.wasm.v1.MsgExecuteContract";
-
+typeMap.GenericAuthorization = "/cosmos.authz.v1beta1.GenericAuthorization";
 console.log("");
 console.log(
   `/* 
