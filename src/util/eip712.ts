@@ -218,6 +218,8 @@ export function constructEIP712Tx(doc: CarbonTx.StdSignDoc, chainId?: string): E
         domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(chainId || chain_id) },
         message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) },
     }
+
+    console.log('xx eip712Tx', JSON.stringify(eip712Tx))
     return eip712Tx
 }
 
