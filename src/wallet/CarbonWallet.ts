@@ -477,7 +477,7 @@ export class CarbonWallet {
     return this;
   }
 
-  public setAuthorizedMsgs(msgs: string[], version: number) {
+  public setAuthorizedMsgs(msgs?: string[], version?: number) {
     this.authorizedMsgs = msgs;
     this.authorizedMsgsVersion = version;
   }
