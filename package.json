@@ -1,6 +1,6 @@
 {
   "name": "carbon-js-sdk",
-  "version": "0.11.66-beta.16",
+  "version": "0.11.66-beta.17",
   "description": "TypeScript SDK for Carbon blockchain",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
