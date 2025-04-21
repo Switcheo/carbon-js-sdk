@@ -173,7 +173,7 @@ const grantAuthzAminoProcess: AminoProcess = {
 const feegrantAminoProcess: AminoProcess = {
   toAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
     const { allowance } = input as MsgGrantAllowance;
-    console.log('xx allowance: ', allowance)
+    console.log('xx input to amino process: ', input)
     const innerAllowance: { type_url: string, value: Uint8Array } = registry.decode(allowance!)
     const decodedInnerAllowance = registry.decode({ typeUrl: innerAllowance.type_url, value: innerAllowance.value })
 
@@ -190,6 +190,7 @@ const feegrantAminoProcess: AminoProcess = {
   },
   fromAminoProcess: (amino: AminoValueMap, input: any, aminoTypesMap: AminoTypes) => {
     const allowance = input.allowance as AminoMsg;
+    console.log('xx input from amino process: ', input)
     const msg = aminoTypesMap.fromAmino(allowance)
     const value = registry.encode(msg)
     const newInput = {
@@ -197,7 +198,7 @@ const feegrantAminoProcess: AminoProcess = {
       allowance: {
         typeUrl: msg.typeUrl,
         value: value,
-      }
+      },
     }
     console.log('xx newInput from amino process: ', newInput)
     return {
