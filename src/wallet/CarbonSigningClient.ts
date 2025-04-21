@@ -196,6 +196,7 @@ export class CarbonSigningClient extends StargateClient {
     const msgs = messages.map((msg) => this.aminoTypes.toAmino(msg));
     const signDoc = makeSignDocAmino(msgs, fee, chainId, memo, accountNumber, sequence, timeoutHeight ?? 0);
     const { signature, signed } = await signer.signAmino(signerAddress, signDoc);
+    console.log('xx hello1')
     const signedTxBody = {
       messages: signed.msgs.map((msg) => this.aminoTypes.fromAmino(msg)),
       memo: signed.memo,
@@ -203,11 +204,15 @@ export class CarbonSigningClient extends StargateClient {
         timeoutHeight: Long.fromNumber(timeoutHeight),
       }),
     };
+    console.log('xx hello2')
     const signedTxBodyEncodeObject: EncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
       value: signedTxBody,
     };
+    console.log('xx hello3: ',JSON.stringify(signedTxBodyEncodeObject))
+
     const signedTxBodyBytes = this.registry.encode(signedTxBodyEncodeObject);
+    console.log('xx hello4: ')
     const signedGasLimit = Int53.fromString(signed.fee.gas).toNumber();
     const signedSequence = Int53.fromString(signed.sequence).toNumber();
     const signedAuthInfoBytes = makeAuthInfoBytes([{ pubkey, sequence: signedSequence }], signed.fee.amount, signedGasLimit, granterAddress, (granterAddress ? signerAddress : undefined), signMode);
