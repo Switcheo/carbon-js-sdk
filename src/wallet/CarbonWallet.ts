@@ -208,9 +208,6 @@ export class CarbonWallet {
   // for analytics
   providerAgent?: ProviderAgent | string;
 
-  authorizedMsgs?: string[];
-  authorizedMsgsVersion?: number;
-
   private tmClient?: Tendermint37Client;
   private grantee?: Grantee;
   private signingClient?: CarbonSigningClient;
@@ -477,10 +474,6 @@ export class CarbonWallet {
     return this;
   }
 
-  public setAuthorizedMsgs(msgs: string[], version: number) {
-    this.authorizedMsgs = msgs;
-    this.authorizedMsgsVersion = version;
-  }
 
   async getSignedTx(
     signerAddress: string,
@@ -600,8 +593,7 @@ export class CarbonWallet {
       messages,
       handler: { resolve, reject },
     } = txRequest;
-    const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
-    if (this.isGranteeValid() && isAuthorized) {
+    if (this.isGranteeValid()) {
       await this.signWithGrantee(txRequest)
     } else {
       try {
