@@ -6,7 +6,7 @@ import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/aut
 import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { QueryClientImpl as FeeGrantQueryClient } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
 import { MsgGrantAllowance, MsgRevokeAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
-import { GrantTypes } from "@carbon-sdk/provider/amino/types/grant";
+import { GrantTypes } from "@carbon-sdk/util/grant";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import BaseModule from "./base";
 export class GrantModule extends BaseModule {
