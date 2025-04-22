@@ -106,10 +106,10 @@ export interface Position {
   realized_pnl: string; // string representation of number
   max_lots: string; // string representation of number
   total_fee_amount: string; // string representation of number
-  avg_allocated_margin: string; // string representation of number
+  avg_allocated_margin?: string; // string representation of number
   avg_entry_price: string; // string representation of number
   avg_exit_price: string; // string representation of number
-  allocated_margin: string; // string representation of number
+  allocated_margin?: string; // string representation of number
   lots: string; // string representation of number
   opened_at: string; // string representation of timestamp
   closed_at?: string; // string representation of timestamp
