@@ -461,7 +461,7 @@ export class CarbonWallet {
     this.grantee = grantee;
   }
 
-  private isGranteeValid(): boolean {
+  public isGranteeValid(): boolean {
     if (!this.grantee) return false
     const { expiry } = this.grantee;
     const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(BUFFER_PERIOD, 'seconds'));
