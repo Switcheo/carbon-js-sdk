@@ -14,7 +14,7 @@ import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import BigNumber from "bignumber.js";
 import * as clients from "./clients";
-import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { CarbonQueryClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import GasFee from "./clients/GasFee";
 import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
@@ -152,16 +152,6 @@ class CarbonSDK {
   otc: OTCModule;
 
   neo: NEOClient;
-  eth: ETHClient;
-  bsc: ETHClient;
-  arbitrum: ETHClient;
-  polygon: ETHClient;
-  mantle: ETHClient;
-  monad: ETHClient;
-  op: ETHClient;
-  base: ETHClient;
-  okc: ETHClient;
-  avax: ETHClient;
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
@@ -237,69 +227,9 @@ class CarbonSDK {
       blockchain: Blockchain.Neo3,
     });
 
-    this.eth = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Ethereum,
-      tokenClient: this.token,
-    });
-
-    this.bsc = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.BinanceSmartChain,
-      tokenClient: this.token,
-    });
-
     this.zil = ZILClient.instance({
       configProvider: this,
       blockchain: Blockchain.Zilliqa,
-    });
-
-    this.arbitrum = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Arbitrum,
-      tokenClient: this.token,
-    });
-
-    this.polygon = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Polygon,
-      tokenClient: this.token,
-    });
-
-    this.okc = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Okc,
-      tokenClient: this.token,
-    });
-
-    this.mantle = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Mantle,
-      tokenClient: this.token,
-    });
-
-    this.op = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Optimism,
-      tokenClient: this.token,
-    });
-
-    this.avax = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Avalanche,
-      tokenClient: this.token,
-    });
-
-    this.base = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Base,
-      tokenClient: this.token,
-    });
-
-    this.monad = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Monad,
-      tokenClient: this.token,
     });
   }
 

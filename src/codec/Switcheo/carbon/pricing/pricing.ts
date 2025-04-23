@@ -31,6 +31,12 @@ export interface TokenPrice {
   oracleId: string;
 }
 
+export interface IndexPriceForMarket {
+  marketId: string;
+  index: string;
+  timestamp?: Date;
+}
+
 const basePriceSet: object = {
   last: "",
   index: "",
@@ -390,6 +396,89 @@ export const TokenPrice = {
     message.twap = object.twap ?? "";
     message.indexUpdatedAt = object.indexUpdatedAt ?? undefined;
     message.oracleId = object.oracleId ?? "";
+    return message;
+  },
+};
+
+const baseIndexPriceForMarket: object = { marketId: "", index: "" };
+
+export const IndexPriceForMarket = {
+  encode(
+    message: IndexPriceForMarket,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
+    }
+    if (message.index !== "") {
+      writer.uint32(18).string(message.index);
+    }
+    if (message.timestamp !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.timestamp),
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IndexPriceForMarket {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseIndexPriceForMarket } as IndexPriceForMarket;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketId = reader.string();
+          break;
+        case 2:
+          message.index = reader.string();
+          break;
+        case 3:
+          message.timestamp = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IndexPriceForMarket {
+    const message = { ...baseIndexPriceForMarket } as IndexPriceForMarket;
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? String(object.index)
+        : "";
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? fromJsonTimestamp(object.timestamp)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: IndexPriceForMarket): unknown {
+    const obj: any = {};
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    message.index !== undefined && (obj.index = message.index);
+    message.timestamp !== undefined &&
+      (obj.timestamp = message.timestamp.toISOString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<IndexPriceForMarket>): IndexPriceForMarket {
+    const message = { ...baseIndexPriceForMarket } as IndexPriceForMarket;
+    message.marketId = object.marketId ?? "";
+    message.index = object.index ?? "";
+    message.timestamp = object.timestamp ?? undefined;
     return message;
   },
 };

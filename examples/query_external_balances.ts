@@ -1,6 +1,7 @@
 import * as BIP39 from "bip39";
-import { AddressUtils, CarbonSDK } from "./_sdk";
+import { AddressUtils, CarbonSDK, EVMChain } from "./_sdk";
 import "./_setup";
+import { ETHClient } from "../lib/clients";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -21,15 +22,27 @@ import "./_setup";
 
   // query eth external balances
   const ethAddress = AddressUtils.ETHAddress.generateAddress(connectedSDK.wallet.mnemonic);
-  const ethDepositAddr = await sdk.eth.getDepositContractAddress(connectedSDK.wallet.bech32Address, ethAddress);
-  const ethBalances = await sdk.eth.getExternalBalances(sdk, ethDepositAddr);
+  const ethClient = ETHClient.instance({
+    configProvider: sdk,
+    tokenClient: sdk.token,
+    blockchain: "Ethereum" as EVMChain,
+    rpcURL: sdk.networkConfig.eth.rpcURL,
+  })
+  const ethDepositAddr = await ethClient.getDepositContractAddress(connectedSDK.wallet.bech32Address, ethAddress);
+  const ethBalances = await ethClient.getExternalBalances(sdk, ethDepositAddr);
   console.log("ethBalances", ethBalances);
 
   // query bsc external balances
   // use ETHAddress to generate address because bsc and eth addresses are similar
   const bscAddress = AddressUtils.ETHAddress.generateAddress(connectedSDK.wallet.mnemonic);
-  const bscdepositAddr = await sdk.bsc.getDepositContractAddress(connectedSDK.wallet.bech32Address, bscAddress);
-  const bscBalances = await sdk.bsc.getExternalBalances(sdk, bscdepositAddr);
+  const bscClient = ETHClient.instance({
+    configProvider: sdk,
+    tokenClient: sdk.token,
+    blockchain: "Binance Smart Chain" as EVMChain,
+    rpcURL: sdk.networkConfig.bsc.rpcURL,
+  })
+  const bscdepositAddr = await bscClient.getDepositContractAddress(connectedSDK.wallet.bech32Address, bscAddress);
+  const bscBalances = await bscClient.getExternalBalances(sdk, bscdepositAddr);
   console.log("bscBalances", bscBalances);
 
   // query neo external balances

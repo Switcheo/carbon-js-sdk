@@ -1,7 +1,7 @@
 import { Carbon, OverrideConfig } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
-import { registry } from "@carbon-sdk/codec";
+import { registry, TxTypes } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
@@ -1042,12 +1042,9 @@ export class CarbonWallet {
     return this.signer.type === CarbonSignerTypes.PublicKey
   }
 
-  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
+  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM,) {
     const denomGasPrice = this.gasFee?.getGasPrice(feeDenom);
-    const totalGasCost = messages.reduce((result, message) => {
-      const gasCost = this.gasFee?.getGasCost(message.typeUrl);
-      return result.plus(gasCost ?? BN_ZERO);
-    }, BN_ZERO);
+    const totalGasCost = this.getTotalGasCost(messages);
     let totalFees = totalGasCost.times(denomGasPrice ?? BN_ZERO);
 
     // override zero gas cost tx with some gas for tx execution
@@ -1065,6 +1062,28 @@ export class CarbonWallet {
       ],
       gas: DEFAULT_GAS.toString(10),
     };
+  }
+
+  private getTotalGasCost(messages: readonly EncodeObject[]) {
+    let totalGasCost = BN_ZERO;
+    for (const message of messages) {
+      const gasCost = this.gasFee?.getGasCost(message.typeUrl);
+      const additionalGasCost = this.addAdditionalGasCost(message);
+      totalGasCost = totalGasCost.plus(gasCost ?? BN_ZERO).plus(additionalGasCost);
+    }
+    return totalGasCost;
+  }
+  
+  private addAdditionalGasCost(message: EncodeObject) {
+    switch (message.typeUrl) {
+      case TxTypes.MsgExec: return this.getExecGasCost(message.value as MsgExec);
+    }
+    return BN_ZERO;
+  }
+
+  private getExecGasCost(message: MsgExec) {
+    const { msgs } = message;
+    return this.getTotalGasCost(msgs);
   }
 
   private isAccountNotFoundError = (error: Error, address: string) => {
