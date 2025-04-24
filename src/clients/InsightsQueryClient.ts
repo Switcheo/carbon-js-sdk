@@ -203,8 +203,8 @@ class InsightsQueryClient {
   }
 
   async PerpPoolApy(
-    query: Insights.QueryPerpPoolAPY
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>> {
+    query: Insights.QueryVaultAPY
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>> {
     const routeParams = { id: query.id };
     const request = this.apiManager.path(
       "pool/perp/apy",
@@ -215,15 +215,15 @@ class InsightsQueryClient {
       }
     );
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>;
   }
 
   async UserVaultApy(
-    query: Insights.QueryPerpPoolAPY
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>> {
+    query: Insights.QueryVaultAPY
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>> {
     const routeParams = { id: query.id };
     const request = this.apiManager.path(
-      "pool/vault/apy",
+      "vault/user/apy",
       routeParams,
       {
         limit: query.limit ?? 10,
@@ -231,7 +231,55 @@ class InsightsQueryClient {
       }
     );
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryPerpPoolAPYResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>;
+  }
+
+  async UserVaultDepositors(
+    query: Insights.QueryUserVaultDepositors
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorsResponse>> {
+    const routeParams = { id: query.id };
+    const request = this.apiManager.path(
+      "vault/user/depositors",
+      routeParams,
+      {
+        limit: query.limit ?? 10,
+        offset: query.offset ?? 0,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorsResponse>;
+  }
+
+  async UserVaultActions(
+    query: Insights.QueryUserVaultActions
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryUserVaultActionsResponse>> {
+    const routeParams = { id: query.id };
+    const request = this.apiManager.path(
+      "vault/user/actions",
+      routeParams,
+      {
+        limit: query.limit ?? 10,
+        offset: query.offset ?? 0,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryUserVaultActionsResponse>;
+  }
+
+  async UserVaultDepositorActions(
+    query: Insights.QueryUserVaultDepositorActions
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorActionsResponse>> {
+    const routeParams = { address: query.address };
+    const request = this.apiManager.path(
+      "vault/depositor/actions",
+      routeParams,
+      {
+        limit: query.limit ?? 10,
+        offset: query.offset ?? 0
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorActionsResponse>;
   }
 
   async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
