@@ -275,7 +275,7 @@ class InsightsQueryClient {
       routeParams,
       {
         limit: query.limit ?? 10,
-        offset: query.offset ?? 0
+        offset: query.offset ?? 0,
       }
     );
     const response = await request.get();
