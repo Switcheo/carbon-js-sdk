@@ -135,6 +135,9 @@ export interface VaultAPYEntry {
 export interface UserVaultDepositorEntry {
   address: string;
   shares: string;
+  netDeposit: string;
+  deposit: string;
+  withdraw: string;
 }
 
 export interface UserVaultActionEntry {
