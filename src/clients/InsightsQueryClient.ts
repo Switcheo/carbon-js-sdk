@@ -282,6 +282,23 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorActionsResponse>;
   }
 
+
+  async UserVaultDepositorDeposits(
+    query: Insights.QueryUserVaultDepositorDeposits
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorDepositsResponse>> {
+    const routeParams = { address: query.address };
+    const request = this.apiManager.path(
+      "vault/depositor/deposits",
+      routeParams,
+      {
+        limit: query.limit ?? 10,
+        offset: query.offset ?? 0,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorDepositsResponse>;
+  }
+
   async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
     const routeParams = { poolId: req.poolId };
     const queryParams = {

@@ -123,6 +123,10 @@ export interface QueryUserVaultDepositorActions extends QueryByPageRequest {
   address: string;
 }
 
+export interface QueryUserVaultDepositorDeposits extends QueryByPageRequest {
+  address: string;
+}
+
 export interface VaultAPYEntry {
   denom: string;
   annualizedApy1day: number | null;
@@ -155,6 +159,15 @@ export interface UserVaultDepositorActionEntry {
   hash: string;
 }
 
+export interface UserVaultDepositorDepositEntry {
+  address: string;
+  poolId: number;
+  shares: string;
+  netDeposit: string;
+  deposit: string;
+  withdraw: string;
+}
+
 export interface QueryVaultAPYResponse {
   entries: VaultAPYEntry[];
   meta: PageMeta;
@@ -172,6 +185,11 @@ export interface QueryUserVaultActionsResponse {
 
 export interface QueryUserVaultDepositorActionsResponse {
   entries: UserVaultDepositorActionEntry[];
+  meta: PageMeta;
+}
+
+export interface QueryUserVaultDepositorDepositsResponse {
+  entries: UserVaultDepositorDepositEntry[];
   meta: PageMeta;
 }
 

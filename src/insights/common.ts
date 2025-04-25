@@ -38,6 +38,7 @@ export const InsightsEndpoints = {
   "vault/user/depositors": "/vault/user/:id/depositors",
   "vault/user/actions": "/vault/user/:id/actions",
   "vault/depositor/actions": "/vault/depositor/:address/actions",
+  "vault/depositor/deposits": "/vault/depositor/:address/deposits",
 
 
   //market
