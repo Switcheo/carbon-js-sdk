@@ -142,6 +142,7 @@ export interface UserVaultDepositorEntry {
   netDeposit: string;
   deposit: string;
   withdraw: string;
+  avgRedemptionRate: string; // ratio of underlying to shares
 }
 
 export interface UserVaultActionEntry {
