@@ -348,6 +348,8 @@ registry.register("/Switcheo.carbon.coin.MsgTransferCoinsWithinAccount", Carbon.
 registry.register("/Switcheo.carbon.coin.MsgTransferCoinsWithinAccountResponse", Carbon.Coin.MsgTransferCoinsWithinAccountResponse);
 registry.register("/Switcheo.carbon.coin.MsgUpdateGroupedTokenConfig", Carbon.Coin.MsgUpdateGroupedTokenConfig);
 registry.register("/Switcheo.carbon.coin.MsgUpdateGroupedTokenConfigResponse", Carbon.Coin.MsgUpdateGroupedTokenConfigResponse);
+registry.register("/Switcheo.carbon.coin.MsgUpdateParams", Carbon.Coin.MsgUpdateParams);
+registry.register("/Switcheo.carbon.coin.MsgUpdateParamsResponse", Carbon.Coin.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.coin.CreateTokenProposal", Carbon.Coin.CreateTokenProposal);
 
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverage", Carbon.Leverage.MsgSetLeverage);
@@ -441,8 +443,6 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve", Carbon
 registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse", Carbon.Liquiditypool.MsgSetCommitmentCurveResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePool", Carbon.Liquiditypool.MsgUpdatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse", Carbon.Liquiditypool.MsgUpdatePoolResponse);
-registry.register("/Switcheo.carbon.liquiditypool.MsgDeprecatePool", Carbon.Liquiditypool.MsgDeprecatePool);
-registry.register("/Switcheo.carbon.liquiditypool.MsgDeprecatePoolResponse", Carbon.Liquiditypool.MsgDeprecatePoolResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute", Carbon.Liquiditypool.MsgCreatePoolRoute);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse", Carbon.Liquiditypool.MsgCreatePoolRouteResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute", Carbon.Liquiditypool.MsgRemovePoolRoute);
@@ -1067,6 +1067,8 @@ export const TxTypes = {
   "MsgTransferCoinsWithinAccountResponse": "/Switcheo.carbon.coin.MsgTransferCoinsWithinAccountResponse",
   "MsgUpdateGroupedTokenConfig": "/Switcheo.carbon.coin.MsgUpdateGroupedTokenConfig",
   "MsgUpdateGroupedTokenConfigResponse": "/Switcheo.carbon.coin.MsgUpdateGroupedTokenConfigResponse",
+  "MsgCoinUpdateParams": "/Switcheo.carbon.coin.MsgUpdateParams",
+  "MsgCoinUpdateParamsResponse": "/Switcheo.carbon.coin.MsgUpdateParamsResponse",
   "CreateTokenProposal": "/Switcheo.carbon.coin.CreateTokenProposal",
   "MsgSetLeverage": "/Switcheo.carbon.leverage.MsgSetLeverage",
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
@@ -1153,8 +1155,6 @@ export const TxTypes = {
   "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
   "MsgLiquiditypoolUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
   "MsgLiquiditypoolUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
-  "MsgDeprecatePool": "/Switcheo.carbon.liquiditypool.MsgDeprecatePool",
-  "MsgDeprecatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgDeprecatePoolResponse",
   "MsgCreatePoolRoute": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute",
   "MsgCreatePoolRouteResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse",
   "MsgRemovePoolRoute": "/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute",
@@ -7445,6 +7445,18 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.coin"
       }
     ],
+    "Params": [
+      {
+        "name": "assets_route_to_futures",
+        "type": "string[]"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "assets_route_to_futures",
+        "type": "string[]"
+      }
+    ],
     "MsgCreateToken": [
       {
         "name": "creator",
@@ -8023,6 +8035,18 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.coin"
       }
     ],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
     "CreateTokenProposal": [
       {
         "name": "title",
@@ -8227,6 +8251,14 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.coin"
       }
     ]
   },
@@ -10509,10 +10541,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "v_amount_b",
         "type": "string"
-      },
-      {
-        "name": "is_deprecated",
-        "type": "bool"
       }
     ],
     "Pools": [
@@ -11486,17 +11514,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdatePoolResponse": [],
-    "MsgDeprecatePool": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "pool_id",
-        "type": "uint64"
-      }
-    ],
-    "MsgDeprecatePoolResponse": [],
     "MsgCreatePoolRoute": [
       {
         "name": "creator",
@@ -15696,26 +15713,9 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "address",
         "type": "string"
-      },
-      {
-        "name": "market_id",
-        "type": "string"
       }
     ],
     "QueryCrossMaintenanceMarginResponse": [
-      {
-        "name": "cross_maintenance_margin",
-        "type": "CrossMaintenanceMargin",
-        "packageName": "/Switcheo.carbon.position"
-      }
-    ],
-    "QueryAllCrossMaintenanceMarginRequest": [
-      {
-        "name": "address",
-        "type": "string"
-      }
-    ],
-    "QueryAllCrossMaintenanceMarginResponse": [
       {
         "name": "cross_maintenance_margins",
         "type": "CrossMaintenanceMargin[]",
@@ -15820,20 +15820,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "oracle_id",
-        "type": "string"
-      }
-    ],
-    "IndexPriceForMarket": [
-      {
-        "name": "market_id",
-        "type": "string"
-      },
-      {
-        "name": "index",
-        "type": "string"
-      },
-      {
-        "name": "timestamp",
         "type": "string"
       }
     ],

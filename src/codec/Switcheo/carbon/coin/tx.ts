@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Bridge } from "./bridge";
 import { TokenGroup, GroupedTokenConfig } from "./group";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import { ParamsToUpdate } from "./params";
 import {
   BoolValue,
   StringValue,
@@ -281,6 +282,15 @@ export interface UpdateGroupedTokenConfigParams {
 export interface MsgUpdateGroupedTokenConfigResponse {
   groupedTokenConfig?: GroupedTokenConfig;
 }
+
+export interface MsgUpdateParams {
+  /** authority is the address of the governance account. */
+  authority: string;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
+}
+
+export interface MsgUpdateParamsResponse {}
 
 const baseMsgCreateToken: object = { creator: "" };
 
@@ -4444,6 +4454,129 @@ export const MsgUpdateGroupedTokenConfigResponse = {
   },
 };
 
+const baseMsgUpdateParams: object = { authority: "" };
+
+export const MsgUpdateParams = {
+  encode(
+    message: MsgUpdateParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.params !== undefined) {
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateParams {
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? ParamsToUpdate.fromJSON(object.params)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateParams): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.params !== undefined &&
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    message.authority = object.authority ?? "";
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? ParamsToUpdate.fromPartial(object.params)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateParamsResponse: object = {};
+
+export const MsgUpdateParamsResponse = {
+  encode(
+    _: MsgUpdateParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateParamsResponse {
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateParamsResponse>
+  ): MsgUpdateParamsResponse {
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse>;
@@ -4493,10 +4626,11 @@ export interface Msg {
   UpdateGroupedTokenConfig(
     request: MsgUpdateGroupedTokenConfig
   ): Promise<MsgUpdateGroupedTokenConfigResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   TransferCoinsWithinAccount(
     request: MsgTransferCoinsWithinAccount
   ): Promise<MsgTransferCoinsWithinAccountResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -4528,6 +4662,7 @@ export class MsgClientImpl implements Msg {
     this.UpdateGroupedTokenConfig = this.UpdateGroupedTokenConfig.bind(this);
     this.TransferCoinsWithinAccount =
       this.TransferCoinsWithinAccount.bind(this);
+    this.UpdateParams = this.UpdateParams.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -4840,6 +4975,18 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgTransferCoinsWithinAccountResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
+    const data = MsgUpdateParams.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "UpdateParams",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }

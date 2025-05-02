@@ -4,9 +4,9 @@ import _m0 from "protobufjs/minimal";
 import {
   Position,
   OpenInterest,
-  CrossMaintenanceMargin,
   APIPosition,
   PositionAllocatedMargin,
+  CrossMaintenanceMargin,
 } from "./position";
 import {
   PageRequest,
@@ -60,18 +60,9 @@ export interface QueryAllOpenInterestsResponse {
 
 export interface QueryCrossMaintenanceMarginRequest {
   address: string;
-  marketId: string;
 }
 
 export interface QueryCrossMaintenanceMarginResponse {
-  crossMaintenanceMargin?: CrossMaintenanceMargin;
-}
-
-export interface QueryAllCrossMaintenanceMarginRequest {
-  address: string;
-}
-
-export interface QueryAllCrossMaintenanceMarginResponse {
   crossMaintenanceMargins: CrossMaintenanceMargin[];
 }
 
@@ -826,10 +817,7 @@ export const QueryAllOpenInterestsResponse = {
   },
 };
 
-const baseQueryCrossMaintenanceMarginRequest: object = {
-  address: "",
-  marketId: "",
-};
+const baseQueryCrossMaintenanceMarginRequest: object = { address: "" };
 
 export const QueryCrossMaintenanceMarginRequest = {
   encode(
@@ -838,9 +826,6 @@ export const QueryCrossMaintenanceMarginRequest = {
   ): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
-    }
-    if (message.marketId !== "") {
-      writer.uint32(18).string(message.marketId);
     }
     return writer;
   },
@@ -859,9 +844,6 @@ export const QueryCrossMaintenanceMarginRequest = {
       switch (tag >>> 3) {
         case 1:
           message.address = reader.string();
-          break;
-        case 2:
-          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -879,17 +861,12 @@ export const QueryCrossMaintenanceMarginRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
     return message;
   },
 
   toJSON(message: QueryCrossMaintenanceMarginRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
@@ -900,7 +877,6 @@ export const QueryCrossMaintenanceMarginRequest = {
       ...baseQueryCrossMaintenanceMarginRequest,
     } as QueryCrossMaintenanceMarginRequest;
     message.address = object.address ?? "";
-    message.marketId = object.marketId ?? "";
     return message;
   },
 };
@@ -912,148 +888,6 @@ export const QueryCrossMaintenanceMarginResponse = {
     message: QueryCrossMaintenanceMarginResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.crossMaintenanceMargin !== undefined) {
-      CrossMaintenanceMargin.encode(
-        message.crossMaintenanceMargin,
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCrossMaintenanceMarginResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCrossMaintenanceMarginResponse,
-    } as QueryCrossMaintenanceMarginResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.crossMaintenanceMargin = CrossMaintenanceMargin.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryCrossMaintenanceMarginResponse {
-    const message = {
-      ...baseQueryCrossMaintenanceMarginResponse,
-    } as QueryCrossMaintenanceMarginResponse;
-    message.crossMaintenanceMargin =
-      object.crossMaintenanceMargin !== undefined &&
-      object.crossMaintenanceMargin !== null
-        ? CrossMaintenanceMargin.fromJSON(object.crossMaintenanceMargin)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryCrossMaintenanceMarginResponse): unknown {
-    const obj: any = {};
-    message.crossMaintenanceMargin !== undefined &&
-      (obj.crossMaintenanceMargin = message.crossMaintenanceMargin
-        ? CrossMaintenanceMargin.toJSON(message.crossMaintenanceMargin)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryCrossMaintenanceMarginResponse>
-  ): QueryCrossMaintenanceMarginResponse {
-    const message = {
-      ...baseQueryCrossMaintenanceMarginResponse,
-    } as QueryCrossMaintenanceMarginResponse;
-    message.crossMaintenanceMargin =
-      object.crossMaintenanceMargin !== undefined &&
-      object.crossMaintenanceMargin !== null
-        ? CrossMaintenanceMargin.fromPartial(object.crossMaintenanceMargin)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllCrossMaintenanceMarginRequest: object = { address: "" };
-
-export const QueryAllCrossMaintenanceMarginRequest = {
-  encode(
-    message: QueryAllCrossMaintenanceMarginRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.address !== "") {
-      writer.uint32(10).string(message.address);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllCrossMaintenanceMarginRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllCrossMaintenanceMarginRequest,
-    } as QueryAllCrossMaintenanceMarginRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllCrossMaintenanceMarginRequest {
-    const message = {
-      ...baseQueryAllCrossMaintenanceMarginRequest,
-    } as QueryAllCrossMaintenanceMarginRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryAllCrossMaintenanceMarginRequest): unknown {
-    const obj: any = {};
-    message.address !== undefined && (obj.address = message.address);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllCrossMaintenanceMarginRequest>
-  ): QueryAllCrossMaintenanceMarginRequest {
-    const message = {
-      ...baseQueryAllCrossMaintenanceMarginRequest,
-    } as QueryAllCrossMaintenanceMarginRequest;
-    message.address = object.address ?? "";
-    return message;
-  },
-};
-
-const baseQueryAllCrossMaintenanceMarginResponse: object = {};
-
-export const QueryAllCrossMaintenanceMarginResponse = {
-  encode(
-    message: QueryAllCrossMaintenanceMarginResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
     for (const v of message.crossMaintenanceMargins) {
       CrossMaintenanceMargin.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1063,12 +897,12 @@ export const QueryAllCrossMaintenanceMarginResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllCrossMaintenanceMarginResponse {
+  ): QueryCrossMaintenanceMarginResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllCrossMaintenanceMarginResponse,
-    } as QueryAllCrossMaintenanceMarginResponse;
+      ...baseQueryCrossMaintenanceMarginResponse,
+    } as QueryCrossMaintenanceMarginResponse;
     message.crossMaintenanceMargins = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -1086,17 +920,17 @@ export const QueryAllCrossMaintenanceMarginResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllCrossMaintenanceMarginResponse {
+  fromJSON(object: any): QueryCrossMaintenanceMarginResponse {
     const message = {
-      ...baseQueryAllCrossMaintenanceMarginResponse,
-    } as QueryAllCrossMaintenanceMarginResponse;
+      ...baseQueryCrossMaintenanceMarginResponse,
+    } as QueryCrossMaintenanceMarginResponse;
     message.crossMaintenanceMargins = (
       object.crossMaintenanceMargins ?? []
     ).map((e: any) => CrossMaintenanceMargin.fromJSON(e));
     return message;
   },
 
-  toJSON(message: QueryAllCrossMaintenanceMarginResponse): unknown {
+  toJSON(message: QueryCrossMaintenanceMarginResponse): unknown {
     const obj: any = {};
     if (message.crossMaintenanceMargins) {
       obj.crossMaintenanceMargins = message.crossMaintenanceMargins.map((e) =>
@@ -1109,11 +943,11 @@ export const QueryAllCrossMaintenanceMarginResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllCrossMaintenanceMarginResponse>
-  ): QueryAllCrossMaintenanceMarginResponse {
+    object: DeepPartial<QueryCrossMaintenanceMarginResponse>
+  ): QueryCrossMaintenanceMarginResponse {
     const message = {
-      ...baseQueryAllCrossMaintenanceMarginResponse,
-    } as QueryAllCrossMaintenanceMarginResponse;
+      ...baseQueryCrossMaintenanceMarginResponse,
+    } as QueryCrossMaintenanceMarginResponse;
     message.crossMaintenanceMargins = (
       object.crossMaintenanceMargins ?? []
     ).map((e) => CrossMaintenanceMargin.fromPartial(e));
@@ -1140,9 +974,6 @@ export interface Query {
   CrossMaintenanceMargin(
     request: QueryCrossMaintenanceMarginRequest
   ): Promise<QueryCrossMaintenanceMarginResponse>;
-  CrossMaintenanceMarginAll(
-    request: QueryAllCrossMaintenanceMarginRequest
-  ): Promise<QueryAllCrossMaintenanceMarginResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1155,7 +986,6 @@ export class QueryClientImpl implements Query {
     this.OpenInterest = this.OpenInterest.bind(this);
     this.OpenInterestAll = this.OpenInterestAll.bind(this);
     this.CrossMaintenanceMargin = this.CrossMaintenanceMargin.bind(this);
-    this.CrossMaintenanceMarginAll = this.CrossMaintenanceMarginAll.bind(this);
   }
   Position(
     request: QueryGetPositionRequest
@@ -1238,20 +1068,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCrossMaintenanceMarginResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  CrossMaintenanceMarginAll(
-    request: QueryAllCrossMaintenanceMarginRequest
-  ): Promise<QueryAllCrossMaintenanceMarginResponse> {
-    const data = QueryAllCrossMaintenanceMarginRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.position.Query",
-      "CrossMaintenanceMarginAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllCrossMaintenanceMarginResponse.decode(new _m0.Reader(data))
     );
   }
 }

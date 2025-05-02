@@ -139,13 +139,6 @@ export interface UpdatePoolParams {
 
 export interface MsgUpdatePoolResponse {}
 
-export interface MsgDeprecatePool {
-  creator: string;
-  poolId: Long;
-}
-
-export interface MsgDeprecatePoolResponse {}
-
 export interface MsgCreatePoolRoute {
   creator: string;
   createPoolRouteParams?: CreatePoolRouteParams;
@@ -2371,127 +2364,6 @@ export const MsgUpdatePoolResponse = {
   },
 };
 
-const baseMsgDeprecatePool: object = { creator: "", poolId: Long.UZERO };
-
-export const MsgDeprecatePool = {
-  encode(
-    message: MsgDeprecatePool,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (!message.poolId.isZero()) {
-      writer.uint32(16).uint64(message.poolId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeprecatePool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgDeprecatePool } as MsgDeprecatePool;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.poolId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgDeprecatePool {
-    const message = { ...baseMsgDeprecatePool } as MsgDeprecatePool;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    return message;
-  },
-
-  toJSON(message: MsgDeprecatePool): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MsgDeprecatePool>): MsgDeprecatePool {
-    const message = { ...baseMsgDeprecatePool } as MsgDeprecatePool;
-    message.creator = object.creator ?? "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    return message;
-  },
-};
-
-const baseMsgDeprecatePoolResponse: object = {};
-
-export const MsgDeprecatePoolResponse = {
-  encode(
-    _: MsgDeprecatePoolResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDeprecatePoolResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDeprecatePoolResponse,
-    } as MsgDeprecatePoolResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgDeprecatePoolResponse {
-    const message = {
-      ...baseMsgDeprecatePoolResponse,
-    } as MsgDeprecatePoolResponse;
-    return message;
-  },
-
-  toJSON(_: MsgDeprecatePoolResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgDeprecatePoolResponse>
-  ): MsgDeprecatePoolResponse {
-    const message = {
-      ...baseMsgDeprecatePoolResponse,
-    } as MsgDeprecatePoolResponse;
-    return message;
-  },
-};
-
 const baseMsgCreatePoolRoute: object = { creator: "" };
 
 export const MsgCreatePoolRoute = {
@@ -3329,9 +3201,6 @@ export interface Msg {
     request: MsgSetCommitmentCurve
   ): Promise<MsgSetCommitmentCurveResponse>;
   HandleUpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse>;
-  HandleDeprecatePool(
-    request: MsgDeprecatePool
-  ): Promise<MsgDeprecatePoolResponse>;
   HandleCreatePoolRoute(
     request: MsgCreatePoolRoute
   ): Promise<MsgCreatePoolRouteResponse>;
@@ -3366,7 +3235,6 @@ export class MsgClientImpl implements Msg {
     this.HandleSetRewardCurve = this.HandleSetRewardCurve.bind(this);
     this.HandleSetCommitmentCurve = this.HandleSetCommitmentCurve.bind(this);
     this.HandleUpdatePool = this.HandleUpdatePool.bind(this);
-    this.HandleDeprecatePool = this.HandleDeprecatePool.bind(this);
     this.HandleCreatePoolRoute = this.HandleCreatePoolRoute.bind(this);
     this.HandleRemovePoolRoute = this.HandleRemovePoolRoute.bind(this);
     this.HandleUpdatePoolRoute = this.HandleUpdatePoolRoute.bind(this);
@@ -3519,20 +3387,6 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdatePoolResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  HandleDeprecatePool(
-    request: MsgDeprecatePool
-  ): Promise<MsgDeprecatePoolResponse> {
-    const data = MsgDeprecatePool.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleDeprecatePool",
-      data
-    );
-    return promise.then((data) =>
-      MsgDeprecatePoolResponse.decode(new _m0.Reader(data))
     );
   }
 

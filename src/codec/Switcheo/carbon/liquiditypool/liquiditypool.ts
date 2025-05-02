@@ -20,7 +20,6 @@ export interface Pool {
   ampBps: Long;
   vAmountA: string;
   vAmountB: string;
-  isDeprecated: boolean;
 }
 
 export interface Pools {
@@ -100,7 +99,6 @@ const basePool: object = {
   ampBps: Long.UZERO,
   vAmountA: "",
   vAmountB: "",
-  isDeprecated: false,
 };
 
 export const Pool = {
@@ -149,9 +147,6 @@ export const Pool = {
     }
     if (message.vAmountB !== "") {
       writer.uint32(138).string(message.vAmountB);
-    }
-    if (message.isDeprecated === true) {
-      writer.uint32(144).bool(message.isDeprecated);
     }
     return writer;
   },
@@ -207,9 +202,6 @@ export const Pool = {
           break;
         case 17:
           message.vAmountB = reader.string();
-          break;
-        case 18:
-          message.isDeprecated = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -281,10 +273,6 @@ export const Pool = {
       object.vAmountB !== undefined && object.vAmountB !== null
         ? String(object.vAmountB)
         : "";
-    message.isDeprecated =
-      object.isDeprecated !== undefined && object.isDeprecated !== null
-        ? Boolean(object.isDeprecated)
-        : false;
     return message;
   },
 
@@ -308,8 +296,6 @@ export const Pool = {
       (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     message.vAmountA !== undefined && (obj.vAmountA = message.vAmountA);
     message.vAmountB !== undefined && (obj.vAmountB = message.vAmountB);
-    message.isDeprecated !== undefined &&
-      (obj.isDeprecated = message.isDeprecated);
     return obj;
   },
 
@@ -336,7 +322,6 @@ export const Pool = {
         : Long.UZERO;
     message.vAmountA = object.vAmountA ?? "";
     message.vAmountB = object.vAmountB ?? "";
-    message.isDeprecated = object.isDeprecated ?? false;
     return message;
   },
 };

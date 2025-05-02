@@ -8,6 +8,7 @@ import {
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { Bridge } from "./bridge";
 import { TokenGroupDetails } from "./group";
+import { Params } from "./params";
 import { BoolValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.coin";
@@ -118,6 +119,14 @@ export interface QueryTokenGroupMappingsResponse {
 export interface QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry {
   key: string;
   value: Long;
+}
+
+/** QueryParamsRequest is request type for the Query/Params RPC method. */
+export interface QueryParamsRequest {}
+
+/** QueryParamsResponse is response type for the Query/Params RPC method. */
+export interface QueryParamsResponse {
+  params?: Params;
 }
 
 const baseQueryGetTokenRequest: object = { denom: "" };
@@ -1967,6 +1976,104 @@ export const QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry = {
   },
 };
 
+const baseQueryParamsRequest: object = {};
+
+export const QueryParamsRequest = {
+  encode(
+    _: QueryParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryParamsRequest {
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    return message;
+  },
+};
+
+const baseQueryParamsResponse: object = {};
+
+export const QueryParamsResponse = {
+  encode(
+    message: QueryParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryParamsResponse {
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryParamsResponse): unknown {
+    const obj: any = {};
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get token details for a denom */
@@ -2003,6 +2110,7 @@ export interface Query {
   TokenGroupMappings(
     request: QueryTokenGroupMappingsRequest
   ): Promise<QueryTokenGroupMappingsResponse>;
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2020,6 +2128,7 @@ export class QueryClientImpl implements Query {
     this.TokenGroup = this.TokenGroup.bind(this);
     this.TokenGroupAll = this.TokenGroupAll.bind(this);
     this.TokenGroupMappings = this.TokenGroupMappings.bind(this);
+    this.Params = this.Params.bind(this);
   }
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
@@ -2164,6 +2273,18 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryTokenGroupMappingsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
+    const data = QueryParamsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "Params",
+      data
+    );
+    return promise.then((data) =>
+      QueryParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }
