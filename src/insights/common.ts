@@ -31,6 +31,7 @@ export const InsightsEndpoints = {
   "pool/perp/apy": "/pool/perp/:id/apy",
   "pool/vault/apy": "/pool/vault/:id/apy",
   "user/pool/rewards": "/user/:address/pool/rewards",
+  "pool/perp/depositor/actions": "/pool/perp/depositor/:address/actions",
 
 
   //user vault api

@@ -119,7 +119,7 @@ export interface QueryUserVaultActions extends QueryByPageRequest {
   id: number;
 }
 
-export interface QueryUserVaultDepositorActions extends QueryByPageRequest {
+export interface QueryVaultDepositorActions extends QueryByPageRequest {
   address: string;
 }
 
@@ -151,7 +151,7 @@ export interface UserVaultActionEntry {
   amount: string;
   hash: string;
 }
-export interface UserVaultDepositorActionEntry {
+export interface VaultDepositorActionEntry {
   timestamp: string;
   poolId: number;
   type: string;
@@ -184,8 +184,8 @@ export interface QueryUserVaultActionsResponse {
   meta: PageMeta;
 }
 
-export interface QueryUserVaultDepositorActionsResponse {
-  entries: UserVaultDepositorActionEntry[];
+export interface QueryVaultDepositorActionsResponse {
+  entries: VaultDepositorActionEntry[];
   meta: PageMeta;
 }
 
