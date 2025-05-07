@@ -3240,6 +3240,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "data",
         "type": "uint8[]"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
       }
     ],
     "BridgeSentEvent": [
