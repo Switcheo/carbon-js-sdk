@@ -306,6 +306,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
         case 1:
           return Blockchain.Btc
         case 0:
+          return Blockchain.Native
         case 5:
           return Blockchain.Carbon
         case 79:
@@ -333,7 +334,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
     case Network.DevNet:
       switch (chainId) {
         case 0:
-          return Blockchain.Carbon
+          return Blockchain.Native
         case 1:
           return Blockchain.Btc
         case 2:

@@ -145,19 +145,24 @@ function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string,
                         const nestedMsgTypeIndex = getLatestMsgTypeIndex(`${nestedAnyTypeName}Value`, types)
                         const nestedAnyValueType = `${nestedAnyTypeName}Value${nestedMsgTypeIndex}`
                         msgTypeDefinitions[`${nestedAnyTypeName}${nestedMsgTypeIndex}`] = [{ name: "type", type: "string" }, { name: "value", type: nestedAnyValueType }]
+
                         const anyObjectTypeNameSplit = nestedAnyTypeName.split('Type')[1].split(/\d+/)[0]
-                        const messageTypeUrl = AminoTypesMap.fromAmino(fieldValue).typeUrl
-                        getMsgValueType(messageTypeUrl, fieldValue.value, "value", nestedMsgTypeIndex, types, anyObjectTypeNameSplit, true, msgTypeDefinitions)
+
+                        const field = isArray ? fieldValue[0] : fieldValue
+                        const messageTypeUrl = AminoTypesMap.fromAmino(field).typeUrl
+
+                        getMsgValueType(messageTypeUrl, field.value, "value", nestedMsgTypeIndex, types, anyObjectTypeNameSplit, true, msgTypeDefinitions)
                     }
                     else {
                         const typeStructName = type.includes('[]') ? type.split('[]')[0].split(/\d+/)[0] : type.split(/\d+/)[0]
                         const messageTypeUrl = `${packageName}.${typeStructName}`
-                        getMsgValueType(messageTypeUrl, fieldValue, name, nestedMsgTypeIndex, types, objectName, true, msgTypeDefinitions)
 
+                        getMsgValueType(messageTypeUrl, fieldValue, name, nestedMsgTypeIndex, types, objectName, true, msgTypeDefinitions)
                     }
                 }
                 else {
-                    msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: getGjsonPrimitiveType(fieldValue) }]
+                    const primitiveType = getGjsonPrimitiveType(fieldValue)
+                    msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: primitiveType }]
                 }
             }
         })
@@ -186,7 +191,7 @@ function getTypeName(name: string, index: number, objectName?: string, nestedTyp
 }
 
 function isGoogleProtobufAnyPackage(packageName: string, type: string): boolean {
-    return packageName === '/google.protobuf' && type == 'Any'
+    return packageName === '/google.protobuf' && (type === 'Any' || type === 'Any[]')
 }
 
 function isNonZeroField(fieldValue: any): boolean {
@@ -213,7 +218,6 @@ export function constructEIP712Tx(doc: CarbonTx.StdSignDoc, chainId?: string): E
         domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(chainId || chain_id) },
         message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) },
     }
-
     return eip712Tx
 }
 

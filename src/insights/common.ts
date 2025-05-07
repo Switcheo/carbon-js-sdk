@@ -29,7 +29,18 @@ export const InsightsEndpoints = {
   "pool/history": "/pool/history",
   "pool/perp/history": "/pool/perp/history",
   "pool/perp/apy": "/pool/perp/:id/apy",
+  "pool/vault/apy": "/pool/vault/:id/apy",
   "user/pool/rewards": "/user/:address/pool/rewards",
+  "pool/perp/depositor/actions": "/pool/perp/depositor/:address/actions",
+
+
+  //user vault api
+  "vault/user/apy": "/vault/user/:id/apy",
+  "vault/user/depositors": "/vault/user/:id/depositors",
+  "vault/user/actions": "/vault/user/:id/actions",
+  "vault/depositor/actions": "/vault/depositor/:address/actions",
+  "vault/depositor/deposits": "/vault/depositor/:address/deposits",
+
 
   //market
   "market/volume": "/market/volume",

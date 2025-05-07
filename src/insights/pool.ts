@@ -108,11 +108,26 @@ export interface QueryGetPerpPoolHistoryRequest extends QueryByPageRequest {
   address: string
 }
 
-export interface QueryPerpPoolAPY extends QueryByPageRequest {
+export interface QueryVaultAPY extends QueryByPageRequest {
+  id: number;
+}
+export interface QueryUserVaultDepositors extends QueryByPageRequest {
   id: number;
 }
 
-export interface PerpPoolAPYEntry {
+export interface QueryUserVaultActions extends QueryByPageRequest {
+  id: number;
+}
+
+export interface QueryVaultDepositorActions extends QueryByPageRequest {
+  address: string;
+}
+
+export interface QueryUserVaultDepositorDeposits extends QueryByPageRequest {
+  address: string;
+}
+
+export interface VaultAPYEntry {
   denom: string;
   annualizedApy1day: number | null;
   annualizedApy7days: number | null;
@@ -121,8 +136,61 @@ export interface PerpPoolAPYEntry {
   annualizedApy90days: number | null;
 }
 
-export interface QueryPerpPoolAPYResponse {
-  entries: PerpPoolAPYEntry[];
+export interface UserVaultDepositorEntry {
+  address: string;
+  shares: string;
+  netDeposit: string;
+  deposit: string;
+  withdraw: string;
+  avgRedemptionRate: string; // ratio of underlying to shares
+}
+
+export interface UserVaultActionEntry {
+  timestamp: string;
+  type: string;
+  amount: string;
+  hash: string;
+}
+export interface VaultDepositorActionEntry {
+  timestamp: string;
+  poolId: number;
+  type: string;
+  amount: string;
+  denom: string;
+  hash: string;
+}
+
+export interface UserVaultDepositorDepositEntry {
+  address: string;
+  poolId: number;
+  shares: string;
+  netDeposit: string;
+  deposit: string;
+  withdraw: string;
+}
+
+export interface QueryVaultAPYResponse {
+  entries: VaultAPYEntry[];
+  meta: PageMeta;
+}
+
+export interface QueryUserVaultDepositorsResponse {
+  entries: UserVaultDepositorEntry[];
+  meta: PageMeta;
+}
+
+export interface QueryUserVaultActionsResponse {
+  entries: UserVaultActionEntry[];
+  meta: PageMeta;
+}
+
+export interface QueryVaultDepositorActionsResponse {
+  entries: VaultDepositorActionEntry[];
+  meta: PageMeta;
+}
+
+export interface QueryUserVaultDepositorDepositsResponse {
+  entries: UserVaultDepositorDepositEntry[];
   meta: PageMeta;
 }
 

@@ -103,6 +103,8 @@ export interface CarbonSignerData extends SignerData {
   evmChainId?: string;
 }
 
+export type ProcessMsgsCallback = (messages: readonly EncodeObject[]) => readonly EncodeObject[];
+
 export interface SignTxOpts {
   fee?: StdFee;
   feeDenom?: string;
@@ -110,6 +112,7 @@ export interface SignTxOpts {
   sequence?: number;
   accountNumber?: number;
   explicitSignerData?: Partial<CarbonSignerData>;
+  processMsgs?: ProcessMsgsCallback;
   triggerMerge?: boolean; // stack merge account tx if user account is unmerged
 }
 
@@ -179,7 +182,12 @@ export const TxGasCostTypeMap = {
 
 const LibPackages: string[] = ['ibc', 'cosmos', 'alliance']
 
-const BacklistedMessages: string[] = []
+const BacklistedMessages: string[] = [
+  '/cosmos.authz.v1beta1.MsgExec',
+  '/cosmos.authz.v1beta1.MsgGrant',
+  '/cosmos.feegrant.v1beta1.MsgGrantAllowance',
+  '/cosmos.feegrant.v1beta1.MsgRevokeAllowance',
+]
 
 
 // to use signDirect for metamask signing if messages are from libraries (cosmos-sdk, ibc, alliance).
