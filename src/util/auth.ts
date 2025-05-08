@@ -1,7 +1,6 @@
 import { Network } from '@carbon-sdk/constant'
 import dayjs from 'dayjs'
 
-import { DEFAULT_PUBLIC_KEY_MESSAGE } from './evm'
 export const expirybufferSeconds = 30
 
 export type AccessTokenResponse = {
