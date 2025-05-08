@@ -1,7 +1,7 @@
 import { Carbon, OverrideConfig } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
-import { registry, TxTypes } from "@carbon-sdk/codec";
+import { TxTypes, registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
@@ -16,6 +16,7 @@ import { ETHAddress, NEOAddress, SWTHAddress, SWTHAddressOptions } from "@carbon
 import { AccessTokenResponse, GrantRequest, GrantType, hasExpired, hasRefreshTokenExpired, isValidIssuer } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
+import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
@@ -53,6 +54,7 @@ export interface CarbonWalletGenericOpts {
   gasFee?: GasFee;
   isRainbowKit?: boolean;
   enableJwtAuth?: boolean;
+  authMessage?: string;
   jwt?: AccessTokenResponse
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -386,7 +388,7 @@ export class CarbonWallet {
       promises.push(this.reconnectTmClient(fallbackConfig));
 
     if (opts?.enableJwtAuth && !this.isViewOnlyWallet())
-      promises.push(this.reloadJwtToken());
+      promises.push(this.reloadJwtToken(undefined, opts?.authMessage));
 
     if (this.isViewOnlyWallet())
       promises.push(this.queryViewOnlyEvmHexAddress())
@@ -397,19 +399,19 @@ export class CarbonWallet {
     return this;
   }
 
-  public async reloadJwtToken(request?: GrantRequest) {
+  public async reloadJwtToken(request?: GrantRequest, authMessage: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
     const network = this.network;
     if (this.jwt) {
       const { iss, exp } = jwtDecode(this.jwt.access_token)
-      if (!isValidIssuer(iss, network)) return this.getNewJwtToken(request)
+      if (!isValidIssuer(iss, network)) return this.getNewJwtToken(authMessage, request)
       const accessTokenExpired = hasExpired(exp)
       if (accessTokenExpired) {
         if (!hasRefreshTokenExpired(this.jwt.refresh_token)) return this.refreshJwtToken(this.jwt.refresh_token)
-        return this.getNewJwtToken(request)
+        return this.getNewJwtToken(authMessage, request)
       }
       return
     }
-    return this.getNewJwtToken(request)
+    return this.getNewJwtToken(authMessage, request)
   }
 
   public async queryViewOnlyEvmHexAddress() {
@@ -434,17 +436,17 @@ export class CarbonWallet {
     this.jwt = response.data.result
   }
 
-  private async getNewJwtToken(request?: GrantRequest) {
-    const req = request ?? await this.constructGrantRequest()
+  private async getNewJwtToken(authMessage: string, request?: GrantRequest) {
+    const req = request ?? await this.constructGrantRequest(authMessage)
     const response = await axios.post(this.networkConfig.authUrl, req)
     this.jwt = response.data.result
   }
 
-  private async constructGrantRequest() {
+  private async constructGrantRequest(authMessage: string) {
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestAuth?.())
       const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
-      const message = AuthUtils.getAuthMessage()
+      const message = AuthUtils.getAuthMessage(authMessage)
       const signature = await this.signer.signMessage(address, message)
       return {
         grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
