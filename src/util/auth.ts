@@ -32,9 +32,9 @@ export type GrantRequest = {
   refresh_token?: string
 })
 
-export const getAuthMessage = (): string => {
+export const getAuthMessage = (message: string): string => {
   const timestamp = dayjs().format('YYYY/MM/DD HH:mm:ss Z')
-  return `${DEFAULT_PUBLIC_KEY_MESSAGE}\n[${timestamp}]`
+  return `${message}\n[${timestamp}]`
 }
 
 export const hasExpired = (exp: number = 0): boolean => {

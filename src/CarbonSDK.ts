@@ -531,7 +531,7 @@ class CarbonSDK {
     let signature: string | undefined
 
     if (signMessageRequired) {
-      const result = await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth)
+      const result = await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth, opts?.authMessage)
       pubKey = result.publicKey
       message = result.message
       signature = result.signature
@@ -551,7 +551,7 @@ class CarbonSDK {
         public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
         signature: signature!,
       }
-      await wallet.reloadJwtToken(authRequest)
+      await wallet.reloadJwtToken(authRequest, opts?.authMessage)
     }
 
     return this.connect(wallet, opts);
@@ -573,7 +573,7 @@ class CarbonSDK {
     let signature: string | undefined
 
     if (signMessageRequired) {
-      const result = await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth)
+      const result = await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth, opts?.authMessage)
       pubKey = result.publicKey
       message = result.message
       signature = result.signature
@@ -592,7 +592,7 @@ class CarbonSDK {
         public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
         signature: signature!,
       }
-      await wallet.reloadJwtToken(authRequest)
+      await wallet.reloadJwtToken(authRequest, opts?.authMessage)
     }
 
     return this.connect(wallet, opts);

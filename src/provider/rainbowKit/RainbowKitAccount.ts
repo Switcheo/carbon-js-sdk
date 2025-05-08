@@ -286,16 +286,16 @@ class RainbowKitAccount extends Eip6963Provider {
     await this.changeNetworkIfRequired("Carbon", network);
   }
 
-  static async signAndRecoverPubKey(provider: RainbowKitAccount, enableJwtAuth?: boolean) {
+  static async signAndRecoverPubKey(provider: RainbowKitAccount, enableJwtAuth?: boolean, customMsg: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
     const address = await provider.defaultAccount()
-    const message = enableJwtAuth ? AuthUtils.getAuthMessage() : DEFAULT_PUBLIC_KEY_MESSAGE;
-    const signature = await provider.personalSign(address, message)
-    const publicKeyHex = EvmUtils.recoverPublicKey(message, signature)
+    const signMessage = enableJwtAuth ? AuthUtils.getAuthMessage(customMsg) : customMsg;
+    const signature = await provider.personalSign(address, signMessage)
+    const publicKeyHex = EvmUtils.recoverPublicKey(signMessage, signature)
 
     return {
       publicKey: Buffer.from(publicKeyHex, 'hex').toString('base64'),
       signature,
-      message,
+      message: signMessage,
     };
   }
 
