@@ -1,13 +1,14 @@
 import { Carbon, OverrideConfig } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
-import { registry, TxTypes } from "@carbon-sdk/codec";
+import { TxTypes, registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs, SupportedEip6963Provider } from "@carbon-sdk/constant";
 import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
+import { GrantModule } from "@carbon-sdk/modules/grant";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
@@ -15,12 +16,13 @@ import { ETHAddress, NEOAddress, SWTHAddress, SWTHAddressOptions } from "@carbon
 import { AccessTokenResponse, GrantRequest, GrantType, hasExpired, hasRefreshTokenExpired, isValidIssuer } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
+import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
-import { EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
+import { DecodeObject, EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
@@ -32,10 +34,10 @@ import axios from "axios";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { utils } from "ethers";
+import { jwtDecode } from "jwt-decode";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
-import { jwtDecode } from "jwt-decode";
-import { utils } from "ethers";
 
 dayjs.extend(utc)
 
@@ -52,6 +54,7 @@ export interface CarbonWalletGenericOpts {
   gasFee?: GasFee;
   isRainbowKit?: boolean;
   enableJwtAuth?: boolean;
+  authMessage?: string;
   jwt?: AccessTokenResponse
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -208,7 +211,6 @@ export class CarbonWallet {
   providerAgent?: ProviderAgent | string;
 
   authorizedMsgs?: string[];
-  authorizedMsgsVersion?: number;
 
   private tmClient?: Tendermint37Client;
   private grantee?: Grantee;
@@ -386,7 +388,7 @@ export class CarbonWallet {
       promises.push(this.reconnectTmClient(fallbackConfig));
 
     if (opts?.enableJwtAuth && !this.isViewOnlyWallet())
-      promises.push(this.reloadJwtToken());
+      promises.push(this.reloadJwtToken(undefined, opts?.authMessage));
 
     if (this.isViewOnlyWallet())
       promises.push(this.queryViewOnlyEvmHexAddress())
@@ -397,19 +399,19 @@ export class CarbonWallet {
     return this;
   }
 
-  public async reloadJwtToken(request?: GrantRequest) {
+  public async reloadJwtToken(request?: GrantRequest, authMessage: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
     const network = this.network;
     if (this.jwt) {
       const { iss, exp } = jwtDecode(this.jwt.access_token)
-      if (!isValidIssuer(iss, network)) return this.getNewJwtToken(request)
+      if (!isValidIssuer(iss, network)) return this.getNewJwtToken(authMessage, request)
       const accessTokenExpired = hasExpired(exp)
       if (accessTokenExpired) {
         if (!hasRefreshTokenExpired(this.jwt.refresh_token)) return this.refreshJwtToken(this.jwt.refresh_token)
-        return this.getNewJwtToken(request)
+        return this.getNewJwtToken(authMessage, request)
       }
       return
     }
-    return this.getNewJwtToken(request)
+    return this.getNewJwtToken(authMessage, request)
   }
 
   public async queryViewOnlyEvmHexAddress() {
@@ -434,17 +436,17 @@ export class CarbonWallet {
     this.jwt = response.data.result
   }
 
-  private async getNewJwtToken(request?: GrantRequest) {
-    const req = request ?? await this.constructGrantRequest()
+  private async getNewJwtToken(authMessage: string, request?: GrantRequest) {
+    const req = request ?? await this.constructGrantRequest(authMessage)
     const response = await axios.post(this.networkConfig.authUrl, req)
     this.jwt = response.data.result
   }
 
-  private async constructGrantRequest() {
+  private async constructGrantRequest(authMessage: string) {
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestAuth?.())
       const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
-      const message = AuthUtils.getAuthMessage()
+      const message = AuthUtils.getAuthMessage(authMessage)
       const signature = await this.signer.signMessage(address, message)
       return {
         grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
@@ -461,7 +463,7 @@ export class CarbonWallet {
     this.grantee = grantee;
   }
 
-  private isGranteeValid(): boolean {
+  public isGranteeValid(): boolean {
     if (!this.grantee) return false
     const { expiry } = this.grantee;
     const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(BUFFER_PERIOD, 'seconds'));
@@ -476,9 +478,8 @@ export class CarbonWallet {
     return this;
   }
 
-  public setAuthorizedMsgs(msgs: string[], version: number) {
+  public setAuthorizedMsgs(msgs?: string[]) {
     this.authorizedMsgs = msgs;
-    this.authorizedMsgsVersion = version;
   }
 
   async getSignedTx(
@@ -577,9 +578,10 @@ export class CarbonWallet {
     broadcastOpts?: CarbonTx.BroadcastTxOpts
   ): Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse> {
     const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse>((resolve, reject) => {
+      const msgs = signOpts?.processMsgs?.(messages) ?? messages
       this.txSignManager.enqueue({
         signerAddress: this.bech32Address,
-        messages,
+        messages: msgs,
         broadcastOpts,
         signOpts,
         handler: { resolve, reject },
@@ -594,11 +596,10 @@ export class CarbonWallet {
       reattempts,
       signerAddress,
       signOpts,
-      messages,
       broadcastOpts,
+      messages,
       handler: { resolve, reject },
     } = txRequest;
-
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
     if (this.isGranteeValid() && isAuthorized) {
       await this.signWithGrantee(txRequest)
@@ -633,7 +634,6 @@ export class CarbonWallet {
           },
         };
         const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
-
         this.txDispatchManager.enqueue({
           reattempts,
           signerAddress,
@@ -674,15 +674,7 @@ export class CarbonWallet {
         throw new Error("grantee account not initialized");
       }
 
-      const msgs = messages.map((message) => registry.encodeAsAny({ ...message }))
-
-      const msgExecMessages: EncodeObject[] = [{
-        typeUrl: CarbonTx.Types.MsgExec,
-        value: MsgExec.fromPartial({
-          grantee: granteeAddress,
-          msgs,
-        }),
-      }]
+      const msgExecMessages = GrantModule.wrapInMsgExec(granteeAddress, messages)
 
       const timeoutHeight = await this.getTimeoutHeight();
       const fee = signOpts?.fee ?? this.estimateTxFee(msgExecMessages, signOpts?.feeDenom);
@@ -1042,7 +1034,7 @@ export class CarbonWallet {
     return this.signer.type === CarbonSignerTypes.PublicKey
   }
 
-  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM,) {
+  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
     const denomGasPrice = this.gasFee?.getGasPrice(feeDenom);
     const totalGasCost = this.getTotalGasCost(messages);
     let totalFees = totalGasCost.times(denomGasPrice ?? BN_ZERO);
@@ -1073,7 +1065,7 @@ export class CarbonWallet {
     }
     return totalGasCost;
   }
-  
+
   private addAdditionalGasCost(message: EncodeObject) {
     switch (message.typeUrl) {
       case TxTypes.MsgExec: return this.getExecGasCost(message.value as MsgExec);
@@ -1082,8 +1074,16 @@ export class CarbonWallet {
   }
 
   private getExecGasCost(message: MsgExec) {
-    const { msgs } = message;
-    return this.getTotalGasCost(msgs);
+    const msgs: DecodeObject[] = message.msgs;
+    const encodedMsgs: EncodeObject[] = msgs.map(m => {
+      const decoded = registry.decode(m);
+      return {
+        typeUrl: m.typeUrl,
+        value: decoded,
+      };
+    });
+
+    return this.getTotalGasCost(encodedMsgs);
   }
 
   private isAccountNotFoundError = (error: Error, address: string) => {

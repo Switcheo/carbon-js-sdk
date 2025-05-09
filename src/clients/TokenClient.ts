@@ -37,6 +37,8 @@ const SYMBOL_OVERRIDE: {
 
 const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i");
 const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i");
+const regexPerpPoolDenom = RegExp(`^${DenomPrefix.PerpPoolToken}/\\d+$`, "i");
+const regexUserVaultDenom = RegExp(`^${DenomPrefix.UserVaultToken}/\\d+$`, "i");
 
 const onError = (error: unknown) => {
   console.error("failed to reload usd values");
@@ -102,7 +104,7 @@ class TokenClient {
 
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = tokenData?.chainId?.toNumber() ?? 3;
-    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
+    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || TokenClient.isVaultToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       chainId = 0;
@@ -117,7 +119,7 @@ class TokenClient {
 
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
     if (!denom) return undefined
-    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupChequeDenom(denom)) {
+    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupChequeDenom(denom) || TokenClient.isVaultToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       return 'Native'
@@ -269,6 +271,18 @@ class TokenClient {
 
   public static isPoolToken(denom: string): boolean {
     return this.isPoolTokenNew(denom) || this.isPoolTokenLegacy(denom);
+  }
+
+  public static isVaultToken(denom: string): boolean {
+    return this.isPerpPoolToken(denom) || this.isUserVaultToken(denom);
+  }
+
+  public static isPerpPoolToken(denom: string): boolean {
+    return denom.match(regexPerpPoolDenom) !== null;
+  }
+
+  public static isUserVaultToken(denom: string): boolean {
+    return denom.match(regexUserVaultDenom) !== null;
   }
 
   public static isIBCDenom(denom: string): boolean {
@@ -702,6 +716,7 @@ class TokenClient {
 
   public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<TypeUtils.SimpleMap<BigNumber>> {
     this.usdValues.iusd = BN_ONE;
+    this.usdValues.cgusd = BN_ONE;
 
     //Get corresponding geckoId for denoms and removes any duplicated geckoIds (espeically for different wrapped tokens as they correspond to the same geckoId(same price))
     const geckoIds = denoms.reduce((coinIds, denom) => {

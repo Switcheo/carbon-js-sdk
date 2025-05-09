@@ -7,6 +7,8 @@ export const decTypeDecimals = 18;
 export const DenomPrefix = {
   LPToken: "clpt",
   CDPToken: "cibt",
+  PerpPoolToken: "cplt",
+  UserVaultToken: "duvt",
 };
 
 export const uscUsdValue = new BigNumber(1);

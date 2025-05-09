@@ -207,6 +207,7 @@ export class CarbonSigningClient extends StargateClient {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
       value: signedTxBody,
     };
+
     const signedTxBodyBytes = this.registry.encode(signedTxBodyEncodeObject);
     const signedGasLimit = Int53.fromString(signed.fee.gas).toNumber();
     const signedSequence = Int53.fromString(signed.sequence).toNumber();

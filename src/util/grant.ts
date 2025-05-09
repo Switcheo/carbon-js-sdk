@@ -1,7 +1,29 @@
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
 import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
-import { GrantTypes } from "@carbon-sdk/provider/amino/types/grant";
+import { TypeUtils } from "@carbon-sdk/util";
+
+export enum GrantTypes {
+  GrantAuthz = "/cosmos.authz.v1beta1.MsgGrant",
+  RevokeAuthz = "/cosmos.authz.v1beta1.MsgRevoke",
+  FeeGrant = "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
+  MsgExec = "/cosmos.authz.v1beta1.MsgExec",
+  GenericAuthorization = "/cosmos.authz.v1beta1.GenericAuthorization",
+  AllowedMsgAllowance = "/cosmos.feegrant.v1beta1.AllowedMsgAllowance",
+  BasicAllowance = "/cosmos.feegrant.v1beta1.BasicAllowance",
+}
+
+enum AminoTypes {
+  GenericAuthorization = "cosmos-sdk/GenericAuthorization",
+  AllowedMsgAllowance = "cosmos-sdk/AllowedMsgAllowance",
+  BasicAllowance = "cosmos-sdk/BasicAllowance",
+}
+
+export const AminoContentTypes: TypeUtils.SimpleMap<string> = {
+  [GrantTypes.GenericAuthorization]: AminoTypes.GenericAuthorization,
+  [GrantTypes.AllowedMsgAllowance]: AminoTypes.AllowedMsgAllowance,
+  [GrantTypes.BasicAllowance]: AminoTypes.BasicAllowance,
+};
 
 export interface ValueDecoded {
   typeUrl: string;

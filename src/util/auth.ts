@@ -1,7 +1,6 @@
 import { Network } from '@carbon-sdk/constant'
 import dayjs from 'dayjs'
 
-import { DEFAULT_PUBLIC_KEY_MESSAGE } from './evm'
 export const expirybufferSeconds = 30
 
 export type AccessTokenResponse = {
@@ -32,9 +31,9 @@ export type GrantRequest = {
   refresh_token?: string
 })
 
-export const getAuthMessage = (): string => {
+export const getAuthMessage = (message: string): string => {
   const timestamp = dayjs().format('YYYY/MM/DD HH:mm:ss Z')
-  return `${DEFAULT_PUBLIC_KEY_MESSAGE}\n[${timestamp}]`
+  return `${message}\n[${timestamp}]`
 }
 
 export const hasExpired = (exp: number = 0): boolean => {
