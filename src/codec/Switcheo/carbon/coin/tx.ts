@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Bridge } from "./bridge";
 import { TokenGroup, GroupedTokenConfig } from "./group";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import { ParamsToUpdate } from "./params";
 import {
   BoolValue,
   StringValue,
@@ -61,6 +62,7 @@ export interface MsgMintToken {
   denom: string;
   amount: string;
   to: string;
+  toFuturesAccount: boolean;
 }
 
 export interface MsgMintTokenResponse {}
@@ -258,6 +260,15 @@ export interface MsgWithdrawFromGroupResponse {
   tokensWithdrawn?: Coin;
 }
 
+export interface MsgTransferCoinsWithinAccount {
+  creator: string;
+  from: string;
+  to: string;
+  amount: Coin[];
+}
+
+export interface MsgTransferCoinsWithinAccountResponse {}
+
 export interface MsgUpdateGroupedTokenConfig {
   creator: string;
   denom: string;
@@ -271,6 +282,15 @@ export interface UpdateGroupedTokenConfigParams {
 export interface MsgUpdateGroupedTokenConfigResponse {
   groupedTokenConfig?: GroupedTokenConfig;
 }
+
+export interface MsgUpdateParams {
+  /** authority is the address of the governance account. */
+  authority: string;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
+}
+
+export interface MsgUpdateParamsResponse {}
 
 const baseMsgCreateToken: object = { creator: "" };
 
@@ -941,7 +961,13 @@ export const MsgSyncTokenResponse = {
   },
 };
 
-const baseMsgMintToken: object = { creator: "", denom: "", amount: "", to: "" };
+const baseMsgMintToken: object = {
+  creator: "",
+  denom: "",
+  amount: "",
+  to: "",
+  toFuturesAccount: false,
+};
 
 export const MsgMintToken = {
   encode(
@@ -959,6 +985,9 @@ export const MsgMintToken = {
     }
     if (message.to !== "") {
       writer.uint32(34).string(message.to);
+    }
+    if (message.toFuturesAccount === true) {
+      writer.uint32(40).bool(message.toFuturesAccount);
     }
     return writer;
   },
@@ -981,6 +1010,9 @@ export const MsgMintToken = {
           break;
         case 4:
           message.to = reader.string();
+          break;
+        case 5:
+          message.toFuturesAccount = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1006,6 +1038,10 @@ export const MsgMintToken = {
         : "";
     message.to =
       object.to !== undefined && object.to !== null ? String(object.to) : "";
+    message.toFuturesAccount =
+      object.toFuturesAccount !== undefined && object.toFuturesAccount !== null
+        ? Boolean(object.toFuturesAccount)
+        : false;
     return message;
   },
 
@@ -1015,6 +1051,8 @@ export const MsgMintToken = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.to !== undefined && (obj.to = message.to);
+    message.toFuturesAccount !== undefined &&
+      (obj.toFuturesAccount = message.toFuturesAccount);
     return obj;
   },
 
@@ -1024,6 +1062,7 @@ export const MsgMintToken = {
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.to = object.to ?? "";
+    message.toFuturesAccount = object.toFuturesAccount ?? false;
     return message;
   },
 };
@@ -4007,6 +4046,162 @@ export const MsgWithdrawFromGroupResponse = {
   },
 };
 
+const baseMsgTransferCoinsWithinAccount: object = {
+  creator: "",
+  from: "",
+  to: "",
+};
+
+export const MsgTransferCoinsWithinAccount = {
+  encode(
+    message: MsgTransferCoinsWithinAccount,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.from !== "") {
+      writer.uint32(18).string(message.from);
+    }
+    if (message.to !== "") {
+      writer.uint32(26).string(message.to);
+    }
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgTransferCoinsWithinAccount {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgTransferCoinsWithinAccount,
+    } as MsgTransferCoinsWithinAccount;
+    message.amount = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.from = reader.string();
+          break;
+        case 3:
+          message.to = reader.string();
+          break;
+        case 4:
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgTransferCoinsWithinAccount {
+    const message = {
+      ...baseMsgTransferCoinsWithinAccount,
+    } as MsgTransferCoinsWithinAccount;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.from =
+      object.from !== undefined && object.from !== null
+        ? String(object.from)
+        : "";
+    message.to =
+      object.to !== undefined && object.to !== null ? String(object.to) : "";
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: MsgTransferCoinsWithinAccount): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.from !== undefined && (obj.from = message.from);
+    message.to !== undefined && (obj.to = message.to);
+    if (message.amount) {
+      obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.amount = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgTransferCoinsWithinAccount>
+  ): MsgTransferCoinsWithinAccount {
+    const message = {
+      ...baseMsgTransferCoinsWithinAccount,
+    } as MsgTransferCoinsWithinAccount;
+    message.creator = object.creator ?? "";
+    message.from = object.from ?? "";
+    message.to = object.to ?? "";
+    message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
+const baseMsgTransferCoinsWithinAccountResponse: object = {};
+
+export const MsgTransferCoinsWithinAccountResponse = {
+  encode(
+    _: MsgTransferCoinsWithinAccountResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgTransferCoinsWithinAccountResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgTransferCoinsWithinAccountResponse,
+    } as MsgTransferCoinsWithinAccountResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgTransferCoinsWithinAccountResponse {
+    const message = {
+      ...baseMsgTransferCoinsWithinAccountResponse,
+    } as MsgTransferCoinsWithinAccountResponse;
+    return message;
+  },
+
+  toJSON(_: MsgTransferCoinsWithinAccountResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgTransferCoinsWithinAccountResponse>
+  ): MsgTransferCoinsWithinAccountResponse {
+    const message = {
+      ...baseMsgTransferCoinsWithinAccountResponse,
+    } as MsgTransferCoinsWithinAccountResponse;
+    return message;
+  },
+};
+
 const baseMsgUpdateGroupedTokenConfig: object = { creator: "", denom: "" };
 
 export const MsgUpdateGroupedTokenConfig = {
@@ -4259,6 +4454,129 @@ export const MsgUpdateGroupedTokenConfigResponse = {
   },
 };
 
+const baseMsgUpdateParams: object = { authority: "" };
+
+export const MsgUpdateParams = {
+  encode(
+    message: MsgUpdateParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.params !== undefined) {
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateParams {
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? ParamsToUpdate.fromJSON(object.params)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateParams): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.params !== undefined &&
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    message.authority = object.authority ?? "";
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? ParamsToUpdate.fromPartial(object.params)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateParamsResponse: object = {};
+
+export const MsgUpdateParamsResponse = {
+  encode(
+    _: MsgUpdateParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateParamsResponse {
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateParamsResponse>
+  ): MsgUpdateParamsResponse {
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse>;
@@ -4305,10 +4623,14 @@ export interface Msg {
   WithdrawFromGroup(
     request: MsgWithdrawFromGroup
   ): Promise<MsgWithdrawFromGroupResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   UpdateGroupedTokenConfig(
     request: MsgUpdateGroupedTokenConfig
   ): Promise<MsgUpdateGroupedTokenConfigResponse>;
+  TransferCoinsWithinAccount(
+    request: MsgTransferCoinsWithinAccount
+  ): Promise<MsgTransferCoinsWithinAccountResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -4338,6 +4660,9 @@ export class MsgClientImpl implements Msg {
     this.DepositToGroup = this.DepositToGroup.bind(this);
     this.WithdrawFromGroup = this.WithdrawFromGroup.bind(this);
     this.UpdateGroupedTokenConfig = this.UpdateGroupedTokenConfig.bind(this);
+    this.TransferCoinsWithinAccount =
+      this.TransferCoinsWithinAccount.bind(this);
+    this.UpdateParams = this.UpdateParams.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -4636,6 +4961,32 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateGroupedTokenConfigResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TransferCoinsWithinAccount(
+    request: MsgTransferCoinsWithinAccount
+  ): Promise<MsgTransferCoinsWithinAccountResponse> {
+    const data = MsgTransferCoinsWithinAccount.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "TransferCoinsWithinAccount",
+      data
+    );
+    return promise.then((data) =>
+      MsgTransferCoinsWithinAccountResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
+    const data = MsgUpdateParams.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "UpdateParams",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }
