@@ -5,7 +5,7 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   SetLeverage: "leverage/SetLeverage",
-  ToggleMarginMode: "leverage/ToggleMarginMode",
+  SetMarginMode: "leverage/SetMarginMode",
 };
 
 const MsgSetLeverage: AminoInit = {
@@ -15,14 +15,14 @@ const MsgSetLeverage: AminoInit = {
   },
 };
 
-const MsgToggleMarginMode: AminoInit = {
-  aminoType: TxTypes.ToggleMarginMode,
+const MsgSetMarginMode: AminoInit = {
+  aminoType: TxTypes.SetMarginMode,
   valueMap: {},
 };
 
 const LeverageAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSetLeverage]: generateAminoType(MsgSetLeverage),
-  [CarbonTx.Types.MsgToggleMarginMode]: generateAminoType(MsgToggleMarginMode),
+  [CarbonTx.Types.MsgSetMarginMode]: generateAminoType(MsgSetMarginMode),
 };
 
 export default LeverageAmino;

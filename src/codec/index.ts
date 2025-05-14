@@ -356,8 +356,10 @@ registry.register("/Switcheo.carbon.coin.CreateTokenProposal", Carbon.Coin.Creat
 
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverage", Carbon.Leverage.MsgSetLeverage);
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", Carbon.Leverage.MsgSetLeverageResponse);
-registry.register("/Switcheo.carbon.leverage.MsgToggleMarginMode", Carbon.Leverage.MsgToggleMarginMode);
-registry.register("/Switcheo.carbon.leverage.MsgToggleMarginModeResponse", Carbon.Leverage.MsgToggleMarginModeResponse);
+registry.register("/Switcheo.carbon.leverage.MsgSetMarginMode", Carbon.Leverage.MsgSetMarginMode);
+registry.register("/Switcheo.carbon.leverage.MsgSetMarginModeResponse", Carbon.Leverage.MsgSetMarginModeResponse);
+registry.register("/Switcheo.carbon.leverage.MsgUpdateParams", Carbon.Leverage.MsgUpdateParams);
+registry.register("/Switcheo.carbon.leverage.MsgUpdateParamsResponse", Carbon.Leverage.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfile", Carbon.Profile.MsgUpdateProfile);
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfileResponse", Carbon.Profile.MsgUpdateProfileResponse);
@@ -459,6 +461,8 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve", Carbon
 registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse", Carbon.Liquiditypool.MsgSetCommitmentCurveResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePool", Carbon.Liquiditypool.MsgUpdatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse", Carbon.Liquiditypool.MsgUpdatePoolResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgDeprecatePool", Carbon.Liquiditypool.MsgDeprecatePool);
+registry.register("/Switcheo.carbon.liquiditypool.MsgDeprecatePoolResponse", Carbon.Liquiditypool.MsgDeprecatePoolResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute", Carbon.Liquiditypool.MsgCreatePoolRoute);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse", Carbon.Liquiditypool.MsgCreatePoolRouteResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute", Carbon.Liquiditypool.MsgRemovePoolRoute);
@@ -1091,8 +1095,10 @@ export const TxTypes = {
   "CreateTokenProposal": "/Switcheo.carbon.coin.CreateTokenProposal",
   "MsgSetLeverage": "/Switcheo.carbon.leverage.MsgSetLeverage",
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
-  "MsgToggleMarginMode": "/Switcheo.carbon.leverage.MsgToggleMarginMode",
-  "MsgToggleMarginModeResponse": "/Switcheo.carbon.leverage.MsgToggleMarginModeResponse",
+  "MsgSetMarginMode": "/Switcheo.carbon.leverage.MsgSetMarginMode",
+  "MsgSetMarginModeResponse": "/Switcheo.carbon.leverage.MsgSetMarginModeResponse",
+  "MsgLeverageUpdateParams": "/Switcheo.carbon.leverage.MsgUpdateParams",
+  "MsgLeverageUpdateParamsResponse": "/Switcheo.carbon.leverage.MsgUpdateParamsResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
   "MsgUpdateProfileResponse": "/Switcheo.carbon.profile.MsgUpdateProfileResponse",
   "MsgCreateSubAccount": "/Switcheo.carbon.subaccount.MsgCreateSubAccount",
@@ -1188,6 +1194,8 @@ export const TxTypes = {
   "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
   "MsgLiquiditypoolUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
   "MsgLiquiditypoolUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
+  "MsgDeprecatePool": "/Switcheo.carbon.liquiditypool.MsgDeprecatePool",
+  "MsgDeprecatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgDeprecatePoolResponse",
   "MsgCreatePoolRoute": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute",
   "MsgCreatePoolRouteResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse",
   "MsgRemovePoolRoute": "/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute",
@@ -7453,6 +7461,18 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "Params": [
+      {
+        "name": "assets_route_to_futures",
+        "type": "string[]"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "assets_route_to_futures",
+        "type": "string[]"
+      }
+    ],
     "GenesisState": [
       {
         "name": "tokens",
@@ -7483,18 +7503,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "groups",
         "type": "TokenGroupDetails[]",
         "packageName": "/Switcheo.carbon.coin"
-      }
-    ],
-    "Params": [
+      },
       {
-        "name": "assets_route_to_futures",
-        "type": "string[]"
-      }
-    ],
-    "ParamsToUpdate": [
-      {
-        "name": "assets_route_to_futures",
-        "type": "string[]"
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.coin"
       }
     ],
     "MsgCreateToken": [
@@ -9427,10 +9440,35 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.leverage"
       }
     ],
+    "Params": [
+      {
+        "name": "default_leverage",
+        "type": "string"
+      },
+      {
+        "name": "is_cross_default",
+        "type": "bool"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "default_leverage",
+        "type": "string"
+      },
+      {
+        "name": "is_cross_default",
+        "type": "bool"
+      }
+    ],
     "GenesisState": [
       {
         "name": "market_leverage_records",
         "type": "MarketLeverageRecord[]",
+        "packageName": "/Switcheo.carbon.leverage"
+      },
+      {
+        "name": "params",
+        "type": "Params",
         "packageName": "/Switcheo.carbon.leverage"
       }
     ],
@@ -9464,6 +9502,14 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.leverage"
       }
     ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.leverage"
+      }
+    ],
     "MsgSetLeverage": [
       {
         "name": "creator",
@@ -9479,7 +9525,7 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgSetLeverageResponse": [],
-    "MsgToggleMarginMode": [
+    "MsgSetMarginMode": [
       {
         "name": "creator",
         "type": "string"
@@ -9487,9 +9533,25 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "market_id",
         "type": "string"
+      },
+      {
+        "name": "to_cross",
+        "type": "bool"
       }
     ],
-    "MsgToggleMarginModeResponse": []
+    "MsgSetMarginModeResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.leverage"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.liquidation": {
     "MatchedOutstandingPositionEvent": [
@@ -10581,6 +10643,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "v_amount_b",
         "type": "string"
+      },
+      {
+        "name": "is_deprecated",
+        "type": "bool"
       }
     ],
     "Pools": [
@@ -11554,6 +11620,17 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgUpdatePoolResponse": [],
+    "MsgDeprecatePool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgDeprecatePoolResponse": [],
     "MsgCreatePoolRoute": [
       {
         "name": "creator",
@@ -16487,6 +16564,20 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "IndexPriceForMarket": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
         "type": "string"
       }
     ],
