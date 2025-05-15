@@ -1,4 +1,4 @@
-import { MsgMintToken, MsgWithdraw, MsgDepositToGroup, MsgWithdrawFromGroup, MsgAddBridgeAddress, MsgCreateToken } from "@carbon-sdk/codec/Switcheo/carbon/coin/tx";
+import { MsgMintToken, MsgWithdraw, MsgDepositToGroup, MsgWithdrawFromGroup, MsgAddBridgeAddress, MsgCreateToken, MsgTransferCoinsWithinAccount } from "@carbon-sdk/codec/Switcheo/carbon/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { CarbonTx } from "@carbon-sdk/util";
 import { EncodeObject } from "@cosmjs/proto-signing";
@@ -140,6 +140,26 @@ export class CoinModule extends BaseModule {
     );
   }
 
+  public async transferBalanceWithinAccount(params: CoinModule.TransferWithinAccountParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgTransferCoinsWithinAccount.fromPartial({
+      creator: wallet.bech32Address,
+      amount: [{
+        denom: params.denom,
+        amount: params.amount.toString(10),
+      }],
+      from: params.toFutures ? 'available' : 'futures',
+      to: params.toFutures ? 'futures' : 'available',
+    });
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgTransferCoinsWithinAccount,
+        value,
+      },
+      opts
+    );
+  }
+
 }
 
 export namespace CoinModule {
@@ -185,5 +205,11 @@ export namespace CoinModule {
     bridgeId: Long;
     bridgeAddress: string;
     tokenAddress: string;
+  }
+
+  export interface TransferWithinAccountParams {
+    denom: string,
+    amount: BigNumber,
+    toFutures: boolean,
   }
 }

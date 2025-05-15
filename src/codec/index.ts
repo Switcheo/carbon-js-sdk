@@ -140,6 +140,8 @@ registry.register("/Switcheo.carbon.headersync.MsgSyncHeadersResponse", PolyNetw
 
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidation", Carbon.Broker.MsgInitiateLiquidation);
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", Carbon.Broker.MsgInitiateLiquidationResponse);
+registry.register("/Switcheo.carbon.broker.MsgUpdateParams", Carbon.Broker.MsgUpdateParams);
+registry.register("/Switcheo.carbon.broker.MsgUpdateParamsResponse", Carbon.Broker.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetGasCost", Carbon.Fee.MsgSetGasCost);
 registry.register("/Switcheo.carbon.fee.MsgSetGasCostResponse", Carbon.Fee.MsgSetGasCostResponse);
@@ -346,12 +348,20 @@ registry.register("/Switcheo.carbon.coin.MsgDepositToGroup", Carbon.Coin.MsgDepo
 registry.register("/Switcheo.carbon.coin.MsgDepositToGroupResponse", Carbon.Coin.MsgDepositToGroupResponse);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawFromGroup", Carbon.Coin.MsgWithdrawFromGroup);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawFromGroupResponse", Carbon.Coin.MsgWithdrawFromGroupResponse);
+registry.register("/Switcheo.carbon.coin.MsgTransferCoinsWithinAccount", Carbon.Coin.MsgTransferCoinsWithinAccount);
+registry.register("/Switcheo.carbon.coin.MsgTransferCoinsWithinAccountResponse", Carbon.Coin.MsgTransferCoinsWithinAccountResponse);
 registry.register("/Switcheo.carbon.coin.MsgUpdateGroupedTokenConfig", Carbon.Coin.MsgUpdateGroupedTokenConfig);
 registry.register("/Switcheo.carbon.coin.MsgUpdateGroupedTokenConfigResponse", Carbon.Coin.MsgUpdateGroupedTokenConfigResponse);
+registry.register("/Switcheo.carbon.coin.MsgUpdateParams", Carbon.Coin.MsgUpdateParams);
+registry.register("/Switcheo.carbon.coin.MsgUpdateParamsResponse", Carbon.Coin.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.coin.CreateTokenProposal", Carbon.Coin.CreateTokenProposal);
 
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverage", Carbon.Leverage.MsgSetLeverage);
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", Carbon.Leverage.MsgSetLeverageResponse);
+registry.register("/Switcheo.carbon.leverage.MsgSetMarginMode", Carbon.Leverage.MsgSetMarginMode);
+registry.register("/Switcheo.carbon.leverage.MsgSetMarginModeResponse", Carbon.Leverage.MsgSetMarginModeResponse);
+registry.register("/Switcheo.carbon.leverage.MsgUpdateParams", Carbon.Leverage.MsgUpdateParams);
+registry.register("/Switcheo.carbon.leverage.MsgUpdateParamsResponse", Carbon.Leverage.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfile", Carbon.Profile.MsgUpdateProfile);
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfileResponse", Carbon.Profile.MsgUpdateProfileResponse);
@@ -885,6 +895,8 @@ export const TxTypes = {
   "MsgSyncHeadersResponse": "/Switcheo.carbon.headersync.MsgSyncHeadersResponse",
   "MsgInitiateLiquidation": "/Switcheo.carbon.broker.MsgInitiateLiquidation",
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
+  "MsgBrokerUpdateParams": "/Switcheo.carbon.broker.MsgUpdateParams",
+  "MsgBrokerUpdateParamsResponse": "/Switcheo.carbon.broker.MsgUpdateParamsResponse",
   "MsgSetGasCost": "/Switcheo.carbon.fee.MsgSetGasCost",
   "MsgSetGasCostResponse": "/Switcheo.carbon.fee.MsgSetGasCostResponse",
   "MsgSetMinGasPrice": "/Switcheo.carbon.fee.MsgSetMinGasPrice",
@@ -1078,11 +1090,19 @@ export const TxTypes = {
   "MsgDepositToGroupResponse": "/Switcheo.carbon.coin.MsgDepositToGroupResponse",
   "MsgWithdrawFromGroup": "/Switcheo.carbon.coin.MsgWithdrawFromGroup",
   "MsgWithdrawFromGroupResponse": "/Switcheo.carbon.coin.MsgWithdrawFromGroupResponse",
+  "MsgTransferCoinsWithinAccount": "/Switcheo.carbon.coin.MsgTransferCoinsWithinAccount",
+  "MsgTransferCoinsWithinAccountResponse": "/Switcheo.carbon.coin.MsgTransferCoinsWithinAccountResponse",
   "MsgUpdateGroupedTokenConfig": "/Switcheo.carbon.coin.MsgUpdateGroupedTokenConfig",
   "MsgUpdateGroupedTokenConfigResponse": "/Switcheo.carbon.coin.MsgUpdateGroupedTokenConfigResponse",
+  "MsgCoinUpdateParams": "/Switcheo.carbon.coin.MsgUpdateParams",
+  "MsgCoinUpdateParamsResponse": "/Switcheo.carbon.coin.MsgUpdateParamsResponse",
   "CreateTokenProposal": "/Switcheo.carbon.coin.CreateTokenProposal",
   "MsgSetLeverage": "/Switcheo.carbon.leverage.MsgSetLeverage",
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
+  "MsgSetMarginMode": "/Switcheo.carbon.leverage.MsgSetMarginMode",
+  "MsgSetMarginModeResponse": "/Switcheo.carbon.leverage.MsgSetMarginModeResponse",
+  "MsgLeverageUpdateParams": "/Switcheo.carbon.leverage.MsgUpdateParams",
+  "MsgLeverageUpdateParamsResponse": "/Switcheo.carbon.leverage.MsgUpdateParamsResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
   "MsgUpdateProfileResponse": "/Switcheo.carbon.profile.MsgUpdateProfileResponse",
   "MsgCreateSubAccount": "/Switcheo.carbon.subaccount.MsgCreateSubAccount",
@@ -1492,7 +1512,7 @@ export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
 export { Empty } from "./google/protobuf/empty";
-export { Edition, editionFromJSON, editionToJSON, ExtensionRangeOptions_VerificationState, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FeatureSet_FieldPresence, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, FeatureSet_EnumType, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, FeatureSet_RepeatedFieldEncoding, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, FeatureSet_Utf8Validation, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, FeatureSet_MessageEncoding, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, FeatureSet_JsonFormat, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, FieldOptions_FeatureSupport, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
+export { Edition, editionFromJSON, editionToJSON, ExtensionRangeOptions_VerificationState, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FeatureSet_FieldPresence, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, FeatureSet_EnumType, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, FeatureSet_RepeatedFieldEncoding, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, FeatureSet_Utf8Validation, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, FeatureSet_MessageEncoding, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, FeatureSet_JsonFormat, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/alliance/gov";
 export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse, MsgCreateAlliance, MsgCreateAllianceResponse, MsgUpdateAlliance, MsgUpdateAllianceResponse, MsgDeleteAlliance, MsgDeleteAllianceResponse } from "./alliance/alliance/tx";
@@ -1835,6 +1855,10 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "php_generic_services",
+        "type": "bool"
+      },
+      {
         "name": "deprecated",
         "type": "bool"
       },
@@ -1969,11 +1993,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/google.protobuf"
       },
       {
-        "name": "feature_support",
-        "type": "FeatureSupport",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -2028,11 +2047,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "debug_redact",
         "type": "bool"
-      },
-      {
-        "name": "feature_support",
-        "type": "FeatureSupport",
-        "packageName": "/google.protobuf.FieldOptions"
       },
       {
         "name": "uninterpreted_option",
@@ -4572,6 +4586,18 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "Params": [
+      {
+        "name": "futures_invariant_buffer_bps",
+        "type": "string"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "futures_invariant_buffer_bps",
+        "type": "string"
+      }
+    ],
     "GenesisState": [
       {
         "name": "spot_amms",
@@ -4581,6 +4607,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "perps_amms",
         "type": "PerpsAmm[]",
+        "packageName": "/Switcheo.carbon.broker"
+      },
+      {
+        "name": "params",
+        "type": "Params",
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
@@ -4708,6 +4739,14 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.broker"
+      }
+    ],
     "LiquidatorPosition": [
       {
         "name": "market_id",
@@ -4729,7 +4768,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
-    "MsgInitiateLiquidationResponse": []
+    "MsgInitiateLiquidationResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.broker"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.btcx": {
     "DenomInfo": [
@@ -7257,11 +7308,15 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "order_margin",
+        "name": "spot_order_margin",
         "type": "string"
       },
       {
         "name": "position_margin",
+        "type": "string"
+      },
+      {
+        "name": "futures_order_margin",
         "type": "string"
       }
     ],
@@ -7297,7 +7352,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "order",
+        "name": "spot_order",
         "type": "string"
       },
       {
@@ -7306,6 +7361,14 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "futures",
+        "type": "string"
+      },
+      {
+        "name": "futures_order",
         "type": "string"
       }
     ],
@@ -7439,6 +7502,18 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "Params": [
+      {
+        "name": "assets_route_to_futures",
+        "type": "string[]"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "assets_route_to_futures",
+        "type": "string[]"
+      }
+    ],
     "GenesisState": [
       {
         "name": "tokens",
@@ -7468,6 +7543,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "groups",
         "type": "TokenGroupDetails[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "params",
+        "type": "Params",
         "packageName": "/Switcheo.carbon.coin"
       }
     ],
@@ -7584,6 +7664,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "to",
         "type": "string"
+      },
+      {
+        "name": "to_futures_account",
+        "type": "bool"
       }
     ],
     "MsgMintTokenResponse": [],
@@ -7997,6 +8081,26 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
+    "MsgTransferCoinsWithinAccount": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "from",
+        "type": "string"
+      },
+      {
+        "name": "to",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgTransferCoinsWithinAccountResponse": [],
     "MsgUpdateGroupedTokenConfig": [
       {
         "name": "creator",
@@ -8025,6 +8129,18 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.coin"
       }
     ],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
     "CreateTokenProposal": [
       {
         "name": "title",
@@ -8229,6 +8345,14 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.coin"
       }
     ]
   },
@@ -9326,6 +9450,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "address",
         "type": "string"
+      },
+      {
+        "name": "is_cross",
+        "type": "bool"
       }
     ],
     "MarketLeverage": [
@@ -9336,6 +9464,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "leverage",
         "type": "string"
+      },
+      {
+        "name": "is_cross",
+        "type": "bool"
       }
     ],
     "MarketLeverageRecord": [
@@ -9349,10 +9481,35 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.leverage"
       }
     ],
+    "Params": [
+      {
+        "name": "default_leverage",
+        "type": "string"
+      },
+      {
+        "name": "is_cross_default",
+        "type": "bool"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "default_leverage",
+        "type": "string"
+      },
+      {
+        "name": "is_cross_default",
+        "type": "bool"
+      }
+    ],
     "GenesisState": [
       {
         "name": "market_leverage_records",
         "type": "MarketLeverageRecord[]",
+        "packageName": "/Switcheo.carbon.leverage"
+      },
+      {
+        "name": "params",
+        "type": "Params",
         "packageName": "/Switcheo.carbon.leverage"
       }
     ],
@@ -9386,6 +9543,14 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.leverage"
       }
     ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.leverage"
+      }
+    ],
     "MsgSetLeverage": [
       {
         "name": "creator",
@@ -9400,7 +9565,34 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgSetLeverageResponse": []
+    "MsgSetLeverageResponse": [],
+    "MsgSetMarginMode": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "to_cross",
+        "type": "bool"
+      }
+    ],
+    "MsgSetMarginModeResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.leverage"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.liquidation": {
     "MatchedOutstandingPositionEvent": [
@@ -16019,6 +16211,16 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.position"
       }
     ],
+    "OpenPositionIndex": [
+      {
+        "name": "address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "market_ids",
+        "type": "string[]"
+      }
+    ],
     "OpenInterest": [
       {
         "name": "market_id",
@@ -16115,6 +16317,21 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "amount",
         "type": "string"
+      }
+    ],
+    "CrossMaintenanceMargin": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "market_display_name",
+        "type": "string"
+      },
+      {
+        "name": "maintenance_margin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
       }
     ],
     "PositionEvent": [
@@ -16274,6 +16491,19 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "open_interests",
         "type": "OpenInterest[]",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "QueryCrossMaintenanceMarginRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryCrossMaintenanceMarginResponse": [
+      {
+        "name": "cross_maintenance_margins",
+        "type": "CrossMaintenanceMargin[]",
         "packageName": "/Switcheo.carbon.position"
       }
     ],
