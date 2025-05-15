@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { BoolValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.leverage";
 
@@ -13,7 +14,7 @@ export interface Params {
 /** ParamsToUpdate allows optional fields for Params. */
 export interface ParamsToUpdate {
   defaultLeverage: string;
-  isCrossDefault: boolean;
+  isCrossDefault?: boolean;
 }
 
 const baseParams: object = { defaultLeverage: "", isCrossDefault: false };
@@ -83,10 +84,7 @@ export const Params = {
   },
 };
 
-const baseParamsToUpdate: object = {
-  defaultLeverage: "",
-  isCrossDefault: false,
-};
+const baseParamsToUpdate: object = { defaultLeverage: "" };
 
 export const ParamsToUpdate = {
   encode(
@@ -96,8 +94,11 @@ export const ParamsToUpdate = {
     if (message.defaultLeverage !== "") {
       writer.uint32(10).string(message.defaultLeverage);
     }
-    if (message.isCrossDefault === true) {
-      writer.uint32(16).bool(message.isCrossDefault);
+    if (message.isCrossDefault !== undefined) {
+      BoolValue.encode(
+        { value: message.isCrossDefault! },
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -113,7 +114,10 @@ export const ParamsToUpdate = {
           message.defaultLeverage = reader.string();
           break;
         case 2:
-          message.isCrossDefault = reader.bool();
+          message.isCrossDefault = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -132,7 +136,7 @@ export const ParamsToUpdate = {
     message.isCrossDefault =
       object.isCrossDefault !== undefined && object.isCrossDefault !== null
         ? Boolean(object.isCrossDefault)
-        : false;
+        : undefined;
     return message;
   },
 
@@ -148,7 +152,7 @@ export const ParamsToUpdate = {
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
     message.defaultLeverage = object.defaultLeverage ?? "";
-    message.isCrossDefault = object.isCrossDefault ?? false;
+    message.isCrossDefault = object.isCrossDefault ?? undefined;
     return message;
   },
 };
