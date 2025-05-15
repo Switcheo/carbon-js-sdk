@@ -140,6 +140,8 @@ registry.register("/Switcheo.carbon.headersync.MsgSyncHeadersResponse", PolyNetw
 
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidation", Carbon.Broker.MsgInitiateLiquidation);
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", Carbon.Broker.MsgInitiateLiquidationResponse);
+registry.register("/Switcheo.carbon.broker.MsgUpdateParams", Carbon.Broker.MsgUpdateParams);
+registry.register("/Switcheo.carbon.broker.MsgUpdateParamsResponse", Carbon.Broker.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetGasCost", Carbon.Fee.MsgSetGasCost);
 registry.register("/Switcheo.carbon.fee.MsgSetGasCostResponse", Carbon.Fee.MsgSetGasCostResponse);
@@ -893,6 +895,8 @@ export const TxTypes = {
   "MsgSyncHeadersResponse": "/Switcheo.carbon.headersync.MsgSyncHeadersResponse",
   "MsgInitiateLiquidation": "/Switcheo.carbon.broker.MsgInitiateLiquidation",
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
+  "MsgBrokerUpdateParams": "/Switcheo.carbon.broker.MsgUpdateParams",
+  "MsgBrokerUpdateParamsResponse": "/Switcheo.carbon.broker.MsgUpdateParamsResponse",
   "MsgSetGasCost": "/Switcheo.carbon.fee.MsgSetGasCost",
   "MsgSetGasCostResponse": "/Switcheo.carbon.fee.MsgSetGasCostResponse",
   "MsgSetMinGasPrice": "/Switcheo.carbon.fee.MsgSetMinGasPrice",
@@ -4582,6 +4586,18 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "Params": [
+      {
+        "name": "futures_invariant_buffer_bps",
+        "type": "string"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "futures_invariant_buffer_bps",
+        "type": "string"
+      }
+    ],
     "GenesisState": [
       {
         "name": "spot_amms",
@@ -4591,6 +4607,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "perps_amms",
         "type": "PerpsAmm[]",
+        "packageName": "/Switcheo.carbon.broker"
+      },
+      {
+        "name": "params",
+        "type": "Params",
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
@@ -4718,6 +4739,14 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.broker"
+      }
+    ],
     "LiquidatorPosition": [
       {
         "name": "market_id",
@@ -4739,7 +4768,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
-    "MsgInitiateLiquidationResponse": []
+    "MsgInitiateLiquidationResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "ParamsToUpdate",
+        "packageName": "/Switcheo.carbon.broker"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.btcx": {
     "DenomInfo": [
