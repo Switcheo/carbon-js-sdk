@@ -49,6 +49,14 @@ export interface QueryResultsLatestResponse {
   pagination?: PageResponse;
 }
 
+export interface QueryResultLatestRequest {
+  oracleId: string;
+}
+
+export interface QueryResultLatestResponse {
+  result?: Result;
+}
+
 export interface QueryVoterPowerRequest {
   address: string;
 }
@@ -717,6 +725,138 @@ export const QueryResultsLatestResponse = {
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryResultLatestRequest: object = { oracleId: "" };
+
+export const QueryResultLatestRequest = {
+  encode(
+    message: QueryResultLatestRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.oracleId !== "") {
+      writer.uint32(10).string(message.oracleId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryResultLatestRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryResultLatestRequest,
+    } as QueryResultLatestRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.oracleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryResultLatestRequest {
+    const message = {
+      ...baseQueryResultLatestRequest,
+    } as QueryResultLatestRequest;
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryResultLatestRequest): unknown {
+    const obj: any = {};
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryResultLatestRequest>
+  ): QueryResultLatestRequest {
+    const message = {
+      ...baseQueryResultLatestRequest,
+    } as QueryResultLatestRequest;
+    message.oracleId = object.oracleId ?? "";
+    return message;
+  },
+};
+
+const baseQueryResultLatestResponse: object = {};
+
+export const QueryResultLatestResponse = {
+  encode(
+    message: QueryResultLatestResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.result !== undefined) {
+      Result.encode(message.result, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryResultLatestResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryResultLatestResponse,
+    } as QueryResultLatestResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.result = Result.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryResultLatestResponse {
+    const message = {
+      ...baseQueryResultLatestResponse,
+    } as QueryResultLatestResponse;
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? Result.fromJSON(object.result)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryResultLatestResponse): unknown {
+    const obj: any = {};
+    message.result !== undefined &&
+      (obj.result = message.result ? Result.toJSON(message.result) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryResultLatestResponse>
+  ): QueryResultLatestResponse {
+    const message = {
+      ...baseQueryResultLatestResponse,
+    } as QueryResultLatestResponse;
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? Result.fromPartial(object.result)
         : undefined;
     return message;
   },
@@ -2393,6 +2533,10 @@ export interface Query {
   ResultsLatest(
     request: QueryResultsLatestRequest
   ): Promise<QueryResultsLatestResponse>;
+  /** Get latest result for a specific oracle */
+  ResultLatest(
+    request: QueryResultLatestRequest
+  ): Promise<QueryResultLatestResponse>;
   /** Get voting power for an address */
   VoterPower(request: QueryVoterPowerRequest): Promise<QueryVoterPowerResponse>;
   /** Get all slash counters */
@@ -2437,6 +2581,7 @@ export class QueryClientImpl implements Query {
     this.OracleAll = this.OracleAll.bind(this);
     this.Results = this.Results.bind(this);
     this.ResultsLatest = this.ResultsLatest.bind(this);
+    this.ResultLatest = this.ResultLatest.bind(this);
     this.VoterPower = this.VoterPower.bind(this);
     this.SlashCounterAll = this.SlashCounterAll.bind(this);
     this.SlashCounter = this.SlashCounter.bind(this);
@@ -2496,6 +2641,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryResultsLatestResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ResultLatest(
+    request: QueryResultLatestRequest
+  ): Promise<QueryResultLatestResponse> {
+    const data = QueryResultLatestRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "ResultLatest",
+      data
+    );
+    return promise.then((data) =>
+      QueryResultLatestResponse.decode(new _m0.Reader(data))
     );
   }
 

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { TokenPrice, PriceSet } from "./pricing";
+import { TokenPrice, PriceSet, VolatilityScoreDetails } from "./pricing";
 import {
   PageRequest,
   PageResponse,
@@ -67,6 +67,23 @@ export interface QueryTokenPriceAllRequest {
 
 export interface QueryTokenPriceAllResponse {
   tokenPrices: TokenPrice[];
+  pagination?: PageResponse;
+}
+
+export interface QueryVolatilityScoreRequest {
+  marketId: string;
+}
+
+export interface QueryVolatilityScoreResponse {
+  volatilityScoreDetails?: VolatilityScoreDetails;
+}
+
+export interface QueryVolatilityScoreAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryVolatilityScoreAllResponse {
+  allVolatilityScoreDetails: VolatilityScoreDetails[];
   pagination?: PageResponse;
 }
 
@@ -986,6 +1003,313 @@ export const QueryTokenPriceAllResponse = {
   },
 };
 
+const baseQueryVolatilityScoreRequest: object = { marketId: "" };
+
+export const QueryVolatilityScoreRequest = {
+  encode(
+    message: QueryVolatilityScoreRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryVolatilityScoreRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryVolatilityScoreRequest,
+    } as QueryVolatilityScoreRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryVolatilityScoreRequest {
+    const message = {
+      ...baseQueryVolatilityScoreRequest,
+    } as QueryVolatilityScoreRequest;
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryVolatilityScoreRequest): unknown {
+    const obj: any = {};
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryVolatilityScoreRequest>
+  ): QueryVolatilityScoreRequest {
+    const message = {
+      ...baseQueryVolatilityScoreRequest,
+    } as QueryVolatilityScoreRequest;
+    message.marketId = object.marketId ?? "";
+    return message;
+  },
+};
+
+const baseQueryVolatilityScoreResponse: object = {};
+
+export const QueryVolatilityScoreResponse = {
+  encode(
+    message: QueryVolatilityScoreResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.volatilityScoreDetails !== undefined) {
+      VolatilityScoreDetails.encode(
+        message.volatilityScoreDetails,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryVolatilityScoreResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryVolatilityScoreResponse,
+    } as QueryVolatilityScoreResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.volatilityScoreDetails = VolatilityScoreDetails.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryVolatilityScoreResponse {
+    const message = {
+      ...baseQueryVolatilityScoreResponse,
+    } as QueryVolatilityScoreResponse;
+    message.volatilityScoreDetails =
+      object.volatilityScoreDetails !== undefined &&
+      object.volatilityScoreDetails !== null
+        ? VolatilityScoreDetails.fromJSON(object.volatilityScoreDetails)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryVolatilityScoreResponse): unknown {
+    const obj: any = {};
+    message.volatilityScoreDetails !== undefined &&
+      (obj.volatilityScoreDetails = message.volatilityScoreDetails
+        ? VolatilityScoreDetails.toJSON(message.volatilityScoreDetails)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryVolatilityScoreResponse>
+  ): QueryVolatilityScoreResponse {
+    const message = {
+      ...baseQueryVolatilityScoreResponse,
+    } as QueryVolatilityScoreResponse;
+    message.volatilityScoreDetails =
+      object.volatilityScoreDetails !== undefined &&
+      object.volatilityScoreDetails !== null
+        ? VolatilityScoreDetails.fromPartial(object.volatilityScoreDetails)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryVolatilityScoreAllRequest: object = {};
+
+export const QueryVolatilityScoreAllRequest = {
+  encode(
+    message: QueryVolatilityScoreAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryVolatilityScoreAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryVolatilityScoreAllRequest,
+    } as QueryVolatilityScoreAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryVolatilityScoreAllRequest {
+    const message = {
+      ...baseQueryVolatilityScoreAllRequest,
+    } as QueryVolatilityScoreAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryVolatilityScoreAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryVolatilityScoreAllRequest>
+  ): QueryVolatilityScoreAllRequest {
+    const message = {
+      ...baseQueryVolatilityScoreAllRequest,
+    } as QueryVolatilityScoreAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryVolatilityScoreAllResponse: object = {};
+
+export const QueryVolatilityScoreAllResponse = {
+  encode(
+    message: QueryVolatilityScoreAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.allVolatilityScoreDetails) {
+      VolatilityScoreDetails.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryVolatilityScoreAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryVolatilityScoreAllResponse,
+    } as QueryVolatilityScoreAllResponse;
+    message.allVolatilityScoreDetails = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.allVolatilityScoreDetails.push(
+            VolatilityScoreDetails.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryVolatilityScoreAllResponse {
+    const message = {
+      ...baseQueryVolatilityScoreAllResponse,
+    } as QueryVolatilityScoreAllResponse;
+    message.allVolatilityScoreDetails = (
+      object.allVolatilityScoreDetails ?? []
+    ).map((e: any) => VolatilityScoreDetails.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryVolatilityScoreAllResponse): unknown {
+    const obj: any = {};
+    if (message.allVolatilityScoreDetails) {
+      obj.allVolatilityScoreDetails = message.allVolatilityScoreDetails.map(
+        (e) => (e ? VolatilityScoreDetails.toJSON(e) : undefined)
+      );
+    } else {
+      obj.allVolatilityScoreDetails = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryVolatilityScoreAllResponse>
+  ): QueryVolatilityScoreAllResponse {
+    const message = {
+      ...baseQueryVolatilityScoreAllResponse,
+    } as QueryVolatilityScoreAllResponse;
+    message.allVolatilityScoreDetails = (
+      object.allVolatilityScoreDetails ?? []
+    ).map((e) => VolatilityScoreDetails.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get prices for a market */
@@ -1004,6 +1328,14 @@ export interface Query {
   TokenPriceAll(
     request: QueryTokenPriceAllRequest
   ): Promise<QueryTokenPriceAllResponse>;
+  /** Get volatility score and constituents for a markets */
+  VolatilityScore(
+    request: QueryVolatilityScoreRequest
+  ): Promise<QueryVolatilityScoreResponse>;
+  /** Get volatility score and constituents for all markets */
+  VolatilityScoreAll(
+    request: QueryVolatilityScoreAllRequest
+  ): Promise<QueryVolatilityScoreAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1016,6 +1348,8 @@ export class QueryClientImpl implements Query {
     this.Params = this.Params.bind(this);
     this.TokenPrice = this.TokenPrice.bind(this);
     this.TokenPriceAll = this.TokenPriceAll.bind(this);
+    this.VolatilityScore = this.VolatilityScore.bind(this);
+    this.VolatilityScoreAll = this.VolatilityScoreAll.bind(this);
   }
   PriceSet(request: QueryPriceSetRequest): Promise<QueryPriceSetResponse> {
     const data = QueryPriceSetRequest.encode(request).finish();
@@ -1092,6 +1426,34 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryTokenPriceAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  VolatilityScore(
+    request: QueryVolatilityScoreRequest
+  ): Promise<QueryVolatilityScoreResponse> {
+    const data = QueryVolatilityScoreRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Query",
+      "VolatilityScore",
+      data
+    );
+    return promise.then((data) =>
+      QueryVolatilityScoreResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  VolatilityScoreAll(
+    request: QueryVolatilityScoreAllRequest
+  ): Promise<QueryVolatilityScoreAllResponse> {
+    const data = QueryVolatilityScoreAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Query",
+      "VolatilityScoreAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryVolatilityScoreAllResponse.decode(new _m0.Reader(data))
     );
   }
 }
