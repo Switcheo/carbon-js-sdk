@@ -76,6 +76,7 @@ export interface ExecutionOnCarbonErrorEvent {
   payloadType: string;
   dataEncoding: string;
   data: Uint8Array;
+  connectionId: string;
 }
 
 /** Event signifying that bridge has sent an outbound message */
@@ -1211,6 +1212,7 @@ const baseExecutionOnCarbonErrorEvent: object = {
   nonce: Long.UZERO,
   payloadType: "",
   dataEncoding: "",
+  connectionId: "",
 };
 
 export const ExecutionOnCarbonErrorEvent = {
@@ -1229,6 +1231,9 @@ export const ExecutionOnCarbonErrorEvent = {
     }
     if (message.data.length !== 0) {
       writer.uint32(34).bytes(message.data);
+    }
+    if (message.connectionId !== "") {
+      writer.uint32(42).string(message.connectionId);
     }
     return writer;
   },
@@ -1258,6 +1263,9 @@ export const ExecutionOnCarbonErrorEvent = {
         case 4:
           message.data = reader.bytes();
           break;
+        case 5:
+          message.connectionId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1286,6 +1294,10 @@ export const ExecutionOnCarbonErrorEvent = {
       object.data !== undefined && object.data !== null
         ? bytesFromBase64(object.data)
         : new Uint8Array();
+    message.connectionId =
+      object.connectionId !== undefined && object.connectionId !== null
+        ? String(object.connectionId)
+        : "";
     return message;
   },
 
@@ -1301,6 +1313,8 @@ export const ExecutionOnCarbonErrorEvent = {
       (obj.data = base64FromBytes(
         message.data !== undefined ? message.data : new Uint8Array()
       ));
+    message.connectionId !== undefined &&
+      (obj.connectionId = message.connectionId);
     return obj;
   },
 
@@ -1317,6 +1331,7 @@ export const ExecutionOnCarbonErrorEvent = {
     message.payloadType = object.payloadType ?? "";
     message.dataEncoding = object.dataEncoding ?? "";
     message.data = object.data ?? new Uint8Array();
+    message.connectionId = object.connectionId ?? "";
     return message;
   },
 };
