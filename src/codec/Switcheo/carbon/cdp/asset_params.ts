@@ -19,7 +19,6 @@ export interface AssetParams {
   liquidationDiscount: string;
   supplyCap: string;
   borrowCap: string;
-  isExitOnly: boolean;
 }
 
 export interface AssetUtilization {
@@ -38,7 +37,6 @@ export interface UpdateAssetParams {
   liquidationDiscount: string;
   supplyCap: string;
   borrowCap: string;
-  isExitOnly: boolean;
 }
 
 const baseAssetParamsAPI: object = { tokenName: "" };
@@ -124,7 +122,6 @@ const baseAssetParams: object = {
   liquidationDiscount: "",
   supplyCap: "",
   borrowCap: "",
-  isExitOnly: false,
 };
 
 export const AssetParams = {
@@ -155,9 +152,6 @@ export const AssetParams = {
     }
     if (message.borrowCap !== "") {
       writer.uint32(74).string(message.borrowCap);
-    }
-    if (message.isExitOnly === true) {
-      writer.uint32(80).bool(message.isExitOnly);
     }
     return writer;
   },
@@ -192,9 +186,6 @@ export const AssetParams = {
           break;
         case 9:
           message.borrowCap = reader.string();
-          break;
-        case 10:
-          message.isExitOnly = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -241,10 +232,6 @@ export const AssetParams = {
       object.borrowCap !== undefined && object.borrowCap !== null
         ? String(object.borrowCap)
         : "";
-    message.isExitOnly =
-      object.isExitOnly !== undefined && object.isExitOnly !== null
-        ? Boolean(object.isExitOnly)
-        : false;
     return message;
   },
 
@@ -263,7 +250,6 @@ export const AssetParams = {
       (obj.liquidationDiscount = message.liquidationDiscount);
     message.supplyCap !== undefined && (obj.supplyCap = message.supplyCap);
     message.borrowCap !== undefined && (obj.borrowCap = message.borrowCap);
-    message.isExitOnly !== undefined && (obj.isExitOnly = message.isExitOnly);
     return obj;
   },
 
@@ -278,7 +264,6 @@ export const AssetParams = {
     message.liquidationDiscount = object.liquidationDiscount ?? "";
     message.supplyCap = object.supplyCap ?? "";
     message.borrowCap = object.borrowCap ?? "";
-    message.isExitOnly = object.isExitOnly ?? false;
     return message;
   },
 };
@@ -387,7 +372,6 @@ const baseUpdateAssetParams: object = {
   liquidationDiscount: "",
   supplyCap: "",
   borrowCap: "",
-  isExitOnly: false,
 };
 
 export const UpdateAssetParams = {
@@ -424,9 +408,6 @@ export const UpdateAssetParams = {
     }
     if (message.borrowCap !== "") {
       writer.uint32(66).string(message.borrowCap);
-    }
-    if (message.isExitOnly === true) {
-      writer.uint32(72).bool(message.isExitOnly);
     }
     return writer;
   },
@@ -467,9 +448,6 @@ export const UpdateAssetParams = {
           break;
         case 8:
           message.borrowCap = reader.string();
-          break;
-        case 9:
-          message.isExitOnly = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -516,10 +494,6 @@ export const UpdateAssetParams = {
       object.borrowCap !== undefined && object.borrowCap !== null
         ? String(object.borrowCap)
         : "";
-    message.isExitOnly =
-      object.isExitOnly !== undefined && object.isExitOnly !== null
-        ? Boolean(object.isExitOnly)
-        : false;
     return message;
   },
 
@@ -538,7 +512,6 @@ export const UpdateAssetParams = {
       (obj.liquidationDiscount = message.liquidationDiscount);
     message.supplyCap !== undefined && (obj.supplyCap = message.supplyCap);
     message.borrowCap !== undefined && (obj.borrowCap = message.borrowCap);
-    message.isExitOnly !== undefined && (obj.isExitOnly = message.isExitOnly);
     return obj;
   },
 
@@ -553,7 +526,6 @@ export const UpdateAssetParams = {
     message.liquidationDiscount = object.liquidationDiscount ?? "";
     message.supplyCap = object.supplyCap ?? "";
     message.borrowCap = object.borrowCap ?? "";
-    message.isExitOnly = object.isExitOnly ?? false;
     return message;
   },
 };

@@ -2,11 +2,6 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
-import {
-  StringValue,
-  UInt64Value,
-  BoolValue,
-} from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.bridge";
 
@@ -41,21 +36,6 @@ export interface Params {
   /** refund_address for deposits that fail due to wrong receiver address */
   refundAddress: string;
   axelarCallDenom: string;
-  withdrawalWindow?: Duration;
-  withdrawalThresholdUsd: string;
-  withdrawalsPaused: boolean;
-}
-
-export interface ParamsToUpdate {
-  axelarIbcChannel?: string;
-  ibcTimeoutHeightOffset?: Long;
-  relayWhitelistDuration?: Duration;
-  maxRelayExpiryDuration?: Duration;
-  refundAddress?: string;
-  axelarCallDenom?: string;
-  withdrawalWindow?: Duration;
-  withdrawalThresholdUsd: string;
-  withdrawalsPaused?: boolean;
 }
 
 const baseParams: object = {
@@ -63,8 +43,6 @@ const baseParams: object = {
   ibcTimeoutHeightOffset: Long.UZERO,
   refundAddress: "",
   axelarCallDenom: "",
-  withdrawalThresholdUsd: "",
-  withdrawalsPaused: false,
 };
 
 export const Params = {
@@ -95,18 +73,6 @@ export const Params = {
     }
     if (message.axelarCallDenom !== "") {
       writer.uint32(50).string(message.axelarCallDenom);
-    }
-    if (message.withdrawalWindow !== undefined) {
-      Duration.encode(
-        message.withdrawalWindow,
-        writer.uint32(58).fork()
-      ).ldelim();
-    }
-    if (message.withdrawalThresholdUsd !== "") {
-      writer.uint32(66).string(message.withdrawalThresholdUsd);
-    }
-    if (message.withdrawalsPaused === true) {
-      writer.uint32(72).bool(message.withdrawalsPaused);
     }
     return writer;
   },
@@ -141,15 +107,6 @@ export const Params = {
           break;
         case 6:
           message.axelarCallDenom = reader.string();
-          break;
-        case 7:
-          message.withdrawalWindow = Duration.decode(reader, reader.uint32());
-          break;
-        case 8:
-          message.withdrawalThresholdUsd = reader.string();
-          break;
-        case 9:
-          message.withdrawalsPaused = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -188,20 +145,6 @@ export const Params = {
       object.axelarCallDenom !== undefined && object.axelarCallDenom !== null
         ? String(object.axelarCallDenom)
         : "";
-    message.withdrawalWindow =
-      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
-        ? Duration.fromJSON(object.withdrawalWindow)
-        : undefined;
-    message.withdrawalThresholdUsd =
-      object.withdrawalThresholdUsd !== undefined &&
-      object.withdrawalThresholdUsd !== null
-        ? String(object.withdrawalThresholdUsd)
-        : "";
-    message.withdrawalsPaused =
-      object.withdrawalsPaused !== undefined &&
-      object.withdrawalsPaused !== null
-        ? Boolean(object.withdrawalsPaused)
-        : false;
     return message;
   },
 
@@ -225,14 +168,6 @@ export const Params = {
       (obj.refundAddress = message.refundAddress);
     message.axelarCallDenom !== undefined &&
       (obj.axelarCallDenom = message.axelarCallDenom);
-    message.withdrawalWindow !== undefined &&
-      (obj.withdrawalWindow = message.withdrawalWindow
-        ? Duration.toJSON(message.withdrawalWindow)
-        : undefined);
-    message.withdrawalThresholdUsd !== undefined &&
-      (obj.withdrawalThresholdUsd = message.withdrawalThresholdUsd);
-    message.withdrawalsPaused !== undefined &&
-      (obj.withdrawalsPaused = message.withdrawalsPaused);
     return obj;
   },
 
@@ -256,241 +191,6 @@ export const Params = {
         : undefined;
     message.refundAddress = object.refundAddress ?? "";
     message.axelarCallDenom = object.axelarCallDenom ?? "";
-    message.withdrawalWindow =
-      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
-        ? Duration.fromPartial(object.withdrawalWindow)
-        : undefined;
-    message.withdrawalThresholdUsd = object.withdrawalThresholdUsd ?? "";
-    message.withdrawalsPaused = object.withdrawalsPaused ?? false;
-    return message;
-  },
-};
-
-const baseParamsToUpdate: object = { withdrawalThresholdUsd: "" };
-
-export const ParamsToUpdate = {
-  encode(
-    message: ParamsToUpdate,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.axelarIbcChannel !== undefined) {
-      StringValue.encode(
-        { value: message.axelarIbcChannel! },
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    if (message.ibcTimeoutHeightOffset !== undefined) {
-      UInt64Value.encode(
-        { value: message.ibcTimeoutHeightOffset! },
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    if (message.relayWhitelistDuration !== undefined) {
-      Duration.encode(
-        message.relayWhitelistDuration,
-        writer.uint32(26).fork()
-      ).ldelim();
-    }
-    if (message.maxRelayExpiryDuration !== undefined) {
-      Duration.encode(
-        message.maxRelayExpiryDuration,
-        writer.uint32(34).fork()
-      ).ldelim();
-    }
-    if (message.refundAddress !== undefined) {
-      StringValue.encode(
-        { value: message.refundAddress! },
-        writer.uint32(42).fork()
-      ).ldelim();
-    }
-    if (message.axelarCallDenom !== undefined) {
-      StringValue.encode(
-        { value: message.axelarCallDenom! },
-        writer.uint32(50).fork()
-      ).ldelim();
-    }
-    if (message.withdrawalWindow !== undefined) {
-      Duration.encode(
-        message.withdrawalWindow,
-        writer.uint32(58).fork()
-      ).ldelim();
-    }
-    if (message.withdrawalThresholdUsd !== "") {
-      writer.uint32(66).string(message.withdrawalThresholdUsd);
-    }
-    if (message.withdrawalsPaused !== undefined) {
-      BoolValue.encode(
-        { value: message.withdrawalsPaused! },
-        writer.uint32(74).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ParamsToUpdate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.axelarIbcChannel = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        case 2:
-          message.ibcTimeoutHeightOffset = UInt64Value.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        case 3:
-          message.relayWhitelistDuration = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        case 4:
-          message.maxRelayExpiryDuration = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        case 5:
-          message.refundAddress = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        case 6:
-          message.axelarCallDenom = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        case 7:
-          message.withdrawalWindow = Duration.decode(reader, reader.uint32());
-          break;
-        case 8:
-          message.withdrawalThresholdUsd = reader.string();
-          break;
-        case 9:
-          message.withdrawalsPaused = BoolValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.axelarIbcChannel =
-      object.axelarIbcChannel !== undefined && object.axelarIbcChannel !== null
-        ? String(object.axelarIbcChannel)
-        : undefined;
-    message.ibcTimeoutHeightOffset =
-      object.ibcTimeoutHeightOffset !== undefined &&
-      object.ibcTimeoutHeightOffset !== null
-        ? Long.fromValue(object.ibcTimeoutHeightOffset)
-        : undefined;
-    message.relayWhitelistDuration =
-      object.relayWhitelistDuration !== undefined &&
-      object.relayWhitelistDuration !== null
-        ? Duration.fromJSON(object.relayWhitelistDuration)
-        : undefined;
-    message.maxRelayExpiryDuration =
-      object.maxRelayExpiryDuration !== undefined &&
-      object.maxRelayExpiryDuration !== null
-        ? Duration.fromJSON(object.maxRelayExpiryDuration)
-        : undefined;
-    message.refundAddress =
-      object.refundAddress !== undefined && object.refundAddress !== null
-        ? String(object.refundAddress)
-        : undefined;
-    message.axelarCallDenom =
-      object.axelarCallDenom !== undefined && object.axelarCallDenom !== null
-        ? String(object.axelarCallDenom)
-        : undefined;
-    message.withdrawalWindow =
-      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
-        ? Duration.fromJSON(object.withdrawalWindow)
-        : undefined;
-    message.withdrawalThresholdUsd =
-      object.withdrawalThresholdUsd !== undefined &&
-      object.withdrawalThresholdUsd !== null
-        ? String(object.withdrawalThresholdUsd)
-        : "";
-    message.withdrawalsPaused =
-      object.withdrawalsPaused !== undefined &&
-      object.withdrawalsPaused !== null
-        ? Boolean(object.withdrawalsPaused)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: ParamsToUpdate): unknown {
-    const obj: any = {};
-    message.axelarIbcChannel !== undefined &&
-      (obj.axelarIbcChannel = message.axelarIbcChannel);
-    message.ibcTimeoutHeightOffset !== undefined &&
-      (obj.ibcTimeoutHeightOffset = message.ibcTimeoutHeightOffset);
-    message.relayWhitelistDuration !== undefined &&
-      (obj.relayWhitelistDuration = message.relayWhitelistDuration
-        ? Duration.toJSON(message.relayWhitelistDuration)
-        : undefined);
-    message.maxRelayExpiryDuration !== undefined &&
-      (obj.maxRelayExpiryDuration = message.maxRelayExpiryDuration
-        ? Duration.toJSON(message.maxRelayExpiryDuration)
-        : undefined);
-    message.refundAddress !== undefined &&
-      (obj.refundAddress = message.refundAddress);
-    message.axelarCallDenom !== undefined &&
-      (obj.axelarCallDenom = message.axelarCallDenom);
-    message.withdrawalWindow !== undefined &&
-      (obj.withdrawalWindow = message.withdrawalWindow
-        ? Duration.toJSON(message.withdrawalWindow)
-        : undefined);
-    message.withdrawalThresholdUsd !== undefined &&
-      (obj.withdrawalThresholdUsd = message.withdrawalThresholdUsd);
-    message.withdrawalsPaused !== undefined &&
-      (obj.withdrawalsPaused = message.withdrawalsPaused);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.axelarIbcChannel = object.axelarIbcChannel ?? undefined;
-    message.ibcTimeoutHeightOffset =
-      object.ibcTimeoutHeightOffset !== undefined &&
-      object.ibcTimeoutHeightOffset !== null
-        ? Long.fromValue(object.ibcTimeoutHeightOffset)
-        : undefined;
-    message.relayWhitelistDuration =
-      object.relayWhitelistDuration !== undefined &&
-      object.relayWhitelistDuration !== null
-        ? Duration.fromPartial(object.relayWhitelistDuration)
-        : undefined;
-    message.maxRelayExpiryDuration =
-      object.maxRelayExpiryDuration !== undefined &&
-      object.maxRelayExpiryDuration !== null
-        ? Duration.fromPartial(object.maxRelayExpiryDuration)
-        : undefined;
-    message.refundAddress = object.refundAddress ?? undefined;
-    message.axelarCallDenom = object.axelarCallDenom ?? undefined;
-    message.withdrawalWindow =
-      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
-        ? Duration.fromPartial(object.withdrawalWindow)
-        : undefined;
-    message.withdrawalThresholdUsd = object.withdrawalThresholdUsd ?? "";
-    message.withdrawalsPaused = object.withdrawalsPaused ?? undefined;
     return message;
   },
 };

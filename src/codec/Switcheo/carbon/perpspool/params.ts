@@ -3,11 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
-import {
-  UInt64Value,
-  StringValue,
-  BoolValue,
-} from "../../../google/protobuf/wrappers";
+import { UInt64Value, StringValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -46,7 +42,6 @@ export interface Params {
   userVaultTradeCommissionRatio: string;
   userVaultFeeCommissionRatio: string;
   stalePriceAllowance?: Duration;
-  volatilitySpreadEnabled: boolean;
 }
 
 export interface ParamsToUpdate {
@@ -68,7 +63,6 @@ export interface ParamsToUpdate {
   userVaultTradeCommissionRatio: string;
   userVaultFeeCommissionRatio: string;
   stalePriceAllowance?: Duration;
-  volatilitySpreadEnabled?: boolean;
 }
 
 const baseParams: object = {
@@ -83,7 +77,6 @@ const baseParams: object = {
   userVaultWithdrawalFeeCap: "",
   userVaultTradeCommissionRatio: "",
   userVaultFeeCommissionRatio: "",
-  volatilitySpreadEnabled: false,
 };
 
 export const Params = {
@@ -167,9 +160,6 @@ export const Params = {
         message.stalePriceAllowance,
         writer.uint32(146).fork()
       ).ldelim();
-    }
-    if (message.volatilitySpreadEnabled === true) {
-      writer.uint32(152).bool(message.volatilitySpreadEnabled);
     }
     return writer;
   },
@@ -255,9 +245,6 @@ export const Params = {
             reader,
             reader.uint32()
           );
-          break;
-        case 19:
-          message.volatilitySpreadEnabled = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -359,11 +346,6 @@ export const Params = {
       object.stalePriceAllowance !== null
         ? Duration.fromJSON(object.stalePriceAllowance)
         : undefined;
-    message.volatilitySpreadEnabled =
-      object.volatilitySpreadEnabled !== undefined &&
-      object.volatilitySpreadEnabled !== null
-        ? Boolean(object.volatilitySpreadEnabled)
-        : false;
     return message;
   },
 
@@ -425,8 +407,6 @@ export const Params = {
       (obj.stalePriceAllowance = message.stalePriceAllowance
         ? Duration.toJSON(message.stalePriceAllowance)
         : undefined);
-    message.volatilitySpreadEnabled !== undefined &&
-      (obj.volatilitySpreadEnabled = message.volatilitySpreadEnabled);
     return obj;
   },
 
@@ -485,7 +465,6 @@ export const Params = {
       object.stalePriceAllowance !== null
         ? Duration.fromPartial(object.stalePriceAllowance)
         : undefined;
-    message.volatilitySpreadEnabled = object.volatilitySpreadEnabled ?? false;
     return message;
   },
 };
@@ -590,12 +569,6 @@ export const ParamsToUpdate = {
         writer.uint32(146).fork()
       ).ldelim();
     }
-    if (message.volatilitySpreadEnabled !== undefined) {
-      BoolValue.encode(
-        { value: message.volatilitySpreadEnabled! },
-        writer.uint32(154).fork()
-      ).ldelim();
-    }
     return writer;
   },
 
@@ -686,12 +659,6 @@ export const ParamsToUpdate = {
             reader,
             reader.uint32()
           );
-          break;
-        case 19:
-          message.volatilitySpreadEnabled = BoolValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -793,11 +760,6 @@ export const ParamsToUpdate = {
       object.stalePriceAllowance !== null
         ? Duration.fromJSON(object.stalePriceAllowance)
         : undefined;
-    message.volatilitySpreadEnabled =
-      object.volatilitySpreadEnabled !== undefined &&
-      object.volatilitySpreadEnabled !== null
-        ? Boolean(object.volatilitySpreadEnabled)
-        : undefined;
     return message;
   },
 
@@ -857,8 +819,6 @@ export const ParamsToUpdate = {
       (obj.stalePriceAllowance = message.stalePriceAllowance
         ? Duration.toJSON(message.stalePriceAllowance)
         : undefined);
-    message.volatilitySpreadEnabled !== undefined &&
-      (obj.volatilitySpreadEnabled = message.volatilitySpreadEnabled);
     return obj;
   },
 
@@ -917,8 +877,6 @@ export const ParamsToUpdate = {
       object.stalePriceAllowance !== null
         ? Duration.fromPartial(object.stalePriceAllowance)
         : undefined;
-    message.volatilitySpreadEnabled =
-      object.volatilitySpreadEnabled ?? undefined;
     return message;
   },
 };
