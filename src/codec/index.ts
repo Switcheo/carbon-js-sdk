@@ -15266,6 +15266,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "volatility_spread_enabled",
         "type": "bool"
+      },
+      {
+        "name": "volatility_spread_blacklist",
+        "type": "string"
       }
     ],
     "ParamsToUpdate": [
@@ -15345,6 +15349,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "volatility_spread_enabled",
         "type": "bool"
+      },
+      {
+        "name": "volatility_spread_blacklist",
+        "type": "string"
       }
     ],
     "GenesisState": [
