@@ -4,6 +4,4 @@ export { default as CarbonQueryClient } from "./CarbonQueryClient";
 export { default as ETHClient } from "./ETHClient";
 export { default as HydrogenClient } from "./HydrogenClient";
 export { default as InsightsQueryClient } from "./InsightsQueryClient";
-export { default as NEOClient } from "./NEOClient";
 export { default as TokenClient } from "./TokenClient";
-export { default as ZILClient } from "./ZILClient";

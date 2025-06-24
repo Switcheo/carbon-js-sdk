@@ -14,10 +14,9 @@ import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import BigNumber from "bignumber.js";
 import * as clients from "./clients";
-import { CarbonQueryClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { CarbonQueryClient, HydrogenClient, InsightsQueryClient, TokenClient } from "./clients";
 import GasFee from "./clients/GasFee";
 import GrpcQueryClient from "./clients/GrpcQueryClient";
-import N3Client from "./clients/N3Client";
 import {
   AdminModule,
   AllianceModule,
@@ -50,7 +49,6 @@ import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./
 import { MetaMask } from "./provider/metamask/MetaMask";
 import RainbowKitAccount from "./provider/rainbowKit/RainbowKitAccount";
 import { SWTHAddressOptions } from "./util/address";
-import { Blockchain } from "./util/blockchain";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
 import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, EvmWalletOpts, RainbowKitWalletOpts } from "./wallet";
@@ -151,9 +149,6 @@ class CarbonSDK {
   bridge: BridgeModule;
   otc: OTCModule;
 
-  neo: NEOClient;
-  zil: ZILClient;
-  n3: N3Client;
   chainId: string;
   evmChainId: string;
 
@@ -216,21 +211,6 @@ class CarbonSDK {
     this.evmmerge = new EvmMergeModule(this);
     this.bridge = new BridgeModule(this);
     this.otc = new OTCModule(this);
-
-    this.neo = NEOClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Neo,
-    });
-
-    this.n3 = N3Client.instance({
-      configProvider: this,
-      blockchain: Blockchain.Neo3,
-    });
-
-    this.zil = ZILClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Zilliqa,
-    });
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
@@ -654,9 +634,7 @@ namespace CarbonSDK {
   export import ETHClient = clients.ETHClient;
   export import HydrogenClient = clients.HydrogenClient;
   export import InsightsQueryClient = clients.InsightsQueryClient;
-  export import NEOClient = clients.NEOClient;
   export import TokenClient = clients.TokenClient;
-  export import ZILClient = clients.ZILClient;
 }
 
 export default CarbonSDK;
