@@ -67,6 +67,7 @@ export interface Params {
    * price stability
    */
   stablecoinInterestRateAdjusterCoefficient: string;
+  cdpLiquidationPaused: boolean;
 }
 
 /** ParamsToUpdate allows optional fields for Params. */
@@ -81,6 +82,7 @@ export interface ParamsToUpdate {
   cdpPaused?: boolean;
   stablecoinInterestRateEpoch?: Duration;
   stablecoinInterestRateAdjusterCoefficient: string;
+  cdpLiquidationPaused?: boolean;
 }
 
 const baseParams: object = {
@@ -92,6 +94,7 @@ const baseParams: object = {
   smallLiquidationSize: "",
   cdpPaused: false,
   stablecoinInterestRateAdjusterCoefficient: "",
+  cdpLiquidationPaused: false,
 };
 
 export const Params = {
@@ -136,6 +139,9 @@ export const Params = {
       writer
         .uint32(90)
         .string(message.stablecoinInterestRateAdjusterCoefficient);
+    }
+    if (message.cdpLiquidationPaused === true) {
+      writer.uint32(96).bool(message.cdpLiquidationPaused);
     }
     return writer;
   },
@@ -182,6 +188,9 @@ export const Params = {
           break;
         case 11:
           message.stablecoinInterestRateAdjusterCoefficient = reader.string();
+          break;
+        case 12:
+          message.cdpLiquidationPaused = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -240,6 +249,11 @@ export const Params = {
       object.stablecoinInterestRateAdjusterCoefficient !== null
         ? String(object.stablecoinInterestRateAdjusterCoefficient)
         : "";
+    message.cdpLiquidationPaused =
+      object.cdpLiquidationPaused !== undefined &&
+      object.cdpLiquidationPaused !== null
+        ? Boolean(object.cdpLiquidationPaused)
+        : false;
     return message;
   },
 
@@ -269,6 +283,8 @@ export const Params = {
     message.stablecoinInterestRateAdjusterCoefficient !== undefined &&
       (obj.stablecoinInterestRateAdjusterCoefficient =
         message.stablecoinInterestRateAdjusterCoefficient);
+    message.cdpLiquidationPaused !== undefined &&
+      (obj.cdpLiquidationPaused = message.cdpLiquidationPaused);
     return obj;
   },
 
@@ -294,6 +310,7 @@ export const Params = {
         : undefined;
     message.stablecoinInterestRateAdjusterCoefficient =
       object.stablecoinInterestRateAdjusterCoefficient ?? "";
+    message.cdpLiquidationPaused = object.cdpLiquidationPaused ?? false;
     return message;
   },
 };
@@ -354,6 +371,12 @@ export const ParamsToUpdate = {
         .uint32(90)
         .string(message.stablecoinInterestRateAdjusterCoefficient);
     }
+    if (message.cdpLiquidationPaused !== undefined) {
+      BoolValue.encode(
+        { value: message.cdpLiquidationPaused! },
+        writer.uint32(98).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -399,6 +422,12 @@ export const ParamsToUpdate = {
           break;
         case 11:
           message.stablecoinInterestRateAdjusterCoefficient = reader.string();
+          break;
+        case 12:
+          message.cdpLiquidationPaused = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -457,6 +486,11 @@ export const ParamsToUpdate = {
       object.stablecoinInterestRateAdjusterCoefficient !== null
         ? String(object.stablecoinInterestRateAdjusterCoefficient)
         : "";
+    message.cdpLiquidationPaused =
+      object.cdpLiquidationPaused !== undefined &&
+      object.cdpLiquidationPaused !== null
+        ? Boolean(object.cdpLiquidationPaused)
+        : undefined;
     return message;
   },
 
@@ -486,6 +520,8 @@ export const ParamsToUpdate = {
     message.stablecoinInterestRateAdjusterCoefficient !== undefined &&
       (obj.stablecoinInterestRateAdjusterCoefficient =
         message.stablecoinInterestRateAdjusterCoefficient);
+    message.cdpLiquidationPaused !== undefined &&
+      (obj.cdpLiquidationPaused = message.cdpLiquidationPaused);
     return obj;
   },
 
@@ -511,6 +547,7 @@ export const ParamsToUpdate = {
         : undefined;
     message.stablecoinInterestRateAdjusterCoefficient =
       object.stablecoinInterestRateAdjusterCoefficient ?? "";
+    message.cdpLiquidationPaused = object.cdpLiquidationPaused ?? undefined;
     return message;
   },
 };
