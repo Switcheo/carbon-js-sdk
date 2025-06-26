@@ -11,6 +11,7 @@ import {
   BridgeState,
   Connection,
   ExternalTokenMapping,
+  Withdrawal,
 } from "./bridge";
 
 export const protobufPackage = "Switcheo.carbon.bridge";
@@ -103,6 +104,7 @@ export interface QueryPendingActionRequest {
 
 export interface QueryPendingActionResponse {
   action: string;
+  actionType: Long;
 }
 
 export interface QueryControllersForConnectionRequest {
@@ -119,6 +121,21 @@ export interface QueryAllControllersRequest {
 
 export interface QueryAllControllersResponse {
   controllers: ControllerContracts[];
+  pagination?: PageResponse;
+}
+
+export interface QueryTotalWindowWithdrawalValueRequest {}
+
+export interface QueryTotalWindowWithdrawalValueResponse {
+  totalUsdValue: string;
+}
+
+export interface QueryWindowWithdrawalsRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryWindowWithdrawalsResponse {
+  withdrawals: Withdrawal[];
   pagination?: PageResponse;
 }
 
@@ -1392,7 +1409,10 @@ export const QueryPendingActionRequest = {
   },
 };
 
-const baseQueryPendingActionResponse: object = { action: "" };
+const baseQueryPendingActionResponse: object = {
+  action: "",
+  actionType: Long.UZERO,
+};
 
 export const QueryPendingActionResponse = {
   encode(
@@ -1401,6 +1421,9 @@ export const QueryPendingActionResponse = {
   ): _m0.Writer {
     if (message.action !== "") {
       writer.uint32(10).string(message.action);
+    }
+    if (!message.actionType.isZero()) {
+      writer.uint32(16).uint64(message.actionType);
     }
     return writer;
   },
@@ -1420,6 +1443,9 @@ export const QueryPendingActionResponse = {
         case 1:
           message.action = reader.string();
           break;
+        case 2:
+          message.actionType = reader.uint64() as Long;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1436,12 +1462,18 @@ export const QueryPendingActionResponse = {
       object.action !== undefined && object.action !== null
         ? String(object.action)
         : "";
+    message.actionType =
+      object.actionType !== undefined && object.actionType !== null
+        ? Long.fromString(object.actionType)
+        : Long.UZERO;
     return message;
   },
 
   toJSON(message: QueryPendingActionResponse): unknown {
     const obj: any = {};
     message.action !== undefined && (obj.action = message.action);
+    message.actionType !== undefined &&
+      (obj.actionType = (message.actionType || Long.UZERO).toString());
     return obj;
   },
 
@@ -1452,6 +1484,10 @@ export const QueryPendingActionResponse = {
       ...baseQueryPendingActionResponse,
     } as QueryPendingActionResponse;
     message.action = object.action ?? "";
+    message.actionType =
+      object.actionType !== undefined && object.actionType !== null
+        ? Long.fromValue(object.actionType)
+        : Long.UZERO;
     return message;
   },
 };
@@ -1762,6 +1798,288 @@ export const QueryAllControllersResponse = {
   },
 };
 
+const baseQueryTotalWindowWithdrawalValueRequest: object = {};
+
+export const QueryTotalWindowWithdrawalValueRequest = {
+  encode(
+    _: QueryTotalWindowWithdrawalValueRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTotalWindowWithdrawalValueRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTotalWindowWithdrawalValueRequest,
+    } as QueryTotalWindowWithdrawalValueRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryTotalWindowWithdrawalValueRequest {
+    const message = {
+      ...baseQueryTotalWindowWithdrawalValueRequest,
+    } as QueryTotalWindowWithdrawalValueRequest;
+    return message;
+  },
+
+  toJSON(_: QueryTotalWindowWithdrawalValueRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryTotalWindowWithdrawalValueRequest>
+  ): QueryTotalWindowWithdrawalValueRequest {
+    const message = {
+      ...baseQueryTotalWindowWithdrawalValueRequest,
+    } as QueryTotalWindowWithdrawalValueRequest;
+    return message;
+  },
+};
+
+const baseQueryTotalWindowWithdrawalValueResponse: object = {
+  totalUsdValue: "",
+};
+
+export const QueryTotalWindowWithdrawalValueResponse = {
+  encode(
+    message: QueryTotalWindowWithdrawalValueResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.totalUsdValue !== "") {
+      writer.uint32(10).string(message.totalUsdValue);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTotalWindowWithdrawalValueResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTotalWindowWithdrawalValueResponse,
+    } as QueryTotalWindowWithdrawalValueResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.totalUsdValue = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTotalWindowWithdrawalValueResponse {
+    const message = {
+      ...baseQueryTotalWindowWithdrawalValueResponse,
+    } as QueryTotalWindowWithdrawalValueResponse;
+    message.totalUsdValue =
+      object.totalUsdValue !== undefined && object.totalUsdValue !== null
+        ? String(object.totalUsdValue)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryTotalWindowWithdrawalValueResponse): unknown {
+    const obj: any = {};
+    message.totalUsdValue !== undefined &&
+      (obj.totalUsdValue = message.totalUsdValue);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTotalWindowWithdrawalValueResponse>
+  ): QueryTotalWindowWithdrawalValueResponse {
+    const message = {
+      ...baseQueryTotalWindowWithdrawalValueResponse,
+    } as QueryTotalWindowWithdrawalValueResponse;
+    message.totalUsdValue = object.totalUsdValue ?? "";
+    return message;
+  },
+};
+
+const baseQueryWindowWithdrawalsRequest: object = {};
+
+export const QueryWindowWithdrawalsRequest = {
+  encode(
+    message: QueryWindowWithdrawalsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryWindowWithdrawalsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryWindowWithdrawalsRequest,
+    } as QueryWindowWithdrawalsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryWindowWithdrawalsRequest {
+    const message = {
+      ...baseQueryWindowWithdrawalsRequest,
+    } as QueryWindowWithdrawalsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryWindowWithdrawalsRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryWindowWithdrawalsRequest>
+  ): QueryWindowWithdrawalsRequest {
+    const message = {
+      ...baseQueryWindowWithdrawalsRequest,
+    } as QueryWindowWithdrawalsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryWindowWithdrawalsResponse: object = {};
+
+export const QueryWindowWithdrawalsResponse = {
+  encode(
+    message: QueryWindowWithdrawalsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.withdrawals) {
+      Withdrawal.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryWindowWithdrawalsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryWindowWithdrawalsResponse,
+    } as QueryWindowWithdrawalsResponse;
+    message.withdrawals = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.withdrawals.push(Withdrawal.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryWindowWithdrawalsResponse {
+    const message = {
+      ...baseQueryWindowWithdrawalsResponse,
+    } as QueryWindowWithdrawalsResponse;
+    message.withdrawals = (object.withdrawals ?? []).map((e: any) =>
+      Withdrawal.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryWindowWithdrawalsResponse): unknown {
+    const obj: any = {};
+    if (message.withdrawals) {
+      obj.withdrawals = message.withdrawals.map((e) =>
+        e ? Withdrawal.toJSON(e) : undefined
+      );
+    } else {
+      obj.withdrawals = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryWindowWithdrawalsResponse>
+  ): QueryWindowWithdrawalsResponse {
+    const message = {
+      ...baseQueryWindowWithdrawalsResponse,
+    } as QueryWindowWithdrawalsResponse;
+    message.withdrawals = (object.withdrawals ?? []).map((e) =>
+      Withdrawal.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /**
@@ -1798,6 +2116,12 @@ export interface Query {
   ControllersAll(
     request: QueryAllControllersRequest
   ): Promise<QueryAllControllersResponse>;
+  TotalWindowWithdrawalValue(
+    request: QueryTotalWindowWithdrawalValueRequest
+  ): Promise<QueryTotalWindowWithdrawalValueResponse>;
+  WindowWithdrawals(
+    request: QueryWindowWithdrawalsRequest
+  ): Promise<QueryWindowWithdrawalsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1815,6 +2139,9 @@ export class QueryClientImpl implements Query {
     this.PendingActionForNonce = this.PendingActionForNonce.bind(this);
     this.ControllersForConnection = this.ControllersForConnection.bind(this);
     this.ControllersAll = this.ControllersAll.bind(this);
+    this.TotalWindowWithdrawalValue =
+      this.TotalWindowWithdrawalValue.bind(this);
+    this.WindowWithdrawals = this.WindowWithdrawals.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1963,6 +2290,35 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllControllersResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TotalWindowWithdrawalValue(
+    request: QueryTotalWindowWithdrawalValueRequest
+  ): Promise<QueryTotalWindowWithdrawalValueResponse> {
+    const data =
+      QueryTotalWindowWithdrawalValueRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Query",
+      "TotalWindowWithdrawalValue",
+      data
+    );
+    return promise.then((data) =>
+      QueryTotalWindowWithdrawalValueResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  WindowWithdrawals(
+    request: QueryWindowWithdrawalsRequest
+  ): Promise<QueryWindowWithdrawalsResponse> {
+    const data = QueryWindowWithdrawalsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.bridge.Query",
+      "WindowWithdrawals",
+      data
+    );
+    return promise.then((data) =>
+      QueryWindowWithdrawalsResponse.decode(new _m0.Reader(data))
     );
   }
 }

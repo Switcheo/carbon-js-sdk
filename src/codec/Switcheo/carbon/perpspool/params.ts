@@ -3,7 +3,11 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
-import { UInt64Value, StringValue } from "../../../google/protobuf/wrappers";
+import {
+  UInt64Value,
+  StringValue,
+  BoolValue,
+} from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -42,6 +46,8 @@ export interface Params {
   userVaultTradeCommissionRatio: string;
   userVaultFeeCommissionRatio: string;
   stalePriceAllowance?: Duration;
+  volatilitySpreadEnabled: boolean;
+  volatilitySpreadBlacklist: string;
 }
 
 export interface ParamsToUpdate {
@@ -63,6 +69,8 @@ export interface ParamsToUpdate {
   userVaultTradeCommissionRatio: string;
   userVaultFeeCommissionRatio: string;
   stalePriceAllowance?: Duration;
+  volatilitySpreadEnabled?: boolean;
+  volatilitySpreadBlacklist?: string;
 }
 
 const baseParams: object = {
@@ -77,6 +85,8 @@ const baseParams: object = {
   userVaultWithdrawalFeeCap: "",
   userVaultTradeCommissionRatio: "",
   userVaultFeeCommissionRatio: "",
+  volatilitySpreadEnabled: false,
+  volatilitySpreadBlacklist: "",
 };
 
 export const Params = {
@@ -160,6 +170,12 @@ export const Params = {
         message.stalePriceAllowance,
         writer.uint32(146).fork()
       ).ldelim();
+    }
+    if (message.volatilitySpreadEnabled === true) {
+      writer.uint32(152).bool(message.volatilitySpreadEnabled);
+    }
+    if (message.volatilitySpreadBlacklist !== "") {
+      writer.uint32(162).string(message.volatilitySpreadBlacklist);
     }
     return writer;
   },
@@ -245,6 +261,12 @@ export const Params = {
             reader,
             reader.uint32()
           );
+          break;
+        case 19:
+          message.volatilitySpreadEnabled = reader.bool();
+          break;
+        case 20:
+          message.volatilitySpreadBlacklist = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -346,6 +368,16 @@ export const Params = {
       object.stalePriceAllowance !== null
         ? Duration.fromJSON(object.stalePriceAllowance)
         : undefined;
+    message.volatilitySpreadEnabled =
+      object.volatilitySpreadEnabled !== undefined &&
+      object.volatilitySpreadEnabled !== null
+        ? Boolean(object.volatilitySpreadEnabled)
+        : false;
+    message.volatilitySpreadBlacklist =
+      object.volatilitySpreadBlacklist !== undefined &&
+      object.volatilitySpreadBlacklist !== null
+        ? String(object.volatilitySpreadBlacklist)
+        : "";
     return message;
   },
 
@@ -407,6 +439,10 @@ export const Params = {
       (obj.stalePriceAllowance = message.stalePriceAllowance
         ? Duration.toJSON(message.stalePriceAllowance)
         : undefined);
+    message.volatilitySpreadEnabled !== undefined &&
+      (obj.volatilitySpreadEnabled = message.volatilitySpreadEnabled);
+    message.volatilitySpreadBlacklist !== undefined &&
+      (obj.volatilitySpreadBlacklist = message.volatilitySpreadBlacklist);
     return obj;
   },
 
@@ -465,6 +501,8 @@ export const Params = {
       object.stalePriceAllowance !== null
         ? Duration.fromPartial(object.stalePriceAllowance)
         : undefined;
+    message.volatilitySpreadEnabled = object.volatilitySpreadEnabled ?? false;
+    message.volatilitySpreadBlacklist = object.volatilitySpreadBlacklist ?? "";
     return message;
   },
 };
@@ -569,6 +607,18 @@ export const ParamsToUpdate = {
         writer.uint32(146).fork()
       ).ldelim();
     }
+    if (message.volatilitySpreadEnabled !== undefined) {
+      BoolValue.encode(
+        { value: message.volatilitySpreadEnabled! },
+        writer.uint32(154).fork()
+      ).ldelim();
+    }
+    if (message.volatilitySpreadBlacklist !== undefined) {
+      StringValue.encode(
+        { value: message.volatilitySpreadBlacklist! },
+        writer.uint32(162).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -659,6 +709,18 @@ export const ParamsToUpdate = {
             reader,
             reader.uint32()
           );
+          break;
+        case 19:
+          message.volatilitySpreadEnabled = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 20:
+          message.volatilitySpreadBlacklist = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -760,6 +822,16 @@ export const ParamsToUpdate = {
       object.stalePriceAllowance !== null
         ? Duration.fromJSON(object.stalePriceAllowance)
         : undefined;
+    message.volatilitySpreadEnabled =
+      object.volatilitySpreadEnabled !== undefined &&
+      object.volatilitySpreadEnabled !== null
+        ? Boolean(object.volatilitySpreadEnabled)
+        : undefined;
+    message.volatilitySpreadBlacklist =
+      object.volatilitySpreadBlacklist !== undefined &&
+      object.volatilitySpreadBlacklist !== null
+        ? String(object.volatilitySpreadBlacklist)
+        : undefined;
     return message;
   },
 
@@ -819,6 +891,10 @@ export const ParamsToUpdate = {
       (obj.stalePriceAllowance = message.stalePriceAllowance
         ? Duration.toJSON(message.stalePriceAllowance)
         : undefined);
+    message.volatilitySpreadEnabled !== undefined &&
+      (obj.volatilitySpreadEnabled = message.volatilitySpreadEnabled);
+    message.volatilitySpreadBlacklist !== undefined &&
+      (obj.volatilitySpreadBlacklist = message.volatilitySpreadBlacklist);
     return obj;
   },
 
@@ -877,6 +953,10 @@ export const ParamsToUpdate = {
       object.stalePriceAllowance !== null
         ? Duration.fromPartial(object.stalePriceAllowance)
         : undefined;
+    message.volatilitySpreadEnabled =
+      object.volatilitySpreadEnabled ?? undefined;
+    message.volatilitySpreadBlacklist =
+      object.volatilitySpreadBlacklist ?? undefined;
     return message;
   },
 };

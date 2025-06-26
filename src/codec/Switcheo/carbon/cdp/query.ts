@@ -15,6 +15,7 @@ import { EModeCategory } from "./e_mode_category";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { RewardScheme, RewardDebt } from "./reward_scheme";
 import { CDPLiquidations } from "./cdp_liquidations";
+import { GlpTransferRecord, NLendConversionRecord } from "./nlend";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -130,6 +131,25 @@ export interface QueryAssetAllRequest {
 export interface QueryAssetAllResponse {
   assetParamsAll: AssetParamsAPI[];
   pagination?: PageResponse;
+}
+
+export interface QueryAssetLoansRequest {
+  pagination?: PageRequest;
+  denom: string;
+}
+
+export interface QueryAssetLoansResponse {
+  denom: string;
+  cibtDenom: string;
+  loans: AssetLoan[];
+  pagination?: PageResponse;
+}
+
+export interface AssetLoan {
+  address: string;
+  uncollaterizedAmount: string;
+  collaterizedAmount: string;
+  totalLentAmount: string;
 }
 
 export interface QueryTokenDebtRequest {
@@ -262,6 +282,32 @@ export interface QueryCDPLiquidationsAllRequest {
 export interface QueryCDPLiquidationsAllResponse {
   cdpLiquidationsAll: CDPLiquidations[];
   pagination?: PageResponse;
+}
+
+export interface QueryGlpTransferAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryGlpTransferAllResponse {
+  glpTransfersAll: GlpTransferRecord[];
+  pagination?: PageResponse;
+}
+
+export interface QueryNLendConversionsAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryNLendConversionsAllResponse {
+  nlendConversions: NLendConversionRecord[];
+  pagination?: PageResponse;
+}
+
+export interface QueryNLendConversionRequest {
+  address: string;
+}
+
+export interface QueryNLendConversionResponse {
+  nlendConversions: NLendConversionRecord[];
 }
 
 const baseQueryParamsRequest: object = {};
@@ -2068,6 +2114,294 @@ export const QueryAssetAllResponse = {
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
         : undefined;
+    return message;
+  },
+};
+
+const baseQueryAssetLoansRequest: object = { denom: "" };
+
+export const QueryAssetLoansRequest = {
+  encode(
+    message: QueryAssetLoansRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAssetLoansRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAssetLoansRequest } as QueryAssetLoansRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAssetLoansRequest {
+    const message = { ...baseQueryAssetLoansRequest } as QueryAssetLoansRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAssetLoansRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAssetLoansRequest>
+  ): QueryAssetLoansRequest {
+    const message = { ...baseQueryAssetLoansRequest } as QueryAssetLoansRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseQueryAssetLoansResponse: object = { denom: "", cibtDenom: "" };
+
+export const QueryAssetLoansResponse = {
+  encode(
+    message: QueryAssetLoansResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.cibtDenom !== "") {
+      writer.uint32(18).string(message.cibtDenom);
+    }
+    for (const v of message.loans) {
+      AssetLoan.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAssetLoansResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAssetLoansResponse,
+    } as QueryAssetLoansResponse;
+    message.loans = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        case 2:
+          message.cibtDenom = reader.string();
+          break;
+        case 3:
+          message.loans.push(AssetLoan.decode(reader, reader.uint32()));
+          break;
+        case 4:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAssetLoansResponse {
+    const message = {
+      ...baseQueryAssetLoansResponse,
+    } as QueryAssetLoansResponse;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.cibtDenom =
+      object.cibtDenom !== undefined && object.cibtDenom !== null
+        ? String(object.cibtDenom)
+        : "";
+    message.loans = (object.loans ?? []).map((e: any) => AssetLoan.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAssetLoansResponse): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
+    if (message.loans) {
+      obj.loans = message.loans.map((e) =>
+        e ? AssetLoan.toJSON(e) : undefined
+      );
+    } else {
+      obj.loans = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAssetLoansResponse>
+  ): QueryAssetLoansResponse {
+    const message = {
+      ...baseQueryAssetLoansResponse,
+    } as QueryAssetLoansResponse;
+    message.denom = object.denom ?? "";
+    message.cibtDenom = object.cibtDenom ?? "";
+    message.loans = (object.loans ?? []).map((e) => AssetLoan.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseAssetLoan: object = {
+  address: "",
+  uncollaterizedAmount: "",
+  collaterizedAmount: "",
+  totalLentAmount: "",
+};
+
+export const AssetLoan = {
+  encode(
+    message: AssetLoan,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.uncollaterizedAmount !== "") {
+      writer.uint32(18).string(message.uncollaterizedAmount);
+    }
+    if (message.collaterizedAmount !== "") {
+      writer.uint32(26).string(message.collaterizedAmount);
+    }
+    if (message.totalLentAmount !== "") {
+      writer.uint32(34).string(message.totalLentAmount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AssetLoan {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseAssetLoan } as AssetLoan;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.uncollaterizedAmount = reader.string();
+          break;
+        case 3:
+          message.collaterizedAmount = reader.string();
+          break;
+        case 4:
+          message.totalLentAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AssetLoan {
+    const message = { ...baseAssetLoan } as AssetLoan;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.uncollaterizedAmount =
+      object.uncollaterizedAmount !== undefined &&
+      object.uncollaterizedAmount !== null
+        ? String(object.uncollaterizedAmount)
+        : "";
+    message.collaterizedAmount =
+      object.collaterizedAmount !== undefined &&
+      object.collaterizedAmount !== null
+        ? String(object.collaterizedAmount)
+        : "";
+    message.totalLentAmount =
+      object.totalLentAmount !== undefined && object.totalLentAmount !== null
+        ? String(object.totalLentAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: AssetLoan): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.uncollaterizedAmount !== undefined &&
+      (obj.uncollaterizedAmount = message.uncollaterizedAmount);
+    message.collaterizedAmount !== undefined &&
+      (obj.collaterizedAmount = message.collaterizedAmount);
+    message.totalLentAmount !== undefined &&
+      (obj.totalLentAmount = message.totalLentAmount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<AssetLoan>): AssetLoan {
+    const message = { ...baseAssetLoan } as AssetLoan;
+    message.address = object.address ?? "";
+    message.uncollaterizedAmount = object.uncollaterizedAmount ?? "";
+    message.collaterizedAmount = object.collaterizedAmount ?? "";
+    message.totalLentAmount = object.totalLentAmount ?? "";
     return message;
   },
 };
@@ -4306,6 +4640,474 @@ export const QueryCDPLiquidationsAllResponse = {
   },
 };
 
+const baseQueryGlpTransferAllRequest: object = {};
+
+export const QueryGlpTransferAllRequest = {
+  encode(
+    message: QueryGlpTransferAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGlpTransferAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGlpTransferAllRequest,
+    } as QueryGlpTransferAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGlpTransferAllRequest {
+    const message = {
+      ...baseQueryGlpTransferAllRequest,
+    } as QueryGlpTransferAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryGlpTransferAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGlpTransferAllRequest>
+  ): QueryGlpTransferAllRequest {
+    const message = {
+      ...baseQueryGlpTransferAllRequest,
+    } as QueryGlpTransferAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryGlpTransferAllResponse: object = {};
+
+export const QueryGlpTransferAllResponse = {
+  encode(
+    message: QueryGlpTransferAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.glpTransfersAll) {
+      GlpTransferRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGlpTransferAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGlpTransferAllResponse,
+    } as QueryGlpTransferAllResponse;
+    message.glpTransfersAll = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.glpTransfersAll.push(
+            GlpTransferRecord.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGlpTransferAllResponse {
+    const message = {
+      ...baseQueryGlpTransferAllResponse,
+    } as QueryGlpTransferAllResponse;
+    message.glpTransfersAll = (object.glpTransfersAll ?? []).map((e: any) =>
+      GlpTransferRecord.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryGlpTransferAllResponse): unknown {
+    const obj: any = {};
+    if (message.glpTransfersAll) {
+      obj.glpTransfersAll = message.glpTransfersAll.map((e) =>
+        e ? GlpTransferRecord.toJSON(e) : undefined
+      );
+    } else {
+      obj.glpTransfersAll = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGlpTransferAllResponse>
+  ): QueryGlpTransferAllResponse {
+    const message = {
+      ...baseQueryGlpTransferAllResponse,
+    } as QueryGlpTransferAllResponse;
+    message.glpTransfersAll = (object.glpTransfersAll ?? []).map((e) =>
+      GlpTransferRecord.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryNLendConversionsAllRequest: object = {};
+
+export const QueryNLendConversionsAllRequest = {
+  encode(
+    message: QueryNLendConversionsAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryNLendConversionsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryNLendConversionsAllRequest,
+    } as QueryNLendConversionsAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNLendConversionsAllRequest {
+    const message = {
+      ...baseQueryNLendConversionsAllRequest,
+    } as QueryNLendConversionsAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryNLendConversionsAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryNLendConversionsAllRequest>
+  ): QueryNLendConversionsAllRequest {
+    const message = {
+      ...baseQueryNLendConversionsAllRequest,
+    } as QueryNLendConversionsAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryNLendConversionsAllResponse: object = {};
+
+export const QueryNLendConversionsAllResponse = {
+  encode(
+    message: QueryNLendConversionsAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.nlendConversions) {
+      NLendConversionRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryNLendConversionsAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryNLendConversionsAllResponse,
+    } as QueryNLendConversionsAllResponse;
+    message.nlendConversions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.nlendConversions.push(
+            NLendConversionRecord.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNLendConversionsAllResponse {
+    const message = {
+      ...baseQueryNLendConversionsAllResponse,
+    } as QueryNLendConversionsAllResponse;
+    message.nlendConversions = (object.nlendConversions ?? []).map((e: any) =>
+      NLendConversionRecord.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryNLendConversionsAllResponse): unknown {
+    const obj: any = {};
+    if (message.nlendConversions) {
+      obj.nlendConversions = message.nlendConversions.map((e) =>
+        e ? NLendConversionRecord.toJSON(e) : undefined
+      );
+    } else {
+      obj.nlendConversions = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryNLendConversionsAllResponse>
+  ): QueryNLendConversionsAllResponse {
+    const message = {
+      ...baseQueryNLendConversionsAllResponse,
+    } as QueryNLendConversionsAllResponse;
+    message.nlendConversions = (object.nlendConversions ?? []).map((e) =>
+      NLendConversionRecord.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryNLendConversionRequest: object = { address: "" };
+
+export const QueryNLendConversionRequest = {
+  encode(
+    message: QueryNLendConversionRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryNLendConversionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryNLendConversionRequest,
+    } as QueryNLendConversionRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNLendConversionRequest {
+    const message = {
+      ...baseQueryNLendConversionRequest,
+    } as QueryNLendConversionRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryNLendConversionRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryNLendConversionRequest>
+  ): QueryNLendConversionRequest {
+    const message = {
+      ...baseQueryNLendConversionRequest,
+    } as QueryNLendConversionRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryNLendConversionResponse: object = {};
+
+export const QueryNLendConversionResponse = {
+  encode(
+    message: QueryNLendConversionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.nlendConversions) {
+      NLendConversionRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryNLendConversionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryNLendConversionResponse,
+    } as QueryNLendConversionResponse;
+    message.nlendConversions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.nlendConversions.push(
+            NLendConversionRecord.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNLendConversionResponse {
+    const message = {
+      ...baseQueryNLendConversionResponse,
+    } as QueryNLendConversionResponse;
+    message.nlendConversions = (object.nlendConversions ?? []).map((e: any) =>
+      NLendConversionRecord.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryNLendConversionResponse): unknown {
+    const obj: any = {};
+    if (message.nlendConversions) {
+      obj.nlendConversions = message.nlendConversions.map((e) =>
+        e ? NLendConversionRecord.toJSON(e) : undefined
+      );
+    } else {
+      obj.nlendConversions = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryNLendConversionResponse>
+  ): QueryNLendConversionResponse {
+    const message = {
+      ...baseQueryNLendConversionResponse,
+    } as QueryNLendConversionResponse;
+    message.nlendConversions = (object.nlendConversions ?? []).map((e) =>
+      NLendConversionRecord.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -4346,6 +5148,11 @@ export interface Query {
   Asset(request: QueryAssetRequest): Promise<QueryAssetResponse>;
   /** Queries a list of AssetsAll items. */
   AssetAll(request: QueryAssetAllRequest): Promise<QueryAssetAllResponse>;
+  /**
+   * AssetLoans queries all users' loans (amount returned in cibt denom) for
+   * an asset (in underlying denom)
+   */
+  AssetLoans(request: QueryAssetLoansRequest): Promise<QueryAssetLoansResponse>;
   /** Queries a list of TokenDebt items. */
   TokenDebt(request: QueryTokenDebtRequest): Promise<QueryTokenDebtResponse>;
   /** Queries a list of TokenDebtsAll items. */
@@ -4392,6 +5199,19 @@ export interface Query {
   CDPLiquidationsAll(
     request: QueryCDPLiquidationsAllRequest
   ): Promise<QueryCDPLiquidationsAllResponse>;
+  /**
+   * For nlend migration to keep and store all the glp that was retrieved from
+   * all users
+   */
+  GlpTransfersAll(
+    request: QueryGlpTransferAllRequest
+  ): Promise<QueryGlpTransferAllResponse>;
+  NLendConversionsAll(
+    request: QueryNLendConversionsAllRequest
+  ): Promise<QueryNLendConversionsAllResponse>;
+  NLendConversion(
+    request: QueryNLendConversionRequest
+  ): Promise<QueryNLendConversionResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -4409,6 +5229,7 @@ export class QueryClientImpl implements Query {
     this.AccountStablecoin = this.AccountStablecoin.bind(this);
     this.Asset = this.Asset.bind(this);
     this.AssetAll = this.AssetAll.bind(this);
+    this.AssetLoans = this.AssetLoans.bind(this);
     this.TokenDebt = this.TokenDebt.bind(this);
     this.TokenDebtAll = this.TokenDebtAll.bind(this);
     this.StablecoinDebt = this.StablecoinDebt.bind(this);
@@ -4423,6 +5244,9 @@ export class QueryClientImpl implements Query {
     this.AccountEMode = this.AccountEMode.bind(this);
     this.StablecoinInterest = this.StablecoinInterest.bind(this);
     this.CDPLiquidationsAll = this.CDPLiquidationsAll.bind(this);
+    this.GlpTransfersAll = this.GlpTransfersAll.bind(this);
+    this.NLendConversionsAll = this.NLendConversionsAll.bind(this);
+    this.NLendConversion = this.NLendConversion.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -4569,6 +5393,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAssetAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AssetLoans(
+    request: QueryAssetLoansRequest
+  ): Promise<QueryAssetLoansResponse> {
+    const data = QueryAssetLoansRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "AssetLoans",
+      data
+    );
+    return promise.then((data) =>
+      QueryAssetLoansResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -4759,6 +5597,48 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCDPLiquidationsAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  GlpTransfersAll(
+    request: QueryGlpTransferAllRequest
+  ): Promise<QueryGlpTransferAllResponse> {
+    const data = QueryGlpTransferAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "GlpTransfersAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryGlpTransferAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  NLendConversionsAll(
+    request: QueryNLendConversionsAllRequest
+  ): Promise<QueryNLendConversionsAllResponse> {
+    const data = QueryNLendConversionsAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "NLendConversionsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryNLendConversionsAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  NLendConversion(
+    request: QueryNLendConversionRequest
+  ): Promise<QueryNLendConversionResponse> {
+    const data = QueryNLendConversionRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "NLendConversion",
+      data
+    );
+    return promise.then((data) =>
+      QueryNLendConversionResponse.decode(new _m0.Reader(data))
     );
   }
 }
