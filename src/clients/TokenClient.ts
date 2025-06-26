@@ -119,11 +119,6 @@ class TokenClient {
 
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
     if (!denom) return undefined
-    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupChequeDenom(denom) || TokenClient.isVaultToken(denom)) {
-      // native denoms "swth" and "usc" should be native.
-      // pool and cdp tokens are on the Native blockchain, hence 0
-      return 'Native'
-    }
 
     const token = this.tokenForDenom(denom)
     if (this.isBridgedToken(denom)) {
@@ -132,6 +127,8 @@ class TokenClient {
       const bridgeList = this.bridges.axelar
       const chainName = bridgeList.find((bridge) => bridge.bridgeAddress === token?.bridgeAddress)?.chainName
       return chainName
+    } else if (token?.chainId.eq(0) && token?.bridgeId.eq(0)) {
+      return 'Native';
     }
     const bridge = this.getBridgeFromToken(token)
     return bridge?.chainName;
