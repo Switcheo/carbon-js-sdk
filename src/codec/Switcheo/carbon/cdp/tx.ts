@@ -288,6 +288,20 @@ export interface MsgRemoveAccountEMode {
 
 export interface MsgRemoveAccountEModeResponse {}
 
+export interface MsgAddAccountToLiquidationProtection {
+  creator: string;
+  address: string;
+}
+
+export interface MsgAddAccountToLiquidationProtectionResponse {}
+
+export interface MsgRemoveAccountFromLiquidationProtection {
+  creator: string;
+  address: string;
+}
+
+export interface MsgRemoveAccountFromLiquidationProtectionResponse {}
+
 /**
  * MsgUpdateParams is the Msg/UpdateParams request type.
  *
@@ -4992,6 +5006,268 @@ export const MsgRemoveAccountEModeResponse = {
   },
 };
 
+const baseMsgAddAccountToLiquidationProtection: object = {
+  creator: "",
+  address: "",
+};
+
+export const MsgAddAccountToLiquidationProtection = {
+  encode(
+    message: MsgAddAccountToLiquidationProtection,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddAccountToLiquidationProtection {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddAccountToLiquidationProtection,
+    } as MsgAddAccountToLiquidationProtection;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddAccountToLiquidationProtection {
+    const message = {
+      ...baseMsgAddAccountToLiquidationProtection,
+    } as MsgAddAccountToLiquidationProtection;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgAddAccountToLiquidationProtection): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgAddAccountToLiquidationProtection>
+  ): MsgAddAccountToLiquidationProtection {
+    const message = {
+      ...baseMsgAddAccountToLiquidationProtection,
+    } as MsgAddAccountToLiquidationProtection;
+    message.creator = object.creator ?? "";
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseMsgAddAccountToLiquidationProtectionResponse: object = {};
+
+export const MsgAddAccountToLiquidationProtectionResponse = {
+  encode(
+    _: MsgAddAccountToLiquidationProtectionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddAccountToLiquidationProtectionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddAccountToLiquidationProtectionResponse,
+    } as MsgAddAccountToLiquidationProtectionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAddAccountToLiquidationProtectionResponse {
+    const message = {
+      ...baseMsgAddAccountToLiquidationProtectionResponse,
+    } as MsgAddAccountToLiquidationProtectionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAddAccountToLiquidationProtectionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgAddAccountToLiquidationProtectionResponse>
+  ): MsgAddAccountToLiquidationProtectionResponse {
+    const message = {
+      ...baseMsgAddAccountToLiquidationProtectionResponse,
+    } as MsgAddAccountToLiquidationProtectionResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveAccountFromLiquidationProtection: object = {
+  creator: "",
+  address: "",
+};
+
+export const MsgRemoveAccountFromLiquidationProtection = {
+  encode(
+    message: MsgRemoveAccountFromLiquidationProtection,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveAccountFromLiquidationProtection {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveAccountFromLiquidationProtection,
+    } as MsgRemoveAccountFromLiquidationProtection;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveAccountFromLiquidationProtection {
+    const message = {
+      ...baseMsgRemoveAccountFromLiquidationProtection,
+    } as MsgRemoveAccountFromLiquidationProtection;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveAccountFromLiquidationProtection): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveAccountFromLiquidationProtection>
+  ): MsgRemoveAccountFromLiquidationProtection {
+    const message = {
+      ...baseMsgRemoveAccountFromLiquidationProtection,
+    } as MsgRemoveAccountFromLiquidationProtection;
+    message.creator = object.creator ?? "";
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveAccountFromLiquidationProtectionResponse: object = {};
+
+export const MsgRemoveAccountFromLiquidationProtectionResponse = {
+  encode(
+    _: MsgRemoveAccountFromLiquidationProtectionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveAccountFromLiquidationProtectionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveAccountFromLiquidationProtectionResponse,
+    } as MsgRemoveAccountFromLiquidationProtectionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveAccountFromLiquidationProtectionResponse {
+    const message = {
+      ...baseMsgRemoveAccountFromLiquidationProtectionResponse,
+    } as MsgRemoveAccountFromLiquidationProtectionResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveAccountFromLiquidationProtectionResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveAccountFromLiquidationProtectionResponse>
+  ): MsgRemoveAccountFromLiquidationProtectionResponse {
+    const message = {
+      ...baseMsgRemoveAccountFromLiquidationProtectionResponse,
+    } as MsgRemoveAccountFromLiquidationProtectionResponse;
+    return message;
+  },
+};
+
 const baseMsgUpdateParams: object = { authority: "" };
 
 export const MsgUpdateParams = {
@@ -5200,6 +5476,12 @@ export interface Msg {
   RemoveAccountEMode(
     request: MsgRemoveAccountEMode
   ): Promise<MsgRemoveAccountEModeResponse>;
+  AddAccountToLiquidationProtection(
+    request: MsgAddAccountToLiquidationProtection
+  ): Promise<MsgAddAccountToLiquidationProtectionResponse>;
+  RemoveAccountFromLiquidationProtection(
+    request: MsgRemoveAccountFromLiquidationProtection
+  ): Promise<MsgRemoveAccountFromLiquidationProtectionResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -5250,6 +5532,10 @@ export class MsgClientImpl implements Msg {
     this.UpdateEModeCategory = this.UpdateEModeCategory.bind(this);
     this.SetAccountEMode = this.SetAccountEMode.bind(this);
     this.RemoveAccountEMode = this.RemoveAccountEMode.bind(this);
+    this.AddAccountToLiquidationProtection =
+      this.AddAccountToLiquidationProtection.bind(this);
+    this.RemoveAccountFromLiquidationProtection =
+      this.RemoveAccountFromLiquidationProtection.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
   }
   AddRateStrategy(
@@ -5695,6 +5981,37 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRemoveAccountEModeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AddAccountToLiquidationProtection(
+    request: MsgAddAccountToLiquidationProtection
+  ): Promise<MsgAddAccountToLiquidationProtectionResponse> {
+    const data = MsgAddAccountToLiquidationProtection.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "AddAccountToLiquidationProtection",
+      data
+    );
+    return promise.then((data) =>
+      MsgAddAccountToLiquidationProtectionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveAccountFromLiquidationProtection(
+    request: MsgRemoveAccountFromLiquidationProtection
+  ): Promise<MsgRemoveAccountFromLiquidationProtectionResponse> {
+    const data =
+      MsgRemoveAccountFromLiquidationProtection.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "RemoveAccountFromLiquidationProtection",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveAccountFromLiquidationProtectionResponse.decode(
+        new _m0.Reader(data)
+      )
     );
   }
 
