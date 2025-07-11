@@ -5,3 +5,5 @@ index.js
 .env
 yarn-error.log
 proto-ts.tar.gz
+
+.idea
