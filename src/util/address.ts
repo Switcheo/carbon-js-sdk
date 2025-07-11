@@ -1,20 +1,15 @@
 import { Bech32AddrType, Network, NetworkConfigs } from "@carbon-sdk/constant";
-import { CONST, wallet } from "@cityofzion/neon-core-next";
-import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
 import * as BIP32 from "bip32";
 import * as BIP39 from "bip39";
 import CryptoJS from "crypto-js";
 import { ethers } from "ethers";
 import * as secp256k1 from "secp256k1";
-import * as secp256r1 from "secp256r1";
 import * as wif from "wif";
 import { stripHexPrefix } from "./generic";
 
 const BIP44_PURPOSE = 44;
-const NEO_COIN_TYPE = 0x00000378;
 const ETH_COIN_TYPE = 0x0000003c;
-
 const SWTH_COIN_TYPE = 118;
 
 /**
@@ -186,9 +181,9 @@ export const SWTHAddress: SWTHAddressType = {
   },
 
   privateToPublicKey: (privateKey: string | Buffer): Buffer => {
-    const privateKeyBuff = stringOrBufferToBuffer(privateKey)!;
-    const publicKeyUint8Array: Uint8Array = secp256k1.publicKeyCreate(privateKeyBuff, true);
-    const publicKey = Buffer.from(publicKeyUint8Array);
+    const privateKeyArr = new Uint8Array(stringOrBufferToBuffer(privateKey)!);
+    const publicKeyArr = secp256k1.publicKeyCreate(privateKeyArr, true);
+    const publicKey = Buffer.from(publicKeyArr);
     return publicKey;
   },
 
@@ -249,126 +244,6 @@ export const SWTHAddress: SWTHAddressType = {
   getModuleAddress: (moduleKey: string, network: Network = Network.MainNet) => {
     const addressHash = CryptoJS.SHA256(moduleKey).toString(CryptoJS.enc.Hex);
     return SWTHAddress.encode(addressHash, { network });
-  },
-};
-
-type NEOAddressType = AddressBuilder<AddressOptions> & {
-  isAddress(address: string): boolean;
-  encode(hash: string | Buffer, version?: string): string;
-};
-
-export const NEOAddress: NEOAddressType = {
-  coinType: (): number => {
-    return NEO_COIN_TYPE;
-  },
-
-  publicKeyToScriptHash: (publicKey: string | Buffer): string => {
-    const encodedPublicKey = NEOAddress.encodePublicKey(publicKey);
-
-    const addressScript = Buffer.concat([
-      Buffer.from([0x21]), // OptCode.PUSHBYTES21
-      encodedPublicKey,
-      Buffer.from([0xac]), // OptCode.CHECKSIG
-    ]);
-    const sha256Hash = ethers.utils.sha256(addressScript);
-    const ripemdHash = ethers.utils.ripemd160(sha256Hash);
-
-    return stripHexPrefix(ripemdHash);
-  },
-
-  publicKeyToAddress: (publicKey: string | Buffer): string => {
-    const addressScript = NEOAddress.publicKeyToScriptHash(publicKey);
-    const address = Base58Check.encode(addressScript, "17");
-
-    return address;
-  },
-
-  encodePublicKey: (unencodedPublicKey: string | Buffer): Buffer => {
-    const unencPubKeyBuf = stringOrBufferToBuffer(unencodedPublicKey)!;
-    if (unencPubKeyBuf.length <= 33) {
-      // length indicates already encoded
-      return unencPubKeyBuf;
-    }
-
-    const pointXHex = unencPubKeyBuf.slice(1, 33);
-    const pointYEven = unencPubKeyBuf[unencPubKeyBuf.length - 1] % 2 === 0;
-    const compressedPublicKey = Buffer.concat([Buffer.from([pointYEven ? 0x02 : 0x03]), pointXHex]);
-    return compressedPublicKey;
-  },
-
-  encode: (addressScript: string | Buffer, version = "17"): string => {
-    return Base58Check.encode(addressScript, version);
-  },
-
-  mnemonicToPrivateKey: (mnemonic: string, account: number = 0): Buffer => {
-    const coinType = NEOAddress.coinType();
-    const path = new BIP44Path(BIP44_PURPOSE, coinType).update(account).generate();
-    const seed = BIP39.mnemonicToSeedSync(mnemonic);
-    const masterKey = BIP32.fromSeed(seed);
-    const hardenedDerivation = masterKey.derivePath(path);
-    const privateKey = hardenedDerivation.privateKey;
-
-    if (!privateKey) throw new Error("Private key derivation from mnemonic failed");
-
-    return privateKey;
-  },
-
-  privateToPublicKey: (privateKey: string | Buffer): Buffer => {
-    const privateKeyBuff = stringOrBufferToBuffer(privateKey);
-    const publicKeyUint8Array: Uint8Array = secp256r1.publicKeyCreate(privateKeyBuff, true);
-    return Buffer.from(publicKeyUint8Array);
-  },
-
-  privateKeyToAddress: (privateKey: string | Buffer): string => {
-    const compressedPublicKey = NEOAddress.privateToPublicKey(privateKey);
-    const address = NEOAddress.publicKeyToAddress(compressedPublicKey);
-
-    return address;
-  },
-
-  generateAddress: (mnemonic: string, account: number = 0) => {
-    const privateKey = NEOAddress.mnemonicToPrivateKey(mnemonic, account);
-    return NEOAddress.privateKeyToAddress(privateKey);
-  },
-
-  isAddress: (address: string) => {
-    return wallet.isAddress(address, 0x17);
-  },
-};
-
-type N3AddressType = NEOAddressType & object;
-
-export const N3Address: N3AddressType = {
-  ...NEOAddress,
-
-  publicKeyToScriptHash: (publicKey: string | Buffer): string => {
-    const publicKeyHex = stringOrBufferToBuffer(publicKey)!.toString("hex");
-    return wallet.getScriptHashFromPublicKey(publicKeyHex);
-  },
-
-  publicKeyToAddress: (publicKey: string | Buffer): string => {
-    const addressScript = N3Address.publicKeyToScriptHash(publicKey);
-    return wallet.getAddressFromScriptHash(addressScript);
-  },
-
-  privateKeyToAddress: (privateKey: string | Buffer): string => {
-    const compressedPublicKey = N3Address.privateToPublicKey(privateKey);
-    const address = N3Address.publicKeyToAddress(compressedPublicKey);
-
-    return address;
-  },
-
-  generateAddress: (mnemonic: string, account: number = 0) => {
-    const privateKey = N3Address.mnemonicToPrivateKey(mnemonic, account);
-    return N3Address.privateKeyToAddress(privateKey);
-  },
-
-  isAddress: (address: string) => {
-    return wallet.isAddress(address, CONST.DEFAULT_ADDRESS_VERSION);
-  },
-
-  encode: (addressScript: string | Buffer, version = "35"): string => {
-    return Base58Check.encode(addressScript, version);
   },
 };
 

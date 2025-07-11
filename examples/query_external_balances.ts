@@ -44,10 +44,5 @@ import { ETHClient } from "../lib/clients";
   const bscdepositAddr = await bscClient.getDepositContractAddress(connectedSDK.wallet.bech32Address, bscAddress);
   const bscBalances = await bscClient.getExternalBalances(sdk, bscdepositAddr);
   console.log("bscBalances", bscBalances);
-
-  // query neo external balances
-  const neoAddress = AddressUtils.NEOAddress.generateAddress(connectedSDK.wallet.mnemonic);
-  const neoBalances = await sdk.neo.getExternalBalances(sdk, neoAddress, sdk.networkConfig.neo.rpcURL);
-  console.log("neoBalances", neoBalances);
 })().catch(console.error).finally(() => process.exit(0));
 

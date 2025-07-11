@@ -12,7 +12,7 @@ import { GrantModule } from "@carbon-sdk/modules/grant";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
-import { ETHAddress, NEOAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { ETHAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { AccessTokenResponse, GrantRequest, GrantType, hasExpired, hasRefreshTokenExpired, isValidIssuer } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
@@ -931,8 +931,6 @@ export class CarbonWallet {
         case SmartWalletBlockchain.Ethereum:
         case SmartWalletBlockchain.BinanceSmartChain:
           return ETHAddress.mnemonicToPrivateKey(this.mnemonic);
-        case SmartWalletBlockchain.Neo:
-          return NEOAddress.mnemonicToPrivateKey(this.mnemonic);
         default:
           return null
       }

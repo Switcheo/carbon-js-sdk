@@ -1,5 +1,3 @@
-import { CONST } from "@cityofzion/neon-core-next";
-
 export enum Network {
   MainNet = "mainnet",
   TestNet = "testnet",
@@ -179,7 +177,7 @@ export const NetworkConfigs: {
 
     n3: {
       rpcURL: "https://n3-rpc.dem.exchange",
-      networkMagic: CONST.MAGIC_NUMBER.MainNet,
+      networkMagic: 860833102,
     },
 
     zil: {
@@ -292,7 +290,7 @@ export const NetworkConfigs: {
 
     n3: {
       rpcURL: "https://test-n3-rpc.dem.exchange",
-      networkMagic: CONST.MAGIC_NUMBER.TestNet,
+      networkMagic: 877933390,
     },
 
     zil: {
@@ -417,7 +415,7 @@ export const NetworkConfigs: {
 
     n3: {
       rpcURL: "https://test-n3-rpc.dem.exchange",
-      networkMagic: CONST.MAGIC_NUMBER.TestNet,
+      networkMagic: 877933390,
     },
 
     zil: {
@@ -531,7 +529,7 @@ export const NetworkConfigs: {
 
     n3: {
       rpcURL: "https://test-n3-rpc.dem.exchange",
-      networkMagic: CONST.MAGIC_NUMBER.TestNet,
+      networkMagic: 877933390,
     },
 
     zil: {
