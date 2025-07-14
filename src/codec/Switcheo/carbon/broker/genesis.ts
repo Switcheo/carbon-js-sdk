@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Params } from "./params";
 import { SpotAmm, PerpsAmm } from "./amm";
 
 export const protobufPackage = "Switcheo.carbon.broker";
@@ -13,6 +14,7 @@ export interface GenesisState {
    */
   spotAmms: SpotAmm[];
   perpsAmms: PerpsAmm[];
+  params?: Params;
 }
 
 const baseGenesisState: object = {};
@@ -27,6 +29,9 @@ export const GenesisState = {
     }
     for (const v of message.perpsAmms) {
       PerpsAmm.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -46,6 +51,9 @@ export const GenesisState = {
         case 2:
           message.perpsAmms.push(PerpsAmm.decode(reader, reader.uint32()));
           break;
+        case 3:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -62,6 +70,10 @@ export const GenesisState = {
     message.perpsAmms = (object.perpsAmms ?? []).map((e: any) =>
       PerpsAmm.fromJSON(e)
     );
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -81,6 +93,8 @@ export const GenesisState = {
     } else {
       obj.perpsAmms = [];
     }
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -92,6 +106,10 @@ export const GenesisState = {
     message.perpsAmms = (object.perpsAmms ?? []).map((e) =>
       PerpsAmm.fromPartial(e)
     );
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };
