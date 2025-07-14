@@ -17,7 +17,7 @@
     "test": "tsc && node lib/test.js",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint . --ext .ts",
-    "prepare": "yarn run build",
+    "prepare": "rm -rf ./lib && yarn run build",
     "prepublishOnly": "yarn run lint",
     "preversion": "yarn run lint",
     "version": "yarn run format && git add -A src",
