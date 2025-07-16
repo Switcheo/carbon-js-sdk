@@ -1,28 +1,45 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Duration } from "../../../google/protobuf/duration";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
 /** Params defines the parameters for the coin module. */
 export interface Params {
+  withdrawalWindow?: Duration;
+  withdrawalThreshold: string;
   assetsRouteToFutures: string[];
 }
 
 /** ParamsToUpdate allows optional fields for Params. */
 export interface ParamsToUpdate {
+  withdrawalWindow?: Duration;
+  withdrawalThreshold: string;
   assetsRouteToFutures: string[];
 }
 
-const baseParams: object = { assetsRouteToFutures: "" };
+const baseParams: object = {
+  withdrawalThreshold: "",
+  assetsRouteToFutures: "",
+};
 
 export const Params = {
   encode(
     message: Params,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.withdrawalWindow !== undefined) {
+      Duration.encode(
+        message.withdrawalWindow,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.withdrawalThreshold !== "") {
+      writer.uint32(18).string(message.withdrawalThreshold);
+    }
     for (const v of message.assetsRouteToFutures) {
-      writer.uint32(10).string(v!);
+      writer.uint32(26).string(v!);
     }
     return writer;
   },
@@ -36,6 +53,12 @@ export const Params = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.withdrawalWindow = Duration.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.withdrawalThreshold = reader.string();
+          break;
+        case 3:
           message.assetsRouteToFutures.push(reader.string());
           break;
         default:
@@ -48,6 +71,15 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
+    message.withdrawalWindow =
+      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
+        ? Duration.fromJSON(object.withdrawalWindow)
+        : undefined;
+    message.withdrawalThreshold =
+      object.withdrawalThreshold !== undefined &&
+      object.withdrawalThreshold !== null
+        ? String(object.withdrawalThreshold)
+        : "";
     message.assetsRouteToFutures = (object.assetsRouteToFutures ?? []).map(
       (e: any) => String(e)
     );
@@ -56,6 +88,12 @@ export const Params = {
 
   toJSON(message: Params): unknown {
     const obj: any = {};
+    message.withdrawalWindow !== undefined &&
+      (obj.withdrawalWindow = message.withdrawalWindow
+        ? Duration.toJSON(message.withdrawalWindow)
+        : undefined);
+    message.withdrawalThreshold !== undefined &&
+      (obj.withdrawalThreshold = message.withdrawalThreshold);
     if (message.assetsRouteToFutures) {
       obj.assetsRouteToFutures = message.assetsRouteToFutures.map((e) => e);
     } else {
@@ -66,6 +104,11 @@ export const Params = {
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
+    message.withdrawalWindow =
+      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
+        ? Duration.fromPartial(object.withdrawalWindow)
+        : undefined;
+    message.withdrawalThreshold = object.withdrawalThreshold ?? "";
     message.assetsRouteToFutures = (object.assetsRouteToFutures ?? []).map(
       (e) => e
     );
@@ -73,15 +116,27 @@ export const Params = {
   },
 };
 
-const baseParamsToUpdate: object = { assetsRouteToFutures: "" };
+const baseParamsToUpdate: object = {
+  withdrawalThreshold: "",
+  assetsRouteToFutures: "",
+};
 
 export const ParamsToUpdate = {
   encode(
     message: ParamsToUpdate,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.withdrawalWindow !== undefined) {
+      Duration.encode(
+        message.withdrawalWindow,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.withdrawalThreshold !== "") {
+      writer.uint32(18).string(message.withdrawalThreshold);
+    }
     for (const v of message.assetsRouteToFutures) {
-      writer.uint32(10).string(v!);
+      writer.uint32(26).string(v!);
     }
     return writer;
   },
@@ -95,6 +150,12 @@ export const ParamsToUpdate = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.withdrawalWindow = Duration.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.withdrawalThreshold = reader.string();
+          break;
+        case 3:
           message.assetsRouteToFutures.push(reader.string());
           break;
         default:
@@ -107,6 +168,15 @@ export const ParamsToUpdate = {
 
   fromJSON(object: any): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    message.withdrawalWindow =
+      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
+        ? Duration.fromJSON(object.withdrawalWindow)
+        : undefined;
+    message.withdrawalThreshold =
+      object.withdrawalThreshold !== undefined &&
+      object.withdrawalThreshold !== null
+        ? String(object.withdrawalThreshold)
+        : "";
     message.assetsRouteToFutures = (object.assetsRouteToFutures ?? []).map(
       (e: any) => String(e)
     );
@@ -115,6 +185,12 @@ export const ParamsToUpdate = {
 
   toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
+    message.withdrawalWindow !== undefined &&
+      (obj.withdrawalWindow = message.withdrawalWindow
+        ? Duration.toJSON(message.withdrawalWindow)
+        : undefined);
+    message.withdrawalThreshold !== undefined &&
+      (obj.withdrawalThreshold = message.withdrawalThreshold);
     if (message.assetsRouteToFutures) {
       obj.assetsRouteToFutures = message.assetsRouteToFutures.map((e) => e);
     } else {
@@ -125,6 +201,11 @@ export const ParamsToUpdate = {
 
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    message.withdrawalWindow =
+      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
+        ? Duration.fromPartial(object.withdrawalWindow)
+        : undefined;
+    message.withdrawalThreshold = object.withdrawalThreshold ?? "";
     message.assetsRouteToFutures = (object.assetsRouteToFutures ?? []).map(
       (e) => e
     );
