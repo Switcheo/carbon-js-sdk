@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgGasCost, MinGasPrice } from "./fee";
+import { MinGasPrice, MsgGasCost } from "./fee";
 
 export const protobufPackage = "Switcheo.carbon.fee";
 
@@ -13,13 +13,12 @@ export interface GenesisState {
   minGasPrices: MinGasPrice[];
 }
 
-const baseGenesisState: object = {};
+function createBaseGenesisState(): GenesisState {
+  return { msgGasCosts: [], minGasPrices: [] };
+}
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.msgGasCosts) {
       MsgGasCost.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -30,90 +29,77 @@ export const GenesisState = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
-    message.msgGasCosts = [];
-    message.minGasPrices = [];
+    const message = createBaseGenesisState();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.msgGasCosts.push(MsgGasCost.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
-          message.minGasPrices.push(
-            MinGasPrice.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.minGasPrices.push(MinGasPrice.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.msgGasCosts = (object.msgGasCosts ?? []).map((e: any) =>
-      MsgGasCost.fromJSON(e)
-    );
-    message.minGasPrices = (object.minGasPrices ?? []).map((e: any) =>
-      MinGasPrice.fromJSON(e)
-    );
-    return message;
+    return {
+      msgGasCosts: Array.isArray(object?.msgGasCosts) ? object.msgGasCosts.map((e: any) => MsgGasCost.fromJSON(e)) : [],
+      minGasPrices: Array.isArray(object?.minGasPrices)
+        ? object.minGasPrices.map((e: any) => MinGasPrice.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
     if (message.msgGasCosts) {
-      obj.msgGasCosts = message.msgGasCosts.map((e) =>
-        e ? MsgGasCost.toJSON(e) : undefined
-      );
+      obj.msgGasCosts = message.msgGasCosts.map((e) => e ? MsgGasCost.toJSON(e) : undefined);
     } else {
       obj.msgGasCosts = [];
     }
     if (message.minGasPrices) {
-      obj.minGasPrices = message.minGasPrices.map((e) =>
-        e ? MinGasPrice.toJSON(e) : undefined
-      );
+      obj.minGasPrices = message.minGasPrices.map((e) => e ? MinGasPrice.toJSON(e) : undefined);
     } else {
       obj.minGasPrices = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisState>): GenesisState {
+    return GenesisState.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.msgGasCosts = (object.msgGasCosts ?? []).map((e) =>
-      MsgGasCost.fromPartial(e)
-    );
-    message.minGasPrices = (object.minGasPrices ?? []).map((e) =>
-      MinGasPrice.fromPartial(e)
-    );
+    const message = createBaseGenesisState();
+    message.msgGasCosts = object.msgGasCosts?.map((e) => MsgGasCost.fromPartial(e)) || [];
+    message.minGasPrices = object.minGasPrices?.map((e) => MinGasPrice.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {

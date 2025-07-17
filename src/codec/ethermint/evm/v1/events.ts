@@ -44,21 +44,12 @@ export interface EventBlockBloom {
   bloom: string;
 }
 
-const baseEventEthereumTx: object = {
-  amount: "",
-  ethHash: "",
-  index: "",
-  gasUsed: "",
-  hash: "",
-  recipient: "",
-  ethTxFailed: "",
-};
+function createBaseEventEthereumTx(): EventEthereumTx {
+  return { amount: "", ethHash: "", index: "", gasUsed: "", hash: "", recipient: "", ethTxFailed: "" };
+}
 
 export const EventEthereumTx = {
-  encode(
-    message: EventEthereumTx,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventEthereumTx, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.amount !== "") {
       writer.uint32(10).string(message.amount);
     }
@@ -84,72 +75,80 @@ export const EventEthereumTx = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventEthereumTx {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventEthereumTx } as EventEthereumTx;
+    const message = createBaseEventEthereumTx();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.ethHash = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.index = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.gasUsed = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.hash = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.recipient = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.ethTxFailed = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventEthereumTx {
-    const message = { ...baseEventEthereumTx } as EventEthereumTx;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.ethHash =
-      object.ethHash !== undefined && object.ethHash !== null
-        ? String(object.ethHash)
-        : "";
-    message.index =
-      object.index !== undefined && object.index !== null
-        ? String(object.index)
-        : "";
-    message.gasUsed =
-      object.gasUsed !== undefined && object.gasUsed !== null
-        ? String(object.gasUsed)
-        : "";
-    message.hash =
-      object.hash !== undefined && object.hash !== null
-        ? String(object.hash)
-        : "";
-    message.recipient =
-      object.recipient !== undefined && object.recipient !== null
-        ? String(object.recipient)
-        : "";
-    message.ethTxFailed =
-      object.ethTxFailed !== undefined && object.ethTxFailed !== null
-        ? String(object.ethTxFailed)
-        : "";
-    return message;
+    return {
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      ethHash: isSet(object.ethHash) ? String(object.ethHash) : "",
+      index: isSet(object.index) ? String(object.index) : "",
+      gasUsed: isSet(object.gasUsed) ? String(object.gasUsed) : "",
+      hash: isSet(object.hash) ? String(object.hash) : "",
+      recipient: isSet(object.recipient) ? String(object.recipient) : "",
+      ethTxFailed: isSet(object.ethTxFailed) ? String(object.ethTxFailed) : "",
+    };
   },
 
   toJSON(message: EventEthereumTx): unknown {
@@ -160,13 +159,16 @@ export const EventEthereumTx = {
     message.gasUsed !== undefined && (obj.gasUsed = message.gasUsed);
     message.hash !== undefined && (obj.hash = message.hash);
     message.recipient !== undefined && (obj.recipient = message.recipient);
-    message.ethTxFailed !== undefined &&
-      (obj.ethTxFailed = message.ethTxFailed);
+    message.ethTxFailed !== undefined && (obj.ethTxFailed = message.ethTxFailed);
     return obj;
   },
 
+  create(base?: DeepPartial<EventEthereumTx>): EventEthereumTx {
+    return EventEthereumTx.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventEthereumTx>): EventEthereumTx {
-    const message = { ...baseEventEthereumTx } as EventEthereumTx;
+    const message = createBaseEventEthereumTx();
     message.amount = object.amount ?? "";
     message.ethHash = object.ethHash ?? "";
     message.index = object.index ?? "";
@@ -178,13 +180,12 @@ export const EventEthereumTx = {
   },
 };
 
-const baseEventTxLog: object = { txLogs: "" };
+function createBaseEventTxLog(): EventTxLog {
+  return { txLogs: [] };
+}
 
 export const EventTxLog = {
-  encode(
-    message: EventTxLog,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventTxLog, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.txLogs) {
       writer.uint32(10).string(v!);
     }
@@ -192,28 +193,30 @@ export const EventTxLog = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventTxLog {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventTxLog } as EventTxLog;
-    message.txLogs = [];
+    const message = createBaseEventTxLog();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.txLogs.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventTxLog {
-    const message = { ...baseEventTxLog } as EventTxLog;
-    message.txLogs = (object.txLogs ?? []).map((e: any) => String(e));
-    return message;
+    return { txLogs: Array.isArray(object?.txLogs) ? object.txLogs.map((e: any) => String(e)) : [] };
   },
 
   toJSON(message: EventTxLog): unknown {
@@ -226,20 +229,23 @@ export const EventTxLog = {
     return obj;
   },
 
+  create(base?: DeepPartial<EventTxLog>): EventTxLog {
+    return EventTxLog.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventTxLog>): EventTxLog {
-    const message = { ...baseEventTxLog } as EventTxLog;
-    message.txLogs = (object.txLogs ?? []).map((e) => e);
+    const message = createBaseEventTxLog();
+    message.txLogs = object.txLogs?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseEventMessage: object = { module: "", sender: "", txType: "" };
+function createBaseEventMessage(): EventMessage {
+  return { module: "", sender: "", txType: "" };
+}
 
 export const EventMessage = {
-  encode(
-    message: EventMessage,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventMessage, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.module !== "") {
       writer.uint32(10).string(message.module);
     }
@@ -253,44 +259,48 @@ export const EventMessage = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventMessage {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventMessage } as EventMessage;
+    const message = createBaseEventMessage();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.module = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.txType = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventMessage {
-    const message = { ...baseEventMessage } as EventMessage;
-    message.module =
-      object.module !== undefined && object.module !== null
-        ? String(object.module)
-        : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.txType =
-      object.txType !== undefined && object.txType !== null
-        ? String(object.txType)
-        : "";
-    return message;
+    return {
+      module: isSet(object.module) ? String(object.module) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      txType: isSet(object.txType) ? String(object.txType) : "",
+    };
   },
 
   toJSON(message: EventMessage): unknown {
@@ -301,8 +311,12 @@ export const EventMessage = {
     return obj;
   },
 
+  create(base?: DeepPartial<EventMessage>): EventMessage {
+    return EventMessage.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventMessage>): EventMessage {
-    const message = { ...baseEventMessage } as EventMessage;
+    const message = createBaseEventMessage();
     message.module = object.module ?? "";
     message.sender = object.sender ?? "";
     message.txType = object.txType ?? "";
@@ -310,13 +324,12 @@ export const EventMessage = {
   },
 };
 
-const baseEventBlockBloom: object = { bloom: "" };
+function createBaseEventBlockBloom(): EventBlockBloom {
+  return { bloom: "" };
+}
 
 export const EventBlockBloom = {
-  encode(
-    message: EventBlockBloom,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventBlockBloom, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.bloom !== "") {
       writer.uint32(10).string(message.bloom);
     }
@@ -324,30 +337,30 @@ export const EventBlockBloom = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventBlockBloom {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventBlockBloom } as EventBlockBloom;
+    const message = createBaseEventBlockBloom();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.bloom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventBlockBloom {
-    const message = { ...baseEventBlockBloom } as EventBlockBloom;
-    message.bloom =
-      object.bloom !== undefined && object.bloom !== null
-        ? String(object.bloom)
-        : "";
-    return message;
+    return { bloom: isSet(object.bloom) ? String(object.bloom) : "" };
   },
 
   toJSON(message: EventBlockBloom): unknown {
@@ -356,34 +369,30 @@ export const EventBlockBloom = {
     return obj;
   },
 
+  create(base?: DeepPartial<EventBlockBloom>): EventBlockBloom {
+    return EventBlockBloom.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventBlockBloom>): EventBlockBloom {
-    const message = { ...baseEventBlockBloom } as EventBlockBloom;
+    const message = createBaseEventBlockBloom();
     message.bloom = object.bloom ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -6,7 +6,8 @@ import { FileDescriptorProto } from "../../../google/protobuf/descriptor";
 export const protobufPackage = "cosmos.reflection.v1";
 
 /** FileDescriptorsRequest is the Query/FileDescriptors request type. */
-export interface FileDescriptorsRequest {}
+export interface FileDescriptorsRequest {
+}
 
 /** FileDescriptorsResponse is the Query/FileDescriptors response type. */
 export interface FileDescriptorsResponse {
@@ -14,37 +15,33 @@ export interface FileDescriptorsResponse {
   files: FileDescriptorProto[];
 }
 
-const baseFileDescriptorsRequest: object = {};
+function createBaseFileDescriptorsRequest(): FileDescriptorsRequest {
+  return {};
+}
 
 export const FileDescriptorsRequest = {
-  encode(
-    _: FileDescriptorsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: FileDescriptorsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): FileDescriptorsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): FileDescriptorsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFileDescriptorsRequest } as FileDescriptorsRequest;
+    const message = createBaseFileDescriptorsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): FileDescriptorsRequest {
-    const message = { ...baseFileDescriptorsRequest } as FileDescriptorsRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: FileDescriptorsRequest): unknown {
@@ -52,82 +49,72 @@ export const FileDescriptorsRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<FileDescriptorsRequest>): FileDescriptorsRequest {
+    return FileDescriptorsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<FileDescriptorsRequest>): FileDescriptorsRequest {
-    const message = { ...baseFileDescriptorsRequest } as FileDescriptorsRequest;
+    const message = createBaseFileDescriptorsRequest();
     return message;
   },
 };
 
-const baseFileDescriptorsResponse: object = {};
+function createBaseFileDescriptorsResponse(): FileDescriptorsResponse {
+  return { files: [] };
+}
 
 export const FileDescriptorsResponse = {
-  encode(
-    message: FileDescriptorsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FileDescriptorsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.files) {
       FileDescriptorProto.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): FileDescriptorsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): FileDescriptorsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseFileDescriptorsResponse,
-    } as FileDescriptorsResponse;
-    message.files = [];
+    const message = createBaseFileDescriptorsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.files.push(
-            FileDescriptorProto.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.files.push(FileDescriptorProto.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FileDescriptorsResponse {
-    const message = {
-      ...baseFileDescriptorsResponse,
-    } as FileDescriptorsResponse;
-    message.files = (object.files ?? []).map((e: any) =>
-      FileDescriptorProto.fromJSON(e)
-    );
-    return message;
+    return { files: Array.isArray(object?.files) ? object.files.map((e: any) => FileDescriptorProto.fromJSON(e)) : [] };
   },
 
   toJSON(message: FileDescriptorsResponse): unknown {
     const obj: any = {};
     if (message.files) {
-      obj.files = message.files.map((e) =>
-        e ? FileDescriptorProto.toJSON(e) : undefined
-      );
+      obj.files = message.files.map((e) => e ? FileDescriptorProto.toJSON(e) : undefined);
     } else {
       obj.files = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<FileDescriptorsResponse>
-  ): FileDescriptorsResponse {
-    const message = {
-      ...baseFileDescriptorsResponse,
-    } as FileDescriptorsResponse;
-    message.files = (object.files ?? []).map((e) =>
-      FileDescriptorProto.fromPartial(e)
-    );
+  create(base?: DeepPartial<FileDescriptorsResponse>): FileDescriptorsResponse {
+    return FileDescriptorsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<FileDescriptorsResponse>): FileDescriptorsResponse {
+    const message = createBaseFileDescriptorsResponse();
+    message.files = object.files?.map((e) => FileDescriptorProto.fromPartial(e)) || [];
     return message;
   },
 };
@@ -141,58 +128,34 @@ export interface ReflectionService {
    * FileDescriptors queries all the file descriptors in the app in order
    * to enable easier generation of dynamic clients.
    */
-  FileDescriptors(
-    request: FileDescriptorsRequest
-  ): Promise<FileDescriptorsResponse>;
+  FileDescriptors(request: FileDescriptorsRequest): Promise<FileDescriptorsResponse>;
 }
 
 export class ReflectionServiceClientImpl implements ReflectionService {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.reflection.v1.ReflectionService";
     this.rpc = rpc;
     this.FileDescriptors = this.FileDescriptors.bind(this);
   }
-  FileDescriptors(
-    request: FileDescriptorsRequest
-  ): Promise<FileDescriptorsResponse> {
+  FileDescriptors(request: FileDescriptorsRequest): Promise<FileDescriptorsResponse> {
     const data = FileDescriptorsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.reflection.v1.ReflectionService",
-      "FileDescriptors",
-      data
-    );
-    return promise.then((data) =>
-      FileDescriptorsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "FileDescriptors", data);
+    return promise.then((data) => FileDescriptorsResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {

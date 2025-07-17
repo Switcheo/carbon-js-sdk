@@ -18,31 +18,28 @@ export interface Candlestick {
   lastUpdatedBlockHeight: Long;
 }
 
-const baseCandlestick: object = {
-  marketId: "",
-  resolution: Long.UZERO,
-  open: "",
-  close: "",
-  high: "",
-  low: "",
-  volume: "",
-  quoteVolume: "",
-  lastUpdatedBlockHeight: Long.ZERO,
-};
+function createBaseCandlestick(): Candlestick {
+  return {
+    marketId: "",
+    time: undefined,
+    resolution: Long.UZERO,
+    open: "",
+    close: "",
+    high: "",
+    low: "",
+    volume: "",
+    quoteVolume: "",
+    lastUpdatedBlockHeight: Long.ZERO,
+  };
+}
 
 export const Candlestick = {
-  encode(
-    message: Candlestick,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Candlestick, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
     if (message.time !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.time),
-        writer.uint32(18).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.time), writer.uint32(18).fork()).ldelim();
     }
     if (!message.resolution.isZero()) {
       writer.uint32(24).uint64(message.resolution);
@@ -72,124 +69,135 @@ export const Candlestick = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Candlestick {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCandlestick } as Candlestick;
+    const message = createBaseCandlestick();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
-          message.time = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.time = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.resolution = reader.uint64() as Long;
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.open = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.close = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.high = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.low = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.volume = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.quoteVolume = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 80) {
+            break;
+          }
+
           message.lastUpdatedBlockHeight = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Candlestick {
-    const message = { ...baseCandlestick } as Candlestick;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.time =
-      object.time !== undefined && object.time !== null
-        ? fromJsonTimestamp(object.time)
-        : undefined;
-    message.resolution =
-      object.resolution !== undefined && object.resolution !== null
-        ? Long.fromString(object.resolution)
-        : Long.UZERO;
-    message.open =
-      object.open !== undefined && object.open !== null
-        ? String(object.open)
-        : "";
-    message.close =
-      object.close !== undefined && object.close !== null
-        ? String(object.close)
-        : "";
-    message.high =
-      object.high !== undefined && object.high !== null
-        ? String(object.high)
-        : "";
-    message.low =
-      object.low !== undefined && object.low !== null ? String(object.low) : "";
-    message.volume =
-      object.volume !== undefined && object.volume !== null
-        ? String(object.volume)
-        : "";
-    message.quoteVolume =
-      object.quoteVolume !== undefined && object.quoteVolume !== null
-        ? String(object.quoteVolume)
-        : "";
-    message.lastUpdatedBlockHeight =
-      object.lastUpdatedBlockHeight !== undefined &&
-      object.lastUpdatedBlockHeight !== null
-        ? Long.fromString(object.lastUpdatedBlockHeight)
-        : Long.ZERO;
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      time: isSet(object.time) ? fromJsonTimestamp(object.time) : undefined,
+      resolution: isSet(object.resolution) ? Long.fromValue(object.resolution) : Long.UZERO,
+      open: isSet(object.open) ? String(object.open) : "",
+      close: isSet(object.close) ? String(object.close) : "",
+      high: isSet(object.high) ? String(object.high) : "",
+      low: isSet(object.low) ? String(object.low) : "",
+      volume: isSet(object.volume) ? String(object.volume) : "",
+      quoteVolume: isSet(object.quoteVolume) ? String(object.quoteVolume) : "",
+      lastUpdatedBlockHeight: isSet(object.lastUpdatedBlockHeight)
+        ? Long.fromValue(object.lastUpdatedBlockHeight)
+        : Long.ZERO,
+    };
   },
 
   toJSON(message: Candlestick): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.time !== undefined && (obj.time = message.time.toISOString());
-    message.resolution !== undefined &&
-      (obj.resolution = (message.resolution || Long.UZERO).toString());
+    message.resolution !== undefined && (obj.resolution = (message.resolution || Long.UZERO).toString());
     message.open !== undefined && (obj.open = message.open);
     message.close !== undefined && (obj.close = message.close);
     message.high !== undefined && (obj.high = message.high);
     message.low !== undefined && (obj.low = message.low);
     message.volume !== undefined && (obj.volume = message.volume);
-    message.quoteVolume !== undefined &&
-      (obj.quoteVolume = message.quoteVolume);
+    message.quoteVolume !== undefined && (obj.quoteVolume = message.quoteVolume);
     message.lastUpdatedBlockHeight !== undefined &&
-      (obj.lastUpdatedBlockHeight = (
-        message.lastUpdatedBlockHeight || Long.ZERO
-      ).toString());
+      (obj.lastUpdatedBlockHeight = (message.lastUpdatedBlockHeight || Long.ZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<Candlestick>): Candlestick {
+    return Candlestick.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Candlestick>): Candlestick {
-    const message = { ...baseCandlestick } as Candlestick;
+    const message = createBaseCandlestick();
     message.marketId = object.marketId ?? "";
     message.time = object.time ?? undefined;
-    message.resolution =
-      object.resolution !== undefined && object.resolution !== null
-        ? Long.fromValue(object.resolution)
-        : Long.UZERO;
+    message.resolution = (object.resolution !== undefined && object.resolution !== null)
+      ? Long.fromValue(object.resolution)
+      : Long.UZERO;
     message.open = object.open ?? "";
     message.close = object.close ?? "";
     message.high = object.high ?? "";
@@ -197,32 +205,19 @@ export const Candlestick = {
     message.volume = object.volume ?? "";
     message.quoteVolume = object.quoteVolume ?? "";
     message.lastUpdatedBlockHeight =
-      object.lastUpdatedBlockHeight !== undefined &&
-      object.lastUpdatedBlockHeight !== null
+      (object.lastUpdatedBlockHeight !== undefined && object.lastUpdatedBlockHeight !== null)
         ? Long.fromValue(object.lastUpdatedBlockHeight)
         : Long.ZERO;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -232,8 +227,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -254,4 +249,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

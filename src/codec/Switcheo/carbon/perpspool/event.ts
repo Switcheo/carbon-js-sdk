@@ -1,11 +1,11 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Pool } from "./pool";
-import { MarketConfig } from "./market";
-import { UserVault } from "./user_vault";
-import { QuoteStrategy } from "./quote";
 import { Timestamp } from "../../../google/protobuf/timestamp";
+import { MarketConfig } from "./market";
+import { Pool } from "./pool";
+import { QuoteStrategy } from "./quote";
+import { UserVault } from "./user_vault";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -95,13 +95,12 @@ export interface SetQuoteStrategyEvent {
   quoteStrategy?: QuoteStrategy;
 }
 
-const basePoolEvent: object = { type: "" };
+function createBasePoolEvent(): PoolEvent {
+  return { pool: undefined, type: "" };
+}
 
 export const PoolEvent = {
-  encode(
-    message: PoolEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PoolEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pool !== undefined) {
       Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
@@ -112,65 +111,67 @@ export const PoolEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PoolEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePoolEvent } as PoolEvent;
+    const message = createBasePoolEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pool = Pool.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PoolEvent {
-    const message = { ...basePoolEvent } as PoolEvent;
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? Pool.fromJSON(object.pool)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      pool: isSet(object.pool) ? Pool.fromJSON(object.pool) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: PoolEvent): unknown {
     const obj: any = {};
-    message.pool !== undefined &&
-      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
+    message.pool !== undefined && (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
+  create(base?: DeepPartial<PoolEvent>): PoolEvent {
+    return PoolEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<PoolEvent>): PoolEvent {
-    const message = { ...basePoolEvent } as PoolEvent;
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? Pool.fromPartial(object.pool)
-        : undefined;
+    const message = createBasePoolEvent();
+    message.pool = (object.pool !== undefined && object.pool !== null) ? Pool.fromPartial(object.pool) : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseRegisterToPoolEvent: object = { poolId: Long.UZERO, marketId: "" };
+function createBaseRegisterToPoolEvent(): RegisterToPoolEvent {
+  return { poolId: Long.UZERO, marketId: "" };
+}
 
 export const RegisterToPoolEvent = {
-  encode(
-    message: RegisterToPoolEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RegisterToPoolEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -181,68 +182,69 @@ export const RegisterToPoolEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RegisterToPoolEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRegisterToPoolEvent } as RegisterToPoolEvent;
+    const message = createBaseRegisterToPoolEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RegisterToPoolEvent {
-    const message = { ...baseRegisterToPoolEvent } as RegisterToPoolEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+    };
   },
 
   toJSON(message: RegisterToPoolEvent): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
+  create(base?: DeepPartial<RegisterToPoolEvent>): RegisterToPoolEvent {
+    return RegisterToPoolEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RegisterToPoolEvent>): RegisterToPoolEvent {
-    const message = { ...baseRegisterToPoolEvent } as RegisterToPoolEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    const message = createBaseRegisterToPoolEvent();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseDeregisterFromPoolEvent: object = {
-  poolId: Long.UZERO,
-  marketId: "",
-};
+function createBaseDeregisterFromPoolEvent(): DeregisterFromPoolEvent {
+  return { poolId: Long.UZERO, marketId: "" };
+}
 
 export const DeregisterFromPoolEvent = {
-  encode(
-    message: DeregisterFromPoolEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DeregisterFromPoolEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -252,145 +254,129 @@ export const DeregisterFromPoolEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): DeregisterFromPoolEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeregisterFromPoolEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseDeregisterFromPoolEvent,
-    } as DeregisterFromPoolEvent;
+    const message = createBaseDeregisterFromPoolEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DeregisterFromPoolEvent {
-    const message = {
-      ...baseDeregisterFromPoolEvent,
-    } as DeregisterFromPoolEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+    };
   },
 
   toJSON(message: DeregisterFromPoolEvent): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<DeregisterFromPoolEvent>
-  ): DeregisterFromPoolEvent {
-    const message = {
-      ...baseDeregisterFromPoolEvent,
-    } as DeregisterFromPoolEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+  create(base?: DeepPartial<DeregisterFromPoolEvent>): DeregisterFromPoolEvent {
+    return DeregisterFromPoolEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<DeregisterFromPoolEvent>): DeregisterFromPoolEvent {
+    const message = createBaseDeregisterFromPoolEvent();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseSetMarketConfigEvent: object = {};
+function createBaseSetMarketConfigEvent(): SetMarketConfigEvent {
+  return { marketConfig: undefined };
+}
 
 export const SetMarketConfigEvent = {
-  encode(
-    message: SetMarketConfigEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetMarketConfigEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketConfig !== undefined) {
-      MarketConfig.encode(
-        message.marketConfig,
-        writer.uint32(10).fork()
-      ).ldelim();
+      MarketConfig.encode(message.marketConfig, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetMarketConfigEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetMarketConfigEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSetMarketConfigEvent } as SetMarketConfigEvent;
+    const message = createBaseSetMarketConfigEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketConfig = MarketConfig.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetMarketConfigEvent {
-    const message = { ...baseSetMarketConfigEvent } as SetMarketConfigEvent;
-    message.marketConfig =
-      object.marketConfig !== undefined && object.marketConfig !== null
-        ? MarketConfig.fromJSON(object.marketConfig)
-        : undefined;
-    return message;
+    return { marketConfig: isSet(object.marketConfig) ? MarketConfig.fromJSON(object.marketConfig) : undefined };
   },
 
   toJSON(message: SetMarketConfigEvent): unknown {
     const obj: any = {};
     message.marketConfig !== undefined &&
-      (obj.marketConfig = message.marketConfig
-        ? MarketConfig.toJSON(message.marketConfig)
-        : undefined);
+      (obj.marketConfig = message.marketConfig ? MarketConfig.toJSON(message.marketConfig) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<SetMarketConfigEvent>): SetMarketConfigEvent {
+    return SetMarketConfigEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SetMarketConfigEvent>): SetMarketConfigEvent {
-    const message = { ...baseSetMarketConfigEvent } as SetMarketConfigEvent;
-    message.marketConfig =
-      object.marketConfig !== undefined && object.marketConfig !== null
-        ? MarketConfig.fromPartial(object.marketConfig)
-        : undefined;
+    const message = createBaseSetMarketConfigEvent();
+    message.marketConfig = (object.marketConfig !== undefined && object.marketConfig !== null)
+      ? MarketConfig.fromPartial(object.marketConfig)
+      : undefined;
     return message;
   },
 };
 
-const baseUpdateMarketLiquidityUsageMultiplierEvent: object = {
-  marketId: "",
-  multiplier: "",
-};
+function createBaseUpdateMarketLiquidityUsageMultiplierEvent(): UpdateMarketLiquidityUsageMultiplierEvent {
+  return { marketId: "", multiplier: "" };
+}
 
 export const UpdateMarketLiquidityUsageMultiplierEvent = {
-  encode(
-    message: UpdateMarketLiquidityUsageMultiplierEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateMarketLiquidityUsageMultiplierEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -400,45 +386,41 @@ export const UpdateMarketLiquidityUsageMultiplierEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateMarketLiquidityUsageMultiplierEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateMarketLiquidityUsageMultiplierEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
-    } as UpdateMarketLiquidityUsageMultiplierEvent;
+    const message = createBaseUpdateMarketLiquidityUsageMultiplierEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.multiplier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateMarketLiquidityUsageMultiplierEvent {
-    const message = {
-      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
-    } as UpdateMarketLiquidityUsageMultiplierEvent;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.multiplier =
-      object.multiplier !== undefined && object.multiplier !== null
-        ? String(object.multiplier)
-        : "";
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      multiplier: isSet(object.multiplier) ? String(object.multiplier) : "",
+    };
   },
 
   toJSON(message: UpdateMarketLiquidityUsageMultiplierEvent): unknown {
@@ -448,38 +430,39 @@ export const UpdateMarketLiquidityUsageMultiplierEvent = {
     return obj;
   },
 
+  create(base?: DeepPartial<UpdateMarketLiquidityUsageMultiplierEvent>): UpdateMarketLiquidityUsageMultiplierEvent {
+    return UpdateMarketLiquidityUsageMultiplierEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(
-    object: DeepPartial<UpdateMarketLiquidityUsageMultiplierEvent>
+    object: DeepPartial<UpdateMarketLiquidityUsageMultiplierEvent>,
   ): UpdateMarketLiquidityUsageMultiplierEvent {
-    const message = {
-      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
-    } as UpdateMarketLiquidityUsageMultiplierEvent;
+    const message = createBaseUpdateMarketLiquidityUsageMultiplierEvent();
     message.marketId = object.marketId ?? "";
     message.multiplier = object.multiplier ?? "";
     return message;
   },
 };
 
-const baseDepositToVaultEvent: object = {
-  poolId: Long.UZERO,
-  denom: "",
-  amount: "",
-  shareDenom: "",
-  shareAmount: "",
-  initialShareAmountBurnt: "",
-  depositor: "",
-  vaultFeeDenom: "",
-  vaultFeeAmount: "",
-  commissionFeeDenom: "",
-  commissionFeeAmount: "",
-  vaultType: Long.UZERO,
-};
+function createBaseDepositToVaultEvent(): DepositToVaultEvent {
+  return {
+    poolId: Long.UZERO,
+    denom: "",
+    amount: "",
+    shareDenom: "",
+    shareAmount: "",
+    initialShareAmountBurnt: "",
+    depositor: "",
+    vaultFeeDenom: "",
+    vaultFeeAmount: "",
+    commissionFeeDenom: "",
+    commissionFeeAmount: "",
+    vaultType: Long.UZERO,
+  };
+}
 
 export const DepositToVaultEvent = {
-  encode(
-    message: DepositToVaultEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DepositToVaultEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -520,143 +503,148 @@ export const DepositToVaultEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DepositToVaultEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDepositToVaultEvent } as DepositToVaultEvent;
+    const message = createBaseDepositToVaultEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.shareDenom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.shareAmount = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.initialShareAmountBurnt = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.depositor = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.vaultFeeDenom = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.vaultFeeAmount = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.commissionFeeDenom = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.commissionFeeAmount = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 96) {
+            break;
+          }
+
           message.vaultType = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DepositToVaultEvent {
-    const message = { ...baseDepositToVaultEvent } as DepositToVaultEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.shareDenom =
-      object.shareDenom !== undefined && object.shareDenom !== null
-        ? String(object.shareDenom)
-        : "";
-    message.shareAmount =
-      object.shareAmount !== undefined && object.shareAmount !== null
-        ? String(object.shareAmount)
-        : "";
-    message.initialShareAmountBurnt =
-      object.initialShareAmountBurnt !== undefined &&
-      object.initialShareAmountBurnt !== null
-        ? String(object.initialShareAmountBurnt)
-        : "";
-    message.depositor =
-      object.depositor !== undefined && object.depositor !== null
-        ? String(object.depositor)
-        : "";
-    message.vaultFeeDenom =
-      object.vaultFeeDenom !== undefined && object.vaultFeeDenom !== null
-        ? String(object.vaultFeeDenom)
-        : "";
-    message.vaultFeeAmount =
-      object.vaultFeeAmount !== undefined && object.vaultFeeAmount !== null
-        ? String(object.vaultFeeAmount)
-        : "";
-    message.commissionFeeDenom =
-      object.commissionFeeDenom !== undefined &&
-      object.commissionFeeDenom !== null
-        ? String(object.commissionFeeDenom)
-        : "";
-    message.commissionFeeAmount =
-      object.commissionFeeAmount !== undefined &&
-      object.commissionFeeAmount !== null
-        ? String(object.commissionFeeAmount)
-        : "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? Long.fromString(object.vaultType)
-        : Long.UZERO;
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      shareDenom: isSet(object.shareDenom) ? String(object.shareDenom) : "",
+      shareAmount: isSet(object.shareAmount) ? String(object.shareAmount) : "",
+      initialShareAmountBurnt: isSet(object.initialShareAmountBurnt) ? String(object.initialShareAmountBurnt) : "",
+      depositor: isSet(object.depositor) ? String(object.depositor) : "",
+      vaultFeeDenom: isSet(object.vaultFeeDenom) ? String(object.vaultFeeDenom) : "",
+      vaultFeeAmount: isSet(object.vaultFeeAmount) ? String(object.vaultFeeAmount) : "",
+      commissionFeeDenom: isSet(object.commissionFeeDenom) ? String(object.commissionFeeDenom) : "",
+      commissionFeeAmount: isSet(object.commissionFeeAmount) ? String(object.commissionFeeAmount) : "",
+      vaultType: isSet(object.vaultType) ? Long.fromValue(object.vaultType) : Long.UZERO,
+    };
   },
 
   toJSON(message: DepositToVaultEvent): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.shareDenom !== undefined && (obj.shareDenom = message.shareDenom);
-    message.shareAmount !== undefined &&
-      (obj.shareAmount = message.shareAmount);
-    message.initialShareAmountBurnt !== undefined &&
-      (obj.initialShareAmountBurnt = message.initialShareAmountBurnt);
+    message.shareAmount !== undefined && (obj.shareAmount = message.shareAmount);
+    message.initialShareAmountBurnt !== undefined && (obj.initialShareAmountBurnt = message.initialShareAmountBurnt);
     message.depositor !== undefined && (obj.depositor = message.depositor);
-    message.vaultFeeDenom !== undefined &&
-      (obj.vaultFeeDenom = message.vaultFeeDenom);
-    message.vaultFeeAmount !== undefined &&
-      (obj.vaultFeeAmount = message.vaultFeeAmount);
-    message.commissionFeeDenom !== undefined &&
-      (obj.commissionFeeDenom = message.commissionFeeDenom);
-    message.commissionFeeAmount !== undefined &&
-      (obj.commissionFeeAmount = message.commissionFeeAmount);
-    message.vaultType !== undefined &&
-      (obj.vaultType = (message.vaultType || Long.UZERO).toString());
+    message.vaultFeeDenom !== undefined && (obj.vaultFeeDenom = message.vaultFeeDenom);
+    message.vaultFeeAmount !== undefined && (obj.vaultFeeAmount = message.vaultFeeAmount);
+    message.commissionFeeDenom !== undefined && (obj.commissionFeeDenom = message.commissionFeeDenom);
+    message.commissionFeeAmount !== undefined && (obj.commissionFeeAmount = message.commissionFeeAmount);
+    message.vaultType !== undefined && (obj.vaultType = (message.vaultType || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<DepositToVaultEvent>): DepositToVaultEvent {
+    return DepositToVaultEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DepositToVaultEvent>): DepositToVaultEvent {
-    const message = { ...baseDepositToVaultEvent } as DepositToVaultEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    const message = createBaseDepositToVaultEvent();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.shareDenom = object.shareDenom ?? "";
@@ -667,33 +655,31 @@ export const DepositToVaultEvent = {
     message.vaultFeeAmount = object.vaultFeeAmount ?? "";
     message.commissionFeeDenom = object.commissionFeeDenom ?? "";
     message.commissionFeeAmount = object.commissionFeeAmount ?? "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? Long.fromValue(object.vaultType)
-        : Long.UZERO;
+    message.vaultType = (object.vaultType !== undefined && object.vaultType !== null)
+      ? Long.fromValue(object.vaultType)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseWithdrawFromVaultEvent: object = {
-  poolId: Long.UZERO,
-  denom: "",
-  amount: "",
-  shareDenom: "",
-  shareAmount: "",
-  withdrawer: "",
-  vaultFeeDenom: "",
-  vaultFeeAmount: "",
-  commissionFeeDenom: "",
-  commissionFeeAmount: "",
-  vaultType: Long.UZERO,
-};
+function createBaseWithdrawFromVaultEvent(): WithdrawFromVaultEvent {
+  return {
+    poolId: Long.UZERO,
+    denom: "",
+    amount: "",
+    shareDenom: "",
+    shareAmount: "",
+    withdrawer: "",
+    vaultFeeDenom: "",
+    vaultFeeAmount: "",
+    commissionFeeDenom: "",
+    commissionFeeAmount: "",
+    vaultType: Long.UZERO,
+  };
+}
 
 export const WithdrawFromVaultEvent = {
-  encode(
-    message: WithdrawFromVaultEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: WithdrawFromVaultEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -730,139 +716,140 @@ export const WithdrawFromVaultEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): WithdrawFromVaultEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawFromVaultEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseWithdrawFromVaultEvent } as WithdrawFromVaultEvent;
+    const message = createBaseWithdrawFromVaultEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.shareDenom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.shareAmount = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.withdrawer = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.vaultFeeDenom = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.vaultFeeAmount = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.commissionFeeDenom = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.commissionFeeAmount = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 88) {
+            break;
+          }
+
           message.vaultType = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): WithdrawFromVaultEvent {
-    const message = { ...baseWithdrawFromVaultEvent } as WithdrawFromVaultEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.shareDenom =
-      object.shareDenom !== undefined && object.shareDenom !== null
-        ? String(object.shareDenom)
-        : "";
-    message.shareAmount =
-      object.shareAmount !== undefined && object.shareAmount !== null
-        ? String(object.shareAmount)
-        : "";
-    message.withdrawer =
-      object.withdrawer !== undefined && object.withdrawer !== null
-        ? String(object.withdrawer)
-        : "";
-    message.vaultFeeDenom =
-      object.vaultFeeDenom !== undefined && object.vaultFeeDenom !== null
-        ? String(object.vaultFeeDenom)
-        : "";
-    message.vaultFeeAmount =
-      object.vaultFeeAmount !== undefined && object.vaultFeeAmount !== null
-        ? String(object.vaultFeeAmount)
-        : "";
-    message.commissionFeeDenom =
-      object.commissionFeeDenom !== undefined &&
-      object.commissionFeeDenom !== null
-        ? String(object.commissionFeeDenom)
-        : "";
-    message.commissionFeeAmount =
-      object.commissionFeeAmount !== undefined &&
-      object.commissionFeeAmount !== null
-        ? String(object.commissionFeeAmount)
-        : "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? Long.fromString(object.vaultType)
-        : Long.UZERO;
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      shareDenom: isSet(object.shareDenom) ? String(object.shareDenom) : "",
+      shareAmount: isSet(object.shareAmount) ? String(object.shareAmount) : "",
+      withdrawer: isSet(object.withdrawer) ? String(object.withdrawer) : "",
+      vaultFeeDenom: isSet(object.vaultFeeDenom) ? String(object.vaultFeeDenom) : "",
+      vaultFeeAmount: isSet(object.vaultFeeAmount) ? String(object.vaultFeeAmount) : "",
+      commissionFeeDenom: isSet(object.commissionFeeDenom) ? String(object.commissionFeeDenom) : "",
+      commissionFeeAmount: isSet(object.commissionFeeAmount) ? String(object.commissionFeeAmount) : "",
+      vaultType: isSet(object.vaultType) ? Long.fromValue(object.vaultType) : Long.UZERO,
+    };
   },
 
   toJSON(message: WithdrawFromVaultEvent): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.shareDenom !== undefined && (obj.shareDenom = message.shareDenom);
-    message.shareAmount !== undefined &&
-      (obj.shareAmount = message.shareAmount);
+    message.shareAmount !== undefined && (obj.shareAmount = message.shareAmount);
     message.withdrawer !== undefined && (obj.withdrawer = message.withdrawer);
-    message.vaultFeeDenom !== undefined &&
-      (obj.vaultFeeDenom = message.vaultFeeDenom);
-    message.vaultFeeAmount !== undefined &&
-      (obj.vaultFeeAmount = message.vaultFeeAmount);
-    message.commissionFeeDenom !== undefined &&
-      (obj.commissionFeeDenom = message.commissionFeeDenom);
-    message.commissionFeeAmount !== undefined &&
-      (obj.commissionFeeAmount = message.commissionFeeAmount);
-    message.vaultType !== undefined &&
-      (obj.vaultType = (message.vaultType || Long.UZERO).toString());
+    message.vaultFeeDenom !== undefined && (obj.vaultFeeDenom = message.vaultFeeDenom);
+    message.vaultFeeAmount !== undefined && (obj.vaultFeeAmount = message.vaultFeeAmount);
+    message.commissionFeeDenom !== undefined && (obj.commissionFeeDenom = message.commissionFeeDenom);
+    message.commissionFeeAmount !== undefined && (obj.commissionFeeAmount = message.commissionFeeAmount);
+    message.vaultType !== undefined && (obj.vaultType = (message.vaultType || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<WithdrawFromVaultEvent>
-  ): WithdrawFromVaultEvent {
-    const message = { ...baseWithdrawFromVaultEvent } as WithdrawFromVaultEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+  create(base?: DeepPartial<WithdrawFromVaultEvent>): WithdrawFromVaultEvent {
+    return WithdrawFromVaultEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<WithdrawFromVaultEvent>): WithdrawFromVaultEvent {
+    const message = createBaseWithdrawFromVaultEvent();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.shareDenom = object.shareDenom ?? "";
@@ -872,26 +859,19 @@ export const WithdrawFromVaultEvent = {
     message.vaultFeeAmount = object.vaultFeeAmount ?? "";
     message.commissionFeeDenom = object.commissionFeeDenom ?? "";
     message.commissionFeeAmount = object.commissionFeeAmount ?? "";
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? Long.fromValue(object.vaultType)
-        : Long.UZERO;
+    message.vaultType = (object.vaultType !== undefined && object.vaultType !== null)
+      ? Long.fromValue(object.vaultType)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseUserVaultWithdrawalPendingEvent: object = {
-  vaultId: Long.UZERO,
-  address: "",
-  sharesAmount: "",
-  processId: Long.UZERO,
-};
+function createBaseUserVaultWithdrawalPendingEvent(): UserVaultWithdrawalPendingEvent {
+  return { vaultId: Long.UZERO, address: "", sharesAmount: "", processId: Long.UZERO, requestTime: undefined };
+}
 
 export const UserVaultWithdrawalPendingEvent = {
-  encode(
-    message: UserVaultWithdrawalPendingEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UserVaultWithdrawalPendingEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.vaultId.isZero()) {
       writer.uint32(8).uint64(message.vaultId);
     }
@@ -905,129 +885,118 @@ export const UserVaultWithdrawalPendingEvent = {
       writer.uint32(32).uint64(message.processId);
     }
     if (message.requestTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.requestTime),
-        writer.uint32(42).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.requestTime), writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UserVaultWithdrawalPendingEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserVaultWithdrawalPendingEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUserVaultWithdrawalPendingEvent,
-    } as UserVaultWithdrawalPendingEvent;
+    const message = createBaseUserVaultWithdrawalPendingEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.vaultId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.sharesAmount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.processId = reader.uint64() as Long;
-          break;
+          continue;
         case 5:
-          message.requestTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 42) {
+            break;
+          }
+
+          message.requestTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UserVaultWithdrawalPendingEvent {
-    const message = {
-      ...baseUserVaultWithdrawalPendingEvent,
-    } as UserVaultWithdrawalPendingEvent;
-    message.vaultId =
-      object.vaultId !== undefined && object.vaultId !== null
-        ? Long.fromString(object.vaultId)
-        : Long.UZERO;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.sharesAmount =
-      object.sharesAmount !== undefined && object.sharesAmount !== null
-        ? String(object.sharesAmount)
-        : "";
-    message.processId =
-      object.processId !== undefined && object.processId !== null
-        ? Long.fromString(object.processId)
-        : Long.UZERO;
-    message.requestTime =
-      object.requestTime !== undefined && object.requestTime !== null
-        ? fromJsonTimestamp(object.requestTime)
-        : undefined;
-    return message;
+    return {
+      vaultId: isSet(object.vaultId) ? Long.fromValue(object.vaultId) : Long.UZERO,
+      address: isSet(object.address) ? String(object.address) : "",
+      sharesAmount: isSet(object.sharesAmount) ? String(object.sharesAmount) : "",
+      processId: isSet(object.processId) ? Long.fromValue(object.processId) : Long.UZERO,
+      requestTime: isSet(object.requestTime) ? fromJsonTimestamp(object.requestTime) : undefined,
+    };
   },
 
   toJSON(message: UserVaultWithdrawalPendingEvent): unknown {
     const obj: any = {};
-    message.vaultId !== undefined &&
-      (obj.vaultId = (message.vaultId || Long.UZERO).toString());
+    message.vaultId !== undefined && (obj.vaultId = (message.vaultId || Long.UZERO).toString());
     message.address !== undefined && (obj.address = message.address);
-    message.sharesAmount !== undefined &&
-      (obj.sharesAmount = message.sharesAmount);
-    message.processId !== undefined &&
-      (obj.processId = (message.processId || Long.UZERO).toString());
-    message.requestTime !== undefined &&
-      (obj.requestTime = message.requestTime.toISOString());
+    message.sharesAmount !== undefined && (obj.sharesAmount = message.sharesAmount);
+    message.processId !== undefined && (obj.processId = (message.processId || Long.UZERO).toString());
+    message.requestTime !== undefined && (obj.requestTime = message.requestTime.toISOString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UserVaultWithdrawalPendingEvent>
-  ): UserVaultWithdrawalPendingEvent {
-    const message = {
-      ...baseUserVaultWithdrawalPendingEvent,
-    } as UserVaultWithdrawalPendingEvent;
-    message.vaultId =
-      object.vaultId !== undefined && object.vaultId !== null
-        ? Long.fromValue(object.vaultId)
-        : Long.UZERO;
+  create(base?: DeepPartial<UserVaultWithdrawalPendingEvent>): UserVaultWithdrawalPendingEvent {
+    return UserVaultWithdrawalPendingEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UserVaultWithdrawalPendingEvent>): UserVaultWithdrawalPendingEvent {
+    const message = createBaseUserVaultWithdrawalPendingEvent();
+    message.vaultId = (object.vaultId !== undefined && object.vaultId !== null)
+      ? Long.fromValue(object.vaultId)
+      : Long.UZERO;
     message.address = object.address ?? "";
     message.sharesAmount = object.sharesAmount ?? "";
-    message.processId =
-      object.processId !== undefined && object.processId !== null
-        ? Long.fromValue(object.processId)
-        : Long.UZERO;
+    message.processId = (object.processId !== undefined && object.processId !== null)
+      ? Long.fromValue(object.processId)
+      : Long.UZERO;
     message.requestTime = object.requestTime ?? undefined;
     return message;
   },
 };
 
-const baseUserVaultWithdrawalReleasedEvent: object = {
-  vaultId: Long.UZERO,
-  processId: Long.UZERO,
-  address: "",
-  sharesDenom: "",
-  sharesAmount: "",
-  receivedDenom: "",
-  receivedAmount: "",
-  error: "",
-};
+function createBaseUserVaultWithdrawalReleasedEvent(): UserVaultWithdrawalReleasedEvent {
+  return {
+    vaultId: Long.UZERO,
+    processId: Long.UZERO,
+    address: "",
+    sharesDenom: "",
+    sharesAmount: "",
+    receivedDenom: "",
+    receivedAmount: "",
+    requestTime: undefined,
+    completionTime: undefined,
+    error: "",
+  };
+}
 
 export const UserVaultWithdrawalReleasedEvent = {
-  encode(
-    message: UserVaultWithdrawalReleasedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UserVaultWithdrawalReleasedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.vaultId.isZero()) {
       writer.uint32(8).uint64(message.vaultId);
     }
@@ -1050,16 +1019,10 @@ export const UserVaultWithdrawalReleasedEvent = {
       writer.uint32(58).string(message.receivedAmount);
     }
     if (message.requestTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.requestTime),
-        writer.uint32(66).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.requestTime), writer.uint32(66).fork()).ldelim();
     }
     if (message.completionTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.completionTime),
-        writer.uint32(74).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.completionTime), writer.uint32(74).fork()).ldelim();
     }
     if (message.error !== "") {
       writer.uint32(82).string(message.error);
@@ -1067,144 +1030,134 @@ export const UserVaultWithdrawalReleasedEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UserVaultWithdrawalReleasedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserVaultWithdrawalReleasedEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUserVaultWithdrawalReleasedEvent,
-    } as UserVaultWithdrawalReleasedEvent;
+    const message = createBaseUserVaultWithdrawalReleasedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.vaultId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.processId = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.sharesDenom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.sharesAmount = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.receivedDenom = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.receivedAmount = reader.string();
-          break;
+          continue;
         case 8:
-          message.requestTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 66) {
+            break;
+          }
+
+          message.requestTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 9:
-          message.completionTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 74) {
+            break;
+          }
+
+          message.completionTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.error = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UserVaultWithdrawalReleasedEvent {
-    const message = {
-      ...baseUserVaultWithdrawalReleasedEvent,
-    } as UserVaultWithdrawalReleasedEvent;
-    message.vaultId =
-      object.vaultId !== undefined && object.vaultId !== null
-        ? Long.fromString(object.vaultId)
-        : Long.UZERO;
-    message.processId =
-      object.processId !== undefined && object.processId !== null
-        ? Long.fromString(object.processId)
-        : Long.UZERO;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.sharesDenom =
-      object.sharesDenom !== undefined && object.sharesDenom !== null
-        ? String(object.sharesDenom)
-        : "";
-    message.sharesAmount =
-      object.sharesAmount !== undefined && object.sharesAmount !== null
-        ? String(object.sharesAmount)
-        : "";
-    message.receivedDenom =
-      object.receivedDenom !== undefined && object.receivedDenom !== null
-        ? String(object.receivedDenom)
-        : "";
-    message.receivedAmount =
-      object.receivedAmount !== undefined && object.receivedAmount !== null
-        ? String(object.receivedAmount)
-        : "";
-    message.requestTime =
-      object.requestTime !== undefined && object.requestTime !== null
-        ? fromJsonTimestamp(object.requestTime)
-        : undefined;
-    message.completionTime =
-      object.completionTime !== undefined && object.completionTime !== null
-        ? fromJsonTimestamp(object.completionTime)
-        : undefined;
-    message.error =
-      object.error !== undefined && object.error !== null
-        ? String(object.error)
-        : "";
-    return message;
+    return {
+      vaultId: isSet(object.vaultId) ? Long.fromValue(object.vaultId) : Long.UZERO,
+      processId: isSet(object.processId) ? Long.fromValue(object.processId) : Long.UZERO,
+      address: isSet(object.address) ? String(object.address) : "",
+      sharesDenom: isSet(object.sharesDenom) ? String(object.sharesDenom) : "",
+      sharesAmount: isSet(object.sharesAmount) ? String(object.sharesAmount) : "",
+      receivedDenom: isSet(object.receivedDenom) ? String(object.receivedDenom) : "",
+      receivedAmount: isSet(object.receivedAmount) ? String(object.receivedAmount) : "",
+      requestTime: isSet(object.requestTime) ? fromJsonTimestamp(object.requestTime) : undefined,
+      completionTime: isSet(object.completionTime) ? fromJsonTimestamp(object.completionTime) : undefined,
+      error: isSet(object.error) ? String(object.error) : "",
+    };
   },
 
   toJSON(message: UserVaultWithdrawalReleasedEvent): unknown {
     const obj: any = {};
-    message.vaultId !== undefined &&
-      (obj.vaultId = (message.vaultId || Long.UZERO).toString());
-    message.processId !== undefined &&
-      (obj.processId = (message.processId || Long.UZERO).toString());
+    message.vaultId !== undefined && (obj.vaultId = (message.vaultId || Long.UZERO).toString());
+    message.processId !== undefined && (obj.processId = (message.processId || Long.UZERO).toString());
     message.address !== undefined && (obj.address = message.address);
-    message.sharesDenom !== undefined &&
-      (obj.sharesDenom = message.sharesDenom);
-    message.sharesAmount !== undefined &&
-      (obj.sharesAmount = message.sharesAmount);
-    message.receivedDenom !== undefined &&
-      (obj.receivedDenom = message.receivedDenom);
-    message.receivedAmount !== undefined &&
-      (obj.receivedAmount = message.receivedAmount);
-    message.requestTime !== undefined &&
-      (obj.requestTime = message.requestTime.toISOString());
-    message.completionTime !== undefined &&
-      (obj.completionTime = message.completionTime.toISOString());
+    message.sharesDenom !== undefined && (obj.sharesDenom = message.sharesDenom);
+    message.sharesAmount !== undefined && (obj.sharesAmount = message.sharesAmount);
+    message.receivedDenom !== undefined && (obj.receivedDenom = message.receivedDenom);
+    message.receivedAmount !== undefined && (obj.receivedAmount = message.receivedAmount);
+    message.requestTime !== undefined && (obj.requestTime = message.requestTime.toISOString());
+    message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
     message.error !== undefined && (obj.error = message.error);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UserVaultWithdrawalReleasedEvent>
-  ): UserVaultWithdrawalReleasedEvent {
-    const message = {
-      ...baseUserVaultWithdrawalReleasedEvent,
-    } as UserVaultWithdrawalReleasedEvent;
-    message.vaultId =
-      object.vaultId !== undefined && object.vaultId !== null
-        ? Long.fromValue(object.vaultId)
-        : Long.UZERO;
-    message.processId =
-      object.processId !== undefined && object.processId !== null
-        ? Long.fromValue(object.processId)
-        : Long.UZERO;
+  create(base?: DeepPartial<UserVaultWithdrawalReleasedEvent>): UserVaultWithdrawalReleasedEvent {
+    return UserVaultWithdrawalReleasedEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UserVaultWithdrawalReleasedEvent>): UserVaultWithdrawalReleasedEvent {
+    const message = createBaseUserVaultWithdrawalReleasedEvent();
+    message.vaultId = (object.vaultId !== undefined && object.vaultId !== null)
+      ? Long.fromValue(object.vaultId)
+      : Long.UZERO;
+    message.processId = (object.processId !== undefined && object.processId !== null)
+      ? Long.fromValue(object.processId)
+      : Long.UZERO;
     message.address = object.address ?? "";
     message.sharesDenom = object.sharesDenom ?? "";
     message.sharesAmount = object.sharesAmount ?? "";
@@ -1217,13 +1170,12 @@ export const UserVaultWithdrawalReleasedEvent = {
   },
 };
 
-const baseUserVaultEvent: object = {};
+function createBaseUserVaultEvent(): UserVaultEvent {
+  return { vault: undefined };
+}
 
 export const UserVaultEvent = {
-  encode(
-    message: UserVaultEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UserVaultEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.vault !== undefined) {
       UserVault.encode(message.vault, writer.uint32(10).fork()).ldelim();
     }
@@ -1231,194 +1183,172 @@ export const UserVaultEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UserVaultEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUserVaultEvent } as UserVaultEvent;
+    const message = createBaseUserVaultEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.vault = UserVault.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UserVaultEvent {
-    const message = { ...baseUserVaultEvent } as UserVaultEvent;
-    message.vault =
-      object.vault !== undefined && object.vault !== null
-        ? UserVault.fromJSON(object.vault)
-        : undefined;
-    return message;
+    return { vault: isSet(object.vault) ? UserVault.fromJSON(object.vault) : undefined };
   },
 
   toJSON(message: UserVaultEvent): unknown {
     const obj: any = {};
-    message.vault !== undefined &&
-      (obj.vault = message.vault ? UserVault.toJSON(message.vault) : undefined);
+    message.vault !== undefined && (obj.vault = message.vault ? UserVault.toJSON(message.vault) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<UserVaultEvent>): UserVaultEvent {
+    return UserVaultEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UserVaultEvent>): UserVaultEvent {
-    const message = { ...baseUserVaultEvent } as UserVaultEvent;
-    message.vault =
-      object.vault !== undefined && object.vault !== null
-        ? UserVault.fromPartial(object.vault)
-        : undefined;
+    const message = createBaseUserVaultEvent();
+    message.vault = (object.vault !== undefined && object.vault !== null)
+      ? UserVault.fromPartial(object.vault)
+      : undefined;
     return message;
   },
 };
 
-const baseUserVaultClosedEvent: object = { id: Long.UZERO };
+function createBaseUserVaultClosedEvent(): UserVaultClosedEvent {
+  return { id: Long.UZERO };
+}
 
 export const UserVaultClosedEvent = {
-  encode(
-    message: UserVaultClosedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UserVaultClosedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.id.isZero()) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UserVaultClosedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserVaultClosedEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUserVaultClosedEvent } as UserVaultClosedEvent;
+    const message = createBaseUserVaultClosedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.id = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UserVaultClosedEvent {
-    const message = { ...baseUserVaultClosedEvent } as UserVaultClosedEvent;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    return message;
+    return { id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO };
   },
 
   toJSON(message: UserVaultClosedEvent): unknown {
     const obj: any = {};
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<UserVaultClosedEvent>): UserVaultClosedEvent {
+    return UserVaultClosedEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UserVaultClosedEvent>): UserVaultClosedEvent {
-    const message = { ...baseUserVaultClosedEvent } as UserVaultClosedEvent;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    const message = createBaseUserVaultClosedEvent();
+    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
     return message;
   },
 };
 
-const baseSetQuoteStrategyEvent: object = {};
+function createBaseSetQuoteStrategyEvent(): SetQuoteStrategyEvent {
+  return { quoteStrategy: undefined };
+}
 
 export const SetQuoteStrategyEvent = {
-  encode(
-    message: SetQuoteStrategyEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetQuoteStrategyEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.quoteStrategy !== undefined) {
-      QuoteStrategy.encode(
-        message.quoteStrategy,
-        writer.uint32(10).fork()
-      ).ldelim();
+      QuoteStrategy.encode(message.quoteStrategy, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetQuoteStrategyEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetQuoteStrategyEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSetQuoteStrategyEvent } as SetQuoteStrategyEvent;
+    const message = createBaseSetQuoteStrategyEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.quoteStrategy = QuoteStrategy.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetQuoteStrategyEvent {
-    const message = { ...baseSetQuoteStrategyEvent } as SetQuoteStrategyEvent;
-    message.quoteStrategy =
-      object.quoteStrategy !== undefined && object.quoteStrategy !== null
-        ? QuoteStrategy.fromJSON(object.quoteStrategy)
-        : undefined;
-    return message;
+    return { quoteStrategy: isSet(object.quoteStrategy) ? QuoteStrategy.fromJSON(object.quoteStrategy) : undefined };
   },
 
   toJSON(message: SetQuoteStrategyEvent): unknown {
     const obj: any = {};
     message.quoteStrategy !== undefined &&
-      (obj.quoteStrategy = message.quoteStrategy
-        ? QuoteStrategy.toJSON(message.quoteStrategy)
-        : undefined);
+      (obj.quoteStrategy = message.quoteStrategy ? QuoteStrategy.toJSON(message.quoteStrategy) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetQuoteStrategyEvent>
-  ): SetQuoteStrategyEvent {
-    const message = { ...baseSetQuoteStrategyEvent } as SetQuoteStrategyEvent;
-    message.quoteStrategy =
-      object.quoteStrategy !== undefined && object.quoteStrategy !== null
-        ? QuoteStrategy.fromPartial(object.quoteStrategy)
-        : undefined;
+  create(base?: DeepPartial<SetQuoteStrategyEvent>): SetQuoteStrategyEvent {
+    return SetQuoteStrategyEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetQuoteStrategyEvent>): SetQuoteStrategyEvent {
+    const message = createBaseSetQuoteStrategyEvent();
+    message.quoteStrategy = (object.quoteStrategy !== undefined && object.quoteStrategy !== null)
+      ? QuoteStrategy.fromPartial(object.quoteStrategy)
+      : undefined;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -1428,8 +1358,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -1450,4 +1380,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -36,13 +36,12 @@ export interface RedelegationEntry {
   completionTime?: Date;
 }
 
-const baseQueuedRedelegation: object = {};
+function createBaseQueuedRedelegation(): QueuedRedelegation {
+  return { entries: [] };
+}
 
 export const QueuedRedelegation = {
-  encode(
-    message: QueuedRedelegation,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueuedRedelegation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.entries) {
       Redelegation.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -50,64 +49,59 @@ export const QueuedRedelegation = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueuedRedelegation {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueuedRedelegation } as QueuedRedelegation;
-    message.entries = [];
+    const message = createBaseQueuedRedelegation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.entries.push(Redelegation.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueuedRedelegation {
-    const message = { ...baseQueuedRedelegation } as QueuedRedelegation;
-    message.entries = (object.entries ?? []).map((e: any) =>
-      Redelegation.fromJSON(e)
-    );
-    return message;
+    return { entries: Array.isArray(object?.entries) ? object.entries.map((e: any) => Redelegation.fromJSON(e)) : [] };
   },
 
   toJSON(message: QueuedRedelegation): unknown {
     const obj: any = {};
     if (message.entries) {
-      obj.entries = message.entries.map((e) =>
-        e ? Redelegation.toJSON(e) : undefined
-      );
+      obj.entries = message.entries.map((e) => e ? Redelegation.toJSON(e) : undefined);
     } else {
       obj.entries = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<QueuedRedelegation>): QueuedRedelegation {
+    return QueuedRedelegation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueuedRedelegation>): QueuedRedelegation {
-    const message = { ...baseQueuedRedelegation } as QueuedRedelegation;
-    message.entries = (object.entries ?? []).map((e) =>
-      Redelegation.fromPartial(e)
-    );
+    const message = createBaseQueuedRedelegation();
+    message.entries = object.entries?.map((e) => Redelegation.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseRedelegation: object = {
-  delegatorAddress: "",
-  srcValidatorAddress: "",
-  dstValidatorAddress: "",
-};
+function createBaseRedelegation(): Redelegation {
+  return { delegatorAddress: "", srcValidatorAddress: "", dstValidatorAddress: "", balance: undefined };
+}
 
 export const Redelegation = {
-  encode(
-    message: Redelegation,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Redelegation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -124,94 +118,95 @@ export const Redelegation = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Redelegation {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRedelegation } as Redelegation;
+    const message = createBaseRedelegation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.srcValidatorAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.dstValidatorAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.balance = Coin.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Redelegation {
-    const message = { ...baseRedelegation } as Redelegation;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.srcValidatorAddress =
-      object.srcValidatorAddress !== undefined &&
-      object.srcValidatorAddress !== null
-        ? String(object.srcValidatorAddress)
-        : "";
-    message.dstValidatorAddress =
-      object.dstValidatorAddress !== undefined &&
-      object.dstValidatorAddress !== null
-        ? String(object.dstValidatorAddress)
-        : "";
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? Coin.fromJSON(object.balance)
-        : undefined;
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      srcValidatorAddress: isSet(object.srcValidatorAddress) ? String(object.srcValidatorAddress) : "",
+      dstValidatorAddress: isSet(object.dstValidatorAddress) ? String(object.dstValidatorAddress) : "",
+      balance: isSet(object.balance) ? Coin.fromJSON(object.balance) : undefined,
+    };
   },
 
   toJSON(message: Redelegation): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.srcValidatorAddress !== undefined &&
-      (obj.srcValidatorAddress = message.srcValidatorAddress);
-    message.dstValidatorAddress !== undefined &&
-      (obj.dstValidatorAddress = message.dstValidatorAddress);
-    message.balance !== undefined &&
-      (obj.balance = message.balance
-        ? Coin.toJSON(message.balance)
-        : undefined);
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.srcValidatorAddress !== undefined && (obj.srcValidatorAddress = message.srcValidatorAddress);
+    message.dstValidatorAddress !== undefined && (obj.dstValidatorAddress = message.dstValidatorAddress);
+    message.balance !== undefined && (obj.balance = message.balance ? Coin.toJSON(message.balance) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<Redelegation>): Redelegation {
+    return Redelegation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Redelegation>): Redelegation {
-    const message = { ...baseRedelegation } as Redelegation;
+    const message = createBaseRedelegation();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.srcValidatorAddress = object.srcValidatorAddress ?? "";
     message.dstValidatorAddress = object.dstValidatorAddress ?? "";
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? Coin.fromPartial(object.balance)
-        : undefined;
+    message.balance = (object.balance !== undefined && object.balance !== null)
+      ? Coin.fromPartial(object.balance)
+      : undefined;
     return message;
   },
 };
 
-const baseRedelegationEntry: object = {
-  delegatorAddress: "",
-  srcValidatorAddress: "",
-  dstValidatorAddress: "",
-};
+function createBaseRedelegationEntry(): RedelegationEntry {
+  return {
+    delegatorAddress: "",
+    srcValidatorAddress: "",
+    dstValidatorAddress: "",
+    balance: undefined,
+    completionTime: undefined,
+  };
+}
 
 export const RedelegationEntry = {
-  encode(
-    message: RedelegationEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RedelegationEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -225,122 +220,105 @@ export const RedelegationEntry = {
       Coin.encode(message.balance, writer.uint32(34).fork()).ldelim();
     }
     if (message.completionTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.completionTime),
-        writer.uint32(42).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.completionTime), writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RedelegationEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRedelegationEntry } as RedelegationEntry;
+    const message = createBaseRedelegationEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.srcValidatorAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.dstValidatorAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.balance = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 5:
-          message.completionTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 42) {
+            break;
+          }
+
+          message.completionTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RedelegationEntry {
-    const message = { ...baseRedelegationEntry } as RedelegationEntry;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.srcValidatorAddress =
-      object.srcValidatorAddress !== undefined &&
-      object.srcValidatorAddress !== null
-        ? String(object.srcValidatorAddress)
-        : "";
-    message.dstValidatorAddress =
-      object.dstValidatorAddress !== undefined &&
-      object.dstValidatorAddress !== null
-        ? String(object.dstValidatorAddress)
-        : "";
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? Coin.fromJSON(object.balance)
-        : undefined;
-    message.completionTime =
-      object.completionTime !== undefined && object.completionTime !== null
-        ? fromJsonTimestamp(object.completionTime)
-        : undefined;
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      srcValidatorAddress: isSet(object.srcValidatorAddress) ? String(object.srcValidatorAddress) : "",
+      dstValidatorAddress: isSet(object.dstValidatorAddress) ? String(object.dstValidatorAddress) : "",
+      balance: isSet(object.balance) ? Coin.fromJSON(object.balance) : undefined,
+      completionTime: isSet(object.completionTime) ? fromJsonTimestamp(object.completionTime) : undefined,
+    };
   },
 
   toJSON(message: RedelegationEntry): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.srcValidatorAddress !== undefined &&
-      (obj.srcValidatorAddress = message.srcValidatorAddress);
-    message.dstValidatorAddress !== undefined &&
-      (obj.dstValidatorAddress = message.dstValidatorAddress);
-    message.balance !== undefined &&
-      (obj.balance = message.balance
-        ? Coin.toJSON(message.balance)
-        : undefined);
-    message.completionTime !== undefined &&
-      (obj.completionTime = message.completionTime.toISOString());
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.srcValidatorAddress !== undefined && (obj.srcValidatorAddress = message.srcValidatorAddress);
+    message.dstValidatorAddress !== undefined && (obj.dstValidatorAddress = message.dstValidatorAddress);
+    message.balance !== undefined && (obj.balance = message.balance ? Coin.toJSON(message.balance) : undefined);
+    message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
     return obj;
   },
 
+  create(base?: DeepPartial<RedelegationEntry>): RedelegationEntry {
+    return RedelegationEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RedelegationEntry>): RedelegationEntry {
-    const message = { ...baseRedelegationEntry } as RedelegationEntry;
+    const message = createBaseRedelegationEntry();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.srcValidatorAddress = object.srcValidatorAddress ?? "";
     message.dstValidatorAddress = object.dstValidatorAddress ?? "";
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? Coin.fromPartial(object.balance)
-        : undefined;
+    message.balance = (object.balance !== undefined && object.balance !== null)
+      ? Coin.fromPartial(object.balance)
+      : undefined;
     message.completionTime = object.completionTime ?? undefined;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -350,8 +328,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -372,4 +350,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

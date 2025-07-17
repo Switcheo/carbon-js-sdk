@@ -1,13 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  Params,
-  Validator,
-  Delegation,
-  UnbondingDelegation,
-  Redelegation,
-} from "./staking";
+import { Delegation, Params, Redelegation, UnbondingDelegation, Validator } from "./staking";
 
 export const protobufPackage = "cosmos.staking.v1beta1";
 
@@ -45,13 +39,21 @@ export interface LastValidatorPower {
   power: Long;
 }
 
-const baseGenesisState: object = { exported: false };
+function createBaseGenesisState(): GenesisState {
+  return {
+    params: undefined,
+    lastTotalPower: new Uint8Array(),
+    lastValidatorPowers: [],
+    validators: [],
+    delegations: [],
+    unbondingDelegations: [],
+    redelegations: [],
+    exported: false,
+  };
+}
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -80,130 +82,125 @@ export const GenesisState = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
-    message.lastValidatorPowers = [];
-    message.validators = [];
-    message.delegations = [];
-    message.unbondingDelegations = [];
-    message.redelegations = [];
-    message.lastTotalPower = new Uint8Array();
+    const message = createBaseGenesisState();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.params = Params.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.lastTotalPower = reader.bytes();
-          break;
+          continue;
         case 3:
-          message.lastValidatorPowers.push(
-            LastValidatorPower.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.lastValidatorPowers.push(LastValidatorPower.decode(reader, reader.uint32()));
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.validators.push(Validator.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.delegations.push(Delegation.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 6:
-          message.unbondingDelegations.push(
-            UnbondingDelegation.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 50) {
+            break;
+          }
+
+          message.unbondingDelegations.push(UnbondingDelegation.decode(reader, reader.uint32()));
+          continue;
         case 7:
-          message.redelegations.push(
-            Redelegation.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 58) {
+            break;
+          }
+
+          message.redelegations.push(Redelegation.decode(reader, reader.uint32()));
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.exported = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
-        : undefined;
-    message.lastTotalPower =
-      object.lastTotalPower !== undefined && object.lastTotalPower !== null
-        ? bytesFromBase64(object.lastTotalPower)
-        : new Uint8Array();
-    message.lastValidatorPowers = (object.lastValidatorPowers ?? []).map(
-      (e: any) => LastValidatorPower.fromJSON(e)
-    );
-    message.validators = (object.validators ?? []).map((e: any) =>
-      Validator.fromJSON(e)
-    );
-    message.delegations = (object.delegations ?? []).map((e: any) =>
-      Delegation.fromJSON(e)
-    );
-    message.unbondingDelegations = (object.unbondingDelegations ?? []).map(
-      (e: any) => UnbondingDelegation.fromJSON(e)
-    );
-    message.redelegations = (object.redelegations ?? []).map((e: any) =>
-      Redelegation.fromJSON(e)
-    );
-    message.exported =
-      object.exported !== undefined && object.exported !== null
-        ? Boolean(object.exported)
-        : false;
-    return message;
+    return {
+      params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
+      lastTotalPower: isSet(object.lastTotalPower) ? bytesFromBase64(object.lastTotalPower) : new Uint8Array(),
+      lastValidatorPowers: Array.isArray(object?.lastValidatorPowers)
+        ? object.lastValidatorPowers.map((e: any) => LastValidatorPower.fromJSON(e))
+        : [],
+      validators: Array.isArray(object?.validators) ? object.validators.map((e: any) => Validator.fromJSON(e)) : [],
+      delegations: Array.isArray(object?.delegations) ? object.delegations.map((e: any) => Delegation.fromJSON(e)) : [],
+      unbondingDelegations: Array.isArray(object?.unbondingDelegations)
+        ? object.unbondingDelegations.map((e: any) => UnbondingDelegation.fromJSON(e))
+        : [],
+      redelegations: Array.isArray(object?.redelegations)
+        ? object.redelegations.map((e: any) => Redelegation.fromJSON(e))
+        : [],
+      exported: isSet(object.exported) ? Boolean(object.exported) : false,
+    };
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     message.lastTotalPower !== undefined &&
       (obj.lastTotalPower = base64FromBytes(
-        message.lastTotalPower !== undefined
-          ? message.lastTotalPower
-          : new Uint8Array()
+        message.lastTotalPower !== undefined ? message.lastTotalPower : new Uint8Array(),
       ));
     if (message.lastValidatorPowers) {
-      obj.lastValidatorPowers = message.lastValidatorPowers.map((e) =>
-        e ? LastValidatorPower.toJSON(e) : undefined
-      );
+      obj.lastValidatorPowers = message.lastValidatorPowers.map((e) => e ? LastValidatorPower.toJSON(e) : undefined);
     } else {
       obj.lastValidatorPowers = [];
     }
     if (message.validators) {
-      obj.validators = message.validators.map((e) =>
-        e ? Validator.toJSON(e) : undefined
-      );
+      obj.validators = message.validators.map((e) => e ? Validator.toJSON(e) : undefined);
     } else {
       obj.validators = [];
     }
     if (message.delegations) {
-      obj.delegations = message.delegations.map((e) =>
-        e ? Delegation.toJSON(e) : undefined
-      );
+      obj.delegations = message.delegations.map((e) => e ? Delegation.toJSON(e) : undefined);
     } else {
       obj.delegations = [];
     }
     if (message.unbondingDelegations) {
-      obj.unbondingDelegations = message.unbondingDelegations.map((e) =>
-        e ? UnbondingDelegation.toJSON(e) : undefined
-      );
+      obj.unbondingDelegations = message.unbondingDelegations.map((e) => e ? UnbondingDelegation.toJSON(e) : undefined);
     } else {
       obj.unbondingDelegations = [];
     }
     if (message.redelegations) {
-      obj.redelegations = message.redelegations.map((e) =>
-        e ? Redelegation.toJSON(e) : undefined
-      );
+      obj.redelegations = message.redelegations.map((e) => e ? Redelegation.toJSON(e) : undefined);
     } else {
       obj.redelegations = [];
     }
@@ -211,40 +208,32 @@ export const GenesisState = {
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisState>): GenesisState {
+    return GenesisState.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+    const message = createBaseGenesisState();
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     message.lastTotalPower = object.lastTotalPower ?? new Uint8Array();
-    message.lastValidatorPowers = (object.lastValidatorPowers ?? []).map((e) =>
-      LastValidatorPower.fromPartial(e)
-    );
-    message.validators = (object.validators ?? []).map((e) =>
-      Validator.fromPartial(e)
-    );
-    message.delegations = (object.delegations ?? []).map((e) =>
-      Delegation.fromPartial(e)
-    );
-    message.unbondingDelegations = (object.unbondingDelegations ?? []).map(
-      (e) => UnbondingDelegation.fromPartial(e)
-    );
-    message.redelegations = (object.redelegations ?? []).map((e) =>
-      Redelegation.fromPartial(e)
-    );
+    message.lastValidatorPowers = object.lastValidatorPowers?.map((e) => LastValidatorPower.fromPartial(e)) || [];
+    message.validators = object.validators?.map((e) => Validator.fromPartial(e)) || [];
+    message.delegations = object.delegations?.map((e) => Delegation.fromPartial(e)) || [];
+    message.unbondingDelegations = object.unbondingDelegations?.map((e) => UnbondingDelegation.fromPartial(e)) || [];
+    message.redelegations = object.redelegations?.map((e) => Redelegation.fromPartial(e)) || [];
     message.exported = object.exported ?? false;
     return message;
   },
 };
 
-const baseLastValidatorPower: object = { address: "", power: Long.ZERO };
+function createBaseLastValidatorPower(): LastValidatorPower {
+  return { address: "", power: Long.ZERO };
+}
 
 export const LastValidatorPower = {
-  encode(
-    message: LastValidatorPower,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LastValidatorPower, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -255,54 +244,57 @@ export const LastValidatorPower = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LastValidatorPower {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLastValidatorPower } as LastValidatorPower;
+    const message = createBaseLastValidatorPower();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.power = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LastValidatorPower {
-    const message = { ...baseLastValidatorPower } as LastValidatorPower;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.power =
-      object.power !== undefined && object.power !== null
-        ? Long.fromString(object.power)
-        : Long.ZERO;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      power: isSet(object.power) ? Long.fromValue(object.power) : Long.ZERO,
+    };
   },
 
   toJSON(message: LastValidatorPower): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.power !== undefined &&
-      (obj.power = (message.power || Long.ZERO).toString());
+    message.power !== undefined && (obj.power = (message.power || Long.ZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<LastValidatorPower>): LastValidatorPower {
+    return LastValidatorPower.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<LastValidatorPower>): LastValidatorPower {
-    const message = { ...baseLastValidatorPower } as LastValidatorPower;
+    const message = createBaseLastValidatorPower();
     message.address = object.address ?? "";
-    message.power =
-      object.power !== undefined && object.power !== null
-        ? Long.fromValue(object.power)
-        : Long.ZERO;
+    message.power = (object.power !== undefined && object.power !== null) ? Long.fromValue(object.power) : Long.ZERO;
     return message;
   },
 };
@@ -310,58 +302,60 @@ export const LastValidatorPower = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

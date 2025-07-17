@@ -12,51 +12,43 @@ export interface QueryAccountBalanceResponse {
   balance: string;
 }
 
-const baseQueryAccountBalanceRequest: object = { address: "" };
+function createBaseQueryAccountBalanceRequest(): QueryAccountBalanceRequest {
+  return { address: "" };
+}
 
 export const QueryAccountBalanceRequest = {
-  encode(
-    message: QueryAccountBalanceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAccountBalanceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAccountBalanceRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountBalanceRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAccountBalanceRequest,
-    } as QueryAccountBalanceRequest;
+    const message = createBaseQueryAccountBalanceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAccountBalanceRequest {
-    const message = {
-      ...baseQueryAccountBalanceRequest,
-    } as QueryAccountBalanceRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return { address: isSet(object.address) ? String(object.address) : "" };
   },
 
   toJSON(message: QueryAccountBalanceRequest): unknown {
@@ -65,62 +57,54 @@ export const QueryAccountBalanceRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAccountBalanceRequest>
-  ): QueryAccountBalanceRequest {
-    const message = {
-      ...baseQueryAccountBalanceRequest,
-    } as QueryAccountBalanceRequest;
+  create(base?: DeepPartial<QueryAccountBalanceRequest>): QueryAccountBalanceRequest {
+    return QueryAccountBalanceRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAccountBalanceRequest>): QueryAccountBalanceRequest {
+    const message = createBaseQueryAccountBalanceRequest();
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseQueryAccountBalanceResponse: object = { balance: "" };
+function createBaseQueryAccountBalanceResponse(): QueryAccountBalanceResponse {
+  return { balance: "" };
+}
 
 export const QueryAccountBalanceResponse = {
-  encode(
-    message: QueryAccountBalanceResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAccountBalanceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.balance !== "") {
       writer.uint32(10).string(message.balance);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAccountBalanceResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountBalanceResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAccountBalanceResponse,
-    } as QueryAccountBalanceResponse;
+    const message = createBaseQueryAccountBalanceResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.balance = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAccountBalanceResponse {
-    const message = {
-      ...baseQueryAccountBalanceResponse,
-    } as QueryAccountBalanceResponse;
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? String(object.balance)
-        : "";
-    return message;
+    return { balance: isSet(object.balance) ? String(object.balance) : "" };
   },
 
   toJSON(message: QueryAccountBalanceResponse): unknown {
@@ -129,12 +113,12 @@ export const QueryAccountBalanceResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAccountBalanceResponse>
-  ): QueryAccountBalanceResponse {
-    const message = {
-      ...baseQueryAccountBalanceResponse,
-    } as QueryAccountBalanceResponse;
+  create(base?: DeepPartial<QueryAccountBalanceResponse>): QueryAccountBalanceResponse {
+    return QueryAccountBalanceResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAccountBalanceResponse>): QueryAccountBalanceResponse {
+    const message = createBaseQueryAccountBalanceResponse();
     message.balance = object.balance ?? "";
     return message;
   },
@@ -142,61 +126,41 @@ export const QueryAccountBalanceResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  Balance(
-    request: QueryAccountBalanceRequest
-  ): Promise<QueryAccountBalanceResponse>;
+  Balance(request: QueryAccountBalanceRequest): Promise<QueryAccountBalanceResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.evmbank.Query";
     this.rpc = rpc;
     this.Balance = this.Balance.bind(this);
   }
-  Balance(
-    request: QueryAccountBalanceRequest
-  ): Promise<QueryAccountBalanceResponse> {
+  Balance(request: QueryAccountBalanceRequest): Promise<QueryAccountBalanceResponse> {
     const data = QueryAccountBalanceRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.evmbank.Query",
-      "Balance",
-      data
-    );
-    return promise.then((data) =>
-      QueryAccountBalanceResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Balance", data);
+    return promise.then((data) => QueryAccountBalanceResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

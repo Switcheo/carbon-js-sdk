@@ -38,17 +38,12 @@ export interface DeductAllianceAssetsEvent {
   coins: Coin[];
 }
 
-const baseDelegateAllianceEvent: object = {
-  allianceSender: "",
-  validator: "",
-  newShares: "",
-};
+function createBaseDelegateAllianceEvent(): DelegateAllianceEvent {
+  return { allianceSender: "", validator: "", coin: undefined, newShares: "" };
+}
 
 export const DelegateAllianceEvent = {
-  encode(
-    message: DelegateAllianceEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DelegateAllianceEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.allianceSender !== "") {
       writer.uint32(10).string(message.allianceSender);
     }
@@ -64,93 +59,88 @@ export const DelegateAllianceEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): DelegateAllianceEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DelegateAllianceEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDelegateAllianceEvent } as DelegateAllianceEvent;
+    const message = createBaseDelegateAllianceEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.allianceSender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validator = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.coin = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.newShares = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DelegateAllianceEvent {
-    const message = { ...baseDelegateAllianceEvent } as DelegateAllianceEvent;
-    message.allianceSender =
-      object.allianceSender !== undefined && object.allianceSender !== null
-        ? String(object.allianceSender)
-        : "";
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? String(object.validator)
-        : "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromJSON(object.coin)
-        : undefined;
-    message.newShares =
-      object.newShares !== undefined && object.newShares !== null
-        ? String(object.newShares)
-        : "";
-    return message;
+    return {
+      allianceSender: isSet(object.allianceSender) ? String(object.allianceSender) : "",
+      validator: isSet(object.validator) ? String(object.validator) : "",
+      coin: isSet(object.coin) ? Coin.fromJSON(object.coin) : undefined,
+      newShares: isSet(object.newShares) ? String(object.newShares) : "",
+    };
   },
 
   toJSON(message: DelegateAllianceEvent): unknown {
     const obj: any = {};
-    message.allianceSender !== undefined &&
-      (obj.allianceSender = message.allianceSender);
+    message.allianceSender !== undefined && (obj.allianceSender = message.allianceSender);
     message.validator !== undefined && (obj.validator = message.validator);
-    message.coin !== undefined &&
-      (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
+    message.coin !== undefined && (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
     message.newShares !== undefined && (obj.newShares = message.newShares);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<DelegateAllianceEvent>
-  ): DelegateAllianceEvent {
-    const message = { ...baseDelegateAllianceEvent } as DelegateAllianceEvent;
+  create(base?: DeepPartial<DelegateAllianceEvent>): DelegateAllianceEvent {
+    return DelegateAllianceEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<DelegateAllianceEvent>): DelegateAllianceEvent {
+    const message = createBaseDelegateAllianceEvent();
     message.allianceSender = object.allianceSender ?? "";
     message.validator = object.validator ?? "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromPartial(object.coin)
-        : undefined;
+    message.coin = (object.coin !== undefined && object.coin !== null) ? Coin.fromPartial(object.coin) : undefined;
     message.newShares = object.newShares ?? "";
     return message;
   },
 };
 
-const baseUndelegateAllianceEvent: object = {
-  allianceSender: "",
-  validator: "",
-};
+function createBaseUndelegateAllianceEvent(): UndelegateAllianceEvent {
+  return { allianceSender: "", validator: "", coin: undefined, completionTime: undefined };
+}
 
 export const UndelegateAllianceEvent = {
-  encode(
-    message: UndelegateAllianceEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UndelegateAllianceEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.allianceSender !== "") {
       writer.uint32(10).string(message.allianceSender);
     }
@@ -161,111 +151,99 @@ export const UndelegateAllianceEvent = {
       Coin.encode(message.coin, writer.uint32(26).fork()).ldelim();
     }
     if (message.completionTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.completionTime),
-        writer.uint32(34).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.completionTime), writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UndelegateAllianceEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UndelegateAllianceEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUndelegateAllianceEvent,
-    } as UndelegateAllianceEvent;
+    const message = createBaseUndelegateAllianceEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.allianceSender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validator = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.coin = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 4:
-          message.completionTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 34) {
+            break;
+          }
+
+          message.completionTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UndelegateAllianceEvent {
-    const message = {
-      ...baseUndelegateAllianceEvent,
-    } as UndelegateAllianceEvent;
-    message.allianceSender =
-      object.allianceSender !== undefined && object.allianceSender !== null
-        ? String(object.allianceSender)
-        : "";
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? String(object.validator)
-        : "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromJSON(object.coin)
-        : undefined;
-    message.completionTime =
-      object.completionTime !== undefined && object.completionTime !== null
-        ? fromJsonTimestamp(object.completionTime)
-        : undefined;
-    return message;
+    return {
+      allianceSender: isSet(object.allianceSender) ? String(object.allianceSender) : "",
+      validator: isSet(object.validator) ? String(object.validator) : "",
+      coin: isSet(object.coin) ? Coin.fromJSON(object.coin) : undefined,
+      completionTime: isSet(object.completionTime) ? fromJsonTimestamp(object.completionTime) : undefined,
+    };
   },
 
   toJSON(message: UndelegateAllianceEvent): unknown {
     const obj: any = {};
-    message.allianceSender !== undefined &&
-      (obj.allianceSender = message.allianceSender);
+    message.allianceSender !== undefined && (obj.allianceSender = message.allianceSender);
     message.validator !== undefined && (obj.validator = message.validator);
-    message.coin !== undefined &&
-      (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
-    message.completionTime !== undefined &&
-      (obj.completionTime = message.completionTime.toISOString());
+    message.coin !== undefined && (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
+    message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UndelegateAllianceEvent>
-  ): UndelegateAllianceEvent {
-    const message = {
-      ...baseUndelegateAllianceEvent,
-    } as UndelegateAllianceEvent;
+  create(base?: DeepPartial<UndelegateAllianceEvent>): UndelegateAllianceEvent {
+    return UndelegateAllianceEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UndelegateAllianceEvent>): UndelegateAllianceEvent {
+    const message = createBaseUndelegateAllianceEvent();
     message.allianceSender = object.allianceSender ?? "";
     message.validator = object.validator ?? "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromPartial(object.coin)
-        : undefined;
+    message.coin = (object.coin !== undefined && object.coin !== null) ? Coin.fromPartial(object.coin) : undefined;
     message.completionTime = object.completionTime ?? undefined;
     return message;
   },
 };
 
-const baseRedelegateAllianceEvent: object = {
-  allianceSender: "",
-  sourceValidator: "",
-  destinationValidator: "",
-};
+function createBaseRedelegateAllianceEvent(): RedelegateAllianceEvent {
+  return {
+    allianceSender: "",
+    sourceValidator: "",
+    destinationValidator: "",
+    coin: undefined,
+    completionTime: undefined,
+  };
+}
 
 export const RedelegateAllianceEvent = {
-  encode(
-    message: RedelegateAllianceEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RedelegateAllianceEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.allianceSender !== "") {
       writer.uint32(10).string(message.allianceSender);
     }
@@ -279,122 +257,103 @@ export const RedelegateAllianceEvent = {
       Coin.encode(message.coin, writer.uint32(34).fork()).ldelim();
     }
     if (message.completionTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.completionTime),
-        writer.uint32(42).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.completionTime), writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RedelegateAllianceEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RedelegateAllianceEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseRedelegateAllianceEvent,
-    } as RedelegateAllianceEvent;
+    const message = createBaseRedelegateAllianceEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.allianceSender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sourceValidator = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.destinationValidator = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.coin = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 5:
-          message.completionTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 42) {
+            break;
+          }
+
+          message.completionTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RedelegateAllianceEvent {
-    const message = {
-      ...baseRedelegateAllianceEvent,
-    } as RedelegateAllianceEvent;
-    message.allianceSender =
-      object.allianceSender !== undefined && object.allianceSender !== null
-        ? String(object.allianceSender)
-        : "";
-    message.sourceValidator =
-      object.sourceValidator !== undefined && object.sourceValidator !== null
-        ? String(object.sourceValidator)
-        : "";
-    message.destinationValidator =
-      object.destinationValidator !== undefined &&
-      object.destinationValidator !== null
-        ? String(object.destinationValidator)
-        : "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromJSON(object.coin)
-        : undefined;
-    message.completionTime =
-      object.completionTime !== undefined && object.completionTime !== null
-        ? fromJsonTimestamp(object.completionTime)
-        : undefined;
-    return message;
+    return {
+      allianceSender: isSet(object.allianceSender) ? String(object.allianceSender) : "",
+      sourceValidator: isSet(object.sourceValidator) ? String(object.sourceValidator) : "",
+      destinationValidator: isSet(object.destinationValidator) ? String(object.destinationValidator) : "",
+      coin: isSet(object.coin) ? Coin.fromJSON(object.coin) : undefined,
+      completionTime: isSet(object.completionTime) ? fromJsonTimestamp(object.completionTime) : undefined,
+    };
   },
 
   toJSON(message: RedelegateAllianceEvent): unknown {
     const obj: any = {};
-    message.allianceSender !== undefined &&
-      (obj.allianceSender = message.allianceSender);
-    message.sourceValidator !== undefined &&
-      (obj.sourceValidator = message.sourceValidator);
-    message.destinationValidator !== undefined &&
-      (obj.destinationValidator = message.destinationValidator);
-    message.coin !== undefined &&
-      (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
-    message.completionTime !== undefined &&
-      (obj.completionTime = message.completionTime.toISOString());
+    message.allianceSender !== undefined && (obj.allianceSender = message.allianceSender);
+    message.sourceValidator !== undefined && (obj.sourceValidator = message.sourceValidator);
+    message.destinationValidator !== undefined && (obj.destinationValidator = message.destinationValidator);
+    message.coin !== undefined && (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
+    message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RedelegateAllianceEvent>
-  ): RedelegateAllianceEvent {
-    const message = {
-      ...baseRedelegateAllianceEvent,
-    } as RedelegateAllianceEvent;
+  create(base?: DeepPartial<RedelegateAllianceEvent>): RedelegateAllianceEvent {
+    return RedelegateAllianceEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<RedelegateAllianceEvent>): RedelegateAllianceEvent {
+    const message = createBaseRedelegateAllianceEvent();
     message.allianceSender = object.allianceSender ?? "";
     message.sourceValidator = object.sourceValidator ?? "";
     message.destinationValidator = object.destinationValidator ?? "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromPartial(object.coin)
-        : undefined;
+    message.coin = (object.coin !== undefined && object.coin !== null) ? Coin.fromPartial(object.coin) : undefined;
     message.completionTime = object.completionTime ?? undefined;
     return message;
   },
 };
 
-const baseClaimAllianceRewardsEvent: object = {
-  allianceSender: "",
-  validator: "",
-};
+function createBaseClaimAllianceRewardsEvent(): ClaimAllianceRewardsEvent {
+  return { allianceSender: "", validator: "", coins: [] };
+}
 
 export const ClaimAllianceRewardsEvent = {
-  encode(
-    message: ClaimAllianceRewardsEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ClaimAllianceRewardsEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.allianceSender !== "") {
       writer.uint32(10).string(message.allianceSender);
     }
@@ -407,162 +366,142 @@ export const ClaimAllianceRewardsEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ClaimAllianceRewardsEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ClaimAllianceRewardsEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseClaimAllianceRewardsEvent,
-    } as ClaimAllianceRewardsEvent;
-    message.coins = [];
+    const message = createBaseClaimAllianceRewardsEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.allianceSender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validator = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.coins.push(Coin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ClaimAllianceRewardsEvent {
-    const message = {
-      ...baseClaimAllianceRewardsEvent,
-    } as ClaimAllianceRewardsEvent;
-    message.allianceSender =
-      object.allianceSender !== undefined && object.allianceSender !== null
-        ? String(object.allianceSender)
-        : "";
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? String(object.validator)
-        : "";
-    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
-    return message;
+    return {
+      allianceSender: isSet(object.allianceSender) ? String(object.allianceSender) : "",
+      validator: isSet(object.validator) ? String(object.validator) : "",
+      coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: ClaimAllianceRewardsEvent): unknown {
     const obj: any = {};
-    message.allianceSender !== undefined &&
-      (obj.allianceSender = message.allianceSender);
+    message.allianceSender !== undefined && (obj.allianceSender = message.allianceSender);
     message.validator !== undefined && (obj.validator = message.validator);
     if (message.coins) {
-      obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
+      obj.coins = message.coins.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.coins = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ClaimAllianceRewardsEvent>
-  ): ClaimAllianceRewardsEvent {
-    const message = {
-      ...baseClaimAllianceRewardsEvent,
-    } as ClaimAllianceRewardsEvent;
+  create(base?: DeepPartial<ClaimAllianceRewardsEvent>): ClaimAllianceRewardsEvent {
+    return ClaimAllianceRewardsEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ClaimAllianceRewardsEvent>): ClaimAllianceRewardsEvent {
+    const message = createBaseClaimAllianceRewardsEvent();
     message.allianceSender = object.allianceSender ?? "";
     message.validator = object.validator ?? "";
-    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseDeductAllianceAssetsEvent: object = {};
+function createBaseDeductAllianceAssetsEvent(): DeductAllianceAssetsEvent {
+  return { coins: [] };
+}
 
 export const DeductAllianceAssetsEvent = {
-  encode(
-    message: DeductAllianceAssetsEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DeductAllianceAssetsEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.coins) {
       Coin.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): DeductAllianceAssetsEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeductAllianceAssetsEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseDeductAllianceAssetsEvent,
-    } as DeductAllianceAssetsEvent;
-    message.coins = [];
+    const message = createBaseDeductAllianceAssetsEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.coins.push(Coin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DeductAllianceAssetsEvent {
-    const message = {
-      ...baseDeductAllianceAssetsEvent,
-    } as DeductAllianceAssetsEvent;
-    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
-    return message;
+    return { coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [] };
   },
 
   toJSON(message: DeductAllianceAssetsEvent): unknown {
     const obj: any = {};
     if (message.coins) {
-      obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
+      obj.coins = message.coins.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.coins = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<DeductAllianceAssetsEvent>
-  ): DeductAllianceAssetsEvent {
-    const message = {
-      ...baseDeductAllianceAssetsEvent,
-    } as DeductAllianceAssetsEvent;
-    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
+  create(base?: DeepPartial<DeductAllianceAssetsEvent>): DeductAllianceAssetsEvent {
+    return DeductAllianceAssetsEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<DeductAllianceAssetsEvent>): DeductAllianceAssetsEvent {
+    const message = createBaseDeductAllianceAssetsEvent();
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -572,8 +511,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -594,4 +533,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

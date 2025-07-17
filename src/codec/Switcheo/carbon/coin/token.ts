@@ -60,21 +60,23 @@ export interface TokenBalance {
   denom: string;
 }
 
-const baseToken: object = {
-  id: "",
-  creator: "",
-  denom: "",
-  name: "",
-  symbol: "",
-  decimals: Long.ZERO,
-  bridgeId: Long.UZERO,
-  chainId: Long.UZERO,
-  tokenAddress: "",
-  bridgeAddress: "",
-  isActive: false,
-  createdBlockHeight: Long.UZERO,
-  isDeprecated: false,
-};
+function createBaseToken(): Token {
+  return {
+    id: "",
+    creator: "",
+    denom: "",
+    name: "",
+    symbol: "",
+    decimals: Long.ZERO,
+    bridgeId: Long.UZERO,
+    chainId: Long.UZERO,
+    tokenAddress: "",
+    bridgeAddress: "",
+    isActive: false,
+    createdBlockHeight: Long.UZERO,
+    isDeprecated: false,
+  };
+}
 
 export const Token = {
   encode(message: Token, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -121,113 +123,128 @@ export const Token = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Token {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseToken } as Token;
+    const message = createBaseToken();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.symbol = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.decimals = reader.int64() as Long;
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.bridgeId = reader.uint64() as Long;
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.chainId = reader.uint64() as Long;
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.tokenAddress = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.bridgeAddress = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 88) {
+            break;
+          }
+
           message.isActive = reader.bool();
-          break;
+          continue;
         case 13:
+          if (tag !== 104) {
+            break;
+          }
+
           message.createdBlockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 14:
+          if (tag !== 112) {
+            break;
+          }
+
           message.isDeprecated = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Token {
-    const message = { ...baseToken } as Token;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.symbol =
-      object.symbol !== undefined && object.symbol !== null
-        ? String(object.symbol)
-        : "";
-    message.decimals =
-      object.decimals !== undefined && object.decimals !== null
-        ? Long.fromString(object.decimals)
-        : Long.ZERO;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromString(object.bridgeId)
-        : Long.UZERO;
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromString(object.chainId)
-        : Long.UZERO;
-    message.tokenAddress =
-      object.tokenAddress !== undefined && object.tokenAddress !== null
-        ? String(object.tokenAddress)
-        : "";
-    message.bridgeAddress =
-      object.bridgeAddress !== undefined && object.bridgeAddress !== null
-        ? String(object.bridgeAddress)
-        : "";
-    message.isActive =
-      object.isActive !== undefined && object.isActive !== null
-        ? Boolean(object.isActive)
-        : false;
-    message.createdBlockHeight =
-      object.createdBlockHeight !== undefined &&
-      object.createdBlockHeight !== null
-        ? Long.fromString(object.createdBlockHeight)
-        : Long.UZERO;
-    message.isDeprecated =
-      object.isDeprecated !== undefined && object.isDeprecated !== null
-        ? Boolean(object.isDeprecated)
-        : false;
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      name: isSet(object.name) ? String(object.name) : "",
+      symbol: isSet(object.symbol) ? String(object.symbol) : "",
+      decimals: isSet(object.decimals) ? Long.fromValue(object.decimals) : Long.ZERO,
+      bridgeId: isSet(object.bridgeId) ? Long.fromValue(object.bridgeId) : Long.UZERO,
+      chainId: isSet(object.chainId) ? Long.fromValue(object.chainId) : Long.UZERO,
+      tokenAddress: isSet(object.tokenAddress) ? String(object.tokenAddress) : "",
+      bridgeAddress: isSet(object.bridgeAddress) ? String(object.bridgeAddress) : "",
+      isActive: isSet(object.isActive) ? Boolean(object.isActive) : false,
+      createdBlockHeight: isSet(object.createdBlockHeight) ? Long.fromValue(object.createdBlockHeight) : Long.UZERO,
+      isDeprecated: isSet(object.isDeprecated) ? Boolean(object.isDeprecated) : false,
+    };
   },
 
   toJSON(message: Token): unknown {
@@ -237,72 +254,55 @@ export const Token = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.name !== undefined && (obj.name = message.name);
     message.symbol !== undefined && (obj.symbol = message.symbol);
-    message.decimals !== undefined &&
-      (obj.decimals = (message.decimals || Long.ZERO).toString());
-    message.bridgeId !== undefined &&
-      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
-    message.chainId !== undefined &&
-      (obj.chainId = (message.chainId || Long.UZERO).toString());
-    message.tokenAddress !== undefined &&
-      (obj.tokenAddress = message.tokenAddress);
-    message.bridgeAddress !== undefined &&
-      (obj.bridgeAddress = message.bridgeAddress);
+    message.decimals !== undefined && (obj.decimals = (message.decimals || Long.ZERO).toString());
+    message.bridgeId !== undefined && (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.chainId !== undefined && (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.tokenAddress !== undefined && (obj.tokenAddress = message.tokenAddress);
+    message.bridgeAddress !== undefined && (obj.bridgeAddress = message.bridgeAddress);
     message.isActive !== undefined && (obj.isActive = message.isActive);
     message.createdBlockHeight !== undefined &&
-      (obj.createdBlockHeight = (
-        message.createdBlockHeight || Long.UZERO
-      ).toString());
-    message.isDeprecated !== undefined &&
-      (obj.isDeprecated = message.isDeprecated);
+      (obj.createdBlockHeight = (message.createdBlockHeight || Long.UZERO).toString());
+    message.isDeprecated !== undefined && (obj.isDeprecated = message.isDeprecated);
     return obj;
   },
 
+  create(base?: DeepPartial<Token>): Token {
+    return Token.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Token>): Token {
-    const message = { ...baseToken } as Token;
+    const message = createBaseToken();
     message.id = object.id ?? "";
     message.creator = object.creator ?? "";
     message.denom = object.denom ?? "";
     message.name = object.name ?? "";
     message.symbol = object.symbol ?? "";
-    message.decimals =
-      object.decimals !== undefined && object.decimals !== null
-        ? Long.fromValue(object.decimals)
-        : Long.ZERO;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromValue(object.bridgeId)
-        : Long.UZERO;
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromValue(object.chainId)
-        : Long.UZERO;
+    message.decimals = (object.decimals !== undefined && object.decimals !== null)
+      ? Long.fromValue(object.decimals)
+      : Long.ZERO;
+    message.bridgeId = (object.bridgeId !== undefined && object.bridgeId !== null)
+      ? Long.fromValue(object.bridgeId)
+      : Long.UZERO;
+    message.chainId = (object.chainId !== undefined && object.chainId !== null)
+      ? Long.fromValue(object.chainId)
+      : Long.UZERO;
     message.tokenAddress = object.tokenAddress ?? "";
     message.bridgeAddress = object.bridgeAddress ?? "";
     message.isActive = object.isActive ?? false;
-    message.createdBlockHeight =
-      object.createdBlockHeight !== undefined &&
-      object.createdBlockHeight !== null
-        ? Long.fromValue(object.createdBlockHeight)
-        : Long.UZERO;
+    message.createdBlockHeight = (object.createdBlockHeight !== undefined && object.createdBlockHeight !== null)
+      ? Long.fromValue(object.createdBlockHeight)
+      : Long.UZERO;
     message.isDeprecated = object.isDeprecated ?? false;
     return message;
   },
 };
 
-const baseBalanceChange: object = {
-  address: "",
-  blockHeight: Long.UZERO,
-  denom: "",
-  amount: "",
-  type: "",
-  location: "",
-};
+function createBaseBalanceChange(): BalanceChange {
+  return { address: "", blockHeight: Long.UZERO, denom: "", amount: "", type: "", location: "", metadata: undefined };
+}
 
 export const BalanceChange = {
-  encode(
-    message: BalanceChange,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BalanceChange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -328,150 +328,152 @@ export const BalanceChange = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BalanceChange {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBalanceChange } as BalanceChange;
+    const message = createBaseBalanceChange();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.blockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.location = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.metadata = Metadata.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BalanceChange {
-    const message = { ...baseBalanceChange } as BalanceChange;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.blockHeight =
-      object.blockHeight !== undefined && object.blockHeight !== null
-        ? Long.fromString(object.blockHeight)
-        : Long.UZERO;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    message.location =
-      object.location !== undefined && object.location !== null
-        ? String(object.location)
-        : "";
-    message.metadata =
-      object.metadata !== undefined && object.metadata !== null
-        ? Metadata.fromJSON(object.metadata)
-        : undefined;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      blockHeight: isSet(object.blockHeight) ? Long.fromValue(object.blockHeight) : Long.UZERO,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+      location: isSet(object.location) ? String(object.location) : "",
+      metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+    };
   },
 
   toJSON(message: BalanceChange): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.blockHeight !== undefined &&
-      (obj.blockHeight = (message.blockHeight || Long.UZERO).toString());
+    message.blockHeight !== undefined && (obj.blockHeight = (message.blockHeight || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.type !== undefined && (obj.type = message.type);
     message.location !== undefined && (obj.location = message.location);
-    message.metadata !== undefined &&
-      (obj.metadata = message.metadata
-        ? Metadata.toJSON(message.metadata)
-        : undefined);
+    message.metadata !== undefined && (obj.metadata = message.metadata ? Metadata.toJSON(message.metadata) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<BalanceChange>): BalanceChange {
+    return BalanceChange.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BalanceChange>): BalanceChange {
-    const message = { ...baseBalanceChange } as BalanceChange;
+    const message = createBaseBalanceChange();
     message.address = object.address ?? "";
-    message.blockHeight =
-      object.blockHeight !== undefined && object.blockHeight !== null
-        ? Long.fromValue(object.blockHeight)
-        : Long.UZERO;
+    message.blockHeight = (object.blockHeight !== undefined && object.blockHeight !== null)
+      ? Long.fromValue(object.blockHeight)
+      : Long.UZERO;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.type = object.type ?? "";
     message.location = object.location ?? "";
-    message.metadata =
-      object.metadata !== undefined && object.metadata !== null
-        ? Metadata.fromPartial(object.metadata)
-        : undefined;
+    message.metadata = (object.metadata !== undefined && object.metadata !== null)
+      ? Metadata.fromPartial(object.metadata)
+      : undefined;
     return message;
   },
 };
 
-const baseMetadata: object = {};
+function createBaseMetadata(): Metadata {
+  return { orderId: undefined };
+}
 
 export const Metadata = {
-  encode(
-    message: Metadata,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Metadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.orderId !== undefined) {
-      StringValue.encode(
-        { value: message.orderId! },
-        writer.uint32(10).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.orderId! }, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Metadata {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMetadata } as Metadata;
+    const message = createBaseMetadata();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.orderId = StringValue.decode(reader, reader.uint32()).value;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Metadata {
-    const message = { ...baseMetadata } as Metadata;
-    message.orderId =
-      object.orderId !== undefined && object.orderId !== null
-        ? String(object.orderId)
-        : undefined;
-    return message;
+    return { orderId: isSet(object.orderId) ? String(object.orderId) : undefined };
   },
 
   toJSON(message: Metadata): unknown {
@@ -480,24 +482,23 @@ export const Metadata = {
     return obj;
   },
 
+  create(base?: DeepPartial<Metadata>): Metadata {
+    return Metadata.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Metadata>): Metadata {
-    const message = { ...baseMetadata } as Metadata;
+    const message = createBaseMetadata();
     message.orderId = object.orderId ?? undefined;
     return message;
   },
 };
 
-const baseLockedCoins: object = {
-  denom: "",
-  orderMargin: "",
-  positionMargin: "",
-};
+function createBaseLockedCoins(): LockedCoins {
+  return { denom: "", orderMargin: "", positionMargin: "" };
+}
 
 export const LockedCoins = {
-  encode(
-    message: LockedCoins,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LockedCoins, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -511,58 +512,64 @@ export const LockedCoins = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LockedCoins {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLockedCoins } as LockedCoins;
+    const message = createBaseLockedCoins();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.orderMargin = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.positionMargin = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LockedCoins {
-    const message = { ...baseLockedCoins } as LockedCoins;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.orderMargin =
-      object.orderMargin !== undefined && object.orderMargin !== null
-        ? String(object.orderMargin)
-        : "";
-    message.positionMargin =
-      object.positionMargin !== undefined && object.positionMargin !== null
-        ? String(object.positionMargin)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      orderMargin: isSet(object.orderMargin) ? String(object.orderMargin) : "",
+      positionMargin: isSet(object.positionMargin) ? String(object.positionMargin) : "",
+    };
   },
 
   toJSON(message: LockedCoins): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.orderMargin !== undefined &&
-      (obj.orderMargin = message.orderMargin);
-    message.positionMargin !== undefined &&
-      (obj.positionMargin = message.positionMargin);
+    message.orderMargin !== undefined && (obj.orderMargin = message.orderMargin);
+    message.positionMargin !== undefined && (obj.positionMargin = message.positionMargin);
     return obj;
   },
 
+  create(base?: DeepPartial<LockedCoins>): LockedCoins {
+    return LockedCoins.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<LockedCoins>): LockedCoins {
-    const message = { ...baseLockedCoins } as LockedCoins;
+    const message = createBaseLockedCoins();
     message.denom = object.denom ?? "";
     message.orderMargin = object.orderMargin ?? "";
     message.positionMargin = object.positionMargin ?? "";
@@ -570,13 +577,12 @@ export const LockedCoins = {
   },
 };
 
-const baseLockedCoinsRecord: object = { address: "", marketId: "" };
+function createBaseLockedCoinsRecord(): LockedCoinsRecord {
+  return { address: "", marketId: "", lockedCoins: undefined };
+}
 
 export const LockedCoinsRecord = {
-  encode(
-    message: LockedCoinsRecord,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LockedCoinsRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -584,53 +590,54 @@ export const LockedCoinsRecord = {
       writer.uint32(18).string(message.marketId);
     }
     if (message.lockedCoins !== undefined) {
-      LockedCoins.encode(
-        message.lockedCoins,
-        writer.uint32(26).fork()
-      ).ldelim();
+      LockedCoins.encode(message.lockedCoins, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LockedCoinsRecord {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
+    const message = createBaseLockedCoinsRecord();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.lockedCoins = LockedCoins.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LockedCoinsRecord {
-    const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.lockedCoins =
-      object.lockedCoins !== undefined && object.lockedCoins !== null
-        ? LockedCoins.fromJSON(object.lockedCoins)
-        : undefined;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      lockedCoins: isSet(object.lockedCoins) ? LockedCoins.fromJSON(object.lockedCoins) : undefined,
+    };
   },
 
   toJSON(message: LockedCoinsRecord): unknown {
@@ -638,31 +645,31 @@ export const LockedCoinsRecord = {
     message.address !== undefined && (obj.address = message.address);
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.lockedCoins !== undefined &&
-      (obj.lockedCoins = message.lockedCoins
-        ? LockedCoins.toJSON(message.lockedCoins)
-        : undefined);
+      (obj.lockedCoins = message.lockedCoins ? LockedCoins.toJSON(message.lockedCoins) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<LockedCoinsRecord>): LockedCoinsRecord {
+    return LockedCoinsRecord.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<LockedCoinsRecord>): LockedCoinsRecord {
-    const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
+    const message = createBaseLockedCoinsRecord();
     message.address = object.address ?? "";
     message.marketId = object.marketId ?? "";
-    message.lockedCoins =
-      object.lockedCoins !== undefined && object.lockedCoins !== null
-        ? LockedCoins.fromPartial(object.lockedCoins)
-        : undefined;
+    message.lockedCoins = (object.lockedCoins !== undefined && object.lockedCoins !== null)
+      ? LockedCoins.fromPartial(object.lockedCoins)
+      : undefined;
     return message;
   },
 };
 
-const basePositionPool: object = { marketId: "" };
+function createBasePositionPool(): PositionPool {
+  return { marketId: "", coins: [] };
+}
 
 export const PositionPool = {
-  encode(
-    message: PositionPool,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PositionPool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -673,68 +680,71 @@ export const PositionPool = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PositionPool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePositionPool } as PositionPool;
-    message.coins = [];
+    const message = createBasePositionPool();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.coins.push(Coin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PositionPool {
-    const message = { ...basePositionPool } as PositionPool;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: PositionPool): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.coins) {
-      obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
+      obj.coins = message.coins.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.coins = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<PositionPool>): PositionPool {
+    return PositionPool.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<PositionPool>): PositionPool {
-    const message = { ...basePositionPool } as PositionPool;
+    const message = createBasePositionPool();
     message.marketId = object.marketId ?? "";
-    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseTokenBalance: object = {
-  available: "",
-  order: "",
-  position: "",
-  denom: "",
-};
+function createBaseTokenBalance(): TokenBalance {
+  return { available: "", order: "", position: "", denom: "" };
+}
 
 export const TokenBalance = {
-  encode(
-    message: TokenBalance,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TokenBalance, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.available !== "") {
       writer.uint32(10).string(message.available);
     }
@@ -751,51 +761,56 @@ export const TokenBalance = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TokenBalance {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTokenBalance } as TokenBalance;
+    const message = createBaseTokenBalance();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.available = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.order = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.position = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TokenBalance {
-    const message = { ...baseTokenBalance } as TokenBalance;
-    message.available =
-      object.available !== undefined && object.available !== null
-        ? String(object.available)
-        : "";
-    message.order =
-      object.order !== undefined && object.order !== null
-        ? String(object.order)
-        : "";
-    message.position =
-      object.position !== undefined && object.position !== null
-        ? String(object.position)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    return message;
+    return {
+      available: isSet(object.available) ? String(object.available) : "",
+      order: isSet(object.order) ? String(object.order) : "",
+      position: isSet(object.position) ? String(object.position) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+    };
   },
 
   toJSON(message: TokenBalance): unknown {
@@ -807,8 +822,12 @@ export const TokenBalance = {
     return obj;
   },
 
+  create(base?: DeepPartial<TokenBalance>): TokenBalance {
+    return TokenBalance.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TokenBalance>): TokenBalance {
-    const message = { ...baseTokenBalance } as TokenBalance;
+    const message = createBaseTokenBalance();
     message.available = object.available ?? "";
     message.order = object.order ?? "";
     message.position = object.position ?? "";
@@ -817,27 +836,19 @@ export const TokenBalance = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

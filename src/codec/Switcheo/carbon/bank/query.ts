@@ -1,10 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  PageRequest,
-  PageResponse,
-} from "../../../cosmos/base/query/v1beta1/pagination";
+import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.bank";
@@ -48,28 +45,30 @@ export interface QueryBlacklistResponse {
   isBlacklisted: boolean;
 }
 
-export interface QueryBlacklistAllRequest {}
+export interface QueryBlacklistAllRequest {
+}
 
 export interface QueryBlacklistAllResponse {
   address: string[];
 }
 
-const baseInternalTransfer: object = {
-  sender: "",
-  receiver: "",
-  transactionHash: "",
-  transactionMemo: "",
-  transactionBlockHeight: Long.UZERO,
-  senderUsername: "",
-  receiverUsername: "",
-  transactionCode: 0,
-};
+function createBaseInternalTransfer(): InternalTransfer {
+  return {
+    sender: "",
+    receiver: "",
+    transactionHash: "",
+    coins: [],
+    transactionMemo: "",
+    transactionBlockHeight: Long.UZERO,
+    transactionBlockTime: undefined,
+    senderUsername: "",
+    receiverUsername: "",
+    transactionCode: 0,
+  };
+}
 
 export const InternalTransfer = {
-  encode(
-    message: InternalTransfer,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: InternalTransfer, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sender !== "") {
       writer.uint32(10).string(message.sender);
     }
@@ -89,10 +88,7 @@ export const InternalTransfer = {
       writer.uint32(48).uint64(message.transactionBlockHeight);
     }
     if (message.transactionBlockTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.transactionBlockTime),
-        writer.uint32(58).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.transactionBlockTime), writer.uint32(58).fork()).ldelim();
     }
     if (message.senderUsername !== "") {
       writer.uint32(66).string(message.senderUsername);
@@ -107,135 +103,144 @@ export const InternalTransfer = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): InternalTransfer {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseInternalTransfer } as InternalTransfer;
-    message.coins = [];
+    const message = createBaseInternalTransfer();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.transactionHash = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.coins.push(Coin.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.transactionMemo = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.transactionBlockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 7:
-          message.transactionBlockTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 58) {
+            break;
+          }
+
+          message.transactionBlockTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.senderUsername = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.receiverUsername = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 80) {
+            break;
+          }
+
           message.transactionCode = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): InternalTransfer {
-    const message = { ...baseInternalTransfer } as InternalTransfer;
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.transactionHash =
-      object.transactionHash !== undefined && object.transactionHash !== null
-        ? String(object.transactionHash)
-        : "";
-    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
-    message.transactionMemo =
-      object.transactionMemo !== undefined && object.transactionMemo !== null
-        ? String(object.transactionMemo)
-        : "";
-    message.transactionBlockHeight =
-      object.transactionBlockHeight !== undefined &&
-      object.transactionBlockHeight !== null
-        ? Long.fromString(object.transactionBlockHeight)
-        : Long.UZERO;
-    message.transactionBlockTime =
-      object.transactionBlockTime !== undefined &&
-      object.transactionBlockTime !== null
+    return {
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      transactionHash: isSet(object.transactionHash) ? String(object.transactionHash) : "",
+      coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [],
+      transactionMemo: isSet(object.transactionMemo) ? String(object.transactionMemo) : "",
+      transactionBlockHeight: isSet(object.transactionBlockHeight)
+        ? Long.fromValue(object.transactionBlockHeight)
+        : Long.UZERO,
+      transactionBlockTime: isSet(object.transactionBlockTime)
         ? fromJsonTimestamp(object.transactionBlockTime)
-        : undefined;
-    message.senderUsername =
-      object.senderUsername !== undefined && object.senderUsername !== null
-        ? String(object.senderUsername)
-        : "";
-    message.receiverUsername =
-      object.receiverUsername !== undefined && object.receiverUsername !== null
-        ? String(object.receiverUsername)
-        : "";
-    message.transactionCode =
-      object.transactionCode !== undefined && object.transactionCode !== null
-        ? Number(object.transactionCode)
-        : 0;
-    return message;
+        : undefined,
+      senderUsername: isSet(object.senderUsername) ? String(object.senderUsername) : "",
+      receiverUsername: isSet(object.receiverUsername) ? String(object.receiverUsername) : "",
+      transactionCode: isSet(object.transactionCode) ? Number(object.transactionCode) : 0,
+    };
   },
 
   toJSON(message: InternalTransfer): unknown {
     const obj: any = {};
     message.sender !== undefined && (obj.sender = message.sender);
     message.receiver !== undefined && (obj.receiver = message.receiver);
-    message.transactionHash !== undefined &&
-      (obj.transactionHash = message.transactionHash);
+    message.transactionHash !== undefined && (obj.transactionHash = message.transactionHash);
     if (message.coins) {
-      obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
+      obj.coins = message.coins.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.coins = [];
     }
-    message.transactionMemo !== undefined &&
-      (obj.transactionMemo = message.transactionMemo);
+    message.transactionMemo !== undefined && (obj.transactionMemo = message.transactionMemo);
     message.transactionBlockHeight !== undefined &&
-      (obj.transactionBlockHeight = (
-        message.transactionBlockHeight || Long.UZERO
-      ).toString());
+      (obj.transactionBlockHeight = (message.transactionBlockHeight || Long.UZERO).toString());
     message.transactionBlockTime !== undefined &&
       (obj.transactionBlockTime = message.transactionBlockTime.toISOString());
-    message.senderUsername !== undefined &&
-      (obj.senderUsername = message.senderUsername);
-    message.receiverUsername !== undefined &&
-      (obj.receiverUsername = message.receiverUsername);
-    message.transactionCode !== undefined &&
-      (obj.transactionCode = message.transactionCode);
+    message.senderUsername !== undefined && (obj.senderUsername = message.senderUsername);
+    message.receiverUsername !== undefined && (obj.receiverUsername = message.receiverUsername);
+    message.transactionCode !== undefined && (obj.transactionCode = Math.round(message.transactionCode));
     return obj;
   },
 
+  create(base?: DeepPartial<InternalTransfer>): InternalTransfer {
+    return InternalTransfer.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<InternalTransfer>): InternalTransfer {
-    const message = { ...baseInternalTransfer } as InternalTransfer;
+    const message = createBaseInternalTransfer();
     message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
     message.transactionHash = object.transactionHash ?? "";
-    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     message.transactionMemo = object.transactionMemo ?? "";
     message.transactionBlockHeight =
-      object.transactionBlockHeight !== undefined &&
-      object.transactionBlockHeight !== null
+      (object.transactionBlockHeight !== undefined && object.transactionBlockHeight !== null)
         ? Long.fromValue(object.transactionBlockHeight)
         : Long.UZERO;
     message.transactionBlockTime = object.transactionBlockTime ?? undefined;
@@ -246,7 +251,9 @@ export const InternalTransfer = {
   },
 };
 
-const baseCoin: object = { denom: "", amount: "" };
+function createBaseCoin(): Coin {
+  return { denom: "", amount: "" };
+}
 
 export const Coin = {
   encode(message: Coin, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -260,37 +267,40 @@ export const Coin = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Coin {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCoin } as Coin;
+    const message = createBaseCoin();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Coin {
-    const message = { ...baseCoin } as Coin;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+    };
   },
 
   toJSON(message: Coin): unknown {
@@ -300,26 +310,24 @@ export const Coin = {
     return obj;
   },
 
+  create(base?: DeepPartial<Coin>): Coin {
+    return Coin.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Coin>): Coin {
-    const message = { ...baseCoin } as Coin;
+    const message = createBaseCoin();
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-const baseQueryInternalTransfersRequest: object = {
-  address: "",
-  sender: "",
-  receiver: "",
-  denom: "",
-};
+function createBaseQueryInternalTransfersRequest(): QueryInternalTransfersRequest {
+  return { address: "", sender: "", receiver: "", denom: "", pagination: undefined };
+}
 
 export const QueryInternalTransfersRequest = {
-  encode(
-    message: QueryInternalTransfersRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryInternalTransfersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -338,66 +346,65 @@ export const QueryInternalTransfersRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryInternalTransfersRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryInternalTransfersRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryInternalTransfersRequest,
-    } as QueryInternalTransfersRequest;
+    const message = createBaseQueryInternalTransfersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryInternalTransfersRequest {
-    const message = {
-      ...baseQueryInternalTransfersRequest,
-    } as QueryInternalTransfersRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryInternalTransfersRequest): unknown {
@@ -407,166 +414,144 @@ export const QueryInternalTransfersRequest = {
     message.receiver !== undefined && (obj.receiver = message.receiver);
     message.denom !== undefined && (obj.denom = message.denom);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryInternalTransfersRequest>
-  ): QueryInternalTransfersRequest {
-    const message = {
-      ...baseQueryInternalTransfersRequest,
-    } as QueryInternalTransfersRequest;
+  create(base?: DeepPartial<QueryInternalTransfersRequest>): QueryInternalTransfersRequest {
+    return QueryInternalTransfersRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryInternalTransfersRequest>): QueryInternalTransfersRequest {
+    const message = createBaseQueryInternalTransfersRequest();
     message.address = object.address ?? "";
     message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
     message.denom = object.denom ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryInternalTransfersResponse: object = {};
+function createBaseQueryInternalTransfersResponse(): QueryInternalTransfersResponse {
+  return { internalTransfers: [], pagination: undefined };
+}
 
 export const QueryInternalTransfersResponse = {
-  encode(
-    message: QueryInternalTransfersResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryInternalTransfersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.internalTransfers) {
       InternalTransfer.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryInternalTransfersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryInternalTransfersResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryInternalTransfersResponse,
-    } as QueryInternalTransfersResponse;
-    message.internalTransfers = [];
+    const message = createBaseQueryInternalTransfersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.internalTransfers.push(
-            InternalTransfer.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.internalTransfers.push(InternalTransfer.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryInternalTransfersResponse {
-    const message = {
-      ...baseQueryInternalTransfersResponse,
-    } as QueryInternalTransfersResponse;
-    message.internalTransfers = (object.internalTransfers ?? []).map((e: any) =>
-      InternalTransfer.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      internalTransfers: Array.isArray(object?.internalTransfers)
+        ? object.internalTransfers.map((e: any) => InternalTransfer.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryInternalTransfersResponse): unknown {
     const obj: any = {};
     if (message.internalTransfers) {
-      obj.internalTransfers = message.internalTransfers.map((e) =>
-        e ? InternalTransfer.toJSON(e) : undefined
-      );
+      obj.internalTransfers = message.internalTransfers.map((e) => e ? InternalTransfer.toJSON(e) : undefined);
     } else {
       obj.internalTransfers = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryInternalTransfersResponse>
-  ): QueryInternalTransfersResponse {
-    const message = {
-      ...baseQueryInternalTransfersResponse,
-    } as QueryInternalTransfersResponse;
-    message.internalTransfers = (object.internalTransfers ?? []).map((e) =>
-      InternalTransfer.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryInternalTransfersResponse>): QueryInternalTransfersResponse {
+    return QueryInternalTransfersResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryInternalTransfersResponse>): QueryInternalTransfersResponse {
+    const message = createBaseQueryInternalTransfersResponse();
+    message.internalTransfers = object.internalTransfers?.map((e) => InternalTransfer.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryBlacklistRequest: object = { address: "" };
+function createBaseQueryBlacklistRequest(): QueryBlacklistRequest {
+  return { address: "" };
+}
 
 export const QueryBlacklistRequest = {
-  encode(
-    message: QueryBlacklistRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBlacklistRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryBlacklistRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBlacklistRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBlacklistRequest } as QueryBlacklistRequest;
+    const message = createBaseQueryBlacklistRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBlacklistRequest {
-    const message = { ...baseQueryBlacklistRequest } as QueryBlacklistRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return { address: isSet(object.address) ? String(object.address) : "" };
   },
 
   toJSON(message: QueryBlacklistRequest): unknown {
@@ -575,109 +560,100 @@ export const QueryBlacklistRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryBlacklistRequest>
-  ): QueryBlacklistRequest {
-    const message = { ...baseQueryBlacklistRequest } as QueryBlacklistRequest;
+  create(base?: DeepPartial<QueryBlacklistRequest>): QueryBlacklistRequest {
+    return QueryBlacklistRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryBlacklistRequest>): QueryBlacklistRequest {
+    const message = createBaseQueryBlacklistRequest();
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseQueryBlacklistResponse: object = { isBlacklisted: false };
+function createBaseQueryBlacklistResponse(): QueryBlacklistResponse {
+  return { isBlacklisted: false };
+}
 
 export const QueryBlacklistResponse = {
-  encode(
-    message: QueryBlacklistResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBlacklistResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.isBlacklisted === true) {
       writer.uint32(8).bool(message.isBlacklisted);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryBlacklistResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBlacklistResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBlacklistResponse } as QueryBlacklistResponse;
+    const message = createBaseQueryBlacklistResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.isBlacklisted = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBlacklistResponse {
-    const message = { ...baseQueryBlacklistResponse } as QueryBlacklistResponse;
-    message.isBlacklisted =
-      object.isBlacklisted !== undefined && object.isBlacklisted !== null
-        ? Boolean(object.isBlacklisted)
-        : false;
-    return message;
+    return { isBlacklisted: isSet(object.isBlacklisted) ? Boolean(object.isBlacklisted) : false };
   },
 
   toJSON(message: QueryBlacklistResponse): unknown {
     const obj: any = {};
-    message.isBlacklisted !== undefined &&
-      (obj.isBlacklisted = message.isBlacklisted);
+    message.isBlacklisted !== undefined && (obj.isBlacklisted = message.isBlacklisted);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryBlacklistResponse>
-  ): QueryBlacklistResponse {
-    const message = { ...baseQueryBlacklistResponse } as QueryBlacklistResponse;
+  create(base?: DeepPartial<QueryBlacklistResponse>): QueryBlacklistResponse {
+    return QueryBlacklistResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryBlacklistResponse>): QueryBlacklistResponse {
+    const message = createBaseQueryBlacklistResponse();
     message.isBlacklisted = object.isBlacklisted ?? false;
     return message;
   },
 };
 
-const baseQueryBlacklistAllRequest: object = {};
+function createBaseQueryBlacklistAllRequest(): QueryBlacklistAllRequest {
+  return {};
+}
 
 export const QueryBlacklistAllRequest = {
-  encode(
-    _: QueryBlacklistAllRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryBlacklistAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryBlacklistAllRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBlacklistAllRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryBlacklistAllRequest,
-    } as QueryBlacklistAllRequest;
+    const message = createBaseQueryBlacklistAllRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): QueryBlacklistAllRequest {
-    const message = {
-      ...baseQueryBlacklistAllRequest,
-    } as QueryBlacklistAllRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryBlacklistAllRequest): unknown {
@@ -685,59 +661,53 @@ export const QueryBlacklistAllRequest = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<QueryBlacklistAllRequest>
-  ): QueryBlacklistAllRequest {
-    const message = {
-      ...baseQueryBlacklistAllRequest,
-    } as QueryBlacklistAllRequest;
+  create(base?: DeepPartial<QueryBlacklistAllRequest>): QueryBlacklistAllRequest {
+    return QueryBlacklistAllRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<QueryBlacklistAllRequest>): QueryBlacklistAllRequest {
+    const message = createBaseQueryBlacklistAllRequest();
     return message;
   },
 };
 
-const baseQueryBlacklistAllResponse: object = { address: "" };
+function createBaseQueryBlacklistAllResponse(): QueryBlacklistAllResponse {
+  return { address: [] };
+}
 
 export const QueryBlacklistAllResponse = {
-  encode(
-    message: QueryBlacklistAllResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBlacklistAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.address) {
       writer.uint32(10).string(v!);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryBlacklistAllResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBlacklistAllResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryBlacklistAllResponse,
-    } as QueryBlacklistAllResponse;
-    message.address = [];
+    const message = createBaseQueryBlacklistAllResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBlacklistAllResponse {
-    const message = {
-      ...baseQueryBlacklistAllResponse,
-    } as QueryBlacklistAllResponse;
-    message.address = (object.address ?? []).map((e: any) => String(e));
-    return message;
+    return { address: Array.isArray(object?.address) ? object.address.map((e: any) => String(e)) : [] };
   },
 
   toJSON(message: QueryBlacklistAllResponse): unknown {
@@ -750,13 +720,13 @@ export const QueryBlacklistAllResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryBlacklistAllResponse>
-  ): QueryBlacklistAllResponse {
-    const message = {
-      ...baseQueryBlacklistAllResponse,
-    } as QueryBlacklistAllResponse;
-    message.address = (object.address ?? []).map((e) => e);
+  create(base?: DeepPartial<QueryBlacklistAllResponse>): QueryBlacklistAllResponse {
+    return QueryBlacklistAllResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryBlacklistAllResponse>): QueryBlacklistAllResponse {
+    const message = createBaseQueryBlacklistAllResponse();
+    message.address = object.address?.map((e) => e) || [];
     return message;
   },
 };
@@ -764,92 +734,52 @@ export const QueryBlacklistAllResponse = {
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
-  InternalTransfers(
-    request: QueryInternalTransfersRequest
-  ): Promise<QueryInternalTransfersResponse>;
+  InternalTransfers(request: QueryInternalTransfersRequest): Promise<QueryInternalTransfersResponse>;
   /** Get whether a specific address is blacklisted. */
   Blacklist(request: QueryBlacklistRequest): Promise<QueryBlacklistResponse>;
   /** Queries a list of blacklist items. */
-  BlacklistAll(
-    request: QueryBlacklistAllRequest
-  ): Promise<QueryBlacklistAllResponse>;
+  BlacklistAll(request: QueryBlacklistAllRequest): Promise<QueryBlacklistAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.bank.Query";
     this.rpc = rpc;
     this.InternalTransfers = this.InternalTransfers.bind(this);
     this.Blacklist = this.Blacklist.bind(this);
     this.BlacklistAll = this.BlacklistAll.bind(this);
   }
-  InternalTransfers(
-    request: QueryInternalTransfersRequest
-  ): Promise<QueryInternalTransfersResponse> {
+  InternalTransfers(request: QueryInternalTransfersRequest): Promise<QueryInternalTransfersResponse> {
     const data = QueryInternalTransfersRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.bank.Query",
-      "InternalTransfers",
-      data
-    );
-    return promise.then((data) =>
-      QueryInternalTransfersResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "InternalTransfers", data);
+    return promise.then((data) => QueryInternalTransfersResponse.decode(_m0.Reader.create(data)));
   }
 
   Blacklist(request: QueryBlacklistRequest): Promise<QueryBlacklistResponse> {
     const data = QueryBlacklistRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.bank.Query",
-      "Blacklist",
-      data
-    );
-    return promise.then((data) =>
-      QueryBlacklistResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Blacklist", data);
+    return promise.then((data) => QueryBlacklistResponse.decode(_m0.Reader.create(data)));
   }
 
-  BlacklistAll(
-    request: QueryBlacklistAllRequest
-  ): Promise<QueryBlacklistAllResponse> {
+  BlacklistAll(request: QueryBlacklistAllRequest): Promise<QueryBlacklistAllResponse> {
     const data = QueryBlacklistAllRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.bank.Query",
-      "BlacklistAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryBlacklistAllResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "BlacklistAll", data);
+    return promise.then((data) => QueryBlacklistAllResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -859,8 +789,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -881,4 +811,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

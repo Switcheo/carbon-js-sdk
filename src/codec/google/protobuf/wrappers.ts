@@ -8,6 +8,9 @@ export const protobufPackage = "google.protobuf";
  * Wrapper message for `double`.
  *
  * The JSON representation for `DoubleValue` is JSON number.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface DoubleValue {
   /** The double value. */
@@ -18,6 +21,9 @@ export interface DoubleValue {
  * Wrapper message for `float`.
  *
  * The JSON representation for `FloatValue` is JSON number.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface FloatValue {
   /** The float value. */
@@ -28,6 +34,9 @@ export interface FloatValue {
  * Wrapper message for `int64`.
  *
  * The JSON representation for `Int64Value` is JSON string.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface Int64Value {
   /** The int64 value. */
@@ -38,6 +47,9 @@ export interface Int64Value {
  * Wrapper message for `uint64`.
  *
  * The JSON representation for `UInt64Value` is JSON string.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface UInt64Value {
   /** The uint64 value. */
@@ -48,6 +60,9 @@ export interface UInt64Value {
  * Wrapper message for `int32`.
  *
  * The JSON representation for `Int32Value` is JSON number.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface Int32Value {
   /** The int32 value. */
@@ -58,6 +73,9 @@ export interface Int32Value {
  * Wrapper message for `uint32`.
  *
  * The JSON representation for `UInt32Value` is JSON number.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface UInt32Value {
   /** The uint32 value. */
@@ -68,6 +86,9 @@ export interface UInt32Value {
  * Wrapper message for `bool`.
  *
  * The JSON representation for `BoolValue` is JSON `true` and `false`.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface BoolValue {
   /** The bool value. */
@@ -78,6 +99,9 @@ export interface BoolValue {
  * Wrapper message for `string`.
  *
  * The JSON representation for `StringValue` is JSON string.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface StringValue {
   /** The string value. */
@@ -88,19 +112,21 @@ export interface StringValue {
  * Wrapper message for `bytes`.
  *
  * The JSON representation for `BytesValue` is JSON string.
+ *
+ * Not recommended for use in new APIs, but still useful for legacy APIs and
+ * has no plan to be removed.
  */
 export interface BytesValue {
   /** The bytes value. */
   value: Uint8Array;
 }
 
-const baseDoubleValue: object = { value: 0 };
+function createBaseDoubleValue(): DoubleValue {
+  return { value: 0 };
+}
 
 export const DoubleValue = {
-  encode(
-    message: DoubleValue,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DoubleValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.value !== 0) {
       writer.uint32(9).double(message.value);
     }
@@ -108,30 +134,30 @@ export const DoubleValue = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DoubleValue {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDoubleValue } as DoubleValue;
+    const message = createBaseDoubleValue();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 9) {
+            break;
+          }
+
           message.value = reader.double();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DoubleValue {
-    const message = { ...baseDoubleValue } as DoubleValue;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Number(object.value)
-        : 0;
-    return message;
+    return { value: isSet(object.value) ? Number(object.value) : 0 };
   },
 
   toJSON(message: DoubleValue): unknown {
@@ -140,20 +166,23 @@ export const DoubleValue = {
     return obj;
   },
 
+  create(base?: DeepPartial<DoubleValue>): DoubleValue {
+    return DoubleValue.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DoubleValue>): DoubleValue {
-    const message = { ...baseDoubleValue } as DoubleValue;
+    const message = createBaseDoubleValue();
     message.value = object.value ?? 0;
     return message;
   },
 };
 
-const baseFloatValue: object = { value: 0 };
+function createBaseFloatValue(): FloatValue {
+  return { value: 0 };
+}
 
 export const FloatValue = {
-  encode(
-    message: FloatValue,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FloatValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.value !== 0) {
       writer.uint32(13).float(message.value);
     }
@@ -161,30 +190,30 @@ export const FloatValue = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FloatValue {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFloatValue } as FloatValue;
+    const message = createBaseFloatValue();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 13) {
+            break;
+          }
+
           message.value = reader.float();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FloatValue {
-    const message = { ...baseFloatValue } as FloatValue;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Number(object.value)
-        : 0;
-    return message;
+    return { value: isSet(object.value) ? Number(object.value) : 0 };
   },
 
   toJSON(message: FloatValue): unknown {
@@ -193,20 +222,23 @@ export const FloatValue = {
     return obj;
   },
 
+  create(base?: DeepPartial<FloatValue>): FloatValue {
+    return FloatValue.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FloatValue>): FloatValue {
-    const message = { ...baseFloatValue } as FloatValue;
+    const message = createBaseFloatValue();
     message.value = object.value ?? 0;
     return message;
   },
 };
 
-const baseInt64Value: object = { value: Long.ZERO };
+function createBaseInt64Value(): Int64Value {
+  return { value: Long.ZERO };
+}
 
 export const Int64Value = {
-  encode(
-    message: Int64Value,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Int64Value, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.value.isZero()) {
       writer.uint32(8).int64(message.value);
     }
@@ -214,56 +246,55 @@ export const Int64Value = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Int64Value {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseInt64Value } as Int64Value;
+    const message = createBaseInt64Value();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.value = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Int64Value {
-    const message = { ...baseInt64Value } as Int64Value;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Long.fromString(object.value)
-        : Long.ZERO;
-    return message;
+    return { value: isSet(object.value) ? Long.fromValue(object.value) : Long.ZERO };
   },
 
   toJSON(message: Int64Value): unknown {
     const obj: any = {};
-    message.value !== undefined &&
-      (obj.value = (message.value || Long.ZERO).toString());
+    message.value !== undefined && (obj.value = (message.value || Long.ZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<Int64Value>): Int64Value {
+    return Int64Value.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Int64Value>): Int64Value {
-    const message = { ...baseInt64Value } as Int64Value;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Long.fromValue(object.value)
-        : Long.ZERO;
+    const message = createBaseInt64Value();
+    message.value = (object.value !== undefined && object.value !== null) ? Long.fromValue(object.value) : Long.ZERO;
     return message;
   },
 };
 
-const baseUInt64Value: object = { value: Long.UZERO };
+function createBaseUInt64Value(): UInt64Value {
+  return { value: Long.UZERO };
+}
 
 export const UInt64Value = {
-  encode(
-    message: UInt64Value,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UInt64Value, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.value.isZero()) {
       writer.uint32(8).uint64(message.value);
     }
@@ -271,56 +302,55 @@ export const UInt64Value = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UInt64Value {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUInt64Value } as UInt64Value;
+    const message = createBaseUInt64Value();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.value = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UInt64Value {
-    const message = { ...baseUInt64Value } as UInt64Value;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Long.fromString(object.value)
-        : Long.UZERO;
-    return message;
+    return { value: isSet(object.value) ? Long.fromValue(object.value) : Long.UZERO };
   },
 
   toJSON(message: UInt64Value): unknown {
     const obj: any = {};
-    message.value !== undefined &&
-      (obj.value = (message.value || Long.UZERO).toString());
+    message.value !== undefined && (obj.value = (message.value || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<UInt64Value>): UInt64Value {
+    return UInt64Value.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UInt64Value>): UInt64Value {
-    const message = { ...baseUInt64Value } as UInt64Value;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Long.fromValue(object.value)
-        : Long.UZERO;
+    const message = createBaseUInt64Value();
+    message.value = (object.value !== undefined && object.value !== null) ? Long.fromValue(object.value) : Long.UZERO;
     return message;
   },
 };
 
-const baseInt32Value: object = { value: 0 };
+function createBaseInt32Value(): Int32Value {
+  return { value: 0 };
+}
 
 export const Int32Value = {
-  encode(
-    message: Int32Value,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Int32Value, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.value !== 0) {
       writer.uint32(8).int32(message.value);
     }
@@ -328,52 +358,55 @@ export const Int32Value = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Int32Value {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseInt32Value } as Int32Value;
+    const message = createBaseInt32Value();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.value = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Int32Value {
-    const message = { ...baseInt32Value } as Int32Value;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Number(object.value)
-        : 0;
-    return message;
+    return { value: isSet(object.value) ? Number(object.value) : 0 };
   },
 
   toJSON(message: Int32Value): unknown {
     const obj: any = {};
-    message.value !== undefined && (obj.value = message.value);
+    message.value !== undefined && (obj.value = Math.round(message.value));
     return obj;
   },
 
+  create(base?: DeepPartial<Int32Value>): Int32Value {
+    return Int32Value.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Int32Value>): Int32Value {
-    const message = { ...baseInt32Value } as Int32Value;
+    const message = createBaseInt32Value();
     message.value = object.value ?? 0;
     return message;
   },
 };
 
-const baseUInt32Value: object = { value: 0 };
+function createBaseUInt32Value(): UInt32Value {
+  return { value: 0 };
+}
 
 export const UInt32Value = {
-  encode(
-    message: UInt32Value,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UInt32Value, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.value !== 0) {
       writer.uint32(8).uint32(message.value);
     }
@@ -381,52 +414,55 @@ export const UInt32Value = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UInt32Value {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUInt32Value } as UInt32Value;
+    const message = createBaseUInt32Value();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.value = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UInt32Value {
-    const message = { ...baseUInt32Value } as UInt32Value;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Number(object.value)
-        : 0;
-    return message;
+    return { value: isSet(object.value) ? Number(object.value) : 0 };
   },
 
   toJSON(message: UInt32Value): unknown {
     const obj: any = {};
-    message.value !== undefined && (obj.value = message.value);
+    message.value !== undefined && (obj.value = Math.round(message.value));
     return obj;
   },
 
+  create(base?: DeepPartial<UInt32Value>): UInt32Value {
+    return UInt32Value.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UInt32Value>): UInt32Value {
-    const message = { ...baseUInt32Value } as UInt32Value;
+    const message = createBaseUInt32Value();
     message.value = object.value ?? 0;
     return message;
   },
 };
 
-const baseBoolValue: object = { value: false };
+function createBaseBoolValue(): BoolValue {
+  return { value: false };
+}
 
 export const BoolValue = {
-  encode(
-    message: BoolValue,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BoolValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.value === true) {
       writer.uint32(8).bool(message.value);
     }
@@ -434,30 +470,30 @@ export const BoolValue = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BoolValue {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBoolValue } as BoolValue;
+    const message = createBaseBoolValue();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.value = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BoolValue {
-    const message = { ...baseBoolValue } as BoolValue;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? Boolean(object.value)
-        : false;
-    return message;
+    return { value: isSet(object.value) ? Boolean(object.value) : false };
   },
 
   toJSON(message: BoolValue): unknown {
@@ -466,20 +502,23 @@ export const BoolValue = {
     return obj;
   },
 
+  create(base?: DeepPartial<BoolValue>): BoolValue {
+    return BoolValue.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BoolValue>): BoolValue {
-    const message = { ...baseBoolValue } as BoolValue;
+    const message = createBaseBoolValue();
     message.value = object.value ?? false;
     return message;
   },
 };
 
-const baseStringValue: object = { value: "" };
+function createBaseStringValue(): StringValue {
+  return { value: "" };
+}
 
 export const StringValue = {
-  encode(
-    message: StringValue,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: StringValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.value !== "") {
       writer.uint32(10).string(message.value);
     }
@@ -487,30 +526,30 @@ export const StringValue = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): StringValue {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseStringValue } as StringValue;
+    const message = createBaseStringValue();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): StringValue {
-    const message = { ...baseStringValue } as StringValue;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? String(object.value)
-        : "";
-    return message;
+    return { value: isSet(object.value) ? String(object.value) : "" };
   },
 
   toJSON(message: StringValue): unknown {
@@ -519,20 +558,23 @@ export const StringValue = {
     return obj;
   },
 
+  create(base?: DeepPartial<StringValue>): StringValue {
+    return StringValue.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<StringValue>): StringValue {
-    const message = { ...baseStringValue } as StringValue;
+    const message = createBaseStringValue();
     message.value = object.value ?? "";
     return message;
   },
 };
 
-const baseBytesValue: object = {};
+function createBaseBytesValue(): BytesValue {
+  return { value: new Uint8Array() };
+}
 
 export const BytesValue = {
-  encode(
-    message: BytesValue,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BytesValue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.value.length !== 0) {
       writer.uint32(10).bytes(message.value);
     }
@@ -540,44 +582,45 @@ export const BytesValue = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BytesValue {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBytesValue } as BytesValue;
-    message.value = new Uint8Array();
+    const message = createBaseBytesValue();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.value = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BytesValue {
-    const message = { ...baseBytesValue } as BytesValue;
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? bytesFromBase64(object.value)
-        : new Uint8Array();
-    return message;
+    return { value: isSet(object.value) ? bytesFromBase64(object.value) : new Uint8Array() };
   },
 
   toJSON(message: BytesValue): unknown {
     const obj: any = {};
     message.value !== undefined &&
-      (obj.value = base64FromBytes(
-        message.value !== undefined ? message.value : new Uint8Array()
-      ));
+      (obj.value = base64FromBytes(message.value !== undefined ? message.value : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<BytesValue>): BytesValue {
+    return BytesValue.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BytesValue>): BytesValue {
-    const message = { ...baseBytesValue } as BytesValue;
+    const message = createBaseBytesValue();
     message.value = object.value ?? new Uint8Array();
     return message;
   },
@@ -586,58 +629,60 @@ export const BytesValue = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

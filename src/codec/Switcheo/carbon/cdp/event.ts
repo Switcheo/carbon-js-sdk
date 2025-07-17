@@ -1,13 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { RateStrategyParams } from "./rate_strategy_params";
-import { AssetParams } from "./asset_params";
-import { EModeCategory } from "./e_mode_category";
 import { Duration } from "../../../google/protobuf/duration";
+import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
-import { StablecoinDebtInfo } from "./stablecoin_debt_info";
+import { EModeCategory } from "./e_mode_category";
+import { RateStrategyParams } from "./rate_strategy_params";
 import { RewardDebt, RewardScheme } from "./reward_scheme";
+import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -222,18 +222,14 @@ export interface RefundReserveEvent {
   amountRefunded: string;
 }
 
-const baseNewRateStrategyParamsEvent: object = { type: "" };
+function createBaseNewRateStrategyParamsEvent(): NewRateStrategyParamsEvent {
+  return { rateStrategyParams: undefined, type: "" };
+}
 
 export const NewRateStrategyParamsEvent = {
-  encode(
-    message: NewRateStrategyParamsEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: NewRateStrategyParamsEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rateStrategyParams !== undefined) {
-      RateStrategyParams.encode(
-        message.rateStrategyParams,
-        writer.uint32(10).fork()
-      ).ldelim();
+      RateStrategyParams.encode(message.rateStrategyParams, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -241,89 +237,76 @@ export const NewRateStrategyParamsEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): NewRateStrategyParamsEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewRateStrategyParamsEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseNewRateStrategyParamsEvent,
-    } as NewRateStrategyParamsEvent;
+    const message = createBaseNewRateStrategyParamsEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.rateStrategyParams = RateStrategyParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rateStrategyParams = RateStrategyParams.decode(reader, reader.uint32());
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewRateStrategyParamsEvent {
-    const message = {
-      ...baseNewRateStrategyParamsEvent,
-    } as NewRateStrategyParamsEvent;
-    message.rateStrategyParams =
-      object.rateStrategyParams !== undefined &&
-      object.rateStrategyParams !== null
+    return {
+      rateStrategyParams: isSet(object.rateStrategyParams)
         ? RateStrategyParams.fromJSON(object.rateStrategyParams)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+        : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: NewRateStrategyParamsEvent): unknown {
     const obj: any = {};
-    message.rateStrategyParams !== undefined &&
-      (obj.rateStrategyParams = message.rateStrategyParams
-        ? RateStrategyParams.toJSON(message.rateStrategyParams)
-        : undefined);
+    message.rateStrategyParams !== undefined && (obj.rateStrategyParams = message.rateStrategyParams
+      ? RateStrategyParams.toJSON(message.rateStrategyParams)
+      : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<NewRateStrategyParamsEvent>
-  ): NewRateStrategyParamsEvent {
-    const message = {
-      ...baseNewRateStrategyParamsEvent,
-    } as NewRateStrategyParamsEvent;
-    message.rateStrategyParams =
-      object.rateStrategyParams !== undefined &&
-      object.rateStrategyParams !== null
-        ? RateStrategyParams.fromPartial(object.rateStrategyParams)
-        : undefined;
+  create(base?: DeepPartial<NewRateStrategyParamsEvent>): NewRateStrategyParamsEvent {
+    return NewRateStrategyParamsEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<NewRateStrategyParamsEvent>): NewRateStrategyParamsEvent {
+    const message = createBaseNewRateStrategyParamsEvent();
+    message.rateStrategyParams = (object.rateStrategyParams !== undefined && object.rateStrategyParams !== null)
+      ? RateStrategyParams.fromPartial(object.rateStrategyParams)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseUpdateRateStrategyParamsEvent: object = { type: "" };
+function createBaseUpdateRateStrategyParamsEvent(): UpdateRateStrategyParamsEvent {
+  return { rateStrategyParams: undefined, type: "" };
+}
 
 export const UpdateRateStrategyParamsEvent = {
-  encode(
-    message: UpdateRateStrategyParamsEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateRateStrategyParamsEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rateStrategyParams !== undefined) {
-      RateStrategyParams.encode(
-        message.rateStrategyParams,
-        writer.uint32(10).fork()
-      ).ldelim();
+      RateStrategyParams.encode(message.rateStrategyParams, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -331,89 +314,76 @@ export const UpdateRateStrategyParamsEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateRateStrategyParamsEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateRateStrategyParamsEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdateRateStrategyParamsEvent,
-    } as UpdateRateStrategyParamsEvent;
+    const message = createBaseUpdateRateStrategyParamsEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.rateStrategyParams = RateStrategyParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rateStrategyParams = RateStrategyParams.decode(reader, reader.uint32());
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateRateStrategyParamsEvent {
-    const message = {
-      ...baseUpdateRateStrategyParamsEvent,
-    } as UpdateRateStrategyParamsEvent;
-    message.rateStrategyParams =
-      object.rateStrategyParams !== undefined &&
-      object.rateStrategyParams !== null
+    return {
+      rateStrategyParams: isSet(object.rateStrategyParams)
         ? RateStrategyParams.fromJSON(object.rateStrategyParams)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+        : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: UpdateRateStrategyParamsEvent): unknown {
     const obj: any = {};
-    message.rateStrategyParams !== undefined &&
-      (obj.rateStrategyParams = message.rateStrategyParams
-        ? RateStrategyParams.toJSON(message.rateStrategyParams)
-        : undefined);
+    message.rateStrategyParams !== undefined && (obj.rateStrategyParams = message.rateStrategyParams
+      ? RateStrategyParams.toJSON(message.rateStrategyParams)
+      : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdateRateStrategyParamsEvent>
-  ): UpdateRateStrategyParamsEvent {
-    const message = {
-      ...baseUpdateRateStrategyParamsEvent,
-    } as UpdateRateStrategyParamsEvent;
-    message.rateStrategyParams =
-      object.rateStrategyParams !== undefined &&
-      object.rateStrategyParams !== null
-        ? RateStrategyParams.fromPartial(object.rateStrategyParams)
-        : undefined;
+  create(base?: DeepPartial<UpdateRateStrategyParamsEvent>): UpdateRateStrategyParamsEvent {
+    return UpdateRateStrategyParamsEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UpdateRateStrategyParamsEvent>): UpdateRateStrategyParamsEvent {
+    const message = createBaseUpdateRateStrategyParamsEvent();
+    message.rateStrategyParams = (object.rateStrategyParams !== undefined && object.rateStrategyParams !== null)
+      ? RateStrategyParams.fromPartial(object.rateStrategyParams)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseRemoveRateStrategyParamsEvent: object = { type: "" };
+function createBaseRemoveRateStrategyParamsEvent(): RemoveRateStrategyParamsEvent {
+  return { rateStrategyParams: undefined, type: "" };
+}
 
 export const RemoveRateStrategyParamsEvent = {
-  encode(
-    message: RemoveRateStrategyParamsEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RemoveRateStrategyParamsEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rateStrategyParams !== undefined) {
-      RateStrategyParams.encode(
-        message.rateStrategyParams,
-        writer.uint32(10).fork()
-      ).ldelim();
+      RateStrategyParams.encode(message.rateStrategyParams, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -421,89 +391,76 @@ export const RemoveRateStrategyParamsEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RemoveRateStrategyParamsEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RemoveRateStrategyParamsEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseRemoveRateStrategyParamsEvent,
-    } as RemoveRateStrategyParamsEvent;
+    const message = createBaseRemoveRateStrategyParamsEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.rateStrategyParams = RateStrategyParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rateStrategyParams = RateStrategyParams.decode(reader, reader.uint32());
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RemoveRateStrategyParamsEvent {
-    const message = {
-      ...baseRemoveRateStrategyParamsEvent,
-    } as RemoveRateStrategyParamsEvent;
-    message.rateStrategyParams =
-      object.rateStrategyParams !== undefined &&
-      object.rateStrategyParams !== null
+    return {
+      rateStrategyParams: isSet(object.rateStrategyParams)
         ? RateStrategyParams.fromJSON(object.rateStrategyParams)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+        : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: RemoveRateStrategyParamsEvent): unknown {
     const obj: any = {};
-    message.rateStrategyParams !== undefined &&
-      (obj.rateStrategyParams = message.rateStrategyParams
-        ? RateStrategyParams.toJSON(message.rateStrategyParams)
-        : undefined);
+    message.rateStrategyParams !== undefined && (obj.rateStrategyParams = message.rateStrategyParams
+      ? RateStrategyParams.toJSON(message.rateStrategyParams)
+      : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RemoveRateStrategyParamsEvent>
-  ): RemoveRateStrategyParamsEvent {
-    const message = {
-      ...baseRemoveRateStrategyParamsEvent,
-    } as RemoveRateStrategyParamsEvent;
-    message.rateStrategyParams =
-      object.rateStrategyParams !== undefined &&
-      object.rateStrategyParams !== null
-        ? RateStrategyParams.fromPartial(object.rateStrategyParams)
-        : undefined;
+  create(base?: DeepPartial<RemoveRateStrategyParamsEvent>): RemoveRateStrategyParamsEvent {
+    return RemoveRateStrategyParamsEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<RemoveRateStrategyParamsEvent>): RemoveRateStrategyParamsEvent {
+    const message = createBaseRemoveRateStrategyParamsEvent();
+    message.rateStrategyParams = (object.rateStrategyParams !== undefined && object.rateStrategyParams !== null)
+      ? RateStrategyParams.fromPartial(object.rateStrategyParams)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseNewAssetParamsEvent: object = { type: "" };
+function createBaseNewAssetParamsEvent(): NewAssetParamsEvent {
+  return { assetParams: undefined, type: "" };
+}
 
 export const NewAssetParamsEvent = {
-  encode(
-    message: NewAssetParamsEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: NewAssetParamsEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.assetParams !== undefined) {
-      AssetParams.encode(
-        message.assetParams,
-        writer.uint32(10).fork()
-      ).ldelim();
+      AssetParams.encode(message.assetParams, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -512,72 +469,72 @@ export const NewAssetParamsEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NewAssetParamsEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseNewAssetParamsEvent } as NewAssetParamsEvent;
+    const message = createBaseNewAssetParamsEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.assetParams = AssetParams.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewAssetParamsEvent {
-    const message = { ...baseNewAssetParamsEvent } as NewAssetParamsEvent;
-    message.assetParams =
-      object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromJSON(object.assetParams)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      assetParams: isSet(object.assetParams) ? AssetParams.fromJSON(object.assetParams) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: NewAssetParamsEvent): unknown {
     const obj: any = {};
     message.assetParams !== undefined &&
-      (obj.assetParams = message.assetParams
-        ? AssetParams.toJSON(message.assetParams)
-        : undefined);
+      (obj.assetParams = message.assetParams ? AssetParams.toJSON(message.assetParams) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
+  create(base?: DeepPartial<NewAssetParamsEvent>): NewAssetParamsEvent {
+    return NewAssetParamsEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<NewAssetParamsEvent>): NewAssetParamsEvent {
-    const message = { ...baseNewAssetParamsEvent } as NewAssetParamsEvent;
-    message.assetParams =
-      object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromPartial(object.assetParams)
-        : undefined;
+    const message = createBaseNewAssetParamsEvent();
+    message.assetParams = (object.assetParams !== undefined && object.assetParams !== null)
+      ? AssetParams.fromPartial(object.assetParams)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseUpdateAssetParamsEvent: object = { type: "" };
+function createBaseUpdateAssetParamsEvent(): UpdateAssetParamsEvent {
+  return { assetParams: undefined, type: "" };
+}
 
 export const UpdateAssetParamsEvent = {
-  encode(
-    message: UpdateAssetParamsEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateAssetParamsEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.assetParams !== undefined) {
-      AssetParams.encode(
-        message.assetParams,
-        writer.uint32(10).fork()
-      ).ldelim();
+      AssetParams.encode(message.assetParams, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -585,78 +542,73 @@ export const UpdateAssetParamsEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateAssetParamsEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateAssetParamsEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateAssetParamsEvent } as UpdateAssetParamsEvent;
+    const message = createBaseUpdateAssetParamsEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.assetParams = AssetParams.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateAssetParamsEvent {
-    const message = { ...baseUpdateAssetParamsEvent } as UpdateAssetParamsEvent;
-    message.assetParams =
-      object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromJSON(object.assetParams)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      assetParams: isSet(object.assetParams) ? AssetParams.fromJSON(object.assetParams) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: UpdateAssetParamsEvent): unknown {
     const obj: any = {};
     message.assetParams !== undefined &&
-      (obj.assetParams = message.assetParams
-        ? AssetParams.toJSON(message.assetParams)
-        : undefined);
+      (obj.assetParams = message.assetParams ? AssetParams.toJSON(message.assetParams) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdateAssetParamsEvent>
-  ): UpdateAssetParamsEvent {
-    const message = { ...baseUpdateAssetParamsEvent } as UpdateAssetParamsEvent;
-    message.assetParams =
-      object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromPartial(object.assetParams)
-        : undefined;
+  create(base?: DeepPartial<UpdateAssetParamsEvent>): UpdateAssetParamsEvent {
+    return UpdateAssetParamsEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UpdateAssetParamsEvent>): UpdateAssetParamsEvent {
+    const message = createBaseUpdateAssetParamsEvent();
+    message.assetParams = (object.assetParams !== undefined && object.assetParams !== null)
+      ? AssetParams.fromPartial(object.assetParams)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseNewEModeCategoryEvent: object = { type: "" };
+function createBaseNewEModeCategoryEvent(): NewEModeCategoryEvent {
+  return { eModeCategory: undefined, type: "" };
+}
 
 export const NewEModeCategoryEvent = {
-  encode(
-    message: NewEModeCategoryEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: NewEModeCategoryEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.eModeCategory !== undefined) {
-      EModeCategory.encode(
-        message.eModeCategory,
-        writer.uint32(10).fork()
-      ).ldelim();
+      EModeCategory.encode(message.eModeCategory, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -664,78 +616,73 @@ export const NewEModeCategoryEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): NewEModeCategoryEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewEModeCategoryEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseNewEModeCategoryEvent } as NewEModeCategoryEvent;
+    const message = createBaseNewEModeCategoryEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.eModeCategory = EModeCategory.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewEModeCategoryEvent {
-    const message = { ...baseNewEModeCategoryEvent } as NewEModeCategoryEvent;
-    message.eModeCategory =
-      object.eModeCategory !== undefined && object.eModeCategory !== null
-        ? EModeCategory.fromJSON(object.eModeCategory)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      eModeCategory: isSet(object.eModeCategory) ? EModeCategory.fromJSON(object.eModeCategory) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: NewEModeCategoryEvent): unknown {
     const obj: any = {};
     message.eModeCategory !== undefined &&
-      (obj.eModeCategory = message.eModeCategory
-        ? EModeCategory.toJSON(message.eModeCategory)
-        : undefined);
+      (obj.eModeCategory = message.eModeCategory ? EModeCategory.toJSON(message.eModeCategory) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<NewEModeCategoryEvent>
-  ): NewEModeCategoryEvent {
-    const message = { ...baseNewEModeCategoryEvent } as NewEModeCategoryEvent;
-    message.eModeCategory =
-      object.eModeCategory !== undefined && object.eModeCategory !== null
-        ? EModeCategory.fromPartial(object.eModeCategory)
-        : undefined;
+  create(base?: DeepPartial<NewEModeCategoryEvent>): NewEModeCategoryEvent {
+    return NewEModeCategoryEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<NewEModeCategoryEvent>): NewEModeCategoryEvent {
+    const message = createBaseNewEModeCategoryEvent();
+    message.eModeCategory = (object.eModeCategory !== undefined && object.eModeCategory !== null)
+      ? EModeCategory.fromPartial(object.eModeCategory)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseUpdateEModeCategoryEvent: object = { type: "" };
+function createBaseUpdateEModeCategoryEvent(): UpdateEModeCategoryEvent {
+  return { eModeCategory: undefined, type: "" };
+}
 
 export const UpdateEModeCategoryEvent = {
-  encode(
-    message: UpdateEModeCategoryEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateEModeCategoryEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.eModeCategory !== undefined) {
-      EModeCategory.encode(
-        message.eModeCategory,
-        writer.uint32(10).fork()
-      ).ldelim();
+      EModeCategory.encode(message.eModeCategory, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -743,82 +690,71 @@ export const UpdateEModeCategoryEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateEModeCategoryEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateEModeCategoryEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdateEModeCategoryEvent,
-    } as UpdateEModeCategoryEvent;
+    const message = createBaseUpdateEModeCategoryEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.eModeCategory = EModeCategory.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateEModeCategoryEvent {
-    const message = {
-      ...baseUpdateEModeCategoryEvent,
-    } as UpdateEModeCategoryEvent;
-    message.eModeCategory =
-      object.eModeCategory !== undefined && object.eModeCategory !== null
-        ? EModeCategory.fromJSON(object.eModeCategory)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      eModeCategory: isSet(object.eModeCategory) ? EModeCategory.fromJSON(object.eModeCategory) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: UpdateEModeCategoryEvent): unknown {
     const obj: any = {};
     message.eModeCategory !== undefined &&
-      (obj.eModeCategory = message.eModeCategory
-        ? EModeCategory.toJSON(message.eModeCategory)
-        : undefined);
+      (obj.eModeCategory = message.eModeCategory ? EModeCategory.toJSON(message.eModeCategory) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdateEModeCategoryEvent>
-  ): UpdateEModeCategoryEvent {
-    const message = {
-      ...baseUpdateEModeCategoryEvent,
-    } as UpdateEModeCategoryEvent;
-    message.eModeCategory =
-      object.eModeCategory !== undefined && object.eModeCategory !== null
-        ? EModeCategory.fromPartial(object.eModeCategory)
-        : undefined;
+  create(base?: DeepPartial<UpdateEModeCategoryEvent>): UpdateEModeCategoryEvent {
+    return UpdateEModeCategoryEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UpdateEModeCategoryEvent>): UpdateEModeCategoryEvent {
+    const message = createBaseUpdateEModeCategoryEvent();
+    message.eModeCategory = (object.eModeCategory !== undefined && object.eModeCategory !== null)
+      ? EModeCategory.fromPartial(object.eModeCategory)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseUpdateAccountEModeCategoryNameEvent: object = {
-  account: "",
-  eModeCategoryName: "",
-};
+function createBaseUpdateAccountEModeCategoryNameEvent(): UpdateAccountEModeCategoryNameEvent {
+  return { account: "", eModeCategoryName: "" };
+}
 
 export const UpdateAccountEModeCategoryNameEvent = {
-  encode(
-    message: UpdateAccountEModeCategoryNameEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateAccountEModeCategoryNameEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.account !== "") {
       writer.uint32(10).string(message.account);
     }
@@ -828,75 +764,68 @@ export const UpdateAccountEModeCategoryNameEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateAccountEModeCategoryNameEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateAccountEModeCategoryNameEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdateAccountEModeCategoryNameEvent,
-    } as UpdateAccountEModeCategoryNameEvent;
+    const message = createBaseUpdateAccountEModeCategoryNameEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.account = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.eModeCategoryName = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateAccountEModeCategoryNameEvent {
-    const message = {
-      ...baseUpdateAccountEModeCategoryNameEvent,
-    } as UpdateAccountEModeCategoryNameEvent;
-    message.account =
-      object.account !== undefined && object.account !== null
-        ? String(object.account)
-        : "";
-    message.eModeCategoryName =
-      object.eModeCategoryName !== undefined &&
-      object.eModeCategoryName !== null
-        ? String(object.eModeCategoryName)
-        : "";
-    return message;
+    return {
+      account: isSet(object.account) ? String(object.account) : "",
+      eModeCategoryName: isSet(object.eModeCategoryName) ? String(object.eModeCategoryName) : "",
+    };
   },
 
   toJSON(message: UpdateAccountEModeCategoryNameEvent): unknown {
     const obj: any = {};
     message.account !== undefined && (obj.account = message.account);
-    message.eModeCategoryName !== undefined &&
-      (obj.eModeCategoryName = message.eModeCategoryName);
+    message.eModeCategoryName !== undefined && (obj.eModeCategoryName = message.eModeCategoryName);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdateAccountEModeCategoryNameEvent>
-  ): UpdateAccountEModeCategoryNameEvent {
-    const message = {
-      ...baseUpdateAccountEModeCategoryNameEvent,
-    } as UpdateAccountEModeCategoryNameEvent;
+  create(base?: DeepPartial<UpdateAccountEModeCategoryNameEvent>): UpdateAccountEModeCategoryNameEvent {
+    return UpdateAccountEModeCategoryNameEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UpdateAccountEModeCategoryNameEvent>): UpdateAccountEModeCategoryNameEvent {
+    const message = createBaseUpdateAccountEModeCategoryNameEvent();
     message.account = object.account ?? "";
     message.eModeCategoryName = object.eModeCategoryName ?? "";
     return message;
   },
 };
 
-const baseSetInterestFeeEvent: object = { interestFee: "", type: "" };
+function createBaseSetInterestFeeEvent(): SetInterestFeeEvent {
+  return { interestFee: "", type: "" };
+}
 
 export const SetInterestFeeEvent = {
-  encode(
-    message: SetInterestFeeEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetInterestFeeEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.interestFee !== "") {
       writer.uint32(10).string(message.interestFee);
     }
@@ -907,62 +836,67 @@ export const SetInterestFeeEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SetInterestFeeEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSetInterestFeeEvent } as SetInterestFeeEvent;
+    const message = createBaseSetInterestFeeEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.interestFee = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetInterestFeeEvent {
-    const message = { ...baseSetInterestFeeEvent } as SetInterestFeeEvent;
-    message.interestFee =
-      object.interestFee !== undefined && object.interestFee !== null
-        ? String(object.interestFee)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      interestFee: isSet(object.interestFee) ? String(object.interestFee) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: SetInterestFeeEvent): unknown {
     const obj: any = {};
-    message.interestFee !== undefined &&
-      (obj.interestFee = message.interestFee);
+    message.interestFee !== undefined && (obj.interestFee = message.interestFee);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
+  create(base?: DeepPartial<SetInterestFeeEvent>): SetInterestFeeEvent {
+    return SetInterestFeeEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SetInterestFeeEvent>): SetInterestFeeEvent {
-    const message = { ...baseSetInterestFeeEvent } as SetInterestFeeEvent;
+    const message = createBaseSetInterestFeeEvent();
     message.interestFee = object.interestFee ?? "";
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseSetLiquidationFeeEvent: object = { liquidationFee: "", type: "" };
+function createBaseSetLiquidationFeeEvent(): SetLiquidationFeeEvent {
+  return { liquidationFee: "", type: "" };
+}
 
 export const SetLiquidationFeeEvent = {
-  encode(
-    message: SetLiquidationFeeEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetLiquidationFeeEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.liquidationFee !== "") {
       writer.uint32(10).string(message.liquidationFee);
     }
@@ -972,72 +906,68 @@ export const SetLiquidationFeeEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetLiquidationFeeEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetLiquidationFeeEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSetLiquidationFeeEvent } as SetLiquidationFeeEvent;
+    const message = createBaseSetLiquidationFeeEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.liquidationFee = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetLiquidationFeeEvent {
-    const message = { ...baseSetLiquidationFeeEvent } as SetLiquidationFeeEvent;
-    message.liquidationFee =
-      object.liquidationFee !== undefined && object.liquidationFee !== null
-        ? String(object.liquidationFee)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      liquidationFee: isSet(object.liquidationFee) ? String(object.liquidationFee) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: SetLiquidationFeeEvent): unknown {
     const obj: any = {};
-    message.liquidationFee !== undefined &&
-      (obj.liquidationFee = message.liquidationFee);
+    message.liquidationFee !== undefined && (obj.liquidationFee = message.liquidationFee);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetLiquidationFeeEvent>
-  ): SetLiquidationFeeEvent {
-    const message = { ...baseSetLiquidationFeeEvent } as SetLiquidationFeeEvent;
+  create(base?: DeepPartial<SetLiquidationFeeEvent>): SetLiquidationFeeEvent {
+    return SetLiquidationFeeEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetLiquidationFeeEvent>): SetLiquidationFeeEvent {
+    const message = createBaseSetLiquidationFeeEvent();
     message.liquidationFee = object.liquidationFee ?? "";
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseSetStablecoinInterestRateEvent: object = {
-  stablecoinInterestRate: "",
-  type: "",
-  stablecoinInterestRateDec: "",
-};
+function createBaseSetStablecoinInterestRateEvent(): SetStablecoinInterestRateEvent {
+  return { stablecoinInterestRate: "", type: "", stablecoinInterestRateDec: "" };
+}
 
 export const SetStablecoinInterestRateEvent = {
-  encode(
-    message: SetStablecoinInterestRateEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetStablecoinInterestRateEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.stablecoinInterestRate !== "") {
       writer.uint32(10).string(message.stablecoinInterestRate);
     }
@@ -1050,72 +980,68 @@ export const SetStablecoinInterestRateEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetStablecoinInterestRateEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetStablecoinInterestRateEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetStablecoinInterestRateEvent,
-    } as SetStablecoinInterestRateEvent;
+    const message = createBaseSetStablecoinInterestRateEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.stablecoinInterestRate = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.stablecoinInterestRateDec = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetStablecoinInterestRateEvent {
-    const message = {
-      ...baseSetStablecoinInterestRateEvent,
-    } as SetStablecoinInterestRateEvent;
-    message.stablecoinInterestRate =
-      object.stablecoinInterestRate !== undefined &&
-      object.stablecoinInterestRate !== null
-        ? String(object.stablecoinInterestRate)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    message.stablecoinInterestRateDec =
-      object.stablecoinInterestRateDec !== undefined &&
-      object.stablecoinInterestRateDec !== null
+    return {
+      stablecoinInterestRate: isSet(object.stablecoinInterestRate) ? String(object.stablecoinInterestRate) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+      stablecoinInterestRateDec: isSet(object.stablecoinInterestRateDec)
         ? String(object.stablecoinInterestRateDec)
-        : "";
-    return message;
+        : "",
+    };
   },
 
   toJSON(message: SetStablecoinInterestRateEvent): unknown {
     const obj: any = {};
-    message.stablecoinInterestRate !== undefined &&
-      (obj.stablecoinInterestRate = message.stablecoinInterestRate);
+    message.stablecoinInterestRate !== undefined && (obj.stablecoinInterestRate = message.stablecoinInterestRate);
     message.type !== undefined && (obj.type = message.type);
     message.stablecoinInterestRateDec !== undefined &&
       (obj.stablecoinInterestRateDec = message.stablecoinInterestRateDec);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetStablecoinInterestRateEvent>
-  ): SetStablecoinInterestRateEvent {
-    const message = {
-      ...baseSetStablecoinInterestRateEvent,
-    } as SetStablecoinInterestRateEvent;
+  create(base?: DeepPartial<SetStablecoinInterestRateEvent>): SetStablecoinInterestRateEvent {
+    return SetStablecoinInterestRateEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetStablecoinInterestRateEvent>): SetStablecoinInterestRateEvent {
+    const message = createBaseSetStablecoinInterestRateEvent();
     message.stablecoinInterestRate = object.stablecoinInterestRate ?? "";
     message.type = object.type ?? "";
     message.stablecoinInterestRateDec = object.stablecoinInterestRateDec ?? "";
@@ -1123,16 +1049,12 @@ export const SetStablecoinInterestRateEvent = {
   },
 };
 
-const baseSetStablecoinMintCapEvent: object = {
-  stablecoinMintCap: "",
-  type: "",
-};
+function createBaseSetStablecoinMintCapEvent(): SetStablecoinMintCapEvent {
+  return { stablecoinMintCap: "", type: "" };
+}
 
 export const SetStablecoinMintCapEvent = {
-  encode(
-    message: SetStablecoinMintCapEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetStablecoinMintCapEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.stablecoinMintCap !== "") {
       writer.uint32(10).string(message.stablecoinMintCap);
     }
@@ -1142,78 +1064,68 @@ export const SetStablecoinMintCapEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetStablecoinMintCapEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetStablecoinMintCapEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetStablecoinMintCapEvent,
-    } as SetStablecoinMintCapEvent;
+    const message = createBaseSetStablecoinMintCapEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.stablecoinMintCap = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetStablecoinMintCapEvent {
-    const message = {
-      ...baseSetStablecoinMintCapEvent,
-    } as SetStablecoinMintCapEvent;
-    message.stablecoinMintCap =
-      object.stablecoinMintCap !== undefined &&
-      object.stablecoinMintCap !== null
-        ? String(object.stablecoinMintCap)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      stablecoinMintCap: isSet(object.stablecoinMintCap) ? String(object.stablecoinMintCap) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: SetStablecoinMintCapEvent): unknown {
     const obj: any = {};
-    message.stablecoinMintCap !== undefined &&
-      (obj.stablecoinMintCap = message.stablecoinMintCap);
+    message.stablecoinMintCap !== undefined && (obj.stablecoinMintCap = message.stablecoinMintCap);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetStablecoinMintCapEvent>
-  ): SetStablecoinMintCapEvent {
-    const message = {
-      ...baseSetStablecoinMintCapEvent,
-    } as SetStablecoinMintCapEvent;
+  create(base?: DeepPartial<SetStablecoinMintCapEvent>): SetStablecoinMintCapEvent {
+    return SetStablecoinMintCapEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetStablecoinMintCapEvent>): SetStablecoinMintCapEvent {
+    const message = createBaseSetStablecoinMintCapEvent();
     message.stablecoinMintCap = object.stablecoinMintCap ?? "";
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseSetCompleteLiquidationThresholdEvent: object = {
-  completeLiquidationThreshold: "",
-  type: "",
-};
+function createBaseSetCompleteLiquidationThresholdEvent(): SetCompleteLiquidationThresholdEvent {
+  return { completeLiquidationThreshold: "", type: "" };
+}
 
 export const SetCompleteLiquidationThresholdEvent = {
-  encode(
-    message: SetCompleteLiquidationThresholdEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetCompleteLiquidationThresholdEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.completeLiquidationThreshold !== "") {
       writer.uint32(10).string(message.completeLiquidationThreshold);
     }
@@ -1223,46 +1135,43 @@ export const SetCompleteLiquidationThresholdEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetCompleteLiquidationThresholdEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetCompleteLiquidationThresholdEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetCompleteLiquidationThresholdEvent,
-    } as SetCompleteLiquidationThresholdEvent;
+    const message = createBaseSetCompleteLiquidationThresholdEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.completeLiquidationThreshold = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetCompleteLiquidationThresholdEvent {
-    const message = {
-      ...baseSetCompleteLiquidationThresholdEvent,
-    } as SetCompleteLiquidationThresholdEvent;
-    message.completeLiquidationThreshold =
-      object.completeLiquidationThreshold !== undefined &&
-      object.completeLiquidationThreshold !== null
+    return {
+      completeLiquidationThreshold: isSet(object.completeLiquidationThreshold)
         ? String(object.completeLiquidationThreshold)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+        : "",
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: SetCompleteLiquidationThresholdEvent): unknown {
@@ -1273,29 +1182,24 @@ export const SetCompleteLiquidationThresholdEvent = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetCompleteLiquidationThresholdEvent>
-  ): SetCompleteLiquidationThresholdEvent {
-    const message = {
-      ...baseSetCompleteLiquidationThresholdEvent,
-    } as SetCompleteLiquidationThresholdEvent;
-    message.completeLiquidationThreshold =
-      object.completeLiquidationThreshold ?? "";
+  create(base?: DeepPartial<SetCompleteLiquidationThresholdEvent>): SetCompleteLiquidationThresholdEvent {
+    return SetCompleteLiquidationThresholdEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetCompleteLiquidationThresholdEvent>): SetCompleteLiquidationThresholdEvent {
+    const message = createBaseSetCompleteLiquidationThresholdEvent();
+    message.completeLiquidationThreshold = object.completeLiquidationThreshold ?? "";
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseSetMinimumCloseFactorEvent: object = {
-  minimumCloseFactor: "",
-  type: "",
-};
+function createBaseSetMinimumCloseFactorEvent(): SetMinimumCloseFactorEvent {
+  return { minimumCloseFactor: "", type: "" };
+}
 
 export const SetMinimumCloseFactorEvent = {
-  encode(
-    message: SetMinimumCloseFactorEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetMinimumCloseFactorEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.minimumCloseFactor !== "") {
       writer.uint32(10).string(message.minimumCloseFactor);
     }
@@ -1305,78 +1209,68 @@ export const SetMinimumCloseFactorEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetMinimumCloseFactorEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetMinimumCloseFactorEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetMinimumCloseFactorEvent,
-    } as SetMinimumCloseFactorEvent;
+    const message = createBaseSetMinimumCloseFactorEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.minimumCloseFactor = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetMinimumCloseFactorEvent {
-    const message = {
-      ...baseSetMinimumCloseFactorEvent,
-    } as SetMinimumCloseFactorEvent;
-    message.minimumCloseFactor =
-      object.minimumCloseFactor !== undefined &&
-      object.minimumCloseFactor !== null
-        ? String(object.minimumCloseFactor)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      minimumCloseFactor: isSet(object.minimumCloseFactor) ? String(object.minimumCloseFactor) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: SetMinimumCloseFactorEvent): unknown {
     const obj: any = {};
-    message.minimumCloseFactor !== undefined &&
-      (obj.minimumCloseFactor = message.minimumCloseFactor);
+    message.minimumCloseFactor !== undefined && (obj.minimumCloseFactor = message.minimumCloseFactor);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetMinimumCloseFactorEvent>
-  ): SetMinimumCloseFactorEvent {
-    const message = {
-      ...baseSetMinimumCloseFactorEvent,
-    } as SetMinimumCloseFactorEvent;
+  create(base?: DeepPartial<SetMinimumCloseFactorEvent>): SetMinimumCloseFactorEvent {
+    return SetMinimumCloseFactorEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetMinimumCloseFactorEvent>): SetMinimumCloseFactorEvent {
+    const message = createBaseSetMinimumCloseFactorEvent();
     message.minimumCloseFactor = object.minimumCloseFactor ?? "";
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseSetSmallLiquidationSizeEvent: object = {
-  smallLiquidationSize: "",
-  type: "",
-};
+function createBaseSetSmallLiquidationSizeEvent(): SetSmallLiquidationSizeEvent {
+  return { smallLiquidationSize: "", type: "" };
+}
 
 export const SetSmallLiquidationSizeEvent = {
-  encode(
-    message: SetSmallLiquidationSizeEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetSmallLiquidationSizeEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.smallLiquidationSize !== "") {
       writer.uint32(10).string(message.smallLiquidationSize);
     }
@@ -1386,80 +1280,70 @@ export const SetSmallLiquidationSizeEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetSmallLiquidationSizeEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetSmallLiquidationSizeEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetSmallLiquidationSizeEvent,
-    } as SetSmallLiquidationSizeEvent;
+    const message = createBaseSetSmallLiquidationSizeEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.smallLiquidationSize = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetSmallLiquidationSizeEvent {
-    const message = {
-      ...baseSetSmallLiquidationSizeEvent,
-    } as SetSmallLiquidationSizeEvent;
-    message.smallLiquidationSize =
-      object.smallLiquidationSize !== undefined &&
-      object.smallLiquidationSize !== null
-        ? String(object.smallLiquidationSize)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      smallLiquidationSize: isSet(object.smallLiquidationSize) ? String(object.smallLiquidationSize) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: SetSmallLiquidationSizeEvent): unknown {
     const obj: any = {};
-    message.smallLiquidationSize !== undefined &&
-      (obj.smallLiquidationSize = message.smallLiquidationSize);
+    message.smallLiquidationSize !== undefined && (obj.smallLiquidationSize = message.smallLiquidationSize);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetSmallLiquidationSizeEvent>
-  ): SetSmallLiquidationSizeEvent {
-    const message = {
-      ...baseSetSmallLiquidationSizeEvent,
-    } as SetSmallLiquidationSizeEvent;
+  create(base?: DeepPartial<SetSmallLiquidationSizeEvent>): SetSmallLiquidationSizeEvent {
+    return SetSmallLiquidationSizeEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetSmallLiquidationSizeEvent>): SetSmallLiquidationSizeEvent {
+    const message = createBaseSetSmallLiquidationSizeEvent();
     message.smallLiquidationSize = object.smallLiquidationSize ?? "";
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseSetStalePriceGracePeriodEvent: object = { type: "" };
+function createBaseSetStalePriceGracePeriodEvent(): SetStalePriceGracePeriodEvent {
+  return { stalePriceGracePeriod: undefined, type: "" };
+}
 
 export const SetStalePriceGracePeriodEvent = {
-  encode(
-    message: SetStalePriceGracePeriodEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetStalePriceGracePeriodEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.stalePriceGracePeriod !== undefined) {
-      Duration.encode(
-        message.stalePriceGracePeriod,
-        writer.uint32(10).fork()
-      ).ldelim();
+      Duration.encode(message.stalePriceGracePeriod, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -1467,70 +1351,62 @@ export const SetStalePriceGracePeriodEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetStalePriceGracePeriodEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetStalePriceGracePeriodEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetStalePriceGracePeriodEvent,
-    } as SetStalePriceGracePeriodEvent;
+    const message = createBaseSetStalePriceGracePeriodEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.stalePriceGracePeriod = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.stalePriceGracePeriod = Duration.decode(reader, reader.uint32());
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetStalePriceGracePeriodEvent {
-    const message = {
-      ...baseSetStalePriceGracePeriodEvent,
-    } as SetStalePriceGracePeriodEvent;
-    message.stalePriceGracePeriod =
-      object.stalePriceGracePeriod !== undefined &&
-      object.stalePriceGracePeriod !== null
+    return {
+      stalePriceGracePeriod: isSet(object.stalePriceGracePeriod)
         ? Duration.fromJSON(object.stalePriceGracePeriod)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+        : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: SetStalePriceGracePeriodEvent): unknown {
     const obj: any = {};
-    message.stalePriceGracePeriod !== undefined &&
-      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
-        ? Duration.toJSON(message.stalePriceGracePeriod)
-        : undefined);
+    message.stalePriceGracePeriod !== undefined && (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
+      ? Duration.toJSON(message.stalePriceGracePeriod)
+      : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetStalePriceGracePeriodEvent>
-  ): SetStalePriceGracePeriodEvent {
-    const message = {
-      ...baseSetStalePriceGracePeriodEvent,
-    } as SetStalePriceGracePeriodEvent;
+  create(base?: DeepPartial<SetStalePriceGracePeriodEvent>): SetStalePriceGracePeriodEvent {
+    return SetStalePriceGracePeriodEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetStalePriceGracePeriodEvent>): SetStalePriceGracePeriodEvent {
+    const message = createBaseSetStalePriceGracePeriodEvent();
     message.stalePriceGracePeriod =
-      object.stalePriceGracePeriod !== undefined &&
-      object.stalePriceGracePeriod !== null
+      (object.stalePriceGracePeriod !== undefined && object.stalePriceGracePeriod !== null)
         ? Duration.fromPartial(object.stalePriceGracePeriod)
         : undefined;
     message.type = object.type ?? "";
@@ -1538,13 +1414,12 @@ export const SetStalePriceGracePeriodEvent = {
   },
 };
 
-const baseSetCdpPausedEvent: object = { cdpPaused: false, type: "" };
+function createBaseSetCdpPausedEvent(): SetCdpPausedEvent {
+  return { cdpPaused: false, type: "" };
+}
 
 export const SetCdpPausedEvent = {
-  encode(
-    message: SetCdpPausedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetCdpPausedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.cdpPaused === true) {
       writer.uint32(8).bool(message.cdpPaused);
     }
@@ -1555,37 +1430,40 @@ export const SetCdpPausedEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SetCdpPausedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSetCdpPausedEvent } as SetCdpPausedEvent;
+    const message = createBaseSetCdpPausedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.cdpPaused = reader.bool();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetCdpPausedEvent {
-    const message = { ...baseSetCdpPausedEvent } as SetCdpPausedEvent;
-    message.cdpPaused =
-      object.cdpPaused !== undefined && object.cdpPaused !== null
-        ? Boolean(object.cdpPaused)
-        : false;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      cdpPaused: isSet(object.cdpPaused) ? Boolean(object.cdpPaused) : false,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: SetCdpPausedEvent): unknown {
@@ -1595,27 +1473,24 @@ export const SetCdpPausedEvent = {
     return obj;
   },
 
+  create(base?: DeepPartial<SetCdpPausedEvent>): SetCdpPausedEvent {
+    return SetCdpPausedEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SetCdpPausedEvent>): SetCdpPausedEvent {
-    const message = { ...baseSetCdpPausedEvent } as SetCdpPausedEvent;
+    const message = createBaseSetCdpPausedEvent();
     message.cdpPaused = object.cdpPaused ?? false;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseSupplyAssetEvent: object = {
-  supplier: "",
-  denom: "",
-  amountSupplied: "",
-  cibtDenom: "",
-  amountMinted: "",
-};
+function createBaseSupplyAssetEvent(): SupplyAssetEvent {
+  return { supplier: "", denom: "", amountSupplied: "", cibtDenom: "", amountMinted: "" };
+}
 
 export const SupplyAssetEvent = {
-  encode(
-    message: SupplyAssetEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SupplyAssetEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.supplier !== "") {
       writer.uint32(10).string(message.supplier);
     }
@@ -1635,74 +1510,82 @@ export const SupplyAssetEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SupplyAssetEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSupplyAssetEvent } as SupplyAssetEvent;
+    const message = createBaseSupplyAssetEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.supplier = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amountSupplied = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.cibtDenom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.amountMinted = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SupplyAssetEvent {
-    const message = { ...baseSupplyAssetEvent } as SupplyAssetEvent;
-    message.supplier =
-      object.supplier !== undefined && object.supplier !== null
-        ? String(object.supplier)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amountSupplied =
-      object.amountSupplied !== undefined && object.amountSupplied !== null
-        ? String(object.amountSupplied)
-        : "";
-    message.cibtDenom =
-      object.cibtDenom !== undefined && object.cibtDenom !== null
-        ? String(object.cibtDenom)
-        : "";
-    message.amountMinted =
-      object.amountMinted !== undefined && object.amountMinted !== null
-        ? String(object.amountMinted)
-        : "";
-    return message;
+    return {
+      supplier: isSet(object.supplier) ? String(object.supplier) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amountSupplied: isSet(object.amountSupplied) ? String(object.amountSupplied) : "",
+      cibtDenom: isSet(object.cibtDenom) ? String(object.cibtDenom) : "",
+      amountMinted: isSet(object.amountMinted) ? String(object.amountMinted) : "",
+    };
   },
 
   toJSON(message: SupplyAssetEvent): unknown {
     const obj: any = {};
     message.supplier !== undefined && (obj.supplier = message.supplier);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.amountSupplied !== undefined &&
-      (obj.amountSupplied = message.amountSupplied);
+    message.amountSupplied !== undefined && (obj.amountSupplied = message.amountSupplied);
     message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
-    message.amountMinted !== undefined &&
-      (obj.amountMinted = message.amountMinted);
+    message.amountMinted !== undefined && (obj.amountMinted = message.amountMinted);
     return obj;
   },
 
+  create(base?: DeepPartial<SupplyAssetEvent>): SupplyAssetEvent {
+    return SupplyAssetEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SupplyAssetEvent>): SupplyAssetEvent {
-    const message = { ...baseSupplyAssetEvent } as SupplyAssetEvent;
+    const message = createBaseSupplyAssetEvent();
     message.supplier = object.supplier ?? "";
     message.denom = object.denom ?? "";
     message.amountSupplied = object.amountSupplied ?? "";
@@ -1712,19 +1595,12 @@ export const SupplyAssetEvent = {
   },
 };
 
-const baseWithdrawAssetEvent: object = {
-  withdrawer: "",
-  denom: "",
-  amountWithdrawed: "",
-  cibtDenom: "",
-  amountBurned: "",
-};
+function createBaseWithdrawAssetEvent(): WithdrawAssetEvent {
+  return { withdrawer: "", denom: "", amountWithdrawed: "", cibtDenom: "", amountBurned: "" };
+}
 
 export const WithdrawAssetEvent = {
-  encode(
-    message: WithdrawAssetEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: WithdrawAssetEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.withdrawer !== "") {
       writer.uint32(10).string(message.withdrawer);
     }
@@ -1744,74 +1620,82 @@ export const WithdrawAssetEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawAssetEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseWithdrawAssetEvent } as WithdrawAssetEvent;
+    const message = createBaseWithdrawAssetEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.withdrawer = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amountWithdrawed = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.cibtDenom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.amountBurned = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): WithdrawAssetEvent {
-    const message = { ...baseWithdrawAssetEvent } as WithdrawAssetEvent;
-    message.withdrawer =
-      object.withdrawer !== undefined && object.withdrawer !== null
-        ? String(object.withdrawer)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amountWithdrawed =
-      object.amountWithdrawed !== undefined && object.amountWithdrawed !== null
-        ? String(object.amountWithdrawed)
-        : "";
-    message.cibtDenom =
-      object.cibtDenom !== undefined && object.cibtDenom !== null
-        ? String(object.cibtDenom)
-        : "";
-    message.amountBurned =
-      object.amountBurned !== undefined && object.amountBurned !== null
-        ? String(object.amountBurned)
-        : "";
-    return message;
+    return {
+      withdrawer: isSet(object.withdrawer) ? String(object.withdrawer) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amountWithdrawed: isSet(object.amountWithdrawed) ? String(object.amountWithdrawed) : "",
+      cibtDenom: isSet(object.cibtDenom) ? String(object.cibtDenom) : "",
+      amountBurned: isSet(object.amountBurned) ? String(object.amountBurned) : "",
+    };
   },
 
   toJSON(message: WithdrawAssetEvent): unknown {
     const obj: any = {};
     message.withdrawer !== undefined && (obj.withdrawer = message.withdrawer);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.amountWithdrawed !== undefined &&
-      (obj.amountWithdrawed = message.amountWithdrawed);
+    message.amountWithdrawed !== undefined && (obj.amountWithdrawed = message.amountWithdrawed);
     message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
-    message.amountBurned !== undefined &&
-      (obj.amountBurned = message.amountBurned);
+    message.amountBurned !== undefined && (obj.amountBurned = message.amountBurned);
     return obj;
   },
 
+  create(base?: DeepPartial<WithdrawAssetEvent>): WithdrawAssetEvent {
+    return WithdrawAssetEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<WithdrawAssetEvent>): WithdrawAssetEvent {
-    const message = { ...baseWithdrawAssetEvent } as WithdrawAssetEvent;
+    const message = createBaseWithdrawAssetEvent();
     message.withdrawer = object.withdrawer ?? "";
     message.denom = object.denom ?? "";
     message.amountWithdrawed = object.amountWithdrawed ?? "";
@@ -1821,20 +1705,19 @@ export const WithdrawAssetEvent = {
   },
 };
 
-const baseBorrowAssetEvent: object = {
-  borrower: "",
-  denom: "",
-  amountBorrowed: "",
-  debtValue: "",
-  collateralValue: "",
-  initialCumulativeInterestMultiplier: "",
-};
+function createBaseBorrowAssetEvent(): BorrowAssetEvent {
+  return {
+    borrower: "",
+    denom: "",
+    amountBorrowed: "",
+    debtValue: "",
+    collateralValue: "",
+    initialCumulativeInterestMultiplier: "",
+  };
+}
 
 export const BorrowAssetEvent = {
-  encode(
-    message: BorrowAssetEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BorrowAssetEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.borrower !== "") {
       writer.uint32(10).string(message.borrower);
     }
@@ -1857,111 +1740,118 @@ export const BorrowAssetEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BorrowAssetEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBorrowAssetEvent } as BorrowAssetEvent;
+    const message = createBaseBorrowAssetEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.borrower = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amountBorrowed = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.debtValue = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.collateralValue = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.initialCumulativeInterestMultiplier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BorrowAssetEvent {
-    const message = { ...baseBorrowAssetEvent } as BorrowAssetEvent;
-    message.borrower =
-      object.borrower !== undefined && object.borrower !== null
-        ? String(object.borrower)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amountBorrowed =
-      object.amountBorrowed !== undefined && object.amountBorrowed !== null
-        ? String(object.amountBorrowed)
-        : "";
-    message.debtValue =
-      object.debtValue !== undefined && object.debtValue !== null
-        ? String(object.debtValue)
-        : "";
-    message.collateralValue =
-      object.collateralValue !== undefined && object.collateralValue !== null
-        ? String(object.collateralValue)
-        : "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier !== undefined &&
-      object.initialCumulativeInterestMultiplier !== null
+    return {
+      borrower: isSet(object.borrower) ? String(object.borrower) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amountBorrowed: isSet(object.amountBorrowed) ? String(object.amountBorrowed) : "",
+      debtValue: isSet(object.debtValue) ? String(object.debtValue) : "",
+      collateralValue: isSet(object.collateralValue) ? String(object.collateralValue) : "",
+      initialCumulativeInterestMultiplier: isSet(object.initialCumulativeInterestMultiplier)
         ? String(object.initialCumulativeInterestMultiplier)
-        : "";
-    return message;
+        : "",
+    };
   },
 
   toJSON(message: BorrowAssetEvent): unknown {
     const obj: any = {};
     message.borrower !== undefined && (obj.borrower = message.borrower);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.amountBorrowed !== undefined &&
-      (obj.amountBorrowed = message.amountBorrowed);
+    message.amountBorrowed !== undefined && (obj.amountBorrowed = message.amountBorrowed);
     message.debtValue !== undefined && (obj.debtValue = message.debtValue);
-    message.collateralValue !== undefined &&
-      (obj.collateralValue = message.collateralValue);
+    message.collateralValue !== undefined && (obj.collateralValue = message.collateralValue);
     message.initialCumulativeInterestMultiplier !== undefined &&
-      (obj.initialCumulativeInterestMultiplier =
-        message.initialCumulativeInterestMultiplier);
+      (obj.initialCumulativeInterestMultiplier = message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
+  create(base?: DeepPartial<BorrowAssetEvent>): BorrowAssetEvent {
+    return BorrowAssetEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BorrowAssetEvent>): BorrowAssetEvent {
-    const message = { ...baseBorrowAssetEvent } as BorrowAssetEvent;
+    const message = createBaseBorrowAssetEvent();
     message.borrower = object.borrower ?? "";
     message.denom = object.denom ?? "";
     message.amountBorrowed = object.amountBorrowed ?? "";
     message.debtValue = object.debtValue ?? "";
     message.collateralValue = object.collateralValue ?? "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier ?? "";
+    message.initialCumulativeInterestMultiplier = object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };
 
-const baseRepayAssetEvent: object = {
-  repayer: "",
-  debtor: "",
-  denom: "",
-  principalRepaid: "",
-  interestRepaid: "",
-  debtValue: "",
-  collateralValue: "",
-};
+function createBaseRepayAssetEvent(): RepayAssetEvent {
+  return {
+    repayer: "",
+    debtor: "",
+    denom: "",
+    principalRepaid: "",
+    interestRepaid: "",
+    debtValue: "",
+    collateralValue: "",
+  };
+}
 
 export const RepayAssetEvent = {
-  encode(
-    message: RepayAssetEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RepayAssetEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.repayer !== "") {
       writer.uint32(10).string(message.repayer);
     }
@@ -1987,72 +1877,80 @@ export const RepayAssetEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RepayAssetEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRepayAssetEvent } as RepayAssetEvent;
+    const message = createBaseRepayAssetEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.repayer = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.debtor = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.principalRepaid = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.interestRepaid = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.debtValue = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.collateralValue = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RepayAssetEvent {
-    const message = { ...baseRepayAssetEvent } as RepayAssetEvent;
-    message.repayer =
-      object.repayer !== undefined && object.repayer !== null
-        ? String(object.repayer)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.principalRepaid =
-      object.principalRepaid !== undefined && object.principalRepaid !== null
-        ? String(object.principalRepaid)
-        : "";
-    message.interestRepaid =
-      object.interestRepaid !== undefined && object.interestRepaid !== null
-        ? String(object.interestRepaid)
-        : "";
-    message.debtValue =
-      object.debtValue !== undefined && object.debtValue !== null
-        ? String(object.debtValue)
-        : "";
-    message.collateralValue =
-      object.collateralValue !== undefined && object.collateralValue !== null
-        ? String(object.collateralValue)
-        : "";
-    return message;
+    return {
+      repayer: isSet(object.repayer) ? String(object.repayer) : "",
+      debtor: isSet(object.debtor) ? String(object.debtor) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      principalRepaid: isSet(object.principalRepaid) ? String(object.principalRepaid) : "",
+      interestRepaid: isSet(object.interestRepaid) ? String(object.interestRepaid) : "",
+      debtValue: isSet(object.debtValue) ? String(object.debtValue) : "",
+      collateralValue: isSet(object.collateralValue) ? String(object.collateralValue) : "",
+    };
   },
 
   toJSON(message: RepayAssetEvent): unknown {
@@ -2060,18 +1958,19 @@ export const RepayAssetEvent = {
     message.repayer !== undefined && (obj.repayer = message.repayer);
     message.debtor !== undefined && (obj.debtor = message.debtor);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.principalRepaid !== undefined &&
-      (obj.principalRepaid = message.principalRepaid);
-    message.interestRepaid !== undefined &&
-      (obj.interestRepaid = message.interestRepaid);
+    message.principalRepaid !== undefined && (obj.principalRepaid = message.principalRepaid);
+    message.interestRepaid !== undefined && (obj.interestRepaid = message.interestRepaid);
     message.debtValue !== undefined && (obj.debtValue = message.debtValue);
-    message.collateralValue !== undefined &&
-      (obj.collateralValue = message.collateralValue);
+    message.collateralValue !== undefined && (obj.collateralValue = message.collateralValue);
     return obj;
   },
 
+  create(base?: DeepPartial<RepayAssetEvent>): RepayAssetEvent {
+    return RepayAssetEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RepayAssetEvent>): RepayAssetEvent {
-    const message = { ...baseRepayAssetEvent } as RepayAssetEvent;
+    const message = createBaseRepayAssetEvent();
     message.repayer = object.repayer ?? "";
     message.debtor = object.debtor ?? "";
     message.denom = object.denom ?? "";
@@ -2083,19 +1982,12 @@ export const RepayAssetEvent = {
   },
 };
 
-const baseLockCollateralEvent: object = {
-  locker: "",
-  cibtDenom: "",
-  amountLocked: "",
-  debtValue: "",
-  collateralValue: "",
-};
+function createBaseLockCollateralEvent(): LockCollateralEvent {
+  return { locker: "", cibtDenom: "", amountLocked: "", debtValue: "", collateralValue: "" };
+}
 
 export const LockCollateralEvent = {
-  encode(
-    message: LockCollateralEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LockCollateralEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.locker !== "") {
       writer.uint32(10).string(message.locker);
     }
@@ -2115,74 +2007,82 @@ export const LockCollateralEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LockCollateralEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLockCollateralEvent } as LockCollateralEvent;
+    const message = createBaseLockCollateralEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.locker = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.cibtDenom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amountLocked = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.debtValue = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.collateralValue = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LockCollateralEvent {
-    const message = { ...baseLockCollateralEvent } as LockCollateralEvent;
-    message.locker =
-      object.locker !== undefined && object.locker !== null
-        ? String(object.locker)
-        : "";
-    message.cibtDenom =
-      object.cibtDenom !== undefined && object.cibtDenom !== null
-        ? String(object.cibtDenom)
-        : "";
-    message.amountLocked =
-      object.amountLocked !== undefined && object.amountLocked !== null
-        ? String(object.amountLocked)
-        : "";
-    message.debtValue =
-      object.debtValue !== undefined && object.debtValue !== null
-        ? String(object.debtValue)
-        : "";
-    message.collateralValue =
-      object.collateralValue !== undefined && object.collateralValue !== null
-        ? String(object.collateralValue)
-        : "";
-    return message;
+    return {
+      locker: isSet(object.locker) ? String(object.locker) : "",
+      cibtDenom: isSet(object.cibtDenom) ? String(object.cibtDenom) : "",
+      amountLocked: isSet(object.amountLocked) ? String(object.amountLocked) : "",
+      debtValue: isSet(object.debtValue) ? String(object.debtValue) : "",
+      collateralValue: isSet(object.collateralValue) ? String(object.collateralValue) : "",
+    };
   },
 
   toJSON(message: LockCollateralEvent): unknown {
     const obj: any = {};
     message.locker !== undefined && (obj.locker = message.locker);
     message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
-    message.amountLocked !== undefined &&
-      (obj.amountLocked = message.amountLocked);
+    message.amountLocked !== undefined && (obj.amountLocked = message.amountLocked);
     message.debtValue !== undefined && (obj.debtValue = message.debtValue);
-    message.collateralValue !== undefined &&
-      (obj.collateralValue = message.collateralValue);
+    message.collateralValue !== undefined && (obj.collateralValue = message.collateralValue);
     return obj;
   },
 
+  create(base?: DeepPartial<LockCollateralEvent>): LockCollateralEvent {
+    return LockCollateralEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<LockCollateralEvent>): LockCollateralEvent {
-    const message = { ...baseLockCollateralEvent } as LockCollateralEvent;
+    const message = createBaseLockCollateralEvent();
     message.locker = object.locker ?? "";
     message.cibtDenom = object.cibtDenom ?? "";
     message.amountLocked = object.amountLocked ?? "";
@@ -2192,19 +2092,12 @@ export const LockCollateralEvent = {
   },
 };
 
-const baseUnlockCollateralEvent: object = {
-  unlocker: "",
-  cibtDenom: "",
-  amountUnlocked: "",
-  debtValue: "",
-  collateralValue: "",
-};
+function createBaseUnlockCollateralEvent(): UnlockCollateralEvent {
+  return { unlocker: "", cibtDenom: "", amountUnlocked: "", debtValue: "", collateralValue: "" };
+}
 
 export const UnlockCollateralEvent = {
-  encode(
-    message: UnlockCollateralEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UnlockCollateralEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.unlocker !== "") {
       writer.uint32(10).string(message.unlocker);
     }
@@ -2223,80 +2116,83 @@ export const UnlockCollateralEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UnlockCollateralEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UnlockCollateralEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnlockCollateralEvent } as UnlockCollateralEvent;
+    const message = createBaseUnlockCollateralEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.unlocker = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.cibtDenom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amountUnlocked = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.debtValue = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.collateralValue = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UnlockCollateralEvent {
-    const message = { ...baseUnlockCollateralEvent } as UnlockCollateralEvent;
-    message.unlocker =
-      object.unlocker !== undefined && object.unlocker !== null
-        ? String(object.unlocker)
-        : "";
-    message.cibtDenom =
-      object.cibtDenom !== undefined && object.cibtDenom !== null
-        ? String(object.cibtDenom)
-        : "";
-    message.amountUnlocked =
-      object.amountUnlocked !== undefined && object.amountUnlocked !== null
-        ? String(object.amountUnlocked)
-        : "";
-    message.debtValue =
-      object.debtValue !== undefined && object.debtValue !== null
-        ? String(object.debtValue)
-        : "";
-    message.collateralValue =
-      object.collateralValue !== undefined && object.collateralValue !== null
-        ? String(object.collateralValue)
-        : "";
-    return message;
+    return {
+      unlocker: isSet(object.unlocker) ? String(object.unlocker) : "",
+      cibtDenom: isSet(object.cibtDenom) ? String(object.cibtDenom) : "",
+      amountUnlocked: isSet(object.amountUnlocked) ? String(object.amountUnlocked) : "",
+      debtValue: isSet(object.debtValue) ? String(object.debtValue) : "",
+      collateralValue: isSet(object.collateralValue) ? String(object.collateralValue) : "",
+    };
   },
 
   toJSON(message: UnlockCollateralEvent): unknown {
     const obj: any = {};
     message.unlocker !== undefined && (obj.unlocker = message.unlocker);
     message.cibtDenom !== undefined && (obj.cibtDenom = message.cibtDenom);
-    message.amountUnlocked !== undefined &&
-      (obj.amountUnlocked = message.amountUnlocked);
+    message.amountUnlocked !== undefined && (obj.amountUnlocked = message.amountUnlocked);
     message.debtValue !== undefined && (obj.debtValue = message.debtValue);
-    message.collateralValue !== undefined &&
-      (obj.collateralValue = message.collateralValue);
+    message.collateralValue !== undefined && (obj.collateralValue = message.collateralValue);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UnlockCollateralEvent>
-  ): UnlockCollateralEvent {
-    const message = { ...baseUnlockCollateralEvent } as UnlockCollateralEvent;
+  create(base?: DeepPartial<UnlockCollateralEvent>): UnlockCollateralEvent {
+    return UnlockCollateralEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UnlockCollateralEvent>): UnlockCollateralEvent {
+    const message = createBaseUnlockCollateralEvent();
     message.unlocker = object.unlocker ?? "";
     message.cibtDenom = object.cibtDenom ?? "";
     message.amountUnlocked = object.amountUnlocked ?? "";
@@ -2306,13 +2202,12 @@ export const UnlockCollateralEvent = {
   },
 };
 
-const baseUpdateDebtInfoEvent: object = { type: "" };
+function createBaseUpdateDebtInfoEvent(): UpdateDebtInfoEvent {
+  return { debtInfo: undefined, type: "" };
+}
 
 export const UpdateDebtInfoEvent = {
-  encode(
-    message: UpdateDebtInfoEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateDebtInfoEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.debtInfo !== undefined) {
       DebtInfo.encode(message.debtInfo, writer.uint32(10).fork()).ldelim();
     }
@@ -2323,72 +2218,71 @@ export const UpdateDebtInfoEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UpdateDebtInfoEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateDebtInfoEvent } as UpdateDebtInfoEvent;
+    const message = createBaseUpdateDebtInfoEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.debtInfo = DebtInfo.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateDebtInfoEvent {
-    const message = { ...baseUpdateDebtInfoEvent } as UpdateDebtInfoEvent;
-    message.debtInfo =
-      object.debtInfo !== undefined && object.debtInfo !== null
-        ? DebtInfo.fromJSON(object.debtInfo)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      debtInfo: isSet(object.debtInfo) ? DebtInfo.fromJSON(object.debtInfo) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: UpdateDebtInfoEvent): unknown {
     const obj: any = {};
-    message.debtInfo !== undefined &&
-      (obj.debtInfo = message.debtInfo
-        ? DebtInfo.toJSON(message.debtInfo)
-        : undefined);
+    message.debtInfo !== undefined && (obj.debtInfo = message.debtInfo ? DebtInfo.toJSON(message.debtInfo) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
+  create(base?: DeepPartial<UpdateDebtInfoEvent>): UpdateDebtInfoEvent {
+    return UpdateDebtInfoEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UpdateDebtInfoEvent>): UpdateDebtInfoEvent {
-    const message = { ...baseUpdateDebtInfoEvent } as UpdateDebtInfoEvent;
-    message.debtInfo =
-      object.debtInfo !== undefined && object.debtInfo !== null
-        ? DebtInfo.fromPartial(object.debtInfo)
-        : undefined;
+    const message = createBaseUpdateDebtInfoEvent();
+    message.debtInfo = (object.debtInfo !== undefined && object.debtInfo !== null)
+      ? DebtInfo.fromPartial(object.debtInfo)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseUpdateStablecoinDebtInfoEvent: object = { type: "" };
+function createBaseUpdateStablecoinDebtInfoEvent(): UpdateStablecoinDebtInfoEvent {
+  return { stablecoinDebtInfo: undefined, type: "" };
+}
 
 export const UpdateStablecoinDebtInfoEvent = {
-  encode(
-    message: UpdateStablecoinDebtInfoEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateStablecoinDebtInfoEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.stablecoinDebtInfo !== undefined) {
-      StablecoinDebtInfo.encode(
-        message.stablecoinDebtInfo,
-        writer.uint32(10).fork()
-      ).ldelim();
+      StablecoinDebtInfo.encode(message.stablecoinDebtInfo, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -2396,91 +2290,81 @@ export const UpdateStablecoinDebtInfoEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateStablecoinDebtInfoEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateStablecoinDebtInfoEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdateStablecoinDebtInfoEvent,
-    } as UpdateStablecoinDebtInfoEvent;
+    const message = createBaseUpdateStablecoinDebtInfoEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.stablecoinDebtInfo = StablecoinDebtInfo.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.stablecoinDebtInfo = StablecoinDebtInfo.decode(reader, reader.uint32());
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateStablecoinDebtInfoEvent {
-    const message = {
-      ...baseUpdateStablecoinDebtInfoEvent,
-    } as UpdateStablecoinDebtInfoEvent;
-    message.stablecoinDebtInfo =
-      object.stablecoinDebtInfo !== undefined &&
-      object.stablecoinDebtInfo !== null
+    return {
+      stablecoinDebtInfo: isSet(object.stablecoinDebtInfo)
         ? StablecoinDebtInfo.fromJSON(object.stablecoinDebtInfo)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+        : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: UpdateStablecoinDebtInfoEvent): unknown {
     const obj: any = {};
-    message.stablecoinDebtInfo !== undefined &&
-      (obj.stablecoinDebtInfo = message.stablecoinDebtInfo
-        ? StablecoinDebtInfo.toJSON(message.stablecoinDebtInfo)
-        : undefined);
+    message.stablecoinDebtInfo !== undefined && (obj.stablecoinDebtInfo = message.stablecoinDebtInfo
+      ? StablecoinDebtInfo.toJSON(message.stablecoinDebtInfo)
+      : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdateStablecoinDebtInfoEvent>
-  ): UpdateStablecoinDebtInfoEvent {
-    const message = {
-      ...baseUpdateStablecoinDebtInfoEvent,
-    } as UpdateStablecoinDebtInfoEvent;
-    message.stablecoinDebtInfo =
-      object.stablecoinDebtInfo !== undefined &&
-      object.stablecoinDebtInfo !== null
-        ? StablecoinDebtInfo.fromPartial(object.stablecoinDebtInfo)
-        : undefined;
+  create(base?: DeepPartial<UpdateStablecoinDebtInfoEvent>): UpdateStablecoinDebtInfoEvent {
+    return UpdateStablecoinDebtInfoEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UpdateStablecoinDebtInfoEvent>): UpdateStablecoinDebtInfoEvent {
+    const message = createBaseUpdateStablecoinDebtInfoEvent();
+    message.stablecoinDebtInfo = (object.stablecoinDebtInfo !== undefined && object.stablecoinDebtInfo !== null)
+      ? StablecoinDebtInfo.fromPartial(object.stablecoinDebtInfo)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseMintStablecoinEvent: object = {
-  minter: "",
-  denom: "",
-  amountMinted: "",
-  debtValue: "",
-  collateralValue: "",
-  initialCumulativeInterestMultiplier: "",
-};
+function createBaseMintStablecoinEvent(): MintStablecoinEvent {
+  return {
+    minter: "",
+    denom: "",
+    amountMinted: "",
+    debtValue: "",
+    collateralValue: "",
+    initialCumulativeInterestMultiplier: "",
+  };
+}
 
 export const MintStablecoinEvent = {
-  encode(
-    message: MintStablecoinEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MintStablecoinEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.minter !== "") {
       writer.uint32(10).string(message.minter);
     }
@@ -2503,111 +2387,118 @@ export const MintStablecoinEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MintStablecoinEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMintStablecoinEvent } as MintStablecoinEvent;
+    const message = createBaseMintStablecoinEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.minter = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amountMinted = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.debtValue = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.collateralValue = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.initialCumulativeInterestMultiplier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MintStablecoinEvent {
-    const message = { ...baseMintStablecoinEvent } as MintStablecoinEvent;
-    message.minter =
-      object.minter !== undefined && object.minter !== null
-        ? String(object.minter)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amountMinted =
-      object.amountMinted !== undefined && object.amountMinted !== null
-        ? String(object.amountMinted)
-        : "";
-    message.debtValue =
-      object.debtValue !== undefined && object.debtValue !== null
-        ? String(object.debtValue)
-        : "";
-    message.collateralValue =
-      object.collateralValue !== undefined && object.collateralValue !== null
-        ? String(object.collateralValue)
-        : "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier !== undefined &&
-      object.initialCumulativeInterestMultiplier !== null
+    return {
+      minter: isSet(object.minter) ? String(object.minter) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amountMinted: isSet(object.amountMinted) ? String(object.amountMinted) : "",
+      debtValue: isSet(object.debtValue) ? String(object.debtValue) : "",
+      collateralValue: isSet(object.collateralValue) ? String(object.collateralValue) : "",
+      initialCumulativeInterestMultiplier: isSet(object.initialCumulativeInterestMultiplier)
         ? String(object.initialCumulativeInterestMultiplier)
-        : "";
-    return message;
+        : "",
+    };
   },
 
   toJSON(message: MintStablecoinEvent): unknown {
     const obj: any = {};
     message.minter !== undefined && (obj.minter = message.minter);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.amountMinted !== undefined &&
-      (obj.amountMinted = message.amountMinted);
+    message.amountMinted !== undefined && (obj.amountMinted = message.amountMinted);
     message.debtValue !== undefined && (obj.debtValue = message.debtValue);
-    message.collateralValue !== undefined &&
-      (obj.collateralValue = message.collateralValue);
+    message.collateralValue !== undefined && (obj.collateralValue = message.collateralValue);
     message.initialCumulativeInterestMultiplier !== undefined &&
-      (obj.initialCumulativeInterestMultiplier =
-        message.initialCumulativeInterestMultiplier);
+      (obj.initialCumulativeInterestMultiplier = message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
+  create(base?: DeepPartial<MintStablecoinEvent>): MintStablecoinEvent {
+    return MintStablecoinEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MintStablecoinEvent>): MintStablecoinEvent {
-    const message = { ...baseMintStablecoinEvent } as MintStablecoinEvent;
+    const message = createBaseMintStablecoinEvent();
     message.minter = object.minter ?? "";
     message.denom = object.denom ?? "";
     message.amountMinted = object.amountMinted ?? "";
     message.debtValue = object.debtValue ?? "";
     message.collateralValue = object.collateralValue ?? "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier ?? "";
+    message.initialCumulativeInterestMultiplier = object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };
 
-const baseReturnStablecoinEvent: object = {
-  returner: "",
-  debtor: "",
-  interestDenom: "",
-  interestRepaid: "",
-  principalRepaid: "",
-  debtValue: "",
-  collateralValue: "",
-};
+function createBaseReturnStablecoinEvent(): ReturnStablecoinEvent {
+  return {
+    returner: "",
+    debtor: "",
+    interestDenom: "",
+    interestRepaid: "",
+    principalRepaid: "",
+    debtValue: "",
+    collateralValue: "",
+  };
+}
 
 export const ReturnStablecoinEvent = {
-  encode(
-    message: ReturnStablecoinEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ReturnStablecoinEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.returner !== "") {
       writer.uint32(10).string(message.returner);
     }
@@ -2632,98 +2523,101 @@ export const ReturnStablecoinEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ReturnStablecoinEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ReturnStablecoinEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseReturnStablecoinEvent } as ReturnStablecoinEvent;
+    const message = createBaseReturnStablecoinEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.returner = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.debtor = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.interestDenom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.interestRepaid = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.principalRepaid = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.debtValue = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.collateralValue = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ReturnStablecoinEvent {
-    const message = { ...baseReturnStablecoinEvent } as ReturnStablecoinEvent;
-    message.returner =
-      object.returner !== undefined && object.returner !== null
-        ? String(object.returner)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.interestDenom =
-      object.interestDenom !== undefined && object.interestDenom !== null
-        ? String(object.interestDenom)
-        : "";
-    message.interestRepaid =
-      object.interestRepaid !== undefined && object.interestRepaid !== null
-        ? String(object.interestRepaid)
-        : "";
-    message.principalRepaid =
-      object.principalRepaid !== undefined && object.principalRepaid !== null
-        ? String(object.principalRepaid)
-        : "";
-    message.debtValue =
-      object.debtValue !== undefined && object.debtValue !== null
-        ? String(object.debtValue)
-        : "";
-    message.collateralValue =
-      object.collateralValue !== undefined && object.collateralValue !== null
-        ? String(object.collateralValue)
-        : "";
-    return message;
+    return {
+      returner: isSet(object.returner) ? String(object.returner) : "",
+      debtor: isSet(object.debtor) ? String(object.debtor) : "",
+      interestDenom: isSet(object.interestDenom) ? String(object.interestDenom) : "",
+      interestRepaid: isSet(object.interestRepaid) ? String(object.interestRepaid) : "",
+      principalRepaid: isSet(object.principalRepaid) ? String(object.principalRepaid) : "",
+      debtValue: isSet(object.debtValue) ? String(object.debtValue) : "",
+      collateralValue: isSet(object.collateralValue) ? String(object.collateralValue) : "",
+    };
   },
 
   toJSON(message: ReturnStablecoinEvent): unknown {
     const obj: any = {};
     message.returner !== undefined && (obj.returner = message.returner);
     message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.interestDenom !== undefined &&
-      (obj.interestDenom = message.interestDenom);
-    message.interestRepaid !== undefined &&
-      (obj.interestRepaid = message.interestRepaid);
-    message.principalRepaid !== undefined &&
-      (obj.principalRepaid = message.principalRepaid);
+    message.interestDenom !== undefined && (obj.interestDenom = message.interestDenom);
+    message.interestRepaid !== undefined && (obj.interestRepaid = message.interestRepaid);
+    message.principalRepaid !== undefined && (obj.principalRepaid = message.principalRepaid);
     message.debtValue !== undefined && (obj.debtValue = message.debtValue);
-    message.collateralValue !== undefined &&
-      (obj.collateralValue = message.collateralValue);
+    message.collateralValue !== undefined && (obj.collateralValue = message.collateralValue);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ReturnStablecoinEvent>
-  ): ReturnStablecoinEvent {
-    const message = { ...baseReturnStablecoinEvent } as ReturnStablecoinEvent;
+  create(base?: DeepPartial<ReturnStablecoinEvent>): ReturnStablecoinEvent {
+    return ReturnStablecoinEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ReturnStablecoinEvent>): ReturnStablecoinEvent {
+    const message = createBaseReturnStablecoinEvent();
     message.returner = object.returner ?? "";
     message.debtor = object.debtor ?? "";
     message.interestDenom = object.interestDenom ?? "";
@@ -2735,29 +2629,28 @@ export const ReturnStablecoinEvent = {
   },
 };
 
-const baseLiquidateCollateralEvent: object = {
-  liquidator: "",
-  debtor: "",
-  collateralDenom: "",
-  collateralAmountLiquidated: "",
-  collateralAmountLiquidator: "",
-  collateralAmountFee: "",
-  liquidationPrice: "",
-  marketPrice: "",
-  discount: "",
-  debtDenom: "",
-  debtAmount: "",
-  id: Long.UZERO,
-  principalAmount: "",
-  interestDenom: "",
-  interestAmount: "",
-};
+function createBaseLiquidateCollateralEvent(): LiquidateCollateralEvent {
+  return {
+    liquidator: "",
+    debtor: "",
+    collateralDenom: "",
+    collateralAmountLiquidated: "",
+    collateralAmountLiquidator: "",
+    collateralAmountFee: "",
+    liquidationPrice: "",
+    marketPrice: "",
+    discount: "",
+    debtDenom: "",
+    debtAmount: "",
+    id: Long.UZERO,
+    principalAmount: "",
+    interestDenom: "",
+    interestAmount: "",
+  };
+}
 
 export const LiquidateCollateralEvent = {
-  encode(
-    message: LiquidateCollateralEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LiquidateCollateralEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.liquidator !== "") {
       writer.uint32(10).string(message.liquidator);
     }
@@ -2806,194 +2699,191 @@ export const LiquidateCollateralEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): LiquidateCollateralEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiquidateCollateralEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseLiquidateCollateralEvent,
-    } as LiquidateCollateralEvent;
+    const message = createBaseLiquidateCollateralEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.liquidator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.debtor = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.collateralDenom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.collateralAmountLiquidated = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.collateralAmountLiquidator = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.collateralAmountFee = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.liquidationPrice = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.marketPrice = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.discount = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.debtDenom = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.debtAmount = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 96) {
+            break;
+          }
+
           message.id = reader.uint64() as Long;
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.principalAmount = reader.string();
-          break;
+          continue;
         case 14:
+          if (tag !== 114) {
+            break;
+          }
+
           message.interestDenom = reader.string();
-          break;
+          continue;
         case 15:
+          if (tag !== 122) {
+            break;
+          }
+
           message.interestAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LiquidateCollateralEvent {
-    const message = {
-      ...baseLiquidateCollateralEvent,
-    } as LiquidateCollateralEvent;
-    message.liquidator =
-      object.liquidator !== undefined && object.liquidator !== null
-        ? String(object.liquidator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.collateralAmountLiquidated =
-      object.collateralAmountLiquidated !== undefined &&
-      object.collateralAmountLiquidated !== null
+    return {
+      liquidator: isSet(object.liquidator) ? String(object.liquidator) : "",
+      debtor: isSet(object.debtor) ? String(object.debtor) : "",
+      collateralDenom: isSet(object.collateralDenom) ? String(object.collateralDenom) : "",
+      collateralAmountLiquidated: isSet(object.collateralAmountLiquidated)
         ? String(object.collateralAmountLiquidated)
-        : "";
-    message.collateralAmountLiquidator =
-      object.collateralAmountLiquidator !== undefined &&
-      object.collateralAmountLiquidator !== null
+        : "",
+      collateralAmountLiquidator: isSet(object.collateralAmountLiquidator)
         ? String(object.collateralAmountLiquidator)
-        : "";
-    message.collateralAmountFee =
-      object.collateralAmountFee !== undefined &&
-      object.collateralAmountFee !== null
-        ? String(object.collateralAmountFee)
-        : "";
-    message.liquidationPrice =
-      object.liquidationPrice !== undefined && object.liquidationPrice !== null
-        ? String(object.liquidationPrice)
-        : "";
-    message.marketPrice =
-      object.marketPrice !== undefined && object.marketPrice !== null
-        ? String(object.marketPrice)
-        : "";
-    message.discount =
-      object.discount !== undefined && object.discount !== null
-        ? String(object.discount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.principalAmount =
-      object.principalAmount !== undefined && object.principalAmount !== null
-        ? String(object.principalAmount)
-        : "";
-    message.interestDenom =
-      object.interestDenom !== undefined && object.interestDenom !== null
-        ? String(object.interestDenom)
-        : "";
-    message.interestAmount =
-      object.interestAmount !== undefined && object.interestAmount !== null
-        ? String(object.interestAmount)
-        : "";
-    return message;
+        : "",
+      collateralAmountFee: isSet(object.collateralAmountFee) ? String(object.collateralAmountFee) : "",
+      liquidationPrice: isSet(object.liquidationPrice) ? String(object.liquidationPrice) : "",
+      marketPrice: isSet(object.marketPrice) ? String(object.marketPrice) : "",
+      discount: isSet(object.discount) ? String(object.discount) : "",
+      debtDenom: isSet(object.debtDenom) ? String(object.debtDenom) : "",
+      debtAmount: isSet(object.debtAmount) ? String(object.debtAmount) : "",
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
+      principalAmount: isSet(object.principalAmount) ? String(object.principalAmount) : "",
+      interestDenom: isSet(object.interestDenom) ? String(object.interestDenom) : "",
+      interestAmount: isSet(object.interestAmount) ? String(object.interestAmount) : "",
+    };
   },
 
   toJSON(message: LiquidateCollateralEvent): unknown {
     const obj: any = {};
     message.liquidator !== undefined && (obj.liquidator = message.liquidator);
     message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
+    message.collateralDenom !== undefined && (obj.collateralDenom = message.collateralDenom);
     message.collateralAmountLiquidated !== undefined &&
       (obj.collateralAmountLiquidated = message.collateralAmountLiquidated);
     message.collateralAmountLiquidator !== undefined &&
       (obj.collateralAmountLiquidator = message.collateralAmountLiquidator);
-    message.collateralAmountFee !== undefined &&
-      (obj.collateralAmountFee = message.collateralAmountFee);
-    message.liquidationPrice !== undefined &&
-      (obj.liquidationPrice = message.liquidationPrice);
-    message.marketPrice !== undefined &&
-      (obj.marketPrice = message.marketPrice);
+    message.collateralAmountFee !== undefined && (obj.collateralAmountFee = message.collateralAmountFee);
+    message.liquidationPrice !== undefined && (obj.liquidationPrice = message.liquidationPrice);
+    message.marketPrice !== undefined && (obj.marketPrice = message.marketPrice);
     message.discount !== undefined && (obj.discount = message.discount);
     message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
     message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
-    message.principalAmount !== undefined &&
-      (obj.principalAmount = message.principalAmount);
-    message.interestDenom !== undefined &&
-      (obj.interestDenom = message.interestDenom);
-    message.interestAmount !== undefined &&
-      (obj.interestAmount = message.interestAmount);
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
+    message.principalAmount !== undefined && (obj.principalAmount = message.principalAmount);
+    message.interestDenom !== undefined && (obj.interestDenom = message.interestDenom);
+    message.interestAmount !== undefined && (obj.interestAmount = message.interestAmount);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<LiquidateCollateralEvent>
-  ): LiquidateCollateralEvent {
-    const message = {
-      ...baseLiquidateCollateralEvent,
-    } as LiquidateCollateralEvent;
+  create(base?: DeepPartial<LiquidateCollateralEvent>): LiquidateCollateralEvent {
+    return LiquidateCollateralEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<LiquidateCollateralEvent>): LiquidateCollateralEvent {
+    const message = createBaseLiquidateCollateralEvent();
     message.liquidator = object.liquidator ?? "";
     message.debtor = object.debtor ?? "";
     message.collateralDenom = object.collateralDenom ?? "";
-    message.collateralAmountLiquidated =
-      object.collateralAmountLiquidated ?? "";
-    message.collateralAmountLiquidator =
-      object.collateralAmountLiquidator ?? "";
+    message.collateralAmountLiquidated = object.collateralAmountLiquidated ?? "";
+    message.collateralAmountLiquidator = object.collateralAmountLiquidator ?? "";
     message.collateralAmountFee = object.collateralAmountFee ?? "";
     message.liquidationPrice = object.liquidationPrice ?? "";
     message.marketPrice = object.marketPrice ?? "";
     message.discount = object.discount ?? "";
     message.debtDenom = object.debtDenom ?? "";
     message.debtAmount = object.debtAmount ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
     message.principalAmount = object.principalAmount ?? "";
     message.interestDenom = object.interestDenom ?? "";
     message.interestAmount = object.interestAmount ?? "";
@@ -3001,17 +2891,12 @@ export const LiquidateCollateralEvent = {
   },
 };
 
-const baseClaimRewardEvent: object = {
-  receiver: "",
-  rewardSchemeId: "",
-  rewardClaimed: "",
-};
+function createBaseClaimRewardEvent(): ClaimRewardEvent {
+  return { receiver: "", rewardSchemeId: "", rewardClaimed: "" };
+}
 
 export const ClaimRewardEvent = {
-  encode(
-    message: ClaimRewardEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ClaimRewardEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.receiver !== "") {
       writer.uint32(10).string(message.receiver);
     }
@@ -3025,58 +2910,64 @@ export const ClaimRewardEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ClaimRewardEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseClaimRewardEvent } as ClaimRewardEvent;
+    const message = createBaseClaimRewardEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.rewardSchemeId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.rewardClaimed = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ClaimRewardEvent {
-    const message = { ...baseClaimRewardEvent } as ClaimRewardEvent;
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.rewardSchemeId =
-      object.rewardSchemeId !== undefined && object.rewardSchemeId !== null
-        ? String(object.rewardSchemeId)
-        : "";
-    message.rewardClaimed =
-      object.rewardClaimed !== undefined && object.rewardClaimed !== null
-        ? String(object.rewardClaimed)
-        : "";
-    return message;
+    return {
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      rewardSchemeId: isSet(object.rewardSchemeId) ? String(object.rewardSchemeId) : "",
+      rewardClaimed: isSet(object.rewardClaimed) ? String(object.rewardClaimed) : "",
+    };
   },
 
   toJSON(message: ClaimRewardEvent): unknown {
     const obj: any = {};
     message.receiver !== undefined && (obj.receiver = message.receiver);
-    message.rewardSchemeId !== undefined &&
-      (obj.rewardSchemeId = message.rewardSchemeId);
-    message.rewardClaimed !== undefined &&
-      (obj.rewardClaimed = message.rewardClaimed);
+    message.rewardSchemeId !== undefined && (obj.rewardSchemeId = message.rewardSchemeId);
+    message.rewardClaimed !== undefined && (obj.rewardClaimed = message.rewardClaimed);
     return obj;
   },
 
+  create(base?: DeepPartial<ClaimRewardEvent>): ClaimRewardEvent {
+    return ClaimRewardEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ClaimRewardEvent>): ClaimRewardEvent {
-    const message = { ...baseClaimRewardEvent } as ClaimRewardEvent;
+    const message = createBaseClaimRewardEvent();
     message.receiver = object.receiver ?? "";
     message.rewardSchemeId = object.rewardSchemeId ?? "";
     message.rewardClaimed = object.rewardClaimed ?? "";
@@ -3084,13 +2975,12 @@ export const ClaimRewardEvent = {
   },
 };
 
-const baseRewardDebtEvent: object = { type: "" };
+function createBaseRewardDebtEvent(): RewardDebtEvent {
+  return { rewardDebt: undefined, type: "" };
+}
 
 export const RewardDebtEvent = {
-  encode(
-    message: RewardDebtEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RewardDebtEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rewardDebt !== undefined) {
       RewardDebt.encode(message.rewardDebt, writer.uint32(10).fork()).ldelim();
     }
@@ -3101,72 +2991,72 @@ export const RewardDebtEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RewardDebtEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRewardDebtEvent } as RewardDebtEvent;
+    const message = createBaseRewardDebtEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.rewardDebt = RewardDebt.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RewardDebtEvent {
-    const message = { ...baseRewardDebtEvent } as RewardDebtEvent;
-    message.rewardDebt =
-      object.rewardDebt !== undefined && object.rewardDebt !== null
-        ? RewardDebt.fromJSON(object.rewardDebt)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      rewardDebt: isSet(object.rewardDebt) ? RewardDebt.fromJSON(object.rewardDebt) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: RewardDebtEvent): unknown {
     const obj: any = {};
     message.rewardDebt !== undefined &&
-      (obj.rewardDebt = message.rewardDebt
-        ? RewardDebt.toJSON(message.rewardDebt)
-        : undefined);
+      (obj.rewardDebt = message.rewardDebt ? RewardDebt.toJSON(message.rewardDebt) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
+  create(base?: DeepPartial<RewardDebtEvent>): RewardDebtEvent {
+    return RewardDebtEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RewardDebtEvent>): RewardDebtEvent {
-    const message = { ...baseRewardDebtEvent } as RewardDebtEvent;
-    message.rewardDebt =
-      object.rewardDebt !== undefined && object.rewardDebt !== null
-        ? RewardDebt.fromPartial(object.rewardDebt)
-        : undefined;
+    const message = createBaseRewardDebtEvent();
+    message.rewardDebt = (object.rewardDebt !== undefined && object.rewardDebt !== null)
+      ? RewardDebt.fromPartial(object.rewardDebt)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseRewardSchemeEvent: object = { type: "" };
+function createBaseRewardSchemeEvent(): RewardSchemeEvent {
+  return { rewardScheme: undefined, type: "" };
+}
 
 export const RewardSchemeEvent = {
-  encode(
-    message: RewardSchemeEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RewardSchemeEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rewardScheme !== undefined) {
-      RewardScheme.encode(
-        message.rewardScheme,
-        writer.uint32(10).fork()
-      ).ldelim();
+      RewardScheme.encode(message.rewardScheme, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -3175,72 +3065,72 @@ export const RewardSchemeEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RewardSchemeEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRewardSchemeEvent } as RewardSchemeEvent;
+    const message = createBaseRewardSchemeEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.rewardScheme = RewardScheme.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RewardSchemeEvent {
-    const message = { ...baseRewardSchemeEvent } as RewardSchemeEvent;
-    message.rewardScheme =
-      object.rewardScheme !== undefined && object.rewardScheme !== null
-        ? RewardScheme.fromJSON(object.rewardScheme)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      rewardScheme: isSet(object.rewardScheme) ? RewardScheme.fromJSON(object.rewardScheme) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: RewardSchemeEvent): unknown {
     const obj: any = {};
     message.rewardScheme !== undefined &&
-      (obj.rewardScheme = message.rewardScheme
-        ? RewardScheme.toJSON(message.rewardScheme)
-        : undefined);
+      (obj.rewardScheme = message.rewardScheme ? RewardScheme.toJSON(message.rewardScheme) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
+  create(base?: DeepPartial<RewardSchemeEvent>): RewardSchemeEvent {
+    return RewardSchemeEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RewardSchemeEvent>): RewardSchemeEvent {
-    const message = { ...baseRewardSchemeEvent } as RewardSchemeEvent;
-    message.rewardScheme =
-      object.rewardScheme !== undefined && object.rewardScheme !== null
-        ? RewardScheme.fromPartial(object.rewardScheme)
-        : undefined;
+    const message = createBaseRewardSchemeEvent();
+    message.rewardScheme = (object.rewardScheme !== undefined && object.rewardScheme !== null)
+      ? RewardScheme.fromPartial(object.rewardScheme)
+      : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseAddReserveEvent: object = { amountAdded: "" };
+function createBaseAddReserveEvent(): AddReserveEvent {
+  return { rewardScheme: undefined, amountAdded: "" };
+}
 
 export const AddReserveEvent = {
-  encode(
-    message: AddReserveEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AddReserveEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rewardScheme !== undefined) {
-      RewardScheme.encode(
-        message.rewardScheme,
-        writer.uint32(10).fork()
-      ).ldelim();
+      RewardScheme.encode(message.rewardScheme, writer.uint32(10).fork()).ldelim();
     }
     if (message.amountAdded !== "") {
       writer.uint32(18).string(message.amountAdded);
@@ -3249,73 +3139,72 @@ export const AddReserveEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AddReserveEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAddReserveEvent } as AddReserveEvent;
+    const message = createBaseAddReserveEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.rewardScheme = RewardScheme.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amountAdded = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AddReserveEvent {
-    const message = { ...baseAddReserveEvent } as AddReserveEvent;
-    message.rewardScheme =
-      object.rewardScheme !== undefined && object.rewardScheme !== null
-        ? RewardScheme.fromJSON(object.rewardScheme)
-        : undefined;
-    message.amountAdded =
-      object.amountAdded !== undefined && object.amountAdded !== null
-        ? String(object.amountAdded)
-        : "";
-    return message;
+    return {
+      rewardScheme: isSet(object.rewardScheme) ? RewardScheme.fromJSON(object.rewardScheme) : undefined,
+      amountAdded: isSet(object.amountAdded) ? String(object.amountAdded) : "",
+    };
   },
 
   toJSON(message: AddReserveEvent): unknown {
     const obj: any = {};
     message.rewardScheme !== undefined &&
-      (obj.rewardScheme = message.rewardScheme
-        ? RewardScheme.toJSON(message.rewardScheme)
-        : undefined);
-    message.amountAdded !== undefined &&
-      (obj.amountAdded = message.amountAdded);
+      (obj.rewardScheme = message.rewardScheme ? RewardScheme.toJSON(message.rewardScheme) : undefined);
+    message.amountAdded !== undefined && (obj.amountAdded = message.amountAdded);
     return obj;
   },
 
+  create(base?: DeepPartial<AddReserveEvent>): AddReserveEvent {
+    return AddReserveEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<AddReserveEvent>): AddReserveEvent {
-    const message = { ...baseAddReserveEvent } as AddReserveEvent;
-    message.rewardScheme =
-      object.rewardScheme !== undefined && object.rewardScheme !== null
-        ? RewardScheme.fromPartial(object.rewardScheme)
-        : undefined;
+    const message = createBaseAddReserveEvent();
+    message.rewardScheme = (object.rewardScheme !== undefined && object.rewardScheme !== null)
+      ? RewardScheme.fromPartial(object.rewardScheme)
+      : undefined;
     message.amountAdded = object.amountAdded ?? "";
     return message;
   },
 };
 
-const baseRefundReserveEvent: object = { amountRefunded: "" };
+function createBaseRefundReserveEvent(): RefundReserveEvent {
+  return { rewardScheme: undefined, amountRefunded: "" };
+}
 
 export const RefundReserveEvent = {
-  encode(
-    message: RefundReserveEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RefundReserveEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rewardScheme !== undefined) {
-      RewardScheme.encode(
-        message.rewardScheme,
-        writer.uint32(10).fork()
-      ).ldelim();
+      RewardScheme.encode(message.rewardScheme, writer.uint32(10).fork()).ldelim();
     }
     if (message.amountRefunded !== "") {
       writer.uint32(18).string(message.amountRefunded);
@@ -3324,82 +3213,77 @@ export const RefundReserveEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RefundReserveEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRefundReserveEvent } as RefundReserveEvent;
+    const message = createBaseRefundReserveEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.rewardScheme = RewardScheme.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amountRefunded = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RefundReserveEvent {
-    const message = { ...baseRefundReserveEvent } as RefundReserveEvent;
-    message.rewardScheme =
-      object.rewardScheme !== undefined && object.rewardScheme !== null
-        ? RewardScheme.fromJSON(object.rewardScheme)
-        : undefined;
-    message.amountRefunded =
-      object.amountRefunded !== undefined && object.amountRefunded !== null
-        ? String(object.amountRefunded)
-        : "";
-    return message;
+    return {
+      rewardScheme: isSet(object.rewardScheme) ? RewardScheme.fromJSON(object.rewardScheme) : undefined,
+      amountRefunded: isSet(object.amountRefunded) ? String(object.amountRefunded) : "",
+    };
   },
 
   toJSON(message: RefundReserveEvent): unknown {
     const obj: any = {};
     message.rewardScheme !== undefined &&
-      (obj.rewardScheme = message.rewardScheme
-        ? RewardScheme.toJSON(message.rewardScheme)
-        : undefined);
-    message.amountRefunded !== undefined &&
-      (obj.amountRefunded = message.amountRefunded);
+      (obj.rewardScheme = message.rewardScheme ? RewardScheme.toJSON(message.rewardScheme) : undefined);
+    message.amountRefunded !== undefined && (obj.amountRefunded = message.amountRefunded);
     return obj;
   },
 
+  create(base?: DeepPartial<RefundReserveEvent>): RefundReserveEvent {
+    return RefundReserveEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RefundReserveEvent>): RefundReserveEvent {
-    const message = { ...baseRefundReserveEvent } as RefundReserveEvent;
-    message.rewardScheme =
-      object.rewardScheme !== undefined && object.rewardScheme !== null
-        ? RewardScheme.fromPartial(object.rewardScheme)
-        : undefined;
+    const message = createBaseRefundReserveEvent();
+    message.rewardScheme = (object.rewardScheme !== undefined && object.rewardScheme !== null)
+      ? RewardScheme.fromPartial(object.rewardScheme)
+      : undefined;
     message.amountRefunded = object.amountRefunded ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

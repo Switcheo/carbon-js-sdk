@@ -23,7 +23,8 @@ export interface MsgConvertCoin {
 }
 
 /** MsgConvertCoinResponse returns no fields */
-export interface MsgConvertCoinResponse {}
+export interface MsgConvertCoinResponse {
+}
 
 /**
  * MsgConvertERC20 defines a Msg to convert a ERC20 token to a native Cosmos
@@ -47,7 +48,8 @@ export interface MsgConvertERC20 {
 }
 
 /** MsgConvertERC20Response returns no fields */
-export interface MsgConvertERC20Response {}
+export interface MsgConvertERC20Response {
+}
 
 /**
  * MsgUpdateParams is the Msg/UpdateParams request type for Erc20 parameters.
@@ -65,7 +67,8 @@ export interface MsgUpdateParams {
  * MsgUpdateParams message.
  * Since: cosmos-sdk 0.47
  */
-export interface MsgUpdateParamsResponse {}
+export interface MsgUpdateParamsResponse {
+}
 
 /**
  * MsgRegisterToken defines a Msg to register an existing token on the token
@@ -101,7 +104,8 @@ export interface MsgUpdateERC20Enabled {
   isEnabled: boolean;
 }
 
-export interface MsgUpdateERC20EnabledResponse {}
+export interface MsgUpdateERC20EnabledResponse {
+}
 
 /** MsgRegisterERC20 defines a Msg */
 export interface MsgUpdateEVMHookEnabled {
@@ -109,15 +113,15 @@ export interface MsgUpdateEVMHookEnabled {
   isEnabled: boolean;
 }
 
-export interface MsgUpdateEVMHookEnabledResponse {}
+export interface MsgUpdateEVMHookEnabledResponse {
+}
 
-const baseMsgConvertCoin: object = { receiver: "", sender: "" };
+function createBaseMsgConvertCoin(): MsgConvertCoin {
+  return { coin: undefined, receiver: "", sender: "" };
+}
 
 export const MsgConvertCoin = {
-  encode(
-    message: MsgConvertCoin,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgConvertCoin, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.coin !== undefined) {
       Coin.encode(message.coin, writer.uint32(10).fork()).ldelim();
     }
@@ -131,98 +135,98 @@ export const MsgConvertCoin = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgConvertCoin {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgConvertCoin } as MsgConvertCoin;
+    const message = createBaseMsgConvertCoin();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.coin = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgConvertCoin {
-    const message = { ...baseMsgConvertCoin } as MsgConvertCoin;
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromJSON(object.coin)
-        : undefined;
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    return message;
+    return {
+      coin: isSet(object.coin) ? Coin.fromJSON(object.coin) : undefined,
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+    };
   },
 
   toJSON(message: MsgConvertCoin): unknown {
     const obj: any = {};
-    message.coin !== undefined &&
-      (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
+    message.coin !== undefined && (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
     message.receiver !== undefined && (obj.receiver = message.receiver);
     message.sender !== undefined && (obj.sender = message.sender);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgConvertCoin>): MsgConvertCoin {
+    return MsgConvertCoin.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgConvertCoin>): MsgConvertCoin {
-    const message = { ...baseMsgConvertCoin } as MsgConvertCoin;
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromPartial(object.coin)
-        : undefined;
+    const message = createBaseMsgConvertCoin();
+    message.coin = (object.coin !== undefined && object.coin !== null) ? Coin.fromPartial(object.coin) : undefined;
     message.receiver = object.receiver ?? "";
     message.sender = object.sender ?? "";
     return message;
   },
 };
 
-const baseMsgConvertCoinResponse: object = {};
+function createBaseMsgConvertCoinResponse(): MsgConvertCoinResponse {
+  return {};
+}
 
 export const MsgConvertCoinResponse = {
-  encode(
-    _: MsgConvertCoinResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgConvertCoinResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgConvertCoinResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgConvertCoinResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgConvertCoinResponse } as MsgConvertCoinResponse;
+    const message = createBaseMsgConvertCoinResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgConvertCoinResponse {
-    const message = { ...baseMsgConvertCoinResponse } as MsgConvertCoinResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgConvertCoinResponse): unknown {
@@ -230,24 +234,22 @@ export const MsgConvertCoinResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgConvertCoinResponse>): MsgConvertCoinResponse {
+    return MsgConvertCoinResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<MsgConvertCoinResponse>): MsgConvertCoinResponse {
-    const message = { ...baseMsgConvertCoinResponse } as MsgConvertCoinResponse;
+    const message = createBaseMsgConvertCoinResponse();
     return message;
   },
 };
 
-const baseMsgConvertERC20: object = {
-  contractAddress: "",
-  amount: "",
-  receiver: "",
-  sender: "",
-};
+function createBaseMsgConvertERC20(): MsgConvertERC20 {
+  return { contractAddress: "", amount: "", receiver: "", sender: "" };
+}
 
 export const MsgConvertERC20 = {
-  encode(
-    message: MsgConvertERC20,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgConvertERC20, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.contractAddress !== "") {
       writer.uint32(10).string(message.contractAddress);
     }
@@ -264,65 +266,73 @@ export const MsgConvertERC20 = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgConvertERC20 {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgConvertERC20 } as MsgConvertERC20;
+    const message = createBaseMsgConvertERC20();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contractAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgConvertERC20 {
-    const message = { ...baseMsgConvertERC20 } as MsgConvertERC20;
-    message.contractAddress =
-      object.contractAddress !== undefined && object.contractAddress !== null
-        ? String(object.contractAddress)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    return message;
+    return {
+      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+    };
   },
 
   toJSON(message: MsgConvertERC20): unknown {
     const obj: any = {};
-    message.contractAddress !== undefined &&
-      (obj.contractAddress = message.contractAddress);
+    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     message.amount !== undefined && (obj.amount = message.amount);
     message.receiver !== undefined && (obj.receiver = message.receiver);
     message.sender !== undefined && (obj.sender = message.sender);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgConvertERC20>): MsgConvertERC20 {
+    return MsgConvertERC20.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgConvertERC20>): MsgConvertERC20 {
-    const message = { ...baseMsgConvertERC20 } as MsgConvertERC20;
+    const message = createBaseMsgConvertERC20();
     message.contractAddress = object.contractAddress ?? "";
     message.amount = object.amount ?? "";
     message.receiver = object.receiver ?? "";
@@ -331,41 +341,33 @@ export const MsgConvertERC20 = {
   },
 };
 
-const baseMsgConvertERC20Response: object = {};
+function createBaseMsgConvertERC20Response(): MsgConvertERC20Response {
+  return {};
+}
 
 export const MsgConvertERC20Response = {
-  encode(
-    _: MsgConvertERC20Response,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgConvertERC20Response, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgConvertERC20Response {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgConvertERC20Response {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgConvertERC20Response,
-    } as MsgConvertERC20Response;
+    const message = createBaseMsgConvertERC20Response();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgConvertERC20Response {
-    const message = {
-      ...baseMsgConvertERC20Response,
-    } as MsgConvertERC20Response;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgConvertERC20Response): unknown {
@@ -373,23 +375,22 @@ export const MsgConvertERC20Response = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgConvertERC20Response>
-  ): MsgConvertERC20Response {
-    const message = {
-      ...baseMsgConvertERC20Response,
-    } as MsgConvertERC20Response;
+  create(base?: DeepPartial<MsgConvertERC20Response>): MsgConvertERC20Response {
+    return MsgConvertERC20Response.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgConvertERC20Response>): MsgConvertERC20Response {
+    const message = createBaseMsgConvertERC20Response();
     return message;
   },
 };
 
-const baseMsgUpdateParams: object = { authority: "" };
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return { authority: "", params: undefined };
+}
 
 export const MsgUpdateParams = {
-  encode(
-    message: MsgUpdateParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -400,95 +401,90 @@ export const MsgUpdateParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.params = ParamsToUpdate.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? ParamsToUpdate.fromJSON(object.params)
-        : undefined;
-    return message;
+    return {
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      params: isSet(object.params) ? ParamsToUpdate.fromJSON(object.params) : undefined,
+    };
   },
 
   toJSON(message: MsgUpdateParams): unknown {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
-    message.params !== undefined &&
-      (obj.params = message.params
-        ? ParamsToUpdate.toJSON(message.params)
-        : undefined);
+    message.params !== undefined && (obj.params = message.params ? ParamsToUpdate.toJSON(message.params) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     message.authority = object.authority ?? "";
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? ParamsToUpdate.fromPartial(object.params)
-        : undefined;
+    message.params = (object.params !== undefined && object.params !== null)
+      ? ParamsToUpdate.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
 
-const baseMsgUpdateParamsResponse: object = {};
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
 
 export const MsgUpdateParamsResponse = {
-  encode(
-    _: MsgUpdateParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+    const message = createBaseMsgUpdateParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateParamsResponse): unknown {
@@ -496,23 +492,22 @@ export const MsgUpdateParamsResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateParamsResponse>
-  ): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
     return message;
   },
 };
 
-const baseMsgRegisterToken: object = { creator: "", denom: "" };
+function createBaseMsgRegisterToken(): MsgRegisterToken {
+  return { creator: "", denom: "" };
+}
 
 export const MsgRegisterToken = {
-  encode(
-    message: MsgRegisterToken,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRegisterToken, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -523,37 +518,40 @@ export const MsgRegisterToken = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterToken {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRegisterToken } as MsgRegisterToken;
+    const message = createBaseMsgRegisterToken();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRegisterToken {
-    const message = { ...baseMsgRegisterToken } as MsgRegisterToken;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+    };
   },
 
   toJSON(message: MsgRegisterToken): unknown {
@@ -563,86 +561,80 @@ export const MsgRegisterToken = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgRegisterToken>): MsgRegisterToken {
+    return MsgRegisterToken.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgRegisterToken>): MsgRegisterToken {
-    const message = { ...baseMsgRegisterToken } as MsgRegisterToken;
+    const message = createBaseMsgRegisterToken();
     message.creator = object.creator ?? "";
     message.denom = object.denom ?? "";
     return message;
   },
 };
 
-const baseMsgRegisterTokenResponse: object = { contractAddress: "" };
+function createBaseMsgRegisterTokenResponse(): MsgRegisterTokenResponse {
+  return { contractAddress: "" };
+}
 
 export const MsgRegisterTokenResponse = {
-  encode(
-    message: MsgRegisterTokenResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRegisterTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.contractAddress !== "") {
       writer.uint32(10).string(message.contractAddress);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRegisterTokenResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRegisterTokenResponse,
-    } as MsgRegisterTokenResponse;
+    const message = createBaseMsgRegisterTokenResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contractAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRegisterTokenResponse {
-    const message = {
-      ...baseMsgRegisterTokenResponse,
-    } as MsgRegisterTokenResponse;
-    message.contractAddress =
-      object.contractAddress !== undefined && object.contractAddress !== null
-        ? String(object.contractAddress)
-        : "";
-    return message;
+    return { contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "" };
   },
 
   toJSON(message: MsgRegisterTokenResponse): unknown {
     const obj: any = {};
-    message.contractAddress !== undefined &&
-      (obj.contractAddress = message.contractAddress);
+    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgRegisterTokenResponse>
-  ): MsgRegisterTokenResponse {
-    const message = {
-      ...baseMsgRegisterTokenResponse,
-    } as MsgRegisterTokenResponse;
+  create(base?: DeepPartial<MsgRegisterTokenResponse>): MsgRegisterTokenResponse {
+    return MsgRegisterTokenResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgRegisterTokenResponse>): MsgRegisterTokenResponse {
+    const message = createBaseMsgRegisterTokenResponse();
     message.contractAddress = object.contractAddress ?? "";
     return message;
   },
 };
 
-const baseMsgRegisterERC20: object = { creator: "", contractAddress: "" };
+function createBaseMsgRegisterERC20(): MsgRegisterERC20 {
+  return { creator: "", contractAddress: "" };
+}
 
 export const MsgRegisterERC20 = {
-  encode(
-    message: MsgRegisterERC20,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRegisterERC20, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -653,100 +645,98 @@ export const MsgRegisterERC20 = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterERC20 {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRegisterERC20 } as MsgRegisterERC20;
+    const message = createBaseMsgRegisterERC20();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contractAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRegisterERC20 {
-    const message = { ...baseMsgRegisterERC20 } as MsgRegisterERC20;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.contractAddress =
-      object.contractAddress !== undefined && object.contractAddress !== null
-        ? String(object.contractAddress)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
+    };
   },
 
   toJSON(message: MsgRegisterERC20): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.contractAddress !== undefined &&
-      (obj.contractAddress = message.contractAddress);
+    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgRegisterERC20>): MsgRegisterERC20 {
+    return MsgRegisterERC20.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgRegisterERC20>): MsgRegisterERC20 {
-    const message = { ...baseMsgRegisterERC20 } as MsgRegisterERC20;
+    const message = createBaseMsgRegisterERC20();
     message.creator = object.creator ?? "";
     message.contractAddress = object.contractAddress ?? "";
     return message;
   },
 };
 
-const baseMsgRegisterERC20Response: object = { denom: "" };
+function createBaseMsgRegisterERC20Response(): MsgRegisterERC20Response {
+  return { denom: "" };
+}
 
 export const MsgRegisterERC20Response = {
-  encode(
-    message: MsgRegisterERC20Response,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRegisterERC20Response, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRegisterERC20Response {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterERC20Response {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRegisterERC20Response,
-    } as MsgRegisterERC20Response;
+    const message = createBaseMsgRegisterERC20Response();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRegisterERC20Response {
-    const message = {
-      ...baseMsgRegisterERC20Response,
-    } as MsgRegisterERC20Response;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    return message;
+    return { denom: isSet(object.denom) ? String(object.denom) : "" };
   },
 
   toJSON(message: MsgRegisterERC20Response): unknown {
@@ -755,24 +745,23 @@ export const MsgRegisterERC20Response = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgRegisterERC20Response>
-  ): MsgRegisterERC20Response {
-    const message = {
-      ...baseMsgRegisterERC20Response,
-    } as MsgRegisterERC20Response;
+  create(base?: DeepPartial<MsgRegisterERC20Response>): MsgRegisterERC20Response {
+    return MsgRegisterERC20Response.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgRegisterERC20Response>): MsgRegisterERC20Response {
+    const message = createBaseMsgRegisterERC20Response();
     message.denom = object.denom ?? "";
     return message;
   },
 };
 
-const baseMsgUpdateERC20Enabled: object = { creator: "", isEnabled: false };
+function createBaseMsgUpdateERC20Enabled(): MsgUpdateERC20Enabled {
+  return { creator: "", isEnabled: false };
+}
 
 export const MsgUpdateERC20Enabled = {
-  encode(
-    message: MsgUpdateERC20Enabled,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateERC20Enabled, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -782,41 +771,41 @@ export const MsgUpdateERC20Enabled = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateERC20Enabled {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateERC20Enabled {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateERC20Enabled } as MsgUpdateERC20Enabled;
+    const message = createBaseMsgUpdateERC20Enabled();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.isEnabled = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateERC20Enabled {
-    const message = { ...baseMsgUpdateERC20Enabled } as MsgUpdateERC20Enabled;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.isEnabled =
-      object.isEnabled !== undefined && object.isEnabled !== null
-        ? Boolean(object.isEnabled)
-        : false;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      isEnabled: isSet(object.isEnabled) ? Boolean(object.isEnabled) : false,
+    };
   },
 
   toJSON(message: MsgUpdateERC20Enabled): unknown {
@@ -826,51 +815,45 @@ export const MsgUpdateERC20Enabled = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgUpdateERC20Enabled>
-  ): MsgUpdateERC20Enabled {
-    const message = { ...baseMsgUpdateERC20Enabled } as MsgUpdateERC20Enabled;
+  create(base?: DeepPartial<MsgUpdateERC20Enabled>): MsgUpdateERC20Enabled {
+    return MsgUpdateERC20Enabled.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateERC20Enabled>): MsgUpdateERC20Enabled {
+    const message = createBaseMsgUpdateERC20Enabled();
     message.creator = object.creator ?? "";
     message.isEnabled = object.isEnabled ?? false;
     return message;
   },
 };
 
-const baseMsgUpdateERC20EnabledResponse: object = {};
+function createBaseMsgUpdateERC20EnabledResponse(): MsgUpdateERC20EnabledResponse {
+  return {};
+}
 
 export const MsgUpdateERC20EnabledResponse = {
-  encode(
-    _: MsgUpdateERC20EnabledResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateERC20EnabledResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateERC20EnabledResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateERC20EnabledResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateERC20EnabledResponse,
-    } as MsgUpdateERC20EnabledResponse;
+    const message = createBaseMsgUpdateERC20EnabledResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateERC20EnabledResponse {
-    const message = {
-      ...baseMsgUpdateERC20EnabledResponse,
-    } as MsgUpdateERC20EnabledResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateERC20EnabledResponse): unknown {
@@ -878,23 +861,22 @@ export const MsgUpdateERC20EnabledResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateERC20EnabledResponse>
-  ): MsgUpdateERC20EnabledResponse {
-    const message = {
-      ...baseMsgUpdateERC20EnabledResponse,
-    } as MsgUpdateERC20EnabledResponse;
+  create(base?: DeepPartial<MsgUpdateERC20EnabledResponse>): MsgUpdateERC20EnabledResponse {
+    return MsgUpdateERC20EnabledResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateERC20EnabledResponse>): MsgUpdateERC20EnabledResponse {
+    const message = createBaseMsgUpdateERC20EnabledResponse();
     return message;
   },
 };
 
-const baseMsgUpdateEVMHookEnabled: object = { creator: "", isEnabled: false };
+function createBaseMsgUpdateEVMHookEnabled(): MsgUpdateEVMHookEnabled {
+  return { creator: "", isEnabled: false };
+}
 
 export const MsgUpdateEVMHookEnabled = {
-  encode(
-    message: MsgUpdateEVMHookEnabled,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateEVMHookEnabled, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -904,45 +886,41 @@ export const MsgUpdateEVMHookEnabled = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateEVMHookEnabled {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateEVMHookEnabled {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateEVMHookEnabled,
-    } as MsgUpdateEVMHookEnabled;
+    const message = createBaseMsgUpdateEVMHookEnabled();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.isEnabled = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateEVMHookEnabled {
-    const message = {
-      ...baseMsgUpdateEVMHookEnabled,
-    } as MsgUpdateEVMHookEnabled;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.isEnabled =
-      object.isEnabled !== undefined && object.isEnabled !== null
-        ? Boolean(object.isEnabled)
-        : false;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      isEnabled: isSet(object.isEnabled) ? Boolean(object.isEnabled) : false,
+    };
   },
 
   toJSON(message: MsgUpdateEVMHookEnabled): unknown {
@@ -952,53 +930,45 @@ export const MsgUpdateEVMHookEnabled = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgUpdateEVMHookEnabled>
-  ): MsgUpdateEVMHookEnabled {
-    const message = {
-      ...baseMsgUpdateEVMHookEnabled,
-    } as MsgUpdateEVMHookEnabled;
+  create(base?: DeepPartial<MsgUpdateEVMHookEnabled>): MsgUpdateEVMHookEnabled {
+    return MsgUpdateEVMHookEnabled.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateEVMHookEnabled>): MsgUpdateEVMHookEnabled {
+    const message = createBaseMsgUpdateEVMHookEnabled();
     message.creator = object.creator ?? "";
     message.isEnabled = object.isEnabled ?? false;
     return message;
   },
 };
 
-const baseMsgUpdateEVMHookEnabledResponse: object = {};
+function createBaseMsgUpdateEVMHookEnabledResponse(): MsgUpdateEVMHookEnabledResponse {
+  return {};
+}
 
 export const MsgUpdateEVMHookEnabledResponse = {
-  encode(
-    _: MsgUpdateEVMHookEnabledResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateEVMHookEnabledResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateEVMHookEnabledResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateEVMHookEnabledResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateEVMHookEnabledResponse,
-    } as MsgUpdateEVMHookEnabledResponse;
+    const message = createBaseMsgUpdateEVMHookEnabledResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateEVMHookEnabledResponse {
-    const message = {
-      ...baseMsgUpdateEVMHookEnabledResponse,
-    } as MsgUpdateEVMHookEnabledResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateEVMHookEnabledResponse): unknown {
@@ -1006,12 +976,12 @@ export const MsgUpdateEVMHookEnabledResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateEVMHookEnabledResponse>
-  ): MsgUpdateEVMHookEnabledResponse {
-    const message = {
-      ...baseMsgUpdateEVMHookEnabledResponse,
-    } as MsgUpdateEVMHookEnabledResponse;
+  create(base?: DeepPartial<MsgUpdateEVMHookEnabledResponse>): MsgUpdateEVMHookEnabledResponse {
+    return MsgUpdateEVMHookEnabledResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateEVMHookEnabledResponse>): MsgUpdateEVMHookEnabledResponse {
+    const message = createBaseMsgUpdateEVMHookEnabledResponse();
     return message;
   },
 };
@@ -1039,13 +1009,9 @@ export interface Msg {
    */
   ConvertERC20(request: MsgConvertERC20): Promise<MsgConvertERC20Response>;
   /** UpdateERC20Enabled updates whether erc20 module functions are enabled */
-  UpdateERC20Enabled(
-    request: MsgUpdateERC20Enabled
-  ): Promise<MsgUpdateERC20EnabledResponse>;
+  UpdateERC20Enabled(request: MsgUpdateERC20Enabled): Promise<MsgUpdateERC20EnabledResponse>;
   /** UpdateEVMHookEnabled updates whether erc20 module functions are enabled */
-  UpdateEVMHookEnabled(
-    request: MsgUpdateEVMHookEnabled
-  ): Promise<MsgUpdateEVMHookEnabledResponse>;
+  UpdateEVMHookEnabled(request: MsgUpdateEVMHookEnabled): Promise<MsgUpdateEVMHookEnabledResponse>;
   /**
    * UpdateParams defined a governance operation for updating the x/erc20 module
    * parameters. The authority is hard-coded to the Cosmos SDK x/gov module
@@ -1056,7 +1022,9 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.erc20.Msg";
     this.rpc = rpc;
     this.RegisterToken = this.RegisterToken.bind(this);
     this.RegisterERC20 = this.RegisterERC20.bind(this);
@@ -1068,122 +1036,64 @@ export class MsgClientImpl implements Msg {
   }
   RegisterToken(request: MsgRegisterToken): Promise<MsgRegisterTokenResponse> {
     const data = MsgRegisterToken.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.erc20.Msg",
-      "RegisterToken",
-      data
-    );
-    return promise.then((data) =>
-      MsgRegisterTokenResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "RegisterToken", data);
+    return promise.then((data) => MsgRegisterTokenResponse.decode(_m0.Reader.create(data)));
   }
 
   RegisterERC20(request: MsgRegisterERC20): Promise<MsgRegisterERC20Response> {
     const data = MsgRegisterERC20.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.erc20.Msg",
-      "RegisterERC20",
-      data
-    );
-    return promise.then((data) =>
-      MsgRegisterERC20Response.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "RegisterERC20", data);
+    return promise.then((data) => MsgRegisterERC20Response.decode(_m0.Reader.create(data)));
   }
 
   ConvertCoin(request: MsgConvertCoin): Promise<MsgConvertCoinResponse> {
     const data = MsgConvertCoin.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.erc20.Msg",
-      "ConvertCoin",
-      data
-    );
-    return promise.then((data) =>
-      MsgConvertCoinResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "ConvertCoin", data);
+    return promise.then((data) => MsgConvertCoinResponse.decode(_m0.Reader.create(data)));
   }
 
   ConvertERC20(request: MsgConvertERC20): Promise<MsgConvertERC20Response> {
     const data = MsgConvertERC20.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.erc20.Msg",
-      "ConvertERC20",
-      data
-    );
-    return promise.then((data) =>
-      MsgConvertERC20Response.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "ConvertERC20", data);
+    return promise.then((data) => MsgConvertERC20Response.decode(_m0.Reader.create(data)));
   }
 
-  UpdateERC20Enabled(
-    request: MsgUpdateERC20Enabled
-  ): Promise<MsgUpdateERC20EnabledResponse> {
+  UpdateERC20Enabled(request: MsgUpdateERC20Enabled): Promise<MsgUpdateERC20EnabledResponse> {
     const data = MsgUpdateERC20Enabled.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.erc20.Msg",
-      "UpdateERC20Enabled",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateERC20EnabledResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateERC20Enabled", data);
+    return promise.then((data) => MsgUpdateERC20EnabledResponse.decode(_m0.Reader.create(data)));
   }
 
-  UpdateEVMHookEnabled(
-    request: MsgUpdateEVMHookEnabled
-  ): Promise<MsgUpdateEVMHookEnabledResponse> {
+  UpdateEVMHookEnabled(request: MsgUpdateEVMHookEnabled): Promise<MsgUpdateEVMHookEnabledResponse> {
     const data = MsgUpdateEVMHookEnabled.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.erc20.Msg",
-      "UpdateEVMHookEnabled",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateEVMHookEnabledResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateEVMHookEnabled", data);
+    return promise.then((data) => MsgUpdateEVMHookEnabledResponse.decode(_m0.Reader.create(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.erc20.Msg",
-      "UpdateParams",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateParams", data);
+    return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

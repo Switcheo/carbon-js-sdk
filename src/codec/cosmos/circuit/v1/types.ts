@@ -77,8 +77,9 @@ export function permissions_LevelToJSON(object: Permissions_Level): string {
       return "LEVEL_ALL_MSGS";
     case Permissions_Level.LEVEL_SUPER_ADMIN:
       return "LEVEL_SUPER_ADMIN";
+    case Permissions_Level.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -94,13 +95,12 @@ export interface GenesisState {
   disabledTypeUrls: string[];
 }
 
-const basePermissions: object = { level: 0, limitTypeUrls: "" };
+function createBasePermissions(): Permissions {
+  return { level: 0, limitTypeUrls: [] };
+}
 
 export const Permissions = {
-  encode(
-    message: Permissions,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Permissions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.level !== 0) {
       writer.uint32(8).int32(message.level);
     }
@@ -111,43 +111,45 @@ export const Permissions = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Permissions {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePermissions } as Permissions;
-    message.limitTypeUrls = [];
+    const message = createBasePermissions();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.level = reader.int32() as any;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.limitTypeUrls.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Permissions {
-    const message = { ...basePermissions } as Permissions;
-    message.level =
-      object.level !== undefined && object.level !== null
-        ? permissions_LevelFromJSON(object.level)
-        : 0;
-    message.limitTypeUrls = (object.limitTypeUrls ?? []).map((e: any) =>
-      String(e)
-    );
-    return message;
+    return {
+      level: isSet(object.level) ? permissions_LevelFromJSON(object.level) : 0,
+      limitTypeUrls: Array.isArray(object?.limitTypeUrls) ? object.limitTypeUrls.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: Permissions): unknown {
     const obj: any = {};
-    message.level !== undefined &&
-      (obj.level = permissions_LevelToJSON(message.level));
+    message.level !== undefined && (obj.level = permissions_LevelToJSON(message.level));
     if (message.limitTypeUrls) {
       obj.limitTypeUrls = message.limitTypeUrls.map((e) => e);
     } else {
@@ -156,106 +158,98 @@ export const Permissions = {
     return obj;
   },
 
+  create(base?: DeepPartial<Permissions>): Permissions {
+    return Permissions.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Permissions>): Permissions {
-    const message = { ...basePermissions } as Permissions;
+    const message = createBasePermissions();
     message.level = object.level ?? 0;
-    message.limitTypeUrls = (object.limitTypeUrls ?? []).map((e) => e);
+    message.limitTypeUrls = object.limitTypeUrls?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseGenesisAccountPermissions: object = { address: "" };
+function createBaseGenesisAccountPermissions(): GenesisAccountPermissions {
+  return { address: "", permissions: undefined };
+}
 
 export const GenesisAccountPermissions = {
-  encode(
-    message: GenesisAccountPermissions,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisAccountPermissions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
     if (message.permissions !== undefined) {
-      Permissions.encode(
-        message.permissions,
-        writer.uint32(18).fork()
-      ).ldelim();
+      Permissions.encode(message.permissions, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GenesisAccountPermissions {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisAccountPermissions {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGenesisAccountPermissions,
-    } as GenesisAccountPermissions;
+    const message = createBaseGenesisAccountPermissions();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.permissions = Permissions.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisAccountPermissions {
-    const message = {
-      ...baseGenesisAccountPermissions,
-    } as GenesisAccountPermissions;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.permissions =
-      object.permissions !== undefined && object.permissions !== null
-        ? Permissions.fromJSON(object.permissions)
-        : undefined;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      permissions: isSet(object.permissions) ? Permissions.fromJSON(object.permissions) : undefined,
+    };
   },
 
   toJSON(message: GenesisAccountPermissions): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.permissions !== undefined &&
-      (obj.permissions = message.permissions
-        ? Permissions.toJSON(message.permissions)
-        : undefined);
+      (obj.permissions = message.permissions ? Permissions.toJSON(message.permissions) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GenesisAccountPermissions>
-  ): GenesisAccountPermissions {
-    const message = {
-      ...baseGenesisAccountPermissions,
-    } as GenesisAccountPermissions;
+  create(base?: DeepPartial<GenesisAccountPermissions>): GenesisAccountPermissions {
+    return GenesisAccountPermissions.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<GenesisAccountPermissions>): GenesisAccountPermissions {
+    const message = createBaseGenesisAccountPermissions();
     message.address = object.address ?? "";
-    message.permissions =
-      object.permissions !== undefined && object.permissions !== null
-        ? Permissions.fromPartial(object.permissions)
-        : undefined;
+    message.permissions = (object.permissions !== undefined && object.permissions !== null)
+      ? Permissions.fromPartial(object.permissions)
+      : undefined;
     return message;
   },
 };
 
-const baseGenesisState: object = { disabledTypeUrls: "" };
+function createBaseGenesisState(): GenesisState {
+  return { accountPermissions: [], disabledTypeUrls: [] };
+}
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.accountPermissions) {
       GenesisAccountPermissions.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -266,39 +260,44 @@ export const GenesisState = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
-    message.accountPermissions = [];
-    message.disabledTypeUrls = [];
+    const message = createBaseGenesisState();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.accountPermissions.push(
-            GenesisAccountPermissions.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.accountPermissions.push(GenesisAccountPermissions.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.disabledTypeUrls.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.accountPermissions = (object.accountPermissions ?? []).map(
-      (e: any) => GenesisAccountPermissions.fromJSON(e)
-    );
-    message.disabledTypeUrls = (object.disabledTypeUrls ?? []).map((e: any) =>
-      String(e)
-    );
-    return message;
+    return {
+      accountPermissions: Array.isArray(object?.accountPermissions)
+        ? object.accountPermissions.map((e: any) => GenesisAccountPermissions.fromJSON(e))
+        : [],
+      disabledTypeUrls: Array.isArray(object?.disabledTypeUrls)
+        ? object.disabledTypeUrls.map((e: any) => String(e))
+        : [],
+    };
   },
 
   toJSON(message: GenesisState): unknown {
@@ -318,37 +317,31 @@ export const GenesisState = {
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisState>): GenesisState {
+    return GenesisState.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.accountPermissions = (object.accountPermissions ?? []).map((e) =>
-      GenesisAccountPermissions.fromPartial(e)
-    );
-    message.disabledTypeUrls = (object.disabledTypeUrls ?? []).map((e) => e);
+    const message = createBaseGenesisState();
+    message.accountPermissions = object.accountPermissions?.map((e) => GenesisAccountPermissions.fromPartial(e)) || [];
+    message.disabledTypeUrls = object.disabledTypeUrls?.map((e) => e) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
