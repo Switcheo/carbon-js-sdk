@@ -22,13 +22,12 @@ export interface SendAuthorization {
   allowList: string[];
 }
 
-const baseSendAuthorization: object = { allowList: "" };
+function createBaseSendAuthorization(): SendAuthorization {
+  return { spendLimit: [], allowList: [] };
+}
 
 export const SendAuthorization = {
-  encode(
-    message: SendAuthorization,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SendAuthorization, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.spendLimit) {
       Coin.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -39,43 +38,46 @@ export const SendAuthorization = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SendAuthorization {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSendAuthorization } as SendAuthorization;
-    message.spendLimit = [];
-    message.allowList = [];
+    const message = createBaseSendAuthorization();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.spendLimit.push(Coin.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.allowList.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SendAuthorization {
-    const message = { ...baseSendAuthorization } as SendAuthorization;
-    message.spendLimit = (object.spendLimit ?? []).map((e: any) =>
-      Coin.fromJSON(e)
-    );
-    message.allowList = (object.allowList ?? []).map((e: any) => String(e));
-    return message;
+    return {
+      spendLimit: Array.isArray(object?.spendLimit) ? object.spendLimit.map((e: any) => Coin.fromJSON(e)) : [],
+      allowList: Array.isArray(object?.allowList) ? object.allowList.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: SendAuthorization): unknown {
     const obj: any = {};
     if (message.spendLimit) {
-      obj.spendLimit = message.spendLimit.map((e) =>
-        e ? Coin.toJSON(e) : undefined
-      );
+      obj.spendLimit = message.spendLimit.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.spendLimit = [];
     }
@@ -87,34 +89,24 @@ export const SendAuthorization = {
     return obj;
   },
 
+  create(base?: DeepPartial<SendAuthorization>): SendAuthorization {
+    return SendAuthorization.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SendAuthorization>): SendAuthorization {
-    const message = { ...baseSendAuthorization } as SendAuthorization;
-    message.spendLimit = (object.spendLimit ?? []).map((e) =>
-      Coin.fromPartial(e)
-    );
-    message.allowList = (object.allowList ?? []).map((e) => e);
+    const message = createBaseSendAuthorization();
+    message.spendLimit = object.spendLimit?.map((e) => Coin.fromPartial(e)) || [];
+    message.allowList = object.allowList?.map((e) => e) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {

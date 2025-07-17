@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, IdentifiedClientState, ClientConsensusStates } from "./client";
+import { ClientConsensusStates, IdentifiedClientState, Params } from "./client";
 
 export const protobufPackage = "ibc.core.client.v1";
 
@@ -45,16 +45,19 @@ export interface IdentifiedGenesisMetadata {
   clientMetadata: GenesisMetadata[];
 }
 
-const baseGenesisState: object = {
-  createLocalhost: false,
-  nextClientSequence: Long.UZERO,
-};
+function createBaseGenesisState(): GenesisState {
+  return {
+    clients: [],
+    clientsConsensus: [],
+    clientsMetadata: [],
+    params: undefined,
+    createLocalhost: false,
+    nextClientSequence: Long.UZERO,
+  };
+}
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.clients) {
       IdentifiedClientState.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -77,140 +80,128 @@ export const GenesisState = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
-    message.clients = [];
-    message.clientsConsensus = [];
-    message.clientsMetadata = [];
+    const message = createBaseGenesisState();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.clients.push(
-            IdentifiedClientState.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.clients.push(IdentifiedClientState.decode(reader, reader.uint32()));
+          continue;
         case 2:
-          message.clientsConsensus.push(
-            ClientConsensusStates.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.clientsConsensus.push(ClientConsensusStates.decode(reader, reader.uint32()));
+          continue;
         case 3:
-          message.clientsMetadata.push(
-            IdentifiedGenesisMetadata.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.clientsMetadata.push(IdentifiedGenesisMetadata.decode(reader, reader.uint32()));
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.params = Params.decode(reader, reader.uint32());
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.createLocalhost = reader.bool();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.nextClientSequence = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.clients = (object.clients ?? []).map((e: any) =>
-      IdentifiedClientState.fromJSON(e)
-    );
-    message.clientsConsensus = (object.clientsConsensus ?? []).map((e: any) =>
-      ClientConsensusStates.fromJSON(e)
-    );
-    message.clientsMetadata = (object.clientsMetadata ?? []).map((e: any) =>
-      IdentifiedGenesisMetadata.fromJSON(e)
-    );
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
-        : undefined;
-    message.createLocalhost =
-      object.createLocalhost !== undefined && object.createLocalhost !== null
-        ? Boolean(object.createLocalhost)
-        : false;
-    message.nextClientSequence =
-      object.nextClientSequence !== undefined &&
-      object.nextClientSequence !== null
-        ? Long.fromString(object.nextClientSequence)
-        : Long.UZERO;
-    return message;
+    return {
+      clients: Array.isArray(object?.clients) ? object.clients.map((e: any) => IdentifiedClientState.fromJSON(e)) : [],
+      clientsConsensus: Array.isArray(object?.clientsConsensus)
+        ? object.clientsConsensus.map((e: any) => ClientConsensusStates.fromJSON(e))
+        : [],
+      clientsMetadata: Array.isArray(object?.clientsMetadata)
+        ? object.clientsMetadata.map((e: any) => IdentifiedGenesisMetadata.fromJSON(e))
+        : [],
+      params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
+      createLocalhost: isSet(object.createLocalhost) ? Boolean(object.createLocalhost) : false,
+      nextClientSequence: isSet(object.nextClientSequence) ? Long.fromValue(object.nextClientSequence) : Long.UZERO,
+    };
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
     if (message.clients) {
-      obj.clients = message.clients.map((e) =>
-        e ? IdentifiedClientState.toJSON(e) : undefined
-      );
+      obj.clients = message.clients.map((e) => e ? IdentifiedClientState.toJSON(e) : undefined);
     } else {
       obj.clients = [];
     }
     if (message.clientsConsensus) {
-      obj.clientsConsensus = message.clientsConsensus.map((e) =>
-        e ? ClientConsensusStates.toJSON(e) : undefined
-      );
+      obj.clientsConsensus = message.clientsConsensus.map((e) => e ? ClientConsensusStates.toJSON(e) : undefined);
     } else {
       obj.clientsConsensus = [];
     }
     if (message.clientsMetadata) {
-      obj.clientsMetadata = message.clientsMetadata.map((e) =>
-        e ? IdentifiedGenesisMetadata.toJSON(e) : undefined
-      );
+      obj.clientsMetadata = message.clientsMetadata.map((e) => e ? IdentifiedGenesisMetadata.toJSON(e) : undefined);
     } else {
       obj.clientsMetadata = [];
     }
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
-    message.createLocalhost !== undefined &&
-      (obj.createLocalhost = message.createLocalhost);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.createLocalhost !== undefined && (obj.createLocalhost = message.createLocalhost);
     message.nextClientSequence !== undefined &&
-      (obj.nextClientSequence = (
-        message.nextClientSequence || Long.UZERO
-      ).toString());
+      (obj.nextClientSequence = (message.nextClientSequence || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisState>): GenesisState {
+    return GenesisState.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.clients = (object.clients ?? []).map((e) =>
-      IdentifiedClientState.fromPartial(e)
-    );
-    message.clientsConsensus = (object.clientsConsensus ?? []).map((e) =>
-      ClientConsensusStates.fromPartial(e)
-    );
-    message.clientsMetadata = (object.clientsMetadata ?? []).map((e) =>
-      IdentifiedGenesisMetadata.fromPartial(e)
-    );
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+    const message = createBaseGenesisState();
+    message.clients = object.clients?.map((e) => IdentifiedClientState.fromPartial(e)) || [];
+    message.clientsConsensus = object.clientsConsensus?.map((e) => ClientConsensusStates.fromPartial(e)) || [];
+    message.clientsMetadata = object.clientsMetadata?.map((e) => IdentifiedGenesisMetadata.fromPartial(e)) || [];
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     message.createLocalhost = object.createLocalhost ?? false;
-    message.nextClientSequence =
-      object.nextClientSequence !== undefined &&
-      object.nextClientSequence !== null
-        ? Long.fromValue(object.nextClientSequence)
-        : Long.UZERO;
+    message.nextClientSequence = (object.nextClientSequence !== undefined && object.nextClientSequence !== null)
+      ? Long.fromValue(object.nextClientSequence)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseGenesisMetadata: object = {};
+function createBaseGenesisMetadata(): GenesisMetadata {
+  return { key: new Uint8Array(), value: new Uint8Array() };
+}
 
 export const GenesisMetadata = {
-  encode(
-    message: GenesisMetadata,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisMetadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key.length !== 0) {
       writer.uint32(10).bytes(message.key);
     }
@@ -221,69 +212,69 @@ export const GenesisMetadata = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisMetadata {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisMetadata } as GenesisMetadata;
-    message.key = new Uint8Array();
-    message.value = new Uint8Array();
+    const message = createBaseGenesisMetadata();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisMetadata {
-    const message = { ...baseGenesisMetadata } as GenesisMetadata;
-    message.key =
-      object.key !== undefined && object.key !== null
-        ? bytesFromBase64(object.key)
-        : new Uint8Array();
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? bytesFromBase64(object.value)
-        : new Uint8Array();
-    return message;
+    return {
+      key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
+      value: isSet(object.value) ? bytesFromBase64(object.value) : new Uint8Array(),
+    };
   },
 
   toJSON(message: GenesisMetadata): unknown {
     const obj: any = {};
     message.key !== undefined &&
-      (obj.key = base64FromBytes(
-        message.key !== undefined ? message.key : new Uint8Array()
-      ));
+      (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
     message.value !== undefined &&
-      (obj.value = base64FromBytes(
-        message.value !== undefined ? message.value : new Uint8Array()
-      ));
+      (obj.value = base64FromBytes(message.value !== undefined ? message.value : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisMetadata>): GenesisMetadata {
+    return GenesisMetadata.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisMetadata>): GenesisMetadata {
-    const message = { ...baseGenesisMetadata } as GenesisMetadata;
+    const message = createBaseGenesisMetadata();
     message.key = object.key ?? new Uint8Array();
     message.value = object.value ?? new Uint8Array();
     return message;
   },
 };
 
-const baseIdentifiedGenesisMetadata: object = { clientId: "" };
+function createBaseIdentifiedGenesisMetadata(): IdentifiedGenesisMetadata {
+  return { clientId: "", clientMetadata: [] };
+}
 
 export const IdentifiedGenesisMetadata = {
-  encode(
-    message: IdentifiedGenesisMetadata,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: IdentifiedGenesisMetadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.clientId !== "") {
       writer.uint32(10).string(message.clientId);
     }
@@ -293,72 +284,64 @@ export const IdentifiedGenesisMetadata = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): IdentifiedGenesisMetadata {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): IdentifiedGenesisMetadata {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseIdentifiedGenesisMetadata,
-    } as IdentifiedGenesisMetadata;
-    message.clientMetadata = [];
+    const message = createBaseIdentifiedGenesisMetadata();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.clientId = reader.string();
-          break;
+          continue;
         case 2:
-          message.clientMetadata.push(
-            GenesisMetadata.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.clientMetadata.push(GenesisMetadata.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): IdentifiedGenesisMetadata {
-    const message = {
-      ...baseIdentifiedGenesisMetadata,
-    } as IdentifiedGenesisMetadata;
-    message.clientId =
-      object.clientId !== undefined && object.clientId !== null
-        ? String(object.clientId)
-        : "";
-    message.clientMetadata = (object.clientMetadata ?? []).map((e: any) =>
-      GenesisMetadata.fromJSON(e)
-    );
-    return message;
+    return {
+      clientId: isSet(object.clientId) ? String(object.clientId) : "",
+      clientMetadata: Array.isArray(object?.clientMetadata)
+        ? object.clientMetadata.map((e: any) => GenesisMetadata.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: IdentifiedGenesisMetadata): unknown {
     const obj: any = {};
     message.clientId !== undefined && (obj.clientId = message.clientId);
     if (message.clientMetadata) {
-      obj.clientMetadata = message.clientMetadata.map((e) =>
-        e ? GenesisMetadata.toJSON(e) : undefined
-      );
+      obj.clientMetadata = message.clientMetadata.map((e) => e ? GenesisMetadata.toJSON(e) : undefined);
     } else {
       obj.clientMetadata = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<IdentifiedGenesisMetadata>
-  ): IdentifiedGenesisMetadata {
-    const message = {
-      ...baseIdentifiedGenesisMetadata,
-    } as IdentifiedGenesisMetadata;
+  create(base?: DeepPartial<IdentifiedGenesisMetadata>): IdentifiedGenesisMetadata {
+    return IdentifiedGenesisMetadata.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<IdentifiedGenesisMetadata>): IdentifiedGenesisMetadata {
+    const message = createBaseIdentifiedGenesisMetadata();
     message.clientId = object.clientId ?? "";
-    message.clientMetadata = (object.clientMetadata ?? []).map((e) =>
-      GenesisMetadata.fromPartial(e)
-    );
+    message.clientMetadata = object.clientMetadata?.map((e) => GenesisMetadata.fromPartial(e)) || [];
     return message;
   },
 };
@@ -366,58 +349,60 @@ export const IdentifiedGenesisMetadata = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

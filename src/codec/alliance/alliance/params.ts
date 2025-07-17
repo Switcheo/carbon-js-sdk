@@ -20,106 +20,96 @@ export interface RewardHistory {
   alliance: string;
 }
 
-const baseParams: object = {};
+function createBaseParams(): Params {
+  return { rewardDelayTime: undefined, takeRateClaimInterval: undefined, lastTakeRateClaimTime: undefined };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rewardDelayTime !== undefined) {
-      Duration.encode(
-        message.rewardDelayTime,
-        writer.uint32(10).fork()
-      ).ldelim();
+      Duration.encode(message.rewardDelayTime, writer.uint32(10).fork()).ldelim();
     }
     if (message.takeRateClaimInterval !== undefined) {
-      Duration.encode(
-        message.takeRateClaimInterval,
-        writer.uint32(18).fork()
-      ).ldelim();
+      Duration.encode(message.takeRateClaimInterval, writer.uint32(18).fork()).ldelim();
     }
     if (message.lastTakeRateClaimTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.lastTakeRateClaimTime),
-        writer.uint32(26).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.lastTakeRateClaimTime), writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.rewardDelayTime = Duration.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
-          message.takeRateClaimInterval = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.takeRateClaimInterval = Duration.decode(reader, reader.uint32());
+          continue;
         case 3:
-          message.lastTakeRateClaimTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.lastTakeRateClaimTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.rewardDelayTime =
-      object.rewardDelayTime !== undefined && object.rewardDelayTime !== null
-        ? Duration.fromJSON(object.rewardDelayTime)
-        : undefined;
-    message.takeRateClaimInterval =
-      object.takeRateClaimInterval !== undefined &&
-      object.takeRateClaimInterval !== null
+    return {
+      rewardDelayTime: isSet(object.rewardDelayTime) ? Duration.fromJSON(object.rewardDelayTime) : undefined,
+      takeRateClaimInterval: isSet(object.takeRateClaimInterval)
         ? Duration.fromJSON(object.takeRateClaimInterval)
-        : undefined;
-    message.lastTakeRateClaimTime =
-      object.lastTakeRateClaimTime !== undefined &&
-      object.lastTakeRateClaimTime !== null
+        : undefined,
+      lastTakeRateClaimTime: isSet(object.lastTakeRateClaimTime)
         ? fromJsonTimestamp(object.lastTakeRateClaimTime)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     message.rewardDelayTime !== undefined &&
-      (obj.rewardDelayTime = message.rewardDelayTime
-        ? Duration.toJSON(message.rewardDelayTime)
-        : undefined);
-    message.takeRateClaimInterval !== undefined &&
-      (obj.takeRateClaimInterval = message.takeRateClaimInterval
-        ? Duration.toJSON(message.takeRateClaimInterval)
-        : undefined);
+      (obj.rewardDelayTime = message.rewardDelayTime ? Duration.toJSON(message.rewardDelayTime) : undefined);
+    message.takeRateClaimInterval !== undefined && (obj.takeRateClaimInterval = message.takeRateClaimInterval
+      ? Duration.toJSON(message.takeRateClaimInterval)
+      : undefined);
     message.lastTakeRateClaimTime !== undefined &&
       (obj.lastTakeRateClaimTime = message.lastTakeRateClaimTime.toISOString());
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.rewardDelayTime =
-      object.rewardDelayTime !== undefined && object.rewardDelayTime !== null
-        ? Duration.fromPartial(object.rewardDelayTime)
-        : undefined;
+    const message = createBaseParams();
+    message.rewardDelayTime = (object.rewardDelayTime !== undefined && object.rewardDelayTime !== null)
+      ? Duration.fromPartial(object.rewardDelayTime)
+      : undefined;
     message.takeRateClaimInterval =
-      object.takeRateClaimInterval !== undefined &&
-      object.takeRateClaimInterval !== null
+      (object.takeRateClaimInterval !== undefined && object.takeRateClaimInterval !== null)
         ? Duration.fromPartial(object.takeRateClaimInterval)
         : undefined;
     message.lastTakeRateClaimTime = object.lastTakeRateClaimTime ?? undefined;
@@ -127,13 +117,12 @@ export const Params = {
   },
 };
 
-const baseRewardHistory: object = { denom: "", index: "", alliance: "" };
+function createBaseRewardHistory(): RewardHistory {
+  return { denom: "", index: "", alliance: "" };
+}
 
 export const RewardHistory = {
-  encode(
-    message: RewardHistory,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RewardHistory, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -147,44 +136,48 @@ export const RewardHistory = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RewardHistory {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRewardHistory } as RewardHistory;
+    const message = createBaseRewardHistory();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.index = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.alliance = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RewardHistory {
-    const message = { ...baseRewardHistory } as RewardHistory;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.index =
-      object.index !== undefined && object.index !== null
-        ? String(object.index)
-        : "";
-    message.alliance =
-      object.alliance !== undefined && object.alliance !== null
-        ? String(object.alliance)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      index: isSet(object.index) ? String(object.index) : "",
+      alliance: isSet(object.alliance) ? String(object.alliance) : "",
+    };
   },
 
   toJSON(message: RewardHistory): unknown {
@@ -195,8 +188,12 @@ export const RewardHistory = {
     return obj;
   },
 
+  create(base?: DeepPartial<RewardHistory>): RewardHistory {
+    return RewardHistory.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RewardHistory>): RewardHistory {
-    const message = { ...baseRewardHistory } as RewardHistory;
+    const message = createBaseRewardHistory();
     message.denom = object.denom ?? "";
     message.index = object.index ?? "";
     message.alliance = object.alliance ?? "";
@@ -204,24 +201,12 @@ export const RewardHistory = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -231,8 +216,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -253,4 +238,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

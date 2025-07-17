@@ -1,11 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Order, DBOrder } from "./order";
-import {
-  PageRequest,
-  PageResponse,
-} from "../../../cosmos/base/query/v1beta1/pagination";
+import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
+import { DBOrder, Order } from "./order";
 import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.order";
@@ -53,7 +50,8 @@ export interface QueryAccountOpenOrdersResponse {
 }
 
 /** QueryParamsRequest is request type for the Query/Params RPC method. */
-export interface QueryParamsRequest {}
+export interface QueryParamsRequest {
+}
 
 /** QueryParamsResponse is response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
@@ -69,45 +67,43 @@ export interface QueryOrderAllocatedMarginResponse {
   orders: DBOrder[];
 }
 
-const baseQueryGetOrderRequest: object = { id: "" };
+function createBaseQueryGetOrderRequest(): QueryGetOrderRequest {
+  return { id: "" };
+}
 
 export const QueryGetOrderRequest = {
-  encode(
-    message: QueryGetOrderRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetOrderRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetOrderRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetOrderRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryGetOrderRequest } as QueryGetOrderRequest;
+    const message = createBaseQueryGetOrderRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetOrderRequest {
-    const message = { ...baseQueryGetOrderRequest } as QueryGetOrderRequest;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    return message;
+    return { id: isSet(object.id) ? String(object.id) : "" };
   },
 
   toJSON(message: QueryGetOrderRequest): unknown {
@@ -116,87 +112,79 @@ export const QueryGetOrderRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryGetOrderRequest>): QueryGetOrderRequest {
+    return QueryGetOrderRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryGetOrderRequest>): QueryGetOrderRequest {
-    const message = { ...baseQueryGetOrderRequest } as QueryGetOrderRequest;
+    const message = createBaseQueryGetOrderRequest();
     message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseQueryGetOrderResponse: object = {};
+function createBaseQueryGetOrderResponse(): QueryGetOrderResponse {
+  return { order: undefined };
+}
 
 export const QueryGetOrderResponse = {
-  encode(
-    message: QueryGetOrderResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetOrderResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.order !== undefined) {
       Order.encode(message.order, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetOrderResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetOrderResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
+    const message = createBaseQueryGetOrderResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.order = Order.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetOrderResponse {
-    const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
-    message.order =
-      object.order !== undefined && object.order !== null
-        ? Order.fromJSON(object.order)
-        : undefined;
-    return message;
+    return { order: isSet(object.order) ? Order.fromJSON(object.order) : undefined };
   },
 
   toJSON(message: QueryGetOrderResponse): unknown {
     const obj: any = {};
-    message.order !== undefined &&
-      (obj.order = message.order ? Order.toJSON(message.order) : undefined);
+    message.order !== undefined && (obj.order = message.order ? Order.toJSON(message.order) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetOrderResponse>
-  ): QueryGetOrderResponse {
-    const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
-    message.order =
-      object.order !== undefined && object.order !== null
-        ? Order.fromPartial(object.order)
-        : undefined;
+  create(base?: DeepPartial<QueryGetOrderResponse>): QueryGetOrderResponse {
+    return QueryGetOrderResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetOrderResponse>): QueryGetOrderResponse {
+    const message = createBaseQueryGetOrderResponse();
+    message.order = (object.order !== undefined && object.order !== null) ? Order.fromPartial(object.order) : undefined;
     return message;
   },
 };
 
-const baseQueryAllOrderRequest: object = {
-  address: "",
-  marketId: "",
-  orderType: "",
-  orderStatus: "",
-};
+function createBaseQueryAllOrderRequest(): QueryAllOrderRequest {
+  return { address: "", marketId: "", orderType: "", orderStatus: "", pagination: undefined };
+}
 
 export const QueryAllOrderRequest = {
-  encode(
-    message: QueryAllOrderRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllOrderRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -215,62 +203,65 @@ export const QueryAllOrderRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllOrderRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllOrderRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
+    const message = createBaseQueryAllOrderRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.orderType = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.orderStatus = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllOrderRequest {
-    const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.orderType =
-      object.orderType !== undefined && object.orderType !== null
-        ? String(object.orderType)
-        : "";
-    message.orderStatus =
-      object.orderStatus !== undefined && object.orderStatus !== null
-        ? String(object.orderStatus)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      orderType: isSet(object.orderType) ? String(object.orderType) : "",
+      orderStatus: isSet(object.orderStatus) ? String(object.orderStatus) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllOrderRequest): unknown {
@@ -278,117 +269,113 @@ export const QueryAllOrderRequest = {
     message.address !== undefined && (obj.address = message.address);
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.orderType !== undefined && (obj.orderType = message.orderType);
-    message.orderStatus !== undefined &&
-      (obj.orderStatus = message.orderStatus);
+    message.orderStatus !== undefined && (obj.orderStatus = message.orderStatus);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryAllOrderRequest>): QueryAllOrderRequest {
+    return QueryAllOrderRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryAllOrderRequest>): QueryAllOrderRequest {
-    const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
+    const message = createBaseQueryAllOrderRequest();
     message.address = object.address ?? "";
     message.marketId = object.marketId ?? "";
     message.orderType = object.orderType ?? "";
     message.orderStatus = object.orderStatus ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllOrderResponse: object = {};
+function createBaseQueryAllOrderResponse(): QueryAllOrderResponse {
+  return { orders: [], pagination: undefined };
+}
 
 export const QueryAllOrderResponse = {
-  encode(
-    message: QueryAllOrderResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllOrderResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.orders) {
       Order.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllOrderResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllOrderResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = [];
+    const message = createBaseQueryAllOrderResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.orders.push(Order.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllOrderResponse {
-    const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      orders: Array.isArray(object?.orders) ? object.orders.map((e: any) => Order.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllOrderResponse): unknown {
     const obj: any = {};
     if (message.orders) {
-      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
+      obj.orders = message.orders.map((e) => e ? Order.toJSON(e) : undefined);
     } else {
       obj.orders = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllOrderResponse>
-  ): QueryAllOrderResponse {
-    const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryAllOrderResponse>): QueryAllOrderResponse {
+    return QueryAllOrderResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllOrderResponse>): QueryAllOrderResponse {
+    const message = createBaseQueryAllOrderResponse();
+    message.orders = object.orders?.map((e) => Order.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAccountOrdersRequest: object = { address: "", marketId: "" };
+function createBaseQueryAccountOrdersRequest(): QueryAccountOrdersRequest {
+  return { address: "", marketId: "" };
+}
 
 export const QueryAccountOrdersRequest = {
-  encode(
-    message: QueryAccountOrdersRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAccountOrdersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -398,45 +385,41 @@ export const QueryAccountOrdersRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAccountOrdersRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountOrdersRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAccountOrdersRequest,
-    } as QueryAccountOrdersRequest;
+    const message = createBaseQueryAccountOrdersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAccountOrdersRequest {
-    const message = {
-      ...baseQueryAccountOrdersRequest,
-    } as QueryAccountOrdersRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+    };
   },
 
   toJSON(message: QueryAccountOrdersRequest): unknown {
@@ -446,91 +429,84 @@ export const QueryAccountOrdersRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAccountOrdersRequest>
-  ): QueryAccountOrdersRequest {
-    const message = {
-      ...baseQueryAccountOrdersRequest,
-    } as QueryAccountOrdersRequest;
+  create(base?: DeepPartial<QueryAccountOrdersRequest>): QueryAccountOrdersRequest {
+    return QueryAccountOrdersRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAccountOrdersRequest>): QueryAccountOrdersRequest {
+    const message = createBaseQueryAccountOrdersRequest();
     message.address = object.address ?? "";
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseQueryAccountOrdersResponse: object = {};
+function createBaseQueryAccountOrdersResponse(): QueryAccountOrdersResponse {
+  return { orders: [] };
+}
 
 export const QueryAccountOrdersResponse = {
-  encode(
-    message: QueryAccountOrdersResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAccountOrdersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.orders) {
       Order.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAccountOrdersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountOrdersResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAccountOrdersResponse,
-    } as QueryAccountOrdersResponse;
-    message.orders = [];
+    const message = createBaseQueryAccountOrdersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.orders.push(Order.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAccountOrdersResponse {
-    const message = {
-      ...baseQueryAccountOrdersResponse,
-    } as QueryAccountOrdersResponse;
-    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
-    return message;
+    return { orders: Array.isArray(object?.orders) ? object.orders.map((e: any) => Order.fromJSON(e)) : [] };
   },
 
   toJSON(message: QueryAccountOrdersResponse): unknown {
     const obj: any = {};
     if (message.orders) {
-      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
+      obj.orders = message.orders.map((e) => e ? Order.toJSON(e) : undefined);
     } else {
       obj.orders = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAccountOrdersResponse>
-  ): QueryAccountOrdersResponse {
-    const message = {
-      ...baseQueryAccountOrdersResponse,
-    } as QueryAccountOrdersResponse;
-    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
+  create(base?: DeepPartial<QueryAccountOrdersResponse>): QueryAccountOrdersResponse {
+    return QueryAccountOrdersResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAccountOrdersResponse>): QueryAccountOrdersResponse {
+    const message = createBaseQueryAccountOrdersResponse();
+    message.orders = object.orders?.map((e) => Order.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseQueryAccountOpenOrdersRequest: object = { address: "", marketId: "" };
+function createBaseQueryAccountOpenOrdersRequest(): QueryAccountOpenOrdersRequest {
+  return { address: "", marketId: "" };
+}
 
 export const QueryAccountOpenOrdersRequest = {
-  encode(
-    message: QueryAccountOpenOrdersRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAccountOpenOrdersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -540,45 +516,41 @@ export const QueryAccountOpenOrdersRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAccountOpenOrdersRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountOpenOrdersRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAccountOpenOrdersRequest,
-    } as QueryAccountOpenOrdersRequest;
+    const message = createBaseQueryAccountOpenOrdersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAccountOpenOrdersRequest {
-    const message = {
-      ...baseQueryAccountOpenOrdersRequest,
-    } as QueryAccountOpenOrdersRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+    };
   },
 
   toJSON(message: QueryAccountOpenOrdersRequest): unknown {
@@ -588,112 +560,105 @@ export const QueryAccountOpenOrdersRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAccountOpenOrdersRequest>
-  ): QueryAccountOpenOrdersRequest {
-    const message = {
-      ...baseQueryAccountOpenOrdersRequest,
-    } as QueryAccountOpenOrdersRequest;
+  create(base?: DeepPartial<QueryAccountOpenOrdersRequest>): QueryAccountOpenOrdersRequest {
+    return QueryAccountOpenOrdersRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAccountOpenOrdersRequest>): QueryAccountOpenOrdersRequest {
+    const message = createBaseQueryAccountOpenOrdersRequest();
     message.address = object.address ?? "";
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseQueryAccountOpenOrdersResponse: object = {};
+function createBaseQueryAccountOpenOrdersResponse(): QueryAccountOpenOrdersResponse {
+  return { orders: [] };
+}
 
 export const QueryAccountOpenOrdersResponse = {
-  encode(
-    message: QueryAccountOpenOrdersResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAccountOpenOrdersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.orders) {
       Order.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAccountOpenOrdersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAccountOpenOrdersResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAccountOpenOrdersResponse,
-    } as QueryAccountOpenOrdersResponse;
-    message.orders = [];
+    const message = createBaseQueryAccountOpenOrdersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.orders.push(Order.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAccountOpenOrdersResponse {
-    const message = {
-      ...baseQueryAccountOpenOrdersResponse,
-    } as QueryAccountOpenOrdersResponse;
-    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
-    return message;
+    return { orders: Array.isArray(object?.orders) ? object.orders.map((e: any) => Order.fromJSON(e)) : [] };
   },
 
   toJSON(message: QueryAccountOpenOrdersResponse): unknown {
     const obj: any = {};
     if (message.orders) {
-      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
+      obj.orders = message.orders.map((e) => e ? Order.toJSON(e) : undefined);
     } else {
       obj.orders = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAccountOpenOrdersResponse>
-  ): QueryAccountOpenOrdersResponse {
-    const message = {
-      ...baseQueryAccountOpenOrdersResponse,
-    } as QueryAccountOpenOrdersResponse;
-    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
+  create(base?: DeepPartial<QueryAccountOpenOrdersResponse>): QueryAccountOpenOrdersResponse {
+    return QueryAccountOpenOrdersResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAccountOpenOrdersResponse>): QueryAccountOpenOrdersResponse {
+    const message = createBaseQueryAccountOpenOrdersResponse();
+    message.orders = object.orders?.map((e) => Order.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+  return {};
+}
 
 export const QueryParamsRequest = {
-  encode(
-    _: QueryParamsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryParamsRequest): unknown {
@@ -701,19 +666,22 @@ export const QueryParamsRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    return QueryParamsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     return message;
   },
 };
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+  return { params: undefined };
+}
 
 export const QueryParamsResponse = {
-  encode(
-    message: QueryParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -721,178 +689,163 @@ export const QueryParamsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    const message = createBaseQueryParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.params = Params.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
-        : undefined;
-    return message;
+    return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
   },
 
   toJSON(message: QueryParamsResponse): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    return QueryParamsResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+    const message = createBaseQueryParamsResponse();
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryOrderAllocatedMarginRequest: object = { endBlockHeight: "" };
+function createBaseQueryOrderAllocatedMarginRequest(): QueryOrderAllocatedMarginRequest {
+  return { endBlockHeight: "" };
+}
 
 export const QueryOrderAllocatedMarginRequest = {
-  encode(
-    message: QueryOrderAllocatedMarginRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryOrderAllocatedMarginRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.endBlockHeight !== "") {
       writer.uint32(10).string(message.endBlockHeight);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryOrderAllocatedMarginRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryOrderAllocatedMarginRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryOrderAllocatedMarginRequest,
-    } as QueryOrderAllocatedMarginRequest;
+    const message = createBaseQueryOrderAllocatedMarginRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.endBlockHeight = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryOrderAllocatedMarginRequest {
-    const message = {
-      ...baseQueryOrderAllocatedMarginRequest,
-    } as QueryOrderAllocatedMarginRequest;
-    message.endBlockHeight =
-      object.endBlockHeight !== undefined && object.endBlockHeight !== null
-        ? String(object.endBlockHeight)
-        : "";
-    return message;
+    return { endBlockHeight: isSet(object.endBlockHeight) ? String(object.endBlockHeight) : "" };
   },
 
   toJSON(message: QueryOrderAllocatedMarginRequest): unknown {
     const obj: any = {};
-    message.endBlockHeight !== undefined &&
-      (obj.endBlockHeight = message.endBlockHeight);
+    message.endBlockHeight !== undefined && (obj.endBlockHeight = message.endBlockHeight);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryOrderAllocatedMarginRequest>
-  ): QueryOrderAllocatedMarginRequest {
-    const message = {
-      ...baseQueryOrderAllocatedMarginRequest,
-    } as QueryOrderAllocatedMarginRequest;
+  create(base?: DeepPartial<QueryOrderAllocatedMarginRequest>): QueryOrderAllocatedMarginRequest {
+    return QueryOrderAllocatedMarginRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryOrderAllocatedMarginRequest>): QueryOrderAllocatedMarginRequest {
+    const message = createBaseQueryOrderAllocatedMarginRequest();
     message.endBlockHeight = object.endBlockHeight ?? "";
     return message;
   },
 };
 
-const baseQueryOrderAllocatedMarginResponse: object = {};
+function createBaseQueryOrderAllocatedMarginResponse(): QueryOrderAllocatedMarginResponse {
+  return { orders: [] };
+}
 
 export const QueryOrderAllocatedMarginResponse = {
-  encode(
-    message: QueryOrderAllocatedMarginResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryOrderAllocatedMarginResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.orders) {
       DBOrder.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryOrderAllocatedMarginResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryOrderAllocatedMarginResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryOrderAllocatedMarginResponse,
-    } as QueryOrderAllocatedMarginResponse;
-    message.orders = [];
+    const message = createBaseQueryOrderAllocatedMarginResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.orders.push(DBOrder.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryOrderAllocatedMarginResponse {
-    const message = {
-      ...baseQueryOrderAllocatedMarginResponse,
-    } as QueryOrderAllocatedMarginResponse;
-    message.orders = (object.orders ?? []).map((e: any) => DBOrder.fromJSON(e));
-    return message;
+    return { orders: Array.isArray(object?.orders) ? object.orders.map((e: any) => DBOrder.fromJSON(e)) : [] };
   },
 
   toJSON(message: QueryOrderAllocatedMarginResponse): unknown {
     const obj: any = {};
     if (message.orders) {
-      obj.orders = message.orders.map((e) =>
-        e ? DBOrder.toJSON(e) : undefined
-      );
+      obj.orders = message.orders.map((e) => e ? DBOrder.toJSON(e) : undefined);
     } else {
       obj.orders = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryOrderAllocatedMarginResponse>
-  ): QueryOrderAllocatedMarginResponse {
-    const message = {
-      ...baseQueryOrderAllocatedMarginResponse,
-    } as QueryOrderAllocatedMarginResponse;
-    message.orders = (object.orders ?? []).map((e) => DBOrder.fromPartial(e));
+  create(base?: DeepPartial<QueryOrderAllocatedMarginResponse>): QueryOrderAllocatedMarginResponse {
+    return QueryOrderAllocatedMarginResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryOrderAllocatedMarginResponse>): QueryOrderAllocatedMarginResponse {
+    const message = createBaseQueryOrderAllocatedMarginResponse();
+    message.orders = object.orders?.map((e) => DBOrder.fromPartial(e)) || [];
     return message;
   },
 };
@@ -904,26 +857,22 @@ export interface Query {
   /** Get details for all orders */
   OrderAll(request: QueryAllOrderRequest): Promise<QueryAllOrderResponse>;
   /** Get orders for an address and market */
-  AccountOrders(
-    request: QueryAccountOrdersRequest
-  ): Promise<QueryAccountOrdersResponse>;
+  AccountOrders(request: QueryAccountOrdersRequest): Promise<QueryAccountOrdersResponse>;
   /**
    * TODO: remove this once frontend has replaced it with query OrdersAccount
    * Get open orders for an address and market
    */
-  OrdersAccountOpen(
-    request: QueryAccountOpenOrdersRequest
-  ): Promise<QueryAccountOpenOrdersResponse>;
+  OrdersAccountOpen(request: QueryAccountOpenOrdersRequest): Promise<QueryAccountOpenOrdersResponse>;
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Get all orders with allocated margin (open orders) */
-  OrderAllocatedMargin(
-    request: QueryOrderAllocatedMarginRequest
-  ): Promise<QueryOrderAllocatedMarginResponse>;
+  OrderAllocatedMargin(request: QueryOrderAllocatedMarginRequest): Promise<QueryOrderAllocatedMarginResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.order.Query";
     this.rpc = rpc;
     this.Order = this.Order.bind(this);
     this.OrderAll = this.OrderAll.bind(this);
@@ -934,112 +883,58 @@ export class QueryClientImpl implements Query {
   }
   Order(request: QueryGetOrderRequest): Promise<QueryGetOrderResponse> {
     const data = QueryGetOrderRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.order.Query",
-      "Order",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetOrderResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Order", data);
+    return promise.then((data) => QueryGetOrderResponse.decode(_m0.Reader.create(data)));
   }
 
   OrderAll(request: QueryAllOrderRequest): Promise<QueryAllOrderResponse> {
     const data = QueryAllOrderRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.order.Query",
-      "OrderAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllOrderResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "OrderAll", data);
+    return promise.then((data) => QueryAllOrderResponse.decode(_m0.Reader.create(data)));
   }
 
-  AccountOrders(
-    request: QueryAccountOrdersRequest
-  ): Promise<QueryAccountOrdersResponse> {
+  AccountOrders(request: QueryAccountOrdersRequest): Promise<QueryAccountOrdersResponse> {
     const data = QueryAccountOrdersRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.order.Query",
-      "AccountOrders",
-      data
-    );
-    return promise.then((data) =>
-      QueryAccountOrdersResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "AccountOrders", data);
+    return promise.then((data) => QueryAccountOrdersResponse.decode(_m0.Reader.create(data)));
   }
 
-  OrdersAccountOpen(
-    request: QueryAccountOpenOrdersRequest
-  ): Promise<QueryAccountOpenOrdersResponse> {
+  OrdersAccountOpen(request: QueryAccountOpenOrdersRequest): Promise<QueryAccountOpenOrdersResponse> {
     const data = QueryAccountOpenOrdersRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.order.Query",
-      "OrdersAccountOpen",
-      data
-    );
-    return promise.then((data) =>
-      QueryAccountOpenOrdersResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "OrdersAccountOpen", data);
+    return promise.then((data) => QueryAccountOpenOrdersResponse.decode(_m0.Reader.create(data)));
   }
 
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.order.Query",
-      "Params",
-      data
-    );
-    return promise.then((data) =>
-      QueryParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Params", data);
+    return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
   }
 
-  OrderAllocatedMargin(
-    request: QueryOrderAllocatedMarginRequest
-  ): Promise<QueryOrderAllocatedMarginResponse> {
+  OrderAllocatedMargin(request: QueryOrderAllocatedMarginRequest): Promise<QueryOrderAllocatedMarginResponse> {
     const data = QueryOrderAllocatedMarginRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.order.Query",
-      "OrderAllocatedMargin",
-      data
-    );
-    return promise.then((data) =>
-      QueryOrderAllocatedMarginResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "OrderAllocatedMargin", data);
+    return promise.then((data) => QueryOrderAllocatedMarginResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

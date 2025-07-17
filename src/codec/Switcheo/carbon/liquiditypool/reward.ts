@@ -97,25 +97,22 @@ export interface AllocatedRewards {
   coins: DecCoin[];
 }
 
-const baseRewardCurve: object = {
-  initialReward: 0,
-  interval: Long.UZERO,
-  numberOfReductions: 0,
-  reduction: 0,
-  finalReward: 0,
-  reductionsMade: 0,
-};
+function createBaseRewardCurve(): RewardCurve {
+  return {
+    startTime: undefined,
+    initialReward: 0,
+    interval: Long.UZERO,
+    numberOfReductions: 0,
+    reduction: 0,
+    finalReward: 0,
+    reductionsMade: 0,
+  };
+}
 
 export const RewardCurve = {
-  encode(
-    message: RewardCurve,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RewardCurve, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.startTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.startTime),
-        writer.uint32(10).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(10).fork()).ldelim();
     }
     if (message.initialReward !== 0) {
       writer.uint32(16).uint32(message.initialReward);
@@ -139,103 +136,105 @@ export const RewardCurve = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RewardCurve {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRewardCurve } as RewardCurve;
+    const message = createBaseRewardCurve();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.startTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.initialReward = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.interval = reader.uint64() as Long;
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.numberOfReductions = reader.uint32();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.reduction = reader.uint32();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.finalReward = reader.uint32();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.reductionsMade = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RewardCurve {
-    const message = { ...baseRewardCurve } as RewardCurve;
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? fromJsonTimestamp(object.startTime)
-        : undefined;
-    message.initialReward =
-      object.initialReward !== undefined && object.initialReward !== null
-        ? Number(object.initialReward)
-        : 0;
-    message.interval =
-      object.interval !== undefined && object.interval !== null
-        ? Long.fromString(object.interval)
-        : Long.UZERO;
-    message.numberOfReductions =
-      object.numberOfReductions !== undefined &&
-      object.numberOfReductions !== null
-        ? Number(object.numberOfReductions)
-        : 0;
-    message.reduction =
-      object.reduction !== undefined && object.reduction !== null
-        ? Number(object.reduction)
-        : 0;
-    message.finalReward =
-      object.finalReward !== undefined && object.finalReward !== null
-        ? Number(object.finalReward)
-        : 0;
-    message.reductionsMade =
-      object.reductionsMade !== undefined && object.reductionsMade !== null
-        ? Number(object.reductionsMade)
-        : 0;
-    return message;
+    return {
+      startTime: isSet(object.startTime) ? fromJsonTimestamp(object.startTime) : undefined,
+      initialReward: isSet(object.initialReward) ? Number(object.initialReward) : 0,
+      interval: isSet(object.interval) ? Long.fromValue(object.interval) : Long.UZERO,
+      numberOfReductions: isSet(object.numberOfReductions) ? Number(object.numberOfReductions) : 0,
+      reduction: isSet(object.reduction) ? Number(object.reduction) : 0,
+      finalReward: isSet(object.finalReward) ? Number(object.finalReward) : 0,
+      reductionsMade: isSet(object.reductionsMade) ? Number(object.reductionsMade) : 0,
+    };
   },
 
   toJSON(message: RewardCurve): unknown {
     const obj: any = {};
-    message.startTime !== undefined &&
-      (obj.startTime = message.startTime.toISOString());
-    message.initialReward !== undefined &&
-      (obj.initialReward = message.initialReward);
-    message.interval !== undefined &&
-      (obj.interval = (message.interval || Long.UZERO).toString());
-    message.numberOfReductions !== undefined &&
-      (obj.numberOfReductions = message.numberOfReductions);
-    message.reduction !== undefined && (obj.reduction = message.reduction);
-    message.finalReward !== undefined &&
-      (obj.finalReward = message.finalReward);
-    message.reductionsMade !== undefined &&
-      (obj.reductionsMade = message.reductionsMade);
+    message.startTime !== undefined && (obj.startTime = message.startTime.toISOString());
+    message.initialReward !== undefined && (obj.initialReward = Math.round(message.initialReward));
+    message.interval !== undefined && (obj.interval = (message.interval || Long.UZERO).toString());
+    message.numberOfReductions !== undefined && (obj.numberOfReductions = Math.round(message.numberOfReductions));
+    message.reduction !== undefined && (obj.reduction = Math.round(message.reduction));
+    message.finalReward !== undefined && (obj.finalReward = Math.round(message.finalReward));
+    message.reductionsMade !== undefined && (obj.reductionsMade = Math.round(message.reductionsMade));
     return obj;
   },
 
+  create(base?: DeepPartial<RewardCurve>): RewardCurve {
+    return RewardCurve.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RewardCurve>): RewardCurve {
-    const message = { ...baseRewardCurve } as RewardCurve;
+    const message = createBaseRewardCurve();
     message.startTime = object.startTime ?? undefined;
     message.initialReward = object.initialReward ?? 0;
-    message.interval =
-      object.interval !== undefined && object.interval !== null
-        ? Long.fromValue(object.interval)
-        : Long.UZERO;
+    message.interval = (object.interval !== undefined && object.interval !== null)
+      ? Long.fromValue(object.interval)
+      : Long.UZERO;
     message.numberOfReductions = object.numberOfReductions ?? 0;
     message.reduction = object.reduction ?? 0;
     message.finalReward = object.finalReward ?? 0;
@@ -244,16 +243,12 @@ export const RewardCurve = {
   },
 };
 
-const baseCommitmentCurve: object = {
-  maxCommitmentDuration: Long.UZERO,
-  maxRewardMultiplier: 0,
-};
+function createBaseCommitmentCurve(): CommitmentCurve {
+  return { maxCommitmentDuration: Long.UZERO, maxRewardMultiplier: 0 };
+}
 
 export const CommitmentCurve = {
-  encode(
-    message: CommitmentCurve,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommitmentCurve, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.maxCommitmentDuration.isZero()) {
       writer.uint32(8).uint64(message.maxCommitmentDuration);
     }
@@ -264,57 +259,60 @@ export const CommitmentCurve = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentCurve {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommitmentCurve } as CommitmentCurve;
+    const message = createBaseCommitmentCurve();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.maxCommitmentDuration = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.maxRewardMultiplier = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CommitmentCurve {
-    const message = { ...baseCommitmentCurve } as CommitmentCurve;
-    message.maxCommitmentDuration =
-      object.maxCommitmentDuration !== undefined &&
-      object.maxCommitmentDuration !== null
-        ? Long.fromString(object.maxCommitmentDuration)
-        : Long.UZERO;
-    message.maxRewardMultiplier =
-      object.maxRewardMultiplier !== undefined &&
-      object.maxRewardMultiplier !== null
-        ? Number(object.maxRewardMultiplier)
-        : 0;
-    return message;
+    return {
+      maxCommitmentDuration: isSet(object.maxCommitmentDuration)
+        ? Long.fromValue(object.maxCommitmentDuration)
+        : Long.UZERO,
+      maxRewardMultiplier: isSet(object.maxRewardMultiplier) ? Number(object.maxRewardMultiplier) : 0,
+    };
   },
 
   toJSON(message: CommitmentCurve): unknown {
     const obj: any = {};
     message.maxCommitmentDuration !== undefined &&
-      (obj.maxCommitmentDuration = (
-        message.maxCommitmentDuration || Long.UZERO
-      ).toString());
-    message.maxRewardMultiplier !== undefined &&
-      (obj.maxRewardMultiplier = message.maxRewardMultiplier);
+      (obj.maxCommitmentDuration = (message.maxCommitmentDuration || Long.UZERO).toString());
+    message.maxRewardMultiplier !== undefined && (obj.maxRewardMultiplier = Math.round(message.maxRewardMultiplier));
     return obj;
   },
 
+  create(base?: DeepPartial<CommitmentCurve>): CommitmentCurve {
+    return CommitmentCurve.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CommitmentCurve>): CommitmentCurve {
-    const message = { ...baseCommitmentCurve } as CommitmentCurve;
+    const message = createBaseCommitmentCurve();
     message.maxCommitmentDuration =
-      object.maxCommitmentDuration !== undefined &&
-      object.maxCommitmentDuration !== null
+      (object.maxCommitmentDuration !== undefined && object.maxCommitmentDuration !== null)
         ? Long.fromValue(object.maxCommitmentDuration)
         : Long.UZERO;
     message.maxRewardMultiplier = object.maxRewardMultiplier ?? 0;
@@ -322,13 +320,12 @@ export const CommitmentCurve = {
   },
 };
 
-const baseRewardWeight: object = { poolId: Long.UZERO, weight: "" };
+function createBaseRewardWeight(): RewardWeight {
+  return { poolId: Long.UZERO, weight: "" };
+}
 
 export const RewardWeight = {
-  encode(
-    message: RewardWeight,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RewardWeight, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -339,65 +336,69 @@ export const RewardWeight = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RewardWeight {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRewardWeight } as RewardWeight;
+    const message = createBaseRewardWeight();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.weight = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RewardWeight {
-    const message = { ...baseRewardWeight } as RewardWeight;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.weight =
-      object.weight !== undefined && object.weight !== null
-        ? String(object.weight)
-        : "";
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      weight: isSet(object.weight) ? String(object.weight) : "",
+    };
   },
 
   toJSON(message: RewardWeight): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.weight !== undefined && (obj.weight = message.weight);
     return obj;
   },
 
+  create(base?: DeepPartial<RewardWeight>): RewardWeight {
+    return RewardWeight.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RewardWeight>): RewardWeight {
-    const message = { ...baseRewardWeight } as RewardWeight;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    const message = createBaseRewardWeight();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.weight = object.weight ?? "";
     return message;
   },
 };
 
-const baseRewardWeights: object = {};
+function createBaseRewardWeights(): RewardWeights {
+  return { weights: [] };
+}
 
 export const RewardWeights = {
-  encode(
-    message: RewardWeights,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RewardWeights, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.weights) {
       RewardWeight.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -405,60 +406,59 @@ export const RewardWeights = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RewardWeights {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRewardWeights } as RewardWeights;
-    message.weights = [];
+    const message = createBaseRewardWeights();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.weights.push(RewardWeight.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RewardWeights {
-    const message = { ...baseRewardWeights } as RewardWeights;
-    message.weights = (object.weights ?? []).map((e: any) =>
-      RewardWeight.fromJSON(e)
-    );
-    return message;
+    return { weights: Array.isArray(object?.weights) ? object.weights.map((e: any) => RewardWeight.fromJSON(e)) : [] };
   },
 
   toJSON(message: RewardWeights): unknown {
     const obj: any = {};
     if (message.weights) {
-      obj.weights = message.weights.map((e) =>
-        e ? RewardWeight.toJSON(e) : undefined
-      );
+      obj.weights = message.weights.map((e) => e ? RewardWeight.toJSON(e) : undefined);
     } else {
       obj.weights = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<RewardWeights>): RewardWeights {
+    return RewardWeights.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RewardWeights>): RewardWeights {
-    const message = { ...baseRewardWeights } as RewardWeights;
-    message.weights = (object.weights ?? []).map((e) =>
-      RewardWeight.fromPartial(e)
-    );
+    const message = createBaseRewardWeights();
+    message.weights = object.weights?.map((e) => RewardWeight.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseCommitment: object = { poolId: Long.UZERO, duration: Long.UZERO };
+function createBaseCommitment(): Commitment {
+  return { poolId: Long.UZERO, liquidity: undefined, startTime: undefined, duration: Long.UZERO, rewardDebt: [] };
+}
 
 export const Commitment = {
-  encode(
-    message: Commitment,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Commitment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -466,10 +466,7 @@ export const Commitment = {
       Coin.encode(message.liquidity, writer.uint32(18).fork()).ldelim();
     }
     if (message.startTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.startTime),
-        writer.uint32(26).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(26).fork()).ldelim();
     }
     if (!message.duration.isZero()) {
       writer.uint32(32).uint64(message.duration);
@@ -481,113 +478,107 @@ export const Commitment = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Commitment {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommitment } as Commitment;
-    message.rewardDebt = [];
+    const message = createBaseCommitment();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.liquidity = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
-          message.startTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.duration = reader.uint64() as Long;
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.rewardDebt.push(DecCoin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Commitment {
-    const message = { ...baseCommitment } as Commitment;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.liquidity =
-      object.liquidity !== undefined && object.liquidity !== null
-        ? Coin.fromJSON(object.liquidity)
-        : undefined;
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? fromJsonTimestamp(object.startTime)
-        : undefined;
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Long.fromString(object.duration)
-        : Long.UZERO;
-    message.rewardDebt = (object.rewardDebt ?? []).map((e: any) =>
-      DecCoin.fromJSON(e)
-    );
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      liquidity: isSet(object.liquidity) ? Coin.fromJSON(object.liquidity) : undefined,
+      startTime: isSet(object.startTime) ? fromJsonTimestamp(object.startTime) : undefined,
+      duration: isSet(object.duration) ? Long.fromValue(object.duration) : Long.UZERO,
+      rewardDebt: Array.isArray(object?.rewardDebt) ? object.rewardDebt.map((e: any) => DecCoin.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: Commitment): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.liquidity !== undefined &&
-      (obj.liquidity = message.liquidity
-        ? Coin.toJSON(message.liquidity)
-        : undefined);
-    message.startTime !== undefined &&
-      (obj.startTime = message.startTime.toISOString());
-    message.duration !== undefined &&
-      (obj.duration = (message.duration || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.liquidity !== undefined && (obj.liquidity = message.liquidity ? Coin.toJSON(message.liquidity) : undefined);
+    message.startTime !== undefined && (obj.startTime = message.startTime.toISOString());
+    message.duration !== undefined && (obj.duration = (message.duration || Long.UZERO).toString());
     if (message.rewardDebt) {
-      obj.rewardDebt = message.rewardDebt.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
-      );
+      obj.rewardDebt = message.rewardDebt.map((e) => e ? DecCoin.toJSON(e) : undefined);
     } else {
       obj.rewardDebt = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Commitment>): Commitment {
+    return Commitment.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Commitment>): Commitment {
-    const message = { ...baseCommitment } as Commitment;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    message.liquidity =
-      object.liquidity !== undefined && object.liquidity !== null
-        ? Coin.fromPartial(object.liquidity)
-        : undefined;
+    const message = createBaseCommitment();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
+    message.liquidity = (object.liquidity !== undefined && object.liquidity !== null)
+      ? Coin.fromPartial(object.liquidity)
+      : undefined;
     message.startTime = object.startTime ?? undefined;
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Long.fromValue(object.duration)
-        : Long.UZERO;
-    message.rewardDebt = (object.rewardDebt ?? []).map((e) =>
-      DecCoin.fromPartial(e)
-    );
+    message.duration = (object.duration !== undefined && object.duration !== null)
+      ? Long.fromValue(object.duration)
+      : Long.UZERO;
+    message.rewardDebt = object.rewardDebt?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseCommitmentRecord: object = { address: "" };
+function createBaseCommitmentRecord(): CommitmentRecord {
+  return { address: "", commitment: undefined };
+}
 
 export const CommitmentRecord = {
-  encode(
-    message: CommitmentRecord,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommitmentRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -598,67 +589,70 @@ export const CommitmentRecord = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentRecord {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommitmentRecord } as CommitmentRecord;
+    const message = createBaseCommitmentRecord();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.commitment = Commitment.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CommitmentRecord {
-    const message = { ...baseCommitmentRecord } as CommitmentRecord;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.commitment =
-      object.commitment !== undefined && object.commitment !== null
-        ? Commitment.fromJSON(object.commitment)
-        : undefined;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      commitment: isSet(object.commitment) ? Commitment.fromJSON(object.commitment) : undefined,
+    };
   },
 
   toJSON(message: CommitmentRecord): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.commitment !== undefined &&
-      (obj.commitment = message.commitment
-        ? Commitment.toJSON(message.commitment)
-        : undefined);
+      (obj.commitment = message.commitment ? Commitment.toJSON(message.commitment) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<CommitmentRecord>): CommitmentRecord {
+    return CommitmentRecord.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CommitmentRecord>): CommitmentRecord {
-    const message = { ...baseCommitmentRecord } as CommitmentRecord;
+    const message = createBaseCommitmentRecord();
     message.address = object.address ?? "";
-    message.commitment =
-      object.commitment !== undefined && object.commitment !== null
-        ? Commitment.fromPartial(object.commitment)
-        : undefined;
+    message.commitment = (object.commitment !== undefined && object.commitment !== null)
+      ? Commitment.fromPartial(object.commitment)
+      : undefined;
     return message;
   },
 };
 
-const baseTotalCommitment: object = { total: "" };
+function createBaseTotalCommitment(): TotalCommitment {
+  return { total: "" };
+}
 
 export const TotalCommitment = {
-  encode(
-    message: TotalCommitment,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TotalCommitment, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.total !== "") {
       writer.uint32(10).string(message.total);
     }
@@ -666,30 +660,30 @@ export const TotalCommitment = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TotalCommitment {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTotalCommitment } as TotalCommitment;
+    const message = createBaseTotalCommitment();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.total = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TotalCommitment {
-    const message = { ...baseTotalCommitment } as TotalCommitment;
-    message.total =
-      object.total !== undefined && object.total !== null
-        ? String(object.total)
-        : "";
-    return message;
+    return { total: isSet(object.total) ? String(object.total) : "" };
   },
 
   toJSON(message: TotalCommitment): unknown {
@@ -698,113 +692,108 @@ export const TotalCommitment = {
     return obj;
   },
 
+  create(base?: DeepPartial<TotalCommitment>): TotalCommitment {
+    return TotalCommitment.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TotalCommitment>): TotalCommitment {
-    const message = { ...baseTotalCommitment } as TotalCommitment;
+    const message = createBaseTotalCommitment();
     message.total = object.total ?? "";
     return message;
   },
 };
 
-const baseTotalCommitmentRecord: object = { poolId: Long.UZERO };
+function createBaseTotalCommitmentRecord(): TotalCommitmentRecord {
+  return { poolId: Long.UZERO, totalCommitment: undefined };
+}
 
 export const TotalCommitmentRecord = {
-  encode(
-    message: TotalCommitmentRecord,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TotalCommitmentRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
     if (message.totalCommitment !== undefined) {
-      TotalCommitment.encode(
-        message.totalCommitment,
-        writer.uint32(18).fork()
-      ).ldelim();
+      TotalCommitment.encode(message.totalCommitment, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): TotalCommitmentRecord {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): TotalCommitmentRecord {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTotalCommitmentRecord } as TotalCommitmentRecord;
+    const message = createBaseTotalCommitmentRecord();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
-          message.totalCommitment = TotalCommitment.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.totalCommitment = TotalCommitment.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TotalCommitmentRecord {
-    const message = { ...baseTotalCommitmentRecord } as TotalCommitmentRecord;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.totalCommitment =
-      object.totalCommitment !== undefined && object.totalCommitment !== null
-        ? TotalCommitment.fromJSON(object.totalCommitment)
-        : undefined;
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      totalCommitment: isSet(object.totalCommitment) ? TotalCommitment.fromJSON(object.totalCommitment) : undefined,
+    };
   },
 
   toJSON(message: TotalCommitmentRecord): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.totalCommitment !== undefined &&
-      (obj.totalCommitment = message.totalCommitment
-        ? TotalCommitment.toJSON(message.totalCommitment)
-        : undefined);
+      (obj.totalCommitment = message.totalCommitment ? TotalCommitment.toJSON(message.totalCommitment) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<TotalCommitmentRecord>
-  ): TotalCommitmentRecord {
-    const message = { ...baseTotalCommitmentRecord } as TotalCommitmentRecord;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    message.totalCommitment =
-      object.totalCommitment !== undefined && object.totalCommitment !== null
-        ? TotalCommitment.fromPartial(object.totalCommitment)
-        : undefined;
+  create(base?: DeepPartial<TotalCommitmentRecord>): TotalCommitmentRecord {
+    return TotalCommitmentRecord.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<TotalCommitmentRecord>): TotalCommitmentRecord {
+    const message = createBaseTotalCommitmentRecord();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
+    message.totalCommitment = (object.totalCommitment !== undefined && object.totalCommitment !== null)
+      ? TotalCommitment.fromPartial(object.totalCommitment)
+      : undefined;
     return message;
   },
 };
 
-const baseCommitmentResponse: object = {
-  denom: "",
-  amount: "",
-  duration: Long.UZERO,
-  isLocked: false,
-  commitmentPower: "",
-  boostFactor: "",
-};
+function createBaseCommitmentResponse(): CommitmentResponse {
+  return {
+    denom: "",
+    amount: "",
+    startTime: undefined,
+    endTime: undefined,
+    duration: Long.UZERO,
+    isLocked: false,
+    commitmentPower: "",
+    boostFactor: "",
+  };
+}
 
 export const CommitmentResponse = {
-  encode(
-    message: CommitmentResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommitmentResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -812,16 +801,10 @@ export const CommitmentResponse = {
       writer.uint32(18).string(message.amount);
     }
     if (message.startTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.startTime),
-        writer.uint32(26).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(26).fork()).ldelim();
     }
     if (message.endTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.endTime),
-        writer.uint32(34).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(34).fork()).ldelim();
     }
     if (!message.duration.isZero()) {
       writer.uint32(40).uint64(message.duration);
@@ -839,113 +822,116 @@ export const CommitmentResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommitmentResponse } as CommitmentResponse;
+    const message = createBaseCommitmentResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 3:
-          message.startTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 4:
-          message.endTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 34) {
+            break;
+          }
+
+          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.duration = reader.uint64() as Long;
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.isLocked = reader.bool();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.commitmentPower = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.boostFactor = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CommitmentResponse {
-    const message = { ...baseCommitmentResponse } as CommitmentResponse;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? fromJsonTimestamp(object.startTime)
-        : undefined;
-    message.endTime =
-      object.endTime !== undefined && object.endTime !== null
-        ? fromJsonTimestamp(object.endTime)
-        : undefined;
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Long.fromString(object.duration)
-        : Long.UZERO;
-    message.isLocked =
-      object.isLocked !== undefined && object.isLocked !== null
-        ? Boolean(object.isLocked)
-        : false;
-    message.commitmentPower =
-      object.commitmentPower !== undefined && object.commitmentPower !== null
-        ? String(object.commitmentPower)
-        : "";
-    message.boostFactor =
-      object.boostFactor !== undefined && object.boostFactor !== null
-        ? String(object.boostFactor)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      startTime: isSet(object.startTime) ? fromJsonTimestamp(object.startTime) : undefined,
+      endTime: isSet(object.endTime) ? fromJsonTimestamp(object.endTime) : undefined,
+      duration: isSet(object.duration) ? Long.fromValue(object.duration) : Long.UZERO,
+      isLocked: isSet(object.isLocked) ? Boolean(object.isLocked) : false,
+      commitmentPower: isSet(object.commitmentPower) ? String(object.commitmentPower) : "",
+      boostFactor: isSet(object.boostFactor) ? String(object.boostFactor) : "",
+    };
   },
 
   toJSON(message: CommitmentResponse): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
-    message.startTime !== undefined &&
-      (obj.startTime = message.startTime.toISOString());
-    message.endTime !== undefined &&
-      (obj.endTime = message.endTime.toISOString());
-    message.duration !== undefined &&
-      (obj.duration = (message.duration || Long.UZERO).toString());
+    message.startTime !== undefined && (obj.startTime = message.startTime.toISOString());
+    message.endTime !== undefined && (obj.endTime = message.endTime.toISOString());
+    message.duration !== undefined && (obj.duration = (message.duration || Long.UZERO).toString());
     message.isLocked !== undefined && (obj.isLocked = message.isLocked);
-    message.commitmentPower !== undefined &&
-      (obj.commitmentPower = message.commitmentPower);
-    message.boostFactor !== undefined &&
-      (obj.boostFactor = message.boostFactor);
+    message.commitmentPower !== undefined && (obj.commitmentPower = message.commitmentPower);
+    message.boostFactor !== undefined && (obj.boostFactor = message.boostFactor);
     return obj;
   },
 
+  create(base?: DeepPartial<CommitmentResponse>): CommitmentResponse {
+    return CommitmentResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CommitmentResponse>): CommitmentResponse {
-    const message = { ...baseCommitmentResponse } as CommitmentResponse;
+    const message = createBaseCommitmentResponse();
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.startTime = object.startTime ?? undefined;
     message.endTime = object.endTime ?? undefined;
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Long.fromValue(object.duration)
-        : Long.UZERO;
+    message.duration = (object.duration !== undefined && object.duration !== null)
+      ? Long.fromValue(object.duration)
+      : Long.UZERO;
     message.isLocked = object.isLocked ?? false;
     message.commitmentPower = object.commitmentPower ?? "";
     message.boostFactor = object.boostFactor ?? "";
@@ -953,13 +939,12 @@ export const CommitmentResponse = {
   },
 };
 
-const baseRewardHistory: object = { poolId: Long.UZERO, totalCommitment: "" };
+function createBaseRewardHistory(): RewardHistory {
+  return { poolId: Long.UZERO, rewards: [], totalCommitment: "" };
+}
 
 export const RewardHistory = {
-  encode(
-    message: RewardHistory,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RewardHistory, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -973,81 +958,83 @@ export const RewardHistory = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RewardHistory {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRewardHistory } as RewardHistory;
-    message.rewards = [];
+    const message = createBaseRewardHistory();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.rewards.push(DecCoin.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.totalCommitment = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RewardHistory {
-    const message = { ...baseRewardHistory } as RewardHistory;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.rewards = (object.rewards ?? []).map((e: any) =>
-      DecCoin.fromJSON(e)
-    );
-    message.totalCommitment =
-      object.totalCommitment !== undefined && object.totalCommitment !== null
-        ? String(object.totalCommitment)
-        : "";
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      rewards: Array.isArray(object?.rewards) ? object.rewards.map((e: any) => DecCoin.fromJSON(e)) : [],
+      totalCommitment: isSet(object.totalCommitment) ? String(object.totalCommitment) : "",
+    };
   },
 
   toJSON(message: RewardHistory): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     if (message.rewards) {
-      obj.rewards = message.rewards.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
-      );
+      obj.rewards = message.rewards.map((e) => e ? DecCoin.toJSON(e) : undefined);
     } else {
       obj.rewards = [];
     }
-    message.totalCommitment !== undefined &&
-      (obj.totalCommitment = message.totalCommitment);
+    message.totalCommitment !== undefined && (obj.totalCommitment = message.totalCommitment);
     return obj;
   },
 
+  create(base?: DeepPartial<RewardHistory>): RewardHistory {
+    return RewardHistory.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RewardHistory>): RewardHistory {
-    const message = { ...baseRewardHistory } as RewardHistory;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    message.rewards = (object.rewards ?? []).map((e) => DecCoin.fromPartial(e));
+    const message = createBaseRewardHistory();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
+    message.rewards = object.rewards?.map((e) => DecCoin.fromPartial(e)) || [];
     message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
 };
 
-const baseAccumulatedRewards: object = {};
+function createBaseAccumulatedRewards(): AccumulatedRewards {
+  return { rewardPerCommitmentShare: [] };
+}
 
 export const AccumulatedRewards = {
-  encode(
-    message: AccumulatedRewards,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AccumulatedRewards, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.rewardPerCommitmentShare) {
       DecCoin.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1055,156 +1042,142 @@ export const AccumulatedRewards = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccumulatedRewards {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAccumulatedRewards } as AccumulatedRewards;
-    message.rewardPerCommitmentShare = [];
+    const message = createBaseAccumulatedRewards();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.rewardPerCommitmentShare.push(
-            DecCoin.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rewardPerCommitmentShare.push(DecCoin.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccumulatedRewards {
-    const message = { ...baseAccumulatedRewards } as AccumulatedRewards;
-    message.rewardPerCommitmentShare = (
-      object.rewardPerCommitmentShare ?? []
-    ).map((e: any) => DecCoin.fromJSON(e));
-    return message;
+    return {
+      rewardPerCommitmentShare: Array.isArray(object?.rewardPerCommitmentShare)
+        ? object.rewardPerCommitmentShare.map((e: any) => DecCoin.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: AccumulatedRewards): unknown {
     const obj: any = {};
     if (message.rewardPerCommitmentShare) {
-      obj.rewardPerCommitmentShare = message.rewardPerCommitmentShare.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
-      );
+      obj.rewardPerCommitmentShare = message.rewardPerCommitmentShare.map((e) => e ? DecCoin.toJSON(e) : undefined);
     } else {
       obj.rewardPerCommitmentShare = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<AccumulatedRewards>): AccumulatedRewards {
+    return AccumulatedRewards.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<AccumulatedRewards>): AccumulatedRewards {
-    const message = { ...baseAccumulatedRewards } as AccumulatedRewards;
-    message.rewardPerCommitmentShare = (
-      object.rewardPerCommitmentShare ?? []
-    ).map((e) => DecCoin.fromPartial(e));
+    const message = createBaseAccumulatedRewards();
+    message.rewardPerCommitmentShare = object.rewardPerCommitmentShare?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseAccumulatedRewardsRecord: object = { poolId: Long.UZERO };
+function createBaseAccumulatedRewardsRecord(): AccumulatedRewardsRecord {
+  return { poolId: Long.UZERO, accumulatedRewards: undefined };
+}
 
 export const AccumulatedRewardsRecord = {
-  encode(
-    message: AccumulatedRewardsRecord,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AccumulatedRewardsRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
     if (message.accumulatedRewards !== undefined) {
-      AccumulatedRewards.encode(
-        message.accumulatedRewards,
-        writer.uint32(18).fork()
-      ).ldelim();
+      AccumulatedRewards.encode(message.accumulatedRewards, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): AccumulatedRewardsRecord {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccumulatedRewardsRecord {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseAccumulatedRewardsRecord,
-    } as AccumulatedRewardsRecord;
+    const message = createBaseAccumulatedRewardsRecord();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
-          message.accumulatedRewards = AccumulatedRewards.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.accumulatedRewards = AccumulatedRewards.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccumulatedRewardsRecord {
-    const message = {
-      ...baseAccumulatedRewardsRecord,
-    } as AccumulatedRewardsRecord;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.accumulatedRewards =
-      object.accumulatedRewards !== undefined &&
-      object.accumulatedRewards !== null
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      accumulatedRewards: isSet(object.accumulatedRewards)
         ? AccumulatedRewards.fromJSON(object.accumulatedRewards)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: AccumulatedRewardsRecord): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.accumulatedRewards !== undefined &&
-      (obj.accumulatedRewards = message.accumulatedRewards
-        ? AccumulatedRewards.toJSON(message.accumulatedRewards)
-        : undefined);
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.accumulatedRewards !== undefined && (obj.accumulatedRewards = message.accumulatedRewards
+      ? AccumulatedRewards.toJSON(message.accumulatedRewards)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<AccumulatedRewardsRecord>
-  ): AccumulatedRewardsRecord {
-    const message = {
-      ...baseAccumulatedRewardsRecord,
-    } as AccumulatedRewardsRecord;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    message.accumulatedRewards =
-      object.accumulatedRewards !== undefined &&
-      object.accumulatedRewards !== null
-        ? AccumulatedRewards.fromPartial(object.accumulatedRewards)
-        : undefined;
+  create(base?: DeepPartial<AccumulatedRewardsRecord>): AccumulatedRewardsRecord {
+    return AccumulatedRewardsRecord.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<AccumulatedRewardsRecord>): AccumulatedRewardsRecord {
+    const message = createBaseAccumulatedRewardsRecord();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
+    message.accumulatedRewards = (object.accumulatedRewards !== undefined && object.accumulatedRewards !== null)
+      ? AccumulatedRewards.fromPartial(object.accumulatedRewards)
+      : undefined;
     return message;
   },
 };
 
-const baseCommitmentExpiry: object = { poolId: Long.UZERO, address: "" };
+function createBaseCommitmentExpiry(): CommitmentExpiry {
+  return { poolId: Long.UZERO, address: "" };
+}
 
 export const CommitmentExpiry = {
-  encode(
-    message: CommitmentExpiry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommitmentExpiry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -1215,65 +1188,69 @@ export const CommitmentExpiry = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentExpiry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommitmentExpiry } as CommitmentExpiry;
+    const message = createBaseCommitmentExpiry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CommitmentExpiry {
-    const message = { ...baseCommitmentExpiry } as CommitmentExpiry;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      address: isSet(object.address) ? String(object.address) : "",
+    };
   },
 
   toJSON(message: CommitmentExpiry): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.address !== undefined && (obj.address = message.address);
     return obj;
   },
 
+  create(base?: DeepPartial<CommitmentExpiry>): CommitmentExpiry {
+    return CommitmentExpiry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CommitmentExpiry>): CommitmentExpiry {
-    const message = { ...baseCommitmentExpiry } as CommitmentExpiry;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    const message = createBaseCommitmentExpiry();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseCommitmentExpiries: object = {};
+function createBaseCommitmentExpiries(): CommitmentExpiries {
+  return { commitmentExpiries: [] };
+}
 
 export const CommitmentExpiries = {
-  encode(
-    message: CommitmentExpiries,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommitmentExpiries, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.commitmentExpiries) {
       CommitmentExpiry.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1281,156 +1258,142 @@ export const CommitmentExpiries = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentExpiries {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommitmentExpiries } as CommitmentExpiries;
-    message.commitmentExpiries = [];
+    const message = createBaseCommitmentExpiries();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.commitmentExpiries.push(
-            CommitmentExpiry.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.commitmentExpiries.push(CommitmentExpiry.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CommitmentExpiries {
-    const message = { ...baseCommitmentExpiries } as CommitmentExpiries;
-    message.commitmentExpiries = (object.commitmentExpiries ?? []).map(
-      (e: any) => CommitmentExpiry.fromJSON(e)
-    );
-    return message;
+    return {
+      commitmentExpiries: Array.isArray(object?.commitmentExpiries)
+        ? object.commitmentExpiries.map((e: any) => CommitmentExpiry.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: CommitmentExpiries): unknown {
     const obj: any = {};
     if (message.commitmentExpiries) {
-      obj.commitmentExpiries = message.commitmentExpiries.map((e) =>
-        e ? CommitmentExpiry.toJSON(e) : undefined
-      );
+      obj.commitmentExpiries = message.commitmentExpiries.map((e) => e ? CommitmentExpiry.toJSON(e) : undefined);
     } else {
       obj.commitmentExpiries = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<CommitmentExpiries>): CommitmentExpiries {
+    return CommitmentExpiries.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CommitmentExpiries>): CommitmentExpiries {
-    const message = { ...baseCommitmentExpiries } as CommitmentExpiries;
-    message.commitmentExpiries = (object.commitmentExpiries ?? []).map((e) =>
-      CommitmentExpiry.fromPartial(e)
-    );
+    const message = createBaseCommitmentExpiries();
+    message.commitmentExpiries = object.commitmentExpiries?.map((e) => CommitmentExpiry.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseCommitmentExpiriesRecord: object = { expiryTime: Long.UZERO };
+function createBaseCommitmentExpiriesRecord(): CommitmentExpiriesRecord {
+  return { expiryTime: Long.UZERO, commitmentExpiries: undefined };
+}
 
 export const CommitmentExpiriesRecord = {
-  encode(
-    message: CommitmentExpiriesRecord,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommitmentExpiriesRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.expiryTime.isZero()) {
       writer.uint32(8).uint64(message.expiryTime);
     }
     if (message.commitmentExpiries !== undefined) {
-      CommitmentExpiries.encode(
-        message.commitmentExpiries,
-        writer.uint32(18).fork()
-      ).ldelim();
+      CommitmentExpiries.encode(message.commitmentExpiries, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): CommitmentExpiriesRecord {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentExpiriesRecord {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseCommitmentExpiriesRecord,
-    } as CommitmentExpiriesRecord;
+    const message = createBaseCommitmentExpiriesRecord();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.expiryTime = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
-          message.commitmentExpiries = CommitmentExpiries.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.commitmentExpiries = CommitmentExpiries.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CommitmentExpiriesRecord {
-    const message = {
-      ...baseCommitmentExpiriesRecord,
-    } as CommitmentExpiriesRecord;
-    message.expiryTime =
-      object.expiryTime !== undefined && object.expiryTime !== null
-        ? Long.fromString(object.expiryTime)
-        : Long.UZERO;
-    message.commitmentExpiries =
-      object.commitmentExpiries !== undefined &&
-      object.commitmentExpiries !== null
+    return {
+      expiryTime: isSet(object.expiryTime) ? Long.fromValue(object.expiryTime) : Long.UZERO,
+      commitmentExpiries: isSet(object.commitmentExpiries)
         ? CommitmentExpiries.fromJSON(object.commitmentExpiries)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: CommitmentExpiriesRecord): unknown {
     const obj: any = {};
-    message.expiryTime !== undefined &&
-      (obj.expiryTime = (message.expiryTime || Long.UZERO).toString());
-    message.commitmentExpiries !== undefined &&
-      (obj.commitmentExpiries = message.commitmentExpiries
-        ? CommitmentExpiries.toJSON(message.commitmentExpiries)
-        : undefined);
+    message.expiryTime !== undefined && (obj.expiryTime = (message.expiryTime || Long.UZERO).toString());
+    message.commitmentExpiries !== undefined && (obj.commitmentExpiries = message.commitmentExpiries
+      ? CommitmentExpiries.toJSON(message.commitmentExpiries)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<CommitmentExpiriesRecord>
-  ): CommitmentExpiriesRecord {
-    const message = {
-      ...baseCommitmentExpiriesRecord,
-    } as CommitmentExpiriesRecord;
-    message.expiryTime =
-      object.expiryTime !== undefined && object.expiryTime !== null
-        ? Long.fromValue(object.expiryTime)
-        : Long.UZERO;
-    message.commitmentExpiries =
-      object.commitmentExpiries !== undefined &&
-      object.commitmentExpiries !== null
-        ? CommitmentExpiries.fromPartial(object.commitmentExpiries)
-        : undefined;
+  create(base?: DeepPartial<CommitmentExpiriesRecord>): CommitmentExpiriesRecord {
+    return CommitmentExpiriesRecord.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<CommitmentExpiriesRecord>): CommitmentExpiriesRecord {
+    const message = createBaseCommitmentExpiriesRecord();
+    message.expiryTime = (object.expiryTime !== undefined && object.expiryTime !== null)
+      ? Long.fromValue(object.expiryTime)
+      : Long.UZERO;
+    message.commitmentExpiries = (object.commitmentExpiries !== undefined && object.commitmentExpiries !== null)
+      ? CommitmentExpiries.fromPartial(object.commitmentExpiries)
+      : undefined;
     return message;
   },
 };
 
-const baseAllocatedRewards: object = {};
+function createBaseAllocatedRewards(): AllocatedRewards {
+  return { coins: [] };
+}
 
 export const AllocatedRewards = {
-  encode(
-    message: AllocatedRewards,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AllocatedRewards, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.coins) {
       DecCoin.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1438,65 +1401,59 @@ export const AllocatedRewards = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AllocatedRewards {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAllocatedRewards } as AllocatedRewards;
-    message.coins = [];
+    const message = createBaseAllocatedRewards();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.coins.push(DecCoin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AllocatedRewards {
-    const message = { ...baseAllocatedRewards } as AllocatedRewards;
-    message.coins = (object.coins ?? []).map((e: any) => DecCoin.fromJSON(e));
-    return message;
+    return { coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => DecCoin.fromJSON(e)) : [] };
   },
 
   toJSON(message: AllocatedRewards): unknown {
     const obj: any = {};
     if (message.coins) {
-      obj.coins = message.coins.map((e) => (e ? DecCoin.toJSON(e) : undefined));
+      obj.coins = message.coins.map((e) => e ? DecCoin.toJSON(e) : undefined);
     } else {
       obj.coins = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<AllocatedRewards>): AllocatedRewards {
+    return AllocatedRewards.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<AllocatedRewards>): AllocatedRewards {
-    const message = { ...baseAllocatedRewards } as AllocatedRewards;
-    message.coins = (object.coins ?? []).map((e) => DecCoin.fromPartial(e));
+    const message = createBaseAllocatedRewards();
+    message.coins = object.coins?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -1506,8 +1463,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -1528,4 +1485,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

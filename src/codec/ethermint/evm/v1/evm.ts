@@ -187,19 +187,19 @@ export interface TraceConfig {
   tracerJsonConfig: string;
 }
 
-const baseParams: object = {
-  evmDenom: "",
-  enableCreate: false,
-  enableCall: false,
-  extraEips: Long.ZERO,
-  allowUnprotectedTxs: false,
-};
+function createBaseParams(): Params {
+  return {
+    evmDenom: "",
+    enableCreate: false,
+    enableCall: false,
+    extraEips: [],
+    chainConfig: undefined,
+    allowUnprotectedTxs: false,
+  };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.evmDenom !== "") {
       writer.uint32(10).string(message.evmDenom);
     }
@@ -215,10 +215,7 @@ export const Params = {
     }
     writer.ldelim();
     if (message.chainConfig !== undefined) {
-      ChainConfig.encode(
-        message.chainConfig,
-        writer.uint32(42).fork()
-      ).ldelim();
+      ChainConfig.encode(message.chainConfig, writer.uint32(42).fork()).ldelim();
     }
     if (message.allowUnprotectedTxs === true) {
       writer.uint32(48).bool(message.allowUnprotectedTxs);
@@ -227,80 +224,88 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    message.extraEips = [];
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.evmDenom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.enableCreate = reader.bool();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.enableCall = reader.bool();
-          break;
+          continue;
         case 4:
-          if ((tag & 7) === 2) {
+          if (tag === 32) {
+            message.extraEips.push(reader.int64() as Long);
+
+            continue;
+          }
+
+          if (tag === 34) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.extraEips.push(reader.int64() as Long);
             }
-          } else {
-            message.extraEips.push(reader.int64() as Long);
+
+            continue;
           }
+
           break;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.chainConfig = ChainConfig.decode(reader, reader.uint32());
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.allowUnprotectedTxs = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.evmDenom =
-      object.evmDenom !== undefined && object.evmDenom !== null
-        ? String(object.evmDenom)
-        : "";
-    message.enableCreate =
-      object.enableCreate !== undefined && object.enableCreate !== null
-        ? Boolean(object.enableCreate)
-        : false;
-    message.enableCall =
-      object.enableCall !== undefined && object.enableCall !== null
-        ? Boolean(object.enableCall)
-        : false;
-    message.extraEips = (object.extraEips ?? []).map((e: any) =>
-      Long.fromString(e)
-    );
-    message.chainConfig =
-      object.chainConfig !== undefined && object.chainConfig !== null
-        ? ChainConfig.fromJSON(object.chainConfig)
-        : undefined;
-    message.allowUnprotectedTxs =
-      object.allowUnprotectedTxs !== undefined &&
-      object.allowUnprotectedTxs !== null
-        ? Boolean(object.allowUnprotectedTxs)
-        : false;
-    return message;
+    return {
+      evmDenom: isSet(object.evmDenom) ? String(object.evmDenom) : "",
+      enableCreate: isSet(object.enableCreate) ? Boolean(object.enableCreate) : false,
+      enableCall: isSet(object.enableCall) ? Boolean(object.enableCall) : false,
+      extraEips: Array.isArray(object?.extraEips) ? object.extraEips.map((e: any) => Long.fromValue(e)) : [],
+      chainConfig: isSet(object.chainConfig) ? ChainConfig.fromJSON(object.chainConfig) : undefined,
+      allowUnprotectedTxs: isSet(object.allowUnprotectedTxs) ? Boolean(object.allowUnprotectedTxs) : false,
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     message.evmDenom !== undefined && (obj.evmDenom = message.evmDenom);
-    message.enableCreate !== undefined &&
-      (obj.enableCreate = message.enableCreate);
+    message.enableCreate !== undefined && (obj.enableCreate = message.enableCreate);
     message.enableCall !== undefined && (obj.enableCall = message.enableCall);
     if (message.extraEips) {
       obj.extraEips = message.extraEips.map((e) => (e || Long.ZERO).toString());
@@ -308,56 +313,55 @@ export const Params = {
       obj.extraEips = [];
     }
     message.chainConfig !== undefined &&
-      (obj.chainConfig = message.chainConfig
-        ? ChainConfig.toJSON(message.chainConfig)
-        : undefined);
-    message.allowUnprotectedTxs !== undefined &&
-      (obj.allowUnprotectedTxs = message.allowUnprotectedTxs);
+      (obj.chainConfig = message.chainConfig ? ChainConfig.toJSON(message.chainConfig) : undefined);
+    message.allowUnprotectedTxs !== undefined && (obj.allowUnprotectedTxs = message.allowUnprotectedTxs);
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.evmDenom = object.evmDenom ?? "";
     message.enableCreate = object.enableCreate ?? false;
     message.enableCall = object.enableCall ?? false;
-    message.extraEips = (object.extraEips ?? []).map((e) => Long.fromValue(e));
-    message.chainConfig =
-      object.chainConfig !== undefined && object.chainConfig !== null
-        ? ChainConfig.fromPartial(object.chainConfig)
-        : undefined;
+    message.extraEips = object.extraEips?.map((e) => Long.fromValue(e)) || [];
+    message.chainConfig = (object.chainConfig !== undefined && object.chainConfig !== null)
+      ? ChainConfig.fromPartial(object.chainConfig)
+      : undefined;
     message.allowUnprotectedTxs = object.allowUnprotectedTxs ?? false;
     return message;
   },
 };
 
-const baseChainConfig: object = {
-  homesteadBlock: "",
-  daoForkBlock: "",
-  daoForkSupport: false,
-  eip150Block: "",
-  eip150Hash: "",
-  eip155Block: "",
-  eip158Block: "",
-  byzantiumBlock: "",
-  constantinopleBlock: "",
-  petersburgBlock: "",
-  istanbulBlock: "",
-  muirGlacierBlock: "",
-  berlinBlock: "",
-  londonBlock: "",
-  arrowGlacierBlock: "",
-  grayGlacierBlock: "",
-  mergeNetsplitBlock: "",
-  shanghaiBlock: "",
-  cancunBlock: "",
-};
+function createBaseChainConfig(): ChainConfig {
+  return {
+    homesteadBlock: "",
+    daoForkBlock: "",
+    daoForkSupport: false,
+    eip150Block: "",
+    eip150Hash: "",
+    eip155Block: "",
+    eip158Block: "",
+    byzantiumBlock: "",
+    constantinopleBlock: "",
+    petersburgBlock: "",
+    istanbulBlock: "",
+    muirGlacierBlock: "",
+    berlinBlock: "",
+    londonBlock: "",
+    arrowGlacierBlock: "",
+    grayGlacierBlock: "",
+    mergeNetsplitBlock: "",
+    shanghaiBlock: "",
+    cancunBlock: "",
+  };
+}
 
 export const ChainConfig = {
-  encode(
-    message: ChainConfig,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ChainConfig, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.homesteadBlock !== "") {
       writer.uint32(10).string(message.homesteadBlock);
     }
@@ -419,205 +423,208 @@ export const ChainConfig = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ChainConfig {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseChainConfig } as ChainConfig;
+    const message = createBaseChainConfig();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.homesteadBlock = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.daoForkBlock = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.daoForkSupport = reader.bool();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.eip150Block = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.eip150Hash = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.eip155Block = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.eip158Block = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.byzantiumBlock = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.constantinopleBlock = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.petersburgBlock = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.istanbulBlock = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.muirGlacierBlock = reader.string();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.berlinBlock = reader.string();
-          break;
+          continue;
         case 17:
+          if (tag !== 138) {
+            break;
+          }
+
           message.londonBlock = reader.string();
-          break;
+          continue;
         case 18:
+          if (tag !== 146) {
+            break;
+          }
+
           message.arrowGlacierBlock = reader.string();
-          break;
+          continue;
         case 20:
+          if (tag !== 162) {
+            break;
+          }
+
           message.grayGlacierBlock = reader.string();
-          break;
+          continue;
         case 21:
+          if (tag !== 170) {
+            break;
+          }
+
           message.mergeNetsplitBlock = reader.string();
-          break;
+          continue;
         case 22:
+          if (tag !== 178) {
+            break;
+          }
+
           message.shanghaiBlock = reader.string();
-          break;
+          continue;
         case 23:
+          if (tag !== 186) {
+            break;
+          }
+
           message.cancunBlock = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ChainConfig {
-    const message = { ...baseChainConfig } as ChainConfig;
-    message.homesteadBlock =
-      object.homesteadBlock !== undefined && object.homesteadBlock !== null
-        ? String(object.homesteadBlock)
-        : "";
-    message.daoForkBlock =
-      object.daoForkBlock !== undefined && object.daoForkBlock !== null
-        ? String(object.daoForkBlock)
-        : "";
-    message.daoForkSupport =
-      object.daoForkSupport !== undefined && object.daoForkSupport !== null
-        ? Boolean(object.daoForkSupport)
-        : false;
-    message.eip150Block =
-      object.eip150Block !== undefined && object.eip150Block !== null
-        ? String(object.eip150Block)
-        : "";
-    message.eip150Hash =
-      object.eip150Hash !== undefined && object.eip150Hash !== null
-        ? String(object.eip150Hash)
-        : "";
-    message.eip155Block =
-      object.eip155Block !== undefined && object.eip155Block !== null
-        ? String(object.eip155Block)
-        : "";
-    message.eip158Block =
-      object.eip158Block !== undefined && object.eip158Block !== null
-        ? String(object.eip158Block)
-        : "";
-    message.byzantiumBlock =
-      object.byzantiumBlock !== undefined && object.byzantiumBlock !== null
-        ? String(object.byzantiumBlock)
-        : "";
-    message.constantinopleBlock =
-      object.constantinopleBlock !== undefined &&
-      object.constantinopleBlock !== null
-        ? String(object.constantinopleBlock)
-        : "";
-    message.petersburgBlock =
-      object.petersburgBlock !== undefined && object.petersburgBlock !== null
-        ? String(object.petersburgBlock)
-        : "";
-    message.istanbulBlock =
-      object.istanbulBlock !== undefined && object.istanbulBlock !== null
-        ? String(object.istanbulBlock)
-        : "";
-    message.muirGlacierBlock =
-      object.muirGlacierBlock !== undefined && object.muirGlacierBlock !== null
-        ? String(object.muirGlacierBlock)
-        : "";
-    message.berlinBlock =
-      object.berlinBlock !== undefined && object.berlinBlock !== null
-        ? String(object.berlinBlock)
-        : "";
-    message.londonBlock =
-      object.londonBlock !== undefined && object.londonBlock !== null
-        ? String(object.londonBlock)
-        : "";
-    message.arrowGlacierBlock =
-      object.arrowGlacierBlock !== undefined &&
-      object.arrowGlacierBlock !== null
-        ? String(object.arrowGlacierBlock)
-        : "";
-    message.grayGlacierBlock =
-      object.grayGlacierBlock !== undefined && object.grayGlacierBlock !== null
-        ? String(object.grayGlacierBlock)
-        : "";
-    message.mergeNetsplitBlock =
-      object.mergeNetsplitBlock !== undefined &&
-      object.mergeNetsplitBlock !== null
-        ? String(object.mergeNetsplitBlock)
-        : "";
-    message.shanghaiBlock =
-      object.shanghaiBlock !== undefined && object.shanghaiBlock !== null
-        ? String(object.shanghaiBlock)
-        : "";
-    message.cancunBlock =
-      object.cancunBlock !== undefined && object.cancunBlock !== null
-        ? String(object.cancunBlock)
-        : "";
-    return message;
+    return {
+      homesteadBlock: isSet(object.homesteadBlock) ? String(object.homesteadBlock) : "",
+      daoForkBlock: isSet(object.daoForkBlock) ? String(object.daoForkBlock) : "",
+      daoForkSupport: isSet(object.daoForkSupport) ? Boolean(object.daoForkSupport) : false,
+      eip150Block: isSet(object.eip150Block) ? String(object.eip150Block) : "",
+      eip150Hash: isSet(object.eip150Hash) ? String(object.eip150Hash) : "",
+      eip155Block: isSet(object.eip155Block) ? String(object.eip155Block) : "",
+      eip158Block: isSet(object.eip158Block) ? String(object.eip158Block) : "",
+      byzantiumBlock: isSet(object.byzantiumBlock) ? String(object.byzantiumBlock) : "",
+      constantinopleBlock: isSet(object.constantinopleBlock) ? String(object.constantinopleBlock) : "",
+      petersburgBlock: isSet(object.petersburgBlock) ? String(object.petersburgBlock) : "",
+      istanbulBlock: isSet(object.istanbulBlock) ? String(object.istanbulBlock) : "",
+      muirGlacierBlock: isSet(object.muirGlacierBlock) ? String(object.muirGlacierBlock) : "",
+      berlinBlock: isSet(object.berlinBlock) ? String(object.berlinBlock) : "",
+      londonBlock: isSet(object.londonBlock) ? String(object.londonBlock) : "",
+      arrowGlacierBlock: isSet(object.arrowGlacierBlock) ? String(object.arrowGlacierBlock) : "",
+      grayGlacierBlock: isSet(object.grayGlacierBlock) ? String(object.grayGlacierBlock) : "",
+      mergeNetsplitBlock: isSet(object.mergeNetsplitBlock) ? String(object.mergeNetsplitBlock) : "",
+      shanghaiBlock: isSet(object.shanghaiBlock) ? String(object.shanghaiBlock) : "",
+      cancunBlock: isSet(object.cancunBlock) ? String(object.cancunBlock) : "",
+    };
   },
 
   toJSON(message: ChainConfig): unknown {
     const obj: any = {};
-    message.homesteadBlock !== undefined &&
-      (obj.homesteadBlock = message.homesteadBlock);
-    message.daoForkBlock !== undefined &&
-      (obj.daoForkBlock = message.daoForkBlock);
-    message.daoForkSupport !== undefined &&
-      (obj.daoForkSupport = message.daoForkSupport);
-    message.eip150Block !== undefined &&
-      (obj.eip150Block = message.eip150Block);
+    message.homesteadBlock !== undefined && (obj.homesteadBlock = message.homesteadBlock);
+    message.daoForkBlock !== undefined && (obj.daoForkBlock = message.daoForkBlock);
+    message.daoForkSupport !== undefined && (obj.daoForkSupport = message.daoForkSupport);
+    message.eip150Block !== undefined && (obj.eip150Block = message.eip150Block);
     message.eip150Hash !== undefined && (obj.eip150Hash = message.eip150Hash);
-    message.eip155Block !== undefined &&
-      (obj.eip155Block = message.eip155Block);
-    message.eip158Block !== undefined &&
-      (obj.eip158Block = message.eip158Block);
-    message.byzantiumBlock !== undefined &&
-      (obj.byzantiumBlock = message.byzantiumBlock);
-    message.constantinopleBlock !== undefined &&
-      (obj.constantinopleBlock = message.constantinopleBlock);
-    message.petersburgBlock !== undefined &&
-      (obj.petersburgBlock = message.petersburgBlock);
-    message.istanbulBlock !== undefined &&
-      (obj.istanbulBlock = message.istanbulBlock);
-    message.muirGlacierBlock !== undefined &&
-      (obj.muirGlacierBlock = message.muirGlacierBlock);
-    message.berlinBlock !== undefined &&
-      (obj.berlinBlock = message.berlinBlock);
-    message.londonBlock !== undefined &&
-      (obj.londonBlock = message.londonBlock);
-    message.arrowGlacierBlock !== undefined &&
-      (obj.arrowGlacierBlock = message.arrowGlacierBlock);
-    message.grayGlacierBlock !== undefined &&
-      (obj.grayGlacierBlock = message.grayGlacierBlock);
-    message.mergeNetsplitBlock !== undefined &&
-      (obj.mergeNetsplitBlock = message.mergeNetsplitBlock);
-    message.shanghaiBlock !== undefined &&
-      (obj.shanghaiBlock = message.shanghaiBlock);
-    message.cancunBlock !== undefined &&
-      (obj.cancunBlock = message.cancunBlock);
+    message.eip155Block !== undefined && (obj.eip155Block = message.eip155Block);
+    message.eip158Block !== undefined && (obj.eip158Block = message.eip158Block);
+    message.byzantiumBlock !== undefined && (obj.byzantiumBlock = message.byzantiumBlock);
+    message.constantinopleBlock !== undefined && (obj.constantinopleBlock = message.constantinopleBlock);
+    message.petersburgBlock !== undefined && (obj.petersburgBlock = message.petersburgBlock);
+    message.istanbulBlock !== undefined && (obj.istanbulBlock = message.istanbulBlock);
+    message.muirGlacierBlock !== undefined && (obj.muirGlacierBlock = message.muirGlacierBlock);
+    message.berlinBlock !== undefined && (obj.berlinBlock = message.berlinBlock);
+    message.londonBlock !== undefined && (obj.londonBlock = message.londonBlock);
+    message.arrowGlacierBlock !== undefined && (obj.arrowGlacierBlock = message.arrowGlacierBlock);
+    message.grayGlacierBlock !== undefined && (obj.grayGlacierBlock = message.grayGlacierBlock);
+    message.mergeNetsplitBlock !== undefined && (obj.mergeNetsplitBlock = message.mergeNetsplitBlock);
+    message.shanghaiBlock !== undefined && (obj.shanghaiBlock = message.shanghaiBlock);
+    message.cancunBlock !== undefined && (obj.cancunBlock = message.cancunBlock);
     return obj;
   },
 
+  create(base?: DeepPartial<ChainConfig>): ChainConfig {
+    return ChainConfig.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ChainConfig>): ChainConfig {
-    const message = { ...baseChainConfig } as ChainConfig;
+    const message = createBaseChainConfig();
     message.homesteadBlock = object.homesteadBlock ?? "";
     message.daoForkBlock = object.daoForkBlock ?? "";
     message.daoForkSupport = object.daoForkSupport ?? false;
@@ -641,7 +648,9 @@ export const ChainConfig = {
   },
 };
 
-const baseState: object = { key: "", value: "" };
+function createBaseState(): State {
+  return { key: "", value: "" };
+}
 
 export const State = {
   encode(message: State, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -655,35 +664,37 @@ export const State = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): State {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseState } as State;
+    const message = createBaseState();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): State {
-    const message = { ...baseState } as State;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? String(object.value)
-        : "";
-    return message;
+    return { key: isSet(object.key) ? String(object.key) : "", value: isSet(object.value) ? String(object.value) : "" };
   },
 
   toJSON(message: State): unknown {
@@ -693,21 +704,24 @@ export const State = {
     return obj;
   },
 
+  create(base?: DeepPartial<State>): State {
+    return State.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<State>): State {
-    const message = { ...baseState } as State;
+    const message = createBaseState();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;
   },
 };
 
-const baseTransactionLogs: object = { hash: "" };
+function createBaseTransactionLogs(): TransactionLogs {
+  return { hash: "", logs: [] };
+}
 
 export const TransactionLogs = {
-  encode(
-    message: TransactionLogs,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TransactionLogs, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.hash !== "") {
       writer.uint32(10).string(message.hash);
     }
@@ -718,66 +732,78 @@ export const TransactionLogs = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TransactionLogs {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTransactionLogs } as TransactionLogs;
-    message.logs = [];
+    const message = createBaseTransactionLogs();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.hash = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.logs.push(Log.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TransactionLogs {
-    const message = { ...baseTransactionLogs } as TransactionLogs;
-    message.hash =
-      object.hash !== undefined && object.hash !== null
-        ? String(object.hash)
-        : "";
-    message.logs = (object.logs ?? []).map((e: any) => Log.fromJSON(e));
-    return message;
+    return {
+      hash: isSet(object.hash) ? String(object.hash) : "",
+      logs: Array.isArray(object?.logs) ? object.logs.map((e: any) => Log.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: TransactionLogs): unknown {
     const obj: any = {};
     message.hash !== undefined && (obj.hash = message.hash);
     if (message.logs) {
-      obj.logs = message.logs.map((e) => (e ? Log.toJSON(e) : undefined));
+      obj.logs = message.logs.map((e) => e ? Log.toJSON(e) : undefined);
     } else {
       obj.logs = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<TransactionLogs>): TransactionLogs {
+    return TransactionLogs.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TransactionLogs>): TransactionLogs {
-    const message = { ...baseTransactionLogs } as TransactionLogs;
+    const message = createBaseTransactionLogs();
     message.hash = object.hash ?? "";
-    message.logs = (object.logs ?? []).map((e) => Log.fromPartial(e));
+    message.logs = object.logs?.map((e) => Log.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseLog: object = {
-  address: "",
-  topics: "",
-  blockNumber: Long.UZERO,
-  txHash: "",
-  txIndex: Long.UZERO,
-  blockHash: "",
-  index: Long.UZERO,
-  removed: false,
-};
+function createBaseLog(): Log {
+  return {
+    address: "",
+    topics: [],
+    data: new Uint8Array(),
+    blockNumber: Long.UZERO,
+    txHash: "",
+    txIndex: Long.UZERO,
+    blockHash: "",
+    index: Long.UZERO,
+    removed: false,
+  };
+}
 
 export const Log = {
   encode(message: Log, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -812,85 +838,96 @@ export const Log = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Log {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLog } as Log;
-    message.topics = [];
-    message.data = new Uint8Array();
+    const message = createBaseLog();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.topics.push(reader.string());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.data = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.blockNumber = reader.uint64() as Long;
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.txHash = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.txIndex = reader.uint64() as Long;
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.blockHash = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.index = reader.uint64() as Long;
-          break;
+          continue;
         case 9:
+          if (tag !== 72) {
+            break;
+          }
+
           message.removed = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Log {
-    const message = { ...baseLog } as Log;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.topics = (object.topics ?? []).map((e: any) => String(e));
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? bytesFromBase64(object.data)
-        : new Uint8Array();
-    message.blockNumber =
-      object.blockNumber !== undefined && object.blockNumber !== null
-        ? Long.fromString(object.blockNumber)
-        : Long.UZERO;
-    message.txHash =
-      object.txHash !== undefined && object.txHash !== null
-        ? String(object.txHash)
-        : "";
-    message.txIndex =
-      object.txIndex !== undefined && object.txIndex !== null
-        ? Long.fromString(object.txIndex)
-        : Long.UZERO;
-    message.blockHash =
-      object.blockHash !== undefined && object.blockHash !== null
-        ? String(object.blockHash)
-        : "";
-    message.index =
-      object.index !== undefined && object.index !== null
-        ? Long.fromString(object.index)
-        : Long.UZERO;
-    message.removed =
-      object.removed !== undefined && object.removed !== null
-        ? Boolean(object.removed)
-        : false;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      topics: Array.isArray(object?.topics) ? object.topics.map((e: any) => String(e)) : [],
+      data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+      blockNumber: isSet(object.blockNumber) ? Long.fromValue(object.blockNumber) : Long.UZERO,
+      txHash: isSet(object.txHash) ? String(object.txHash) : "",
+      txIndex: isSet(object.txIndex) ? Long.fromValue(object.txIndex) : Long.UZERO,
+      blockHash: isSet(object.blockHash) ? String(object.blockHash) : "",
+      index: isSet(object.index) ? Long.fromValue(object.index) : Long.UZERO,
+      removed: isSet(object.removed) ? Boolean(object.removed) : false,
+    };
   },
 
   toJSON(message: Log): unknown {
@@ -902,56 +939,52 @@ export const Log = {
       obj.topics = [];
     }
     message.data !== undefined &&
-      (obj.data = base64FromBytes(
-        message.data !== undefined ? message.data : new Uint8Array()
-      ));
-    message.blockNumber !== undefined &&
-      (obj.blockNumber = (message.blockNumber || Long.UZERO).toString());
+      (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
+    message.blockNumber !== undefined && (obj.blockNumber = (message.blockNumber || Long.UZERO).toString());
     message.txHash !== undefined && (obj.txHash = message.txHash);
-    message.txIndex !== undefined &&
-      (obj.txIndex = (message.txIndex || Long.UZERO).toString());
+    message.txIndex !== undefined && (obj.txIndex = (message.txIndex || Long.UZERO).toString());
     message.blockHash !== undefined && (obj.blockHash = message.blockHash);
-    message.index !== undefined &&
-      (obj.index = (message.index || Long.UZERO).toString());
+    message.index !== undefined && (obj.index = (message.index || Long.UZERO).toString());
     message.removed !== undefined && (obj.removed = message.removed);
     return obj;
   },
 
+  create(base?: DeepPartial<Log>): Log {
+    return Log.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Log>): Log {
-    const message = { ...baseLog } as Log;
+    const message = createBaseLog();
     message.address = object.address ?? "";
-    message.topics = (object.topics ?? []).map((e) => e);
+    message.topics = object.topics?.map((e) => e) || [];
     message.data = object.data ?? new Uint8Array();
-    message.blockNumber =
-      object.blockNumber !== undefined && object.blockNumber !== null
-        ? Long.fromValue(object.blockNumber)
-        : Long.UZERO;
+    message.blockNumber = (object.blockNumber !== undefined && object.blockNumber !== null)
+      ? Long.fromValue(object.blockNumber)
+      : Long.UZERO;
     message.txHash = object.txHash ?? "";
-    message.txIndex =
-      object.txIndex !== undefined && object.txIndex !== null
-        ? Long.fromValue(object.txIndex)
-        : Long.UZERO;
+    message.txIndex = (object.txIndex !== undefined && object.txIndex !== null)
+      ? Long.fromValue(object.txIndex)
+      : Long.UZERO;
     message.blockHash = object.blockHash ?? "";
-    message.index =
-      object.index !== undefined && object.index !== null
-        ? Long.fromValue(object.index)
-        : Long.UZERO;
+    message.index = (object.index !== undefined && object.index !== null) ? Long.fromValue(object.index) : Long.UZERO;
     message.removed = object.removed ?? false;
     return message;
   },
 };
 
-const baseTxResult: object = {
-  contractAddress: "",
-  reverted: false,
-  gasUsed: Long.UZERO,
-};
+function createBaseTxResult(): TxResult {
+  return {
+    contractAddress: "",
+    bloom: new Uint8Array(),
+    txLogs: undefined,
+    ret: new Uint8Array(),
+    reverted: false,
+    gasUsed: Long.UZERO,
+  };
+}
 
 export const TxResult = {
-  encode(
-    message: TxResult,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TxResult, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.contractAddress !== "") {
       writer.uint32(10).string(message.contractAddress);
     }
@@ -974,116 +1007,113 @@ export const TxResult = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TxResult {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTxResult } as TxResult;
-    message.bloom = new Uint8Array();
-    message.ret = new Uint8Array();
+    const message = createBaseTxResult();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contractAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.bloom = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.txLogs = TransactionLogs.decode(reader, reader.uint32());
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.ret = reader.bytes();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.reverted = reader.bool();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.gasUsed = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TxResult {
-    const message = { ...baseTxResult } as TxResult;
-    message.contractAddress =
-      object.contractAddress !== undefined && object.contractAddress !== null
-        ? String(object.contractAddress)
-        : "";
-    message.bloom =
-      object.bloom !== undefined && object.bloom !== null
-        ? bytesFromBase64(object.bloom)
-        : new Uint8Array();
-    message.txLogs =
-      object.txLogs !== undefined && object.txLogs !== null
-        ? TransactionLogs.fromJSON(object.txLogs)
-        : undefined;
-    message.ret =
-      object.ret !== undefined && object.ret !== null
-        ? bytesFromBase64(object.ret)
-        : new Uint8Array();
-    message.reverted =
-      object.reverted !== undefined && object.reverted !== null
-        ? Boolean(object.reverted)
-        : false;
-    message.gasUsed =
-      object.gasUsed !== undefined && object.gasUsed !== null
-        ? Long.fromString(object.gasUsed)
-        : Long.UZERO;
-    return message;
+    return {
+      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
+      bloom: isSet(object.bloom) ? bytesFromBase64(object.bloom) : new Uint8Array(),
+      txLogs: isSet(object.txLogs) ? TransactionLogs.fromJSON(object.txLogs) : undefined,
+      ret: isSet(object.ret) ? bytesFromBase64(object.ret) : new Uint8Array(),
+      reverted: isSet(object.reverted) ? Boolean(object.reverted) : false,
+      gasUsed: isSet(object.gasUsed) ? Long.fromValue(object.gasUsed) : Long.UZERO,
+    };
   },
 
   toJSON(message: TxResult): unknown {
     const obj: any = {};
-    message.contractAddress !== undefined &&
-      (obj.contractAddress = message.contractAddress);
+    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     message.bloom !== undefined &&
-      (obj.bloom = base64FromBytes(
-        message.bloom !== undefined ? message.bloom : new Uint8Array()
-      ));
-    message.txLogs !== undefined &&
-      (obj.txLogs = message.txLogs
-        ? TransactionLogs.toJSON(message.txLogs)
-        : undefined);
+      (obj.bloom = base64FromBytes(message.bloom !== undefined ? message.bloom : new Uint8Array()));
+    message.txLogs !== undefined && (obj.txLogs = message.txLogs ? TransactionLogs.toJSON(message.txLogs) : undefined);
     message.ret !== undefined &&
-      (obj.ret = base64FromBytes(
-        message.ret !== undefined ? message.ret : new Uint8Array()
-      ));
+      (obj.ret = base64FromBytes(message.ret !== undefined ? message.ret : new Uint8Array()));
     message.reverted !== undefined && (obj.reverted = message.reverted);
-    message.gasUsed !== undefined &&
-      (obj.gasUsed = (message.gasUsed || Long.UZERO).toString());
+    message.gasUsed !== undefined && (obj.gasUsed = (message.gasUsed || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<TxResult>): TxResult {
+    return TxResult.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TxResult>): TxResult {
-    const message = { ...baseTxResult } as TxResult;
+    const message = createBaseTxResult();
     message.contractAddress = object.contractAddress ?? "";
     message.bloom = object.bloom ?? new Uint8Array();
-    message.txLogs =
-      object.txLogs !== undefined && object.txLogs !== null
-        ? TransactionLogs.fromPartial(object.txLogs)
-        : undefined;
+    message.txLogs = (object.txLogs !== undefined && object.txLogs !== null)
+      ? TransactionLogs.fromPartial(object.txLogs)
+      : undefined;
     message.ret = object.ret ?? new Uint8Array();
     message.reverted = object.reverted ?? false;
-    message.gasUsed =
-      object.gasUsed !== undefined && object.gasUsed !== null
-        ? Long.fromValue(object.gasUsed)
-        : Long.UZERO;
+    message.gasUsed = (object.gasUsed !== undefined && object.gasUsed !== null)
+      ? Long.fromValue(object.gasUsed)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseAccessTuple: object = { address: "", storageKeys: "" };
+function createBaseAccessTuple(): AccessTuple {
+  return { address: "", storageKeys: [] };
+}
 
 export const AccessTuple = {
-  encode(
-    message: AccessTuple,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AccessTuple, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -1094,35 +1124,40 @@ export const AccessTuple = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccessTuple {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAccessTuple } as AccessTuple;
-    message.storageKeys = [];
+    const message = createBaseAccessTuple();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.storageKeys.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccessTuple {
-    const message = { ...baseAccessTuple } as AccessTuple;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.storageKeys = (object.storageKeys ?? []).map((e: any) => String(e));
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      storageKeys: Array.isArray(object?.storageKeys) ? object.storageKeys.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: AccessTuple): unknown {
@@ -1136,32 +1171,36 @@ export const AccessTuple = {
     return obj;
   },
 
+  create(base?: DeepPartial<AccessTuple>): AccessTuple {
+    return AccessTuple.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<AccessTuple>): AccessTuple {
-    const message = { ...baseAccessTuple } as AccessTuple;
+    const message = createBaseAccessTuple();
     message.address = object.address ?? "";
-    message.storageKeys = (object.storageKeys ?? []).map((e) => e);
+    message.storageKeys = object.storageKeys?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseTraceConfig: object = {
-  tracer: "",
-  timeout: "",
-  reexec: Long.UZERO,
-  disableStack: false,
-  disableStorage: false,
-  debug: false,
-  limit: 0,
-  enableMemory: false,
-  enableReturnData: false,
-  tracerJsonConfig: "",
-};
+function createBaseTraceConfig(): TraceConfig {
+  return {
+    tracer: "",
+    timeout: "",
+    reexec: Long.UZERO,
+    disableStack: false,
+    disableStorage: false,
+    debug: false,
+    limit: 0,
+    overrides: undefined,
+    enableMemory: false,
+    enableReturnData: false,
+    tracerJsonConfig: "",
+  };
+}
 
 export const TraceConfig = {
-  encode(
-    message: TraceConfig,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TraceConfig, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.tracer !== "") {
       writer.uint32(10).string(message.tracer);
     }
@@ -1199,143 +1238,149 @@ export const TraceConfig = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TraceConfig {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTraceConfig } as TraceConfig;
+    const message = createBaseTraceConfig();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.tracer = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.timeout = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.reexec = reader.uint64() as Long;
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.disableStack = reader.bool();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.disableStorage = reader.bool();
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.debug = reader.bool();
-          break;
+          continue;
         case 9:
+          if (tag !== 72) {
+            break;
+          }
+
           message.limit = reader.int32();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.overrides = ChainConfig.decode(reader, reader.uint32());
-          break;
+          continue;
         case 11:
+          if (tag !== 88) {
+            break;
+          }
+
           message.enableMemory = reader.bool();
-          break;
+          continue;
         case 12:
+          if (tag !== 96) {
+            break;
+          }
+
           message.enableReturnData = reader.bool();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.tracerJsonConfig = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TraceConfig {
-    const message = { ...baseTraceConfig } as TraceConfig;
-    message.tracer =
-      object.tracer !== undefined && object.tracer !== null
-        ? String(object.tracer)
-        : "";
-    message.timeout =
-      object.timeout !== undefined && object.timeout !== null
-        ? String(object.timeout)
-        : "";
-    message.reexec =
-      object.reexec !== undefined && object.reexec !== null
-        ? Long.fromString(object.reexec)
-        : Long.UZERO;
-    message.disableStack =
-      object.disableStack !== undefined && object.disableStack !== null
-        ? Boolean(object.disableStack)
-        : false;
-    message.disableStorage =
-      object.disableStorage !== undefined && object.disableStorage !== null
-        ? Boolean(object.disableStorage)
-        : false;
-    message.debug =
-      object.debug !== undefined && object.debug !== null
-        ? Boolean(object.debug)
-        : false;
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Number(object.limit)
-        : 0;
-    message.overrides =
-      object.overrides !== undefined && object.overrides !== null
-        ? ChainConfig.fromJSON(object.overrides)
-        : undefined;
-    message.enableMemory =
-      object.enableMemory !== undefined && object.enableMemory !== null
-        ? Boolean(object.enableMemory)
-        : false;
-    message.enableReturnData =
-      object.enableReturnData !== undefined && object.enableReturnData !== null
-        ? Boolean(object.enableReturnData)
-        : false;
-    message.tracerJsonConfig =
-      object.tracerJsonConfig !== undefined && object.tracerJsonConfig !== null
-        ? String(object.tracerJsonConfig)
-        : "";
-    return message;
+    return {
+      tracer: isSet(object.tracer) ? String(object.tracer) : "",
+      timeout: isSet(object.timeout) ? String(object.timeout) : "",
+      reexec: isSet(object.reexec) ? Long.fromValue(object.reexec) : Long.UZERO,
+      disableStack: isSet(object.disableStack) ? Boolean(object.disableStack) : false,
+      disableStorage: isSet(object.disableStorage) ? Boolean(object.disableStorage) : false,
+      debug: isSet(object.debug) ? Boolean(object.debug) : false,
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+      overrides: isSet(object.overrides) ? ChainConfig.fromJSON(object.overrides) : undefined,
+      enableMemory: isSet(object.enableMemory) ? Boolean(object.enableMemory) : false,
+      enableReturnData: isSet(object.enableReturnData) ? Boolean(object.enableReturnData) : false,
+      tracerJsonConfig: isSet(object.tracerJsonConfig) ? String(object.tracerJsonConfig) : "",
+    };
   },
 
   toJSON(message: TraceConfig): unknown {
     const obj: any = {};
     message.tracer !== undefined && (obj.tracer = message.tracer);
     message.timeout !== undefined && (obj.timeout = message.timeout);
-    message.reexec !== undefined &&
-      (obj.reexec = (message.reexec || Long.UZERO).toString());
-    message.disableStack !== undefined &&
-      (obj.disableStack = message.disableStack);
-    message.disableStorage !== undefined &&
-      (obj.disableStorage = message.disableStorage);
+    message.reexec !== undefined && (obj.reexec = (message.reexec || Long.UZERO).toString());
+    message.disableStack !== undefined && (obj.disableStack = message.disableStack);
+    message.disableStorage !== undefined && (obj.disableStorage = message.disableStorage);
     message.debug !== undefined && (obj.debug = message.debug);
-    message.limit !== undefined && (obj.limit = message.limit);
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.overrides !== undefined &&
-      (obj.overrides = message.overrides
-        ? ChainConfig.toJSON(message.overrides)
-        : undefined);
-    message.enableMemory !== undefined &&
-      (obj.enableMemory = message.enableMemory);
-    message.enableReturnData !== undefined &&
-      (obj.enableReturnData = message.enableReturnData);
-    message.tracerJsonConfig !== undefined &&
-      (obj.tracerJsonConfig = message.tracerJsonConfig);
+      (obj.overrides = message.overrides ? ChainConfig.toJSON(message.overrides) : undefined);
+    message.enableMemory !== undefined && (obj.enableMemory = message.enableMemory);
+    message.enableReturnData !== undefined && (obj.enableReturnData = message.enableReturnData);
+    message.tracerJsonConfig !== undefined && (obj.tracerJsonConfig = message.tracerJsonConfig);
     return obj;
   },
 
+  create(base?: DeepPartial<TraceConfig>): TraceConfig {
+    return TraceConfig.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TraceConfig>): TraceConfig {
-    const message = { ...baseTraceConfig } as TraceConfig;
+    const message = createBaseTraceConfig();
     message.tracer = object.tracer ?? "";
     message.timeout = object.timeout ?? "";
-    message.reexec =
-      object.reexec !== undefined && object.reexec !== null
-        ? Long.fromValue(object.reexec)
-        : Long.UZERO;
+    message.reexec = (object.reexec !== undefined && object.reexec !== null)
+      ? Long.fromValue(object.reexec)
+      : Long.UZERO;
     message.disableStack = object.disableStack ?? false;
     message.disableStorage = object.disableStorage ?? false;
     message.debug = object.debug ?? false;
     message.limit = object.limit ?? 0;
-    message.overrides =
-      object.overrides !== undefined && object.overrides !== null
-        ? ChainConfig.fromPartial(object.overrides)
-        : undefined;
+    message.overrides = (object.overrides !== undefined && object.overrides !== null)
+      ? ChainConfig.fromPartial(object.overrides)
+      : undefined;
     message.enableMemory = object.enableMemory ?? false;
     message.enableReturnData = object.enableReturnData ?? false;
     message.tracerJsonConfig = object.tracerJsonConfig ?? "";
@@ -1346,58 +1391,60 @@ export const TraceConfig = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

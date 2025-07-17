@@ -10,22 +10,23 @@ export interface MsgSyncGenesis {
   genesisHeader: string;
 }
 
-export interface MsgSyncGenesisResponse {}
+export interface MsgSyncGenesisResponse {
+}
 
 export interface MsgSyncHeaders {
   syncer: string;
   headers: string[];
 }
 
-export interface MsgSyncHeadersResponse {}
+export interface MsgSyncHeadersResponse {
+}
 
-const baseMsgSyncGenesis: object = { syncer: "", genesisHeader: "" };
+function createBaseMsgSyncGenesis(): MsgSyncGenesis {
+  return { syncer: "", genesisHeader: "" };
+}
 
 export const MsgSyncGenesis = {
-  encode(
-    message: MsgSyncGenesis,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSyncGenesis, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.syncer !== "") {
       writer.uint32(10).string(message.syncer);
     }
@@ -36,86 +37,88 @@ export const MsgSyncGenesis = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSyncGenesis {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSyncGenesis } as MsgSyncGenesis;
+    const message = createBaseMsgSyncGenesis();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.syncer = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.genesisHeader = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSyncGenesis {
-    const message = { ...baseMsgSyncGenesis } as MsgSyncGenesis;
-    message.syncer =
-      object.syncer !== undefined && object.syncer !== null
-        ? String(object.syncer)
-        : "";
-    message.genesisHeader =
-      object.genesisHeader !== undefined && object.genesisHeader !== null
-        ? String(object.genesisHeader)
-        : "";
-    return message;
+    return {
+      syncer: isSet(object.syncer) ? String(object.syncer) : "",
+      genesisHeader: isSet(object.genesisHeader) ? String(object.genesisHeader) : "",
+    };
   },
 
   toJSON(message: MsgSyncGenesis): unknown {
     const obj: any = {};
     message.syncer !== undefined && (obj.syncer = message.syncer);
-    message.genesisHeader !== undefined &&
-      (obj.genesisHeader = message.genesisHeader);
+    message.genesisHeader !== undefined && (obj.genesisHeader = message.genesisHeader);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSyncGenesis>): MsgSyncGenesis {
+    return MsgSyncGenesis.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgSyncGenesis>): MsgSyncGenesis {
-    const message = { ...baseMsgSyncGenesis } as MsgSyncGenesis;
+    const message = createBaseMsgSyncGenesis();
     message.syncer = object.syncer ?? "";
     message.genesisHeader = object.genesisHeader ?? "";
     return message;
   },
 };
 
-const baseMsgSyncGenesisResponse: object = {};
+function createBaseMsgSyncGenesisResponse(): MsgSyncGenesisResponse {
+  return {};
+}
 
 export const MsgSyncGenesisResponse = {
-  encode(
-    _: MsgSyncGenesisResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSyncGenesisResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSyncGenesisResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSyncGenesisResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSyncGenesisResponse } as MsgSyncGenesisResponse;
+    const message = createBaseMsgSyncGenesisResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSyncGenesisResponse {
-    const message = { ...baseMsgSyncGenesisResponse } as MsgSyncGenesisResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSyncGenesisResponse): unknown {
@@ -123,19 +126,22 @@ export const MsgSyncGenesisResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSyncGenesisResponse>): MsgSyncGenesisResponse {
+    return MsgSyncGenesisResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<MsgSyncGenesisResponse>): MsgSyncGenesisResponse {
-    const message = { ...baseMsgSyncGenesisResponse } as MsgSyncGenesisResponse;
+    const message = createBaseMsgSyncGenesisResponse();
     return message;
   },
 };
 
-const baseMsgSyncHeaders: object = { syncer: "", headers: "" };
+function createBaseMsgSyncHeaders(): MsgSyncHeaders {
+  return { syncer: "", headers: [] };
+}
 
 export const MsgSyncHeaders = {
-  encode(
-    message: MsgSyncHeaders,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSyncHeaders, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.syncer !== "") {
       writer.uint32(10).string(message.syncer);
     }
@@ -146,35 +152,40 @@ export const MsgSyncHeaders = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSyncHeaders {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSyncHeaders } as MsgSyncHeaders;
-    message.headers = [];
+    const message = createBaseMsgSyncHeaders();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.syncer = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.headers.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSyncHeaders {
-    const message = { ...baseMsgSyncHeaders } as MsgSyncHeaders;
-    message.syncer =
-      object.syncer !== undefined && object.syncer !== null
-        ? String(object.syncer)
-        : "";
-    message.headers = (object.headers ?? []).map((e: any) => String(e));
-    return message;
+    return {
+      syncer: isSet(object.syncer) ? String(object.syncer) : "",
+      headers: Array.isArray(object?.headers) ? object.headers.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: MsgSyncHeaders): unknown {
@@ -188,45 +199,45 @@ export const MsgSyncHeaders = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSyncHeaders>): MsgSyncHeaders {
+    return MsgSyncHeaders.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgSyncHeaders>): MsgSyncHeaders {
-    const message = { ...baseMsgSyncHeaders } as MsgSyncHeaders;
+    const message = createBaseMsgSyncHeaders();
     message.syncer = object.syncer ?? "";
-    message.headers = (object.headers ?? []).map((e) => e);
+    message.headers = object.headers?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseMsgSyncHeadersResponse: object = {};
+function createBaseMsgSyncHeadersResponse(): MsgSyncHeadersResponse {
+  return {};
+}
 
 export const MsgSyncHeadersResponse = {
-  encode(
-    _: MsgSyncHeadersResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSyncHeadersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSyncHeadersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSyncHeadersResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSyncHeadersResponse } as MsgSyncHeadersResponse;
+    const message = createBaseMsgSyncHeadersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSyncHeadersResponse {
-    const message = { ...baseMsgSyncHeadersResponse } as MsgSyncHeadersResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSyncHeadersResponse): unknown {
@@ -234,8 +245,12 @@ export const MsgSyncHeadersResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSyncHeadersResponse>): MsgSyncHeadersResponse {
+    return MsgSyncHeadersResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<MsgSyncHeadersResponse>): MsgSyncHeadersResponse {
-    const message = { ...baseMsgSyncHeadersResponse } as MsgSyncHeadersResponse;
+    const message = createBaseMsgSyncHeadersResponse();
     return message;
   },
 };
@@ -249,65 +264,43 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.headersync.Msg";
     this.rpc = rpc;
     this.SyncGenesis = this.SyncGenesis.bind(this);
     this.SyncHeaders = this.SyncHeaders.bind(this);
   }
   SyncGenesis(request: MsgSyncGenesis): Promise<MsgSyncGenesisResponse> {
     const data = MsgSyncGenesis.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.headersync.Msg",
-      "SyncGenesis",
-      data
-    );
-    return promise.then((data) =>
-      MsgSyncGenesisResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "SyncGenesis", data);
+    return promise.then((data) => MsgSyncGenesisResponse.decode(_m0.Reader.create(data)));
   }
 
   SyncHeaders(request: MsgSyncHeaders): Promise<MsgSyncHeadersResponse> {
     const data = MsgSyncHeaders.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.headersync.Msg",
-      "SyncHeaders",
-      data
-    );
-    return promise.then((data) =>
-      MsgSyncHeadersResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "SyncHeaders", data);
+    return promise.then((data) => MsgSyncHeadersResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

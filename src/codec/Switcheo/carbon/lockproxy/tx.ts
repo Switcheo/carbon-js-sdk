@@ -9,7 +9,8 @@ export interface MsgCreate {
   creator: string;
 }
 
-export interface MsgCreateResponse {}
+export interface MsgCreateResponse {
+}
 
 export interface MsgBind {
   creator: string;
@@ -20,7 +21,8 @@ export interface MsgBind {
   nativeAssetHash: Uint8Array;
 }
 
-export interface MsgBindResponse {}
+export interface MsgBindResponse {
+}
 
 export interface MsgLock {
   denom: string;
@@ -37,7 +39,8 @@ export interface MsgLock {
   feeAddress: string;
 }
 
-export interface MsgLockResponse {}
+export interface MsgLockResponse {
+}
 
 export interface MsgSetWrapperMapping {
   creator: string;
@@ -47,7 +50,8 @@ export interface MsgSetWrapperMapping {
   lockType: Long;
 }
 
-export interface MsgSetWrapperMappingResponse {}
+export interface MsgSetWrapperMappingResponse {
+}
 
 export interface MsgDeleteWrapperMapping {
   creator: string;
@@ -55,7 +59,8 @@ export interface MsgDeleteWrapperMapping {
   contractAddress: string;
 }
 
-export interface MsgDeleteWrapperMappingResponse {}
+export interface MsgDeleteWrapperMappingResponse {
+}
 
 export interface MsgAddExtension {
   creator: string;
@@ -64,7 +69,8 @@ export interface MsgAddExtension {
   extensionAddress: string;
 }
 
-export interface MsgAddExtensionResponse {}
+export interface MsgAddExtensionResponse {
+}
 
 export interface MsgRemoveExtension {
   creator: string;
@@ -73,15 +79,15 @@ export interface MsgRemoveExtension {
   extensionAddress: string;
 }
 
-export interface MsgRemoveExtensionResponse {}
+export interface MsgRemoveExtensionResponse {
+}
 
-const baseMsgCreate: object = { creator: "" };
+function createBaseMsgCreate(): MsgCreate {
+  return { creator: "" };
+}
 
 export const MsgCreate = {
-  encode(
-    message: MsgCreate,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -89,30 +95,30 @@ export const MsgCreate = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreate } as MsgCreate;
+    const message = createBaseMsgCreate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreate {
-    const message = { ...baseMsgCreate } as MsgCreate;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    return message;
+    return { creator: isSet(object.creator) ? String(object.creator) : "" };
   },
 
   toJSON(message: MsgCreate): unknown {
@@ -121,41 +127,44 @@ export const MsgCreate = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgCreate>): MsgCreate {
+    return MsgCreate.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgCreate>): MsgCreate {
-    const message = { ...baseMsgCreate } as MsgCreate;
+    const message = createBaseMsgCreate();
     message.creator = object.creator ?? "";
     return message;
   },
 };
 
-const baseMsgCreateResponse: object = {};
+function createBaseMsgCreateResponse(): MsgCreateResponse {
+  return {};
+}
 
 export const MsgCreateResponse = {
-  encode(
-    _: MsgCreateResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgCreateResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateResponse } as MsgCreateResponse;
+    const message = createBaseMsgCreateResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgCreateResponse {
-    const message = { ...baseMsgCreateResponse } as MsgCreateResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgCreateResponse): unknown {
@@ -163,23 +172,29 @@ export const MsgCreateResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgCreateResponse>): MsgCreateResponse {
+    return MsgCreateResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<MsgCreateResponse>): MsgCreateResponse {
-    const message = { ...baseMsgCreateResponse } as MsgCreateResponse;
+    const message = createBaseMsgCreateResponse();
     return message;
   },
 };
 
-const baseMsgBind: object = {
-  creator: "",
-  denom: "",
-  nativeChainId: Long.UZERO,
-};
+function createBaseMsgBind(): MsgBind {
+  return {
+    creator: "",
+    denom: "",
+    lockProxyHash: new Uint8Array(),
+    nativeChainId: Long.UZERO,
+    nativeLockProxyHash: new Uint8Array(),
+    nativeAssetHash: new Uint8Array(),
+  };
+}
 
 export const MsgBind = {
-  encode(
-    message: MsgBind,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgBind, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -202,69 +217,74 @@ export const MsgBind = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgBind {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgBind } as MsgBind;
-    message.lockProxyHash = new Uint8Array();
-    message.nativeLockProxyHash = new Uint8Array();
-    message.nativeAssetHash = new Uint8Array();
+    const message = createBaseMsgBind();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.lockProxyHash = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.nativeChainId = reader.uint64() as Long;
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.nativeLockProxyHash = reader.bytes();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.nativeAssetHash = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgBind {
-    const message = { ...baseMsgBind } as MsgBind;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.lockProxyHash =
-      object.lockProxyHash !== undefined && object.lockProxyHash !== null
-        ? bytesFromBase64(object.lockProxyHash)
-        : new Uint8Array();
-    message.nativeChainId =
-      object.nativeChainId !== undefined && object.nativeChainId !== null
-        ? Long.fromString(object.nativeChainId)
-        : Long.UZERO;
-    message.nativeLockProxyHash =
-      object.nativeLockProxyHash !== undefined &&
-      object.nativeLockProxyHash !== null
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      lockProxyHash: isSet(object.lockProxyHash) ? bytesFromBase64(object.lockProxyHash) : new Uint8Array(),
+      nativeChainId: isSet(object.nativeChainId) ? Long.fromValue(object.nativeChainId) : Long.UZERO,
+      nativeLockProxyHash: isSet(object.nativeLockProxyHash)
         ? bytesFromBase64(object.nativeLockProxyHash)
-        : new Uint8Array();
-    message.nativeAssetHash =
-      object.nativeAssetHash !== undefined && object.nativeAssetHash !== null
-        ? bytesFromBase64(object.nativeAssetHash)
-        : new Uint8Array();
-    return message;
+        : new Uint8Array(),
+      nativeAssetHash: isSet(object.nativeAssetHash) ? bytesFromBase64(object.nativeAssetHash) : new Uint8Array(),
+    };
   },
 
   toJSON(message: MsgBind): unknown {
@@ -273,71 +293,65 @@ export const MsgBind = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.lockProxyHash !== undefined &&
       (obj.lockProxyHash = base64FromBytes(
-        message.lockProxyHash !== undefined
-          ? message.lockProxyHash
-          : new Uint8Array()
+        message.lockProxyHash !== undefined ? message.lockProxyHash : new Uint8Array(),
       ));
-    message.nativeChainId !== undefined &&
-      (obj.nativeChainId = (message.nativeChainId || Long.UZERO).toString());
+    message.nativeChainId !== undefined && (obj.nativeChainId = (message.nativeChainId || Long.UZERO).toString());
     message.nativeLockProxyHash !== undefined &&
       (obj.nativeLockProxyHash = base64FromBytes(
-        message.nativeLockProxyHash !== undefined
-          ? message.nativeLockProxyHash
-          : new Uint8Array()
+        message.nativeLockProxyHash !== undefined ? message.nativeLockProxyHash : new Uint8Array(),
       ));
     message.nativeAssetHash !== undefined &&
       (obj.nativeAssetHash = base64FromBytes(
-        message.nativeAssetHash !== undefined
-          ? message.nativeAssetHash
-          : new Uint8Array()
+        message.nativeAssetHash !== undefined ? message.nativeAssetHash : new Uint8Array(),
       ));
     return obj;
   },
 
+  create(base?: DeepPartial<MsgBind>): MsgBind {
+    return MsgBind.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgBind>): MsgBind {
-    const message = { ...baseMsgBind } as MsgBind;
+    const message = createBaseMsgBind();
     message.creator = object.creator ?? "";
     message.denom = object.denom ?? "";
     message.lockProxyHash = object.lockProxyHash ?? new Uint8Array();
-    message.nativeChainId =
-      object.nativeChainId !== undefined && object.nativeChainId !== null
-        ? Long.fromValue(object.nativeChainId)
-        : Long.UZERO;
-    message.nativeLockProxyHash =
-      object.nativeLockProxyHash ?? new Uint8Array();
+    message.nativeChainId = (object.nativeChainId !== undefined && object.nativeChainId !== null)
+      ? Long.fromValue(object.nativeChainId)
+      : Long.UZERO;
+    message.nativeLockProxyHash = object.nativeLockProxyHash ?? new Uint8Array();
     message.nativeAssetHash = object.nativeAssetHash ?? new Uint8Array();
     return message;
   },
 };
 
-const baseMsgBindResponse: object = {};
+function createBaseMsgBindResponse(): MsgBindResponse {
+  return {};
+}
 
 export const MsgBindResponse = {
-  encode(
-    _: MsgBindResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgBindResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgBindResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgBindResponse } as MsgBindResponse;
+    const message = createBaseMsgBindResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgBindResponse {
-    const message = { ...baseMsgBindResponse } as MsgBindResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgBindResponse): unknown {
@@ -345,27 +359,35 @@ export const MsgBindResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgBindResponse>): MsgBindResponse {
+    return MsgBindResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<MsgBindResponse>): MsgBindResponse {
-    const message = { ...baseMsgBindResponse } as MsgBindResponse;
+    const message = createBaseMsgBindResponse();
     return message;
   },
 };
 
-const baseMsgLock: object = {
-  denom: "",
-  fromAddress: "",
-  toChainId: Long.UZERO,
-  amount: "",
-  deductFeeInLock: false,
-  feeAmount: "",
-  feeAddress: "",
-};
+function createBaseMsgLock(): MsgLock {
+  return {
+    denom: "",
+    fromLockProxy: new Uint8Array(),
+    fromAddress: "",
+    fromAssetId: new Uint8Array(),
+    toChainId: Long.UZERO,
+    toLockProxy: new Uint8Array(),
+    toAssetId: new Uint8Array(),
+    toAddress: new Uint8Array(),
+    amount: "",
+    deductFeeInLock: false,
+    feeAmount: "",
+    feeAddress: "",
+  };
+}
 
 export const MsgLock = {
-  encode(
-    message: MsgLock,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgLock, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -406,112 +428,120 @@ export const MsgLock = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgLock {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgLock } as MsgLock;
-    message.fromLockProxy = new Uint8Array();
-    message.fromAssetId = new Uint8Array();
-    message.toLockProxy = new Uint8Array();
-    message.toAssetId = new Uint8Array();
-    message.toAddress = new Uint8Array();
+    const message = createBaseMsgLock();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.fromLockProxy = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.fromAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.fromAssetId = reader.bytes();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.toChainId = reader.uint64() as Long;
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.toLockProxy = reader.bytes();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.toAssetId = reader.bytes();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.toAddress = reader.bytes();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 80) {
+            break;
+          }
+
           message.deductFeeInLock = reader.bool();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.feeAmount = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.feeAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgLock {
-    const message = { ...baseMsgLock } as MsgLock;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.fromLockProxy =
-      object.fromLockProxy !== undefined && object.fromLockProxy !== null
-        ? bytesFromBase64(object.fromLockProxy)
-        : new Uint8Array();
-    message.fromAddress =
-      object.fromAddress !== undefined && object.fromAddress !== null
-        ? String(object.fromAddress)
-        : "";
-    message.fromAssetId =
-      object.fromAssetId !== undefined && object.fromAssetId !== null
-        ? bytesFromBase64(object.fromAssetId)
-        : new Uint8Array();
-    message.toChainId =
-      object.toChainId !== undefined && object.toChainId !== null
-        ? Long.fromString(object.toChainId)
-        : Long.UZERO;
-    message.toLockProxy =
-      object.toLockProxy !== undefined && object.toLockProxy !== null
-        ? bytesFromBase64(object.toLockProxy)
-        : new Uint8Array();
-    message.toAssetId =
-      object.toAssetId !== undefined && object.toAssetId !== null
-        ? bytesFromBase64(object.toAssetId)
-        : new Uint8Array();
-    message.toAddress =
-      object.toAddress !== undefined && object.toAddress !== null
-        ? bytesFromBase64(object.toAddress)
-        : new Uint8Array();
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.deductFeeInLock =
-      object.deductFeeInLock !== undefined && object.deductFeeInLock !== null
-        ? Boolean(object.deductFeeInLock)
-        : false;
-    message.feeAmount =
-      object.feeAmount !== undefined && object.feeAmount !== null
-        ? String(object.feeAmount)
-        : "";
-    message.feeAddress =
-      object.feeAddress !== undefined && object.feeAddress !== null
-        ? String(object.feeAddress)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      fromLockProxy: isSet(object.fromLockProxy) ? bytesFromBase64(object.fromLockProxy) : new Uint8Array(),
+      fromAddress: isSet(object.fromAddress) ? String(object.fromAddress) : "",
+      fromAssetId: isSet(object.fromAssetId) ? bytesFromBase64(object.fromAssetId) : new Uint8Array(),
+      toChainId: isSet(object.toChainId) ? Long.fromValue(object.toChainId) : Long.UZERO,
+      toLockProxy: isSet(object.toLockProxy) ? bytesFromBase64(object.toLockProxy) : new Uint8Array(),
+      toAssetId: isSet(object.toAssetId) ? bytesFromBase64(object.toAssetId) : new Uint8Array(),
+      toAddress: isSet(object.toAddress) ? bytesFromBase64(object.toAddress) : new Uint8Array(),
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      deductFeeInLock: isSet(object.deductFeeInLock) ? Boolean(object.deductFeeInLock) : false,
+      feeAmount: isSet(object.feeAmount) ? String(object.feeAmount) : "",
+      feeAddress: isSet(object.feeAddress) ? String(object.feeAddress) : "",
+    };
   },
 
   toJSON(message: MsgLock): unknown {
@@ -519,52 +549,38 @@ export const MsgLock = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.fromLockProxy !== undefined &&
       (obj.fromLockProxy = base64FromBytes(
-        message.fromLockProxy !== undefined
-          ? message.fromLockProxy
-          : new Uint8Array()
+        message.fromLockProxy !== undefined ? message.fromLockProxy : new Uint8Array(),
       ));
-    message.fromAddress !== undefined &&
-      (obj.fromAddress = message.fromAddress);
+    message.fromAddress !== undefined && (obj.fromAddress = message.fromAddress);
     message.fromAssetId !== undefined &&
-      (obj.fromAssetId = base64FromBytes(
-        message.fromAssetId !== undefined
-          ? message.fromAssetId
-          : new Uint8Array()
-      ));
-    message.toChainId !== undefined &&
-      (obj.toChainId = (message.toChainId || Long.UZERO).toString());
+      (obj.fromAssetId = base64FromBytes(message.fromAssetId !== undefined ? message.fromAssetId : new Uint8Array()));
+    message.toChainId !== undefined && (obj.toChainId = (message.toChainId || Long.UZERO).toString());
     message.toLockProxy !== undefined &&
-      (obj.toLockProxy = base64FromBytes(
-        message.toLockProxy !== undefined
-          ? message.toLockProxy
-          : new Uint8Array()
-      ));
+      (obj.toLockProxy = base64FromBytes(message.toLockProxy !== undefined ? message.toLockProxy : new Uint8Array()));
     message.toAssetId !== undefined &&
-      (obj.toAssetId = base64FromBytes(
-        message.toAssetId !== undefined ? message.toAssetId : new Uint8Array()
-      ));
+      (obj.toAssetId = base64FromBytes(message.toAssetId !== undefined ? message.toAssetId : new Uint8Array()));
     message.toAddress !== undefined &&
-      (obj.toAddress = base64FromBytes(
-        message.toAddress !== undefined ? message.toAddress : new Uint8Array()
-      ));
+      (obj.toAddress = base64FromBytes(message.toAddress !== undefined ? message.toAddress : new Uint8Array()));
     message.amount !== undefined && (obj.amount = message.amount);
-    message.deductFeeInLock !== undefined &&
-      (obj.deductFeeInLock = message.deductFeeInLock);
+    message.deductFeeInLock !== undefined && (obj.deductFeeInLock = message.deductFeeInLock);
     message.feeAmount !== undefined && (obj.feeAmount = message.feeAmount);
     message.feeAddress !== undefined && (obj.feeAddress = message.feeAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgLock>): MsgLock {
+    return MsgLock.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgLock>): MsgLock {
-    const message = { ...baseMsgLock } as MsgLock;
+    const message = createBaseMsgLock();
     message.denom = object.denom ?? "";
     message.fromLockProxy = object.fromLockProxy ?? new Uint8Array();
     message.fromAddress = object.fromAddress ?? "";
     message.fromAssetId = object.fromAssetId ?? new Uint8Array();
-    message.toChainId =
-      object.toChainId !== undefined && object.toChainId !== null
-        ? Long.fromValue(object.toChainId)
-        : Long.UZERO;
+    message.toChainId = (object.toChainId !== undefined && object.toChainId !== null)
+      ? Long.fromValue(object.toChainId)
+      : Long.UZERO;
     message.toLockProxy = object.toLockProxy ?? new Uint8Array();
     message.toAssetId = object.toAssetId ?? new Uint8Array();
     message.toAddress = object.toAddress ?? new Uint8Array();
@@ -576,34 +592,33 @@ export const MsgLock = {
   },
 };
 
-const baseMsgLockResponse: object = {};
+function createBaseMsgLockResponse(): MsgLockResponse {
+  return {};
+}
 
 export const MsgLockResponse = {
-  encode(
-    _: MsgLockResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgLockResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgLockResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgLockResponse } as MsgLockResponse;
+    const message = createBaseMsgLockResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgLockResponse {
-    const message = { ...baseMsgLockResponse } as MsgLockResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgLockResponse): unknown {
@@ -611,25 +626,22 @@ export const MsgLockResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgLockResponse>): MsgLockResponse {
+    return MsgLockResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<MsgLockResponse>): MsgLockResponse {
-    const message = { ...baseMsgLockResponse } as MsgLockResponse;
+    const message = createBaseMsgLockResponse();
     return message;
   },
 };
 
-const baseMsgSetWrapperMapping: object = {
-  creator: "",
-  chainId: Long.UZERO,
-  fromContractAddress: "",
-  toContractAddress: "",
-  lockType: Long.UZERO,
-};
+function createBaseMsgSetWrapperMapping(): MsgSetWrapperMapping {
+  return { creator: "", chainId: Long.UZERO, fromContractAddress: "", toContractAddress: "", lockType: Long.UZERO };
+}
 
 export const MsgSetWrapperMapping = {
-  encode(
-    message: MsgSetWrapperMapping,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSetWrapperMapping, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -648,132 +660,123 @@ export const MsgSetWrapperMapping = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetWrapperMapping {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetWrapperMapping {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetWrapperMapping } as MsgSetWrapperMapping;
+    const message = createBaseMsgSetWrapperMapping();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.chainId = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.fromContractAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.toContractAddress = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.lockType = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSetWrapperMapping {
-    const message = { ...baseMsgSetWrapperMapping } as MsgSetWrapperMapping;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromString(object.chainId)
-        : Long.UZERO;
-    message.fromContractAddress =
-      object.fromContractAddress !== undefined &&
-      object.fromContractAddress !== null
-        ? String(object.fromContractAddress)
-        : "";
-    message.toContractAddress =
-      object.toContractAddress !== undefined &&
-      object.toContractAddress !== null
-        ? String(object.toContractAddress)
-        : "";
-    message.lockType =
-      object.lockType !== undefined && object.lockType !== null
-        ? Long.fromString(object.lockType)
-        : Long.UZERO;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      chainId: isSet(object.chainId) ? Long.fromValue(object.chainId) : Long.UZERO,
+      fromContractAddress: isSet(object.fromContractAddress) ? String(object.fromContractAddress) : "",
+      toContractAddress: isSet(object.toContractAddress) ? String(object.toContractAddress) : "",
+      lockType: isSet(object.lockType) ? Long.fromValue(object.lockType) : Long.UZERO,
+    };
   },
 
   toJSON(message: MsgSetWrapperMapping): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.chainId !== undefined &&
-      (obj.chainId = (message.chainId || Long.UZERO).toString());
-    message.fromContractAddress !== undefined &&
-      (obj.fromContractAddress = message.fromContractAddress);
-    message.toContractAddress !== undefined &&
-      (obj.toContractAddress = message.toContractAddress);
-    message.lockType !== undefined &&
-      (obj.lockType = (message.lockType || Long.UZERO).toString());
+    message.chainId !== undefined && (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.fromContractAddress !== undefined && (obj.fromContractAddress = message.fromContractAddress);
+    message.toContractAddress !== undefined && (obj.toContractAddress = message.toContractAddress);
+    message.lockType !== undefined && (obj.lockType = (message.lockType || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSetWrapperMapping>): MsgSetWrapperMapping {
+    return MsgSetWrapperMapping.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgSetWrapperMapping>): MsgSetWrapperMapping {
-    const message = { ...baseMsgSetWrapperMapping } as MsgSetWrapperMapping;
+    const message = createBaseMsgSetWrapperMapping();
     message.creator = object.creator ?? "";
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromValue(object.chainId)
-        : Long.UZERO;
+    message.chainId = (object.chainId !== undefined && object.chainId !== null)
+      ? Long.fromValue(object.chainId)
+      : Long.UZERO;
     message.fromContractAddress = object.fromContractAddress ?? "";
     message.toContractAddress = object.toContractAddress ?? "";
-    message.lockType =
-      object.lockType !== undefined && object.lockType !== null
-        ? Long.fromValue(object.lockType)
-        : Long.UZERO;
+    message.lockType = (object.lockType !== undefined && object.lockType !== null)
+      ? Long.fromValue(object.lockType)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgSetWrapperMappingResponse: object = {};
+function createBaseMsgSetWrapperMappingResponse(): MsgSetWrapperMappingResponse {
+  return {};
+}
 
 export const MsgSetWrapperMappingResponse = {
-  encode(
-    _: MsgSetWrapperMappingResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSetWrapperMappingResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetWrapperMappingResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetWrapperMappingResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgSetWrapperMappingResponse,
-    } as MsgSetWrapperMappingResponse;
+    const message = createBaseMsgSetWrapperMappingResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSetWrapperMappingResponse {
-    const message = {
-      ...baseMsgSetWrapperMappingResponse,
-    } as MsgSetWrapperMappingResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSetWrapperMappingResponse): unknown {
@@ -781,27 +784,22 @@ export const MsgSetWrapperMappingResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgSetWrapperMappingResponse>
-  ): MsgSetWrapperMappingResponse {
-    const message = {
-      ...baseMsgSetWrapperMappingResponse,
-    } as MsgSetWrapperMappingResponse;
+  create(base?: DeepPartial<MsgSetWrapperMappingResponse>): MsgSetWrapperMappingResponse {
+    return MsgSetWrapperMappingResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgSetWrapperMappingResponse>): MsgSetWrapperMappingResponse {
+    const message = createBaseMsgSetWrapperMappingResponse();
     return message;
   },
 };
 
-const baseMsgDeleteWrapperMapping: object = {
-  creator: "",
-  chainId: Long.UZERO,
-  contractAddress: "",
-};
+function createBaseMsgDeleteWrapperMapping(): MsgDeleteWrapperMapping {
+  return { creator: "", chainId: Long.UZERO, contractAddress: "" };
+}
 
 export const MsgDeleteWrapperMapping = {
-  encode(
-    message: MsgDeleteWrapperMapping,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgDeleteWrapperMapping, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -814,115 +812,101 @@ export const MsgDeleteWrapperMapping = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDeleteWrapperMapping {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeleteWrapperMapping {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDeleteWrapperMapping,
-    } as MsgDeleteWrapperMapping;
+    const message = createBaseMsgDeleteWrapperMapping();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.chainId = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.contractAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgDeleteWrapperMapping {
-    const message = {
-      ...baseMsgDeleteWrapperMapping,
-    } as MsgDeleteWrapperMapping;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromString(object.chainId)
-        : Long.UZERO;
-    message.contractAddress =
-      object.contractAddress !== undefined && object.contractAddress !== null
-        ? String(object.contractAddress)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      chainId: isSet(object.chainId) ? Long.fromValue(object.chainId) : Long.UZERO,
+      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
+    };
   },
 
   toJSON(message: MsgDeleteWrapperMapping): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.chainId !== undefined &&
-      (obj.chainId = (message.chainId || Long.UZERO).toString());
-    message.contractAddress !== undefined &&
-      (obj.contractAddress = message.contractAddress);
+    message.chainId !== undefined && (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgDeleteWrapperMapping>
-  ): MsgDeleteWrapperMapping {
-    const message = {
-      ...baseMsgDeleteWrapperMapping,
-    } as MsgDeleteWrapperMapping;
+  create(base?: DeepPartial<MsgDeleteWrapperMapping>): MsgDeleteWrapperMapping {
+    return MsgDeleteWrapperMapping.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgDeleteWrapperMapping>): MsgDeleteWrapperMapping {
+    const message = createBaseMsgDeleteWrapperMapping();
     message.creator = object.creator ?? "";
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromValue(object.chainId)
-        : Long.UZERO;
+    message.chainId = (object.chainId !== undefined && object.chainId !== null)
+      ? Long.fromValue(object.chainId)
+      : Long.UZERO;
     message.contractAddress = object.contractAddress ?? "";
     return message;
   },
 };
 
-const baseMsgDeleteWrapperMappingResponse: object = {};
+function createBaseMsgDeleteWrapperMappingResponse(): MsgDeleteWrapperMappingResponse {
+  return {};
+}
 
 export const MsgDeleteWrapperMappingResponse = {
-  encode(
-    _: MsgDeleteWrapperMappingResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgDeleteWrapperMappingResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDeleteWrapperMappingResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeleteWrapperMappingResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDeleteWrapperMappingResponse,
-    } as MsgDeleteWrapperMappingResponse;
+    const message = createBaseMsgDeleteWrapperMappingResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgDeleteWrapperMappingResponse {
-    const message = {
-      ...baseMsgDeleteWrapperMappingResponse,
-    } as MsgDeleteWrapperMappingResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgDeleteWrapperMappingResponse): unknown {
@@ -930,28 +914,22 @@ export const MsgDeleteWrapperMappingResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgDeleteWrapperMappingResponse>
-  ): MsgDeleteWrapperMappingResponse {
-    const message = {
-      ...baseMsgDeleteWrapperMappingResponse,
-    } as MsgDeleteWrapperMappingResponse;
+  create(base?: DeepPartial<MsgDeleteWrapperMappingResponse>): MsgDeleteWrapperMappingResponse {
+    return MsgDeleteWrapperMappingResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgDeleteWrapperMappingResponse>): MsgDeleteWrapperMappingResponse {
+    const message = createBaseMsgDeleteWrapperMappingResponse();
     return message;
   },
 };
 
-const baseMsgAddExtension: object = {
-  creator: "",
-  chainId: Long.UZERO,
-  lockproxyAddress: "",
-  extensionAddress: "",
-};
+function createBaseMsgAddExtension(): MsgAddExtension {
+  return { creator: "", chainId: Long.UZERO, lockproxyAddress: "", extensionAddress: "" };
+}
 
 export const MsgAddExtension = {
-  encode(
-    message: MsgAddExtension,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgAddExtension, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -968,113 +946,110 @@ export const MsgAddExtension = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddExtension {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgAddExtension } as MsgAddExtension;
+    const message = createBaseMsgAddExtension();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.chainId = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.lockproxyAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.extensionAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgAddExtension {
-    const message = { ...baseMsgAddExtension } as MsgAddExtension;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromString(object.chainId)
-        : Long.UZERO;
-    message.lockproxyAddress =
-      object.lockproxyAddress !== undefined && object.lockproxyAddress !== null
-        ? String(object.lockproxyAddress)
-        : "";
-    message.extensionAddress =
-      object.extensionAddress !== undefined && object.extensionAddress !== null
-        ? String(object.extensionAddress)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      chainId: isSet(object.chainId) ? Long.fromValue(object.chainId) : Long.UZERO,
+      lockproxyAddress: isSet(object.lockproxyAddress) ? String(object.lockproxyAddress) : "",
+      extensionAddress: isSet(object.extensionAddress) ? String(object.extensionAddress) : "",
+    };
   },
 
   toJSON(message: MsgAddExtension): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.chainId !== undefined &&
-      (obj.chainId = (message.chainId || Long.UZERO).toString());
-    message.lockproxyAddress !== undefined &&
-      (obj.lockproxyAddress = message.lockproxyAddress);
-    message.extensionAddress !== undefined &&
-      (obj.extensionAddress = message.extensionAddress);
+    message.chainId !== undefined && (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.lockproxyAddress !== undefined && (obj.lockproxyAddress = message.lockproxyAddress);
+    message.extensionAddress !== undefined && (obj.extensionAddress = message.extensionAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgAddExtension>): MsgAddExtension {
+    return MsgAddExtension.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgAddExtension>): MsgAddExtension {
-    const message = { ...baseMsgAddExtension } as MsgAddExtension;
+    const message = createBaseMsgAddExtension();
     message.creator = object.creator ?? "";
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromValue(object.chainId)
-        : Long.UZERO;
+    message.chainId = (object.chainId !== undefined && object.chainId !== null)
+      ? Long.fromValue(object.chainId)
+      : Long.UZERO;
     message.lockproxyAddress = object.lockproxyAddress ?? "";
     message.extensionAddress = object.extensionAddress ?? "";
     return message;
   },
 };
 
-const baseMsgAddExtensionResponse: object = {};
+function createBaseMsgAddExtensionResponse(): MsgAddExtensionResponse {
+  return {};
+}
 
 export const MsgAddExtensionResponse = {
-  encode(
-    _: MsgAddExtensionResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgAddExtensionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgAddExtensionResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddExtensionResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgAddExtensionResponse,
-    } as MsgAddExtensionResponse;
+    const message = createBaseMsgAddExtensionResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgAddExtensionResponse {
-    const message = {
-      ...baseMsgAddExtensionResponse,
-    } as MsgAddExtensionResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgAddExtensionResponse): unknown {
@@ -1082,28 +1057,22 @@ export const MsgAddExtensionResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgAddExtensionResponse>
-  ): MsgAddExtensionResponse {
-    const message = {
-      ...baseMsgAddExtensionResponse,
-    } as MsgAddExtensionResponse;
+  create(base?: DeepPartial<MsgAddExtensionResponse>): MsgAddExtensionResponse {
+    return MsgAddExtensionResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgAddExtensionResponse>): MsgAddExtensionResponse {
+    const message = createBaseMsgAddExtensionResponse();
     return message;
   },
 };
 
-const baseMsgRemoveExtension: object = {
-  creator: "",
-  chainId: Long.UZERO,
-  lockproxyAddress: "",
-  extensionAddress: "",
-};
+function createBaseMsgRemoveExtension(): MsgRemoveExtension {
+  return { creator: "", chainId: Long.UZERO, lockproxyAddress: "", extensionAddress: "" };
+}
 
 export const MsgRemoveExtension = {
-  encode(
-    message: MsgRemoveExtension,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRemoveExtension, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -1120,113 +1089,110 @@ export const MsgRemoveExtension = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveExtension {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRemoveExtension } as MsgRemoveExtension;
+    const message = createBaseMsgRemoveExtension();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.chainId = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.lockproxyAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.extensionAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRemoveExtension {
-    const message = { ...baseMsgRemoveExtension } as MsgRemoveExtension;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromString(object.chainId)
-        : Long.UZERO;
-    message.lockproxyAddress =
-      object.lockproxyAddress !== undefined && object.lockproxyAddress !== null
-        ? String(object.lockproxyAddress)
-        : "";
-    message.extensionAddress =
-      object.extensionAddress !== undefined && object.extensionAddress !== null
-        ? String(object.extensionAddress)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      chainId: isSet(object.chainId) ? Long.fromValue(object.chainId) : Long.UZERO,
+      lockproxyAddress: isSet(object.lockproxyAddress) ? String(object.lockproxyAddress) : "",
+      extensionAddress: isSet(object.extensionAddress) ? String(object.extensionAddress) : "",
+    };
   },
 
   toJSON(message: MsgRemoveExtension): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.chainId !== undefined &&
-      (obj.chainId = (message.chainId || Long.UZERO).toString());
-    message.lockproxyAddress !== undefined &&
-      (obj.lockproxyAddress = message.lockproxyAddress);
-    message.extensionAddress !== undefined &&
-      (obj.extensionAddress = message.extensionAddress);
+    message.chainId !== undefined && (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.lockproxyAddress !== undefined && (obj.lockproxyAddress = message.lockproxyAddress);
+    message.extensionAddress !== undefined && (obj.extensionAddress = message.extensionAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgRemoveExtension>): MsgRemoveExtension {
+    return MsgRemoveExtension.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgRemoveExtension>): MsgRemoveExtension {
-    const message = { ...baseMsgRemoveExtension } as MsgRemoveExtension;
+    const message = createBaseMsgRemoveExtension();
     message.creator = object.creator ?? "";
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? Long.fromValue(object.chainId)
-        : Long.UZERO;
+    message.chainId = (object.chainId !== undefined && object.chainId !== null)
+      ? Long.fromValue(object.chainId)
+      : Long.UZERO;
     message.lockproxyAddress = object.lockproxyAddress ?? "";
     message.extensionAddress = object.extensionAddress ?? "";
     return message;
   },
 };
 
-const baseMsgRemoveExtensionResponse: object = {};
+function createBaseMsgRemoveExtensionResponse(): MsgRemoveExtensionResponse {
+  return {};
+}
 
 export const MsgRemoveExtensionResponse = {
-  encode(
-    _: MsgRemoveExtensionResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgRemoveExtensionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRemoveExtensionResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveExtensionResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRemoveExtensionResponse,
-    } as MsgRemoveExtensionResponse;
+    const message = createBaseMsgRemoveExtensionResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgRemoveExtensionResponse {
-    const message = {
-      ...baseMsgRemoveExtensionResponse,
-    } as MsgRemoveExtensionResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgRemoveExtensionResponse): unknown {
@@ -1234,12 +1200,12 @@ export const MsgRemoveExtensionResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgRemoveExtensionResponse>
-  ): MsgRemoveExtensionResponse {
-    const message = {
-      ...baseMsgRemoveExtensionResponse,
-    } as MsgRemoveExtensionResponse;
+  create(base?: DeepPartial<MsgRemoveExtensionResponse>): MsgRemoveExtensionResponse {
+    return MsgRemoveExtensionResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgRemoveExtensionResponse>): MsgRemoveExtensionResponse {
+    const message = createBaseMsgRemoveExtensionResponse();
     return message;
   },
 };
@@ -1250,21 +1216,17 @@ export interface Msg {
   Create(request: MsgCreate): Promise<MsgCreateResponse>;
   Bind(request: MsgBind): Promise<MsgBindResponse>;
   Lock(request: MsgLock): Promise<MsgLockResponse>;
-  SetWrapperMapping(
-    request: MsgSetWrapperMapping
-  ): Promise<MsgSetWrapperMappingResponse>;
-  DeleteWrapperMapping(
-    request: MsgDeleteWrapperMapping
-  ): Promise<MsgDeleteWrapperMappingResponse>;
+  SetWrapperMapping(request: MsgSetWrapperMapping): Promise<MsgSetWrapperMappingResponse>;
+  DeleteWrapperMapping(request: MsgDeleteWrapperMapping): Promise<MsgDeleteWrapperMappingResponse>;
   AddExtension(request: MsgAddExtension): Promise<MsgAddExtensionResponse>;
-  RemoveExtension(
-    request: MsgRemoveExtension
-  ): Promise<MsgRemoveExtensionResponse>;
+  RemoveExtension(request: MsgRemoveExtension): Promise<MsgRemoveExtensionResponse>;
 }
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.lockproxy.Msg";
     this.rpc = rpc;
     this.Create = this.Create.bind(this);
     this.Bind = this.Bind.bind(this);
@@ -1276,154 +1238,108 @@ export class MsgClientImpl implements Msg {
   }
   Create(request: MsgCreate): Promise<MsgCreateResponse> {
     const data = MsgCreate.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.lockproxy.Msg",
-      "Create",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreateResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Create", data);
+    return promise.then((data) => MsgCreateResponse.decode(_m0.Reader.create(data)));
   }
 
   Bind(request: MsgBind): Promise<MsgBindResponse> {
     const data = MsgBind.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.lockproxy.Msg",
-      "Bind",
-      data
-    );
-    return promise.then((data) => MsgBindResponse.decode(new _m0.Reader(data)));
+    const promise = this.rpc.request(this.service, "Bind", data);
+    return promise.then((data) => MsgBindResponse.decode(_m0.Reader.create(data)));
   }
 
   Lock(request: MsgLock): Promise<MsgLockResponse> {
     const data = MsgLock.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.lockproxy.Msg",
-      "Lock",
-      data
-    );
-    return promise.then((data) => MsgLockResponse.decode(new _m0.Reader(data)));
+    const promise = this.rpc.request(this.service, "Lock", data);
+    return promise.then((data) => MsgLockResponse.decode(_m0.Reader.create(data)));
   }
 
-  SetWrapperMapping(
-    request: MsgSetWrapperMapping
-  ): Promise<MsgSetWrapperMappingResponse> {
+  SetWrapperMapping(request: MsgSetWrapperMapping): Promise<MsgSetWrapperMappingResponse> {
     const data = MsgSetWrapperMapping.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.lockproxy.Msg",
-      "SetWrapperMapping",
-      data
-    );
-    return promise.then((data) =>
-      MsgSetWrapperMappingResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "SetWrapperMapping", data);
+    return promise.then((data) => MsgSetWrapperMappingResponse.decode(_m0.Reader.create(data)));
   }
 
-  DeleteWrapperMapping(
-    request: MsgDeleteWrapperMapping
-  ): Promise<MsgDeleteWrapperMappingResponse> {
+  DeleteWrapperMapping(request: MsgDeleteWrapperMapping): Promise<MsgDeleteWrapperMappingResponse> {
     const data = MsgDeleteWrapperMapping.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.lockproxy.Msg",
-      "DeleteWrapperMapping",
-      data
-    );
-    return promise.then((data) =>
-      MsgDeleteWrapperMappingResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "DeleteWrapperMapping", data);
+    return promise.then((data) => MsgDeleteWrapperMappingResponse.decode(_m0.Reader.create(data)));
   }
 
   AddExtension(request: MsgAddExtension): Promise<MsgAddExtensionResponse> {
     const data = MsgAddExtension.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.lockproxy.Msg",
-      "AddExtension",
-      data
-    );
-    return promise.then((data) =>
-      MsgAddExtensionResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "AddExtension", data);
+    return promise.then((data) => MsgAddExtensionResponse.decode(_m0.Reader.create(data)));
   }
 
-  RemoveExtension(
-    request: MsgRemoveExtension
-  ): Promise<MsgRemoveExtensionResponse> {
+  RemoveExtension(request: MsgRemoveExtension): Promise<MsgRemoveExtensionResponse> {
     const data = MsgRemoveExtension.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.lockproxy.Msg",
-      "RemoveExtension",
-      data
-    );
-    return promise.then((data) =>
-      MsgRemoveExtensionResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "RemoveExtension", data);
+    return promise.then((data) => MsgRemoveExtensionResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

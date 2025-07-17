@@ -20,18 +20,12 @@ export interface Module {
   bech32PrefixConsensus: string;
 }
 
-const baseModule: object = {
-  hooksOrder: "",
-  authority: "",
-  bech32PrefixValidator: "",
-  bech32PrefixConsensus: "",
-};
+function createBaseModule(): Module {
+  return { hooksOrder: [], authority: "", bech32PrefixValidator: "", bech32PrefixConsensus: "" };
+}
 
 export const Module = {
-  encode(
-    message: Module,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Module, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.hooksOrder) {
       writer.uint32(10).string(v!);
     }
@@ -48,51 +42,56 @@ export const Module = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Module {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModule } as Module;
-    message.hooksOrder = [];
+    const message = createBaseModule();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.hooksOrder.push(reader.string());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.bech32PrefixValidator = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.bech32PrefixConsensus = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Module {
-    const message = { ...baseModule } as Module;
-    message.hooksOrder = (object.hooksOrder ?? []).map((e: any) => String(e));
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.bech32PrefixValidator =
-      object.bech32PrefixValidator !== undefined &&
-      object.bech32PrefixValidator !== null
-        ? String(object.bech32PrefixValidator)
-        : "";
-    message.bech32PrefixConsensus =
-      object.bech32PrefixConsensus !== undefined &&
-      object.bech32PrefixConsensus !== null
-        ? String(object.bech32PrefixConsensus)
-        : "";
-    return message;
+    return {
+      hooksOrder: Array.isArray(object?.hooksOrder) ? object.hooksOrder.map((e: any) => String(e)) : [],
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      bech32PrefixValidator: isSet(object.bech32PrefixValidator) ? String(object.bech32PrefixValidator) : "",
+      bech32PrefixConsensus: isSet(object.bech32PrefixConsensus) ? String(object.bech32PrefixConsensus) : "",
+    };
   },
 
   toJSON(message: Module): unknown {
@@ -103,16 +102,18 @@ export const Module = {
       obj.hooksOrder = [];
     }
     message.authority !== undefined && (obj.authority = message.authority);
-    message.bech32PrefixValidator !== undefined &&
-      (obj.bech32PrefixValidator = message.bech32PrefixValidator);
-    message.bech32PrefixConsensus !== undefined &&
-      (obj.bech32PrefixConsensus = message.bech32PrefixConsensus);
+    message.bech32PrefixValidator !== undefined && (obj.bech32PrefixValidator = message.bech32PrefixValidator);
+    message.bech32PrefixConsensus !== undefined && (obj.bech32PrefixConsensus = message.bech32PrefixConsensus);
     return obj;
   },
 
+  create(base?: DeepPartial<Module>): Module {
+    return Module.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Module>): Module {
-    const message = { ...baseModule } as Module;
-    message.hooksOrder = (object.hooksOrder ?? []).map((e) => e);
+    const message = createBaseModule();
+    message.hooksOrder = object.hooksOrder?.map((e) => e) || [];
     message.authority = object.authority ?? "";
     message.bech32PrefixValidator = object.bech32PrefixValidator ?? "";
     message.bech32PrefixConsensus = object.bech32PrefixConsensus ?? "";
@@ -120,27 +121,19 @@ export const Module = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

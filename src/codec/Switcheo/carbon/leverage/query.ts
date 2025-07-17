@@ -23,13 +23,12 @@ export interface QueryAllLeverageResponse {
   marketLeverages: MarketLeverage[];
 }
 
-const baseQueryGetLeverageRequest: object = { address: "", marketId: "" };
+function createBaseQueryGetLeverageRequest(): QueryGetLeverageRequest {
+  return { address: "", marketId: "" };
+}
 
 export const QueryGetLeverageRequest = {
-  encode(
-    message: QueryGetLeverageRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetLeverageRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -39,45 +38,41 @@ export const QueryGetLeverageRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetLeverageRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetLeverageRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetLeverageRequest,
-    } as QueryGetLeverageRequest;
+    const message = createBaseQueryGetLeverageRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetLeverageRequest {
-    const message = {
-      ...baseQueryGetLeverageRequest,
-    } as QueryGetLeverageRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+    };
   },
 
   toJSON(message: QueryGetLeverageRequest): unknown {
@@ -87,139 +82,116 @@ export const QueryGetLeverageRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetLeverageRequest>
-  ): QueryGetLeverageRequest {
-    const message = {
-      ...baseQueryGetLeverageRequest,
-    } as QueryGetLeverageRequest;
+  create(base?: DeepPartial<QueryGetLeverageRequest>): QueryGetLeverageRequest {
+    return QueryGetLeverageRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetLeverageRequest>): QueryGetLeverageRequest {
+    const message = createBaseQueryGetLeverageRequest();
     message.address = object.address ?? "";
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseQueryGetLeverageResponse: object = {};
+function createBaseQueryGetLeverageResponse(): QueryGetLeverageResponse {
+  return { marketLeverage: undefined };
+}
 
 export const QueryGetLeverageResponse = {
-  encode(
-    message: QueryGetLeverageResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetLeverageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketLeverage !== undefined) {
-      MarketLeverage.encode(
-        message.marketLeverage,
-        writer.uint32(10).fork()
-      ).ldelim();
+      MarketLeverage.encode(message.marketLeverage, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetLeverageResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetLeverageResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetLeverageResponse,
-    } as QueryGetLeverageResponse;
+    const message = createBaseQueryGetLeverageResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketLeverage = MarketLeverage.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.marketLeverage = MarketLeverage.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetLeverageResponse {
-    const message = {
-      ...baseQueryGetLeverageResponse,
-    } as QueryGetLeverageResponse;
-    message.marketLeverage =
-      object.marketLeverage !== undefined && object.marketLeverage !== null
-        ? MarketLeverage.fromJSON(object.marketLeverage)
-        : undefined;
-    return message;
+    return {
+      marketLeverage: isSet(object.marketLeverage) ? MarketLeverage.fromJSON(object.marketLeverage) : undefined,
+    };
   },
 
   toJSON(message: QueryGetLeverageResponse): unknown {
     const obj: any = {};
     message.marketLeverage !== undefined &&
-      (obj.marketLeverage = message.marketLeverage
-        ? MarketLeverage.toJSON(message.marketLeverage)
-        : undefined);
+      (obj.marketLeverage = message.marketLeverage ? MarketLeverage.toJSON(message.marketLeverage) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetLeverageResponse>
-  ): QueryGetLeverageResponse {
-    const message = {
-      ...baseQueryGetLeverageResponse,
-    } as QueryGetLeverageResponse;
-    message.marketLeverage =
-      object.marketLeverage !== undefined && object.marketLeverage !== null
-        ? MarketLeverage.fromPartial(object.marketLeverage)
-        : undefined;
+  create(base?: DeepPartial<QueryGetLeverageResponse>): QueryGetLeverageResponse {
+    return QueryGetLeverageResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetLeverageResponse>): QueryGetLeverageResponse {
+    const message = createBaseQueryGetLeverageResponse();
+    message.marketLeverage = (object.marketLeverage !== undefined && object.marketLeverage !== null)
+      ? MarketLeverage.fromPartial(object.marketLeverage)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllLeverageRequest: object = { address: "" };
+function createBaseQueryAllLeverageRequest(): QueryAllLeverageRequest {
+  return { address: "" };
+}
 
 export const QueryAllLeverageRequest = {
-  encode(
-    message: QueryAllLeverageRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllLeverageRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllLeverageRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllLeverageRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllLeverageRequest,
-    } as QueryAllLeverageRequest;
+    const message = createBaseQueryAllLeverageRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllLeverageRequest {
-    const message = {
-      ...baseQueryAllLeverageRequest,
-    } as QueryAllLeverageRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return { address: isSet(object.address) ? String(object.address) : "" };
   },
 
   toJSON(message: QueryAllLeverageRequest): unknown {
@@ -228,87 +200,77 @@ export const QueryAllLeverageRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllLeverageRequest>
-  ): QueryAllLeverageRequest {
-    const message = {
-      ...baseQueryAllLeverageRequest,
-    } as QueryAllLeverageRequest;
+  create(base?: DeepPartial<QueryAllLeverageRequest>): QueryAllLeverageRequest {
+    return QueryAllLeverageRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllLeverageRequest>): QueryAllLeverageRequest {
+    const message = createBaseQueryAllLeverageRequest();
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseQueryAllLeverageResponse: object = {};
+function createBaseQueryAllLeverageResponse(): QueryAllLeverageResponse {
+  return { marketLeverages: [] };
+}
 
 export const QueryAllLeverageResponse = {
-  encode(
-    message: QueryAllLeverageResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllLeverageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.marketLeverages) {
       MarketLeverage.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllLeverageResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllLeverageResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllLeverageResponse,
-    } as QueryAllLeverageResponse;
-    message.marketLeverages = [];
+    const message = createBaseQueryAllLeverageResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketLeverages.push(
-            MarketLeverage.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.marketLeverages.push(MarketLeverage.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllLeverageResponse {
-    const message = {
-      ...baseQueryAllLeverageResponse,
-    } as QueryAllLeverageResponse;
-    message.marketLeverages = (object.marketLeverages ?? []).map((e: any) =>
-      MarketLeverage.fromJSON(e)
-    );
-    return message;
+    return {
+      marketLeverages: Array.isArray(object?.marketLeverages)
+        ? object.marketLeverages.map((e: any) => MarketLeverage.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: QueryAllLeverageResponse): unknown {
     const obj: any = {};
     if (message.marketLeverages) {
-      obj.marketLeverages = message.marketLeverages.map((e) =>
-        e ? MarketLeverage.toJSON(e) : undefined
-      );
+      obj.marketLeverages = message.marketLeverages.map((e) => e ? MarketLeverage.toJSON(e) : undefined);
     } else {
       obj.marketLeverages = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllLeverageResponse>
-  ): QueryAllLeverageResponse {
-    const message = {
-      ...baseQueryAllLeverageResponse,
-    } as QueryAllLeverageResponse;
-    message.marketLeverages = (object.marketLeverages ?? []).map((e) =>
-      MarketLeverage.fromPartial(e)
-    );
+  create(base?: DeepPartial<QueryAllLeverageResponse>): QueryAllLeverageResponse {
+    return QueryAllLeverageResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllLeverageResponse>): QueryAllLeverageResponse {
+    const message = createBaseQueryAllLeverageResponse();
+    message.marketLeverages = object.marketLeverages?.map((e) => MarketLeverage.fromPartial(e)) || [];
     return message;
   },
 };
@@ -321,76 +283,48 @@ export interface Query {
    */
   Leverage(request: QueryGetLeverageRequest): Promise<QueryGetLeverageResponse>;
   /** LeverageAll returns all leverages for an address, defaults to 1 */
-  LeverageAll(
-    request: QueryAllLeverageRequest
-  ): Promise<QueryAllLeverageResponse>;
+  LeverageAll(request: QueryAllLeverageRequest): Promise<QueryAllLeverageResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.leverage.Query";
     this.rpc = rpc;
     this.Leverage = this.Leverage.bind(this);
     this.LeverageAll = this.LeverageAll.bind(this);
   }
-  Leverage(
-    request: QueryGetLeverageRequest
-  ): Promise<QueryGetLeverageResponse> {
+  Leverage(request: QueryGetLeverageRequest): Promise<QueryGetLeverageResponse> {
     const data = QueryGetLeverageRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.leverage.Query",
-      "Leverage",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetLeverageResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Leverage", data);
+    return promise.then((data) => QueryGetLeverageResponse.decode(_m0.Reader.create(data)));
   }
 
-  LeverageAll(
-    request: QueryAllLeverageRequest
-  ): Promise<QueryAllLeverageResponse> {
+  LeverageAll(request: QueryAllLeverageRequest): Promise<QueryAllLeverageResponse> {
     const data = QueryAllLeverageRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.leverage.Query",
-      "LeverageAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllLeverageResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "LeverageAll", data);
+    return promise.then((data) => QueryAllLeverageResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

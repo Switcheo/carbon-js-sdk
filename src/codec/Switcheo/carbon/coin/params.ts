@@ -1,31 +1,33 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Int64Value, UInt32Value } from "../../../google/protobuf/wrappers";
+import { Duration } from "../../../google/protobuf/duration";
 
-export const protobufPackage = "Switcheo.carbon.order";
+export const protobufPackage = "Switcheo.carbon.coin";
 
+/** Params defines the parameters for the coin module. */
 export interface Params {
-  maxReferralCommission: number;
-  futuresOrderBlockDelay: Long;
+  withdrawalWindow?: Duration;
+  withdrawalThreshold: string;
 }
 
+/** ParamsToUpdate allows optional fields for Params. */
 export interface ParamsToUpdate {
-  maxReferralCommission?: number;
-  futuresOrderBlockDelay?: Long;
+  withdrawalWindow?: Duration;
+  withdrawalThreshold: string;
 }
 
 function createBaseParams(): Params {
-  return { maxReferralCommission: 0, futuresOrderBlockDelay: Long.ZERO };
+  return { withdrawalWindow: undefined, withdrawalThreshold: "" };
 }
 
 export const Params = {
   encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.maxReferralCommission !== 0) {
-      writer.uint32(8).uint32(message.maxReferralCommission);
+    if (message.withdrawalWindow !== undefined) {
+      Duration.encode(message.withdrawalWindow, writer.uint32(10).fork()).ldelim();
     }
-    if (!message.futuresOrderBlockDelay.isZero()) {
-      writer.uint32(16).int64(message.futuresOrderBlockDelay);
+    if (message.withdrawalThreshold !== "") {
+      writer.uint32(18).string(message.withdrawalThreshold);
     }
     return writer;
   },
@@ -38,18 +40,18 @@ export const Params = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.maxReferralCommission = reader.uint32();
+          message.withdrawalWindow = Duration.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.futuresOrderBlockDelay = reader.int64() as Long;
+          message.withdrawalThreshold = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -62,19 +64,16 @@ export const Params = {
 
   fromJSON(object: any): Params {
     return {
-      maxReferralCommission: isSet(object.maxReferralCommission) ? Number(object.maxReferralCommission) : 0,
-      futuresOrderBlockDelay: isSet(object.futuresOrderBlockDelay)
-        ? Long.fromValue(object.futuresOrderBlockDelay)
-        : Long.ZERO,
+      withdrawalWindow: isSet(object.withdrawalWindow) ? Duration.fromJSON(object.withdrawalWindow) : undefined,
+      withdrawalThreshold: isSet(object.withdrawalThreshold) ? String(object.withdrawalThreshold) : "",
     };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.maxReferralCommission !== undefined &&
-      (obj.maxReferralCommission = Math.round(message.maxReferralCommission));
-    message.futuresOrderBlockDelay !== undefined &&
-      (obj.futuresOrderBlockDelay = (message.futuresOrderBlockDelay || Long.ZERO).toString());
+    message.withdrawalWindow !== undefined &&
+      (obj.withdrawalWindow = message.withdrawalWindow ? Duration.toJSON(message.withdrawalWindow) : undefined);
+    message.withdrawalThreshold !== undefined && (obj.withdrawalThreshold = message.withdrawalThreshold);
     return obj;
   },
 
@@ -84,26 +83,25 @@ export const Params = {
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = createBaseParams();
-    message.maxReferralCommission = object.maxReferralCommission ?? 0;
-    message.futuresOrderBlockDelay =
-      (object.futuresOrderBlockDelay !== undefined && object.futuresOrderBlockDelay !== null)
-        ? Long.fromValue(object.futuresOrderBlockDelay)
-        : Long.ZERO;
+    message.withdrawalWindow = (object.withdrawalWindow !== undefined && object.withdrawalWindow !== null)
+      ? Duration.fromPartial(object.withdrawalWindow)
+      : undefined;
+    message.withdrawalThreshold = object.withdrawalThreshold ?? "";
     return message;
   },
 };
 
 function createBaseParamsToUpdate(): ParamsToUpdate {
-  return { maxReferralCommission: undefined, futuresOrderBlockDelay: undefined };
+  return { withdrawalWindow: undefined, withdrawalThreshold: "" };
 }
 
 export const ParamsToUpdate = {
   encode(message: ParamsToUpdate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.maxReferralCommission !== undefined) {
-      UInt32Value.encode({ value: message.maxReferralCommission! }, writer.uint32(10).fork()).ldelim();
+    if (message.withdrawalWindow !== undefined) {
+      Duration.encode(message.withdrawalWindow, writer.uint32(10).fork()).ldelim();
     }
-    if (message.futuresOrderBlockDelay !== undefined) {
-      Int64Value.encode({ value: message.futuresOrderBlockDelay! }, writer.uint32(18).fork()).ldelim();
+    if (message.withdrawalThreshold !== "") {
+      writer.uint32(18).string(message.withdrawalThreshold);
     }
     return writer;
   },
@@ -120,14 +118,14 @@ export const ParamsToUpdate = {
             break;
           }
 
-          message.maxReferralCommission = UInt32Value.decode(reader, reader.uint32()).value;
+          message.withdrawalWindow = Duration.decode(reader, reader.uint32());
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.futuresOrderBlockDelay = Int64Value.decode(reader, reader.uint32()).value;
+          message.withdrawalThreshold = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -140,17 +138,16 @@ export const ParamsToUpdate = {
 
   fromJSON(object: any): ParamsToUpdate {
     return {
-      maxReferralCommission: isSet(object.maxReferralCommission) ? Number(object.maxReferralCommission) : undefined,
-      futuresOrderBlockDelay: isSet(object.futuresOrderBlockDelay)
-        ? Long.fromValue(object.futuresOrderBlockDelay)
-        : undefined,
+      withdrawalWindow: isSet(object.withdrawalWindow) ? Duration.fromJSON(object.withdrawalWindow) : undefined,
+      withdrawalThreshold: isSet(object.withdrawalThreshold) ? String(object.withdrawalThreshold) : "",
     };
   },
 
   toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
-    message.maxReferralCommission !== undefined && (obj.maxReferralCommission = message.maxReferralCommission);
-    message.futuresOrderBlockDelay !== undefined && (obj.futuresOrderBlockDelay = message.futuresOrderBlockDelay);
+    message.withdrawalWindow !== undefined &&
+      (obj.withdrawalWindow = message.withdrawalWindow ? Duration.toJSON(message.withdrawalWindow) : undefined);
+    message.withdrawalThreshold !== undefined && (obj.withdrawalThreshold = message.withdrawalThreshold);
     return obj;
   },
 
@@ -160,11 +157,10 @@ export const ParamsToUpdate = {
 
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = createBaseParamsToUpdate();
-    message.maxReferralCommission = object.maxReferralCommission ?? undefined;
-    message.futuresOrderBlockDelay =
-      (object.futuresOrderBlockDelay !== undefined && object.futuresOrderBlockDelay !== null)
-        ? Long.fromValue(object.futuresOrderBlockDelay)
-        : undefined;
+    message.withdrawalWindow = (object.withdrawalWindow !== undefined && object.withdrawalWindow !== null)
+      ? Duration.fromPartial(object.withdrawalWindow)
+      : undefined;
+    message.withdrawalThreshold = object.withdrawalThreshold ?? "";
     return message;
   },
 };

@@ -13,20 +13,12 @@ export interface EModeCategory {
   isActive: boolean;
 }
 
-const baseEModeCategory: object = {
-  name: "",
-  denoms: "",
-  loanToValue: "",
-  liquidationThreshold: "",
-  liquidationDiscount: "",
-  isActive: false,
-};
+function createBaseEModeCategory(): EModeCategory {
+  return { name: "", denoms: [], loanToValue: "", liquidationThreshold: "", liquidationDiscount: "", isActive: false };
+}
 
 export const EModeCategory = {
-  encode(
-    message: EModeCategory,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EModeCategory, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -49,65 +41,72 @@ export const EModeCategory = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EModeCategory {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEModeCategory } as EModeCategory;
-    message.denoms = [];
+    const message = createBaseEModeCategory();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denoms.push(reader.string());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.loanToValue = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.liquidationThreshold = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.liquidationDiscount = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.isActive = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EModeCategory {
-    const message = { ...baseEModeCategory } as EModeCategory;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.denoms = (object.denoms ?? []).map((e: any) => String(e));
-    message.loanToValue =
-      object.loanToValue !== undefined && object.loanToValue !== null
-        ? String(object.loanToValue)
-        : "";
-    message.liquidationThreshold =
-      object.liquidationThreshold !== undefined &&
-      object.liquidationThreshold !== null
-        ? String(object.liquidationThreshold)
-        : "";
-    message.liquidationDiscount =
-      object.liquidationDiscount !== undefined &&
-      object.liquidationDiscount !== null
-        ? String(object.liquidationDiscount)
-        : "";
-    message.isActive =
-      object.isActive !== undefined && object.isActive !== null
-        ? Boolean(object.isActive)
-        : false;
-    return message;
+    return {
+      name: isSet(object.name) ? String(object.name) : "",
+      denoms: Array.isArray(object?.denoms) ? object.denoms.map((e: any) => String(e)) : [],
+      loanToValue: isSet(object.loanToValue) ? String(object.loanToValue) : "",
+      liquidationThreshold: isSet(object.liquidationThreshold) ? String(object.liquidationThreshold) : "",
+      liquidationDiscount: isSet(object.liquidationDiscount) ? String(object.liquidationDiscount) : "",
+      isActive: isSet(object.isActive) ? Boolean(object.isActive) : false,
+    };
   },
 
   toJSON(message: EModeCategory): unknown {
@@ -118,20 +117,21 @@ export const EModeCategory = {
     } else {
       obj.denoms = [];
     }
-    message.loanToValue !== undefined &&
-      (obj.loanToValue = message.loanToValue);
-    message.liquidationThreshold !== undefined &&
-      (obj.liquidationThreshold = message.liquidationThreshold);
-    message.liquidationDiscount !== undefined &&
-      (obj.liquidationDiscount = message.liquidationDiscount);
+    message.loanToValue !== undefined && (obj.loanToValue = message.loanToValue);
+    message.liquidationThreshold !== undefined && (obj.liquidationThreshold = message.liquidationThreshold);
+    message.liquidationDiscount !== undefined && (obj.liquidationDiscount = message.liquidationDiscount);
     message.isActive !== undefined && (obj.isActive = message.isActive);
     return obj;
   },
 
+  create(base?: DeepPartial<EModeCategory>): EModeCategory {
+    return EModeCategory.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EModeCategory>): EModeCategory {
-    const message = { ...baseEModeCategory } as EModeCategory;
+    const message = createBaseEModeCategory();
     message.name = object.name ?? "";
-    message.denoms = (object.denoms ?? []).map((e) => e);
+    message.denoms = object.denoms?.map((e) => e) || [];
     message.loanToValue = object.loanToValue ?? "";
     message.liquidationThreshold = object.liquidationThreshold ?? "";
     message.liquidationDiscount = object.liquidationDiscount ?? "";
@@ -140,27 +140,19 @@ export const EModeCategory = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

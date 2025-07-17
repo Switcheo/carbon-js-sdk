@@ -26,13 +26,12 @@ export interface EventRevoke {
   grantee: string;
 }
 
-const baseEventGrant: object = { msgTypeUrl: "", granter: "", grantee: "" };
+function createBaseEventGrant(): EventGrant {
+  return { msgTypeUrl: "", granter: "", grantee: "" };
+}
 
 export const EventGrant = {
-  encode(
-    message: EventGrant,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventGrant, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.msgTypeUrl !== "") {
       writer.uint32(18).string(message.msgTypeUrl);
     }
@@ -46,44 +45,48 @@ export const EventGrant = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventGrant {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventGrant } as EventGrant;
+    const message = createBaseEventGrant();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.msgTypeUrl = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.granter = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.grantee = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventGrant {
-    const message = { ...baseEventGrant } as EventGrant;
-    message.msgTypeUrl =
-      object.msgTypeUrl !== undefined && object.msgTypeUrl !== null
-        ? String(object.msgTypeUrl)
-        : "";
-    message.granter =
-      object.granter !== undefined && object.granter !== null
-        ? String(object.granter)
-        : "";
-    message.grantee =
-      object.grantee !== undefined && object.grantee !== null
-        ? String(object.grantee)
-        : "";
-    return message;
+    return {
+      msgTypeUrl: isSet(object.msgTypeUrl) ? String(object.msgTypeUrl) : "",
+      granter: isSet(object.granter) ? String(object.granter) : "",
+      grantee: isSet(object.grantee) ? String(object.grantee) : "",
+    };
   },
 
   toJSON(message: EventGrant): unknown {
@@ -94,8 +97,12 @@ export const EventGrant = {
     return obj;
   },
 
+  create(base?: DeepPartial<EventGrant>): EventGrant {
+    return EventGrant.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventGrant>): EventGrant {
-    const message = { ...baseEventGrant } as EventGrant;
+    const message = createBaseEventGrant();
     message.msgTypeUrl = object.msgTypeUrl ?? "";
     message.granter = object.granter ?? "";
     message.grantee = object.grantee ?? "";
@@ -103,13 +110,12 @@ export const EventGrant = {
   },
 };
 
-const baseEventRevoke: object = { msgTypeUrl: "", granter: "", grantee: "" };
+function createBaseEventRevoke(): EventRevoke {
+  return { msgTypeUrl: "", granter: "", grantee: "" };
+}
 
 export const EventRevoke = {
-  encode(
-    message: EventRevoke,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventRevoke, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.msgTypeUrl !== "") {
       writer.uint32(18).string(message.msgTypeUrl);
     }
@@ -123,44 +129,48 @@ export const EventRevoke = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventRevoke {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventRevoke } as EventRevoke;
+    const message = createBaseEventRevoke();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.msgTypeUrl = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.granter = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.grantee = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventRevoke {
-    const message = { ...baseEventRevoke } as EventRevoke;
-    message.msgTypeUrl =
-      object.msgTypeUrl !== undefined && object.msgTypeUrl !== null
-        ? String(object.msgTypeUrl)
-        : "";
-    message.granter =
-      object.granter !== undefined && object.granter !== null
-        ? String(object.granter)
-        : "";
-    message.grantee =
-      object.grantee !== undefined && object.grantee !== null
-        ? String(object.grantee)
-        : "";
-    return message;
+    return {
+      msgTypeUrl: isSet(object.msgTypeUrl) ? String(object.msgTypeUrl) : "",
+      granter: isSet(object.granter) ? String(object.granter) : "",
+      grantee: isSet(object.grantee) ? String(object.grantee) : "",
+    };
   },
 
   toJSON(message: EventRevoke): unknown {
@@ -171,8 +181,12 @@ export const EventRevoke = {
     return obj;
   },
 
+  create(base?: DeepPartial<EventRevoke>): EventRevoke {
+    return EventRevoke.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventRevoke>): EventRevoke {
-    const message = { ...baseEventRevoke } as EventRevoke;
+    const message = createBaseEventRevoke();
     message.msgTypeUrl = object.msgTypeUrl ?? "";
     message.granter = object.granter ?? "";
     message.grantee = object.grantee ?? "";
@@ -180,27 +194,19 @@ export const EventRevoke = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

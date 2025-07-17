@@ -27,7 +27,8 @@ export interface MsgRemoveChecksum {
 }
 
 /** MsgStoreChecksumResponse defines the response type for the StoreCode rpc */
-export interface MsgRemoveChecksumResponse {}
+export interface MsgRemoveChecksumResponse {
+}
 
 /** MsgMigrateContract defines the request type for the MigrateContract rpc. */
 export interface MsgMigrateContract {
@@ -42,15 +43,15 @@ export interface MsgMigrateContract {
 }
 
 /** MsgMigrateContractResponse defines the response type for the MigrateContract rpc */
-export interface MsgMigrateContractResponse {}
+export interface MsgMigrateContractResponse {
+}
 
-const baseMsgStoreCode: object = { signer: "" };
+function createBaseMsgStoreCode(): MsgStoreCode {
+  return { signer: "", wasmByteCode: new Uint8Array() };
+}
 
 export const MsgStoreCode = {
-  encode(
-    message: MsgStoreCode,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgStoreCode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -61,38 +62,40 @@ export const MsgStoreCode = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgStoreCode {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgStoreCode } as MsgStoreCode;
-    message.wasmByteCode = new Uint8Array();
+    const message = createBaseMsgStoreCode();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.signer = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.wasmByteCode = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgStoreCode {
-    const message = { ...baseMsgStoreCode } as MsgStoreCode;
-    message.signer =
-      object.signer !== undefined && object.signer !== null
-        ? String(object.signer)
-        : "";
-    message.wasmByteCode =
-      object.wasmByteCode !== undefined && object.wasmByteCode !== null
-        ? bytesFromBase64(object.wasmByteCode)
-        : new Uint8Array();
-    return message;
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      wasmByteCode: isSet(object.wasmByteCode) ? bytesFromBase64(object.wasmByteCode) : new Uint8Array(),
+    };
   },
 
   toJSON(message: MsgStoreCode): unknown {
@@ -100,88 +103,86 @@ export const MsgStoreCode = {
     message.signer !== undefined && (obj.signer = message.signer);
     message.wasmByteCode !== undefined &&
       (obj.wasmByteCode = base64FromBytes(
-        message.wasmByteCode !== undefined
-          ? message.wasmByteCode
-          : new Uint8Array()
+        message.wasmByteCode !== undefined ? message.wasmByteCode : new Uint8Array(),
       ));
     return obj;
   },
 
+  create(base?: DeepPartial<MsgStoreCode>): MsgStoreCode {
+    return MsgStoreCode.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgStoreCode>): MsgStoreCode {
-    const message = { ...baseMsgStoreCode } as MsgStoreCode;
+    const message = createBaseMsgStoreCode();
     message.signer = object.signer ?? "";
     message.wasmByteCode = object.wasmByteCode ?? new Uint8Array();
     return message;
   },
 };
 
-const baseMsgStoreCodeResponse: object = {};
+function createBaseMsgStoreCodeResponse(): MsgStoreCodeResponse {
+  return { checksum: new Uint8Array() };
+}
 
 export const MsgStoreCodeResponse = {
-  encode(
-    message: MsgStoreCodeResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgStoreCodeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.checksum.length !== 0) {
       writer.uint32(10).bytes(message.checksum);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgStoreCodeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgStoreCodeResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgStoreCodeResponse } as MsgStoreCodeResponse;
-    message.checksum = new Uint8Array();
+    const message = createBaseMsgStoreCodeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.checksum = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgStoreCodeResponse {
-    const message = { ...baseMsgStoreCodeResponse } as MsgStoreCodeResponse;
-    message.checksum =
-      object.checksum !== undefined && object.checksum !== null
-        ? bytesFromBase64(object.checksum)
-        : new Uint8Array();
-    return message;
+    return { checksum: isSet(object.checksum) ? bytesFromBase64(object.checksum) : new Uint8Array() };
   },
 
   toJSON(message: MsgStoreCodeResponse): unknown {
     const obj: any = {};
     message.checksum !== undefined &&
-      (obj.checksum = base64FromBytes(
-        message.checksum !== undefined ? message.checksum : new Uint8Array()
-      ));
+      (obj.checksum = base64FromBytes(message.checksum !== undefined ? message.checksum : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<MsgStoreCodeResponse>): MsgStoreCodeResponse {
+    return MsgStoreCodeResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgStoreCodeResponse>): MsgStoreCodeResponse {
-    const message = { ...baseMsgStoreCodeResponse } as MsgStoreCodeResponse;
+    const message = createBaseMsgStoreCodeResponse();
     message.checksum = object.checksum ?? new Uint8Array();
     return message;
   },
 };
 
-const baseMsgRemoveChecksum: object = { signer: "" };
+function createBaseMsgRemoveChecksum(): MsgRemoveChecksum {
+  return { signer: "", checksum: new Uint8Array() };
+}
 
 export const MsgRemoveChecksum = {
-  encode(
-    message: MsgRemoveChecksum,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRemoveChecksum, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -192,93 +193,89 @@ export const MsgRemoveChecksum = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveChecksum {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRemoveChecksum } as MsgRemoveChecksum;
-    message.checksum = new Uint8Array();
+    const message = createBaseMsgRemoveChecksum();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.signer = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.checksum = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRemoveChecksum {
-    const message = { ...baseMsgRemoveChecksum } as MsgRemoveChecksum;
-    message.signer =
-      object.signer !== undefined && object.signer !== null
-        ? String(object.signer)
-        : "";
-    message.checksum =
-      object.checksum !== undefined && object.checksum !== null
-        ? bytesFromBase64(object.checksum)
-        : new Uint8Array();
-    return message;
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      checksum: isSet(object.checksum) ? bytesFromBase64(object.checksum) : new Uint8Array(),
+    };
   },
 
   toJSON(message: MsgRemoveChecksum): unknown {
     const obj: any = {};
     message.signer !== undefined && (obj.signer = message.signer);
     message.checksum !== undefined &&
-      (obj.checksum = base64FromBytes(
-        message.checksum !== undefined ? message.checksum : new Uint8Array()
-      ));
+      (obj.checksum = base64FromBytes(message.checksum !== undefined ? message.checksum : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<MsgRemoveChecksum>): MsgRemoveChecksum {
+    return MsgRemoveChecksum.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgRemoveChecksum>): MsgRemoveChecksum {
-    const message = { ...baseMsgRemoveChecksum } as MsgRemoveChecksum;
+    const message = createBaseMsgRemoveChecksum();
     message.signer = object.signer ?? "";
     message.checksum = object.checksum ?? new Uint8Array();
     return message;
   },
 };
 
-const baseMsgRemoveChecksumResponse: object = {};
+function createBaseMsgRemoveChecksumResponse(): MsgRemoveChecksumResponse {
+  return {};
+}
 
 export const MsgRemoveChecksumResponse = {
-  encode(
-    _: MsgRemoveChecksumResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgRemoveChecksumResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRemoveChecksumResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveChecksumResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRemoveChecksumResponse,
-    } as MsgRemoveChecksumResponse;
+    const message = createBaseMsgRemoveChecksumResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgRemoveChecksumResponse {
-    const message = {
-      ...baseMsgRemoveChecksumResponse,
-    } as MsgRemoveChecksumResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgRemoveChecksumResponse): unknown {
@@ -286,23 +283,22 @@ export const MsgRemoveChecksumResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgRemoveChecksumResponse>
-  ): MsgRemoveChecksumResponse {
-    const message = {
-      ...baseMsgRemoveChecksumResponse,
-    } as MsgRemoveChecksumResponse;
+  create(base?: DeepPartial<MsgRemoveChecksumResponse>): MsgRemoveChecksumResponse {
+    return MsgRemoveChecksumResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgRemoveChecksumResponse>): MsgRemoveChecksumResponse {
+    const message = createBaseMsgRemoveChecksumResponse();
     return message;
   },
 };
 
-const baseMsgMigrateContract: object = { signer: "", clientId: "" };
+function createBaseMsgMigrateContract(): MsgMigrateContract {
+  return { signer: "", clientId: "", checksum: new Uint8Array(), msg: new Uint8Array() };
+}
 
 export const MsgMigrateContract = {
-  encode(
-    message: MsgMigrateContract,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgMigrateContract, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.signer !== "") {
       writer.uint32(10).string(message.signer);
     }
@@ -319,53 +315,56 @@ export const MsgMigrateContract = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgMigrateContract {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgMigrateContract } as MsgMigrateContract;
-    message.checksum = new Uint8Array();
-    message.msg = new Uint8Array();
+    const message = createBaseMsgMigrateContract();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.signer = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.clientId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.checksum = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.msg = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgMigrateContract {
-    const message = { ...baseMsgMigrateContract } as MsgMigrateContract;
-    message.signer =
-      object.signer !== undefined && object.signer !== null
-        ? String(object.signer)
-        : "";
-    message.clientId =
-      object.clientId !== undefined && object.clientId !== null
-        ? String(object.clientId)
-        : "";
-    message.checksum =
-      object.checksum !== undefined && object.checksum !== null
-        ? bytesFromBase64(object.checksum)
-        : new Uint8Array();
-    message.msg =
-      object.msg !== undefined && object.msg !== null
-        ? bytesFromBase64(object.msg)
-        : new Uint8Array();
-    return message;
+    return {
+      signer: isSet(object.signer) ? String(object.signer) : "",
+      clientId: isSet(object.clientId) ? String(object.clientId) : "",
+      checksum: isSet(object.checksum) ? bytesFromBase64(object.checksum) : new Uint8Array(),
+      msg: isSet(object.msg) ? bytesFromBase64(object.msg) : new Uint8Array(),
+    };
   },
 
   toJSON(message: MsgMigrateContract): unknown {
@@ -373,18 +372,18 @@ export const MsgMigrateContract = {
     message.signer !== undefined && (obj.signer = message.signer);
     message.clientId !== undefined && (obj.clientId = message.clientId);
     message.checksum !== undefined &&
-      (obj.checksum = base64FromBytes(
-        message.checksum !== undefined ? message.checksum : new Uint8Array()
-      ));
+      (obj.checksum = base64FromBytes(message.checksum !== undefined ? message.checksum : new Uint8Array()));
     message.msg !== undefined &&
-      (obj.msg = base64FromBytes(
-        message.msg !== undefined ? message.msg : new Uint8Array()
-      ));
+      (obj.msg = base64FromBytes(message.msg !== undefined ? message.msg : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<MsgMigrateContract>): MsgMigrateContract {
+    return MsgMigrateContract.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgMigrateContract>): MsgMigrateContract {
-    const message = { ...baseMsgMigrateContract } as MsgMigrateContract;
+    const message = createBaseMsgMigrateContract();
     message.signer = object.signer ?? "";
     message.clientId = object.clientId ?? "";
     message.checksum = object.checksum ?? new Uint8Array();
@@ -393,41 +392,33 @@ export const MsgMigrateContract = {
   },
 };
 
-const baseMsgMigrateContractResponse: object = {};
+function createBaseMsgMigrateContractResponse(): MsgMigrateContractResponse {
+  return {};
+}
 
 export const MsgMigrateContractResponse = {
-  encode(
-    _: MsgMigrateContractResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgMigrateContractResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgMigrateContractResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgMigrateContractResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgMigrateContractResponse,
-    } as MsgMigrateContractResponse;
+    const message = createBaseMsgMigrateContractResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgMigrateContractResponse {
-    const message = {
-      ...baseMsgMigrateContractResponse,
-    } as MsgMigrateContractResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgMigrateContractResponse): unknown {
@@ -435,12 +426,12 @@ export const MsgMigrateContractResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgMigrateContractResponse>
-  ): MsgMigrateContractResponse {
-    const message = {
-      ...baseMsgMigrateContractResponse,
-    } as MsgMigrateContractResponse;
+  create(base?: DeepPartial<MsgMigrateContractResponse>): MsgMigrateContractResponse {
+    return MsgMigrateContractResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgMigrateContractResponse>): MsgMigrateContractResponse {
+    const message = createBaseMsgMigrateContractResponse();
     return message;
   },
 };
@@ -450,18 +441,16 @@ export interface Msg {
   /** StoreCode defines a rpc handler method for MsgStoreCode. */
   StoreCode(request: MsgStoreCode): Promise<MsgStoreCodeResponse>;
   /** RemoveChecksum defines a rpc handler method for MsgRemoveChecksum. */
-  RemoveChecksum(
-    request: MsgRemoveChecksum
-  ): Promise<MsgRemoveChecksumResponse>;
+  RemoveChecksum(request: MsgRemoveChecksum): Promise<MsgRemoveChecksumResponse>;
   /** MigrateContract defines a rpc handler method for MsgMigrateContract. */
-  MigrateContract(
-    request: MsgMigrateContract
-  ): Promise<MsgMigrateContractResponse>;
+  MigrateContract(request: MsgMigrateContract): Promise<MsgMigrateContractResponse>;
 }
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "ibc.lightclients.wasm.v1.Msg";
     this.rpc = rpc;
     this.StoreCode = this.StoreCode.bind(this);
     this.RemoveChecksum = this.RemoveChecksum.bind(this);
@@ -469,108 +458,84 @@ export class MsgClientImpl implements Msg {
   }
   StoreCode(request: MsgStoreCode): Promise<MsgStoreCodeResponse> {
     const data = MsgStoreCode.encode(request).finish();
-    const promise = this.rpc.request(
-      "ibc.lightclients.wasm.v1.Msg",
-      "StoreCode",
-      data
-    );
-    return promise.then((data) =>
-      MsgStoreCodeResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "StoreCode", data);
+    return promise.then((data) => MsgStoreCodeResponse.decode(_m0.Reader.create(data)));
   }
 
-  RemoveChecksum(
-    request: MsgRemoveChecksum
-  ): Promise<MsgRemoveChecksumResponse> {
+  RemoveChecksum(request: MsgRemoveChecksum): Promise<MsgRemoveChecksumResponse> {
     const data = MsgRemoveChecksum.encode(request).finish();
-    const promise = this.rpc.request(
-      "ibc.lightclients.wasm.v1.Msg",
-      "RemoveChecksum",
-      data
-    );
-    return promise.then((data) =>
-      MsgRemoveChecksumResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "RemoveChecksum", data);
+    return promise.then((data) => MsgRemoveChecksumResponse.decode(_m0.Reader.create(data)));
   }
 
-  MigrateContract(
-    request: MsgMigrateContract
-  ): Promise<MsgMigrateContractResponse> {
+  MigrateContract(request: MsgMigrateContract): Promise<MsgMigrateContractResponse> {
     const data = MsgMigrateContract.encode(request).finish();
-    const promise = this.rpc.request(
-      "ibc.lightclients.wasm.v1.Msg",
-      "MigrateContract",
-      data
-    );
-    return promise.then((data) =>
-      MsgMigrateContractResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "MigrateContract", data);
+    return promise.then((data) => MsgMigrateContractResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

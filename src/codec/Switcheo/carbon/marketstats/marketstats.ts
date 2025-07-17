@@ -22,27 +22,27 @@ export interface MarketStats {
   openInterest: string;
 }
 
-const baseMarketStats: object = {
-  marketId: "",
-  marketType: "",
-  dayOpen: "",
-  dayHigh: "",
-  dayLow: "",
-  dayClose: "",
-  dayVolume: "",
-  dayQuoteVolume: "",
-  indexPrice: "",
-  markPrice: "",
-  lastPrice: "",
-  premiumRate: "",
-  openInterest: "",
-};
+function createBaseMarketStats(): MarketStats {
+  return {
+    marketId: "",
+    marketType: "",
+    dayOpen: "",
+    dayHigh: "",
+    dayLow: "",
+    dayClose: "",
+    dayVolume: "",
+    dayQuoteVolume: "",
+    indexPrice: "",
+    markPrice: "",
+    lastPrice: "",
+    premiumRate: "",
+    lastFundingAt: undefined,
+    openInterest: "",
+  };
+}
 
 export const MarketStats = {
-  encode(
-    message: MarketStats,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MarketStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -80,10 +80,7 @@ export const MarketStats = {
       writer.uint32(98).string(message.premiumRate);
     }
     if (message.lastFundingAt !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.lastFundingAt),
-        writer.uint32(106).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.lastFundingAt), writer.uint32(106).fork()).ldelim();
     }
     if (message.openInterest !== "") {
       writer.uint32(114).string(message.openInterest);
@@ -92,123 +89,136 @@ export const MarketStats = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MarketStats {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMarketStats } as MarketStats;
+    const message = createBaseMarketStats();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketType = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.dayOpen = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.dayHigh = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.dayLow = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.dayClose = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.dayVolume = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.dayQuoteVolume = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.indexPrice = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.markPrice = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.lastPrice = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.premiumRate = reader.string();
-          break;
+          continue;
         case 13:
-          message.lastFundingAt = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 106) {
+            break;
+          }
+
+          message.lastFundingAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 14:
+          if (tag !== 114) {
+            break;
+          }
+
           message.openInterest = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MarketStats {
-    const message = { ...baseMarketStats } as MarketStats;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.marketType =
-      object.marketType !== undefined && object.marketType !== null
-        ? String(object.marketType)
-        : "";
-    message.dayOpen =
-      object.dayOpen !== undefined && object.dayOpen !== null
-        ? String(object.dayOpen)
-        : "";
-    message.dayHigh =
-      object.dayHigh !== undefined && object.dayHigh !== null
-        ? String(object.dayHigh)
-        : "";
-    message.dayLow =
-      object.dayLow !== undefined && object.dayLow !== null
-        ? String(object.dayLow)
-        : "";
-    message.dayClose =
-      object.dayClose !== undefined && object.dayClose !== null
-        ? String(object.dayClose)
-        : "";
-    message.dayVolume =
-      object.dayVolume !== undefined && object.dayVolume !== null
-        ? String(object.dayVolume)
-        : "";
-    message.dayQuoteVolume =
-      object.dayQuoteVolume !== undefined && object.dayQuoteVolume !== null
-        ? String(object.dayQuoteVolume)
-        : "";
-    message.indexPrice =
-      object.indexPrice !== undefined && object.indexPrice !== null
-        ? String(object.indexPrice)
-        : "";
-    message.markPrice =
-      object.markPrice !== undefined && object.markPrice !== null
-        ? String(object.markPrice)
-        : "";
-    message.lastPrice =
-      object.lastPrice !== undefined && object.lastPrice !== null
-        ? String(object.lastPrice)
-        : "";
-    message.premiumRate =
-      object.premiumRate !== undefined && object.premiumRate !== null
-        ? String(object.premiumRate)
-        : "";
-    message.lastFundingAt =
-      object.lastFundingAt !== undefined && object.lastFundingAt !== null
-        ? fromJsonTimestamp(object.lastFundingAt)
-        : undefined;
-    message.openInterest =
-      object.openInterest !== undefined && object.openInterest !== null
-        ? String(object.openInterest)
-        : "";
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      marketType: isSet(object.marketType) ? String(object.marketType) : "",
+      dayOpen: isSet(object.dayOpen) ? String(object.dayOpen) : "",
+      dayHigh: isSet(object.dayHigh) ? String(object.dayHigh) : "",
+      dayLow: isSet(object.dayLow) ? String(object.dayLow) : "",
+      dayClose: isSet(object.dayClose) ? String(object.dayClose) : "",
+      dayVolume: isSet(object.dayVolume) ? String(object.dayVolume) : "",
+      dayQuoteVolume: isSet(object.dayQuoteVolume) ? String(object.dayQuoteVolume) : "",
+      indexPrice: isSet(object.indexPrice) ? String(object.indexPrice) : "",
+      markPrice: isSet(object.markPrice) ? String(object.markPrice) : "",
+      lastPrice: isSet(object.lastPrice) ? String(object.lastPrice) : "",
+      premiumRate: isSet(object.premiumRate) ? String(object.premiumRate) : "",
+      lastFundingAt: isSet(object.lastFundingAt) ? fromJsonTimestamp(object.lastFundingAt) : undefined,
+      openInterest: isSet(object.openInterest) ? String(object.openInterest) : "",
+    };
   },
 
   toJSON(message: MarketStats): unknown {
@@ -220,22 +230,22 @@ export const MarketStats = {
     message.dayLow !== undefined && (obj.dayLow = message.dayLow);
     message.dayClose !== undefined && (obj.dayClose = message.dayClose);
     message.dayVolume !== undefined && (obj.dayVolume = message.dayVolume);
-    message.dayQuoteVolume !== undefined &&
-      (obj.dayQuoteVolume = message.dayQuoteVolume);
+    message.dayQuoteVolume !== undefined && (obj.dayQuoteVolume = message.dayQuoteVolume);
     message.indexPrice !== undefined && (obj.indexPrice = message.indexPrice);
     message.markPrice !== undefined && (obj.markPrice = message.markPrice);
     message.lastPrice !== undefined && (obj.lastPrice = message.lastPrice);
-    message.premiumRate !== undefined &&
-      (obj.premiumRate = message.premiumRate);
-    message.lastFundingAt !== undefined &&
-      (obj.lastFundingAt = message.lastFundingAt.toISOString());
-    message.openInterest !== undefined &&
-      (obj.openInterest = message.openInterest);
+    message.premiumRate !== undefined && (obj.premiumRate = message.premiumRate);
+    message.lastFundingAt !== undefined && (obj.lastFundingAt = message.lastFundingAt.toISOString());
+    message.openInterest !== undefined && (obj.openInterest = message.openInterest);
     return obj;
   },
 
+  create(base?: DeepPartial<MarketStats>): MarketStats {
+    return MarketStats.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MarketStats>): MarketStats {
-    const message = { ...baseMarketStats } as MarketStats;
+    const message = createBaseMarketStats();
     message.marketId = object.marketId ?? "";
     message.marketType = object.marketType ?? "";
     message.dayOpen = object.dayOpen ?? "";
@@ -254,24 +264,12 @@ export const MarketStats = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -281,8 +279,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -303,4 +301,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

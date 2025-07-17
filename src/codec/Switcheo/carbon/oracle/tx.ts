@@ -1,13 +1,9 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ParamsToUpdate } from "./params";
 import { Duration } from "../../../google/protobuf/duration";
-import {
-  StringValue,
-  Int64Value,
-  BoolValue,
-} from "../../../google/protobuf/wrappers";
+import { BoolValue, Int64Value, StringValue } from "../../../google/protobuf/wrappers";
+import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -52,21 +48,24 @@ export interface UpdateOracleParams {
   enableHistoricalResults?: boolean;
 }
 
-export interface MsgUpdateOracleResponse {}
+export interface MsgUpdateOracleResponse {
+}
 
 export interface MsgRemoveOracle {
   creator: string;
   oracleId: string;
 }
 
-export interface MsgRemoveOracleResponse {}
+export interface MsgRemoveOracleResponse {
+}
 
 export interface MsgSetOracleSlashEnabled {
   creator: string;
   enabled: boolean;
 }
 
-export interface MsgSetOracleSlashEnabledResponse {}
+export interface MsgSetOracleSlashEnabledResponse {
+}
 
 /**
  * MsgUpdateParams is the Msg/UpdateParams request type.
@@ -86,7 +85,8 @@ export interface MsgUpdateParams {
  *
  * Since: cosmos-sdk 0.47
  */
-export interface MsgUpdateParamsResponse {}
+export interface MsgUpdateParamsResponse {
+}
 
 export interface MsgUpdateOracleContract {
   creator: string;
@@ -94,14 +94,16 @@ export interface MsgUpdateOracleContract {
   contractAddress: string;
 }
 
-export interface MsgUpdateOracleContractResponse {}
+export interface MsgUpdateOracleContractResponse {
+}
 
 export interface MsgDeployOracleContract {
   creator: string;
   oracleId: string;
 }
 
-export interface MsgDeployOracleContractResponse {}
+export interface MsgDeployOracleContractResponse {
+}
 
 export interface ValidatorSignature {
   /** used to be named "validator", changed to "pub_key" */
@@ -136,119 +138,119 @@ export interface MsgCreateResult {
   votesForOracles: VotesForOracle[];
 }
 
-export interface MsgCreateResultResponse {}
+export interface MsgCreateResultResponse {
+}
 
 export interface MsgCreateHistoricalBucketInfo {
   creator: string;
   duration?: Duration;
 }
 
-export interface MsgCreateHistoricalBucketInfoResponse {}
+export interface MsgCreateHistoricalBucketInfoResponse {
+}
 
 export interface MsgRemoveHistoricalBucketInfo {
   creator: string;
   duration?: Duration;
 }
 
-export interface MsgRemoveHistoricalBucketInfoResponse {}
+export interface MsgRemoveHistoricalBucketInfoResponse {
+}
 
-const baseMsgCreateOracle: object = { creator: "" };
+function createBaseMsgCreateOracle(): MsgCreateOracle {
+  return { creator: "", createOracleParams: undefined };
+}
 
 export const MsgCreateOracle = {
-  encode(
-    message: MsgCreateOracle,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreateOracle, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.createOracleParams !== undefined) {
-      CreateOracleParams.encode(
-        message.createOracleParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      CreateOracleParams.encode(message.createOracleParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateOracle {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
+    const message = createBaseMsgCreateOracle();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
-          message.createOracleParams = CreateOracleParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createOracleParams = CreateOracleParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreateOracle {
-    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.createOracleParams =
-      object.createOracleParams !== undefined &&
-      object.createOracleParams !== null
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      createOracleParams: isSet(object.createOracleParams)
         ? CreateOracleParams.fromJSON(object.createOracleParams)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MsgCreateOracle): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.createOracleParams !== undefined &&
-      (obj.createOracleParams = message.createOracleParams
-        ? CreateOracleParams.toJSON(message.createOracleParams)
-        : undefined);
+    message.createOracleParams !== undefined && (obj.createOracleParams = message.createOracleParams
+      ? CreateOracleParams.toJSON(message.createOracleParams)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgCreateOracle>): MsgCreateOracle {
+    return MsgCreateOracle.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgCreateOracle>): MsgCreateOracle {
-    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
+    const message = createBaseMsgCreateOracle();
     message.creator = object.creator ?? "";
-    message.createOracleParams =
-      object.createOracleParams !== undefined &&
-      object.createOracleParams !== null
-        ? CreateOracleParams.fromPartial(object.createOracleParams)
-        : undefined;
+    message.createOracleParams = (object.createOracleParams !== undefined && object.createOracleParams !== null)
+      ? CreateOracleParams.fromPartial(object.createOracleParams)
+      : undefined;
     return message;
   },
 };
 
-const baseCreateOracleParams: object = {
-  creator: "",
-  id: "",
-  description: "",
-  minTurnoutPercentage: Long.ZERO,
-  maxResultAge: Long.ZERO,
-  securityType: "",
-  resultStrategy: "",
-  resolution: Long.ZERO,
-  spec: "",
-  enableHistoricalResults: false,
-};
+function createBaseCreateOracleParams(): CreateOracleParams {
+  return {
+    creator: "",
+    id: "",
+    description: "",
+    minTurnoutPercentage: Long.ZERO,
+    maxResultAge: Long.ZERO,
+    securityType: "",
+    resultStrategy: "",
+    resolution: Long.ZERO,
+    spec: "",
+    enableHistoricalResults: false,
+  };
+}
 
 export const CreateOracleParams = {
-  encode(
-    message: CreateOracleParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CreateOracleParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -283,188 +285,187 @@ export const CreateOracleParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CreateOracleParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCreateOracleParams } as CreateOracleParams;
+    const message = createBaseCreateOracleParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.description = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.minTurnoutPercentage = reader.int64() as Long;
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.maxResultAge = reader.int64() as Long;
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.securityType = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.resultStrategy = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.resolution = reader.int64() as Long;
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.spec = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 80) {
+            break;
+          }
+
           message.enableHistoricalResults = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CreateOracleParams {
-    const message = { ...baseCreateOracleParams } as CreateOracleParams;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? String(object.description)
-        : "";
-    message.minTurnoutPercentage =
-      object.minTurnoutPercentage !== undefined &&
-      object.minTurnoutPercentage !== null
-        ? Long.fromString(object.minTurnoutPercentage)
-        : Long.ZERO;
-    message.maxResultAge =
-      object.maxResultAge !== undefined && object.maxResultAge !== null
-        ? Long.fromString(object.maxResultAge)
-        : Long.ZERO;
-    message.securityType =
-      object.securityType !== undefined && object.securityType !== null
-        ? String(object.securityType)
-        : "";
-    message.resultStrategy =
-      object.resultStrategy !== undefined && object.resultStrategy !== null
-        ? String(object.resultStrategy)
-        : "";
-    message.resolution =
-      object.resolution !== undefined && object.resolution !== null
-        ? Long.fromString(object.resolution)
-        : Long.ZERO;
-    message.spec =
-      object.spec !== undefined && object.spec !== null
-        ? String(object.spec)
-        : "";
-    message.enableHistoricalResults =
-      object.enableHistoricalResults !== undefined &&
-      object.enableHistoricalResults !== null
-        ? Boolean(object.enableHistoricalResults)
-        : false;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      minTurnoutPercentage: isSet(object.minTurnoutPercentage)
+        ? Long.fromValue(object.minTurnoutPercentage)
+        : Long.ZERO,
+      maxResultAge: isSet(object.maxResultAge) ? Long.fromValue(object.maxResultAge) : Long.ZERO,
+      securityType: isSet(object.securityType) ? String(object.securityType) : "",
+      resultStrategy: isSet(object.resultStrategy) ? String(object.resultStrategy) : "",
+      resolution: isSet(object.resolution) ? Long.fromValue(object.resolution) : Long.ZERO,
+      spec: isSet(object.spec) ? String(object.spec) : "",
+      enableHistoricalResults: isSet(object.enableHistoricalResults) ? Boolean(object.enableHistoricalResults) : false,
+    };
   },
 
   toJSON(message: CreateOracleParams): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.id !== undefined && (obj.id = message.id);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.minTurnoutPercentage !== undefined &&
-      (obj.minTurnoutPercentage = (
-        message.minTurnoutPercentage || Long.ZERO
-      ).toString());
-    message.maxResultAge !== undefined &&
-      (obj.maxResultAge = (message.maxResultAge || Long.ZERO).toString());
-    message.securityType !== undefined &&
-      (obj.securityType = message.securityType);
-    message.resultStrategy !== undefined &&
-      (obj.resultStrategy = message.resultStrategy);
-    message.resolution !== undefined &&
-      (obj.resolution = (message.resolution || Long.ZERO).toString());
+      (obj.minTurnoutPercentage = (message.minTurnoutPercentage || Long.ZERO).toString());
+    message.maxResultAge !== undefined && (obj.maxResultAge = (message.maxResultAge || Long.ZERO).toString());
+    message.securityType !== undefined && (obj.securityType = message.securityType);
+    message.resultStrategy !== undefined && (obj.resultStrategy = message.resultStrategy);
+    message.resolution !== undefined && (obj.resolution = (message.resolution || Long.ZERO).toString());
     message.spec !== undefined && (obj.spec = message.spec);
-    message.enableHistoricalResults !== undefined &&
-      (obj.enableHistoricalResults = message.enableHistoricalResults);
+    message.enableHistoricalResults !== undefined && (obj.enableHistoricalResults = message.enableHistoricalResults);
     return obj;
   },
 
+  create(base?: DeepPartial<CreateOracleParams>): CreateOracleParams {
+    return CreateOracleParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CreateOracleParams>): CreateOracleParams {
-    const message = { ...baseCreateOracleParams } as CreateOracleParams;
+    const message = createBaseCreateOracleParams();
     message.creator = object.creator ?? "";
     message.id = object.id ?? "";
     message.description = object.description ?? "";
-    message.minTurnoutPercentage =
-      object.minTurnoutPercentage !== undefined &&
-      object.minTurnoutPercentage !== null
-        ? Long.fromValue(object.minTurnoutPercentage)
-        : Long.ZERO;
-    message.maxResultAge =
-      object.maxResultAge !== undefined && object.maxResultAge !== null
-        ? Long.fromValue(object.maxResultAge)
-        : Long.ZERO;
+    message.minTurnoutPercentage = (object.minTurnoutPercentage !== undefined && object.minTurnoutPercentage !== null)
+      ? Long.fromValue(object.minTurnoutPercentage)
+      : Long.ZERO;
+    message.maxResultAge = (object.maxResultAge !== undefined && object.maxResultAge !== null)
+      ? Long.fromValue(object.maxResultAge)
+      : Long.ZERO;
     message.securityType = object.securityType ?? "";
     message.resultStrategy = object.resultStrategy ?? "";
-    message.resolution =
-      object.resolution !== undefined && object.resolution !== null
-        ? Long.fromValue(object.resolution)
-        : Long.ZERO;
+    message.resolution = (object.resolution !== undefined && object.resolution !== null)
+      ? Long.fromValue(object.resolution)
+      : Long.ZERO;
     message.spec = object.spec ?? "";
     message.enableHistoricalResults = object.enableHistoricalResults ?? false;
     return message;
   },
 };
 
-const baseMsgCreateOracleResponse: object = { id: "" };
+function createBaseMsgCreateOracleResponse(): MsgCreateOracleResponse {
+  return { id: "" };
+}
 
 export const MsgCreateOracleResponse = {
-  encode(
-    message: MsgCreateOracleResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreateOracleResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreateOracleResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateOracleResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreateOracleResponse,
-    } as MsgCreateOracleResponse;
+    const message = createBaseMsgCreateOracleResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreateOracleResponse {
-    const message = {
-      ...baseMsgCreateOracleResponse,
-    } as MsgCreateOracleResponse;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    return message;
+    return { id: isSet(object.id) ? String(object.id) : "" };
   },
 
   toJSON(message: MsgCreateOracleResponse): unknown {
@@ -473,354 +474,317 @@ export const MsgCreateOracleResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgCreateOracleResponse>
-  ): MsgCreateOracleResponse {
-    const message = {
-      ...baseMsgCreateOracleResponse,
-    } as MsgCreateOracleResponse;
+  create(base?: DeepPartial<MsgCreateOracleResponse>): MsgCreateOracleResponse {
+    return MsgCreateOracleResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateOracleResponse>): MsgCreateOracleResponse {
+    const message = createBaseMsgCreateOracleResponse();
     message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseMsgUpdateOracle: object = { updater: "" };
+function createBaseMsgUpdateOracle(): MsgUpdateOracle {
+  return { updater: "", updateOracleParams: undefined };
+}
 
 export const MsgUpdateOracle = {
-  encode(
-    message: MsgUpdateOracle,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateOracle, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.updater !== "") {
       writer.uint32(10).string(message.updater);
     }
     if (message.updateOracleParams !== undefined) {
-      UpdateOracleParams.encode(
-        message.updateOracleParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      UpdateOracleParams.encode(message.updateOracleParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateOracle {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateOracle } as MsgUpdateOracle;
+    const message = createBaseMsgUpdateOracle();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.updater = reader.string();
-          break;
+          continue;
         case 2:
-          message.updateOracleParams = UpdateOracleParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.updateOracleParams = UpdateOracleParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateOracle {
-    const message = { ...baseMsgUpdateOracle } as MsgUpdateOracle;
-    message.updater =
-      object.updater !== undefined && object.updater !== null
-        ? String(object.updater)
-        : "";
-    message.updateOracleParams =
-      object.updateOracleParams !== undefined &&
-      object.updateOracleParams !== null
+    return {
+      updater: isSet(object.updater) ? String(object.updater) : "",
+      updateOracleParams: isSet(object.updateOracleParams)
         ? UpdateOracleParams.fromJSON(object.updateOracleParams)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MsgUpdateOracle): unknown {
     const obj: any = {};
     message.updater !== undefined && (obj.updater = message.updater);
-    message.updateOracleParams !== undefined &&
-      (obj.updateOracleParams = message.updateOracleParams
-        ? UpdateOracleParams.toJSON(message.updateOracleParams)
-        : undefined);
+    message.updateOracleParams !== undefined && (obj.updateOracleParams = message.updateOracleParams
+      ? UpdateOracleParams.toJSON(message.updateOracleParams)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdateOracle>): MsgUpdateOracle {
+    return MsgUpdateOracle.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdateOracle>): MsgUpdateOracle {
-    const message = { ...baseMsgUpdateOracle } as MsgUpdateOracle;
+    const message = createBaseMsgUpdateOracle();
     message.updater = object.updater ?? "";
-    message.updateOracleParams =
-      object.updateOracleParams !== undefined &&
-      object.updateOracleParams !== null
-        ? UpdateOracleParams.fromPartial(object.updateOracleParams)
-        : undefined;
+    message.updateOracleParams = (object.updateOracleParams !== undefined && object.updateOracleParams !== null)
+      ? UpdateOracleParams.fromPartial(object.updateOracleParams)
+      : undefined;
     return message;
   },
 };
 
-const baseUpdateOracleParams: object = { id: "" };
+function createBaseUpdateOracleParams(): UpdateOracleParams {
+  return {
+    id: "",
+    description: undefined,
+    status: undefined,
+    minTurnoutPercentage: undefined,
+    maxResultAge: undefined,
+    securityType: undefined,
+    resultStrategy: undefined,
+    resolution: undefined,
+    spec: undefined,
+    enableHistoricalResults: undefined,
+  };
+}
 
 export const UpdateOracleParams = {
-  encode(
-    message: UpdateOracleParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateOracleParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     if (message.description !== undefined) {
-      StringValue.encode(
-        { value: message.description! },
-        writer.uint32(18).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.description! }, writer.uint32(18).fork()).ldelim();
     }
     if (message.status !== undefined) {
-      StringValue.encode(
-        { value: message.status! },
-        writer.uint32(26).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.status! }, writer.uint32(26).fork()).ldelim();
     }
     if (message.minTurnoutPercentage !== undefined) {
-      Int64Value.encode(
-        { value: message.minTurnoutPercentage! },
-        writer.uint32(34).fork()
-      ).ldelim();
+      Int64Value.encode({ value: message.minTurnoutPercentage! }, writer.uint32(34).fork()).ldelim();
     }
     if (message.maxResultAge !== undefined) {
-      Int64Value.encode(
-        { value: message.maxResultAge! },
-        writer.uint32(42).fork()
-      ).ldelim();
+      Int64Value.encode({ value: message.maxResultAge! }, writer.uint32(42).fork()).ldelim();
     }
     if (message.securityType !== undefined) {
-      StringValue.encode(
-        { value: message.securityType! },
-        writer.uint32(50).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.securityType! }, writer.uint32(50).fork()).ldelim();
     }
     if (message.resultStrategy !== undefined) {
-      StringValue.encode(
-        { value: message.resultStrategy! },
-        writer.uint32(58).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.resultStrategy! }, writer.uint32(58).fork()).ldelim();
     }
     if (message.resolution !== undefined) {
-      Int64Value.encode(
-        { value: message.resolution! },
-        writer.uint32(66).fork()
-      ).ldelim();
+      Int64Value.encode({ value: message.resolution! }, writer.uint32(66).fork()).ldelim();
     }
     if (message.spec !== undefined) {
-      StringValue.encode(
-        { value: message.spec! },
-        writer.uint32(74).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.spec! }, writer.uint32(74).fork()).ldelim();
     }
     if (message.enableHistoricalResults !== undefined) {
-      BoolValue.encode(
-        { value: message.enableHistoricalResults! },
-        writer.uint32(82).fork()
-      ).ldelim();
+      BoolValue.encode({ value: message.enableHistoricalResults! }, writer.uint32(82).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UpdateOracleParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateOracleParams } as UpdateOracleParams;
+    const message = createBaseUpdateOracleParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
-          message.description = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.description = StringValue.decode(reader, reader.uint32()).value;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.status = StringValue.decode(reader, reader.uint32()).value;
-          break;
+          continue;
         case 4:
-          message.minTurnoutPercentage = Int64Value.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 34) {
+            break;
+          }
+
+          message.minTurnoutPercentage = Int64Value.decode(reader, reader.uint32()).value;
+          continue;
         case 5:
-          message.maxResultAge = Int64Value.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 42) {
+            break;
+          }
+
+          message.maxResultAge = Int64Value.decode(reader, reader.uint32()).value;
+          continue;
         case 6:
-          message.securityType = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 50) {
+            break;
+          }
+
+          message.securityType = StringValue.decode(reader, reader.uint32()).value;
+          continue;
         case 7:
-          message.resultStrategy = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 58) {
+            break;
+          }
+
+          message.resultStrategy = StringValue.decode(reader, reader.uint32()).value;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.resolution = Int64Value.decode(reader, reader.uint32()).value;
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.spec = StringValue.decode(reader, reader.uint32()).value;
-          break;
+          continue;
         case 10:
-          message.enableHistoricalResults = BoolValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 82) {
+            break;
+          }
+
+          message.enableHistoricalResults = BoolValue.decode(reader, reader.uint32()).value;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateOracleParams {
-    const message = { ...baseUpdateOracleParams } as UpdateOracleParams;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? String(object.description)
-        : undefined;
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? String(object.status)
-        : undefined;
-    message.minTurnoutPercentage =
-      object.minTurnoutPercentage !== undefined &&
-      object.minTurnoutPercentage !== null
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      description: isSet(object.description) ? String(object.description) : undefined,
+      status: isSet(object.status) ? String(object.status) : undefined,
+      minTurnoutPercentage: isSet(object.minTurnoutPercentage)
         ? Long.fromValue(object.minTurnoutPercentage)
-        : undefined;
-    message.maxResultAge =
-      object.maxResultAge !== undefined && object.maxResultAge !== null
-        ? Long.fromValue(object.maxResultAge)
-        : undefined;
-    message.securityType =
-      object.securityType !== undefined && object.securityType !== null
-        ? String(object.securityType)
-        : undefined;
-    message.resultStrategy =
-      object.resultStrategy !== undefined && object.resultStrategy !== null
-        ? String(object.resultStrategy)
-        : undefined;
-    message.resolution =
-      object.resolution !== undefined && object.resolution !== null
-        ? Long.fromValue(object.resolution)
-        : undefined;
-    message.spec =
-      object.spec !== undefined && object.spec !== null
-        ? String(object.spec)
-        : undefined;
-    message.enableHistoricalResults =
-      object.enableHistoricalResults !== undefined &&
-      object.enableHistoricalResults !== null
+        : undefined,
+      maxResultAge: isSet(object.maxResultAge) ? Long.fromValue(object.maxResultAge) : undefined,
+      securityType: isSet(object.securityType) ? String(object.securityType) : undefined,
+      resultStrategy: isSet(object.resultStrategy) ? String(object.resultStrategy) : undefined,
+      resolution: isSet(object.resolution) ? Long.fromValue(object.resolution) : undefined,
+      spec: isSet(object.spec) ? String(object.spec) : undefined,
+      enableHistoricalResults: isSet(object.enableHistoricalResults)
         ? Boolean(object.enableHistoricalResults)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: UpdateOracleParams): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.status !== undefined && (obj.status = message.status);
-    message.minTurnoutPercentage !== undefined &&
-      (obj.minTurnoutPercentage = message.minTurnoutPercentage);
-    message.maxResultAge !== undefined &&
-      (obj.maxResultAge = message.maxResultAge);
-    message.securityType !== undefined &&
-      (obj.securityType = message.securityType);
-    message.resultStrategy !== undefined &&
-      (obj.resultStrategy = message.resultStrategy);
+    message.minTurnoutPercentage !== undefined && (obj.minTurnoutPercentage = message.minTurnoutPercentage);
+    message.maxResultAge !== undefined && (obj.maxResultAge = message.maxResultAge);
+    message.securityType !== undefined && (obj.securityType = message.securityType);
+    message.resultStrategy !== undefined && (obj.resultStrategy = message.resultStrategy);
     message.resolution !== undefined && (obj.resolution = message.resolution);
     message.spec !== undefined && (obj.spec = message.spec);
-    message.enableHistoricalResults !== undefined &&
-      (obj.enableHistoricalResults = message.enableHistoricalResults);
+    message.enableHistoricalResults !== undefined && (obj.enableHistoricalResults = message.enableHistoricalResults);
     return obj;
   },
 
+  create(base?: DeepPartial<UpdateOracleParams>): UpdateOracleParams {
+    return UpdateOracleParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UpdateOracleParams>): UpdateOracleParams {
-    const message = { ...baseUpdateOracleParams } as UpdateOracleParams;
+    const message = createBaseUpdateOracleParams();
     message.id = object.id ?? "";
     message.description = object.description ?? undefined;
     message.status = object.status ?? undefined;
-    message.minTurnoutPercentage =
-      object.minTurnoutPercentage !== undefined &&
-      object.minTurnoutPercentage !== null
-        ? Long.fromValue(object.minTurnoutPercentage)
-        : undefined;
-    message.maxResultAge =
-      object.maxResultAge !== undefined && object.maxResultAge !== null
-        ? Long.fromValue(object.maxResultAge)
-        : undefined;
+    message.minTurnoutPercentage = (object.minTurnoutPercentage !== undefined && object.minTurnoutPercentage !== null)
+      ? Long.fromValue(object.minTurnoutPercentage)
+      : undefined;
+    message.maxResultAge = (object.maxResultAge !== undefined && object.maxResultAge !== null)
+      ? Long.fromValue(object.maxResultAge)
+      : undefined;
     message.securityType = object.securityType ?? undefined;
     message.resultStrategy = object.resultStrategy ?? undefined;
-    message.resolution =
-      object.resolution !== undefined && object.resolution !== null
-        ? Long.fromValue(object.resolution)
-        : undefined;
+    message.resolution = (object.resolution !== undefined && object.resolution !== null)
+      ? Long.fromValue(object.resolution)
+      : undefined;
     message.spec = object.spec ?? undefined;
-    message.enableHistoricalResults =
-      object.enableHistoricalResults ?? undefined;
+    message.enableHistoricalResults = object.enableHistoricalResults ?? undefined;
     return message;
   },
 };
 
-const baseMsgUpdateOracleResponse: object = {};
+function createBaseMsgUpdateOracleResponse(): MsgUpdateOracleResponse {
+  return {};
+}
 
 export const MsgUpdateOracleResponse = {
-  encode(
-    _: MsgUpdateOracleResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateOracleResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateOracleResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateOracleResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateOracleResponse,
-    } as MsgUpdateOracleResponse;
+    const message = createBaseMsgUpdateOracleResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateOracleResponse {
-    const message = {
-      ...baseMsgUpdateOracleResponse,
-    } as MsgUpdateOracleResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateOracleResponse): unknown {
@@ -828,23 +792,22 @@ export const MsgUpdateOracleResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateOracleResponse>
-  ): MsgUpdateOracleResponse {
-    const message = {
-      ...baseMsgUpdateOracleResponse,
-    } as MsgUpdateOracleResponse;
+  create(base?: DeepPartial<MsgUpdateOracleResponse>): MsgUpdateOracleResponse {
+    return MsgUpdateOracleResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateOracleResponse>): MsgUpdateOracleResponse {
+    const message = createBaseMsgUpdateOracleResponse();
     return message;
   },
 };
 
-const baseMsgRemoveOracle: object = { creator: "", oracleId: "" };
+function createBaseMsgRemoveOracle(): MsgRemoveOracle {
+  return { creator: "", oracleId: "" };
+}
 
 export const MsgRemoveOracle = {
-  encode(
-    message: MsgRemoveOracle,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRemoveOracle, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -855,37 +818,40 @@ export const MsgRemoveOracle = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveOracle {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRemoveOracle } as MsgRemoveOracle;
+    const message = createBaseMsgRemoveOracle();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.oracleId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRemoveOracle {
-    const message = { ...baseMsgRemoveOracle } as MsgRemoveOracle;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.oracleId =
-      object.oracleId !== undefined && object.oracleId !== null
-        ? String(object.oracleId)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      oracleId: isSet(object.oracleId) ? String(object.oracleId) : "",
+    };
   },
 
   toJSON(message: MsgRemoveOracle): unknown {
@@ -895,49 +861,45 @@ export const MsgRemoveOracle = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgRemoveOracle>): MsgRemoveOracle {
+    return MsgRemoveOracle.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgRemoveOracle>): MsgRemoveOracle {
-    const message = { ...baseMsgRemoveOracle } as MsgRemoveOracle;
+    const message = createBaseMsgRemoveOracle();
     message.creator = object.creator ?? "";
     message.oracleId = object.oracleId ?? "";
     return message;
   },
 };
 
-const baseMsgRemoveOracleResponse: object = {};
+function createBaseMsgRemoveOracleResponse(): MsgRemoveOracleResponse {
+  return {};
+}
 
 export const MsgRemoveOracleResponse = {
-  encode(
-    _: MsgRemoveOracleResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgRemoveOracleResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRemoveOracleResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveOracleResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRemoveOracleResponse,
-    } as MsgRemoveOracleResponse;
+    const message = createBaseMsgRemoveOracleResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgRemoveOracleResponse {
-    const message = {
-      ...baseMsgRemoveOracleResponse,
-    } as MsgRemoveOracleResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgRemoveOracleResponse): unknown {
@@ -945,23 +907,22 @@ export const MsgRemoveOracleResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgRemoveOracleResponse>
-  ): MsgRemoveOracleResponse {
-    const message = {
-      ...baseMsgRemoveOracleResponse,
-    } as MsgRemoveOracleResponse;
+  create(base?: DeepPartial<MsgRemoveOracleResponse>): MsgRemoveOracleResponse {
+    return MsgRemoveOracleResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgRemoveOracleResponse>): MsgRemoveOracleResponse {
+    const message = createBaseMsgRemoveOracleResponse();
     return message;
   },
 };
 
-const baseMsgSetOracleSlashEnabled: object = { creator: "", enabled: false };
+function createBaseMsgSetOracleSlashEnabled(): MsgSetOracleSlashEnabled {
+  return { creator: "", enabled: false };
+}
 
 export const MsgSetOracleSlashEnabled = {
-  encode(
-    message: MsgSetOracleSlashEnabled,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSetOracleSlashEnabled, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -971,45 +932,41 @@ export const MsgSetOracleSlashEnabled = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetOracleSlashEnabled {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetOracleSlashEnabled {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgSetOracleSlashEnabled,
-    } as MsgSetOracleSlashEnabled;
+    const message = createBaseMsgSetOracleSlashEnabled();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.enabled = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSetOracleSlashEnabled {
-    const message = {
-      ...baseMsgSetOracleSlashEnabled,
-    } as MsgSetOracleSlashEnabled;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.enabled =
-      object.enabled !== undefined && object.enabled !== null
-        ? Boolean(object.enabled)
-        : false;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      enabled: isSet(object.enabled) ? Boolean(object.enabled) : false,
+    };
   },
 
   toJSON(message: MsgSetOracleSlashEnabled): unknown {
@@ -1019,53 +976,45 @@ export const MsgSetOracleSlashEnabled = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgSetOracleSlashEnabled>
-  ): MsgSetOracleSlashEnabled {
-    const message = {
-      ...baseMsgSetOracleSlashEnabled,
-    } as MsgSetOracleSlashEnabled;
+  create(base?: DeepPartial<MsgSetOracleSlashEnabled>): MsgSetOracleSlashEnabled {
+    return MsgSetOracleSlashEnabled.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgSetOracleSlashEnabled>): MsgSetOracleSlashEnabled {
+    const message = createBaseMsgSetOracleSlashEnabled();
     message.creator = object.creator ?? "";
     message.enabled = object.enabled ?? false;
     return message;
   },
 };
 
-const baseMsgSetOracleSlashEnabledResponse: object = {};
+function createBaseMsgSetOracleSlashEnabledResponse(): MsgSetOracleSlashEnabledResponse {
+  return {};
+}
 
 export const MsgSetOracleSlashEnabledResponse = {
-  encode(
-    _: MsgSetOracleSlashEnabledResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSetOracleSlashEnabledResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetOracleSlashEnabledResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetOracleSlashEnabledResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgSetOracleSlashEnabledResponse,
-    } as MsgSetOracleSlashEnabledResponse;
+    const message = createBaseMsgSetOracleSlashEnabledResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSetOracleSlashEnabledResponse {
-    const message = {
-      ...baseMsgSetOracleSlashEnabledResponse,
-    } as MsgSetOracleSlashEnabledResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSetOracleSlashEnabledResponse): unknown {
@@ -1073,23 +1022,22 @@ export const MsgSetOracleSlashEnabledResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgSetOracleSlashEnabledResponse>
-  ): MsgSetOracleSlashEnabledResponse {
-    const message = {
-      ...baseMsgSetOracleSlashEnabledResponse,
-    } as MsgSetOracleSlashEnabledResponse;
+  create(base?: DeepPartial<MsgSetOracleSlashEnabledResponse>): MsgSetOracleSlashEnabledResponse {
+    return MsgSetOracleSlashEnabledResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgSetOracleSlashEnabledResponse>): MsgSetOracleSlashEnabledResponse {
+    const message = createBaseMsgSetOracleSlashEnabledResponse();
     return message;
   },
 };
 
-const baseMsgUpdateParams: object = { authority: "" };
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return { authority: "", params: undefined };
+}
 
 export const MsgUpdateParams = {
-  encode(
-    message: MsgUpdateParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -1100,95 +1048,90 @@ export const MsgUpdateParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.params = ParamsToUpdate.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? ParamsToUpdate.fromJSON(object.params)
-        : undefined;
-    return message;
+    return {
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      params: isSet(object.params) ? ParamsToUpdate.fromJSON(object.params) : undefined,
+    };
   },
 
   toJSON(message: MsgUpdateParams): unknown {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
-    message.params !== undefined &&
-      (obj.params = message.params
-        ? ParamsToUpdate.toJSON(message.params)
-        : undefined);
+    message.params !== undefined && (obj.params = message.params ? ParamsToUpdate.toJSON(message.params) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     message.authority = object.authority ?? "";
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? ParamsToUpdate.fromPartial(object.params)
-        : undefined;
+    message.params = (object.params !== undefined && object.params !== null)
+      ? ParamsToUpdate.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
 
-const baseMsgUpdateParamsResponse: object = {};
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
 
 export const MsgUpdateParamsResponse = {
-  encode(
-    _: MsgUpdateParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+    const message = createBaseMsgUpdateParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateParamsResponse): unknown {
@@ -1196,27 +1139,22 @@ export const MsgUpdateParamsResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateParamsResponse>
-  ): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
     return message;
   },
 };
 
-const baseMsgUpdateOracleContract: object = {
-  creator: "",
-  oracleId: "",
-  contractAddress: "",
-};
+function createBaseMsgUpdateOracleContract(): MsgUpdateOracleContract {
+  return { creator: "", oracleId: "", contractAddress: "" };
+}
 
 export const MsgUpdateOracleContract = {
-  encode(
-    message: MsgUpdateOracleContract,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateOracleContract, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -1229,69 +1167,65 @@ export const MsgUpdateOracleContract = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateOracleContract {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateOracleContract {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateOracleContract,
-    } as MsgUpdateOracleContract;
+    const message = createBaseMsgUpdateOracleContract();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.oracleId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.contractAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateOracleContract {
-    const message = {
-      ...baseMsgUpdateOracleContract,
-    } as MsgUpdateOracleContract;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.oracleId =
-      object.oracleId !== undefined && object.oracleId !== null
-        ? String(object.oracleId)
-        : "";
-    message.contractAddress =
-      object.contractAddress !== undefined && object.contractAddress !== null
-        ? String(object.contractAddress)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      oracleId: isSet(object.oracleId) ? String(object.oracleId) : "",
+      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
+    };
   },
 
   toJSON(message: MsgUpdateOracleContract): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
-    message.contractAddress !== undefined &&
-      (obj.contractAddress = message.contractAddress);
+    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgUpdateOracleContract>
-  ): MsgUpdateOracleContract {
-    const message = {
-      ...baseMsgUpdateOracleContract,
-    } as MsgUpdateOracleContract;
+  create(base?: DeepPartial<MsgUpdateOracleContract>): MsgUpdateOracleContract {
+    return MsgUpdateOracleContract.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateOracleContract>): MsgUpdateOracleContract {
+    const message = createBaseMsgUpdateOracleContract();
     message.creator = object.creator ?? "";
     message.oracleId = object.oracleId ?? "";
     message.contractAddress = object.contractAddress ?? "";
@@ -1299,41 +1233,33 @@ export const MsgUpdateOracleContract = {
   },
 };
 
-const baseMsgUpdateOracleContractResponse: object = {};
+function createBaseMsgUpdateOracleContractResponse(): MsgUpdateOracleContractResponse {
+  return {};
+}
 
 export const MsgUpdateOracleContractResponse = {
-  encode(
-    _: MsgUpdateOracleContractResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateOracleContractResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateOracleContractResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateOracleContractResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateOracleContractResponse,
-    } as MsgUpdateOracleContractResponse;
+    const message = createBaseMsgUpdateOracleContractResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateOracleContractResponse {
-    const message = {
-      ...baseMsgUpdateOracleContractResponse,
-    } as MsgUpdateOracleContractResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateOracleContractResponse): unknown {
@@ -1341,23 +1267,22 @@ export const MsgUpdateOracleContractResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateOracleContractResponse>
-  ): MsgUpdateOracleContractResponse {
-    const message = {
-      ...baseMsgUpdateOracleContractResponse,
-    } as MsgUpdateOracleContractResponse;
+  create(base?: DeepPartial<MsgUpdateOracleContractResponse>): MsgUpdateOracleContractResponse {
+    return MsgUpdateOracleContractResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateOracleContractResponse>): MsgUpdateOracleContractResponse {
+    const message = createBaseMsgUpdateOracleContractResponse();
     return message;
   },
 };
 
-const baseMsgDeployOracleContract: object = { creator: "", oracleId: "" };
+function createBaseMsgDeployOracleContract(): MsgDeployOracleContract {
+  return { creator: "", oracleId: "" };
+}
 
 export const MsgDeployOracleContract = {
-  encode(
-    message: MsgDeployOracleContract,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgDeployOracleContract, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -1367,45 +1292,41 @@ export const MsgDeployOracleContract = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDeployOracleContract {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeployOracleContract {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDeployOracleContract,
-    } as MsgDeployOracleContract;
+    const message = createBaseMsgDeployOracleContract();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.oracleId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgDeployOracleContract {
-    const message = {
-      ...baseMsgDeployOracleContract,
-    } as MsgDeployOracleContract;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.oracleId =
-      object.oracleId !== undefined && object.oracleId !== null
-        ? String(object.oracleId)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      oracleId: isSet(object.oracleId) ? String(object.oracleId) : "",
+    };
   },
 
   toJSON(message: MsgDeployOracleContract): unknown {
@@ -1415,53 +1336,45 @@ export const MsgDeployOracleContract = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgDeployOracleContract>
-  ): MsgDeployOracleContract {
-    const message = {
-      ...baseMsgDeployOracleContract,
-    } as MsgDeployOracleContract;
+  create(base?: DeepPartial<MsgDeployOracleContract>): MsgDeployOracleContract {
+    return MsgDeployOracleContract.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgDeployOracleContract>): MsgDeployOracleContract {
+    const message = createBaseMsgDeployOracleContract();
     message.creator = object.creator ?? "";
     message.oracleId = object.oracleId ?? "";
     return message;
   },
 };
 
-const baseMsgDeployOracleContractResponse: object = {};
+function createBaseMsgDeployOracleContractResponse(): MsgDeployOracleContractResponse {
+  return {};
+}
 
 export const MsgDeployOracleContractResponse = {
-  encode(
-    _: MsgDeployOracleContractResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgDeployOracleContractResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDeployOracleContractResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeployOracleContractResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDeployOracleContractResponse,
-    } as MsgDeployOracleContractResponse;
+    const message = createBaseMsgDeployOracleContractResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgDeployOracleContractResponse {
-    const message = {
-      ...baseMsgDeployOracleContractResponse,
-    } as MsgDeployOracleContractResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgDeployOracleContractResponse): unknown {
@@ -1469,26 +1382,22 @@ export const MsgDeployOracleContractResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgDeployOracleContractResponse>
-  ): MsgDeployOracleContractResponse {
-    const message = {
-      ...baseMsgDeployOracleContractResponse,
-    } as MsgDeployOracleContractResponse;
+  create(base?: DeepPartial<MsgDeployOracleContractResponse>): MsgDeployOracleContractResponse {
+    return MsgDeployOracleContractResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgDeployOracleContractResponse>): MsgDeployOracleContractResponse {
+    const message = createBaseMsgDeployOracleContractResponse();
     return message;
   },
 };
 
-const baseValidatorSignature: object = {
-  validatorIndex: 0,
-  signedTimestamp: Long.ZERO,
-};
+function createBaseValidatorSignature(): ValidatorSignature {
+  return { pubKey: new Uint8Array(), validatorIndex: 0, signature: new Uint8Array(), signedTimestamp: Long.ZERO };
+}
 
 export const ValidatorSignature = {
-  encode(
-    message: ValidatorSignature,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ValidatorSignature, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pubKey.length !== 0) {
       writer.uint32(10).bytes(message.pubKey);
     }
@@ -1505,92 +1414,91 @@ export const ValidatorSignature = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ValidatorSignature {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseValidatorSignature } as ValidatorSignature;
-    message.pubKey = new Uint8Array();
-    message.signature = new Uint8Array();
+    const message = createBaseValidatorSignature();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pubKey = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.validatorIndex = reader.int32();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.signature = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.signedTimestamp = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ValidatorSignature {
-    const message = { ...baseValidatorSignature } as ValidatorSignature;
-    message.pubKey =
-      object.pubKey !== undefined && object.pubKey !== null
-        ? bytesFromBase64(object.pubKey)
-        : new Uint8Array();
-    message.validatorIndex =
-      object.validatorIndex !== undefined && object.validatorIndex !== null
-        ? Number(object.validatorIndex)
-        : 0;
-    message.signature =
-      object.signature !== undefined && object.signature !== null
-        ? bytesFromBase64(object.signature)
-        : new Uint8Array();
-    message.signedTimestamp =
-      object.signedTimestamp !== undefined && object.signedTimestamp !== null
-        ? Long.fromString(object.signedTimestamp)
-        : Long.ZERO;
-    return message;
+    return {
+      pubKey: isSet(object.pubKey) ? bytesFromBase64(object.pubKey) : new Uint8Array(),
+      validatorIndex: isSet(object.validatorIndex) ? Number(object.validatorIndex) : 0,
+      signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(),
+      signedTimestamp: isSet(object.signedTimestamp) ? Long.fromValue(object.signedTimestamp) : Long.ZERO,
+    };
   },
 
   toJSON(message: ValidatorSignature): unknown {
     const obj: any = {};
     message.pubKey !== undefined &&
-      (obj.pubKey = base64FromBytes(
-        message.pubKey !== undefined ? message.pubKey : new Uint8Array()
-      ));
-    message.validatorIndex !== undefined &&
-      (obj.validatorIndex = message.validatorIndex);
+      (obj.pubKey = base64FromBytes(message.pubKey !== undefined ? message.pubKey : new Uint8Array()));
+    message.validatorIndex !== undefined && (obj.validatorIndex = Math.round(message.validatorIndex));
     message.signature !== undefined &&
-      (obj.signature = base64FromBytes(
-        message.signature !== undefined ? message.signature : new Uint8Array()
-      ));
-    message.signedTimestamp !== undefined &&
-      (obj.signedTimestamp = (message.signedTimestamp || Long.ZERO).toString());
+      (obj.signature = base64FromBytes(message.signature !== undefined ? message.signature : new Uint8Array()));
+    message.signedTimestamp !== undefined && (obj.signedTimestamp = (message.signedTimestamp || Long.ZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<ValidatorSignature>): ValidatorSignature {
+    return ValidatorSignature.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ValidatorSignature>): ValidatorSignature {
-    const message = { ...baseValidatorSignature } as ValidatorSignature;
+    const message = createBaseValidatorSignature();
     message.pubKey = object.pubKey ?? new Uint8Array();
     message.validatorIndex = object.validatorIndex ?? 0;
     message.signature = object.signature ?? new Uint8Array();
-    message.signedTimestamp =
-      object.signedTimestamp !== undefined && object.signedTimestamp !== null
-        ? Long.fromValue(object.signedTimestamp)
-        : Long.ZERO;
+    message.signedTimestamp = (object.signedTimestamp !== undefined && object.signedTimestamp !== null)
+      ? Long.fromValue(object.signedTimestamp)
+      : Long.ZERO;
     return message;
   },
 };
 
-const baseVotesForOracle: object = { oracleIndex: 0 };
+function createBaseVotesForOracle(): VotesForOracle {
+  return { oracleIndex: 0, votesForData: [] };
+}
 
 export const VotesForOracle = {
-  encode(
-    message: VotesForOracle,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: VotesForOracle, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.oracleIndex !== 0) {
       writer.uint32(8).int32(message.oracleIndex);
     }
@@ -1601,72 +1509,73 @@ export const VotesForOracle = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): VotesForOracle {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseVotesForOracle } as VotesForOracle;
-    message.votesForData = [];
+    const message = createBaseVotesForOracle();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.oracleIndex = reader.int32();
-          break;
+          continue;
         case 2:
-          message.votesForData.push(
-            VotesForData.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.votesForData.push(VotesForData.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): VotesForOracle {
-    const message = { ...baseVotesForOracle } as VotesForOracle;
-    message.oracleIndex =
-      object.oracleIndex !== undefined && object.oracleIndex !== null
-        ? Number(object.oracleIndex)
-        : 0;
-    message.votesForData = (object.votesForData ?? []).map((e: any) =>
-      VotesForData.fromJSON(e)
-    );
-    return message;
+    return {
+      oracleIndex: isSet(object.oracleIndex) ? Number(object.oracleIndex) : 0,
+      votesForData: Array.isArray(object?.votesForData)
+        ? object.votesForData.map((e: any) => VotesForData.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: VotesForOracle): unknown {
     const obj: any = {};
-    message.oracleIndex !== undefined &&
-      (obj.oracleIndex = message.oracleIndex);
+    message.oracleIndex !== undefined && (obj.oracleIndex = Math.round(message.oracleIndex));
     if (message.votesForData) {
-      obj.votesForData = message.votesForData.map((e) =>
-        e ? VotesForData.toJSON(e) : undefined
-      );
+      obj.votesForData = message.votesForData.map((e) => e ? VotesForData.toJSON(e) : undefined);
     } else {
       obj.votesForData = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<VotesForOracle>): VotesForOracle {
+    return VotesForOracle.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<VotesForOracle>): VotesForOracle {
-    const message = { ...baseVotesForOracle } as VotesForOracle;
+    const message = createBaseVotesForOracle();
     message.oracleIndex = object.oracleIndex ?? 0;
-    message.votesForData = (object.votesForData ?? []).map((e) =>
-      VotesForData.fromPartial(e)
-    );
+    message.votesForData = object.votesForData?.map((e) => VotesForData.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseVotesForData: object = { data: "" };
+function createBaseVotesForData(): VotesForData {
+  return { data: "", votesForTimestamps: [] };
+}
 
 export const VotesForData = {
-  encode(
-    message: VotesForData,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: VotesForData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.data !== "") {
       writer.uint32(10).string(message.data);
     }
@@ -1677,74 +1586,73 @@ export const VotesForData = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): VotesForData {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseVotesForData } as VotesForData;
-    message.votesForTimestamps = [];
+    const message = createBaseVotesForData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.data = reader.string();
-          break;
+          continue;
         case 2:
-          message.votesForTimestamps.push(
-            VotesForTimestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.votesForTimestamps.push(VotesForTimestamp.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): VotesForData {
-    const message = { ...baseVotesForData } as VotesForData;
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? String(object.data)
-        : "";
-    message.votesForTimestamps = (object.votesForTimestamps ?? []).map(
-      (e: any) => VotesForTimestamp.fromJSON(e)
-    );
-    return message;
+    return {
+      data: isSet(object.data) ? String(object.data) : "",
+      votesForTimestamps: Array.isArray(object?.votesForTimestamps)
+        ? object.votesForTimestamps.map((e: any) => VotesForTimestamp.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: VotesForData): unknown {
     const obj: any = {};
     message.data !== undefined && (obj.data = message.data);
     if (message.votesForTimestamps) {
-      obj.votesForTimestamps = message.votesForTimestamps.map((e) =>
-        e ? VotesForTimestamp.toJSON(e) : undefined
-      );
+      obj.votesForTimestamps = message.votesForTimestamps.map((e) => e ? VotesForTimestamp.toJSON(e) : undefined);
     } else {
       obj.votesForTimestamps = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<VotesForData>): VotesForData {
+    return VotesForData.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<VotesForData>): VotesForData {
-    const message = { ...baseVotesForData } as VotesForData;
+    const message = createBaseVotesForData();
     message.data = object.data ?? "";
-    message.votesForTimestamps = (object.votesForTimestamps ?? []).map((e) =>
-      VotesForTimestamp.fromPartial(e)
-    );
+    message.votesForTimestamps = object.votesForTimestamps?.map((e) => VotesForTimestamp.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseVotesForTimestamp: object = {
-  timestamp: Long.ZERO,
-  validatorIndexes: 0,
-};
+function createBaseVotesForTimestamp(): VotesForTimestamp {
+  return { timestamp: Long.ZERO, validatorIndexes: [] };
+}
 
 export const VotesForTimestamp = {
-  encode(
-    message: VotesForTimestamp,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: VotesForTimestamp, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.timestamp.isZero()) {
       writer.uint32(8).int64(message.timestamp);
     }
@@ -1757,76 +1665,85 @@ export const VotesForTimestamp = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): VotesForTimestamp {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseVotesForTimestamp } as VotesForTimestamp;
-    message.validatorIndexes = [];
+    const message = createBaseVotesForTimestamp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.timestamp = reader.int64() as Long;
-          break;
+          continue;
         case 2:
-          if ((tag & 7) === 2) {
+          if (tag === 16) {
+            message.validatorIndexes.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 18) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.validatorIndexes.push(reader.int32());
             }
-          } else {
-            message.validatorIndexes.push(reader.int32());
+
+            continue;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
+
           break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): VotesForTimestamp {
-    const message = { ...baseVotesForTimestamp } as VotesForTimestamp;
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromString(object.timestamp)
-        : Long.ZERO;
-    message.validatorIndexes = (object.validatorIndexes ?? []).map((e: any) =>
-      Number(e)
-    );
-    return message;
+    return {
+      timestamp: isSet(object.timestamp) ? Long.fromValue(object.timestamp) : Long.ZERO,
+      validatorIndexes: Array.isArray(object?.validatorIndexes)
+        ? object.validatorIndexes.map((e: any) => Number(e))
+        : [],
+    };
   },
 
   toJSON(message: VotesForTimestamp): unknown {
     const obj: any = {};
-    message.timestamp !== undefined &&
-      (obj.timestamp = (message.timestamp || Long.ZERO).toString());
+    message.timestamp !== undefined && (obj.timestamp = (message.timestamp || Long.ZERO).toString());
     if (message.validatorIndexes) {
-      obj.validatorIndexes = message.validatorIndexes.map((e) => e);
+      obj.validatorIndexes = message.validatorIndexes.map((e) => Math.round(e));
     } else {
       obj.validatorIndexes = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<VotesForTimestamp>): VotesForTimestamp {
+    return VotesForTimestamp.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<VotesForTimestamp>): VotesForTimestamp {
-    const message = { ...baseVotesForTimestamp } as VotesForTimestamp;
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromValue(object.timestamp)
-        : Long.ZERO;
-    message.validatorIndexes = (object.validatorIndexes ?? []).map((e) => e);
+    const message = createBaseVotesForTimestamp();
+    message.timestamp = (object.timestamp !== undefined && object.timestamp !== null)
+      ? Long.fromValue(object.timestamp)
+      : Long.ZERO;
+    message.validatorIndexes = object.validatorIndexes?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseMsgCreateResult: object = { proposer: "" };
+function createBaseMsgCreateResult(): MsgCreateResult {
+  return { proposer: "", validatorSignatures: [], votesForOracles: [] };
+}
 
 export const MsgCreateResult = {
-  encode(
-    message: MsgCreateResult,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreateResult, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.proposer !== "") {
       writer.uint32(10).string(message.proposer);
     }
@@ -1840,118 +1757,110 @@ export const MsgCreateResult = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateResult {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateResult } as MsgCreateResult;
-    message.validatorSignatures = [];
-    message.votesForOracles = [];
+    const message = createBaseMsgCreateResult();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.proposer = reader.string();
-          break;
+          continue;
         case 2:
-          message.validatorSignatures.push(
-            ValidatorSignature.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.validatorSignatures.push(ValidatorSignature.decode(reader, reader.uint32()));
+          continue;
         case 3:
-          message.votesForOracles.push(
-            VotesForOracle.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.votesForOracles.push(VotesForOracle.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreateResult {
-    const message = { ...baseMsgCreateResult } as MsgCreateResult;
-    message.proposer =
-      object.proposer !== undefined && object.proposer !== null
-        ? String(object.proposer)
-        : "";
-    message.validatorSignatures = (object.validatorSignatures ?? []).map(
-      (e: any) => ValidatorSignature.fromJSON(e)
-    );
-    message.votesForOracles = (object.votesForOracles ?? []).map((e: any) =>
-      VotesForOracle.fromJSON(e)
-    );
-    return message;
+    return {
+      proposer: isSet(object.proposer) ? String(object.proposer) : "",
+      validatorSignatures: Array.isArray(object?.validatorSignatures)
+        ? object.validatorSignatures.map((e: any) => ValidatorSignature.fromJSON(e))
+        : [],
+      votesForOracles: Array.isArray(object?.votesForOracles)
+        ? object.votesForOracles.map((e: any) => VotesForOracle.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: MsgCreateResult): unknown {
     const obj: any = {};
     message.proposer !== undefined && (obj.proposer = message.proposer);
     if (message.validatorSignatures) {
-      obj.validatorSignatures = message.validatorSignatures.map((e) =>
-        e ? ValidatorSignature.toJSON(e) : undefined
-      );
+      obj.validatorSignatures = message.validatorSignatures.map((e) => e ? ValidatorSignature.toJSON(e) : undefined);
     } else {
       obj.validatorSignatures = [];
     }
     if (message.votesForOracles) {
-      obj.votesForOracles = message.votesForOracles.map((e) =>
-        e ? VotesForOracle.toJSON(e) : undefined
-      );
+      obj.votesForOracles = message.votesForOracles.map((e) => e ? VotesForOracle.toJSON(e) : undefined);
     } else {
       obj.votesForOracles = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<MsgCreateResult>): MsgCreateResult {
+    return MsgCreateResult.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgCreateResult>): MsgCreateResult {
-    const message = { ...baseMsgCreateResult } as MsgCreateResult;
+    const message = createBaseMsgCreateResult();
     message.proposer = object.proposer ?? "";
-    message.validatorSignatures = (object.validatorSignatures ?? []).map((e) =>
-      ValidatorSignature.fromPartial(e)
-    );
-    message.votesForOracles = (object.votesForOracles ?? []).map((e) =>
-      VotesForOracle.fromPartial(e)
-    );
+    message.validatorSignatures = object.validatorSignatures?.map((e) => ValidatorSignature.fromPartial(e)) || [];
+    message.votesForOracles = object.votesForOracles?.map((e) => VotesForOracle.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseMsgCreateResultResponse: object = {};
+function createBaseMsgCreateResultResponse(): MsgCreateResultResponse {
+  return {};
+}
 
 export const MsgCreateResultResponse = {
-  encode(
-    _: MsgCreateResultResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgCreateResultResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreateResultResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateResultResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreateResultResponse,
-    } as MsgCreateResultResponse;
+    const message = createBaseMsgCreateResultResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgCreateResultResponse {
-    const message = {
-      ...baseMsgCreateResultResponse,
-    } as MsgCreateResultResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgCreateResultResponse): unknown {
@@ -1959,23 +1868,22 @@ export const MsgCreateResultResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgCreateResultResponse>
-  ): MsgCreateResultResponse {
-    const message = {
-      ...baseMsgCreateResultResponse,
-    } as MsgCreateResultResponse;
+  create(base?: DeepPartial<MsgCreateResultResponse>): MsgCreateResultResponse {
+    return MsgCreateResultResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgCreateResultResponse>): MsgCreateResultResponse {
+    const message = createBaseMsgCreateResultResponse();
     return message;
   },
 };
 
-const baseMsgCreateHistoricalBucketInfo: object = { creator: "" };
+function createBaseMsgCreateHistoricalBucketInfo(): MsgCreateHistoricalBucketInfo {
+  return { creator: "", duration: undefined };
+}
 
 export const MsgCreateHistoricalBucketInfo = {
-  encode(
-    message: MsgCreateHistoricalBucketInfo,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreateHistoricalBucketInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -1985,107 +1893,91 @@ export const MsgCreateHistoricalBucketInfo = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreateHistoricalBucketInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateHistoricalBucketInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreateHistoricalBucketInfo,
-    } as MsgCreateHistoricalBucketInfo;
+    const message = createBaseMsgCreateHistoricalBucketInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.duration = Duration.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreateHistoricalBucketInfo {
-    const message = {
-      ...baseMsgCreateHistoricalBucketInfo,
-    } as MsgCreateHistoricalBucketInfo;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Duration.fromJSON(object.duration)
-        : undefined;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      duration: isSet(object.duration) ? Duration.fromJSON(object.duration) : undefined,
+    };
   },
 
   toJSON(message: MsgCreateHistoricalBucketInfo): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.duration !== undefined &&
-      (obj.duration = message.duration
-        ? Duration.toJSON(message.duration)
-        : undefined);
+    message.duration !== undefined && (obj.duration = message.duration ? Duration.toJSON(message.duration) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgCreateHistoricalBucketInfo>
-  ): MsgCreateHistoricalBucketInfo {
-    const message = {
-      ...baseMsgCreateHistoricalBucketInfo,
-    } as MsgCreateHistoricalBucketInfo;
+  create(base?: DeepPartial<MsgCreateHistoricalBucketInfo>): MsgCreateHistoricalBucketInfo {
+    return MsgCreateHistoricalBucketInfo.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateHistoricalBucketInfo>): MsgCreateHistoricalBucketInfo {
+    const message = createBaseMsgCreateHistoricalBucketInfo();
     message.creator = object.creator ?? "";
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Duration.fromPartial(object.duration)
-        : undefined;
+    message.duration = (object.duration !== undefined && object.duration !== null)
+      ? Duration.fromPartial(object.duration)
+      : undefined;
     return message;
   },
 };
 
-const baseMsgCreateHistoricalBucketInfoResponse: object = {};
+function createBaseMsgCreateHistoricalBucketInfoResponse(): MsgCreateHistoricalBucketInfoResponse {
+  return {};
+}
 
 export const MsgCreateHistoricalBucketInfoResponse = {
-  encode(
-    _: MsgCreateHistoricalBucketInfoResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgCreateHistoricalBucketInfoResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreateHistoricalBucketInfoResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateHistoricalBucketInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreateHistoricalBucketInfoResponse,
-    } as MsgCreateHistoricalBucketInfoResponse;
+    const message = createBaseMsgCreateHistoricalBucketInfoResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgCreateHistoricalBucketInfoResponse {
-    const message = {
-      ...baseMsgCreateHistoricalBucketInfoResponse,
-    } as MsgCreateHistoricalBucketInfoResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgCreateHistoricalBucketInfoResponse): unknown {
@@ -2093,23 +1985,22 @@ export const MsgCreateHistoricalBucketInfoResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgCreateHistoricalBucketInfoResponse>
-  ): MsgCreateHistoricalBucketInfoResponse {
-    const message = {
-      ...baseMsgCreateHistoricalBucketInfoResponse,
-    } as MsgCreateHistoricalBucketInfoResponse;
+  create(base?: DeepPartial<MsgCreateHistoricalBucketInfoResponse>): MsgCreateHistoricalBucketInfoResponse {
+    return MsgCreateHistoricalBucketInfoResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgCreateHistoricalBucketInfoResponse>): MsgCreateHistoricalBucketInfoResponse {
+    const message = createBaseMsgCreateHistoricalBucketInfoResponse();
     return message;
   },
 };
 
-const baseMsgRemoveHistoricalBucketInfo: object = { creator: "" };
+function createBaseMsgRemoveHistoricalBucketInfo(): MsgRemoveHistoricalBucketInfo {
+  return { creator: "", duration: undefined };
+}
 
 export const MsgRemoveHistoricalBucketInfo = {
-  encode(
-    message: MsgRemoveHistoricalBucketInfo,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRemoveHistoricalBucketInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -2119,107 +2010,91 @@ export const MsgRemoveHistoricalBucketInfo = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRemoveHistoricalBucketInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveHistoricalBucketInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRemoveHistoricalBucketInfo,
-    } as MsgRemoveHistoricalBucketInfo;
+    const message = createBaseMsgRemoveHistoricalBucketInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.duration = Duration.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRemoveHistoricalBucketInfo {
-    const message = {
-      ...baseMsgRemoveHistoricalBucketInfo,
-    } as MsgRemoveHistoricalBucketInfo;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Duration.fromJSON(object.duration)
-        : undefined;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      duration: isSet(object.duration) ? Duration.fromJSON(object.duration) : undefined,
+    };
   },
 
   toJSON(message: MsgRemoveHistoricalBucketInfo): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.duration !== undefined &&
-      (obj.duration = message.duration
-        ? Duration.toJSON(message.duration)
-        : undefined);
+    message.duration !== undefined && (obj.duration = message.duration ? Duration.toJSON(message.duration) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgRemoveHistoricalBucketInfo>
-  ): MsgRemoveHistoricalBucketInfo {
-    const message = {
-      ...baseMsgRemoveHistoricalBucketInfo,
-    } as MsgRemoveHistoricalBucketInfo;
+  create(base?: DeepPartial<MsgRemoveHistoricalBucketInfo>): MsgRemoveHistoricalBucketInfo {
+    return MsgRemoveHistoricalBucketInfo.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgRemoveHistoricalBucketInfo>): MsgRemoveHistoricalBucketInfo {
+    const message = createBaseMsgRemoveHistoricalBucketInfo();
     message.creator = object.creator ?? "";
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Duration.fromPartial(object.duration)
-        : undefined;
+    message.duration = (object.duration !== undefined && object.duration !== null)
+      ? Duration.fromPartial(object.duration)
+      : undefined;
     return message;
   },
 };
 
-const baseMsgRemoveHistoricalBucketInfoResponse: object = {};
+function createBaseMsgRemoveHistoricalBucketInfoResponse(): MsgRemoveHistoricalBucketInfoResponse {
+  return {};
+}
 
 export const MsgRemoveHistoricalBucketInfoResponse = {
-  encode(
-    _: MsgRemoveHistoricalBucketInfoResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgRemoveHistoricalBucketInfoResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRemoveHistoricalBucketInfoResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveHistoricalBucketInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRemoveHistoricalBucketInfoResponse,
-    } as MsgRemoveHistoricalBucketInfoResponse;
+    const message = createBaseMsgRemoveHistoricalBucketInfoResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgRemoveHistoricalBucketInfoResponse {
-    const message = {
-      ...baseMsgRemoveHistoricalBucketInfoResponse,
-    } as MsgRemoveHistoricalBucketInfoResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgRemoveHistoricalBucketInfoResponse): unknown {
@@ -2227,12 +2102,12 @@ export const MsgRemoveHistoricalBucketInfoResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgRemoveHistoricalBucketInfoResponse>
-  ): MsgRemoveHistoricalBucketInfoResponse {
-    const message = {
-      ...baseMsgRemoveHistoricalBucketInfoResponse,
-    } as MsgRemoveHistoricalBucketInfoResponse;
+  create(base?: DeepPartial<MsgRemoveHistoricalBucketInfoResponse>): MsgRemoveHistoricalBucketInfoResponse {
+    return MsgRemoveHistoricalBucketInfoResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgRemoveHistoricalBucketInfoResponse>): MsgRemoveHistoricalBucketInfoResponse {
+    const message = createBaseMsgRemoveHistoricalBucketInfoResponse();
     return message;
   },
 };
@@ -2243,15 +2118,9 @@ export interface Msg {
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse>;
   UpdateOracle(request: MsgUpdateOracle): Promise<MsgUpdateOracleResponse>;
   RemoveOracle(request: MsgRemoveOracle): Promise<MsgRemoveOracleResponse>;
-  SetOracleSlashEnabled(
-    request: MsgSetOracleSlashEnabled
-  ): Promise<MsgSetOracleSlashEnabledResponse>;
-  UpdateOracleContract(
-    request: MsgUpdateOracleContract
-  ): Promise<MsgUpdateOracleContractResponse>;
-  DeployOracleContract(
-    request: MsgDeployOracleContract
-  ): Promise<MsgDeployOracleContractResponse>;
+  SetOracleSlashEnabled(request: MsgSetOracleSlashEnabled): Promise<MsgSetOracleSlashEnabledResponse>;
+  UpdateOracleContract(request: MsgUpdateOracleContract): Promise<MsgUpdateOracleContractResponse>;
+  DeployOracleContract(request: MsgDeployOracleContract): Promise<MsgDeployOracleContractResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -2260,17 +2129,15 @@ export interface Msg {
    */
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
   CreateResult(request: MsgCreateResult): Promise<MsgCreateResultResponse>;
-  CreateHistoricalBucketInfo(
-    request: MsgCreateHistoricalBucketInfo
-  ): Promise<MsgCreateHistoricalBucketInfoResponse>;
-  RemoveHistoricalBucketInfo(
-    request: MsgRemoveHistoricalBucketInfo
-  ): Promise<MsgRemoveHistoricalBucketInfoResponse>;
+  CreateHistoricalBucketInfo(request: MsgCreateHistoricalBucketInfo): Promise<MsgCreateHistoricalBucketInfoResponse>;
+  RemoveHistoricalBucketInfo(request: MsgRemoveHistoricalBucketInfo): Promise<MsgRemoveHistoricalBucketInfoResponse>;
 }
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.oracle.Msg";
     this.rpc = rpc;
     this.CreateOracle = this.CreateOracle.bind(this);
     this.UpdateOracle = this.UpdateOracle.bind(this);
@@ -2280,205 +2147,131 @@ export class MsgClientImpl implements Msg {
     this.DeployOracleContract = this.DeployOracleContract.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.CreateResult = this.CreateResult.bind(this);
-    this.CreateHistoricalBucketInfo =
-      this.CreateHistoricalBucketInfo.bind(this);
-    this.RemoveHistoricalBucketInfo =
-      this.RemoveHistoricalBucketInfo.bind(this);
+    this.CreateHistoricalBucketInfo = this.CreateHistoricalBucketInfo.bind(this);
+    this.RemoveHistoricalBucketInfo = this.RemoveHistoricalBucketInfo.bind(this);
   }
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse> {
     const data = MsgCreateOracle.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "CreateOracle",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreateOracleResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "CreateOracle", data);
+    return promise.then((data) => MsgCreateOracleResponse.decode(_m0.Reader.create(data)));
   }
 
   UpdateOracle(request: MsgUpdateOracle): Promise<MsgUpdateOracleResponse> {
     const data = MsgUpdateOracle.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "UpdateOracle",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateOracleResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateOracle", data);
+    return promise.then((data) => MsgUpdateOracleResponse.decode(_m0.Reader.create(data)));
   }
 
   RemoveOracle(request: MsgRemoveOracle): Promise<MsgRemoveOracleResponse> {
     const data = MsgRemoveOracle.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "RemoveOracle",
-      data
-    );
-    return promise.then((data) =>
-      MsgRemoveOracleResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "RemoveOracle", data);
+    return promise.then((data) => MsgRemoveOracleResponse.decode(_m0.Reader.create(data)));
   }
 
-  SetOracleSlashEnabled(
-    request: MsgSetOracleSlashEnabled
-  ): Promise<MsgSetOracleSlashEnabledResponse> {
+  SetOracleSlashEnabled(request: MsgSetOracleSlashEnabled): Promise<MsgSetOracleSlashEnabledResponse> {
     const data = MsgSetOracleSlashEnabled.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "SetOracleSlashEnabled",
-      data
-    );
-    return promise.then((data) =>
-      MsgSetOracleSlashEnabledResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "SetOracleSlashEnabled", data);
+    return promise.then((data) => MsgSetOracleSlashEnabledResponse.decode(_m0.Reader.create(data)));
   }
 
-  UpdateOracleContract(
-    request: MsgUpdateOracleContract
-  ): Promise<MsgUpdateOracleContractResponse> {
+  UpdateOracleContract(request: MsgUpdateOracleContract): Promise<MsgUpdateOracleContractResponse> {
     const data = MsgUpdateOracleContract.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "UpdateOracleContract",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateOracleContractResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateOracleContract", data);
+    return promise.then((data) => MsgUpdateOracleContractResponse.decode(_m0.Reader.create(data)));
   }
 
-  DeployOracleContract(
-    request: MsgDeployOracleContract
-  ): Promise<MsgDeployOracleContractResponse> {
+  DeployOracleContract(request: MsgDeployOracleContract): Promise<MsgDeployOracleContractResponse> {
     const data = MsgDeployOracleContract.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "DeployOracleContract",
-      data
-    );
-    return promise.then((data) =>
-      MsgDeployOracleContractResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "DeployOracleContract", data);
+    return promise.then((data) => MsgDeployOracleContractResponse.decode(_m0.Reader.create(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "UpdateParams",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateParams", data);
+    return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
   }
 
   CreateResult(request: MsgCreateResult): Promise<MsgCreateResultResponse> {
     const data = MsgCreateResult.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "CreateResult",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreateResultResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "CreateResult", data);
+    return promise.then((data) => MsgCreateResultResponse.decode(_m0.Reader.create(data)));
   }
 
-  CreateHistoricalBucketInfo(
-    request: MsgCreateHistoricalBucketInfo
-  ): Promise<MsgCreateHistoricalBucketInfoResponse> {
+  CreateHistoricalBucketInfo(request: MsgCreateHistoricalBucketInfo): Promise<MsgCreateHistoricalBucketInfoResponse> {
     const data = MsgCreateHistoricalBucketInfo.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "CreateHistoricalBucketInfo",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreateHistoricalBucketInfoResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "CreateHistoricalBucketInfo", data);
+    return promise.then((data) => MsgCreateHistoricalBucketInfoResponse.decode(_m0.Reader.create(data)));
   }
 
-  RemoveHistoricalBucketInfo(
-    request: MsgRemoveHistoricalBucketInfo
-  ): Promise<MsgRemoveHistoricalBucketInfoResponse> {
+  RemoveHistoricalBucketInfo(request: MsgRemoveHistoricalBucketInfo): Promise<MsgRemoveHistoricalBucketInfoResponse> {
     const data = MsgRemoveHistoricalBucketInfo.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.oracle.Msg",
-      "RemoveHistoricalBucketInfo",
-      data
-    );
-    return promise.then((data) =>
-      MsgRemoveHistoricalBucketInfoResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "RemoveHistoricalBucketInfo", data);
+    return promise.then((data) => MsgRemoveHistoricalBucketInfoResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -36,13 +36,12 @@ export interface EventBurn {
   owner: string;
 }
 
-const baseEventSend: object = { classId: "", id: "", sender: "", receiver: "" };
+function createBaseEventSend(): EventSend {
+  return { classId: "", id: "", sender: "", receiver: "" };
+}
 
 export const EventSend = {
-  encode(
-    message: EventSend,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventSend, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -59,49 +58,56 @@ export const EventSend = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventSend {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventSend } as EventSend;
+    const message = createBaseEventSend();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventSend {
-    const message = { ...baseEventSend } as EventSend;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    return message;
+    return {
+      classId: isSet(object.classId) ? String(object.classId) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+    };
   },
 
   toJSON(message: EventSend): unknown {
@@ -113,8 +119,12 @@ export const EventSend = {
     return obj;
   },
 
+  create(base?: DeepPartial<EventSend>): EventSend {
+    return EventSend.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventSend>): EventSend {
-    const message = { ...baseEventSend } as EventSend;
+    const message = createBaseEventSend();
     message.classId = object.classId ?? "";
     message.id = object.id ?? "";
     message.sender = object.sender ?? "";
@@ -123,13 +133,12 @@ export const EventSend = {
   },
 };
 
-const baseEventMint: object = { classId: "", id: "", owner: "" };
+function createBaseEventMint(): EventMint {
+  return { classId: "", id: "", owner: "" };
+}
 
 export const EventMint = {
-  encode(
-    message: EventMint,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventMint, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -143,42 +152,48 @@ export const EventMint = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventMint {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventMint } as EventMint;
+    const message = createBaseEventMint();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.owner = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventMint {
-    const message = { ...baseEventMint } as EventMint;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    return message;
+    return {
+      classId: isSet(object.classId) ? String(object.classId) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      owner: isSet(object.owner) ? String(object.owner) : "",
+    };
   },
 
   toJSON(message: EventMint): unknown {
@@ -189,8 +204,12 @@ export const EventMint = {
     return obj;
   },
 
+  create(base?: DeepPartial<EventMint>): EventMint {
+    return EventMint.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventMint>): EventMint {
-    const message = { ...baseEventMint } as EventMint;
+    const message = createBaseEventMint();
     message.classId = object.classId ?? "";
     message.id = object.id ?? "";
     message.owner = object.owner ?? "";
@@ -198,13 +217,12 @@ export const EventMint = {
   },
 };
 
-const baseEventBurn: object = { classId: "", id: "", owner: "" };
+function createBaseEventBurn(): EventBurn {
+  return { classId: "", id: "", owner: "" };
+}
 
 export const EventBurn = {
-  encode(
-    message: EventBurn,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventBurn, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -218,42 +236,48 @@ export const EventBurn = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventBurn {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventBurn } as EventBurn;
+    const message = createBaseEventBurn();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.owner = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventBurn {
-    const message = { ...baseEventBurn } as EventBurn;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    return message;
+    return {
+      classId: isSet(object.classId) ? String(object.classId) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      owner: isSet(object.owner) ? String(object.owner) : "",
+    };
   },
 
   toJSON(message: EventBurn): unknown {
@@ -264,8 +288,12 @@ export const EventBurn = {
     return obj;
   },
 
+  create(base?: DeepPartial<EventBurn>): EventBurn {
+    return EventBurn.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventBurn>): EventBurn {
-    const message = { ...baseEventBurn } as EventBurn;
+    const message = createBaseEventBurn();
     message.classId = object.classId ?? "";
     message.id = object.id ?? "";
     message.owner = object.owner ?? "";
@@ -273,27 +301,19 @@ export const EventBurn = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

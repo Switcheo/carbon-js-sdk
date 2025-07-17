@@ -26,20 +26,12 @@ export interface Metadata {
   txType: string;
 }
 
-const baseMetadata: object = {
-  version: "",
-  controllerConnectionId: "",
-  hostConnectionId: "",
-  address: "",
-  encoding: "",
-  txType: "",
-};
+function createBaseMetadata(): Metadata {
+  return { version: "", controllerConnectionId: "", hostConnectionId: "", address: "", encoding: "", txType: "" };
+}
 
 export const Metadata = {
-  encode(
-    message: Metadata,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Metadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.version !== "") {
       writer.uint32(10).string(message.version);
     }
@@ -62,83 +54,91 @@ export const Metadata = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Metadata {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMetadata } as Metadata;
+    const message = createBaseMetadata();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.version = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.controllerConnectionId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.hostConnectionId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.encoding = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.txType = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Metadata {
-    const message = { ...baseMetadata } as Metadata;
-    message.version =
-      object.version !== undefined && object.version !== null
-        ? String(object.version)
-        : "";
-    message.controllerConnectionId =
-      object.controllerConnectionId !== undefined &&
-      object.controllerConnectionId !== null
-        ? String(object.controllerConnectionId)
-        : "";
-    message.hostConnectionId =
-      object.hostConnectionId !== undefined && object.hostConnectionId !== null
-        ? String(object.hostConnectionId)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.encoding =
-      object.encoding !== undefined && object.encoding !== null
-        ? String(object.encoding)
-        : "";
-    message.txType =
-      object.txType !== undefined && object.txType !== null
-        ? String(object.txType)
-        : "";
-    return message;
+    return {
+      version: isSet(object.version) ? String(object.version) : "",
+      controllerConnectionId: isSet(object.controllerConnectionId) ? String(object.controllerConnectionId) : "",
+      hostConnectionId: isSet(object.hostConnectionId) ? String(object.hostConnectionId) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+      encoding: isSet(object.encoding) ? String(object.encoding) : "",
+      txType: isSet(object.txType) ? String(object.txType) : "",
+    };
   },
 
   toJSON(message: Metadata): unknown {
     const obj: any = {};
     message.version !== undefined && (obj.version = message.version);
-    message.controllerConnectionId !== undefined &&
-      (obj.controllerConnectionId = message.controllerConnectionId);
-    message.hostConnectionId !== undefined &&
-      (obj.hostConnectionId = message.hostConnectionId);
+    message.controllerConnectionId !== undefined && (obj.controllerConnectionId = message.controllerConnectionId);
+    message.hostConnectionId !== undefined && (obj.hostConnectionId = message.hostConnectionId);
     message.address !== undefined && (obj.address = message.address);
     message.encoding !== undefined && (obj.encoding = message.encoding);
     message.txType !== undefined && (obj.txType = message.txType);
     return obj;
   },
 
+  create(base?: DeepPartial<Metadata>): Metadata {
+    return Metadata.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Metadata>): Metadata {
-    const message = { ...baseMetadata } as Metadata;
+    const message = createBaseMetadata();
     message.version = object.version ?? "";
     message.controllerConnectionId = object.controllerConnectionId ?? "";
     message.hostConnectionId = object.hostConnectionId ?? "";
@@ -149,27 +149,19 @@ export const Metadata = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

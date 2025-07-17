@@ -1,18 +1,16 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
 import { Params } from "./params";
-import { RfqWithStatus } from "./rfq";
-import {
-  PageRequest,
-  PageResponse,
-} from "../../../cosmos/base/query/v1beta1/pagination";
 import { QuoteWithStatus } from "./quote";
+import { RfqWithStatus } from "./rfq";
 
 export const protobufPackage = "Switcheo.carbon.otc";
 
 /** QueryParamsRequest is request type for the Query/Params RPC method. */
-export interface QueryParamsRequest {}
+export interface QueryParamsRequest {
+}
 
 /** QueryParamsResponse is response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
@@ -88,34 +86,33 @@ export interface QueryAllQuoteResponse {
   pagination?: PageResponse;
 }
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+  return {};
+}
 
 export const QueryParamsRequest = {
-  encode(
-    _: QueryParamsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryParamsRequest): unknown {
@@ -123,19 +120,22 @@ export const QueryParamsRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    return QueryParamsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     return message;
   },
 };
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+  return { params: undefined };
+}
 
 export const QueryParamsResponse = {
-  encode(
-    message: QueryParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -143,56 +143,57 @@ export const QueryParamsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    const message = createBaseQueryParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.params = Params.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
-        : undefined;
-    return message;
+    return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
   },
 
   toJSON(message: QueryParamsResponse): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    return QueryParamsResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+    const message = createBaseQueryParamsResponse();
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryRfqRequest: object = { id: "" };
+function createBaseQueryRfqRequest(): QueryRfqRequest {
+  return { id: "" };
+}
 
 export const QueryRfqRequest = {
-  encode(
-    message: QueryRfqRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryRfqRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -200,28 +201,30 @@ export const QueryRfqRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryRfqRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryRfqRequest } as QueryRfqRequest;
+    const message = createBaseQueryRfqRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryRfqRequest {
-    const message = { ...baseQueryRfqRequest } as QueryRfqRequest;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    return message;
+    return { id: isSet(object.id) ? String(object.id) : "" };
   },
 
   toJSON(message: QueryRfqRequest): unknown {
@@ -230,20 +233,23 @@ export const QueryRfqRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryRfqRequest>): QueryRfqRequest {
+    return QueryRfqRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryRfqRequest>): QueryRfqRequest {
-    const message = { ...baseQueryRfqRequest } as QueryRfqRequest;
+    const message = createBaseQueryRfqRequest();
     message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseQueryRfqResponse: object = {};
+function createBaseQueryRfqResponse(): QueryRfqResponse {
+  return { rfq: undefined };
+}
 
 export const QueryRfqResponse = {
-  encode(
-    message: QueryRfqResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryRfqResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rfq !== undefined) {
       RfqWithStatus.encode(message.rfq, writer.uint32(10).fork()).ldelim();
     }
@@ -251,60 +257,55 @@ export const QueryRfqResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryRfqResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryRfqResponse } as QueryRfqResponse;
+    const message = createBaseQueryRfqResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.rfq = RfqWithStatus.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryRfqResponse {
-    const message = { ...baseQueryRfqResponse } as QueryRfqResponse;
-    message.rfq =
-      object.rfq !== undefined && object.rfq !== null
-        ? RfqWithStatus.fromJSON(object.rfq)
-        : undefined;
-    return message;
+    return { rfq: isSet(object.rfq) ? RfqWithStatus.fromJSON(object.rfq) : undefined };
   },
 
   toJSON(message: QueryRfqResponse): unknown {
     const obj: any = {};
-    message.rfq !== undefined &&
-      (obj.rfq = message.rfq ? RfqWithStatus.toJSON(message.rfq) : undefined);
+    message.rfq !== undefined && (obj.rfq = message.rfq ? RfqWithStatus.toJSON(message.rfq) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryRfqResponse>): QueryRfqResponse {
+    return QueryRfqResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryRfqResponse>): QueryRfqResponse {
-    const message = { ...baseQueryRfqResponse } as QueryRfqResponse;
-    message.rfq =
-      object.rfq !== undefined && object.rfq !== null
-        ? RfqWithStatus.fromPartial(object.rfq)
-        : undefined;
+    const message = createBaseQueryRfqResponse();
+    message.rfq = (object.rfq !== undefined && object.rfq !== null) ? RfqWithStatus.fromPartial(object.rfq) : undefined;
     return message;
   },
 };
 
-const baseQueryAllRfqRequest: object = {
-  requester: "",
-  buyDenom: "",
-  status: "",
-};
+function createBaseQueryAllRfqRequest(): QueryAllRfqRequest {
+  return { requester: "", buyDenom: "", status: "", pagination: undefined };
+}
 
 export const QueryAllRfqRequest = {
-  encode(
-    message: QueryAllRfqRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllRfqRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.requester !== "") {
       writer.uint32(10).string(message.requester);
     }
@@ -321,51 +322,56 @@ export const QueryAllRfqRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllRfqRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllRfqRequest } as QueryAllRfqRequest;
+    const message = createBaseQueryAllRfqRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.requester = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.buyDenom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.status = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllRfqRequest {
-    const message = { ...baseQueryAllRfqRequest } as QueryAllRfqRequest;
-    message.requester =
-      object.requester !== undefined && object.requester !== null
-        ? String(object.requester)
-        : "";
-    message.buyDenom =
-      object.buyDenom !== undefined && object.buyDenom !== null
-        ? String(object.buyDenom)
-        : "";
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? String(object.status)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      requester: isSet(object.requester) ? String(object.requester) : "",
+      buyDenom: isSet(object.buyDenom) ? String(object.buyDenom) : "",
+      status: isSet(object.status) ? String(object.status) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllRfqRequest): unknown {
@@ -374,112 +380,110 @@ export const QueryAllRfqRequest = {
     message.buyDenom !== undefined && (obj.buyDenom = message.buyDenom);
     message.status !== undefined && (obj.status = message.status);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryAllRfqRequest>): QueryAllRfqRequest {
+    return QueryAllRfqRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryAllRfqRequest>): QueryAllRfqRequest {
-    const message = { ...baseQueryAllRfqRequest } as QueryAllRfqRequest;
+    const message = createBaseQueryAllRfqRequest();
     message.requester = object.requester ?? "";
     message.buyDenom = object.buyDenom ?? "";
     message.status = object.status ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllRfqResponse: object = {};
+function createBaseQueryAllRfqResponse(): QueryAllRfqResponse {
+  return { rfqs: [], pagination: undefined };
+}
 
 export const QueryAllRfqResponse = {
-  encode(
-    message: QueryAllRfqResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllRfqResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.rfqs) {
       RfqWithStatus.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllRfqResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllRfqResponse } as QueryAllRfqResponse;
-    message.rfqs = [];
+    const message = createBaseQueryAllRfqResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.rfqs.push(RfqWithStatus.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllRfqResponse {
-    const message = { ...baseQueryAllRfqResponse } as QueryAllRfqResponse;
-    message.rfqs = (object.rfqs ?? []).map((e: any) =>
-      RfqWithStatus.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      rfqs: Array.isArray(object?.rfqs) ? object.rfqs.map((e: any) => RfqWithStatus.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllRfqResponse): unknown {
     const obj: any = {};
     if (message.rfqs) {
-      obj.rfqs = message.rfqs.map((e) =>
-        e ? RfqWithStatus.toJSON(e) : undefined
-      );
+      obj.rfqs = message.rfqs.map((e) => e ? RfqWithStatus.toJSON(e) : undefined);
     } else {
       obj.rfqs = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryAllRfqResponse>): QueryAllRfqResponse {
+    return QueryAllRfqResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryAllRfqResponse>): QueryAllRfqResponse {
-    const message = { ...baseQueryAllRfqResponse } as QueryAllRfqResponse;
-    message.rfqs = (object.rfqs ?? []).map((e) => RfqWithStatus.fromPartial(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+    const message = createBaseQueryAllRfqResponse();
+    message.rfqs = object.rfqs?.map((e) => RfqWithStatus.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryQuoteRequest: object = { id: "" };
+function createBaseQueryQuoteRequest(): QueryQuoteRequest {
+  return { id: "" };
+}
 
 export const QueryQuoteRequest = {
-  encode(
-    message: QueryQuoteRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryQuoteRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -487,28 +491,30 @@ export const QueryQuoteRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryQuoteRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryQuoteRequest } as QueryQuoteRequest;
+    const message = createBaseQueryQuoteRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryQuoteRequest {
-    const message = { ...baseQueryQuoteRequest } as QueryQuoteRequest;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    return message;
+    return { id: isSet(object.id) ? String(object.id) : "" };
   },
 
   toJSON(message: QueryQuoteRequest): unknown {
@@ -517,20 +523,23 @@ export const QueryQuoteRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryQuoteRequest>): QueryQuoteRequest {
+    return QueryQuoteRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryQuoteRequest>): QueryQuoteRequest {
-    const message = { ...baseQueryQuoteRequest } as QueryQuoteRequest;
+    const message = createBaseQueryQuoteRequest();
     message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseQueryQuoteResponse: object = {};
+function createBaseQueryQuoteResponse(): QueryQuoteResponse {
+  return { quote: undefined };
+}
 
 export const QueryQuoteResponse = {
-  encode(
-    message: QueryQuoteResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryQuoteResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.quote !== undefined) {
       QuoteWithStatus.encode(message.quote, writer.uint32(10).fork()).ldelim();
     }
@@ -538,65 +547,57 @@ export const QueryQuoteResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryQuoteResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryQuoteResponse } as QueryQuoteResponse;
+    const message = createBaseQueryQuoteResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.quote = QuoteWithStatus.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryQuoteResponse {
-    const message = { ...baseQueryQuoteResponse } as QueryQuoteResponse;
-    message.quote =
-      object.quote !== undefined && object.quote !== null
-        ? QuoteWithStatus.fromJSON(object.quote)
-        : undefined;
-    return message;
+    return { quote: isSet(object.quote) ? QuoteWithStatus.fromJSON(object.quote) : undefined };
   },
 
   toJSON(message: QueryQuoteResponse): unknown {
     const obj: any = {};
-    message.quote !== undefined &&
-      (obj.quote = message.quote
-        ? QuoteWithStatus.toJSON(message.quote)
-        : undefined);
+    message.quote !== undefined && (obj.quote = message.quote ? QuoteWithStatus.toJSON(message.quote) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryQuoteResponse>): QueryQuoteResponse {
+    return QueryQuoteResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryQuoteResponse>): QueryQuoteResponse {
-    const message = { ...baseQueryQuoteResponse } as QueryQuoteResponse;
-    message.quote =
-      object.quote !== undefined && object.quote !== null
-        ? QuoteWithStatus.fromPartial(object.quote)
-        : undefined;
+    const message = createBaseQueryQuoteResponse();
+    message.quote = (object.quote !== undefined && object.quote !== null)
+      ? QuoteWithStatus.fromPartial(object.quote)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllQuoteRequest: object = {
-  quoter: "",
-  rfqId: "",
-  denom: "",
-  minQuantity: "",
-  maxQuantity: "",
-  status: "",
-};
+function createBaseQueryAllQuoteRequest(): QueryAllQuoteRequest {
+  return { quoter: "", rfqId: "", denom: "", minQuantity: "", maxQuantity: "", status: "", pagination: undefined };
+}
 
 export const QueryAllQuoteRequest = {
-  encode(
-    message: QueryAllQuoteRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllQuoteRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.quoter !== "") {
       writer.uint32(10).string(message.quoter);
     }
@@ -621,76 +622,81 @@ export const QueryAllQuoteRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllQuoteRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllQuoteRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllQuoteRequest } as QueryAllQuoteRequest;
+    const message = createBaseQueryAllQuoteRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.quoter = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.rfqId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.minQuantity = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.maxQuantity = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.status = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllQuoteRequest {
-    const message = { ...baseQueryAllQuoteRequest } as QueryAllQuoteRequest;
-    message.quoter =
-      object.quoter !== undefined && object.quoter !== null
-        ? String(object.quoter)
-        : "";
-    message.rfqId =
-      object.rfqId !== undefined && object.rfqId !== null
-        ? String(object.rfqId)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.minQuantity =
-      object.minQuantity !== undefined && object.minQuantity !== null
-        ? String(object.minQuantity)
-        : "";
-    message.maxQuantity =
-      object.maxQuantity !== undefined && object.maxQuantity !== null
-        ? String(object.maxQuantity)
-        : "";
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? String(object.status)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      quoter: isSet(object.quoter) ? String(object.quoter) : "",
+      rfqId: isSet(object.rfqId) ? String(object.rfqId) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      minQuantity: isSet(object.minQuantity) ? String(object.minQuantity) : "",
+      maxQuantity: isSet(object.maxQuantity) ? String(object.maxQuantity) : "",
+      status: isSet(object.status) ? String(object.status) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllQuoteRequest): unknown {
@@ -698,117 +704,107 @@ export const QueryAllQuoteRequest = {
     message.quoter !== undefined && (obj.quoter = message.quoter);
     message.rfqId !== undefined && (obj.rfqId = message.rfqId);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.minQuantity !== undefined &&
-      (obj.minQuantity = message.minQuantity);
-    message.maxQuantity !== undefined &&
-      (obj.maxQuantity = message.maxQuantity);
+    message.minQuantity !== undefined && (obj.minQuantity = message.minQuantity);
+    message.maxQuantity !== undefined && (obj.maxQuantity = message.maxQuantity);
     message.status !== undefined && (obj.status = message.status);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryAllQuoteRequest>): QueryAllQuoteRequest {
+    return QueryAllQuoteRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryAllQuoteRequest>): QueryAllQuoteRequest {
-    const message = { ...baseQueryAllQuoteRequest } as QueryAllQuoteRequest;
+    const message = createBaseQueryAllQuoteRequest();
     message.quoter = object.quoter ?? "";
     message.rfqId = object.rfqId ?? "";
     message.denom = object.denom ?? "";
     message.minQuantity = object.minQuantity ?? "";
     message.maxQuantity = object.maxQuantity ?? "";
     message.status = object.status ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllQuoteResponse: object = {};
+function createBaseQueryAllQuoteResponse(): QueryAllQuoteResponse {
+  return { quotes: [], pagination: undefined };
+}
 
 export const QueryAllQuoteResponse = {
-  encode(
-    message: QueryAllQuoteResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllQuoteResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.quotes) {
       QuoteWithStatus.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllQuoteResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllQuoteResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllQuoteResponse } as QueryAllQuoteResponse;
-    message.quotes = [];
+    const message = createBaseQueryAllQuoteResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.quotes.push(QuoteWithStatus.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllQuoteResponse {
-    const message = { ...baseQueryAllQuoteResponse } as QueryAllQuoteResponse;
-    message.quotes = (object.quotes ?? []).map((e: any) =>
-      QuoteWithStatus.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      quotes: Array.isArray(object?.quotes) ? object.quotes.map((e: any) => QuoteWithStatus.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllQuoteResponse): unknown {
     const obj: any = {};
     if (message.quotes) {
-      obj.quotes = message.quotes.map((e) =>
-        e ? QuoteWithStatus.toJSON(e) : undefined
-      );
+      obj.quotes = message.quotes.map((e) => e ? QuoteWithStatus.toJSON(e) : undefined);
     } else {
       obj.quotes = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllQuoteResponse>
-  ): QueryAllQuoteResponse {
-    const message = { ...baseQueryAllQuoteResponse } as QueryAllQuoteResponse;
-    message.quotes = (object.quotes ?? []).map((e) =>
-      QuoteWithStatus.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryAllQuoteResponse>): QueryAllQuoteResponse {
+    return QueryAllQuoteResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllQuoteResponse>): QueryAllQuoteResponse {
+    const message = createBaseQueryAllQuoteResponse();
+    message.quotes = object.quotes?.map((e) => QuoteWithStatus.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
@@ -824,7 +820,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.otc.Query";
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.Rfq = this.Rfq.bind(this);
@@ -834,90 +832,52 @@ export class QueryClientImpl implements Query {
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.otc.Query",
-      "Params",
-      data
-    );
-    return promise.then((data) =>
-      QueryParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Params", data);
+    return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
   }
 
   Rfq(request: QueryRfqRequest): Promise<QueryRfqResponse> {
     const data = QueryRfqRequest.encode(request).finish();
-    const promise = this.rpc.request("Switcheo.carbon.otc.Query", "Rfq", data);
-    return promise.then((data) =>
-      QueryRfqResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Rfq", data);
+    return promise.then((data) => QueryRfqResponse.decode(_m0.Reader.create(data)));
   }
 
   RfqAll(request: QueryAllRfqRequest): Promise<QueryAllRfqResponse> {
     const data = QueryAllRfqRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.otc.Query",
-      "RfqAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllRfqResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "RfqAll", data);
+    return promise.then((data) => QueryAllRfqResponse.decode(_m0.Reader.create(data)));
   }
 
   Quote(request: QueryQuoteRequest): Promise<QueryQuoteResponse> {
     const data = QueryQuoteRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.otc.Query",
-      "Quote",
-      data
-    );
-    return promise.then((data) =>
-      QueryQuoteResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Quote", data);
+    return promise.then((data) => QueryQuoteResponse.decode(_m0.Reader.create(data)));
   }
 
   QuoteAll(request: QueryAllQuoteRequest): Promise<QueryAllQuoteResponse> {
     const data = QueryAllQuoteRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.otc.Query",
-      "QuoteAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllQuoteResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "QuoteAll", data);
+    return promise.then((data) => QueryAllQuoteResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

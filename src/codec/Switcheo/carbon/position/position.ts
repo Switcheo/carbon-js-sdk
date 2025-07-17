@@ -51,21 +51,20 @@ export interface PositionAllocatedMargin {
   amount: string;
 }
 
-const basePosition: object = {
-  marketId: "",
-  address: "",
-  lots: "",
-  entryPrice: "",
-  realizedPnl: "",
-  openedBlockHeight: Long.UZERO,
-  allocatedMarginAmount: "",
-};
+function createBasePosition(): Position {
+  return {
+    marketId: "",
+    address: "",
+    lots: "",
+    entryPrice: "",
+    realizedPnl: "",
+    openedBlockHeight: Long.UZERO,
+    allocatedMarginAmount: "",
+  };
+}
 
 export const Position = {
-  encode(
-    message: Position,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Position, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -91,74 +90,80 @@ export const Position = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Position {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePosition } as Position;
+    const message = createBasePosition();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.lots = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.entryPrice = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.realizedPnl = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.openedBlockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.allocatedMarginAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Position {
-    const message = { ...basePosition } as Position;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.lots =
-      object.lots !== undefined && object.lots !== null
-        ? String(object.lots)
-        : "";
-    message.entryPrice =
-      object.entryPrice !== undefined && object.entryPrice !== null
-        ? String(object.entryPrice)
-        : "";
-    message.realizedPnl =
-      object.realizedPnl !== undefined && object.realizedPnl !== null
-        ? String(object.realizedPnl)
-        : "";
-    message.openedBlockHeight =
-      object.openedBlockHeight !== undefined &&
-      object.openedBlockHeight !== null
-        ? Long.fromString(object.openedBlockHeight)
-        : Long.UZERO;
-    message.allocatedMarginAmount =
-      object.allocatedMarginAmount !== undefined &&
-      object.allocatedMarginAmount !== null
-        ? String(object.allocatedMarginAmount)
-        : "";
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+      lots: isSet(object.lots) ? String(object.lots) : "",
+      entryPrice: isSet(object.entryPrice) ? String(object.entryPrice) : "",
+      realizedPnl: isSet(object.realizedPnl) ? String(object.realizedPnl) : "",
+      openedBlockHeight: isSet(object.openedBlockHeight) ? Long.fromValue(object.openedBlockHeight) : Long.UZERO,
+      allocatedMarginAmount: isSet(object.allocatedMarginAmount) ? String(object.allocatedMarginAmount) : "",
+    };
   },
 
   toJSON(message: Position): unknown {
@@ -167,41 +172,38 @@ export const Position = {
     message.address !== undefined && (obj.address = message.address);
     message.lots !== undefined && (obj.lots = message.lots);
     message.entryPrice !== undefined && (obj.entryPrice = message.entryPrice);
-    message.realizedPnl !== undefined &&
-      (obj.realizedPnl = message.realizedPnl);
+    message.realizedPnl !== undefined && (obj.realizedPnl = message.realizedPnl);
     message.openedBlockHeight !== undefined &&
-      (obj.openedBlockHeight = (
-        message.openedBlockHeight || Long.UZERO
-      ).toString());
-    message.allocatedMarginAmount !== undefined &&
-      (obj.allocatedMarginAmount = message.allocatedMarginAmount);
+      (obj.openedBlockHeight = (message.openedBlockHeight || Long.UZERO).toString());
+    message.allocatedMarginAmount !== undefined && (obj.allocatedMarginAmount = message.allocatedMarginAmount);
     return obj;
   },
 
+  create(base?: DeepPartial<Position>): Position {
+    return Position.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Position>): Position {
-    const message = { ...basePosition } as Position;
+    const message = createBasePosition();
     message.marketId = object.marketId ?? "";
     message.address = object.address ?? "";
     message.lots = object.lots ?? "";
     message.entryPrice = object.entryPrice ?? "";
     message.realizedPnl = object.realizedPnl ?? "";
-    message.openedBlockHeight =
-      object.openedBlockHeight !== undefined &&
-      object.openedBlockHeight !== null
-        ? Long.fromValue(object.openedBlockHeight)
-        : Long.UZERO;
+    message.openedBlockHeight = (object.openedBlockHeight !== undefined && object.openedBlockHeight !== null)
+      ? Long.fromValue(object.openedBlockHeight)
+      : Long.UZERO;
     message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
     return message;
   },
 };
 
-const basePositions: object = {};
+function createBasePositions(): Positions {
+  return { positions: [] };
+}
 
 export const Positions = {
-  encode(
-    message: Positions,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Positions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.positions) {
       Position.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -209,60 +211,61 @@ export const Positions = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Positions {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePositions } as Positions;
-    message.positions = [];
+    const message = createBasePositions();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.positions.push(Position.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Positions {
-    const message = { ...basePositions } as Positions;
-    message.positions = (object.positions ?? []).map((e: any) =>
-      Position.fromJSON(e)
-    );
-    return message;
+    return {
+      positions: Array.isArray(object?.positions) ? object.positions.map((e: any) => Position.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: Positions): unknown {
     const obj: any = {};
     if (message.positions) {
-      obj.positions = message.positions.map((e) =>
-        e ? Position.toJSON(e) : undefined
-      );
+      obj.positions = message.positions.map((e) => e ? Position.toJSON(e) : undefined);
     } else {
       obj.positions = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Positions>): Positions {
+    return Positions.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Positions>): Positions {
-    const message = { ...basePositions } as Positions;
-    message.positions = (object.positions ?? []).map((e) =>
-      Position.fromPartial(e)
-    );
+    const message = createBasePositions();
+    message.positions = object.positions?.map((e) => Position.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseOpenInterest: object = { marketId: "", openInterest: "" };
+function createBaseOpenInterest(): OpenInterest {
+  return { marketId: "", openInterest: "" };
+}
 
 export const OpenInterest = {
-  encode(
-    message: OpenInterest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: OpenInterest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -273,80 +276,87 @@ export const OpenInterest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OpenInterest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOpenInterest } as OpenInterest;
+    const message = createBaseOpenInterest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.openInterest = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): OpenInterest {
-    const message = { ...baseOpenInterest } as OpenInterest;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.openInterest =
-      object.openInterest !== undefined && object.openInterest !== null
-        ? String(object.openInterest)
-        : "";
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      openInterest: isSet(object.openInterest) ? String(object.openInterest) : "",
+    };
   },
 
   toJSON(message: OpenInterest): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
-    message.openInterest !== undefined &&
-      (obj.openInterest = message.openInterest);
+    message.openInterest !== undefined && (obj.openInterest = message.openInterest);
     return obj;
   },
 
+  create(base?: DeepPartial<OpenInterest>): OpenInterest {
+    return OpenInterest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<OpenInterest>): OpenInterest {
-    const message = { ...baseOpenInterest } as OpenInterest;
+    const message = createBaseOpenInterest();
     message.marketId = object.marketId ?? "";
     message.openInterest = object.openInterest ?? "";
     return message;
   },
 };
 
-const baseAPIPosition: object = {
-  marketId: "",
-  address: "",
-  tradeId: Long.UZERO,
-  side: "",
-  openedBlockHeight: Long.UZERO,
-  updatedBlockHeight: Long.UZERO,
-  closedBlockHeight: Long.UZERO,
-  realizedPnl: "",
-  maxLots: "",
-  totalFeeAmount: "",
-  avgAllocatedMargin: "",
-  avgEntryPrice: "",
-  avgExitPrice: "",
-  allocatedMargin: "",
-  lots: "",
-  updateCount: Long.UZERO,
-  exitCount: Long.UZERO,
-};
+function createBaseAPIPosition(): APIPosition {
+  return {
+    marketId: "",
+    address: "",
+    tradeId: Long.UZERO,
+    side: "",
+    openedBlockHeight: Long.UZERO,
+    updatedBlockHeight: Long.UZERO,
+    closedBlockHeight: Long.UZERO,
+    realizedPnl: "",
+    maxLots: "",
+    totalFeeAmount: "",
+    avgAllocatedMargin: "",
+    avgEntryPrice: "",
+    avgExitPrice: "",
+    allocatedMargin: "",
+    lots: "",
+    openedAt: undefined,
+    closedAt: undefined,
+    updateCount: Long.UZERO,
+    exitCount: Long.UZERO,
+  };
+}
 
 export const APIPosition = {
-  encode(
-    message: APIPosition,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: APIPosition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -393,16 +403,10 @@ export const APIPosition = {
       writer.uint32(122).string(message.lots);
     }
     if (message.openedAt !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.openedAt),
-        writer.uint32(130).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.openedAt), writer.uint32(130).fork()).ldelim();
     }
     if (message.closedAt !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.closedAt),
-        writer.uint32(138).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.closedAt), writer.uint32(138).fork()).ldelim();
     }
     if (!message.updateCount.isZero()) {
       writer.uint32(144).uint64(message.updateCount);
@@ -414,234 +418,226 @@ export const APIPosition = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): APIPosition {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAPIPosition } as APIPosition;
+    const message = createBaseAPIPosition();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.tradeId = reader.uint64() as Long;
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.side = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.openedBlockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.updatedBlockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.closedBlockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.realizedPnl = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.maxLots = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.totalFeeAmount = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.avgAllocatedMargin = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.avgEntryPrice = reader.string();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.avgExitPrice = reader.string();
-          break;
+          continue;
         case 14:
+          if (tag !== 114) {
+            break;
+          }
+
           message.allocatedMargin = reader.string();
-          break;
+          continue;
         case 15:
+          if (tag !== 122) {
+            break;
+          }
+
           message.lots = reader.string();
-          break;
+          continue;
         case 16:
-          message.openedAt = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 130) {
+            break;
+          }
+
+          message.openedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 17:
-          message.closedAt = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 138) {
+            break;
+          }
+
+          message.closedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 18:
+          if (tag !== 144) {
+            break;
+          }
+
           message.updateCount = reader.uint64() as Long;
-          break;
+          continue;
         case 19:
+          if (tag !== 152) {
+            break;
+          }
+
           message.exitCount = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): APIPosition {
-    const message = { ...baseAPIPosition } as APIPosition;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.tradeId =
-      object.tradeId !== undefined && object.tradeId !== null
-        ? Long.fromString(object.tradeId)
-        : Long.UZERO;
-    message.side =
-      object.side !== undefined && object.side !== null
-        ? String(object.side)
-        : "";
-    message.openedBlockHeight =
-      object.openedBlockHeight !== undefined &&
-      object.openedBlockHeight !== null
-        ? Long.fromString(object.openedBlockHeight)
-        : Long.UZERO;
-    message.updatedBlockHeight =
-      object.updatedBlockHeight !== undefined &&
-      object.updatedBlockHeight !== null
-        ? Long.fromString(object.updatedBlockHeight)
-        : Long.UZERO;
-    message.closedBlockHeight =
-      object.closedBlockHeight !== undefined &&
-      object.closedBlockHeight !== null
-        ? Long.fromString(object.closedBlockHeight)
-        : Long.UZERO;
-    message.realizedPnl =
-      object.realizedPnl !== undefined && object.realizedPnl !== null
-        ? String(object.realizedPnl)
-        : "";
-    message.maxLots =
-      object.maxLots !== undefined && object.maxLots !== null
-        ? String(object.maxLots)
-        : "";
-    message.totalFeeAmount =
-      object.totalFeeAmount !== undefined && object.totalFeeAmount !== null
-        ? String(object.totalFeeAmount)
-        : "";
-    message.avgAllocatedMargin =
-      object.avgAllocatedMargin !== undefined &&
-      object.avgAllocatedMargin !== null
-        ? String(object.avgAllocatedMargin)
-        : "";
-    message.avgEntryPrice =
-      object.avgEntryPrice !== undefined && object.avgEntryPrice !== null
-        ? String(object.avgEntryPrice)
-        : "";
-    message.avgExitPrice =
-      object.avgExitPrice !== undefined && object.avgExitPrice !== null
-        ? String(object.avgExitPrice)
-        : "";
-    message.allocatedMargin =
-      object.allocatedMargin !== undefined && object.allocatedMargin !== null
-        ? String(object.allocatedMargin)
-        : "";
-    message.lots =
-      object.lots !== undefined && object.lots !== null
-        ? String(object.lots)
-        : "";
-    message.openedAt =
-      object.openedAt !== undefined && object.openedAt !== null
-        ? fromJsonTimestamp(object.openedAt)
-        : undefined;
-    message.closedAt =
-      object.closedAt !== undefined && object.closedAt !== null
-        ? fromJsonTimestamp(object.closedAt)
-        : undefined;
-    message.updateCount =
-      object.updateCount !== undefined && object.updateCount !== null
-        ? Long.fromString(object.updateCount)
-        : Long.UZERO;
-    message.exitCount =
-      object.exitCount !== undefined && object.exitCount !== null
-        ? Long.fromString(object.exitCount)
-        : Long.UZERO;
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+      tradeId: isSet(object.tradeId) ? Long.fromValue(object.tradeId) : Long.UZERO,
+      side: isSet(object.side) ? String(object.side) : "",
+      openedBlockHeight: isSet(object.openedBlockHeight) ? Long.fromValue(object.openedBlockHeight) : Long.UZERO,
+      updatedBlockHeight: isSet(object.updatedBlockHeight) ? Long.fromValue(object.updatedBlockHeight) : Long.UZERO,
+      closedBlockHeight: isSet(object.closedBlockHeight) ? Long.fromValue(object.closedBlockHeight) : Long.UZERO,
+      realizedPnl: isSet(object.realizedPnl) ? String(object.realizedPnl) : "",
+      maxLots: isSet(object.maxLots) ? String(object.maxLots) : "",
+      totalFeeAmount: isSet(object.totalFeeAmount) ? String(object.totalFeeAmount) : "",
+      avgAllocatedMargin: isSet(object.avgAllocatedMargin) ? String(object.avgAllocatedMargin) : "",
+      avgEntryPrice: isSet(object.avgEntryPrice) ? String(object.avgEntryPrice) : "",
+      avgExitPrice: isSet(object.avgExitPrice) ? String(object.avgExitPrice) : "",
+      allocatedMargin: isSet(object.allocatedMargin) ? String(object.allocatedMargin) : "",
+      lots: isSet(object.lots) ? String(object.lots) : "",
+      openedAt: isSet(object.openedAt) ? fromJsonTimestamp(object.openedAt) : undefined,
+      closedAt: isSet(object.closedAt) ? fromJsonTimestamp(object.closedAt) : undefined,
+      updateCount: isSet(object.updateCount) ? Long.fromValue(object.updateCount) : Long.UZERO,
+      exitCount: isSet(object.exitCount) ? Long.fromValue(object.exitCount) : Long.UZERO,
+    };
   },
 
   toJSON(message: APIPosition): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.address !== undefined && (obj.address = message.address);
-    message.tradeId !== undefined &&
-      (obj.tradeId = (message.tradeId || Long.UZERO).toString());
+    message.tradeId !== undefined && (obj.tradeId = (message.tradeId || Long.UZERO).toString());
     message.side !== undefined && (obj.side = message.side);
     message.openedBlockHeight !== undefined &&
-      (obj.openedBlockHeight = (
-        message.openedBlockHeight || Long.UZERO
-      ).toString());
+      (obj.openedBlockHeight = (message.openedBlockHeight || Long.UZERO).toString());
     message.updatedBlockHeight !== undefined &&
-      (obj.updatedBlockHeight = (
-        message.updatedBlockHeight || Long.UZERO
-      ).toString());
+      (obj.updatedBlockHeight = (message.updatedBlockHeight || Long.UZERO).toString());
     message.closedBlockHeight !== undefined &&
-      (obj.closedBlockHeight = (
-        message.closedBlockHeight || Long.UZERO
-      ).toString());
-    message.realizedPnl !== undefined &&
-      (obj.realizedPnl = message.realizedPnl);
+      (obj.closedBlockHeight = (message.closedBlockHeight || Long.UZERO).toString());
+    message.realizedPnl !== undefined && (obj.realizedPnl = message.realizedPnl);
     message.maxLots !== undefined && (obj.maxLots = message.maxLots);
-    message.totalFeeAmount !== undefined &&
-      (obj.totalFeeAmount = message.totalFeeAmount);
-    message.avgAllocatedMargin !== undefined &&
-      (obj.avgAllocatedMargin = message.avgAllocatedMargin);
-    message.avgEntryPrice !== undefined &&
-      (obj.avgEntryPrice = message.avgEntryPrice);
-    message.avgExitPrice !== undefined &&
-      (obj.avgExitPrice = message.avgExitPrice);
-    message.allocatedMargin !== undefined &&
-      (obj.allocatedMargin = message.allocatedMargin);
+    message.totalFeeAmount !== undefined && (obj.totalFeeAmount = message.totalFeeAmount);
+    message.avgAllocatedMargin !== undefined && (obj.avgAllocatedMargin = message.avgAllocatedMargin);
+    message.avgEntryPrice !== undefined && (obj.avgEntryPrice = message.avgEntryPrice);
+    message.avgExitPrice !== undefined && (obj.avgExitPrice = message.avgExitPrice);
+    message.allocatedMargin !== undefined && (obj.allocatedMargin = message.allocatedMargin);
     message.lots !== undefined && (obj.lots = message.lots);
-    message.openedAt !== undefined &&
-      (obj.openedAt = message.openedAt.toISOString());
-    message.closedAt !== undefined &&
-      (obj.closedAt = message.closedAt.toISOString());
-    message.updateCount !== undefined &&
-      (obj.updateCount = (message.updateCount || Long.UZERO).toString());
-    message.exitCount !== undefined &&
-      (obj.exitCount = (message.exitCount || Long.UZERO).toString());
+    message.openedAt !== undefined && (obj.openedAt = message.openedAt.toISOString());
+    message.closedAt !== undefined && (obj.closedAt = message.closedAt.toISOString());
+    message.updateCount !== undefined && (obj.updateCount = (message.updateCount || Long.UZERO).toString());
+    message.exitCount !== undefined && (obj.exitCount = (message.exitCount || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<APIPosition>): APIPosition {
+    return APIPosition.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<APIPosition>): APIPosition {
-    const message = { ...baseAPIPosition } as APIPosition;
+    const message = createBaseAPIPosition();
     message.marketId = object.marketId ?? "";
     message.address = object.address ?? "";
-    message.tradeId =
-      object.tradeId !== undefined && object.tradeId !== null
-        ? Long.fromValue(object.tradeId)
-        : Long.UZERO;
+    message.tradeId = (object.tradeId !== undefined && object.tradeId !== null)
+      ? Long.fromValue(object.tradeId)
+      : Long.UZERO;
     message.side = object.side ?? "";
-    message.openedBlockHeight =
-      object.openedBlockHeight !== undefined &&
-      object.openedBlockHeight !== null
-        ? Long.fromValue(object.openedBlockHeight)
-        : Long.UZERO;
-    message.updatedBlockHeight =
-      object.updatedBlockHeight !== undefined &&
-      object.updatedBlockHeight !== null
-        ? Long.fromValue(object.updatedBlockHeight)
-        : Long.UZERO;
-    message.closedBlockHeight =
-      object.closedBlockHeight !== undefined &&
-      object.closedBlockHeight !== null
-        ? Long.fromValue(object.closedBlockHeight)
-        : Long.UZERO;
+    message.openedBlockHeight = (object.openedBlockHeight !== undefined && object.openedBlockHeight !== null)
+      ? Long.fromValue(object.openedBlockHeight)
+      : Long.UZERO;
+    message.updatedBlockHeight = (object.updatedBlockHeight !== undefined && object.updatedBlockHeight !== null)
+      ? Long.fromValue(object.updatedBlockHeight)
+      : Long.UZERO;
+    message.closedBlockHeight = (object.closedBlockHeight !== undefined && object.closedBlockHeight !== null)
+      ? Long.fromValue(object.closedBlockHeight)
+      : Long.UZERO;
     message.realizedPnl = object.realizedPnl ?? "";
     message.maxLots = object.maxLots ?? "";
     message.totalFeeAmount = object.totalFeeAmount ?? "";
@@ -652,25 +648,22 @@ export const APIPosition = {
     message.lots = object.lots ?? "";
     message.openedAt = object.openedAt ?? undefined;
     message.closedAt = object.closedAt ?? undefined;
-    message.updateCount =
-      object.updateCount !== undefined && object.updateCount !== null
-        ? Long.fromValue(object.updateCount)
-        : Long.UZERO;
-    message.exitCount =
-      object.exitCount !== undefined && object.exitCount !== null
-        ? Long.fromValue(object.exitCount)
-        : Long.UZERO;
+    message.updateCount = (object.updateCount !== undefined && object.updateCount !== null)
+      ? Long.fromValue(object.updateCount)
+      : Long.UZERO;
+    message.exitCount = (object.exitCount !== undefined && object.exitCount !== null)
+      ? Long.fromValue(object.exitCount)
+      : Long.UZERO;
     return message;
   },
 };
 
-const basePositionAllocatedMargin: object = { denom: "", amount: "" };
+function createBasePositionAllocatedMargin(): PositionAllocatedMargin {
+  return { denom: "", amount: "" };
+}
 
 export const PositionAllocatedMargin = {
-  encode(
-    message: PositionAllocatedMargin,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PositionAllocatedMargin, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -680,45 +673,41 @@ export const PositionAllocatedMargin = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): PositionAllocatedMargin {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): PositionAllocatedMargin {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...basePositionAllocatedMargin,
-    } as PositionAllocatedMargin;
+    const message = createBasePositionAllocatedMargin();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PositionAllocatedMargin {
-    const message = {
-      ...basePositionAllocatedMargin,
-    } as PositionAllocatedMargin;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+    };
   },
 
   toJSON(message: PositionAllocatedMargin): unknown {
@@ -728,36 +717,24 @@ export const PositionAllocatedMargin = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<PositionAllocatedMargin>
-  ): PositionAllocatedMargin {
-    const message = {
-      ...basePositionAllocatedMargin,
-    } as PositionAllocatedMargin;
+  create(base?: DeepPartial<PositionAllocatedMargin>): PositionAllocatedMargin {
+    return PositionAllocatedMargin.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<PositionAllocatedMargin>): PositionAllocatedMargin {
+    const message = createBasePositionAllocatedMargin();
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -767,8 +744,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -789,4 +766,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -87,13 +87,12 @@ export interface MigrateFromInfo {
   module: string;
 }
 
-const baseModuleDescriptor: object = { goImport: "" };
+function createBaseModuleDescriptor(): ModuleDescriptor {
+  return { goImport: "", usePackage: [], canMigrateFrom: [] };
+}
 
 export const ModuleDescriptor = {
-  encode(
-    message: ModuleDescriptor,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleDescriptor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.goImport !== "") {
       writer.uint32(10).string(message.goImport);
     }
@@ -107,90 +106,89 @@ export const ModuleDescriptor = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ModuleDescriptor {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModuleDescriptor } as ModuleDescriptor;
-    message.usePackage = [];
-    message.canMigrateFrom = [];
+    const message = createBaseModuleDescriptor();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.goImport = reader.string();
-          break;
+          continue;
         case 2:
-          message.usePackage.push(
-            PackageReference.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.usePackage.push(PackageReference.decode(reader, reader.uint32()));
+          continue;
         case 3:
-          message.canMigrateFrom.push(
-            MigrateFromInfo.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.canMigrateFrom.push(MigrateFromInfo.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleDescriptor {
-    const message = { ...baseModuleDescriptor } as ModuleDescriptor;
-    message.goImport =
-      object.goImport !== undefined && object.goImport !== null
-        ? String(object.goImport)
-        : "";
-    message.usePackage = (object.usePackage ?? []).map((e: any) =>
-      PackageReference.fromJSON(e)
-    );
-    message.canMigrateFrom = (object.canMigrateFrom ?? []).map((e: any) =>
-      MigrateFromInfo.fromJSON(e)
-    );
-    return message;
+    return {
+      goImport: isSet(object.goImport) ? String(object.goImport) : "",
+      usePackage: Array.isArray(object?.usePackage)
+        ? object.usePackage.map((e: any) => PackageReference.fromJSON(e))
+        : [],
+      canMigrateFrom: Array.isArray(object?.canMigrateFrom)
+        ? object.canMigrateFrom.map((e: any) => MigrateFromInfo.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: ModuleDescriptor): unknown {
     const obj: any = {};
     message.goImport !== undefined && (obj.goImport = message.goImport);
     if (message.usePackage) {
-      obj.usePackage = message.usePackage.map((e) =>
-        e ? PackageReference.toJSON(e) : undefined
-      );
+      obj.usePackage = message.usePackage.map((e) => e ? PackageReference.toJSON(e) : undefined);
     } else {
       obj.usePackage = [];
     }
     if (message.canMigrateFrom) {
-      obj.canMigrateFrom = message.canMigrateFrom.map((e) =>
-        e ? MigrateFromInfo.toJSON(e) : undefined
-      );
+      obj.canMigrateFrom = message.canMigrateFrom.map((e) => e ? MigrateFromInfo.toJSON(e) : undefined);
     } else {
       obj.canMigrateFrom = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<ModuleDescriptor>): ModuleDescriptor {
+    return ModuleDescriptor.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ModuleDescriptor>): ModuleDescriptor {
-    const message = { ...baseModuleDescriptor } as ModuleDescriptor;
+    const message = createBaseModuleDescriptor();
     message.goImport = object.goImport ?? "";
-    message.usePackage = (object.usePackage ?? []).map((e) =>
-      PackageReference.fromPartial(e)
-    );
-    message.canMigrateFrom = (object.canMigrateFrom ?? []).map((e) =>
-      MigrateFromInfo.fromPartial(e)
-    );
+    message.usePackage = object.usePackage?.map((e) => PackageReference.fromPartial(e)) || [];
+    message.canMigrateFrom = object.canMigrateFrom?.map((e) => MigrateFromInfo.fromPartial(e)) || [];
     return message;
   },
 };
 
-const basePackageReference: object = { name: "", revision: 0 };
+function createBasePackageReference(): PackageReference {
+  return { name: "", revision: 0 };
+}
 
 export const PackageReference = {
-  encode(
-    message: PackageReference,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PackageReference, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -201,61 +199,67 @@ export const PackageReference = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PackageReference {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePackageReference } as PackageReference;
+    const message = createBasePackageReference();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.revision = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PackageReference {
-    const message = { ...basePackageReference } as PackageReference;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.revision =
-      object.revision !== undefined && object.revision !== null
-        ? Number(object.revision)
-        : 0;
-    return message;
+    return {
+      name: isSet(object.name) ? String(object.name) : "",
+      revision: isSet(object.revision) ? Number(object.revision) : 0,
+    };
   },
 
   toJSON(message: PackageReference): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
-    message.revision !== undefined && (obj.revision = message.revision);
+    message.revision !== undefined && (obj.revision = Math.round(message.revision));
     return obj;
   },
 
+  create(base?: DeepPartial<PackageReference>): PackageReference {
+    return PackageReference.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<PackageReference>): PackageReference {
-    const message = { ...basePackageReference } as PackageReference;
+    const message = createBasePackageReference();
     message.name = object.name ?? "";
     message.revision = object.revision ?? 0;
     return message;
   },
 };
 
-const baseMigrateFromInfo: object = { module: "" };
+function createBaseMigrateFromInfo(): MigrateFromInfo {
+  return { module: "" };
+}
 
 export const MigrateFromInfo = {
-  encode(
-    message: MigrateFromInfo,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MigrateFromInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.module !== "") {
       writer.uint32(10).string(message.module);
     }
@@ -263,30 +267,30 @@ export const MigrateFromInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MigrateFromInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMigrateFromInfo } as MigrateFromInfo;
+    const message = createBaseMigrateFromInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.module = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MigrateFromInfo {
-    const message = { ...baseMigrateFromInfo } as MigrateFromInfo;
-    message.module =
-      object.module !== undefined && object.module !== null
-        ? String(object.module)
-        : "";
-    return message;
+    return { module: isSet(object.module) ? String(object.module) : "" };
   },
 
   toJSON(message: MigrateFromInfo): unknown {
@@ -295,34 +299,30 @@ export const MigrateFromInfo = {
     return obj;
   },
 
+  create(base?: DeepPartial<MigrateFromInfo>): MigrateFromInfo {
+    return MigrateFromInfo.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MigrateFromInfo>): MigrateFromInfo {
-    const message = { ...baseMigrateFromInfo } as MigrateFromInfo;
+    const message = createBaseMigrateFromInfo();
     message.module = object.module ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

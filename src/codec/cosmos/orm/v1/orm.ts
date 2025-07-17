@@ -98,18 +98,14 @@ export interface SingletonDescriptor {
   id: number;
 }
 
-const baseTableDescriptor: object = { id: 0 };
+function createBaseTableDescriptor(): TableDescriptor {
+  return { primaryKey: undefined, index: [], id: 0 };
+}
 
 export const TableDescriptor = {
-  encode(
-    message: TableDescriptor,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TableDescriptor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.primaryKey !== undefined) {
-      PrimaryKeyDescriptor.encode(
-        message.primaryKey,
-        writer.uint32(10).fork()
-      ).ldelim();
+      PrimaryKeyDescriptor.encode(message.primaryKey, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.index) {
       SecondaryIndexDescriptor.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -121,87 +117,84 @@ export const TableDescriptor = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TableDescriptor {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTableDescriptor } as TableDescriptor;
-    message.index = [];
+    const message = createBaseTableDescriptor();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.primaryKey = PrimaryKeyDescriptor.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.primaryKey = PrimaryKeyDescriptor.decode(reader, reader.uint32());
+          continue;
         case 2:
-          message.index.push(
-            SecondaryIndexDescriptor.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.index.push(SecondaryIndexDescriptor.decode(reader, reader.uint32()));
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.id = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TableDescriptor {
-    const message = { ...baseTableDescriptor } as TableDescriptor;
-    message.primaryKey =
-      object.primaryKey !== undefined && object.primaryKey !== null
-        ? PrimaryKeyDescriptor.fromJSON(object.primaryKey)
-        : undefined;
-    message.index = (object.index ?? []).map((e: any) =>
-      SecondaryIndexDescriptor.fromJSON(e)
-    );
-    message.id =
-      object.id !== undefined && object.id !== null ? Number(object.id) : 0;
-    return message;
+    return {
+      primaryKey: isSet(object.primaryKey) ? PrimaryKeyDescriptor.fromJSON(object.primaryKey) : undefined,
+      index: Array.isArray(object?.index) ? object.index.map((e: any) => SecondaryIndexDescriptor.fromJSON(e)) : [],
+      id: isSet(object.id) ? Number(object.id) : 0,
+    };
   },
 
   toJSON(message: TableDescriptor): unknown {
     const obj: any = {};
     message.primaryKey !== undefined &&
-      (obj.primaryKey = message.primaryKey
-        ? PrimaryKeyDescriptor.toJSON(message.primaryKey)
-        : undefined);
+      (obj.primaryKey = message.primaryKey ? PrimaryKeyDescriptor.toJSON(message.primaryKey) : undefined);
     if (message.index) {
-      obj.index = message.index.map((e) =>
-        e ? SecondaryIndexDescriptor.toJSON(e) : undefined
-      );
+      obj.index = message.index.map((e) => e ? SecondaryIndexDescriptor.toJSON(e) : undefined);
     } else {
       obj.index = [];
     }
-    message.id !== undefined && (obj.id = message.id);
+    message.id !== undefined && (obj.id = Math.round(message.id));
     return obj;
   },
 
+  create(base?: DeepPartial<TableDescriptor>): TableDescriptor {
+    return TableDescriptor.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TableDescriptor>): TableDescriptor {
-    const message = { ...baseTableDescriptor } as TableDescriptor;
-    message.primaryKey =
-      object.primaryKey !== undefined && object.primaryKey !== null
-        ? PrimaryKeyDescriptor.fromPartial(object.primaryKey)
-        : undefined;
-    message.index = (object.index ?? []).map((e) =>
-      SecondaryIndexDescriptor.fromPartial(e)
-    );
+    const message = createBaseTableDescriptor();
+    message.primaryKey = (object.primaryKey !== undefined && object.primaryKey !== null)
+      ? PrimaryKeyDescriptor.fromPartial(object.primaryKey)
+      : undefined;
+    message.index = object.index?.map((e) => SecondaryIndexDescriptor.fromPartial(e)) || [];
     message.id = object.id ?? 0;
     return message;
   },
 };
 
-const basePrimaryKeyDescriptor: object = { fields: "", autoIncrement: false };
+function createBasePrimaryKeyDescriptor(): PrimaryKeyDescriptor {
+  return { fields: "", autoIncrement: false };
+}
 
 export const PrimaryKeyDescriptor = {
-  encode(
-    message: PrimaryKeyDescriptor,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PrimaryKeyDescriptor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.fields !== "") {
       writer.uint32(10).string(message.fields);
     }
@@ -211,70 +204,68 @@ export const PrimaryKeyDescriptor = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): PrimaryKeyDescriptor {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): PrimaryKeyDescriptor {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePrimaryKeyDescriptor } as PrimaryKeyDescriptor;
+    const message = createBasePrimaryKeyDescriptor();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.fields = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.autoIncrement = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PrimaryKeyDescriptor {
-    const message = { ...basePrimaryKeyDescriptor } as PrimaryKeyDescriptor;
-    message.fields =
-      object.fields !== undefined && object.fields !== null
-        ? String(object.fields)
-        : "";
-    message.autoIncrement =
-      object.autoIncrement !== undefined && object.autoIncrement !== null
-        ? Boolean(object.autoIncrement)
-        : false;
-    return message;
+    return {
+      fields: isSet(object.fields) ? String(object.fields) : "",
+      autoIncrement: isSet(object.autoIncrement) ? Boolean(object.autoIncrement) : false,
+    };
   },
 
   toJSON(message: PrimaryKeyDescriptor): unknown {
     const obj: any = {};
     message.fields !== undefined && (obj.fields = message.fields);
-    message.autoIncrement !== undefined &&
-      (obj.autoIncrement = message.autoIncrement);
+    message.autoIncrement !== undefined && (obj.autoIncrement = message.autoIncrement);
     return obj;
   },
 
+  create(base?: DeepPartial<PrimaryKeyDescriptor>): PrimaryKeyDescriptor {
+    return PrimaryKeyDescriptor.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<PrimaryKeyDescriptor>): PrimaryKeyDescriptor {
-    const message = { ...basePrimaryKeyDescriptor } as PrimaryKeyDescriptor;
+    const message = createBasePrimaryKeyDescriptor();
     message.fields = object.fields ?? "";
     message.autoIncrement = object.autoIncrement ?? false;
     return message;
   },
 };
 
-const baseSecondaryIndexDescriptor: object = {
-  fields: "",
-  id: 0,
-  unique: false,
-};
+function createBaseSecondaryIndexDescriptor(): SecondaryIndexDescriptor {
+  return { fields: "", id: 0, unique: false };
+}
 
 export const SecondaryIndexDescriptor = {
-  encode(
-    message: SecondaryIndexDescriptor,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SecondaryIndexDescriptor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.fields !== "") {
       writer.uint32(10).string(message.fields);
     }
@@ -287,66 +278,65 @@ export const SecondaryIndexDescriptor = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SecondaryIndexDescriptor {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SecondaryIndexDescriptor {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSecondaryIndexDescriptor,
-    } as SecondaryIndexDescriptor;
+    const message = createBaseSecondaryIndexDescriptor();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.fields = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.id = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.unique = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SecondaryIndexDescriptor {
-    const message = {
-      ...baseSecondaryIndexDescriptor,
-    } as SecondaryIndexDescriptor;
-    message.fields =
-      object.fields !== undefined && object.fields !== null
-        ? String(object.fields)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null ? Number(object.id) : 0;
-    message.unique =
-      object.unique !== undefined && object.unique !== null
-        ? Boolean(object.unique)
-        : false;
-    return message;
+    return {
+      fields: isSet(object.fields) ? String(object.fields) : "",
+      id: isSet(object.id) ? Number(object.id) : 0,
+      unique: isSet(object.unique) ? Boolean(object.unique) : false,
+    };
   },
 
   toJSON(message: SecondaryIndexDescriptor): unknown {
     const obj: any = {};
     message.fields !== undefined && (obj.fields = message.fields);
-    message.id !== undefined && (obj.id = message.id);
+    message.id !== undefined && (obj.id = Math.round(message.id));
     message.unique !== undefined && (obj.unique = message.unique);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SecondaryIndexDescriptor>
-  ): SecondaryIndexDescriptor {
-    const message = {
-      ...baseSecondaryIndexDescriptor,
-    } as SecondaryIndexDescriptor;
+  create(base?: DeepPartial<SecondaryIndexDescriptor>): SecondaryIndexDescriptor {
+    return SecondaryIndexDescriptor.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SecondaryIndexDescriptor>): SecondaryIndexDescriptor {
+    const message = createBaseSecondaryIndexDescriptor();
     message.fields = object.fields ?? "";
     message.id = object.id ?? 0;
     message.unique = object.unique ?? false;
@@ -354,13 +344,12 @@ export const SecondaryIndexDescriptor = {
   },
 };
 
-const baseSingletonDescriptor: object = { id: 0 };
+function createBaseSingletonDescriptor(): SingletonDescriptor {
+  return { id: 0 };
+}
 
 export const SingletonDescriptor = {
-  encode(
-    message: SingletonDescriptor,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SingletonDescriptor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint32(message.id);
     }
@@ -368,64 +357,62 @@ export const SingletonDescriptor = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SingletonDescriptor {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSingletonDescriptor } as SingletonDescriptor;
+    const message = createBaseSingletonDescriptor();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.id = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SingletonDescriptor {
-    const message = { ...baseSingletonDescriptor } as SingletonDescriptor;
-    message.id =
-      object.id !== undefined && object.id !== null ? Number(object.id) : 0;
-    return message;
+    return { id: isSet(object.id) ? Number(object.id) : 0 };
   },
 
   toJSON(message: SingletonDescriptor): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.id !== undefined && (obj.id = Math.round(message.id));
     return obj;
   },
 
+  create(base?: DeepPartial<SingletonDescriptor>): SingletonDescriptor {
+    return SingletonDescriptor.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SingletonDescriptor>): SingletonDescriptor {
-    const message = { ...baseSingletonDescriptor } as SingletonDescriptor;
+    const message = createBaseSingletonDescriptor();
     message.id = object.id ?? 0;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
