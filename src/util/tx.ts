@@ -5,6 +5,7 @@ import { StdFee } from "@cosmjs/amino";
 import { SignerData } from "@cosmjs/stargate";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
 import { EncodeObject } from "@cosmjs/proto-signing";
+import { toUint8Array } from '@carbon-sdk/util/bytes'
 export { StdSignDoc } from "@cosmjs/amino";
 
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
@@ -59,7 +60,7 @@ const decodeNestedMsg = (obj: any) => {
 export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
   if (!bytes) return bytes;
 
-  const decodedTx = CosmosModels.Tx.Tx.decode(bytes);
+  const decodedTx = CosmosModels.Tx.Tx.decode(toUint8Array(bytes));
   const carbonTx: Tx = { ...decodedTx, body: undefined };
 
   if (decodedTx.body) {
@@ -193,7 +194,7 @@ const BacklistedMessages: string[] = [
 // to use signDirect for metamask signing if messages are from libraries (cosmos-sdk, ibc, alliance).
 // Reasons:
 // 1. There is decoding issue with MsgGrantAllowance in amino
-// 2. For Ibc MsgTransfer, there is an overflow issue with timeouttimestamp overflow (from uint32) during unmarshalJSON, even though it is defined as uint64 
+// 2. For Ibc MsgTransfer, there is an overflow issue with timeouttimestamp overflow (from uint32) during unmarshalJSON, even though it is defined as uint64
 // (This can be resolved from the client side by use sendIBCTransfer instead of sendIBCTransferV2) but using signDirect here fixes it too.
 // 3. Ethermint is still using legacyMsg.getSigners() to verify many amino signed eip712 txs. However, getSigners() is deprecated and not implmented in messages from cosmos-sdk anymore.
 // 4. as of comsos-sdk v0.50 --> very few messages are using legacyDec so we can safely use signDirect

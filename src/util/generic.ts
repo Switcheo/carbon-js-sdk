@@ -1,5 +1,6 @@
 import { sha256 } from "@cosmjs/crypto";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
+import { toUint8Array } from '@carbon-sdk/util/bytes'
 
 export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) => {
   const result: T = { ...defaults };
@@ -43,12 +44,12 @@ export const appendHexPrefix = (input: string) => {
 export const computeTxHash = (bytes?: Uint8Array | Buffer): string | undefined => {
   if (!bytes) return bytes;
 
-  return toTxHash(sha256(bytes));
+  return toTxHash(sha256(toUint8Array(bytes)));
 };
 export const toTxHash = (bytes?: Uint8Array | Buffer): string | undefined => {
   if (!bytes) return bytes;
 
-  return Buffer.from(bytes).toString("hex").toUpperCase();
+  return Buffer.from(toUint8Array(bytes)).toString("hex").toUpperCase();
 };
 
 /**

@@ -26,7 +26,7 @@ export class CosmWasmModule extends BaseModule {
       try {
         const tmClient = await Tendermint37Client.connect(chainInfo.activeRpc);
         return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient)
-      } catch (error) { 
+      } catch (error) {
         // empty catch
       }
     }
@@ -56,7 +56,7 @@ export class CosmWasmModule extends BaseModule {
     try {
       const smartContract = await this.cosmWasmClient.SmartContractState({
         address: contractAddr,
-        queryData: Buffer.from(JSON.stringify({ balance: { address: walletAddress } }), 'utf-8'),
+        queryData: new TextEncoder().encode(JSON.stringify({ balance: { address: walletAddress } })),
       });
       const result = Buffer.from(smartContract.data).toString("utf-8");
       const balanceJson = JSON.parse(result);
