@@ -17,3 +17,4 @@ export * as TokenUtils from "./token";
 export * as TransferUtils from "./transferfees";
 export * as CarbonTx from "./tx";
 export * as TypeUtils from "./type";
+export * as BytesUtils from "./bytes";
