@@ -66,18 +66,14 @@ export interface PermanentLockedAccount {
   baseVestingAccount?: BaseVestingAccount;
 }
 
-const baseBaseVestingAccount: object = { endTime: Long.ZERO };
+function createBaseBaseVestingAccount(): BaseVestingAccount {
+  return { baseAccount: undefined, originalVesting: [], delegatedFree: [], delegatedVesting: [], endTime: Long.ZERO };
+}
 
 export const BaseVestingAccount = {
-  encode(
-    message: BaseVestingAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BaseVestingAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.baseAccount !== undefined) {
-      BaseAccount.encode(
-        message.baseAccount,
-        writer.uint32(10).fork()
-      ).ldelim();
+      BaseAccount.encode(message.baseAccount, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.originalVesting) {
       Coin.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -95,127 +91,120 @@ export const BaseVestingAccount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BaseVestingAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBaseVestingAccount } as BaseVestingAccount;
-    message.originalVesting = [];
-    message.delegatedFree = [];
-    message.delegatedVesting = [];
+    const message = createBaseBaseVestingAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.baseAccount = BaseAccount.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.originalVesting.push(Coin.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.delegatedFree.push(Coin.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.delegatedVesting.push(Coin.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.endTime = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BaseVestingAccount {
-    const message = { ...baseBaseVestingAccount } as BaseVestingAccount;
-    message.baseAccount =
-      object.baseAccount !== undefined && object.baseAccount !== null
-        ? BaseAccount.fromJSON(object.baseAccount)
-        : undefined;
-    message.originalVesting = (object.originalVesting ?? []).map((e: any) =>
-      Coin.fromJSON(e)
-    );
-    message.delegatedFree = (object.delegatedFree ?? []).map((e: any) =>
-      Coin.fromJSON(e)
-    );
-    message.delegatedVesting = (object.delegatedVesting ?? []).map((e: any) =>
-      Coin.fromJSON(e)
-    );
-    message.endTime =
-      object.endTime !== undefined && object.endTime !== null
-        ? Long.fromString(object.endTime)
-        : Long.ZERO;
-    return message;
+    return {
+      baseAccount: isSet(object.baseAccount) ? BaseAccount.fromJSON(object.baseAccount) : undefined,
+      originalVesting: Array.isArray(object?.originalVesting)
+        ? object.originalVesting.map((e: any) => Coin.fromJSON(e))
+        : [],
+      delegatedFree: Array.isArray(object?.delegatedFree) ? object.delegatedFree.map((e: any) => Coin.fromJSON(e)) : [],
+      delegatedVesting: Array.isArray(object?.delegatedVesting)
+        ? object.delegatedVesting.map((e: any) => Coin.fromJSON(e))
+        : [],
+      endTime: isSet(object.endTime) ? Long.fromValue(object.endTime) : Long.ZERO,
+    };
   },
 
   toJSON(message: BaseVestingAccount): unknown {
     const obj: any = {};
     message.baseAccount !== undefined &&
-      (obj.baseAccount = message.baseAccount
-        ? BaseAccount.toJSON(message.baseAccount)
-        : undefined);
+      (obj.baseAccount = message.baseAccount ? BaseAccount.toJSON(message.baseAccount) : undefined);
     if (message.originalVesting) {
-      obj.originalVesting = message.originalVesting.map((e) =>
-        e ? Coin.toJSON(e) : undefined
-      );
+      obj.originalVesting = message.originalVesting.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.originalVesting = [];
     }
     if (message.delegatedFree) {
-      obj.delegatedFree = message.delegatedFree.map((e) =>
-        e ? Coin.toJSON(e) : undefined
-      );
+      obj.delegatedFree = message.delegatedFree.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.delegatedFree = [];
     }
     if (message.delegatedVesting) {
-      obj.delegatedVesting = message.delegatedVesting.map((e) =>
-        e ? Coin.toJSON(e) : undefined
-      );
+      obj.delegatedVesting = message.delegatedVesting.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.delegatedVesting = [];
     }
-    message.endTime !== undefined &&
-      (obj.endTime = (message.endTime || Long.ZERO).toString());
+    message.endTime !== undefined && (obj.endTime = (message.endTime || Long.ZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<BaseVestingAccount>): BaseVestingAccount {
+    return BaseVestingAccount.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BaseVestingAccount>): BaseVestingAccount {
-    const message = { ...baseBaseVestingAccount } as BaseVestingAccount;
-    message.baseAccount =
-      object.baseAccount !== undefined && object.baseAccount !== null
-        ? BaseAccount.fromPartial(object.baseAccount)
-        : undefined;
-    message.originalVesting = (object.originalVesting ?? []).map((e) =>
-      Coin.fromPartial(e)
-    );
-    message.delegatedFree = (object.delegatedFree ?? []).map((e) =>
-      Coin.fromPartial(e)
-    );
-    message.delegatedVesting = (object.delegatedVesting ?? []).map((e) =>
-      Coin.fromPartial(e)
-    );
-    message.endTime =
-      object.endTime !== undefined && object.endTime !== null
-        ? Long.fromValue(object.endTime)
-        : Long.ZERO;
+    const message = createBaseBaseVestingAccount();
+    message.baseAccount = (object.baseAccount !== undefined && object.baseAccount !== null)
+      ? BaseAccount.fromPartial(object.baseAccount)
+      : undefined;
+    message.originalVesting = object.originalVesting?.map((e) => Coin.fromPartial(e)) || [];
+    message.delegatedFree = object.delegatedFree?.map((e) => Coin.fromPartial(e)) || [];
+    message.delegatedVesting = object.delegatedVesting?.map((e) => Coin.fromPartial(e)) || [];
+    message.endTime = (object.endTime !== undefined && object.endTime !== null)
+      ? Long.fromValue(object.endTime)
+      : Long.ZERO;
     return message;
   },
 };
 
-const baseContinuousVestingAccount: object = { startTime: Long.ZERO };
+function createBaseContinuousVestingAccount(): ContinuousVestingAccount {
+  return { baseVestingAccount: undefined, startTime: Long.ZERO };
+}
 
 export const ContinuousVestingAccount = {
-  encode(
-    message: ContinuousVestingAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ContinuousVestingAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.baseVestingAccount !== undefined) {
-      BaseVestingAccount.encode(
-        message.baseVestingAccount,
-        writer.uint32(10).fork()
-      ).ldelim();
+      BaseVestingAccount.encode(message.baseVestingAccount, writer.uint32(10).fork()).ldelim();
     }
     if (!message.startTime.isZero()) {
       writer.uint32(16).int64(message.startTime);
@@ -223,160 +212,140 @@ export const ContinuousVestingAccount = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ContinuousVestingAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ContinuousVestingAccount {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseContinuousVestingAccount,
-    } as ContinuousVestingAccount;
+    const message = createBaseContinuousVestingAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.baseVestingAccount = BaseVestingAccount.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.baseVestingAccount = BaseVestingAccount.decode(reader, reader.uint32());
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.startTime = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ContinuousVestingAccount {
-    const message = {
-      ...baseContinuousVestingAccount,
-    } as ContinuousVestingAccount;
-    message.baseVestingAccount =
-      object.baseVestingAccount !== undefined &&
-      object.baseVestingAccount !== null
+    return {
+      baseVestingAccount: isSet(object.baseVestingAccount)
         ? BaseVestingAccount.fromJSON(object.baseVestingAccount)
-        : undefined;
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? Long.fromString(object.startTime)
-        : Long.ZERO;
-    return message;
+        : undefined,
+      startTime: isSet(object.startTime) ? Long.fromValue(object.startTime) : Long.ZERO,
+    };
   },
 
   toJSON(message: ContinuousVestingAccount): unknown {
     const obj: any = {};
-    message.baseVestingAccount !== undefined &&
-      (obj.baseVestingAccount = message.baseVestingAccount
-        ? BaseVestingAccount.toJSON(message.baseVestingAccount)
-        : undefined);
-    message.startTime !== undefined &&
-      (obj.startTime = (message.startTime || Long.ZERO).toString());
+    message.baseVestingAccount !== undefined && (obj.baseVestingAccount = message.baseVestingAccount
+      ? BaseVestingAccount.toJSON(message.baseVestingAccount)
+      : undefined);
+    message.startTime !== undefined && (obj.startTime = (message.startTime || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ContinuousVestingAccount>
-  ): ContinuousVestingAccount {
-    const message = {
-      ...baseContinuousVestingAccount,
-    } as ContinuousVestingAccount;
-    message.baseVestingAccount =
-      object.baseVestingAccount !== undefined &&
-      object.baseVestingAccount !== null
-        ? BaseVestingAccount.fromPartial(object.baseVestingAccount)
-        : undefined;
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? Long.fromValue(object.startTime)
-        : Long.ZERO;
+  create(base?: DeepPartial<ContinuousVestingAccount>): ContinuousVestingAccount {
+    return ContinuousVestingAccount.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ContinuousVestingAccount>): ContinuousVestingAccount {
+    const message = createBaseContinuousVestingAccount();
+    message.baseVestingAccount = (object.baseVestingAccount !== undefined && object.baseVestingAccount !== null)
+      ? BaseVestingAccount.fromPartial(object.baseVestingAccount)
+      : undefined;
+    message.startTime = (object.startTime !== undefined && object.startTime !== null)
+      ? Long.fromValue(object.startTime)
+      : Long.ZERO;
     return message;
   },
 };
 
-const baseDelayedVestingAccount: object = {};
+function createBaseDelayedVestingAccount(): DelayedVestingAccount {
+  return { baseVestingAccount: undefined };
+}
 
 export const DelayedVestingAccount = {
-  encode(
-    message: DelayedVestingAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DelayedVestingAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.baseVestingAccount !== undefined) {
-      BaseVestingAccount.encode(
-        message.baseVestingAccount,
-        writer.uint32(10).fork()
-      ).ldelim();
+      BaseVestingAccount.encode(message.baseVestingAccount, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): DelayedVestingAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DelayedVestingAccount {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDelayedVestingAccount } as DelayedVestingAccount;
+    const message = createBaseDelayedVestingAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.baseVestingAccount = BaseVestingAccount.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.baseVestingAccount = BaseVestingAccount.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DelayedVestingAccount {
-    const message = { ...baseDelayedVestingAccount } as DelayedVestingAccount;
-    message.baseVestingAccount =
-      object.baseVestingAccount !== undefined &&
-      object.baseVestingAccount !== null
+    return {
+      baseVestingAccount: isSet(object.baseVestingAccount)
         ? BaseVestingAccount.fromJSON(object.baseVestingAccount)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: DelayedVestingAccount): unknown {
     const obj: any = {};
-    message.baseVestingAccount !== undefined &&
-      (obj.baseVestingAccount = message.baseVestingAccount
-        ? BaseVestingAccount.toJSON(message.baseVestingAccount)
-        : undefined);
+    message.baseVestingAccount !== undefined && (obj.baseVestingAccount = message.baseVestingAccount
+      ? BaseVestingAccount.toJSON(message.baseVestingAccount)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<DelayedVestingAccount>
-  ): DelayedVestingAccount {
-    const message = { ...baseDelayedVestingAccount } as DelayedVestingAccount;
-    message.baseVestingAccount =
-      object.baseVestingAccount !== undefined &&
-      object.baseVestingAccount !== null
-        ? BaseVestingAccount.fromPartial(object.baseVestingAccount)
-        : undefined;
+  create(base?: DeepPartial<DelayedVestingAccount>): DelayedVestingAccount {
+    return DelayedVestingAccount.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<DelayedVestingAccount>): DelayedVestingAccount {
+    const message = createBaseDelayedVestingAccount();
+    message.baseVestingAccount = (object.baseVestingAccount !== undefined && object.baseVestingAccount !== null)
+      ? BaseVestingAccount.fromPartial(object.baseVestingAccount)
+      : undefined;
     return message;
   },
 };
 
-const basePeriod: object = { length: Long.ZERO };
+function createBasePeriod(): Period {
+  return { length: Long.ZERO, amount: [] };
+}
 
 export const Period = {
-  encode(
-    message: Period,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Period, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.length.isZero()) {
       writer.uint32(8).int64(message.length);
     }
@@ -387,72 +356,75 @@ export const Period = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Period {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePeriod } as Period;
-    message.amount = [];
+    const message = createBasePeriod();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.length = reader.int64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amount.push(Coin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Period {
-    const message = { ...basePeriod } as Period;
-    message.length =
-      object.length !== undefined && object.length !== null
-        ? Long.fromString(object.length)
-        : Long.ZERO;
-    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
-    return message;
+    return {
+      length: isSet(object.length) ? Long.fromValue(object.length) : Long.ZERO,
+      amount: Array.isArray(object?.amount) ? object.amount.map((e: any) => Coin.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: Period): unknown {
     const obj: any = {};
-    message.length !== undefined &&
-      (obj.length = (message.length || Long.ZERO).toString());
+    message.length !== undefined && (obj.length = (message.length || Long.ZERO).toString());
     if (message.amount) {
-      obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
+      obj.amount = message.amount.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.amount = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Period>): Period {
+    return Period.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Period>): Period {
-    const message = { ...basePeriod } as Period;
-    message.length =
-      object.length !== undefined && object.length !== null
-        ? Long.fromValue(object.length)
-        : Long.ZERO;
-    message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
+    const message = createBasePeriod();
+    message.length = (object.length !== undefined && object.length !== null)
+      ? Long.fromValue(object.length)
+      : Long.ZERO;
+    message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-const basePeriodicVestingAccount: object = { startTime: Long.ZERO };
+function createBasePeriodicVestingAccount(): PeriodicVestingAccount {
+  return { baseVestingAccount: undefined, startTime: Long.ZERO, vestingPeriods: [] };
+}
 
 export const PeriodicVestingAccount = {
-  encode(
-    message: PeriodicVestingAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PeriodicVestingAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.baseVestingAccount !== undefined) {
-      BaseVestingAccount.encode(
-        message.baseVestingAccount,
-        writer.uint32(10).fork()
-      ).ldelim();
+      BaseVestingAccount.encode(message.baseVestingAccount, writer.uint32(10).fork()).ldelim();
     }
     if (!message.startTime.isZero()) {
       writer.uint32(16).int64(message.startTime);
@@ -463,185 +435,163 @@ export const PeriodicVestingAccount = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): PeriodicVestingAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): PeriodicVestingAccount {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePeriodicVestingAccount } as PeriodicVestingAccount;
-    message.vestingPeriods = [];
+    const message = createBasePeriodicVestingAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.baseVestingAccount = BaseVestingAccount.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.baseVestingAccount = BaseVestingAccount.decode(reader, reader.uint32());
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.startTime = reader.int64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.vestingPeriods.push(Period.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PeriodicVestingAccount {
-    const message = { ...basePeriodicVestingAccount } as PeriodicVestingAccount;
-    message.baseVestingAccount =
-      object.baseVestingAccount !== undefined &&
-      object.baseVestingAccount !== null
+    return {
+      baseVestingAccount: isSet(object.baseVestingAccount)
         ? BaseVestingAccount.fromJSON(object.baseVestingAccount)
-        : undefined;
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? Long.fromString(object.startTime)
-        : Long.ZERO;
-    message.vestingPeriods = (object.vestingPeriods ?? []).map((e: any) =>
-      Period.fromJSON(e)
-    );
-    return message;
+        : undefined,
+      startTime: isSet(object.startTime) ? Long.fromValue(object.startTime) : Long.ZERO,
+      vestingPeriods: Array.isArray(object?.vestingPeriods)
+        ? object.vestingPeriods.map((e: any) => Period.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: PeriodicVestingAccount): unknown {
     const obj: any = {};
-    message.baseVestingAccount !== undefined &&
-      (obj.baseVestingAccount = message.baseVestingAccount
-        ? BaseVestingAccount.toJSON(message.baseVestingAccount)
-        : undefined);
-    message.startTime !== undefined &&
-      (obj.startTime = (message.startTime || Long.ZERO).toString());
+    message.baseVestingAccount !== undefined && (obj.baseVestingAccount = message.baseVestingAccount
+      ? BaseVestingAccount.toJSON(message.baseVestingAccount)
+      : undefined);
+    message.startTime !== undefined && (obj.startTime = (message.startTime || Long.ZERO).toString());
     if (message.vestingPeriods) {
-      obj.vestingPeriods = message.vestingPeriods.map((e) =>
-        e ? Period.toJSON(e) : undefined
-      );
+      obj.vestingPeriods = message.vestingPeriods.map((e) => e ? Period.toJSON(e) : undefined);
     } else {
       obj.vestingPeriods = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<PeriodicVestingAccount>
-  ): PeriodicVestingAccount {
-    const message = { ...basePeriodicVestingAccount } as PeriodicVestingAccount;
-    message.baseVestingAccount =
-      object.baseVestingAccount !== undefined &&
-      object.baseVestingAccount !== null
-        ? BaseVestingAccount.fromPartial(object.baseVestingAccount)
-        : undefined;
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? Long.fromValue(object.startTime)
-        : Long.ZERO;
-    message.vestingPeriods = (object.vestingPeriods ?? []).map((e) =>
-      Period.fromPartial(e)
-    );
+  create(base?: DeepPartial<PeriodicVestingAccount>): PeriodicVestingAccount {
+    return PeriodicVestingAccount.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<PeriodicVestingAccount>): PeriodicVestingAccount {
+    const message = createBasePeriodicVestingAccount();
+    message.baseVestingAccount = (object.baseVestingAccount !== undefined && object.baseVestingAccount !== null)
+      ? BaseVestingAccount.fromPartial(object.baseVestingAccount)
+      : undefined;
+    message.startTime = (object.startTime !== undefined && object.startTime !== null)
+      ? Long.fromValue(object.startTime)
+      : Long.ZERO;
+    message.vestingPeriods = object.vestingPeriods?.map((e) => Period.fromPartial(e)) || [];
     return message;
   },
 };
 
-const basePermanentLockedAccount: object = {};
+function createBasePermanentLockedAccount(): PermanentLockedAccount {
+  return { baseVestingAccount: undefined };
+}
 
 export const PermanentLockedAccount = {
-  encode(
-    message: PermanentLockedAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PermanentLockedAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.baseVestingAccount !== undefined) {
-      BaseVestingAccount.encode(
-        message.baseVestingAccount,
-        writer.uint32(10).fork()
-      ).ldelim();
+      BaseVestingAccount.encode(message.baseVestingAccount, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): PermanentLockedAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): PermanentLockedAccount {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePermanentLockedAccount } as PermanentLockedAccount;
+    const message = createBasePermanentLockedAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.baseVestingAccount = BaseVestingAccount.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.baseVestingAccount = BaseVestingAccount.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PermanentLockedAccount {
-    const message = { ...basePermanentLockedAccount } as PermanentLockedAccount;
-    message.baseVestingAccount =
-      object.baseVestingAccount !== undefined &&
-      object.baseVestingAccount !== null
+    return {
+      baseVestingAccount: isSet(object.baseVestingAccount)
         ? BaseVestingAccount.fromJSON(object.baseVestingAccount)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: PermanentLockedAccount): unknown {
     const obj: any = {};
-    message.baseVestingAccount !== undefined &&
-      (obj.baseVestingAccount = message.baseVestingAccount
-        ? BaseVestingAccount.toJSON(message.baseVestingAccount)
-        : undefined);
+    message.baseVestingAccount !== undefined && (obj.baseVestingAccount = message.baseVestingAccount
+      ? BaseVestingAccount.toJSON(message.baseVestingAccount)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<PermanentLockedAccount>
-  ): PermanentLockedAccount {
-    const message = { ...basePermanentLockedAccount } as PermanentLockedAccount;
-    message.baseVestingAccount =
-      object.baseVestingAccount !== undefined &&
-      object.baseVestingAccount !== null
-        ? BaseVestingAccount.fromPartial(object.baseVestingAccount)
-        : undefined;
+  create(base?: DeepPartial<PermanentLockedAccount>): PermanentLockedAccount {
+    return PermanentLockedAccount.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<PermanentLockedAccount>): PermanentLockedAccount {
+    const message = createBasePermanentLockedAccount();
+    message.baseVestingAccount = (object.baseVestingAccount !== undefined && object.baseVestingAccount !== null)
+      ? BaseVestingAccount.fromPartial(object.baseVestingAccount)
+      : undefined;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

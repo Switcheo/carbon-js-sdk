@@ -12,7 +12,8 @@ export interface MsgSetLeverage {
   leverage: string;
 }
 
-export interface MsgSetLeverageResponse {}
+export interface MsgSetLeverageResponse {
+}
 
 export interface MsgSetMarginMode {
   creator: string;
@@ -20,7 +21,8 @@ export interface MsgSetMarginMode {
   toCross: boolean;
 }
 
-export interface MsgSetMarginModeResponse {}
+export interface MsgSetMarginModeResponse {
+}
 
 export interface MsgUpdateParams {
   /** authority is the address of the governance account. */
@@ -29,15 +31,15 @@ export interface MsgUpdateParams {
   params?: ParamsToUpdate;
 }
 
-export interface MsgUpdateParamsResponse {}
+export interface MsgUpdateParamsResponse {
+}
 
-const baseMsgSetLeverage: object = { creator: "", marketId: "", leverage: "" };
+function createBaseMsgSetLeverage(): MsgSetLeverage {
+  return { creator: "", marketId: "", leverage: "" };
+}
 
 export const MsgSetLeverage = {
-  encode(
-    message: MsgSetLeverage,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSetLeverage, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -51,44 +53,48 @@ export const MsgSetLeverage = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetLeverage {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetLeverage } as MsgSetLeverage;
+    const message = createBaseMsgSetLeverage();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.leverage = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSetLeverage {
-    const message = { ...baseMsgSetLeverage } as MsgSetLeverage;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.leverage =
-      object.leverage !== undefined && object.leverage !== null
-        ? String(object.leverage)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      leverage: isSet(object.leverage) ? String(object.leverage) : "",
+    };
   },
 
   toJSON(message: MsgSetLeverage): unknown {
@@ -99,8 +105,12 @@ export const MsgSetLeverage = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSetLeverage>): MsgSetLeverage {
+    return MsgSetLeverage.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgSetLeverage>): MsgSetLeverage {
-    const message = { ...baseMsgSetLeverage } as MsgSetLeverage;
+    const message = createBaseMsgSetLeverage();
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
     message.leverage = object.leverage ?? "";
@@ -108,37 +118,33 @@ export const MsgSetLeverage = {
   },
 };
 
-const baseMsgSetLeverageResponse: object = {};
+function createBaseMsgSetLeverageResponse(): MsgSetLeverageResponse {
+  return {};
+}
 
 export const MsgSetLeverageResponse = {
-  encode(
-    _: MsgSetLeverageResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSetLeverageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetLeverageResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetLeverageResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetLeverageResponse } as MsgSetLeverageResponse;
+    const message = createBaseMsgSetLeverageResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSetLeverageResponse {
-    const message = { ...baseMsgSetLeverageResponse } as MsgSetLeverageResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSetLeverageResponse): unknown {
@@ -146,23 +152,22 @@ export const MsgSetLeverageResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSetLeverageResponse>): MsgSetLeverageResponse {
+    return MsgSetLeverageResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<MsgSetLeverageResponse>): MsgSetLeverageResponse {
-    const message = { ...baseMsgSetLeverageResponse } as MsgSetLeverageResponse;
+    const message = createBaseMsgSetLeverageResponse();
     return message;
   },
 };
 
-const baseMsgSetMarginMode: object = {
-  creator: "",
-  marketId: "",
-  toCross: false,
-};
+function createBaseMsgSetMarginMode(): MsgSetMarginMode {
+  return { creator: "", marketId: "", toCross: false };
+}
 
 export const MsgSetMarginMode = {
-  encode(
-    message: MsgSetMarginMode,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSetMarginMode, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -176,44 +181,48 @@ export const MsgSetMarginMode = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetMarginMode {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetMarginMode } as MsgSetMarginMode;
+    const message = createBaseMsgSetMarginMode();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.toCross = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSetMarginMode {
-    const message = { ...baseMsgSetMarginMode } as MsgSetMarginMode;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.toCross =
-      object.toCross !== undefined && object.toCross !== null
-        ? Boolean(object.toCross)
-        : false;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      toCross: isSet(object.toCross) ? Boolean(object.toCross) : false,
+    };
   },
 
   toJSON(message: MsgSetMarginMode): unknown {
@@ -224,8 +233,12 @@ export const MsgSetMarginMode = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSetMarginMode>): MsgSetMarginMode {
+    return MsgSetMarginMode.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgSetMarginMode>): MsgSetMarginMode {
-    const message = { ...baseMsgSetMarginMode } as MsgSetMarginMode;
+    const message = createBaseMsgSetMarginMode();
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
     message.toCross = object.toCross ?? false;
@@ -233,41 +246,33 @@ export const MsgSetMarginMode = {
   },
 };
 
-const baseMsgSetMarginModeResponse: object = {};
+function createBaseMsgSetMarginModeResponse(): MsgSetMarginModeResponse {
+  return {};
+}
 
 export const MsgSetMarginModeResponse = {
-  encode(
-    _: MsgSetMarginModeResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSetMarginModeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetMarginModeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetMarginModeResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgSetMarginModeResponse,
-    } as MsgSetMarginModeResponse;
+    const message = createBaseMsgSetMarginModeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSetMarginModeResponse {
-    const message = {
-      ...baseMsgSetMarginModeResponse,
-    } as MsgSetMarginModeResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSetMarginModeResponse): unknown {
@@ -275,23 +280,22 @@ export const MsgSetMarginModeResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgSetMarginModeResponse>
-  ): MsgSetMarginModeResponse {
-    const message = {
-      ...baseMsgSetMarginModeResponse,
-    } as MsgSetMarginModeResponse;
+  create(base?: DeepPartial<MsgSetMarginModeResponse>): MsgSetMarginModeResponse {
+    return MsgSetMarginModeResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgSetMarginModeResponse>): MsgSetMarginModeResponse {
+    const message = createBaseMsgSetMarginModeResponse();
     return message;
   },
 };
 
-const baseMsgUpdateParams: object = { authority: "" };
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return { authority: "", params: undefined };
+}
 
 export const MsgUpdateParams = {
-  encode(
-    message: MsgUpdateParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -302,95 +306,90 @@ export const MsgUpdateParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.params = ParamsToUpdate.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? ParamsToUpdate.fromJSON(object.params)
-        : undefined;
-    return message;
+    return {
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      params: isSet(object.params) ? ParamsToUpdate.fromJSON(object.params) : undefined,
+    };
   },
 
   toJSON(message: MsgUpdateParams): unknown {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
-    message.params !== undefined &&
-      (obj.params = message.params
-        ? ParamsToUpdate.toJSON(message.params)
-        : undefined);
+    message.params !== undefined && (obj.params = message.params ? ParamsToUpdate.toJSON(message.params) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     message.authority = object.authority ?? "";
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? ParamsToUpdate.fromPartial(object.params)
-        : undefined;
+    message.params = (object.params !== undefined && object.params !== null)
+      ? ParamsToUpdate.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
 
-const baseMsgUpdateParamsResponse: object = {};
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
 
 export const MsgUpdateParamsResponse = {
-  encode(
-    _: MsgUpdateParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+    const message = createBaseMsgUpdateParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateParamsResponse): unknown {
@@ -398,12 +397,12 @@ export const MsgUpdateParamsResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateParamsResponse>
-  ): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
     return message;
   },
 };
@@ -418,7 +417,9 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.leverage.Msg";
     this.rpc = rpc;
     this.SetLeverage = this.SetLeverage.bind(this);
     this.SetMarginMode = this.SetMarginMode.bind(this);
@@ -426,70 +427,40 @@ export class MsgClientImpl implements Msg {
   }
   SetLeverage(request: MsgSetLeverage): Promise<MsgSetLeverageResponse> {
     const data = MsgSetLeverage.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.leverage.Msg",
-      "SetLeverage",
-      data
-    );
-    return promise.then((data) =>
-      MsgSetLeverageResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "SetLeverage", data);
+    return promise.then((data) => MsgSetLeverageResponse.decode(_m0.Reader.create(data)));
   }
 
   SetMarginMode(request: MsgSetMarginMode): Promise<MsgSetMarginModeResponse> {
     const data = MsgSetMarginMode.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.leverage.Msg",
-      "SetMarginMode",
-      data
-    );
-    return promise.then((data) =>
-      MsgSetMarginModeResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "SetMarginMode", data);
+    return promise.then((data) => MsgSetMarginModeResponse.decode(_m0.Reader.create(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.leverage.Msg",
-      "UpdateParams",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateParams", data);
+    return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -35,19 +35,19 @@ export interface AllianceValidatorInfo {
   validatorShares: DecCoin[];
 }
 
-const baseDelegation: object = {
-  delegatorAddress: "",
-  validatorAddress: "",
-  denom: "",
-  shares: "",
-  lastRewardClaimHeight: Long.UZERO,
-};
+function createBaseDelegation(): Delegation {
+  return {
+    delegatorAddress: "",
+    validatorAddress: "",
+    denom: "",
+    shares: "",
+    rewardHistory: [],
+    lastRewardClaimHeight: Long.UZERO,
+  };
+}
 
 export const Delegation = {
-  encode(
-    message: Delegation,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Delegation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -70,117 +70,119 @@ export const Delegation = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Delegation {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDelegation } as Delegation;
-    message.rewardHistory = [];
+    const message = createBaseDelegation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.shares = reader.string();
-          break;
+          continue;
         case 5:
-          message.rewardHistory.push(
-            RewardHistory.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 42) {
+            break;
+          }
+
+          message.rewardHistory.push(RewardHistory.decode(reader, reader.uint32()));
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.lastRewardClaimHeight = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Delegation {
-    const message = { ...baseDelegation } as Delegation;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.validatorAddress =
-      object.validatorAddress !== undefined && object.validatorAddress !== null
-        ? String(object.validatorAddress)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.shares =
-      object.shares !== undefined && object.shares !== null
-        ? String(object.shares)
-        : "";
-    message.rewardHistory = (object.rewardHistory ?? []).map((e: any) =>
-      RewardHistory.fromJSON(e)
-    );
-    message.lastRewardClaimHeight =
-      object.lastRewardClaimHeight !== undefined &&
-      object.lastRewardClaimHeight !== null
-        ? Long.fromString(object.lastRewardClaimHeight)
-        : Long.UZERO;
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      shares: isSet(object.shares) ? String(object.shares) : "",
+      rewardHistory: Array.isArray(object?.rewardHistory)
+        ? object.rewardHistory.map((e: any) => RewardHistory.fromJSON(e))
+        : [],
+      lastRewardClaimHeight: isSet(object.lastRewardClaimHeight)
+        ? Long.fromValue(object.lastRewardClaimHeight)
+        : Long.UZERO,
+    };
   },
 
   toJSON(message: Delegation): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.validatorAddress !== undefined &&
-      (obj.validatorAddress = message.validatorAddress);
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     message.denom !== undefined && (obj.denom = message.denom);
     message.shares !== undefined && (obj.shares = message.shares);
     if (message.rewardHistory) {
-      obj.rewardHistory = message.rewardHistory.map((e) =>
-        e ? RewardHistory.toJSON(e) : undefined
-      );
+      obj.rewardHistory = message.rewardHistory.map((e) => e ? RewardHistory.toJSON(e) : undefined);
     } else {
       obj.rewardHistory = [];
     }
     message.lastRewardClaimHeight !== undefined &&
-      (obj.lastRewardClaimHeight = (
-        message.lastRewardClaimHeight || Long.UZERO
-      ).toString());
+      (obj.lastRewardClaimHeight = (message.lastRewardClaimHeight || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<Delegation>): Delegation {
+    return Delegation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Delegation>): Delegation {
-    const message = { ...baseDelegation } as Delegation;
+    const message = createBaseDelegation();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
     message.denom = object.denom ?? "";
     message.shares = object.shares ?? "";
-    message.rewardHistory = (object.rewardHistory ?? []).map((e) =>
-      RewardHistory.fromPartial(e)
-    );
+    message.rewardHistory = object.rewardHistory?.map((e) => RewardHistory.fromPartial(e)) || [];
     message.lastRewardClaimHeight =
-      object.lastRewardClaimHeight !== undefined &&
-      object.lastRewardClaimHeight !== null
+      (object.lastRewardClaimHeight !== undefined && object.lastRewardClaimHeight !== null)
         ? Long.fromValue(object.lastRewardClaimHeight)
         : Long.UZERO;
     return message;
   },
 };
 
-const baseUndelegation: object = { delegatorAddress: "", validatorAddress: "" };
+function createBaseUndelegation(): Undelegation {
+  return { delegatorAddress: "", validatorAddress: "", balance: undefined };
+}
 
 export const Undelegation = {
-  encode(
-    message: Undelegation,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Undelegation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -194,78 +196,79 @@ export const Undelegation = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Undelegation {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUndelegation } as Undelegation;
+    const message = createBaseUndelegation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.balance = Coin.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Undelegation {
-    const message = { ...baseUndelegation } as Undelegation;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.validatorAddress =
-      object.validatorAddress !== undefined && object.validatorAddress !== null
-        ? String(object.validatorAddress)
-        : "";
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? Coin.fromJSON(object.balance)
-        : undefined;
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
+      balance: isSet(object.balance) ? Coin.fromJSON(object.balance) : undefined,
+    };
   },
 
   toJSON(message: Undelegation): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.validatorAddress !== undefined &&
-      (obj.validatorAddress = message.validatorAddress);
-    message.balance !== undefined &&
-      (obj.balance = message.balance
-        ? Coin.toJSON(message.balance)
-        : undefined);
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
+    message.balance !== undefined && (obj.balance = message.balance ? Coin.toJSON(message.balance) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<Undelegation>): Undelegation {
+    return Undelegation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Undelegation>): Undelegation {
-    const message = { ...baseUndelegation } as Undelegation;
+    const message = createBaseUndelegation();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? Coin.fromPartial(object.balance)
-        : undefined;
+    message.balance = (object.balance !== undefined && object.balance !== null)
+      ? Coin.fromPartial(object.balance)
+      : undefined;
     return message;
   },
 };
 
-const baseQueuedUndelegation: object = {};
+function createBaseQueuedUndelegation(): QueuedUndelegation {
+  return { entries: [] };
+}
 
 export const QueuedUndelegation = {
-  encode(
-    message: QueuedUndelegation,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueuedUndelegation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.entries) {
       Undelegation.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -273,60 +276,59 @@ export const QueuedUndelegation = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueuedUndelegation {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueuedUndelegation } as QueuedUndelegation;
-    message.entries = [];
+    const message = createBaseQueuedUndelegation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.entries.push(Undelegation.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueuedUndelegation {
-    const message = { ...baseQueuedUndelegation } as QueuedUndelegation;
-    message.entries = (object.entries ?? []).map((e: any) =>
-      Undelegation.fromJSON(e)
-    );
-    return message;
+    return { entries: Array.isArray(object?.entries) ? object.entries.map((e: any) => Undelegation.fromJSON(e)) : [] };
   },
 
   toJSON(message: QueuedUndelegation): unknown {
     const obj: any = {};
     if (message.entries) {
-      obj.entries = message.entries.map((e) =>
-        e ? Undelegation.toJSON(e) : undefined
-      );
+      obj.entries = message.entries.map((e) => e ? Undelegation.toJSON(e) : undefined);
     } else {
       obj.entries = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<QueuedUndelegation>): QueuedUndelegation {
+    return QueuedUndelegation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueuedUndelegation>): QueuedUndelegation {
-    const message = { ...baseQueuedUndelegation } as QueuedUndelegation;
-    message.entries = (object.entries ?? []).map((e) =>
-      Undelegation.fromPartial(e)
-    );
+    const message = createBaseQueuedUndelegation();
+    message.entries = object.entries?.map((e) => Undelegation.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseAllianceValidatorInfo: object = {};
+function createBaseAllianceValidatorInfo(): AllianceValidatorInfo {
+  return { globalRewardHistory: [], totalDelegatorShares: [], validatorShares: [] };
+}
 
 export const AllianceValidatorInfo = {
-  encode(
-    message: AllianceValidatorInfo,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AllianceValidatorInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.globalRewardHistory) {
       RewardHistory.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -339,118 +341,103 @@ export const AllianceValidatorInfo = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): AllianceValidatorInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AllianceValidatorInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAllianceValidatorInfo } as AllianceValidatorInfo;
-    message.globalRewardHistory = [];
-    message.totalDelegatorShares = [];
-    message.validatorShares = [];
+    const message = createBaseAllianceValidatorInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.globalRewardHistory.push(
-            RewardHistory.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.globalRewardHistory.push(RewardHistory.decode(reader, reader.uint32()));
+          continue;
         case 2:
-          message.totalDelegatorShares.push(
-            DecCoin.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.totalDelegatorShares.push(DecCoin.decode(reader, reader.uint32()));
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.validatorShares.push(DecCoin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AllianceValidatorInfo {
-    const message = { ...baseAllianceValidatorInfo } as AllianceValidatorInfo;
-    message.globalRewardHistory = (object.globalRewardHistory ?? []).map(
-      (e: any) => RewardHistory.fromJSON(e)
-    );
-    message.totalDelegatorShares = (object.totalDelegatorShares ?? []).map(
-      (e: any) => DecCoin.fromJSON(e)
-    );
-    message.validatorShares = (object.validatorShares ?? []).map((e: any) =>
-      DecCoin.fromJSON(e)
-    );
-    return message;
+    return {
+      globalRewardHistory: Array.isArray(object?.globalRewardHistory)
+        ? object.globalRewardHistory.map((e: any) => RewardHistory.fromJSON(e))
+        : [],
+      totalDelegatorShares: Array.isArray(object?.totalDelegatorShares)
+        ? object.totalDelegatorShares.map((e: any) => DecCoin.fromJSON(e))
+        : [],
+      validatorShares: Array.isArray(object?.validatorShares)
+        ? object.validatorShares.map((e: any) => DecCoin.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: AllianceValidatorInfo): unknown {
     const obj: any = {};
     if (message.globalRewardHistory) {
-      obj.globalRewardHistory = message.globalRewardHistory.map((e) =>
-        e ? RewardHistory.toJSON(e) : undefined
-      );
+      obj.globalRewardHistory = message.globalRewardHistory.map((e) => e ? RewardHistory.toJSON(e) : undefined);
     } else {
       obj.globalRewardHistory = [];
     }
     if (message.totalDelegatorShares) {
-      obj.totalDelegatorShares = message.totalDelegatorShares.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
-      );
+      obj.totalDelegatorShares = message.totalDelegatorShares.map((e) => e ? DecCoin.toJSON(e) : undefined);
     } else {
       obj.totalDelegatorShares = [];
     }
     if (message.validatorShares) {
-      obj.validatorShares = message.validatorShares.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
-      );
+      obj.validatorShares = message.validatorShares.map((e) => e ? DecCoin.toJSON(e) : undefined);
     } else {
       obj.validatorShares = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<AllianceValidatorInfo>
-  ): AllianceValidatorInfo {
-    const message = { ...baseAllianceValidatorInfo } as AllianceValidatorInfo;
-    message.globalRewardHistory = (object.globalRewardHistory ?? []).map((e) =>
-      RewardHistory.fromPartial(e)
-    );
-    message.totalDelegatorShares = (object.totalDelegatorShares ?? []).map(
-      (e) => DecCoin.fromPartial(e)
-    );
-    message.validatorShares = (object.validatorShares ?? []).map((e) =>
-      DecCoin.fromPartial(e)
-    );
+  create(base?: DeepPartial<AllianceValidatorInfo>): AllianceValidatorInfo {
+    return AllianceValidatorInfo.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<AllianceValidatorInfo>): AllianceValidatorInfo {
+    const message = createBaseAllianceValidatorInfo();
+    message.globalRewardHistory = object.globalRewardHistory?.map((e) => RewardHistory.fromPartial(e)) || [];
+    message.totalDelegatorShares = object.totalDelegatorShares?.map((e) => DecCoin.fromPartial(e)) || [];
+    message.validatorShares = object.validatorShares?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

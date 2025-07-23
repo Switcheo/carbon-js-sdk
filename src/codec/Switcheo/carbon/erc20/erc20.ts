@@ -41,8 +41,9 @@ export function ownerToJSON(object: Owner): string {
       return "OWNER_MODULE";
     case Owner.OWNER_EXTERNAL:
       return "OWNER_EXTERNAL";
+    case Owner.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -64,18 +65,12 @@ export interface TokenPair {
   contractOwner: Owner;
 }
 
-const baseTokenPair: object = {
-  erc20Address: "",
-  denom: "",
-  enabled: false,
-  contractOwner: 0,
-};
+function createBaseTokenPair(): TokenPair {
+  return { erc20Address: "", denom: "", enabled: false, contractOwner: 0 };
+}
 
 export const TokenPair = {
-  encode(
-    message: TokenPair,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TokenPair, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.erc20Address !== "") {
       writer.uint32(10).string(message.erc20Address);
     }
@@ -92,66 +87,73 @@ export const TokenPair = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TokenPair {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTokenPair } as TokenPair;
+    const message = createBaseTokenPair();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.erc20Address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.enabled = reader.bool();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.contractOwner = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TokenPair {
-    const message = { ...baseTokenPair } as TokenPair;
-    message.erc20Address =
-      object.erc20Address !== undefined && object.erc20Address !== null
-        ? String(object.erc20Address)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.enabled =
-      object.enabled !== undefined && object.enabled !== null
-        ? Boolean(object.enabled)
-        : false;
-    message.contractOwner =
-      object.contractOwner !== undefined && object.contractOwner !== null
-        ? ownerFromJSON(object.contractOwner)
-        : 0;
-    return message;
+    return {
+      erc20Address: isSet(object.erc20Address) ? String(object.erc20Address) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      enabled: isSet(object.enabled) ? Boolean(object.enabled) : false,
+      contractOwner: isSet(object.contractOwner) ? ownerFromJSON(object.contractOwner) : 0,
+    };
   },
 
   toJSON(message: TokenPair): unknown {
     const obj: any = {};
-    message.erc20Address !== undefined &&
-      (obj.erc20Address = message.erc20Address);
+    message.erc20Address !== undefined && (obj.erc20Address = message.erc20Address);
     message.denom !== undefined && (obj.denom = message.denom);
     message.enabled !== undefined && (obj.enabled = message.enabled);
-    message.contractOwner !== undefined &&
-      (obj.contractOwner = ownerToJSON(message.contractOwner));
+    message.contractOwner !== undefined && (obj.contractOwner = ownerToJSON(message.contractOwner));
     return obj;
   },
 
+  create(base?: DeepPartial<TokenPair>): TokenPair {
+    return TokenPair.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TokenPair>): TokenPair {
-    const message = { ...baseTokenPair } as TokenPair;
+    const message = createBaseTokenPair();
     message.erc20Address = object.erc20Address ?? "";
     message.denom = object.denom ?? "";
     message.enabled = object.enabled ?? false;
@@ -160,27 +162,19 @@ export const TokenPair = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

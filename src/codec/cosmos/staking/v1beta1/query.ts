@@ -3,13 +3,13 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../../base/query/v1beta1/pagination";
 import {
-  Validator,
   DelegationResponse,
-  UnbondingDelegation,
   HistoricalInfo,
-  Pool,
   Params,
+  Pool,
   RedelegationResponse,
+  UnbondingDelegation,
+  Validator,
 } from "./staking";
 
 export const protobufPackage = "cosmos.staking.v1beta1";
@@ -247,7 +247,8 @@ export interface QueryHistoricalInfoResponse {
 }
 
 /** QueryPoolRequest is request type for the Query/Pool RPC method. */
-export interface QueryPoolRequest {}
+export interface QueryPoolRequest {
+}
 
 /** QueryPoolResponse is response type for the Query/Pool RPC method. */
 export interface QueryPoolResponse {
@@ -256,7 +257,8 @@ export interface QueryPoolResponse {
 }
 
 /** QueryParamsRequest is request type for the Query/Params RPC method. */
-export interface QueryParamsRequest {}
+export interface QueryParamsRequest {
+}
 
 /** QueryParamsResponse is response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
@@ -264,13 +266,12 @@ export interface QueryParamsResponse {
   params?: Params;
 }
 
-const baseQueryValidatorsRequest: object = { status: "" };
+function createBaseQueryValidatorsRequest(): QueryValidatorsRequest {
+  return { status: "", pagination: undefined };
+}
 
 export const QueryValidatorsRequest = {
-  encode(
-    message: QueryValidatorsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryValidatorsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.status !== "") {
       writer.uint32(10).string(message.status);
     }
@@ -280,289 +281,264 @@ export const QueryValidatorsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryValidatorsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryValidatorsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryValidatorsRequest } as QueryValidatorsRequest;
+    const message = createBaseQueryValidatorsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.status = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryValidatorsRequest {
-    const message = { ...baseQueryValidatorsRequest } as QueryValidatorsRequest;
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? String(object.status)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      status: isSet(object.status) ? String(object.status) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryValidatorsRequest): unknown {
     const obj: any = {};
     message.status !== undefined && (obj.status = message.status);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryValidatorsRequest>
-  ): QueryValidatorsRequest {
-    const message = { ...baseQueryValidatorsRequest } as QueryValidatorsRequest;
+  create(base?: DeepPartial<QueryValidatorsRequest>): QueryValidatorsRequest {
+    return QueryValidatorsRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryValidatorsRequest>): QueryValidatorsRequest {
+    const message = createBaseQueryValidatorsRequest();
     message.status = object.status ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryValidatorsResponse: object = {};
+function createBaseQueryValidatorsResponse(): QueryValidatorsResponse {
+  return { validators: [], pagination: undefined };
+}
 
 export const QueryValidatorsResponse = {
-  encode(
-    message: QueryValidatorsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryValidatorsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.validators) {
       Validator.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryValidatorsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryValidatorsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryValidatorsResponse,
-    } as QueryValidatorsResponse;
-    message.validators = [];
+    const message = createBaseQueryValidatorsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validators.push(Validator.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryValidatorsResponse {
-    const message = {
-      ...baseQueryValidatorsResponse,
-    } as QueryValidatorsResponse;
-    message.validators = (object.validators ?? []).map((e: any) =>
-      Validator.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      validators: Array.isArray(object?.validators) ? object.validators.map((e: any) => Validator.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryValidatorsResponse): unknown {
     const obj: any = {};
     if (message.validators) {
-      obj.validators = message.validators.map((e) =>
-        e ? Validator.toJSON(e) : undefined
-      );
+      obj.validators = message.validators.map((e) => e ? Validator.toJSON(e) : undefined);
     } else {
       obj.validators = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryValidatorsResponse>
-  ): QueryValidatorsResponse {
-    const message = {
-      ...baseQueryValidatorsResponse,
-    } as QueryValidatorsResponse;
-    message.validators = (object.validators ?? []).map((e) =>
-      Validator.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryValidatorsResponse>): QueryValidatorsResponse {
+    return QueryValidatorsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryValidatorsResponse>): QueryValidatorsResponse {
+    const message = createBaseQueryValidatorsResponse();
+    message.validators = object.validators?.map((e) => Validator.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryValidatorRequest: object = { validatorAddr: "" };
+function createBaseQueryValidatorRequest(): QueryValidatorRequest {
+  return { validatorAddr: "" };
+}
 
 export const QueryValidatorRequest = {
-  encode(
-    message: QueryValidatorRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryValidatorRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.validatorAddr !== "") {
       writer.uint32(10).string(message.validatorAddr);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryValidatorRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryValidatorRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryValidatorRequest } as QueryValidatorRequest;
+    const message = createBaseQueryValidatorRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validatorAddr = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryValidatorRequest {
-    const message = { ...baseQueryValidatorRequest } as QueryValidatorRequest;
-    message.validatorAddr =
-      object.validatorAddr !== undefined && object.validatorAddr !== null
-        ? String(object.validatorAddr)
-        : "";
-    return message;
+    return { validatorAddr: isSet(object.validatorAddr) ? String(object.validatorAddr) : "" };
   },
 
   toJSON(message: QueryValidatorRequest): unknown {
     const obj: any = {};
-    message.validatorAddr !== undefined &&
-      (obj.validatorAddr = message.validatorAddr);
+    message.validatorAddr !== undefined && (obj.validatorAddr = message.validatorAddr);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryValidatorRequest>
-  ): QueryValidatorRequest {
-    const message = { ...baseQueryValidatorRequest } as QueryValidatorRequest;
+  create(base?: DeepPartial<QueryValidatorRequest>): QueryValidatorRequest {
+    return QueryValidatorRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryValidatorRequest>): QueryValidatorRequest {
+    const message = createBaseQueryValidatorRequest();
     message.validatorAddr = object.validatorAddr ?? "";
     return message;
   },
 };
 
-const baseQueryValidatorResponse: object = {};
+function createBaseQueryValidatorResponse(): QueryValidatorResponse {
+  return { validator: undefined };
+}
 
 export const QueryValidatorResponse = {
-  encode(
-    message: QueryValidatorResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryValidatorResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.validator !== undefined) {
       Validator.encode(message.validator, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryValidatorResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryValidatorResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryValidatorResponse } as QueryValidatorResponse;
+    const message = createBaseQueryValidatorResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validator = Validator.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryValidatorResponse {
-    const message = { ...baseQueryValidatorResponse } as QueryValidatorResponse;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? Validator.fromJSON(object.validator)
-        : undefined;
-    return message;
+    return { validator: isSet(object.validator) ? Validator.fromJSON(object.validator) : undefined };
   },
 
   toJSON(message: QueryValidatorResponse): unknown {
     const obj: any = {};
     message.validator !== undefined &&
-      (obj.validator = message.validator
-        ? Validator.toJSON(message.validator)
-        : undefined);
+      (obj.validator = message.validator ? Validator.toJSON(message.validator) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryValidatorResponse>
-  ): QueryValidatorResponse {
-    const message = { ...baseQueryValidatorResponse } as QueryValidatorResponse;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? Validator.fromPartial(object.validator)
-        : undefined;
+  create(base?: DeepPartial<QueryValidatorResponse>): QueryValidatorResponse {
+    return QueryValidatorResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryValidatorResponse>): QueryValidatorResponse {
+    const message = createBaseQueryValidatorResponse();
+    message.validator = (object.validator !== undefined && object.validator !== null)
+      ? Validator.fromPartial(object.validator)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryValidatorDelegationsRequest: object = { validatorAddr: "" };
+function createBaseQueryValidatorDelegationsRequest(): QueryValidatorDelegationsRequest {
+  return { validatorAddr: "", pagination: undefined };
+}
 
 export const QueryValidatorDelegationsRequest = {
-  encode(
-    message: QueryValidatorDelegationsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryValidatorDelegationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.validatorAddr !== "") {
       writer.uint32(10).string(message.validatorAddr);
     }
@@ -572,177 +548,151 @@ export const QueryValidatorDelegationsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryValidatorDelegationsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryValidatorDelegationsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryValidatorDelegationsRequest,
-    } as QueryValidatorDelegationsRequest;
+    const message = createBaseQueryValidatorDelegationsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryValidatorDelegationsRequest {
-    const message = {
-      ...baseQueryValidatorDelegationsRequest,
-    } as QueryValidatorDelegationsRequest;
-    message.validatorAddr =
-      object.validatorAddr !== undefined && object.validatorAddr !== null
-        ? String(object.validatorAddr)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      validatorAddr: isSet(object.validatorAddr) ? String(object.validatorAddr) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryValidatorDelegationsRequest): unknown {
     const obj: any = {};
-    message.validatorAddr !== undefined &&
-      (obj.validatorAddr = message.validatorAddr);
+    message.validatorAddr !== undefined && (obj.validatorAddr = message.validatorAddr);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryValidatorDelegationsRequest>
-  ): QueryValidatorDelegationsRequest {
-    const message = {
-      ...baseQueryValidatorDelegationsRequest,
-    } as QueryValidatorDelegationsRequest;
+  create(base?: DeepPartial<QueryValidatorDelegationsRequest>): QueryValidatorDelegationsRequest {
+    return QueryValidatorDelegationsRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryValidatorDelegationsRequest>): QueryValidatorDelegationsRequest {
+    const message = createBaseQueryValidatorDelegationsRequest();
     message.validatorAddr = object.validatorAddr ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryValidatorDelegationsResponse: object = {};
+function createBaseQueryValidatorDelegationsResponse(): QueryValidatorDelegationsResponse {
+  return { delegationResponses: [], pagination: undefined };
+}
 
 export const QueryValidatorDelegationsResponse = {
-  encode(
-    message: QueryValidatorDelegationsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryValidatorDelegationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.delegationResponses) {
       DelegationResponse.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryValidatorDelegationsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryValidatorDelegationsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryValidatorDelegationsResponse,
-    } as QueryValidatorDelegationsResponse;
-    message.delegationResponses = [];
+    const message = createBaseQueryValidatorDelegationsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.delegationResponses.push(
-            DelegationResponse.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.delegationResponses.push(DelegationResponse.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryValidatorDelegationsResponse {
-    const message = {
-      ...baseQueryValidatorDelegationsResponse,
-    } as QueryValidatorDelegationsResponse;
-    message.delegationResponses = (object.delegationResponses ?? []).map(
-      (e: any) => DelegationResponse.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      delegationResponses: Array.isArray(object?.delegationResponses)
+        ? object.delegationResponses.map((e: any) => DelegationResponse.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryValidatorDelegationsResponse): unknown {
     const obj: any = {};
     if (message.delegationResponses) {
-      obj.delegationResponses = message.delegationResponses.map((e) =>
-        e ? DelegationResponse.toJSON(e) : undefined
-      );
+      obj.delegationResponses = message.delegationResponses.map((e) => e ? DelegationResponse.toJSON(e) : undefined);
     } else {
       obj.delegationResponses = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryValidatorDelegationsResponse>
-  ): QueryValidatorDelegationsResponse {
-    const message = {
-      ...baseQueryValidatorDelegationsResponse,
-    } as QueryValidatorDelegationsResponse;
-    message.delegationResponses = (object.delegationResponses ?? []).map((e) =>
-      DelegationResponse.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryValidatorDelegationsResponse>): QueryValidatorDelegationsResponse {
+    return QueryValidatorDelegationsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryValidatorDelegationsResponse>): QueryValidatorDelegationsResponse {
+    const message = createBaseQueryValidatorDelegationsResponse();
+    message.delegationResponses = object.delegationResponses?.map((e) => DelegationResponse.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryValidatorUnbondingDelegationsRequest: object = {
-  validatorAddr: "",
-};
+function createBaseQueryValidatorUnbondingDelegationsRequest(): QueryValidatorUnbondingDelegationsRequest {
+  return { validatorAddr: "", pagination: undefined };
+}
 
 export const QueryValidatorUnbondingDelegationsRequest = {
-  encode(
-    message: QueryValidatorUnbondingDelegationsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryValidatorUnbondingDelegationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.validatorAddr !== "") {
       writer.uint32(10).string(message.validatorAddr);
     }
@@ -752,178 +702,155 @@ export const QueryValidatorUnbondingDelegationsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryValidatorUnbondingDelegationsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryValidatorUnbondingDelegationsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryValidatorUnbondingDelegationsRequest,
-    } as QueryValidatorUnbondingDelegationsRequest;
+    const message = createBaseQueryValidatorUnbondingDelegationsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryValidatorUnbondingDelegationsRequest {
-    const message = {
-      ...baseQueryValidatorUnbondingDelegationsRequest,
-    } as QueryValidatorUnbondingDelegationsRequest;
-    message.validatorAddr =
-      object.validatorAddr !== undefined && object.validatorAddr !== null
-        ? String(object.validatorAddr)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      validatorAddr: isSet(object.validatorAddr) ? String(object.validatorAddr) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryValidatorUnbondingDelegationsRequest): unknown {
     const obj: any = {};
-    message.validatorAddr !== undefined &&
-      (obj.validatorAddr = message.validatorAddr);
+    message.validatorAddr !== undefined && (obj.validatorAddr = message.validatorAddr);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryValidatorUnbondingDelegationsRequest>): QueryValidatorUnbondingDelegationsRequest {
+    return QueryValidatorUnbondingDelegationsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(
-    object: DeepPartial<QueryValidatorUnbondingDelegationsRequest>
+    object: DeepPartial<QueryValidatorUnbondingDelegationsRequest>,
   ): QueryValidatorUnbondingDelegationsRequest {
-    const message = {
-      ...baseQueryValidatorUnbondingDelegationsRequest,
-    } as QueryValidatorUnbondingDelegationsRequest;
+    const message = createBaseQueryValidatorUnbondingDelegationsRequest();
     message.validatorAddr = object.validatorAddr ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryValidatorUnbondingDelegationsResponse: object = {};
+function createBaseQueryValidatorUnbondingDelegationsResponse(): QueryValidatorUnbondingDelegationsResponse {
+  return { unbondingResponses: [], pagination: undefined };
+}
 
 export const QueryValidatorUnbondingDelegationsResponse = {
-  encode(
-    message: QueryValidatorUnbondingDelegationsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryValidatorUnbondingDelegationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.unbondingResponses) {
       UnbondingDelegation.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryValidatorUnbondingDelegationsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryValidatorUnbondingDelegationsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryValidatorUnbondingDelegationsResponse,
-    } as QueryValidatorUnbondingDelegationsResponse;
-    message.unbondingResponses = [];
+    const message = createBaseQueryValidatorUnbondingDelegationsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unbondingResponses.push(
-            UnbondingDelegation.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.unbondingResponses.push(UnbondingDelegation.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryValidatorUnbondingDelegationsResponse {
-    const message = {
-      ...baseQueryValidatorUnbondingDelegationsResponse,
-    } as QueryValidatorUnbondingDelegationsResponse;
-    message.unbondingResponses = (object.unbondingResponses ?? []).map(
-      (e: any) => UnbondingDelegation.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      unbondingResponses: Array.isArray(object?.unbondingResponses)
+        ? object.unbondingResponses.map((e: any) => UnbondingDelegation.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryValidatorUnbondingDelegationsResponse): unknown {
     const obj: any = {};
     if (message.unbondingResponses) {
-      obj.unbondingResponses = message.unbondingResponses.map((e) =>
-        e ? UnbondingDelegation.toJSON(e) : undefined
-      );
+      obj.unbondingResponses = message.unbondingResponses.map((e) => e ? UnbondingDelegation.toJSON(e) : undefined);
     } else {
       obj.unbondingResponses = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryValidatorUnbondingDelegationsResponse>): QueryValidatorUnbondingDelegationsResponse {
+    return QueryValidatorUnbondingDelegationsResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(
-    object: DeepPartial<QueryValidatorUnbondingDelegationsResponse>
+    object: DeepPartial<QueryValidatorUnbondingDelegationsResponse>,
   ): QueryValidatorUnbondingDelegationsResponse {
-    const message = {
-      ...baseQueryValidatorUnbondingDelegationsResponse,
-    } as QueryValidatorUnbondingDelegationsResponse;
-    message.unbondingResponses = (object.unbondingResponses ?? []).map((e) =>
-      UnbondingDelegation.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+    const message = createBaseQueryValidatorUnbondingDelegationsResponse();
+    message.unbondingResponses = object.unbondingResponses?.map((e) => UnbondingDelegation.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDelegationRequest: object = {
-  delegatorAddr: "",
-  validatorAddr: "",
-};
+function createBaseQueryDelegationRequest(): QueryDelegationRequest {
+  return { delegatorAddr: "", validatorAddr: "" };
+}
 
 export const QueryDelegationRequest = {
-  encode(
-    message: QueryDelegationRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegationRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddr !== "") {
       writer.uint32(10).string(message.delegatorAddr);
     }
@@ -933,150 +860,132 @@ export const QueryDelegationRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegationRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegationRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryDelegationRequest } as QueryDelegationRequest;
+    const message = createBaseQueryDelegationRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorAddr = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegationRequest {
-    const message = { ...baseQueryDelegationRequest } as QueryDelegationRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.validatorAddr =
-      object.validatorAddr !== undefined && object.validatorAddr !== null
-        ? String(object.validatorAddr)
-        : "";
-    return message;
+    return {
+      delegatorAddr: isSet(object.delegatorAddr) ? String(object.delegatorAddr) : "",
+      validatorAddr: isSet(object.validatorAddr) ? String(object.validatorAddr) : "",
+    };
   },
 
   toJSON(message: QueryDelegationRequest): unknown {
     const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
-    message.validatorAddr !== undefined &&
-      (obj.validatorAddr = message.validatorAddr);
+    message.delegatorAddr !== undefined && (obj.delegatorAddr = message.delegatorAddr);
+    message.validatorAddr !== undefined && (obj.validatorAddr = message.validatorAddr);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDelegationRequest>
-  ): QueryDelegationRequest {
-    const message = { ...baseQueryDelegationRequest } as QueryDelegationRequest;
+  create(base?: DeepPartial<QueryDelegationRequest>): QueryDelegationRequest {
+    return QueryDelegationRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryDelegationRequest>): QueryDelegationRequest {
+    const message = createBaseQueryDelegationRequest();
     message.delegatorAddr = object.delegatorAddr ?? "";
     message.validatorAddr = object.validatorAddr ?? "";
     return message;
   },
 };
 
-const baseQueryDelegationResponse: object = {};
+function createBaseQueryDelegationResponse(): QueryDelegationResponse {
+  return { delegationResponse: undefined };
+}
 
 export const QueryDelegationResponse = {
-  encode(
-    message: QueryDelegationResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegationResponse !== undefined) {
-      DelegationResponse.encode(
-        message.delegationResponse,
-        writer.uint32(10).fork()
-      ).ldelim();
+      DelegationResponse.encode(message.delegationResponse, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegationResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegationResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegationResponse,
-    } as QueryDelegationResponse;
+    const message = createBaseQueryDelegationResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.delegationResponse = DelegationResponse.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.delegationResponse = DelegationResponse.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegationResponse {
-    const message = {
-      ...baseQueryDelegationResponse,
-    } as QueryDelegationResponse;
-    message.delegationResponse =
-      object.delegationResponse !== undefined &&
-      object.delegationResponse !== null
+    return {
+      delegationResponse: isSet(object.delegationResponse)
         ? DelegationResponse.fromJSON(object.delegationResponse)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: QueryDelegationResponse): unknown {
     const obj: any = {};
-    message.delegationResponse !== undefined &&
-      (obj.delegationResponse = message.delegationResponse
-        ? DelegationResponse.toJSON(message.delegationResponse)
-        : undefined);
+    message.delegationResponse !== undefined && (obj.delegationResponse = message.delegationResponse
+      ? DelegationResponse.toJSON(message.delegationResponse)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDelegationResponse>
-  ): QueryDelegationResponse {
-    const message = {
-      ...baseQueryDelegationResponse,
-    } as QueryDelegationResponse;
-    message.delegationResponse =
-      object.delegationResponse !== undefined &&
-      object.delegationResponse !== null
-        ? DelegationResponse.fromPartial(object.delegationResponse)
-        : undefined;
+  create(base?: DeepPartial<QueryDelegationResponse>): QueryDelegationResponse {
+    return QueryDelegationResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryDelegationResponse>): QueryDelegationResponse {
+    const message = createBaseQueryDelegationResponse();
+    message.delegationResponse = (object.delegationResponse !== undefined && object.delegationResponse !== null)
+      ? DelegationResponse.fromPartial(object.delegationResponse)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryUnbondingDelegationRequest: object = {
-  delegatorAddr: "",
-  validatorAddr: "",
-};
+function createBaseQueryUnbondingDelegationRequest(): QueryUnbondingDelegationRequest {
+  return { delegatorAddr: "", validatorAddr: "" };
+}
 
 export const QueryUnbondingDelegationRequest = {
-  encode(
-    message: QueryUnbondingDelegationRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryUnbondingDelegationRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddr !== "") {
       writer.uint32(10).string(message.delegatorAddr);
     }
@@ -1086,148 +995,127 @@ export const QueryUnbondingDelegationRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryUnbondingDelegationRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryUnbondingDelegationRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryUnbondingDelegationRequest,
-    } as QueryUnbondingDelegationRequest;
+    const message = createBaseQueryUnbondingDelegationRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorAddr = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryUnbondingDelegationRequest {
-    const message = {
-      ...baseQueryUnbondingDelegationRequest,
-    } as QueryUnbondingDelegationRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.validatorAddr =
-      object.validatorAddr !== undefined && object.validatorAddr !== null
-        ? String(object.validatorAddr)
-        : "";
-    return message;
+    return {
+      delegatorAddr: isSet(object.delegatorAddr) ? String(object.delegatorAddr) : "",
+      validatorAddr: isSet(object.validatorAddr) ? String(object.validatorAddr) : "",
+    };
   },
 
   toJSON(message: QueryUnbondingDelegationRequest): unknown {
     const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
-    message.validatorAddr !== undefined &&
-      (obj.validatorAddr = message.validatorAddr);
+    message.delegatorAddr !== undefined && (obj.delegatorAddr = message.delegatorAddr);
+    message.validatorAddr !== undefined && (obj.validatorAddr = message.validatorAddr);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryUnbondingDelegationRequest>
-  ): QueryUnbondingDelegationRequest {
-    const message = {
-      ...baseQueryUnbondingDelegationRequest,
-    } as QueryUnbondingDelegationRequest;
+  create(base?: DeepPartial<QueryUnbondingDelegationRequest>): QueryUnbondingDelegationRequest {
+    return QueryUnbondingDelegationRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryUnbondingDelegationRequest>): QueryUnbondingDelegationRequest {
+    const message = createBaseQueryUnbondingDelegationRequest();
     message.delegatorAddr = object.delegatorAddr ?? "";
     message.validatorAddr = object.validatorAddr ?? "";
     return message;
   },
 };
 
-const baseQueryUnbondingDelegationResponse: object = {};
+function createBaseQueryUnbondingDelegationResponse(): QueryUnbondingDelegationResponse {
+  return { unbond: undefined };
+}
 
 export const QueryUnbondingDelegationResponse = {
-  encode(
-    message: QueryUnbondingDelegationResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryUnbondingDelegationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.unbond !== undefined) {
-      UnbondingDelegation.encode(
-        message.unbond,
-        writer.uint32(10).fork()
-      ).ldelim();
+      UnbondingDelegation.encode(message.unbond, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryUnbondingDelegationResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryUnbondingDelegationResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryUnbondingDelegationResponse,
-    } as QueryUnbondingDelegationResponse;
+    const message = createBaseQueryUnbondingDelegationResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.unbond = UnbondingDelegation.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryUnbondingDelegationResponse {
-    const message = {
-      ...baseQueryUnbondingDelegationResponse,
-    } as QueryUnbondingDelegationResponse;
-    message.unbond =
-      object.unbond !== undefined && object.unbond !== null
-        ? UnbondingDelegation.fromJSON(object.unbond)
-        : undefined;
-    return message;
+    return { unbond: isSet(object.unbond) ? UnbondingDelegation.fromJSON(object.unbond) : undefined };
   },
 
   toJSON(message: QueryUnbondingDelegationResponse): unknown {
     const obj: any = {};
     message.unbond !== undefined &&
-      (obj.unbond = message.unbond
-        ? UnbondingDelegation.toJSON(message.unbond)
-        : undefined);
+      (obj.unbond = message.unbond ? UnbondingDelegation.toJSON(message.unbond) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryUnbondingDelegationResponse>
-  ): QueryUnbondingDelegationResponse {
-    const message = {
-      ...baseQueryUnbondingDelegationResponse,
-    } as QueryUnbondingDelegationResponse;
-    message.unbond =
-      object.unbond !== undefined && object.unbond !== null
-        ? UnbondingDelegation.fromPartial(object.unbond)
-        : undefined;
+  create(base?: DeepPartial<QueryUnbondingDelegationResponse>): QueryUnbondingDelegationResponse {
+    return QueryUnbondingDelegationResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryUnbondingDelegationResponse>): QueryUnbondingDelegationResponse {
+    const message = createBaseQueryUnbondingDelegationResponse();
+    message.unbond = (object.unbond !== undefined && object.unbond !== null)
+      ? UnbondingDelegation.fromPartial(object.unbond)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDelegatorDelegationsRequest: object = { delegatorAddr: "" };
+function createBaseQueryDelegatorDelegationsRequest(): QueryDelegatorDelegationsRequest {
+  return { delegatorAddr: "", pagination: undefined };
+}
 
 export const QueryDelegatorDelegationsRequest = {
-  encode(
-    message: QueryDelegatorDelegationsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegatorDelegationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddr !== "") {
       writer.uint32(10).string(message.delegatorAddr);
     }
@@ -1237,177 +1125,151 @@ export const QueryDelegatorDelegationsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegatorDelegationsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegatorDelegationsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegatorDelegationsRequest,
-    } as QueryDelegatorDelegationsRequest;
+    const message = createBaseQueryDelegatorDelegationsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegatorDelegationsRequest {
-    const message = {
-      ...baseQueryDelegatorDelegationsRequest,
-    } as QueryDelegatorDelegationsRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      delegatorAddr: isSet(object.delegatorAddr) ? String(object.delegatorAddr) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryDelegatorDelegationsRequest): unknown {
     const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
+    message.delegatorAddr !== undefined && (obj.delegatorAddr = message.delegatorAddr);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDelegatorDelegationsRequest>
-  ): QueryDelegatorDelegationsRequest {
-    const message = {
-      ...baseQueryDelegatorDelegationsRequest,
-    } as QueryDelegatorDelegationsRequest;
+  create(base?: DeepPartial<QueryDelegatorDelegationsRequest>): QueryDelegatorDelegationsRequest {
+    return QueryDelegatorDelegationsRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryDelegatorDelegationsRequest>): QueryDelegatorDelegationsRequest {
+    const message = createBaseQueryDelegatorDelegationsRequest();
     message.delegatorAddr = object.delegatorAddr ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDelegatorDelegationsResponse: object = {};
+function createBaseQueryDelegatorDelegationsResponse(): QueryDelegatorDelegationsResponse {
+  return { delegationResponses: [], pagination: undefined };
+}
 
 export const QueryDelegatorDelegationsResponse = {
-  encode(
-    message: QueryDelegatorDelegationsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegatorDelegationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.delegationResponses) {
       DelegationResponse.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegatorDelegationsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegatorDelegationsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegatorDelegationsResponse,
-    } as QueryDelegatorDelegationsResponse;
-    message.delegationResponses = [];
+    const message = createBaseQueryDelegatorDelegationsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.delegationResponses.push(
-            DelegationResponse.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.delegationResponses.push(DelegationResponse.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegatorDelegationsResponse {
-    const message = {
-      ...baseQueryDelegatorDelegationsResponse,
-    } as QueryDelegatorDelegationsResponse;
-    message.delegationResponses = (object.delegationResponses ?? []).map(
-      (e: any) => DelegationResponse.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      delegationResponses: Array.isArray(object?.delegationResponses)
+        ? object.delegationResponses.map((e: any) => DelegationResponse.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryDelegatorDelegationsResponse): unknown {
     const obj: any = {};
     if (message.delegationResponses) {
-      obj.delegationResponses = message.delegationResponses.map((e) =>
-        e ? DelegationResponse.toJSON(e) : undefined
-      );
+      obj.delegationResponses = message.delegationResponses.map((e) => e ? DelegationResponse.toJSON(e) : undefined);
     } else {
       obj.delegationResponses = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDelegatorDelegationsResponse>
-  ): QueryDelegatorDelegationsResponse {
-    const message = {
-      ...baseQueryDelegatorDelegationsResponse,
-    } as QueryDelegatorDelegationsResponse;
-    message.delegationResponses = (object.delegationResponses ?? []).map((e) =>
-      DelegationResponse.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryDelegatorDelegationsResponse>): QueryDelegatorDelegationsResponse {
+    return QueryDelegatorDelegationsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryDelegatorDelegationsResponse>): QueryDelegatorDelegationsResponse {
+    const message = createBaseQueryDelegatorDelegationsResponse();
+    message.delegationResponses = object.delegationResponses?.map((e) => DelegationResponse.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDelegatorUnbondingDelegationsRequest: object = {
-  delegatorAddr: "",
-};
+function createBaseQueryDelegatorUnbondingDelegationsRequest(): QueryDelegatorUnbondingDelegationsRequest {
+  return { delegatorAddr: "", pagination: undefined };
+}
 
 export const QueryDelegatorUnbondingDelegationsRequest = {
-  encode(
-    message: QueryDelegatorUnbondingDelegationsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegatorUnbondingDelegationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddr !== "") {
       writer.uint32(10).string(message.delegatorAddr);
     }
@@ -1417,179 +1279,155 @@ export const QueryDelegatorUnbondingDelegationsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegatorUnbondingDelegationsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegatorUnbondingDelegationsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegatorUnbondingDelegationsRequest,
-    } as QueryDelegatorUnbondingDelegationsRequest;
+    const message = createBaseQueryDelegatorUnbondingDelegationsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegatorUnbondingDelegationsRequest {
-    const message = {
-      ...baseQueryDelegatorUnbondingDelegationsRequest,
-    } as QueryDelegatorUnbondingDelegationsRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      delegatorAddr: isSet(object.delegatorAddr) ? String(object.delegatorAddr) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryDelegatorUnbondingDelegationsRequest): unknown {
     const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
+    message.delegatorAddr !== undefined && (obj.delegatorAddr = message.delegatorAddr);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryDelegatorUnbondingDelegationsRequest>): QueryDelegatorUnbondingDelegationsRequest {
+    return QueryDelegatorUnbondingDelegationsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(
-    object: DeepPartial<QueryDelegatorUnbondingDelegationsRequest>
+    object: DeepPartial<QueryDelegatorUnbondingDelegationsRequest>,
   ): QueryDelegatorUnbondingDelegationsRequest {
-    const message = {
-      ...baseQueryDelegatorUnbondingDelegationsRequest,
-    } as QueryDelegatorUnbondingDelegationsRequest;
+    const message = createBaseQueryDelegatorUnbondingDelegationsRequest();
     message.delegatorAddr = object.delegatorAddr ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDelegatorUnbondingDelegationsResponse: object = {};
+function createBaseQueryDelegatorUnbondingDelegationsResponse(): QueryDelegatorUnbondingDelegationsResponse {
+  return { unbondingResponses: [], pagination: undefined };
+}
 
 export const QueryDelegatorUnbondingDelegationsResponse = {
-  encode(
-    message: QueryDelegatorUnbondingDelegationsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegatorUnbondingDelegationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.unbondingResponses) {
       UnbondingDelegation.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegatorUnbondingDelegationsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegatorUnbondingDelegationsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegatorUnbondingDelegationsResponse,
-    } as QueryDelegatorUnbondingDelegationsResponse;
-    message.unbondingResponses = [];
+    const message = createBaseQueryDelegatorUnbondingDelegationsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.unbondingResponses.push(
-            UnbondingDelegation.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.unbondingResponses.push(UnbondingDelegation.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegatorUnbondingDelegationsResponse {
-    const message = {
-      ...baseQueryDelegatorUnbondingDelegationsResponse,
-    } as QueryDelegatorUnbondingDelegationsResponse;
-    message.unbondingResponses = (object.unbondingResponses ?? []).map(
-      (e: any) => UnbondingDelegation.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      unbondingResponses: Array.isArray(object?.unbondingResponses)
+        ? object.unbondingResponses.map((e: any) => UnbondingDelegation.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryDelegatorUnbondingDelegationsResponse): unknown {
     const obj: any = {};
     if (message.unbondingResponses) {
-      obj.unbondingResponses = message.unbondingResponses.map((e) =>
-        e ? UnbondingDelegation.toJSON(e) : undefined
-      );
+      obj.unbondingResponses = message.unbondingResponses.map((e) => e ? UnbondingDelegation.toJSON(e) : undefined);
     } else {
       obj.unbondingResponses = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryDelegatorUnbondingDelegationsResponse>): QueryDelegatorUnbondingDelegationsResponse {
+    return QueryDelegatorUnbondingDelegationsResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(
-    object: DeepPartial<QueryDelegatorUnbondingDelegationsResponse>
+    object: DeepPartial<QueryDelegatorUnbondingDelegationsResponse>,
   ): QueryDelegatorUnbondingDelegationsResponse {
-    const message = {
-      ...baseQueryDelegatorUnbondingDelegationsResponse,
-    } as QueryDelegatorUnbondingDelegationsResponse;
-    message.unbondingResponses = (object.unbondingResponses ?? []).map((e) =>
-      UnbondingDelegation.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+    const message = createBaseQueryDelegatorUnbondingDelegationsResponse();
+    message.unbondingResponses = object.unbondingResponses?.map((e) => UnbondingDelegation.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryRedelegationsRequest: object = {
-  delegatorAddr: "",
-  srcValidatorAddr: "",
-  dstValidatorAddr: "",
-};
+function createBaseQueryRedelegationsRequest(): QueryRedelegationsRequest {
+  return { delegatorAddr: "", srcValidatorAddr: "", dstValidatorAddr: "", pagination: undefined };
+}
 
 export const QueryRedelegationsRequest = {
-  encode(
-    message: QueryRedelegationsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryRedelegationsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddr !== "") {
       writer.uint32(10).string(message.delegatorAddr);
     }
@@ -1605,153 +1443,137 @@ export const QueryRedelegationsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryRedelegationsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRedelegationsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryRedelegationsRequest,
-    } as QueryRedelegationsRequest;
+    const message = createBaseQueryRedelegationsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.srcValidatorAddr = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.dstValidatorAddr = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryRedelegationsRequest {
-    const message = {
-      ...baseQueryRedelegationsRequest,
-    } as QueryRedelegationsRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.srcValidatorAddr =
-      object.srcValidatorAddr !== undefined && object.srcValidatorAddr !== null
-        ? String(object.srcValidatorAddr)
-        : "";
-    message.dstValidatorAddr =
-      object.dstValidatorAddr !== undefined && object.dstValidatorAddr !== null
-        ? String(object.dstValidatorAddr)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      delegatorAddr: isSet(object.delegatorAddr) ? String(object.delegatorAddr) : "",
+      srcValidatorAddr: isSet(object.srcValidatorAddr) ? String(object.srcValidatorAddr) : "",
+      dstValidatorAddr: isSet(object.dstValidatorAddr) ? String(object.dstValidatorAddr) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryRedelegationsRequest): unknown {
     const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
-    message.srcValidatorAddr !== undefined &&
-      (obj.srcValidatorAddr = message.srcValidatorAddr);
-    message.dstValidatorAddr !== undefined &&
-      (obj.dstValidatorAddr = message.dstValidatorAddr);
+    message.delegatorAddr !== undefined && (obj.delegatorAddr = message.delegatorAddr);
+    message.srcValidatorAddr !== undefined && (obj.srcValidatorAddr = message.srcValidatorAddr);
+    message.dstValidatorAddr !== undefined && (obj.dstValidatorAddr = message.dstValidatorAddr);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryRedelegationsRequest>
-  ): QueryRedelegationsRequest {
-    const message = {
-      ...baseQueryRedelegationsRequest,
-    } as QueryRedelegationsRequest;
+  create(base?: DeepPartial<QueryRedelegationsRequest>): QueryRedelegationsRequest {
+    return QueryRedelegationsRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryRedelegationsRequest>): QueryRedelegationsRequest {
+    const message = createBaseQueryRedelegationsRequest();
     message.delegatorAddr = object.delegatorAddr ?? "";
     message.srcValidatorAddr = object.srcValidatorAddr ?? "";
     message.dstValidatorAddr = object.dstValidatorAddr ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryRedelegationsResponse: object = {};
+function createBaseQueryRedelegationsResponse(): QueryRedelegationsResponse {
+  return { redelegationResponses: [], pagination: undefined };
+}
 
 export const QueryRedelegationsResponse = {
-  encode(
-    message: QueryRedelegationsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryRedelegationsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.redelegationResponses) {
       RedelegationResponse.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryRedelegationsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRedelegationsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryRedelegationsResponse,
-    } as QueryRedelegationsResponse;
-    message.redelegationResponses = [];
+    const message = createBaseQueryRedelegationsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.redelegationResponses.push(
-            RedelegationResponse.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.redelegationResponses.push(RedelegationResponse.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryRedelegationsResponse {
-    const message = {
-      ...baseQueryRedelegationsResponse,
-    } as QueryRedelegationsResponse;
-    message.redelegationResponses = (object.redelegationResponses ?? []).map(
-      (e: any) => RedelegationResponse.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      redelegationResponses: Array.isArray(object?.redelegationResponses)
+        ? object.redelegationResponses.map((e: any) => RedelegationResponse.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryRedelegationsResponse): unknown {
@@ -1764,36 +1586,30 @@ export const QueryRedelegationsResponse = {
       obj.redelegationResponses = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryRedelegationsResponse>
-  ): QueryRedelegationsResponse {
-    const message = {
-      ...baseQueryRedelegationsResponse,
-    } as QueryRedelegationsResponse;
-    message.redelegationResponses = (object.redelegationResponses ?? []).map(
-      (e) => RedelegationResponse.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryRedelegationsResponse>): QueryRedelegationsResponse {
+    return QueryRedelegationsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryRedelegationsResponse>): QueryRedelegationsResponse {
+    const message = createBaseQueryRedelegationsResponse();
+    message.redelegationResponses = object.redelegationResponses?.map((e) => RedelegationResponse.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDelegatorValidatorsRequest: object = { delegatorAddr: "" };
+function createBaseQueryDelegatorValidatorsRequest(): QueryDelegatorValidatorsRequest {
+  return { delegatorAddr: "", pagination: undefined };
+}
 
 export const QueryDelegatorValidatorsRequest = {
-  encode(
-    message: QueryDelegatorValidatorsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegatorValidatorsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddr !== "") {
       writer.uint32(10).string(message.delegatorAddr);
     }
@@ -1803,176 +1619,149 @@ export const QueryDelegatorValidatorsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegatorValidatorsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegatorValidatorsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegatorValidatorsRequest,
-    } as QueryDelegatorValidatorsRequest;
+    const message = createBaseQueryDelegatorValidatorsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegatorValidatorsRequest {
-    const message = {
-      ...baseQueryDelegatorValidatorsRequest,
-    } as QueryDelegatorValidatorsRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      delegatorAddr: isSet(object.delegatorAddr) ? String(object.delegatorAddr) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryDelegatorValidatorsRequest): unknown {
     const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
+    message.delegatorAddr !== undefined && (obj.delegatorAddr = message.delegatorAddr);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDelegatorValidatorsRequest>
-  ): QueryDelegatorValidatorsRequest {
-    const message = {
-      ...baseQueryDelegatorValidatorsRequest,
-    } as QueryDelegatorValidatorsRequest;
+  create(base?: DeepPartial<QueryDelegatorValidatorsRequest>): QueryDelegatorValidatorsRequest {
+    return QueryDelegatorValidatorsRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryDelegatorValidatorsRequest>): QueryDelegatorValidatorsRequest {
+    const message = createBaseQueryDelegatorValidatorsRequest();
     message.delegatorAddr = object.delegatorAddr ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDelegatorValidatorsResponse: object = {};
+function createBaseQueryDelegatorValidatorsResponse(): QueryDelegatorValidatorsResponse {
+  return { validators: [], pagination: undefined };
+}
 
 export const QueryDelegatorValidatorsResponse = {
-  encode(
-    message: QueryDelegatorValidatorsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegatorValidatorsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.validators) {
       Validator.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegatorValidatorsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegatorValidatorsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegatorValidatorsResponse,
-    } as QueryDelegatorValidatorsResponse;
-    message.validators = [];
+    const message = createBaseQueryDelegatorValidatorsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validators.push(Validator.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegatorValidatorsResponse {
-    const message = {
-      ...baseQueryDelegatorValidatorsResponse,
-    } as QueryDelegatorValidatorsResponse;
-    message.validators = (object.validators ?? []).map((e: any) =>
-      Validator.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      validators: Array.isArray(object?.validators) ? object.validators.map((e: any) => Validator.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryDelegatorValidatorsResponse): unknown {
     const obj: any = {};
     if (message.validators) {
-      obj.validators = message.validators.map((e) =>
-        e ? Validator.toJSON(e) : undefined
-      );
+      obj.validators = message.validators.map((e) => e ? Validator.toJSON(e) : undefined);
     } else {
       obj.validators = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDelegatorValidatorsResponse>
-  ): QueryDelegatorValidatorsResponse {
-    const message = {
-      ...baseQueryDelegatorValidatorsResponse,
-    } as QueryDelegatorValidatorsResponse;
-    message.validators = (object.validators ?? []).map((e) =>
-      Validator.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryDelegatorValidatorsResponse>): QueryDelegatorValidatorsResponse {
+    return QueryDelegatorValidatorsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryDelegatorValidatorsResponse>): QueryDelegatorValidatorsResponse {
+    const message = createBaseQueryDelegatorValidatorsResponse();
+    message.validators = object.validators?.map((e) => Validator.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDelegatorValidatorRequest: object = {
-  delegatorAddr: "",
-  validatorAddr: "",
-};
+function createBaseQueryDelegatorValidatorRequest(): QueryDelegatorValidatorRequest {
+  return { delegatorAddr: "", validatorAddr: "" };
+}
 
 export const QueryDelegatorValidatorRequest = {
-  encode(
-    message: QueryDelegatorValidatorRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegatorValidatorRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddr !== "") {
       writer.uint32(10).string(message.delegatorAddr);
     }
@@ -1982,304 +1771,264 @@ export const QueryDelegatorValidatorRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegatorValidatorRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegatorValidatorRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegatorValidatorRequest,
-    } as QueryDelegatorValidatorRequest;
+    const message = createBaseQueryDelegatorValidatorRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddr = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorAddr = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegatorValidatorRequest {
-    const message = {
-      ...baseQueryDelegatorValidatorRequest,
-    } as QueryDelegatorValidatorRequest;
-    message.delegatorAddr =
-      object.delegatorAddr !== undefined && object.delegatorAddr !== null
-        ? String(object.delegatorAddr)
-        : "";
-    message.validatorAddr =
-      object.validatorAddr !== undefined && object.validatorAddr !== null
-        ? String(object.validatorAddr)
-        : "";
-    return message;
+    return {
+      delegatorAddr: isSet(object.delegatorAddr) ? String(object.delegatorAddr) : "",
+      validatorAddr: isSet(object.validatorAddr) ? String(object.validatorAddr) : "",
+    };
   },
 
   toJSON(message: QueryDelegatorValidatorRequest): unknown {
     const obj: any = {};
-    message.delegatorAddr !== undefined &&
-      (obj.delegatorAddr = message.delegatorAddr);
-    message.validatorAddr !== undefined &&
-      (obj.validatorAddr = message.validatorAddr);
+    message.delegatorAddr !== undefined && (obj.delegatorAddr = message.delegatorAddr);
+    message.validatorAddr !== undefined && (obj.validatorAddr = message.validatorAddr);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDelegatorValidatorRequest>
-  ): QueryDelegatorValidatorRequest {
-    const message = {
-      ...baseQueryDelegatorValidatorRequest,
-    } as QueryDelegatorValidatorRequest;
+  create(base?: DeepPartial<QueryDelegatorValidatorRequest>): QueryDelegatorValidatorRequest {
+    return QueryDelegatorValidatorRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryDelegatorValidatorRequest>): QueryDelegatorValidatorRequest {
+    const message = createBaseQueryDelegatorValidatorRequest();
     message.delegatorAddr = object.delegatorAddr ?? "";
     message.validatorAddr = object.validatorAddr ?? "";
     return message;
   },
 };
 
-const baseQueryDelegatorValidatorResponse: object = {};
+function createBaseQueryDelegatorValidatorResponse(): QueryDelegatorValidatorResponse {
+  return { validator: undefined };
+}
 
 export const QueryDelegatorValidatorResponse = {
-  encode(
-    message: QueryDelegatorValidatorResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDelegatorValidatorResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.validator !== undefined) {
       Validator.encode(message.validator, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDelegatorValidatorResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDelegatorValidatorResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDelegatorValidatorResponse,
-    } as QueryDelegatorValidatorResponse;
+    const message = createBaseQueryDelegatorValidatorResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validator = Validator.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryDelegatorValidatorResponse {
-    const message = {
-      ...baseQueryDelegatorValidatorResponse,
-    } as QueryDelegatorValidatorResponse;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? Validator.fromJSON(object.validator)
-        : undefined;
-    return message;
+    return { validator: isSet(object.validator) ? Validator.fromJSON(object.validator) : undefined };
   },
 
   toJSON(message: QueryDelegatorValidatorResponse): unknown {
     const obj: any = {};
     message.validator !== undefined &&
-      (obj.validator = message.validator
-        ? Validator.toJSON(message.validator)
-        : undefined);
+      (obj.validator = message.validator ? Validator.toJSON(message.validator) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDelegatorValidatorResponse>
-  ): QueryDelegatorValidatorResponse {
-    const message = {
-      ...baseQueryDelegatorValidatorResponse,
-    } as QueryDelegatorValidatorResponse;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? Validator.fromPartial(object.validator)
-        : undefined;
+  create(base?: DeepPartial<QueryDelegatorValidatorResponse>): QueryDelegatorValidatorResponse {
+    return QueryDelegatorValidatorResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryDelegatorValidatorResponse>): QueryDelegatorValidatorResponse {
+    const message = createBaseQueryDelegatorValidatorResponse();
+    message.validator = (object.validator !== undefined && object.validator !== null)
+      ? Validator.fromPartial(object.validator)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryHistoricalInfoRequest: object = { height: Long.ZERO };
+function createBaseQueryHistoricalInfoRequest(): QueryHistoricalInfoRequest {
+  return { height: Long.ZERO };
+}
 
 export const QueryHistoricalInfoRequest = {
-  encode(
-    message: QueryHistoricalInfoRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryHistoricalInfoRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.height.isZero()) {
       writer.uint32(8).int64(message.height);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryHistoricalInfoRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryHistoricalInfoRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryHistoricalInfoRequest,
-    } as QueryHistoricalInfoRequest;
+    const message = createBaseQueryHistoricalInfoRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.height = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryHistoricalInfoRequest {
-    const message = {
-      ...baseQueryHistoricalInfoRequest,
-    } as QueryHistoricalInfoRequest;
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromString(object.height)
-        : Long.ZERO;
-    return message;
+    return { height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO };
   },
 
   toJSON(message: QueryHistoricalInfoRequest): unknown {
     const obj: any = {};
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryHistoricalInfoRequest>
-  ): QueryHistoricalInfoRequest {
-    const message = {
-      ...baseQueryHistoricalInfoRequest,
-    } as QueryHistoricalInfoRequest;
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+  create(base?: DeepPartial<QueryHistoricalInfoRequest>): QueryHistoricalInfoRequest {
+    return QueryHistoricalInfoRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryHistoricalInfoRequest>): QueryHistoricalInfoRequest {
+    const message = createBaseQueryHistoricalInfoRequest();
+    message.height = (object.height !== undefined && object.height !== null)
+      ? Long.fromValue(object.height)
+      : Long.ZERO;
     return message;
   },
 };
 
-const baseQueryHistoricalInfoResponse: object = {};
+function createBaseQueryHistoricalInfoResponse(): QueryHistoricalInfoResponse {
+  return { hist: undefined };
+}
 
 export const QueryHistoricalInfoResponse = {
-  encode(
-    message: QueryHistoricalInfoResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryHistoricalInfoResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.hist !== undefined) {
       HistoricalInfo.encode(message.hist, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryHistoricalInfoResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryHistoricalInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryHistoricalInfoResponse,
-    } as QueryHistoricalInfoResponse;
+    const message = createBaseQueryHistoricalInfoResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.hist = HistoricalInfo.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryHistoricalInfoResponse {
-    const message = {
-      ...baseQueryHistoricalInfoResponse,
-    } as QueryHistoricalInfoResponse;
-    message.hist =
-      object.hist !== undefined && object.hist !== null
-        ? HistoricalInfo.fromJSON(object.hist)
-        : undefined;
-    return message;
+    return { hist: isSet(object.hist) ? HistoricalInfo.fromJSON(object.hist) : undefined };
   },
 
   toJSON(message: QueryHistoricalInfoResponse): unknown {
     const obj: any = {};
-    message.hist !== undefined &&
-      (obj.hist = message.hist
-        ? HistoricalInfo.toJSON(message.hist)
-        : undefined);
+    message.hist !== undefined && (obj.hist = message.hist ? HistoricalInfo.toJSON(message.hist) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryHistoricalInfoResponse>
-  ): QueryHistoricalInfoResponse {
-    const message = {
-      ...baseQueryHistoricalInfoResponse,
-    } as QueryHistoricalInfoResponse;
-    message.hist =
-      object.hist !== undefined && object.hist !== null
-        ? HistoricalInfo.fromPartial(object.hist)
-        : undefined;
+  create(base?: DeepPartial<QueryHistoricalInfoResponse>): QueryHistoricalInfoResponse {
+    return QueryHistoricalInfoResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryHistoricalInfoResponse>): QueryHistoricalInfoResponse {
+    const message = createBaseQueryHistoricalInfoResponse();
+    message.hist = (object.hist !== undefined && object.hist !== null)
+      ? HistoricalInfo.fromPartial(object.hist)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryPoolRequest: object = {};
+function createBaseQueryPoolRequest(): QueryPoolRequest {
+  return {};
+}
 
 export const QueryPoolRequest = {
-  encode(
-    _: QueryPoolRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryPoolRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryPoolRequest } as QueryPoolRequest;
+    const message = createBaseQueryPoolRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): QueryPoolRequest {
-    const message = { ...baseQueryPoolRequest } as QueryPoolRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryPoolRequest): unknown {
@@ -2287,19 +2036,22 @@ export const QueryPoolRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryPoolRequest>): QueryPoolRequest {
+    return QueryPoolRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<QueryPoolRequest>): QueryPoolRequest {
-    const message = { ...baseQueryPoolRequest } as QueryPoolRequest;
+    const message = createBaseQueryPoolRequest();
     return message;
   },
 };
 
-const baseQueryPoolResponse: object = {};
+function createBaseQueryPoolResponse(): QueryPoolResponse {
+  return { pool: undefined };
+}
 
 export const QueryPoolResponse = {
-  encode(
-    message: QueryPoolResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryPoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pool !== undefined) {
       Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
@@ -2307,77 +2059,76 @@ export const QueryPoolResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryPoolResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryPoolResponse } as QueryPoolResponse;
+    const message = createBaseQueryPoolResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pool = Pool.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryPoolResponse {
-    const message = { ...baseQueryPoolResponse } as QueryPoolResponse;
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? Pool.fromJSON(object.pool)
-        : undefined;
-    return message;
+    return { pool: isSet(object.pool) ? Pool.fromJSON(object.pool) : undefined };
   },
 
   toJSON(message: QueryPoolResponse): unknown {
     const obj: any = {};
-    message.pool !== undefined &&
-      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
+    message.pool !== undefined && (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryPoolResponse>): QueryPoolResponse {
+    return QueryPoolResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryPoolResponse>): QueryPoolResponse {
-    const message = { ...baseQueryPoolResponse } as QueryPoolResponse;
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? Pool.fromPartial(object.pool)
-        : undefined;
+    const message = createBaseQueryPoolResponse();
+    message.pool = (object.pool !== undefined && object.pool !== null) ? Pool.fromPartial(object.pool) : undefined;
     return message;
   },
 };
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+  return {};
+}
 
 export const QueryParamsRequest = {
-  encode(
-    _: QueryParamsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryParamsRequest): unknown {
@@ -2385,19 +2136,22 @@ export const QueryParamsRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    return QueryParamsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     return message;
   },
 };
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+  return { params: undefined };
+}
 
 export const QueryParamsResponse = {
-  encode(
-    message: QueryParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -2405,45 +2159,47 @@ export const QueryParamsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    const message = createBaseQueryParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.params = Params.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
-        : undefined;
-    return message;
+    return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
   },
 
   toJSON(message: QueryParamsResponse): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    return QueryParamsResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+    const message = createBaseQueryParamsResponse();
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
@@ -2465,9 +2221,7 @@ export interface Query {
    * When called from another module, this query might consume a high amount of
    * gas if the pagination field is incorrectly set.
    */
-  ValidatorDelegations(
-    request: QueryValidatorDelegationsRequest
-  ): Promise<QueryValidatorDelegationsResponse>;
+  ValidatorDelegations(request: QueryValidatorDelegationsRequest): Promise<QueryValidatorDelegationsResponse>;
   /**
    * ValidatorUnbondingDelegations queries unbonding delegations of a validator.
    *
@@ -2475,7 +2229,7 @@ export interface Query {
    * gas if the pagination field is incorrectly set.
    */
   ValidatorUnbondingDelegations(
-    request: QueryValidatorUnbondingDelegationsRequest
+    request: QueryValidatorUnbondingDelegationsRequest,
   ): Promise<QueryValidatorUnbondingDelegationsResponse>;
   /** Delegation queries delegate info for given validator delegator pair. */
   Delegation(request: QueryDelegationRequest): Promise<QueryDelegationResponse>;
@@ -2483,18 +2237,14 @@ export interface Query {
    * UnbondingDelegation queries unbonding info for given validator delegator
    * pair.
    */
-  UnbondingDelegation(
-    request: QueryUnbondingDelegationRequest
-  ): Promise<QueryUnbondingDelegationResponse>;
+  UnbondingDelegation(request: QueryUnbondingDelegationRequest): Promise<QueryUnbondingDelegationResponse>;
   /**
    * DelegatorDelegations queries all delegations of a given delegator address.
    *
    * When called from another module, this query might consume a high amount of
    * gas if the pagination field is incorrectly set.
    */
-  DelegatorDelegations(
-    request: QueryDelegatorDelegationsRequest
-  ): Promise<QueryDelegatorDelegationsResponse>;
+  DelegatorDelegations(request: QueryDelegatorDelegationsRequest): Promise<QueryDelegatorDelegationsResponse>;
   /**
    * DelegatorUnbondingDelegations queries all unbonding delegations of a given
    * delegator address.
@@ -2503,7 +2253,7 @@ export interface Query {
    * gas if the pagination field is incorrectly set.
    */
   DelegatorUnbondingDelegations(
-    request: QueryDelegatorUnbondingDelegationsRequest
+    request: QueryDelegatorUnbondingDelegationsRequest,
   ): Promise<QueryDelegatorUnbondingDelegationsResponse>;
   /**
    * Redelegations queries redelegations of given address.
@@ -2511,9 +2261,7 @@ export interface Query {
    * When called from another module, this query might consume a high amount of
    * gas if the pagination field is incorrectly set.
    */
-  Redelegations(
-    request: QueryRedelegationsRequest
-  ): Promise<QueryRedelegationsResponse>;
+  Redelegations(request: QueryRedelegationsRequest): Promise<QueryRedelegationsResponse>;
   /**
    * DelegatorValidators queries all validators info for given delegator
    * address.
@@ -2521,20 +2269,14 @@ export interface Query {
    * When called from another module, this query might consume a high amount of
    * gas if the pagination field is incorrectly set.
    */
-  DelegatorValidators(
-    request: QueryDelegatorValidatorsRequest
-  ): Promise<QueryDelegatorValidatorsResponse>;
+  DelegatorValidators(request: QueryDelegatorValidatorsRequest): Promise<QueryDelegatorValidatorsResponse>;
   /**
    * DelegatorValidator queries validator info for given delegator validator
    * pair.
    */
-  DelegatorValidator(
-    request: QueryDelegatorValidatorRequest
-  ): Promise<QueryDelegatorValidatorResponse>;
+  DelegatorValidator(request: QueryDelegatorValidatorRequest): Promise<QueryDelegatorValidatorResponse>;
   /** HistoricalInfo queries the historical info for given height. */
-  HistoricalInfo(
-    request: QueryHistoricalInfoRequest
-  ): Promise<QueryHistoricalInfoResponse>;
+  HistoricalInfo(request: QueryHistoricalInfoRequest): Promise<QueryHistoricalInfoResponse>;
   /** Pool queries the pool info. */
   Pool(request: QueryPoolRequest): Promise<QueryPoolResponse>;
   /** Parameters queries the staking parameters. */
@@ -2543,18 +2285,18 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.staking.v1beta1.Query";
     this.rpc = rpc;
     this.Validators = this.Validators.bind(this);
     this.Validator = this.Validator.bind(this);
     this.ValidatorDelegations = this.ValidatorDelegations.bind(this);
-    this.ValidatorUnbondingDelegations =
-      this.ValidatorUnbondingDelegations.bind(this);
+    this.ValidatorUnbondingDelegations = this.ValidatorUnbondingDelegations.bind(this);
     this.Delegation = this.Delegation.bind(this);
     this.UnbondingDelegation = this.UnbondingDelegation.bind(this);
     this.DelegatorDelegations = this.DelegatorDelegations.bind(this);
-    this.DelegatorUnbondingDelegations =
-      this.DelegatorUnbondingDelegations.bind(this);
+    this.DelegatorUnbondingDelegations = this.DelegatorUnbondingDelegations.bind(this);
     this.Redelegations = this.Redelegations.bind(this);
     this.DelegatorValidators = this.DelegatorValidators.bind(this);
     this.DelegatorValidator = this.DelegatorValidator.bind(this);
@@ -2562,228 +2304,112 @@ export class QueryClientImpl implements Query {
     this.Pool = this.Pool.bind(this);
     this.Params = this.Params.bind(this);
   }
-  Validators(
-    request: QueryValidatorsRequest
-  ): Promise<QueryValidatorsResponse> {
+  Validators(request: QueryValidatorsRequest): Promise<QueryValidatorsResponse> {
     const data = QueryValidatorsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "Validators",
-      data
-    );
-    return promise.then((data) =>
-      QueryValidatorsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Validators", data);
+    return promise.then((data) => QueryValidatorsResponse.decode(_m0.Reader.create(data)));
   }
 
   Validator(request: QueryValidatorRequest): Promise<QueryValidatorResponse> {
     const data = QueryValidatorRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "Validator",
-      data
-    );
-    return promise.then((data) =>
-      QueryValidatorResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Validator", data);
+    return promise.then((data) => QueryValidatorResponse.decode(_m0.Reader.create(data)));
   }
 
-  ValidatorDelegations(
-    request: QueryValidatorDelegationsRequest
-  ): Promise<QueryValidatorDelegationsResponse> {
+  ValidatorDelegations(request: QueryValidatorDelegationsRequest): Promise<QueryValidatorDelegationsResponse> {
     const data = QueryValidatorDelegationsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "ValidatorDelegations",
-      data
-    );
-    return promise.then((data) =>
-      QueryValidatorDelegationsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "ValidatorDelegations", data);
+    return promise.then((data) => QueryValidatorDelegationsResponse.decode(_m0.Reader.create(data)));
   }
 
   ValidatorUnbondingDelegations(
-    request: QueryValidatorUnbondingDelegationsRequest
+    request: QueryValidatorUnbondingDelegationsRequest,
   ): Promise<QueryValidatorUnbondingDelegationsResponse> {
-    const data =
-      QueryValidatorUnbondingDelegationsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "ValidatorUnbondingDelegations",
-      data
-    );
-    return promise.then((data) =>
-      QueryValidatorUnbondingDelegationsResponse.decode(new _m0.Reader(data))
-    );
+    const data = QueryValidatorUnbondingDelegationsRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "ValidatorUnbondingDelegations", data);
+    return promise.then((data) => QueryValidatorUnbondingDelegationsResponse.decode(_m0.Reader.create(data)));
   }
 
-  Delegation(
-    request: QueryDelegationRequest
-  ): Promise<QueryDelegationResponse> {
+  Delegation(request: QueryDelegationRequest): Promise<QueryDelegationResponse> {
     const data = QueryDelegationRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "Delegation",
-      data
-    );
-    return promise.then((data) =>
-      QueryDelegationResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Delegation", data);
+    return promise.then((data) => QueryDelegationResponse.decode(_m0.Reader.create(data)));
   }
 
-  UnbondingDelegation(
-    request: QueryUnbondingDelegationRequest
-  ): Promise<QueryUnbondingDelegationResponse> {
+  UnbondingDelegation(request: QueryUnbondingDelegationRequest): Promise<QueryUnbondingDelegationResponse> {
     const data = QueryUnbondingDelegationRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "UnbondingDelegation",
-      data
-    );
-    return promise.then((data) =>
-      QueryUnbondingDelegationResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UnbondingDelegation", data);
+    return promise.then((data) => QueryUnbondingDelegationResponse.decode(_m0.Reader.create(data)));
   }
 
-  DelegatorDelegations(
-    request: QueryDelegatorDelegationsRequest
-  ): Promise<QueryDelegatorDelegationsResponse> {
+  DelegatorDelegations(request: QueryDelegatorDelegationsRequest): Promise<QueryDelegatorDelegationsResponse> {
     const data = QueryDelegatorDelegationsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "DelegatorDelegations",
-      data
-    );
-    return promise.then((data) =>
-      QueryDelegatorDelegationsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "DelegatorDelegations", data);
+    return promise.then((data) => QueryDelegatorDelegationsResponse.decode(_m0.Reader.create(data)));
   }
 
   DelegatorUnbondingDelegations(
-    request: QueryDelegatorUnbondingDelegationsRequest
+    request: QueryDelegatorUnbondingDelegationsRequest,
   ): Promise<QueryDelegatorUnbondingDelegationsResponse> {
-    const data =
-      QueryDelegatorUnbondingDelegationsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "DelegatorUnbondingDelegations",
-      data
-    );
-    return promise.then((data) =>
-      QueryDelegatorUnbondingDelegationsResponse.decode(new _m0.Reader(data))
-    );
+    const data = QueryDelegatorUnbondingDelegationsRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "DelegatorUnbondingDelegations", data);
+    return promise.then((data) => QueryDelegatorUnbondingDelegationsResponse.decode(_m0.Reader.create(data)));
   }
 
-  Redelegations(
-    request: QueryRedelegationsRequest
-  ): Promise<QueryRedelegationsResponse> {
+  Redelegations(request: QueryRedelegationsRequest): Promise<QueryRedelegationsResponse> {
     const data = QueryRedelegationsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "Redelegations",
-      data
-    );
-    return promise.then((data) =>
-      QueryRedelegationsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Redelegations", data);
+    return promise.then((data) => QueryRedelegationsResponse.decode(_m0.Reader.create(data)));
   }
 
-  DelegatorValidators(
-    request: QueryDelegatorValidatorsRequest
-  ): Promise<QueryDelegatorValidatorsResponse> {
+  DelegatorValidators(request: QueryDelegatorValidatorsRequest): Promise<QueryDelegatorValidatorsResponse> {
     const data = QueryDelegatorValidatorsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "DelegatorValidators",
-      data
-    );
-    return promise.then((data) =>
-      QueryDelegatorValidatorsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "DelegatorValidators", data);
+    return promise.then((data) => QueryDelegatorValidatorsResponse.decode(_m0.Reader.create(data)));
   }
 
-  DelegatorValidator(
-    request: QueryDelegatorValidatorRequest
-  ): Promise<QueryDelegatorValidatorResponse> {
+  DelegatorValidator(request: QueryDelegatorValidatorRequest): Promise<QueryDelegatorValidatorResponse> {
     const data = QueryDelegatorValidatorRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "DelegatorValidator",
-      data
-    );
-    return promise.then((data) =>
-      QueryDelegatorValidatorResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "DelegatorValidator", data);
+    return promise.then((data) => QueryDelegatorValidatorResponse.decode(_m0.Reader.create(data)));
   }
 
-  HistoricalInfo(
-    request: QueryHistoricalInfoRequest
-  ): Promise<QueryHistoricalInfoResponse> {
+  HistoricalInfo(request: QueryHistoricalInfoRequest): Promise<QueryHistoricalInfoResponse> {
     const data = QueryHistoricalInfoRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "HistoricalInfo",
-      data
-    );
-    return promise.then((data) =>
-      QueryHistoricalInfoResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HistoricalInfo", data);
+    return promise.then((data) => QueryHistoricalInfoResponse.decode(_m0.Reader.create(data)));
   }
 
   Pool(request: QueryPoolRequest): Promise<QueryPoolResponse> {
     const data = QueryPoolRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "Pool",
-      data
-    );
-    return promise.then((data) =>
-      QueryPoolResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Pool", data);
+    return promise.then((data) => QueryPoolResponse.decode(_m0.Reader.create(data)));
   }
 
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.staking.v1beta1.Query",
-      "Params",
-      data
-    );
-    return promise.then((data) =>
-      QueryParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Params", data);
+    return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -25,18 +25,12 @@ export interface MainAccount {
   subRole: string;
 }
 
-const baseSubAccount: object = {
-  mainAddress: "",
-  role: "",
-  expectedAuthorizer: "",
-  subAddress: "",
-};
+function createBaseSubAccount(): SubAccount {
+  return { mainAddress: "", role: "", expectedAuthorizer: "", subAddress: "" };
+}
 
 export const SubAccount = {
-  encode(
-    message: SubAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SubAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.mainAddress !== "") {
       writer.uint32(10).string(message.mainAddress);
     }
@@ -53,67 +47,73 @@ export const SubAccount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SubAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSubAccount } as SubAccount;
+    const message = createBaseSubAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.mainAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.role = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.expectedAuthorizer = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.subAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SubAccount {
-    const message = { ...baseSubAccount } as SubAccount;
-    message.mainAddress =
-      object.mainAddress !== undefined && object.mainAddress !== null
-        ? String(object.mainAddress)
-        : "";
-    message.role =
-      object.role !== undefined && object.role !== null
-        ? String(object.role)
-        : "";
-    message.expectedAuthorizer =
-      object.expectedAuthorizer !== undefined &&
-      object.expectedAuthorizer !== null
-        ? String(object.expectedAuthorizer)
-        : "";
-    message.subAddress =
-      object.subAddress !== undefined && object.subAddress !== null
-        ? String(object.subAddress)
-        : "";
-    return message;
+    return {
+      mainAddress: isSet(object.mainAddress) ? String(object.mainAddress) : "",
+      role: isSet(object.role) ? String(object.role) : "",
+      expectedAuthorizer: isSet(object.expectedAuthorizer) ? String(object.expectedAuthorizer) : "",
+      subAddress: isSet(object.subAddress) ? String(object.subAddress) : "",
+    };
   },
 
   toJSON(message: SubAccount): unknown {
     const obj: any = {};
-    message.mainAddress !== undefined &&
-      (obj.mainAddress = message.mainAddress);
+    message.mainAddress !== undefined && (obj.mainAddress = message.mainAddress);
     message.role !== undefined && (obj.role = message.role);
-    message.expectedAuthorizer !== undefined &&
-      (obj.expectedAuthorizer = message.expectedAuthorizer);
+    message.expectedAuthorizer !== undefined && (obj.expectedAuthorizer = message.expectedAuthorizer);
     message.subAddress !== undefined && (obj.subAddress = message.subAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<SubAccount>): SubAccount {
+    return SubAccount.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SubAccount>): SubAccount {
-    const message = { ...baseSubAccount } as SubAccount;
+    const message = createBaseSubAccount();
     message.mainAddress = object.mainAddress ?? "";
     message.role = object.role ?? "";
     message.expectedAuthorizer = object.expectedAuthorizer ?? "";
@@ -122,17 +122,12 @@ export const SubAccount = {
   },
 };
 
-const baseGenesisSubAccount: object = {
-  mainAddress: "",
-  subAddress: "",
-  role: "",
-};
+function createBaseGenesisSubAccount(): GenesisSubAccount {
+  return { mainAddress: "", subAddress: "", role: "" };
+}
 
 export const GenesisSubAccount = {
-  encode(
-    message: GenesisSubAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisSubAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.mainAddress !== "") {
       writer.uint32(10).string(message.mainAddress);
     }
@@ -146,57 +141,64 @@ export const GenesisSubAccount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisSubAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisSubAccount } as GenesisSubAccount;
+    const message = createBaseGenesisSubAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.mainAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.subAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.role = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisSubAccount {
-    const message = { ...baseGenesisSubAccount } as GenesisSubAccount;
-    message.mainAddress =
-      object.mainAddress !== undefined && object.mainAddress !== null
-        ? String(object.mainAddress)
-        : "";
-    message.subAddress =
-      object.subAddress !== undefined && object.subAddress !== null
-        ? String(object.subAddress)
-        : "";
-    message.role =
-      object.role !== undefined && object.role !== null
-        ? String(object.role)
-        : "";
-    return message;
+    return {
+      mainAddress: isSet(object.mainAddress) ? String(object.mainAddress) : "",
+      subAddress: isSet(object.subAddress) ? String(object.subAddress) : "",
+      role: isSet(object.role) ? String(object.role) : "",
+    };
   },
 
   toJSON(message: GenesisSubAccount): unknown {
     const obj: any = {};
-    message.mainAddress !== undefined &&
-      (obj.mainAddress = message.mainAddress);
+    message.mainAddress !== undefined && (obj.mainAddress = message.mainAddress);
     message.subAddress !== undefined && (obj.subAddress = message.subAddress);
     message.role !== undefined && (obj.role = message.role);
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisSubAccount>): GenesisSubAccount {
+    return GenesisSubAccount.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisSubAccount>): GenesisSubAccount {
-    const message = { ...baseGenesisSubAccount } as GenesisSubAccount;
+    const message = createBaseGenesisSubAccount();
     message.mainAddress = object.mainAddress ?? "";
     message.subAddress = object.subAddress ?? "";
     message.role = object.role ?? "";
@@ -204,25 +206,17 @@ export const GenesisSubAccount = {
   },
 };
 
-const baseMainAccount: object = {
-  subAddresses: "",
-  mainAddress: "",
-  subRole: "",
-};
+function createBaseMainAccount(): MainAccount {
+  return { subAddresses: [], tradingFeeDelegateLastUpdate: undefined, mainAddress: "", subRole: "" };
+}
 
 export const MainAccount = {
-  encode(
-    message: MainAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MainAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.subAddresses) {
       writer.uint32(10).string(v!);
     }
     if (message.tradingFeeDelegateLastUpdate !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.tradingFeeDelegateLastUpdate),
-        writer.uint32(18).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.tradingFeeDelegateLastUpdate), writer.uint32(18).fork()).ldelim();
     }
     if (message.mainAddress !== "") {
       writer.uint32(26).string(message.mainAddress);
@@ -234,54 +228,58 @@ export const MainAccount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MainAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMainAccount } as MainAccount;
-    message.subAddresses = [];
+    const message = createBaseMainAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.subAddresses.push(reader.string());
-          break;
+          continue;
         case 2:
-          message.tradingFeeDelegateLastUpdate = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.tradingFeeDelegateLastUpdate = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.mainAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.subRole = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MainAccount {
-    const message = { ...baseMainAccount } as MainAccount;
-    message.subAddresses = (object.subAddresses ?? []).map((e: any) =>
-      String(e)
-    );
-    message.tradingFeeDelegateLastUpdate =
-      object.tradingFeeDelegateLastUpdate !== undefined &&
-      object.tradingFeeDelegateLastUpdate !== null
+    return {
+      subAddresses: Array.isArray(object?.subAddresses) ? object.subAddresses.map((e: any) => String(e)) : [],
+      tradingFeeDelegateLastUpdate: isSet(object.tradingFeeDelegateLastUpdate)
         ? fromJsonTimestamp(object.tradingFeeDelegateLastUpdate)
-        : undefined;
-    message.mainAddress =
-      object.mainAddress !== undefined && object.mainAddress !== null
-        ? String(object.mainAddress)
-        : "";
-    message.subRole =
-      object.subRole !== undefined && object.subRole !== null
-        ? String(object.subRole)
-        : "";
-    return message;
+        : undefined,
+      mainAddress: isSet(object.mainAddress) ? String(object.mainAddress) : "",
+      subRole: isSet(object.subRole) ? String(object.subRole) : "",
+    };
   },
 
   toJSON(message: MainAccount): unknown {
@@ -292,43 +290,32 @@ export const MainAccount = {
       obj.subAddresses = [];
     }
     message.tradingFeeDelegateLastUpdate !== undefined &&
-      (obj.tradingFeeDelegateLastUpdate =
-        message.tradingFeeDelegateLastUpdate.toISOString());
-    message.mainAddress !== undefined &&
-      (obj.mainAddress = message.mainAddress);
+      (obj.tradingFeeDelegateLastUpdate = message.tradingFeeDelegateLastUpdate.toISOString());
+    message.mainAddress !== undefined && (obj.mainAddress = message.mainAddress);
     message.subRole !== undefined && (obj.subRole = message.subRole);
     return obj;
   },
 
+  create(base?: DeepPartial<MainAccount>): MainAccount {
+    return MainAccount.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MainAccount>): MainAccount {
-    const message = { ...baseMainAccount } as MainAccount;
-    message.subAddresses = (object.subAddresses ?? []).map((e) => e);
-    message.tradingFeeDelegateLastUpdate =
-      object.tradingFeeDelegateLastUpdate ?? undefined;
+    const message = createBaseMainAccount();
+    message.subAddresses = object.subAddresses?.map((e) => e) || [];
+    message.tradingFeeDelegateLastUpdate = object.tradingFeeDelegateLastUpdate ?? undefined;
     message.mainAddress = object.mainAddress ?? "";
     message.subRole = object.subRole ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -338,8 +325,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -360,4 +347,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

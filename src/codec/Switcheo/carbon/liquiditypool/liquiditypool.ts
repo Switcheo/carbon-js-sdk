@@ -84,24 +84,26 @@ export interface ReserveData {
   vQuoteBalance: string;
 }
 
-const basePool: object = {
-  creator: "",
-  id: Long.UZERO,
-  name: "",
-  denom: "",
-  denomA: "",
-  amountA: "",
-  weightA: "",
-  denomB: "",
-  amountB: "",
-  weightB: "",
-  swapFee: "",
-  sharesAmount: "",
-  ampBps: Long.UZERO,
-  vAmountA: "",
-  vAmountB: "",
-  isDeprecated: false,
-};
+function createBasePool(): Pool {
+  return {
+    creator: "",
+    id: Long.UZERO,
+    name: "",
+    denom: "",
+    denomA: "",
+    amountA: "",
+    weightA: "",
+    denomB: "",
+    amountB: "",
+    weightB: "",
+    swapFee: "",
+    sharesAmount: "",
+    ampBps: Long.UZERO,
+    vAmountA: "",
+    vAmountB: "",
+    isDeprecated: false,
+  };
+}
 
 export const Pool = {
   encode(message: Pool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -157,142 +159,158 @@ export const Pool = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Pool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePool } as Pool;
+    const message = createBasePool();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.id = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.denomA = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.amountA = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.weightA = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.denomB = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.amountB = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.weightB = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.swapFee = reader.string();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.sharesAmount = reader.string();
-          break;
+          continue;
         case 15:
+          if (tag !== 120) {
+            break;
+          }
+
           message.ampBps = reader.uint64() as Long;
-          break;
+          continue;
         case 16:
+          if (tag !== 130) {
+            break;
+          }
+
           message.vAmountA = reader.string();
-          break;
+          continue;
         case 17:
+          if (tag !== 138) {
+            break;
+          }
+
           message.vAmountB = reader.string();
-          break;
+          continue;
         case 18:
+          if (tag !== 144) {
+            break;
+          }
+
           message.isDeprecated = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Pool {
-    const message = { ...basePool } as Pool;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.denomA =
-      object.denomA !== undefined && object.denomA !== null
-        ? String(object.denomA)
-        : "";
-    message.amountA =
-      object.amountA !== undefined && object.amountA !== null
-        ? String(object.amountA)
-        : "";
-    message.weightA =
-      object.weightA !== undefined && object.weightA !== null
-        ? String(object.weightA)
-        : "";
-    message.denomB =
-      object.denomB !== undefined && object.denomB !== null
-        ? String(object.denomB)
-        : "";
-    message.amountB =
-      object.amountB !== undefined && object.amountB !== null
-        ? String(object.amountB)
-        : "";
-    message.weightB =
-      object.weightB !== undefined && object.weightB !== null
-        ? String(object.weightB)
-        : "";
-    message.swapFee =
-      object.swapFee !== undefined && object.swapFee !== null
-        ? String(object.swapFee)
-        : "";
-    message.sharesAmount =
-      object.sharesAmount !== undefined && object.sharesAmount !== null
-        ? String(object.sharesAmount)
-        : "";
-    message.ampBps =
-      object.ampBps !== undefined && object.ampBps !== null
-        ? Long.fromString(object.ampBps)
-        : Long.UZERO;
-    message.vAmountA =
-      object.vAmountA !== undefined && object.vAmountA !== null
-        ? String(object.vAmountA)
-        : "";
-    message.vAmountB =
-      object.vAmountB !== undefined && object.vAmountB !== null
-        ? String(object.vAmountB)
-        : "";
-    message.isDeprecated =
-      object.isDeprecated !== undefined && object.isDeprecated !== null
-        ? Boolean(object.isDeprecated)
-        : false;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
+      name: isSet(object.name) ? String(object.name) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      denomA: isSet(object.denomA) ? String(object.denomA) : "",
+      amountA: isSet(object.amountA) ? String(object.amountA) : "",
+      weightA: isSet(object.weightA) ? String(object.weightA) : "",
+      denomB: isSet(object.denomB) ? String(object.denomB) : "",
+      amountB: isSet(object.amountB) ? String(object.amountB) : "",
+      weightB: isSet(object.weightB) ? String(object.weightB) : "",
+      swapFee: isSet(object.swapFee) ? String(object.swapFee) : "",
+      sharesAmount: isSet(object.sharesAmount) ? String(object.sharesAmount) : "",
+      ampBps: isSet(object.ampBps) ? Long.fromValue(object.ampBps) : Long.UZERO,
+      vAmountA: isSet(object.vAmountA) ? String(object.vAmountA) : "",
+      vAmountB: isSet(object.vAmountB) ? String(object.vAmountB) : "",
+      isDeprecated: isSet(object.isDeprecated) ? Boolean(object.isDeprecated) : false,
+    };
   },
 
   toJSON(message: Pool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     message.name !== undefined && (obj.name = message.name);
     message.denom !== undefined && (obj.denom = message.denom);
     message.denomA !== undefined && (obj.denomA = message.denomA);
@@ -302,24 +320,22 @@ export const Pool = {
     message.amountB !== undefined && (obj.amountB = message.amountB);
     message.weightB !== undefined && (obj.weightB = message.weightB);
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    message.sharesAmount !== undefined &&
-      (obj.sharesAmount = message.sharesAmount);
-    message.ampBps !== undefined &&
-      (obj.ampBps = (message.ampBps || Long.UZERO).toString());
+    message.sharesAmount !== undefined && (obj.sharesAmount = message.sharesAmount);
+    message.ampBps !== undefined && (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     message.vAmountA !== undefined && (obj.vAmountA = message.vAmountA);
     message.vAmountB !== undefined && (obj.vAmountB = message.vAmountB);
-    message.isDeprecated !== undefined &&
-      (obj.isDeprecated = message.isDeprecated);
+    message.isDeprecated !== undefined && (obj.isDeprecated = message.isDeprecated);
     return obj;
   },
 
+  create(base?: DeepPartial<Pool>): Pool {
+    return Pool.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Pool>): Pool {
-    const message = { ...basePool } as Pool;
+    const message = createBasePool();
     message.creator = object.creator ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
     message.name = object.name ?? "";
     message.denom = object.denom ?? "";
     message.denomA = object.denomA ?? "";
@@ -330,10 +346,9 @@ export const Pool = {
     message.weightB = object.weightB ?? "";
     message.swapFee = object.swapFee ?? "";
     message.sharesAmount = object.sharesAmount ?? "";
-    message.ampBps =
-      object.ampBps !== undefined && object.ampBps !== null
-        ? Long.fromValue(object.ampBps)
-        : Long.UZERO;
+    message.ampBps = (object.ampBps !== undefined && object.ampBps !== null)
+      ? Long.fromValue(object.ampBps)
+      : Long.UZERO;
     message.vAmountA = object.vAmountA ?? "";
     message.vAmountB = object.vAmountB ?? "";
     message.isDeprecated = object.isDeprecated ?? false;
@@ -341,7 +356,9 @@ export const Pool = {
   },
 };
 
-const basePools: object = {};
+function createBasePools(): Pools {
+  return { pools: [] };
+}
 
 export const Pools = {
   encode(message: Pools, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -352,59 +369,59 @@ export const Pools = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Pools {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePools } as Pools;
-    message.pools = [];
+    const message = createBasePools();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pools.push(Pool.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Pools {
-    const message = { ...basePools } as Pools;
-    message.pools = (object.pools ?? []).map((e: any) => Pool.fromJSON(e));
-    return message;
+    return { pools: Array.isArray(object?.pools) ? object.pools.map((e: any) => Pool.fromJSON(e)) : [] };
   },
 
   toJSON(message: Pools): unknown {
     const obj: any = {};
     if (message.pools) {
-      obj.pools = message.pools.map((e) => (e ? Pool.toJSON(e) : undefined));
+      obj.pools = message.pools.map((e) => e ? Pool.toJSON(e) : undefined);
     } else {
       obj.pools = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Pools>): Pools {
+    return Pools.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Pools>): Pools {
-    const message = { ...basePools } as Pools;
-    message.pools = (object.pools ?? []).map((e) => Pool.fromPartial(e));
+    const message = createBasePools();
+    message.pools = object.pools?.map((e) => Pool.fromPartial(e)) || [];
     return message;
   },
 };
 
-const basePoolRoute: object = {
-  marketId: "",
-  poolIds: Long.UZERO,
-  legacyNumQuotes: Long.ZERO,
-  numQuotes: Long.UZERO,
-};
+function createBasePoolRoute(): PoolRoute {
+  return { marketId: "", poolIds: [], legacyNumQuotes: Long.ZERO, numQuotes: Long.UZERO };
+}
 
 export const PoolRoute = {
-  encode(
-    message: PoolRoute,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PoolRoute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -423,58 +440,66 @@ export const PoolRoute = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PoolRoute {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePoolRoute } as PoolRoute;
-    message.poolIds = [];
+    const message = createBasePoolRoute();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
-          if ((tag & 7) === 2) {
+          if (tag === 16) {
+            message.poolIds.push(reader.uint64() as Long);
+
+            continue;
+          }
+
+          if (tag === 18) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.poolIds.push(reader.uint64() as Long);
             }
-          } else {
-            message.poolIds.push(reader.uint64() as Long);
+
+            continue;
           }
+
           break;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.legacyNumQuotes = reader.int64() as Long;
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.numQuotes = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PoolRoute {
-    const message = { ...basePoolRoute } as PoolRoute;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.poolIds = (object.poolIds ?? []).map((e: any) =>
-      Long.fromString(e)
-    );
-    message.legacyNumQuotes =
-      object.legacyNumQuotes !== undefined && object.legacyNumQuotes !== null
-        ? Long.fromString(object.legacyNumQuotes)
-        : Long.ZERO;
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromString(object.numQuotes)
-        : Long.UZERO;
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      poolIds: Array.isArray(object?.poolIds) ? object.poolIds.map((e: any) => Long.fromValue(e)) : [],
+      legacyNumQuotes: isSet(object.legacyNumQuotes) ? Long.fromValue(object.legacyNumQuotes) : Long.ZERO,
+      numQuotes: isSet(object.numQuotes) ? Long.fromValue(object.numQuotes) : Long.UZERO,
+    };
   },
 
   toJSON(message: PoolRoute): unknown {
@@ -485,42 +510,35 @@ export const PoolRoute = {
     } else {
       obj.poolIds = [];
     }
-    message.legacyNumQuotes !== undefined &&
-      (obj.legacyNumQuotes = (message.legacyNumQuotes || Long.ZERO).toString());
-    message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
+    message.legacyNumQuotes !== undefined && (obj.legacyNumQuotes = (message.legacyNumQuotes || Long.ZERO).toString());
+    message.numQuotes !== undefined && (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<PoolRoute>): PoolRoute {
+    return PoolRoute.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<PoolRoute>): PoolRoute {
-    const message = { ...basePoolRoute } as PoolRoute;
+    const message = createBasePoolRoute();
     message.marketId = object.marketId ?? "";
-    message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
-    message.legacyNumQuotes =
-      object.legacyNumQuotes !== undefined && object.legacyNumQuotes !== null
-        ? Long.fromValue(object.legacyNumQuotes)
-        : Long.ZERO;
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromValue(object.numQuotes)
-        : Long.UZERO;
+    message.poolIds = object.poolIds?.map((e) => Long.fromValue(e)) || [];
+    message.legacyNumQuotes = (object.legacyNumQuotes !== undefined && object.legacyNumQuotes !== null)
+      ? Long.fromValue(object.legacyNumQuotes)
+      : Long.ZERO;
+    message.numQuotes = (object.numQuotes !== undefined && object.numQuotes !== null)
+      ? Long.fromValue(object.numQuotes)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseAddLiquidity: object = {
-  creator: "",
-  id: Long.UZERO,
-  amountA: "",
-  amountB: "",
-  minShares: "",
-};
+function createBaseAddLiquidity(): AddLiquidity {
+  return { creator: "", id: Long.UZERO, amountA: "", amountB: "", minShares: "" };
+}
 
 export const AddLiquidity = {
-  encode(
-    message: AddLiquidity,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AddLiquidity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -540,78 +558,84 @@ export const AddLiquidity = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AddLiquidity {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAddLiquidity } as AddLiquidity;
+    const message = createBaseAddLiquidity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.id = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amountA = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.amountB = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.minShares = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AddLiquidity {
-    const message = { ...baseAddLiquidity } as AddLiquidity;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.amountA =
-      object.amountA !== undefined && object.amountA !== null
-        ? String(object.amountA)
-        : "";
-    message.amountB =
-      object.amountB !== undefined && object.amountB !== null
-        ? String(object.amountB)
-        : "";
-    message.minShares =
-      object.minShares !== undefined && object.minShares !== null
-        ? String(object.minShares)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
+      amountA: isSet(object.amountA) ? String(object.amountA) : "",
+      amountB: isSet(object.amountB) ? String(object.amountB) : "",
+      minShares: isSet(object.minShares) ? String(object.minShares) : "",
+    };
   },
 
   toJSON(message: AddLiquidity): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     message.amountA !== undefined && (obj.amountA = message.amountA);
     message.amountB !== undefined && (obj.amountB = message.amountB);
     message.minShares !== undefined && (obj.minShares = message.minShares);
     return obj;
   },
 
+  create(base?: DeepPartial<AddLiquidity>): AddLiquidity {
+    return AddLiquidity.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<AddLiquidity>): AddLiquidity {
-    const message = { ...baseAddLiquidity } as AddLiquidity;
+    const message = createBaseAddLiquidity();
     message.creator = object.creator ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
     message.amountA = object.amountA ?? "";
     message.amountB = object.amountB ?? "";
     message.minShares = object.minShares ?? "";
@@ -619,13 +643,12 @@ export const AddLiquidity = {
   },
 };
 
-const baseAddLiquidities: object = {};
+function createBaseAddLiquidities(): AddLiquidities {
+  return { addLiquidities: [] };
+}
 
 export const AddLiquidities = {
-  encode(
-    message: AddLiquidities,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AddLiquidities, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.addLiquidities) {
       AddLiquidity.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -633,62 +656,63 @@ export const AddLiquidities = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AddLiquidities {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAddLiquidities } as AddLiquidities;
-    message.addLiquidities = [];
+    const message = createBaseAddLiquidities();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.addLiquidities.push(
-            AddLiquidity.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.addLiquidities.push(AddLiquidity.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AddLiquidities {
-    const message = { ...baseAddLiquidities } as AddLiquidities;
-    message.addLiquidities = (object.addLiquidities ?? []).map((e: any) =>
-      AddLiquidity.fromJSON(e)
-    );
-    return message;
+    return {
+      addLiquidities: Array.isArray(object?.addLiquidities)
+        ? object.addLiquidities.map((e: any) => AddLiquidity.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: AddLiquidities): unknown {
     const obj: any = {};
     if (message.addLiquidities) {
-      obj.addLiquidities = message.addLiquidities.map((e) =>
-        e ? AddLiquidity.toJSON(e) : undefined
-      );
+      obj.addLiquidities = message.addLiquidities.map((e) => e ? AddLiquidity.toJSON(e) : undefined);
     } else {
       obj.addLiquidities = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<AddLiquidities>): AddLiquidities {
+    return AddLiquidities.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<AddLiquidities>): AddLiquidities {
-    const message = { ...baseAddLiquidities } as AddLiquidities;
-    message.addLiquidities = (object.addLiquidities ?? []).map((e) =>
-      AddLiquidity.fromPartial(e)
-    );
+    const message = createBaseAddLiquidities();
+    message.addLiquidities = object.addLiquidities?.map((e) => AddLiquidity.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseRemoveLiquidity: object = { creator: "", id: Long.UZERO, amount: "" };
+function createBaseRemoveLiquidity(): RemoveLiquidity {
+  return { creator: "", id: Long.UZERO, amount: "" };
+}
 
 export const RemoveLiquidity = {
-  encode(
-    message: RemoveLiquidity,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RemoveLiquidity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -702,74 +726,77 @@ export const RemoveLiquidity = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RemoveLiquidity {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRemoveLiquidity } as RemoveLiquidity;
+    const message = createBaseRemoveLiquidity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.id = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RemoveLiquidity {
-    const message = { ...baseRemoveLiquidity } as RemoveLiquidity;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
+      amount: isSet(object.amount) ? String(object.amount) : "",
+    };
   },
 
   toJSON(message: RemoveLiquidity): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
 
+  create(base?: DeepPartial<RemoveLiquidity>): RemoveLiquidity {
+    return RemoveLiquidity.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RemoveLiquidity>): RemoveLiquidity {
-    const message = { ...baseRemoveLiquidity } as RemoveLiquidity;
+    const message = createBaseRemoveLiquidity();
     message.creator = object.creator ?? "";
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-const baseRemoveLiquidities: object = {};
+function createBaseRemoveLiquidities(): RemoveLiquidities {
+  return { removeLiquidities: [] };
+}
 
 export const RemoveLiquidities = {
-  encode(
-    message: RemoveLiquidities,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RemoveLiquidities, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.removeLiquidities) {
       RemoveLiquidity.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -777,62 +804,63 @@ export const RemoveLiquidities = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RemoveLiquidities {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRemoveLiquidities } as RemoveLiquidities;
-    message.removeLiquidities = [];
+    const message = createBaseRemoveLiquidities();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.removeLiquidities.push(
-            RemoveLiquidity.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.removeLiquidities.push(RemoveLiquidity.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RemoveLiquidities {
-    const message = { ...baseRemoveLiquidities } as RemoveLiquidities;
-    message.removeLiquidities = (object.removeLiquidities ?? []).map((e: any) =>
-      RemoveLiquidity.fromJSON(e)
-    );
-    return message;
+    return {
+      removeLiquidities: Array.isArray(object?.removeLiquidities)
+        ? object.removeLiquidities.map((e: any) => RemoveLiquidity.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: RemoveLiquidities): unknown {
     const obj: any = {};
     if (message.removeLiquidities) {
-      obj.removeLiquidities = message.removeLiquidities.map((e) =>
-        e ? RemoveLiquidity.toJSON(e) : undefined
-      );
+      obj.removeLiquidities = message.removeLiquidities.map((e) => e ? RemoveLiquidity.toJSON(e) : undefined);
     } else {
       obj.removeLiquidities = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<RemoveLiquidities>): RemoveLiquidities {
+    return RemoveLiquidities.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RemoveLiquidities>): RemoveLiquidities {
-    const message = { ...baseRemoveLiquidities } as RemoveLiquidities;
-    message.removeLiquidities = (object.removeLiquidities ?? []).map((e) =>
-      RemoveLiquidity.fromPartial(e)
-    );
+    const message = createBaseRemoveLiquidities();
+    message.removeLiquidities = object.removeLiquidities?.map((e) => RemoveLiquidity.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseRemovePoolRoutes: object = {};
+function createBaseRemovePoolRoutes(): RemovePoolRoutes {
+  return { removePoolRoutes: [] };
+}
 
 export const RemovePoolRoutes = {
-  encode(
-    message: RemovePoolRoutes,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RemovePoolRoutes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.removePoolRoutes) {
       writer.uint32(10).bytes(v!);
     }
@@ -840,30 +868,34 @@ export const RemovePoolRoutes = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RemovePoolRoutes {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRemovePoolRoutes } as RemovePoolRoutes;
-    message.removePoolRoutes = [];
+    const message = createBaseRemovePoolRoutes();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.removePoolRoutes.push(reader.bytes());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RemovePoolRoutes {
-    const message = { ...baseRemovePoolRoutes } as RemovePoolRoutes;
-    message.removePoolRoutes = (object.removePoolRoutes ?? []).map((e: any) =>
-      bytesFromBase64(e)
-    );
-    return message;
+    return {
+      removePoolRoutes: Array.isArray(object?.removePoolRoutes)
+        ? object.removePoolRoutes.map((e: any) => bytesFromBase64(e))
+        : [],
+    };
   },
 
   toJSON(message: RemovePoolRoutes): unknown {
@@ -878,28 +910,23 @@ export const RemovePoolRoutes = {
     return obj;
   },
 
+  create(base?: DeepPartial<RemovePoolRoutes>): RemovePoolRoutes {
+    return RemovePoolRoutes.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RemovePoolRoutes>): RemovePoolRoutes {
-    const message = { ...baseRemovePoolRoutes } as RemovePoolRoutes;
-    message.removePoolRoutes = (object.removePoolRoutes ?? []).map((e) => e);
+    const message = createBaseRemovePoolRoutes();
+    message.removePoolRoutes = object.removePoolRoutes?.map((e) => e) || [];
     return message;
   },
 };
 
-const basePoolReserve: object = {
-  id: Long.UZERO,
-  amountA: "",
-  weightA: "",
-  amountB: "",
-  weightB: "",
-  vAmountA: "",
-  vAmountB: "",
-};
+function createBasePoolReserve(): PoolReserve {
+  return { id: Long.UZERO, amountA: "", weightA: "", amountB: "", weightB: "", vAmountA: "", vAmountB: "" };
+}
 
 export const PoolReserve = {
-  encode(
-    message: PoolReserve,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PoolReserve, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.id.isZero()) {
       writer.uint32(8).uint64(message.id);
     }
@@ -925,78 +952,85 @@ export const PoolReserve = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PoolReserve {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePoolReserve } as PoolReserve;
+    const message = createBasePoolReserve();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.id = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amountA = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.weightA = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.amountB = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.weightB = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.vAmountA = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.vAmountB = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PoolReserve {
-    const message = { ...basePoolReserve } as PoolReserve;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.amountA =
-      object.amountA !== undefined && object.amountA !== null
-        ? String(object.amountA)
-        : "";
-    message.weightA =
-      object.weightA !== undefined && object.weightA !== null
-        ? String(object.weightA)
-        : "";
-    message.amountB =
-      object.amountB !== undefined && object.amountB !== null
-        ? String(object.amountB)
-        : "";
-    message.weightB =
-      object.weightB !== undefined && object.weightB !== null
-        ? String(object.weightB)
-        : "";
-    message.vAmountA =
-      object.vAmountA !== undefined && object.vAmountA !== null
-        ? String(object.vAmountA)
-        : "";
-    message.vAmountB =
-      object.vAmountB !== undefined && object.vAmountB !== null
-        ? String(object.vAmountB)
-        : "";
-    return message;
+    return {
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
+      amountA: isSet(object.amountA) ? String(object.amountA) : "",
+      weightA: isSet(object.weightA) ? String(object.weightA) : "",
+      amountB: isSet(object.amountB) ? String(object.amountB) : "",
+      weightB: isSet(object.weightB) ? String(object.weightB) : "",
+      vAmountA: isSet(object.vAmountA) ? String(object.vAmountA) : "",
+      vAmountB: isSet(object.vAmountB) ? String(object.vAmountB) : "",
+    };
   },
 
   toJSON(message: PoolReserve): unknown {
     const obj: any = {};
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     message.amountA !== undefined && (obj.amountA = message.amountA);
     message.weightA !== undefined && (obj.weightA = message.weightA);
     message.amountB !== undefined && (obj.amountB = message.amountB);
@@ -1006,12 +1040,13 @@ export const PoolReserve = {
     return obj;
   },
 
+  create(base?: DeepPartial<PoolReserve>): PoolReserve {
+    return PoolReserve.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<PoolReserve>): PoolReserve {
-    const message = { ...basePoolReserve } as PoolReserve;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    const message = createBasePoolReserve();
+    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
     message.amountA = object.amountA ?? "";
     message.weightA = object.weightA ?? "";
     message.amountB = object.amountB ?? "";
@@ -1022,25 +1057,24 @@ export const PoolReserve = {
   },
 };
 
-const baseReserveData: object = {
-  poolId: Long.UZERO,
-  baseDenom: "",
-  quoteDenom: "",
-  baseBalance: "",
-  quoteBalance: "",
-  baseWeight: "",
-  quoteWeight: "",
-  swapFee: "",
-  ampBps: Long.UZERO,
-  vBaseBalance: "",
-  vQuoteBalance: "",
-};
+function createBaseReserveData(): ReserveData {
+  return {
+    poolId: Long.UZERO,
+    baseDenom: "",
+    quoteDenom: "",
+    baseBalance: "",
+    quoteBalance: "",
+    baseWeight: "",
+    quoteWeight: "",
+    swapFee: "",
+    ampBps: Long.UZERO,
+    vBaseBalance: "",
+    vQuoteBalance: "",
+  };
+}
 
 export const ReserveData = {
-  encode(
-    message: ReserveData,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ReserveData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -1078,131 +1112,139 @@ export const ReserveData = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReserveData {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseReserveData } as ReserveData;
+    const message = createBaseReserveData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.baseDenom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.quoteDenom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.baseBalance = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.quoteBalance = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.baseWeight = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.quoteWeight = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.swapFee = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 72) {
+            break;
+          }
+
           message.ampBps = reader.uint64() as Long;
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.vBaseBalance = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.vQuoteBalance = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ReserveData {
-    const message = { ...baseReserveData } as ReserveData;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.baseDenom =
-      object.baseDenom !== undefined && object.baseDenom !== null
-        ? String(object.baseDenom)
-        : "";
-    message.quoteDenom =
-      object.quoteDenom !== undefined && object.quoteDenom !== null
-        ? String(object.quoteDenom)
-        : "";
-    message.baseBalance =
-      object.baseBalance !== undefined && object.baseBalance !== null
-        ? String(object.baseBalance)
-        : "";
-    message.quoteBalance =
-      object.quoteBalance !== undefined && object.quoteBalance !== null
-        ? String(object.quoteBalance)
-        : "";
-    message.baseWeight =
-      object.baseWeight !== undefined && object.baseWeight !== null
-        ? String(object.baseWeight)
-        : "";
-    message.quoteWeight =
-      object.quoteWeight !== undefined && object.quoteWeight !== null
-        ? String(object.quoteWeight)
-        : "";
-    message.swapFee =
-      object.swapFee !== undefined && object.swapFee !== null
-        ? String(object.swapFee)
-        : "";
-    message.ampBps =
-      object.ampBps !== undefined && object.ampBps !== null
-        ? Long.fromString(object.ampBps)
-        : Long.UZERO;
-    message.vBaseBalance =
-      object.vBaseBalance !== undefined && object.vBaseBalance !== null
-        ? String(object.vBaseBalance)
-        : "";
-    message.vQuoteBalance =
-      object.vQuoteBalance !== undefined && object.vQuoteBalance !== null
-        ? String(object.vQuoteBalance)
-        : "";
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      baseDenom: isSet(object.baseDenom) ? String(object.baseDenom) : "",
+      quoteDenom: isSet(object.quoteDenom) ? String(object.quoteDenom) : "",
+      baseBalance: isSet(object.baseBalance) ? String(object.baseBalance) : "",
+      quoteBalance: isSet(object.quoteBalance) ? String(object.quoteBalance) : "",
+      baseWeight: isSet(object.baseWeight) ? String(object.baseWeight) : "",
+      quoteWeight: isSet(object.quoteWeight) ? String(object.quoteWeight) : "",
+      swapFee: isSet(object.swapFee) ? String(object.swapFee) : "",
+      ampBps: isSet(object.ampBps) ? Long.fromValue(object.ampBps) : Long.UZERO,
+      vBaseBalance: isSet(object.vBaseBalance) ? String(object.vBaseBalance) : "",
+      vQuoteBalance: isSet(object.vQuoteBalance) ? String(object.vQuoteBalance) : "",
+    };
   },
 
   toJSON(message: ReserveData): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.baseDenom !== undefined && (obj.baseDenom = message.baseDenom);
     message.quoteDenom !== undefined && (obj.quoteDenom = message.quoteDenom);
-    message.baseBalance !== undefined &&
-      (obj.baseBalance = message.baseBalance);
-    message.quoteBalance !== undefined &&
-      (obj.quoteBalance = message.quoteBalance);
+    message.baseBalance !== undefined && (obj.baseBalance = message.baseBalance);
+    message.quoteBalance !== undefined && (obj.quoteBalance = message.quoteBalance);
     message.baseWeight !== undefined && (obj.baseWeight = message.baseWeight);
-    message.quoteWeight !== undefined &&
-      (obj.quoteWeight = message.quoteWeight);
+    message.quoteWeight !== undefined && (obj.quoteWeight = message.quoteWeight);
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    message.ampBps !== undefined &&
-      (obj.ampBps = (message.ampBps || Long.UZERO).toString());
-    message.vBaseBalance !== undefined &&
-      (obj.vBaseBalance = message.vBaseBalance);
-    message.vQuoteBalance !== undefined &&
-      (obj.vQuoteBalance = message.vQuoteBalance);
+    message.ampBps !== undefined && (obj.ampBps = (message.ampBps || Long.UZERO).toString());
+    message.vBaseBalance !== undefined && (obj.vBaseBalance = message.vBaseBalance);
+    message.vQuoteBalance !== undefined && (obj.vQuoteBalance = message.vQuoteBalance);
     return obj;
   },
 
+  create(base?: DeepPartial<ReserveData>): ReserveData {
+    return ReserveData.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ReserveData>): ReserveData {
-    const message = { ...baseReserveData } as ReserveData;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    const message = createBaseReserveData();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.baseDenom = object.baseDenom ?? "";
     message.quoteDenom = object.quoteDenom ?? "";
     message.baseBalance = object.baseBalance ?? "";
@@ -1210,10 +1252,9 @@ export const ReserveData = {
     message.baseWeight = object.baseWeight ?? "";
     message.quoteWeight = object.quoteWeight ?? "";
     message.swapFee = object.swapFee ?? "";
-    message.ampBps =
-      object.ampBps !== undefined && object.ampBps !== null
-        ? Long.fromValue(object.ampBps)
-        : Long.UZERO;
+    message.ampBps = (object.ampBps !== undefined && object.ampBps !== null)
+      ? Long.fromValue(object.ampBps)
+      : Long.UZERO;
     message.vBaseBalance = object.vBaseBalance ?? "";
     message.vQuoteBalance = object.vQuoteBalance ?? "";
     return message;
@@ -1223,58 +1264,60 @@ export const ReserveData = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

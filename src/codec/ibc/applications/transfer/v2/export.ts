@@ -1,1 +1,0 @@
-export { FungibleTokenPacketData } from "./packet";

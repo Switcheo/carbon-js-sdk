@@ -12,19 +12,12 @@ export interface LeverageEvent {
   isCross: boolean;
 }
 
-const baseLeverageEvent: object = {
-  leverage: "",
-  type: "",
-  marketId: "",
-  address: "",
-  isCross: false,
-};
+function createBaseLeverageEvent(): LeverageEvent {
+  return { leverage: "", type: "", marketId: "", address: "", isCross: false };
+}
 
 export const LeverageEvent = {
-  encode(
-    message: LeverageEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LeverageEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.leverage !== "") {
       writer.uint32(10).string(message.leverage);
     }
@@ -44,58 +37,64 @@ export const LeverageEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LeverageEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLeverageEvent } as LeverageEvent;
+    const message = createBaseLeverageEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.leverage = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.isCross = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LeverageEvent {
-    const message = { ...baseLeverageEvent } as LeverageEvent;
-    message.leverage =
-      object.leverage !== undefined && object.leverage !== null
-        ? String(object.leverage)
-        : "";
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.isCross =
-      object.isCross !== undefined && object.isCross !== null
-        ? Boolean(object.isCross)
-        : false;
-    return message;
+    return {
+      leverage: isSet(object.leverage) ? String(object.leverage) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+      isCross: isSet(object.isCross) ? Boolean(object.isCross) : false,
+    };
   },
 
   toJSON(message: LeverageEvent): unknown {
@@ -108,8 +107,12 @@ export const LeverageEvent = {
     return obj;
   },
 
+  create(base?: DeepPartial<LeverageEvent>): LeverageEvent {
+    return LeverageEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<LeverageEvent>): LeverageEvent {
-    const message = { ...baseLeverageEvent } as LeverageEvent;
+    const message = createBaseLeverageEvent();
     message.leverage = object.leverage ?? "";
     message.type = object.type ?? "";
     message.marketId = object.marketId ?? "";
@@ -119,27 +122,19 @@ export const LeverageEvent = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

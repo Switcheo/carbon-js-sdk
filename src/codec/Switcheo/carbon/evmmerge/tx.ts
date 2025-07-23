@@ -20,15 +20,15 @@ export interface MsgMergeAccount {
   pubKeySig?: string;
 }
 
-export interface MsgMergeAccountResponse {}
+export interface MsgMergeAccountResponse {
+}
 
-const baseMsgMergeAccount: object = { creator: "", pubKey: "" };
+function createBaseMsgMergeAccount(): MsgMergeAccount {
+  return { creator: "", pubKey: "", pubKeySig: undefined };
+}
 
 export const MsgMergeAccount = {
-  encode(
-    message: MsgMergeAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgMergeAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -36,53 +36,54 @@ export const MsgMergeAccount = {
       writer.uint32(18).string(message.pubKey);
     }
     if (message.pubKeySig !== undefined) {
-      StringValue.encode(
-        { value: message.pubKeySig! },
-        writer.uint32(34).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.pubKeySig! }, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgMergeAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgMergeAccount } as MsgMergeAccount;
+    const message = createBaseMsgMergeAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pubKey = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.pubKeySig = StringValue.decode(reader, reader.uint32()).value;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgMergeAccount {
-    const message = { ...baseMsgMergeAccount } as MsgMergeAccount;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.pubKey =
-      object.pubKey !== undefined && object.pubKey !== null
-        ? String(object.pubKey)
-        : "";
-    message.pubKeySig =
-      object.pubKeySig !== undefined && object.pubKeySig !== null
-        ? String(object.pubKeySig)
-        : undefined;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      pubKey: isSet(object.pubKey) ? String(object.pubKey) : "",
+      pubKeySig: isSet(object.pubKeySig) ? String(object.pubKeySig) : undefined,
+    };
   },
 
   toJSON(message: MsgMergeAccount): unknown {
@@ -93,8 +94,12 @@ export const MsgMergeAccount = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgMergeAccount>): MsgMergeAccount {
+    return MsgMergeAccount.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgMergeAccount>): MsgMergeAccount {
-    const message = { ...baseMsgMergeAccount } as MsgMergeAccount;
+    const message = createBaseMsgMergeAccount();
     message.creator = object.creator ?? "";
     message.pubKey = object.pubKey ?? "";
     message.pubKeySig = object.pubKeySig ?? undefined;
@@ -102,41 +107,33 @@ export const MsgMergeAccount = {
   },
 };
 
-const baseMsgMergeAccountResponse: object = {};
+function createBaseMsgMergeAccountResponse(): MsgMergeAccountResponse {
+  return {};
+}
 
 export const MsgMergeAccountResponse = {
-  encode(
-    _: MsgMergeAccountResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgMergeAccountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgMergeAccountResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgMergeAccountResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgMergeAccountResponse,
-    } as MsgMergeAccountResponse;
+    const message = createBaseMsgMergeAccountResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgMergeAccountResponse {
-    const message = {
-      ...baseMsgMergeAccountResponse,
-    } as MsgMergeAccountResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgMergeAccountResponse): unknown {
@@ -144,12 +141,12 @@ export const MsgMergeAccountResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgMergeAccountResponse>
-  ): MsgMergeAccountResponse {
-    const message = {
-      ...baseMsgMergeAccountResponse,
-    } as MsgMergeAccountResponse;
+  create(base?: DeepPartial<MsgMergeAccountResponse>): MsgMergeAccountResponse {
+    return MsgMergeAccountResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgMergeAccountResponse>): MsgMergeAccountResponse {
+    const message = createBaseMsgMergeAccountResponse();
     return message;
   },
 };
@@ -162,52 +159,36 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.evmmerge.Msg";
     this.rpc = rpc;
     this.MergeAccount = this.MergeAccount.bind(this);
   }
   MergeAccount(request: MsgMergeAccount): Promise<MsgMergeAccountResponse> {
     const data = MsgMergeAccount.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.evmmerge.Msg",
-      "MergeAccount",
-      data
-    );
-    return promise.then((data) =>
-      MsgMergeAccountResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "MergeAccount", data);
+    return promise.then((data) => MsgMergeAccountResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

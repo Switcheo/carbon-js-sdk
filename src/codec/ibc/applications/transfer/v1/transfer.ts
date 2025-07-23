@@ -37,13 +37,12 @@ export interface Params {
   receiveEnabled: boolean;
 }
 
-const baseDenomTrace: object = { path: "", baseDenom: "" };
+function createBaseDenomTrace(): DenomTrace {
+  return { path: "", baseDenom: "" };
+}
 
 export const DenomTrace = {
-  encode(
-    message: DenomTrace,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DenomTrace, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.path !== "") {
       writer.uint32(10).string(message.path);
     }
@@ -54,37 +53,40 @@ export const DenomTrace = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DenomTrace {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDenomTrace } as DenomTrace;
+    const message = createBaseDenomTrace();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.path = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.baseDenom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DenomTrace {
-    const message = { ...baseDenomTrace } as DenomTrace;
-    message.path =
-      object.path !== undefined && object.path !== null
-        ? String(object.path)
-        : "";
-    message.baseDenom =
-      object.baseDenom !== undefined && object.baseDenom !== null
-        ? String(object.baseDenom)
-        : "";
-    return message;
+    return {
+      path: isSet(object.path) ? String(object.path) : "",
+      baseDenom: isSet(object.baseDenom) ? String(object.baseDenom) : "",
+    };
   },
 
   toJSON(message: DenomTrace): unknown {
@@ -94,21 +96,24 @@ export const DenomTrace = {
     return obj;
   },
 
+  create(base?: DeepPartial<DenomTrace>): DenomTrace {
+    return DenomTrace.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DenomTrace>): DenomTrace {
-    const message = { ...baseDenomTrace } as DenomTrace;
+    const message = createBaseDenomTrace();
     message.path = object.path ?? "";
     message.baseDenom = object.baseDenom ?? "";
     return message;
   },
 };
 
-const baseParams: object = { sendEnabled: false, receiveEnabled: false };
+function createBaseParams(): Params {
+  return { sendEnabled: false, receiveEnabled: false };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sendEnabled === true) {
       writer.uint32(8).bool(message.sendEnabled);
     }
@@ -119,77 +124,74 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.sendEnabled = reader.bool();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.receiveEnabled = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.sendEnabled =
-      object.sendEnabled !== undefined && object.sendEnabled !== null
-        ? Boolean(object.sendEnabled)
-        : false;
-    message.receiveEnabled =
-      object.receiveEnabled !== undefined && object.receiveEnabled !== null
-        ? Boolean(object.receiveEnabled)
-        : false;
-    return message;
+    return {
+      sendEnabled: isSet(object.sendEnabled) ? Boolean(object.sendEnabled) : false,
+      receiveEnabled: isSet(object.receiveEnabled) ? Boolean(object.receiveEnabled) : false,
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.sendEnabled !== undefined &&
-      (obj.sendEnabled = message.sendEnabled);
-    message.receiveEnabled !== undefined &&
-      (obj.receiveEnabled = message.receiveEnabled);
+    message.sendEnabled !== undefined && (obj.sendEnabled = message.sendEnabled);
+    message.receiveEnabled !== undefined && (obj.receiveEnabled = message.receiveEnabled);
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.sendEnabled = object.sendEnabled ?? false;
     message.receiveEnabled = object.receiveEnabled ?? false;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

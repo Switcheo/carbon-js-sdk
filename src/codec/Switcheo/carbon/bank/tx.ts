@@ -9,22 +9,23 @@ export interface MsgBlacklistAddress {
   address: string;
 }
 
-export interface MsgBlacklistAddressResponse {}
+export interface MsgBlacklistAddressResponse {
+}
 
 export interface MsgUnblacklistAddress {
   authority: string;
   address: string;
 }
 
-export interface MsgUnblacklistAddressResponse {}
+export interface MsgUnblacklistAddressResponse {
+}
 
-const baseMsgBlacklistAddress: object = { authority: "", address: "" };
+function createBaseMsgBlacklistAddress(): MsgBlacklistAddress {
+  return { authority: "", address: "" };
+}
 
 export const MsgBlacklistAddress = {
-  encode(
-    message: MsgBlacklistAddress,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgBlacklistAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -35,37 +36,40 @@ export const MsgBlacklistAddress = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgBlacklistAddress {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgBlacklistAddress } as MsgBlacklistAddress;
+    const message = createBaseMsgBlacklistAddress();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgBlacklistAddress {
-    const message = { ...baseMsgBlacklistAddress } as MsgBlacklistAddress;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return {
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+    };
   },
 
   toJSON(message: MsgBlacklistAddress): unknown {
@@ -75,49 +79,45 @@ export const MsgBlacklistAddress = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgBlacklistAddress>): MsgBlacklistAddress {
+    return MsgBlacklistAddress.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgBlacklistAddress>): MsgBlacklistAddress {
-    const message = { ...baseMsgBlacklistAddress } as MsgBlacklistAddress;
+    const message = createBaseMsgBlacklistAddress();
     message.authority = object.authority ?? "";
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseMsgBlacklistAddressResponse: object = {};
+function createBaseMsgBlacklistAddressResponse(): MsgBlacklistAddressResponse {
+  return {};
+}
 
 export const MsgBlacklistAddressResponse = {
-  encode(
-    _: MsgBlacklistAddressResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgBlacklistAddressResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgBlacklistAddressResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBlacklistAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgBlacklistAddressResponse,
-    } as MsgBlacklistAddressResponse;
+    const message = createBaseMsgBlacklistAddressResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgBlacklistAddressResponse {
-    const message = {
-      ...baseMsgBlacklistAddressResponse,
-    } as MsgBlacklistAddressResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgBlacklistAddressResponse): unknown {
@@ -125,23 +125,22 @@ export const MsgBlacklistAddressResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgBlacklistAddressResponse>
-  ): MsgBlacklistAddressResponse {
-    const message = {
-      ...baseMsgBlacklistAddressResponse,
-    } as MsgBlacklistAddressResponse;
+  create(base?: DeepPartial<MsgBlacklistAddressResponse>): MsgBlacklistAddressResponse {
+    return MsgBlacklistAddressResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgBlacklistAddressResponse>): MsgBlacklistAddressResponse {
+    const message = createBaseMsgBlacklistAddressResponse();
     return message;
   },
 };
 
-const baseMsgUnblacklistAddress: object = { authority: "", address: "" };
+function createBaseMsgUnblacklistAddress(): MsgUnblacklistAddress {
+  return { authority: "", address: "" };
+}
 
 export const MsgUnblacklistAddress = {
-  encode(
-    message: MsgUnblacklistAddress,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUnblacklistAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -151,41 +150,41 @@ export const MsgUnblacklistAddress = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUnblacklistAddress {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnblacklistAddress {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUnblacklistAddress } as MsgUnblacklistAddress;
+    const message = createBaseMsgUnblacklistAddress();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUnblacklistAddress {
-    const message = { ...baseMsgUnblacklistAddress } as MsgUnblacklistAddress;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return {
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+    };
   },
 
   toJSON(message: MsgUnblacklistAddress): unknown {
@@ -195,51 +194,45 @@ export const MsgUnblacklistAddress = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgUnblacklistAddress>
-  ): MsgUnblacklistAddress {
-    const message = { ...baseMsgUnblacklistAddress } as MsgUnblacklistAddress;
+  create(base?: DeepPartial<MsgUnblacklistAddress>): MsgUnblacklistAddress {
+    return MsgUnblacklistAddress.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgUnblacklistAddress>): MsgUnblacklistAddress {
+    const message = createBaseMsgUnblacklistAddress();
     message.authority = object.authority ?? "";
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseMsgUnblacklistAddressResponse: object = {};
+function createBaseMsgUnblacklistAddressResponse(): MsgUnblacklistAddressResponse {
+  return {};
+}
 
 export const MsgUnblacklistAddressResponse = {
-  encode(
-    _: MsgUnblacklistAddressResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUnblacklistAddressResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUnblacklistAddressResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnblacklistAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUnblacklistAddressResponse,
-    } as MsgUnblacklistAddressResponse;
+    const message = createBaseMsgUnblacklistAddressResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUnblacklistAddressResponse {
-    const message = {
-      ...baseMsgUnblacklistAddressResponse,
-    } as MsgUnblacklistAddressResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUnblacklistAddressResponse): unknown {
@@ -247,92 +240,62 @@ export const MsgUnblacklistAddressResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUnblacklistAddressResponse>
-  ): MsgUnblacklistAddressResponse {
-    const message = {
-      ...baseMsgUnblacklistAddressResponse,
-    } as MsgUnblacklistAddressResponse;
+  create(base?: DeepPartial<MsgUnblacklistAddressResponse>): MsgUnblacklistAddressResponse {
+    return MsgUnblacklistAddressResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUnblacklistAddressResponse>): MsgUnblacklistAddressResponse {
+    const message = createBaseMsgUnblacklistAddressResponse();
     return message;
   },
 };
 
 /** Msg defines the Msg service. */
 export interface Msg {
-  BlacklistAddress(
-    request: MsgBlacklistAddress
-  ): Promise<MsgBlacklistAddressResponse>;
+  BlacklistAddress(request: MsgBlacklistAddress): Promise<MsgBlacklistAddressResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  UnblacklistAddress(
-    request: MsgUnblacklistAddress
-  ): Promise<MsgUnblacklistAddressResponse>;
+  UnblacklistAddress(request: MsgUnblacklistAddress): Promise<MsgUnblacklistAddressResponse>;
 }
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.bank.Msg";
     this.rpc = rpc;
     this.BlacklistAddress = this.BlacklistAddress.bind(this);
     this.UnblacklistAddress = this.UnblacklistAddress.bind(this);
   }
-  BlacklistAddress(
-    request: MsgBlacklistAddress
-  ): Promise<MsgBlacklistAddressResponse> {
+  BlacklistAddress(request: MsgBlacklistAddress): Promise<MsgBlacklistAddressResponse> {
     const data = MsgBlacklistAddress.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.bank.Msg",
-      "BlacklistAddress",
-      data
-    );
-    return promise.then((data) =>
-      MsgBlacklistAddressResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "BlacklistAddress", data);
+    return promise.then((data) => MsgBlacklistAddressResponse.decode(_m0.Reader.create(data)));
   }
 
-  UnblacklistAddress(
-    request: MsgUnblacklistAddress
-  ): Promise<MsgUnblacklistAddressResponse> {
+  UnblacklistAddress(request: MsgUnblacklistAddress): Promise<MsgUnblacklistAddressResponse> {
     const data = MsgUnblacklistAddress.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.bank.Msg",
-      "UnblacklistAddress",
-      data
-    );
-    return promise.then((data) =>
-      MsgUnblacklistAddressResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UnblacklistAddress", data);
+    return promise.then((data) => MsgUnblacklistAddressResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -22,19 +22,12 @@ export interface FungibleTokenPacketData {
   memo: string;
 }
 
-const baseFungibleTokenPacketData: object = {
-  denom: "",
-  amount: "",
-  sender: "",
-  receiver: "",
-  memo: "",
-};
+function createBaseFungibleTokenPacketData(): FungibleTokenPacketData {
+  return { denom: "", amount: "", sender: "", receiver: "", memo: "" };
+}
 
 export const FungibleTokenPacketData = {
-  encode(
-    message: FungibleTokenPacketData,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FungibleTokenPacketData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -53,66 +46,65 @@ export const FungibleTokenPacketData = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): FungibleTokenPacketData {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): FungibleTokenPacketData {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseFungibleTokenPacketData,
-    } as FungibleTokenPacketData;
+    const message = createBaseFungibleTokenPacketData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.memo = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FungibleTokenPacketData {
-    const message = {
-      ...baseFungibleTokenPacketData,
-    } as FungibleTokenPacketData;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.memo =
-      object.memo !== undefined && object.memo !== null
-        ? String(object.memo)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      memo: isSet(object.memo) ? String(object.memo) : "",
+    };
   },
 
   toJSON(message: FungibleTokenPacketData): unknown {
@@ -125,12 +117,12 @@ export const FungibleTokenPacketData = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<FungibleTokenPacketData>
-  ): FungibleTokenPacketData {
-    const message = {
-      ...baseFungibleTokenPacketData,
-    } as FungibleTokenPacketData;
+  create(base?: DeepPartial<FungibleTokenPacketData>): FungibleTokenPacketData {
+    return FungibleTokenPacketData.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<FungibleTokenPacketData>): FungibleTokenPacketData {
+    const message = createBaseFungibleTokenPacketData();
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.sender = object.sender ?? "";
@@ -140,27 +132,19 @@ export const FungibleTokenPacketData = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

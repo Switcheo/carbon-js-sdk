@@ -11,12 +11,9 @@ export interface Block {
   proposerAddress: string;
 }
 
-const baseBlock: object = {
-  blockHeight: Long.UZERO,
-  time: "",
-  count: 0,
-  proposerAddress: "",
-};
+function createBaseBlock(): Block {
+  return { blockHeight: Long.UZERO, time: "", count: 0, proposerAddress: "" };
+}
 
 export const Block = {
   encode(message: Block, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -36,70 +33,76 @@ export const Block = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Block {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBlock } as Block;
+    const message = createBaseBlock();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.blockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.time = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.count = reader.uint32();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.proposerAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Block {
-    const message = { ...baseBlock } as Block;
-    message.blockHeight =
-      object.blockHeight !== undefined && object.blockHeight !== null
-        ? Long.fromString(object.blockHeight)
-        : Long.UZERO;
-    message.time =
-      object.time !== undefined && object.time !== null
-        ? String(object.time)
-        : "";
-    message.count =
-      object.count !== undefined && object.count !== null
-        ? Number(object.count)
-        : 0;
-    message.proposerAddress =
-      object.proposerAddress !== undefined && object.proposerAddress !== null
-        ? String(object.proposerAddress)
-        : "";
-    return message;
+    return {
+      blockHeight: isSet(object.blockHeight) ? Long.fromValue(object.blockHeight) : Long.UZERO,
+      time: isSet(object.time) ? String(object.time) : "",
+      count: isSet(object.count) ? Number(object.count) : 0,
+      proposerAddress: isSet(object.proposerAddress) ? String(object.proposerAddress) : "",
+    };
   },
 
   toJSON(message: Block): unknown {
     const obj: any = {};
-    message.blockHeight !== undefined &&
-      (obj.blockHeight = (message.blockHeight || Long.UZERO).toString());
+    message.blockHeight !== undefined && (obj.blockHeight = (message.blockHeight || Long.UZERO).toString());
     message.time !== undefined && (obj.time = message.time);
-    message.count !== undefined && (obj.count = message.count);
-    message.proposerAddress !== undefined &&
-      (obj.proposerAddress = message.proposerAddress);
+    message.count !== undefined && (obj.count = Math.round(message.count));
+    message.proposerAddress !== undefined && (obj.proposerAddress = message.proposerAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<Block>): Block {
+    return Block.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Block>): Block {
-    const message = { ...baseBlock } as Block;
-    message.blockHeight =
-      object.blockHeight !== undefined && object.blockHeight !== null
-        ? Long.fromValue(object.blockHeight)
-        : Long.UZERO;
+    const message = createBaseBlock();
+    message.blockHeight = (object.blockHeight !== undefined && object.blockHeight !== null)
+      ? Long.fromValue(object.blockHeight)
+      : Long.UZERO;
     message.time = object.time ?? "";
     message.count = object.count ?? 0;
     message.proposerAddress = object.proposerAddress ?? "";
@@ -107,27 +110,19 @@ export const Block = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -27,13 +27,12 @@ export interface FundUtilization {
   currentUtilization?: Coin;
 }
 
-const baseFundByMarket: object = { amount: "" };
+function createBaseFundByMarket(): FundByMarket {
+  return { amount: "", key: new Uint8Array() };
+}
 
 export const FundByMarket = {
-  encode(
-    message: FundByMarket,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FundByMarket, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.amount !== "") {
       writer.uint32(10).string(message.amount);
     }
@@ -44,59 +43,65 @@ export const FundByMarket = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FundByMarket {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFundByMarket } as FundByMarket;
-    message.key = new Uint8Array();
+    const message = createBaseFundByMarket();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.key = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FundByMarket {
-    const message = { ...baseFundByMarket } as FundByMarket;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.key =
-      object.key !== undefined && object.key !== null
-        ? bytesFromBase64(object.key)
-        : new Uint8Array();
-    return message;
+    return {
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
+    };
   },
 
   toJSON(message: FundByMarket): unknown {
     const obj: any = {};
     message.amount !== undefined && (obj.amount = message.amount);
     message.key !== undefined &&
-      (obj.key = base64FromBytes(
-        message.key !== undefined ? message.key : new Uint8Array()
-      ));
+      (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<FundByMarket>): FundByMarket {
+    return FundByMarket.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FundByMarket>): FundByMarket {
-    const message = { ...baseFundByMarket } as FundByMarket;
+    const message = createBaseFundByMarket();
     message.amount = object.amount ?? "";
     message.key = object.key ?? new Uint8Array();
     return message;
   },
 };
 
-const baseFund: object = { amount: "" };
+function createBaseFund(): Fund {
+  return { amount: "" };
+}
 
 export const Fund = {
   encode(message: Fund, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -107,30 +112,30 @@ export const Fund = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Fund {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFund } as Fund;
+    const message = createBaseFund();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Fund {
-    const message = { ...baseFund } as Fund;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    return message;
+    return { amount: isSet(object.amount) ? String(object.amount) : "" };
   },
 
   toJSON(message: Fund): unknown {
@@ -139,104 +144,100 @@ export const Fund = {
     return obj;
   },
 
+  create(base?: DeepPartial<Fund>): Fund {
+    return Fund.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Fund>): Fund {
-    const message = { ...baseFund } as Fund;
+    const message = createBaseFund();
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-const baseFundUtilization: object = { marketId: "" };
+function createBaseFundUtilization(): FundUtilization {
+  return { marketId: "", intervalStartTime: undefined, currentUtilization: undefined };
+}
 
 export const FundUtilization = {
-  encode(
-    message: FundUtilization,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FundUtilization, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
     if (message.intervalStartTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.intervalStartTime),
-        writer.uint32(18).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.intervalStartTime), writer.uint32(18).fork()).ldelim();
     }
     if (message.currentUtilization !== undefined) {
-      Coin.encode(
-        message.currentUtilization,
-        writer.uint32(26).fork()
-      ).ldelim();
+      Coin.encode(message.currentUtilization, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FundUtilization {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFundUtilization } as FundUtilization;
+    const message = createBaseFundUtilization();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
-          message.intervalStartTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.intervalStartTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.currentUtilization = Coin.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FundUtilization {
-    const message = { ...baseFundUtilization } as FundUtilization;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.intervalStartTime =
-      object.intervalStartTime !== undefined &&
-      object.intervalStartTime !== null
-        ? fromJsonTimestamp(object.intervalStartTime)
-        : undefined;
-    message.currentUtilization =
-      object.currentUtilization !== undefined &&
-      object.currentUtilization !== null
-        ? Coin.fromJSON(object.currentUtilization)
-        : undefined;
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      intervalStartTime: isSet(object.intervalStartTime) ? fromJsonTimestamp(object.intervalStartTime) : undefined,
+      currentUtilization: isSet(object.currentUtilization) ? Coin.fromJSON(object.currentUtilization) : undefined,
+    };
   },
 
   toJSON(message: FundUtilization): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
-    message.intervalStartTime !== undefined &&
-      (obj.intervalStartTime = message.intervalStartTime.toISOString());
+    message.intervalStartTime !== undefined && (obj.intervalStartTime = message.intervalStartTime.toISOString());
     message.currentUtilization !== undefined &&
-      (obj.currentUtilization = message.currentUtilization
-        ? Coin.toJSON(message.currentUtilization)
-        : undefined);
+      (obj.currentUtilization = message.currentUtilization ? Coin.toJSON(message.currentUtilization) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<FundUtilization>): FundUtilization {
+    return FundUtilization.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FundUtilization>): FundUtilization {
-    const message = { ...baseFundUtilization } as FundUtilization;
+    const message = createBaseFundUtilization();
     message.marketId = object.marketId ?? "";
     message.intervalStartTime = object.intervalStartTime ?? undefined;
-    message.currentUtilization =
-      object.currentUtilization !== undefined &&
-      object.currentUtilization !== null
-        ? Coin.fromPartial(object.currentUtilization)
-        : undefined;
+    message.currentUtilization = (object.currentUtilization !== undefined && object.currentUtilization !== null)
+      ? Coin.fromPartial(object.currentUtilization)
+      : undefined;
     return message;
   },
 };
@@ -244,55 +245,53 @@ export const FundUtilization = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -302,8 +301,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -324,4 +323,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

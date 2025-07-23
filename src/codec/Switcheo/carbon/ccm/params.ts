@@ -5,12 +5,16 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.ccm";
 
 /** Params defines the parameters for the ccm module. */
-export interface Params {}
+export interface Params {
+}
 
 /** ParamsToUpdate allows optional fields for Params. */
-export interface ParamsToUpdate {}
+export interface ParamsToUpdate {
+}
 
-const baseParams: object = {};
+function createBaseParams(): Params {
+  return {};
+}
 
 export const Params = {
   encode(_: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -18,23 +22,23 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): Params {
-    const message = { ...baseParams } as Params;
-    return message;
+    return {};
   },
 
   toJSON(_: Params): unknown {
@@ -42,40 +46,43 @@ export const Params = {
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     return message;
   },
 };
 
-const baseParamsToUpdate: object = {};
+function createBaseParamsToUpdate(): ParamsToUpdate {
+  return {};
+}
 
 export const ParamsToUpdate = {
-  encode(
-    _: ParamsToUpdate,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: ParamsToUpdate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ParamsToUpdate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    const message = createBaseParamsToUpdate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    return message;
+    return {};
   },
 
   toJSON(_: ParamsToUpdate): unknown {
@@ -83,30 +90,22 @@ export const ParamsToUpdate = {
     return obj;
   },
 
+  create(base?: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
+    return ParamsToUpdate.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    const message = createBaseParamsToUpdate();
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {

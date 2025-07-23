@@ -35,13 +35,12 @@ export interface ClearVirtualOrderBookEvent {
   marketId: string;
 }
 
-const baseOrderBookEvent: object = { m: "", s: "", p: "", q: "" };
+function createBaseOrderBookEvent(): OrderBookEvent {
+  return { m: "", s: "", p: "", q: "" };
+}
 
 export const OrderBookEvent = {
-  encode(
-    message: OrderBookEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: OrderBookEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.m !== "") {
       writer.uint32(18).string(message.m);
     }
@@ -58,43 +57,56 @@ export const OrderBookEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OrderBookEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOrderBookEvent } as OrderBookEvent;
+    const message = createBaseOrderBookEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.m = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.s = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.p = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.q = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): OrderBookEvent {
-    const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.m =
-      object.m !== undefined && object.m !== null ? String(object.m) : "";
-    message.s =
-      object.s !== undefined && object.s !== null ? String(object.s) : "";
-    message.p =
-      object.p !== undefined && object.p !== null ? String(object.p) : "";
-    message.q =
-      object.q !== undefined && object.q !== null ? String(object.q) : "";
-    return message;
+    return {
+      m: isSet(object.m) ? String(object.m) : "",
+      s: isSet(object.s) ? String(object.s) : "",
+      p: isSet(object.p) ? String(object.p) : "",
+      q: isSet(object.q) ? String(object.q) : "",
+    };
   },
 
   toJSON(message: OrderBookEvent): unknown {
@@ -106,8 +118,12 @@ export const OrderBookEvent = {
     return obj;
   },
 
+  create(base?: DeepPartial<OrderBookEvent>): OrderBookEvent {
+    return OrderBookEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<OrderBookEvent>): OrderBookEvent {
-    const message = { ...baseOrderBookEvent } as OrderBookEvent;
+    const message = createBaseOrderBookEvent();
     message.m = object.m ?? "";
     message.s = object.s ?? "";
     message.p = object.p ?? "";
@@ -116,7 +132,9 @@ export const OrderBookEvent = {
   },
 };
 
-const baseQuote: object = { p: "", q: "" };
+function createBaseQuote(): Quote {
+  return { p: "", q: "" };
+}
 
 export const Quote = {
   encode(message: Quote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -130,33 +148,37 @@ export const Quote = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Quote {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQuote } as Quote;
+    const message = createBaseQuote();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.p = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.q = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Quote {
-    const message = { ...baseQuote } as Quote;
-    message.p =
-      object.p !== undefined && object.p !== null ? String(object.p) : "";
-    message.q =
-      object.q !== undefined && object.q !== null ? String(object.q) : "";
-    return message;
+    return { p: isSet(object.p) ? String(object.p) : "", q: isSet(object.q) ? String(object.q) : "" };
   },
 
   toJSON(message: Quote): unknown {
@@ -166,21 +188,24 @@ export const Quote = {
     return obj;
   },
 
+  create(base?: DeepPartial<Quote>): Quote {
+    return Quote.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Quote>): Quote {
-    const message = { ...baseQuote } as Quote;
+    const message = createBaseQuote();
     message.p = object.p ?? "";
     message.q = object.q ?? "";
     return message;
   },
 };
 
-const baseVirtualOrderBookEvent: object = { m: "" };
+function createBaseVirtualOrderBookEvent(): VirtualOrderBookEvent {
+  return { m: "", b: [], a: [] };
+}
 
 export const VirtualOrderBookEvent = {
-  encode(
-    message: VirtualOrderBookEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: VirtualOrderBookEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.m !== "") {
       writer.uint32(10).string(message.m);
     }
@@ -193,116 +218,117 @@ export const VirtualOrderBookEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): VirtualOrderBookEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): VirtualOrderBookEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
-    message.b = [];
-    message.a = [];
+    const message = createBaseVirtualOrderBookEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.m = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.b.push(Quote.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.a.push(Quote.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): VirtualOrderBookEvent {
-    const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
-    message.m =
-      object.m !== undefined && object.m !== null ? String(object.m) : "";
-    message.b = (object.b ?? []).map((e: any) => Quote.fromJSON(e));
-    message.a = (object.a ?? []).map((e: any) => Quote.fromJSON(e));
-    return message;
+    return {
+      m: isSet(object.m) ? String(object.m) : "",
+      b: Array.isArray(object?.b) ? object.b.map((e: any) => Quote.fromJSON(e)) : [],
+      a: Array.isArray(object?.a) ? object.a.map((e: any) => Quote.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: VirtualOrderBookEvent): unknown {
     const obj: any = {};
     message.m !== undefined && (obj.m = message.m);
     if (message.b) {
-      obj.b = message.b.map((e) => (e ? Quote.toJSON(e) : undefined));
+      obj.b = message.b.map((e) => e ? Quote.toJSON(e) : undefined);
     } else {
       obj.b = [];
     }
     if (message.a) {
-      obj.a = message.a.map((e) => (e ? Quote.toJSON(e) : undefined));
+      obj.a = message.a.map((e) => e ? Quote.toJSON(e) : undefined);
     } else {
       obj.a = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<VirtualOrderBookEvent>
-  ): VirtualOrderBookEvent {
-    const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
+  create(base?: DeepPartial<VirtualOrderBookEvent>): VirtualOrderBookEvent {
+    return VirtualOrderBookEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<VirtualOrderBookEvent>): VirtualOrderBookEvent {
+    const message = createBaseVirtualOrderBookEvent();
     message.m = object.m ?? "";
-    message.b = (object.b ?? []).map((e) => Quote.fromPartial(e));
-    message.a = (object.a ?? []).map((e) => Quote.fromPartial(e));
+    message.b = object.b?.map((e) => Quote.fromPartial(e)) || [];
+    message.a = object.a?.map((e) => Quote.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseClearVirtualOrderBookEvent: object = { marketId: "" };
+function createBaseClearVirtualOrderBookEvent(): ClearVirtualOrderBookEvent {
+  return { marketId: "" };
+}
 
 export const ClearVirtualOrderBookEvent = {
-  encode(
-    message: ClearVirtualOrderBookEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ClearVirtualOrderBookEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ClearVirtualOrderBookEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ClearVirtualOrderBookEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseClearVirtualOrderBookEvent,
-    } as ClearVirtualOrderBookEvent;
+    const message = createBaseClearVirtualOrderBookEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ClearVirtualOrderBookEvent {
-    const message = {
-      ...baseClearVirtualOrderBookEvent,
-    } as ClearVirtualOrderBookEvent;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return { marketId: isSet(object.marketId) ? String(object.marketId) : "" };
   },
 
   toJSON(message: ClearVirtualOrderBookEvent): unknown {
@@ -311,38 +337,30 @@ export const ClearVirtualOrderBookEvent = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ClearVirtualOrderBookEvent>
-  ): ClearVirtualOrderBookEvent {
-    const message = {
-      ...baseClearVirtualOrderBookEvent,
-    } as ClearVirtualOrderBookEvent;
+  create(base?: DeepPartial<ClearVirtualOrderBookEvent>): ClearVirtualOrderBookEvent {
+    return ClearVirtualOrderBookEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ClearVirtualOrderBookEvent>): ClearVirtualOrderBookEvent {
+    const message = createBaseClearVirtualOrderBookEvent();
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

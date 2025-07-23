@@ -23,28 +23,28 @@ export interface CDPLiquidations {
   transactionHash: string;
 }
 
-const baseCDPLiquidations: object = {
-  id: Long.UZERO,
-  liquidator: "",
-  debtor: "",
-  collateralDenom: "",
-  collateralAmountLiquidated: "",
-  collateralAmountLiquidator: "",
-  collateralAmountFee: "",
-  liquidationPrice: "",
-  marketPrice: "",
-  discount: "",
-  debtDenom: "",
-  debtAmount: "",
-  blockHeight: Long.ZERO,
-  transactionHash: "",
-};
+function createBaseCDPLiquidations(): CDPLiquidations {
+  return {
+    id: Long.UZERO,
+    liquidator: "",
+    debtor: "",
+    collateralDenom: "",
+    collateralAmountLiquidated: "",
+    collateralAmountLiquidator: "",
+    collateralAmountFee: "",
+    liquidationPrice: "",
+    marketPrice: "",
+    discount: "",
+    debtDenom: "",
+    debtAmount: "",
+    blockHeight: Long.ZERO,
+    blockTime: undefined,
+    transactionHash: "",
+  };
+}
 
 export const CDPLiquidations = {
-  encode(
-    message: CDPLiquidations,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CDPLiquidations, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.id.isZero()) {
       writer.uint32(8).uint64(message.id);
     }
@@ -85,10 +85,7 @@ export const CDPLiquidations = {
       writer.uint32(104).int64(message.blockHeight);
     }
     if (message.blockTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.blockTime),
-        writer.uint32(114).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.blockTime), writer.uint32(114).fork()).ldelim();
     }
     if (message.transactionHash !== "") {
       writer.uint32(122).string(message.transactionHash);
@@ -97,212 +94,205 @@ export const CDPLiquidations = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CDPLiquidations {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCDPLiquidations } as CDPLiquidations;
+    const message = createBaseCDPLiquidations();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.id = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.liquidator = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.debtor = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.collateralDenom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.collateralAmountLiquidated = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.collateralAmountLiquidator = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.collateralAmountFee = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.liquidationPrice = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.marketPrice = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.discount = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.debtDenom = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.debtAmount = reader.string();
-          break;
+          continue;
         case 13:
+          if (tag !== 104) {
+            break;
+          }
+
           message.blockHeight = reader.int64() as Long;
-          break;
+          continue;
         case 14:
-          message.blockTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 114) {
+            break;
+          }
+
+          message.blockTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 15:
+          if (tag !== 122) {
+            break;
+          }
+
           message.transactionHash = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CDPLiquidations {
-    const message = { ...baseCDPLiquidations } as CDPLiquidations;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.liquidator =
-      object.liquidator !== undefined && object.liquidator !== null
-        ? String(object.liquidator)
-        : "";
-    message.debtor =
-      object.debtor !== undefined && object.debtor !== null
-        ? String(object.debtor)
-        : "";
-    message.collateralDenom =
-      object.collateralDenom !== undefined && object.collateralDenom !== null
-        ? String(object.collateralDenom)
-        : "";
-    message.collateralAmountLiquidated =
-      object.collateralAmountLiquidated !== undefined &&
-      object.collateralAmountLiquidated !== null
+    return {
+      id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
+      liquidator: isSet(object.liquidator) ? String(object.liquidator) : "",
+      debtor: isSet(object.debtor) ? String(object.debtor) : "",
+      collateralDenom: isSet(object.collateralDenom) ? String(object.collateralDenom) : "",
+      collateralAmountLiquidated: isSet(object.collateralAmountLiquidated)
         ? String(object.collateralAmountLiquidated)
-        : "";
-    message.collateralAmountLiquidator =
-      object.collateralAmountLiquidator !== undefined &&
-      object.collateralAmountLiquidator !== null
+        : "",
+      collateralAmountLiquidator: isSet(object.collateralAmountLiquidator)
         ? String(object.collateralAmountLiquidator)
-        : "";
-    message.collateralAmountFee =
-      object.collateralAmountFee !== undefined &&
-      object.collateralAmountFee !== null
-        ? String(object.collateralAmountFee)
-        : "";
-    message.liquidationPrice =
-      object.liquidationPrice !== undefined && object.liquidationPrice !== null
-        ? String(object.liquidationPrice)
-        : "";
-    message.marketPrice =
-      object.marketPrice !== undefined && object.marketPrice !== null
-        ? String(object.marketPrice)
-        : "";
-    message.discount =
-      object.discount !== undefined && object.discount !== null
-        ? String(object.discount)
-        : "";
-    message.debtDenom =
-      object.debtDenom !== undefined && object.debtDenom !== null
-        ? String(object.debtDenom)
-        : "";
-    message.debtAmount =
-      object.debtAmount !== undefined && object.debtAmount !== null
-        ? String(object.debtAmount)
-        : "";
-    message.blockHeight =
-      object.blockHeight !== undefined && object.blockHeight !== null
-        ? Long.fromString(object.blockHeight)
-        : Long.ZERO;
-    message.blockTime =
-      object.blockTime !== undefined && object.blockTime !== null
-        ? fromJsonTimestamp(object.blockTime)
-        : undefined;
-    message.transactionHash =
-      object.transactionHash !== undefined && object.transactionHash !== null
-        ? String(object.transactionHash)
-        : "";
-    return message;
+        : "",
+      collateralAmountFee: isSet(object.collateralAmountFee) ? String(object.collateralAmountFee) : "",
+      liquidationPrice: isSet(object.liquidationPrice) ? String(object.liquidationPrice) : "",
+      marketPrice: isSet(object.marketPrice) ? String(object.marketPrice) : "",
+      discount: isSet(object.discount) ? String(object.discount) : "",
+      debtDenom: isSet(object.debtDenom) ? String(object.debtDenom) : "",
+      debtAmount: isSet(object.debtAmount) ? String(object.debtAmount) : "",
+      blockHeight: isSet(object.blockHeight) ? Long.fromValue(object.blockHeight) : Long.ZERO,
+      blockTime: isSet(object.blockTime) ? fromJsonTimestamp(object.blockTime) : undefined,
+      transactionHash: isSet(object.transactionHash) ? String(object.transactionHash) : "",
+    };
   },
 
   toJSON(message: CDPLiquidations): unknown {
     const obj: any = {};
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
     message.liquidator !== undefined && (obj.liquidator = message.liquidator);
     message.debtor !== undefined && (obj.debtor = message.debtor);
-    message.collateralDenom !== undefined &&
-      (obj.collateralDenom = message.collateralDenom);
+    message.collateralDenom !== undefined && (obj.collateralDenom = message.collateralDenom);
     message.collateralAmountLiquidated !== undefined &&
       (obj.collateralAmountLiquidated = message.collateralAmountLiquidated);
     message.collateralAmountLiquidator !== undefined &&
       (obj.collateralAmountLiquidator = message.collateralAmountLiquidator);
-    message.collateralAmountFee !== undefined &&
-      (obj.collateralAmountFee = message.collateralAmountFee);
-    message.liquidationPrice !== undefined &&
-      (obj.liquidationPrice = message.liquidationPrice);
-    message.marketPrice !== undefined &&
-      (obj.marketPrice = message.marketPrice);
+    message.collateralAmountFee !== undefined && (obj.collateralAmountFee = message.collateralAmountFee);
+    message.liquidationPrice !== undefined && (obj.liquidationPrice = message.liquidationPrice);
+    message.marketPrice !== undefined && (obj.marketPrice = message.marketPrice);
     message.discount !== undefined && (obj.discount = message.discount);
     message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
     message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.blockHeight !== undefined &&
-      (obj.blockHeight = (message.blockHeight || Long.ZERO).toString());
-    message.blockTime !== undefined &&
-      (obj.blockTime = message.blockTime.toISOString());
-    message.transactionHash !== undefined &&
-      (obj.transactionHash = message.transactionHash);
+    message.blockHeight !== undefined && (obj.blockHeight = (message.blockHeight || Long.ZERO).toString());
+    message.blockTime !== undefined && (obj.blockTime = message.blockTime.toISOString());
+    message.transactionHash !== undefined && (obj.transactionHash = message.transactionHash);
     return obj;
   },
 
+  create(base?: DeepPartial<CDPLiquidations>): CDPLiquidations {
+    return CDPLiquidations.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CDPLiquidations>): CDPLiquidations {
-    const message = { ...baseCDPLiquidations } as CDPLiquidations;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
+    const message = createBaseCDPLiquidations();
+    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
     message.liquidator = object.liquidator ?? "";
     message.debtor = object.debtor ?? "";
     message.collateralDenom = object.collateralDenom ?? "";
-    message.collateralAmountLiquidated =
-      object.collateralAmountLiquidated ?? "";
-    message.collateralAmountLiquidator =
-      object.collateralAmountLiquidator ?? "";
+    message.collateralAmountLiquidated = object.collateralAmountLiquidated ?? "";
+    message.collateralAmountLiquidator = object.collateralAmountLiquidator ?? "";
     message.collateralAmountFee = object.collateralAmountFee ?? "";
     message.liquidationPrice = object.liquidationPrice ?? "";
     message.marketPrice = object.marketPrice ?? "";
     message.discount = object.discount ?? "";
     message.debtDenom = object.debtDenom ?? "";
     message.debtAmount = object.debtAmount ?? "";
-    message.blockHeight =
-      object.blockHeight !== undefined && object.blockHeight !== null
-        ? Long.fromValue(object.blockHeight)
-        : Long.ZERO;
+    message.blockHeight = (object.blockHeight !== undefined && object.blockHeight !== null)
+      ? Long.fromValue(object.blockHeight)
+      : Long.ZERO;
     message.blockTime = object.blockTime ?? undefined;
     message.transactionHash = object.transactionHash ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -312,8 +302,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -334,4 +324,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

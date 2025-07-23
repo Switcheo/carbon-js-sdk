@@ -25,13 +25,12 @@ export interface ModuleAccountPermission {
   permissions: string[];
 }
 
-const baseModule: object = { bech32Prefix: "", authority: "" };
+function createBaseModule(): Module {
+  return { bech32Prefix: "", moduleAccountPermissions: [], authority: "" };
+}
 
 export const Module = {
-  encode(
-    message: Module,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Module, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.bech32Prefix !== "") {
       writer.uint32(10).string(message.bech32Prefix);
     }
@@ -45,52 +44,55 @@ export const Module = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Module {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModule } as Module;
-    message.moduleAccountPermissions = [];
+    const message = createBaseModule();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.bech32Prefix = reader.string();
-          break;
+          continue;
         case 2:
-          message.moduleAccountPermissions.push(
-            ModuleAccountPermission.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.moduleAccountPermissions.push(ModuleAccountPermission.decode(reader, reader.uint32()));
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Module {
-    const message = { ...baseModule } as Module;
-    message.bech32Prefix =
-      object.bech32Prefix !== undefined && object.bech32Prefix !== null
-        ? String(object.bech32Prefix)
-        : "";
-    message.moduleAccountPermissions = (
-      object.moduleAccountPermissions ?? []
-    ).map((e: any) => ModuleAccountPermission.fromJSON(e));
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    return message;
+    return {
+      bech32Prefix: isSet(object.bech32Prefix) ? String(object.bech32Prefix) : "",
+      moduleAccountPermissions: Array.isArray(object?.moduleAccountPermissions)
+        ? object.moduleAccountPermissions.map((e: any) => ModuleAccountPermission.fromJSON(e))
+        : [],
+      authority: isSet(object.authority) ? String(object.authority) : "",
+    };
   },
 
   toJSON(message: Module): unknown {
     const obj: any = {};
-    message.bech32Prefix !== undefined &&
-      (obj.bech32Prefix = message.bech32Prefix);
+    message.bech32Prefix !== undefined && (obj.bech32Prefix = message.bech32Prefix);
     if (message.moduleAccountPermissions) {
       obj.moduleAccountPermissions = message.moduleAccountPermissions.map((e) =>
         e ? ModuleAccountPermission.toJSON(e) : undefined
@@ -102,24 +104,26 @@ export const Module = {
     return obj;
   },
 
+  create(base?: DeepPartial<Module>): Module {
+    return Module.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Module>): Module {
-    const message = { ...baseModule } as Module;
+    const message = createBaseModule();
     message.bech32Prefix = object.bech32Prefix ?? "";
-    message.moduleAccountPermissions = (
-      object.moduleAccountPermissions ?? []
-    ).map((e) => ModuleAccountPermission.fromPartial(e));
+    message.moduleAccountPermissions =
+      object.moduleAccountPermissions?.map((e) => ModuleAccountPermission.fromPartial(e)) || [];
     message.authority = object.authority ?? "";
     return message;
   },
 };
 
-const baseModuleAccountPermission: object = { account: "", permissions: "" };
+function createBaseModuleAccountPermission(): ModuleAccountPermission {
+  return { account: "", permissions: [] };
+}
 
 export const ModuleAccountPermission = {
-  encode(
-    message: ModuleAccountPermission,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleAccountPermission, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.account !== "") {
       writer.uint32(10).string(message.account);
     }
@@ -129,43 +133,41 @@ export const ModuleAccountPermission = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ModuleAccountPermission {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleAccountPermission {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseModuleAccountPermission,
-    } as ModuleAccountPermission;
-    message.permissions = [];
+    const message = createBaseModuleAccountPermission();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.account = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.permissions.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleAccountPermission {
-    const message = {
-      ...baseModuleAccountPermission,
-    } as ModuleAccountPermission;
-    message.account =
-      object.account !== undefined && object.account !== null
-        ? String(object.account)
-        : "";
-    message.permissions = (object.permissions ?? []).map((e: any) => String(e));
-    return message;
+    return {
+      account: isSet(object.account) ? String(object.account) : "",
+      permissions: Array.isArray(object?.permissions) ? object.permissions.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: ModuleAccountPermission): unknown {
@@ -179,39 +181,31 @@ export const ModuleAccountPermission = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ModuleAccountPermission>
-  ): ModuleAccountPermission {
-    const message = {
-      ...baseModuleAccountPermission,
-    } as ModuleAccountPermission;
+  create(base?: DeepPartial<ModuleAccountPermission>): ModuleAccountPermission {
+    return ModuleAccountPermission.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ModuleAccountPermission>): ModuleAccountPermission {
+    const message = createBaseModuleAccountPermission();
     message.account = object.account ?? "";
-    message.permissions = (object.permissions ?? []).map((e) => e);
+    message.permissions = object.permissions?.map((e) => e) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -40,7 +40,9 @@ export interface ProofOps {
   ops: ProofOp[];
 }
 
-const baseProof: object = { total: Long.ZERO, index: Long.ZERO };
+function createBaseProof(): Proof {
+  return { total: Long.ZERO, index: Long.ZERO, leafHash: new Uint8Array(), aunts: [] };
+}
 
 export const Proof = {
   encode(message: Proof, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -60,95 +62,92 @@ export const Proof = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Proof {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseProof } as Proof;
-    message.aunts = [];
-    message.leafHash = new Uint8Array();
+    const message = createBaseProof();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.total = reader.int64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.index = reader.int64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.leafHash = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.aunts.push(reader.bytes());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Proof {
-    const message = { ...baseProof } as Proof;
-    message.total =
-      object.total !== undefined && object.total !== null
-        ? Long.fromString(object.total)
-        : Long.ZERO;
-    message.index =
-      object.index !== undefined && object.index !== null
-        ? Long.fromString(object.index)
-        : Long.ZERO;
-    message.leafHash =
-      object.leafHash !== undefined && object.leafHash !== null
-        ? bytesFromBase64(object.leafHash)
-        : new Uint8Array();
-    message.aunts = (object.aunts ?? []).map((e: any) => bytesFromBase64(e));
-    return message;
+    return {
+      total: isSet(object.total) ? Long.fromValue(object.total) : Long.ZERO,
+      index: isSet(object.index) ? Long.fromValue(object.index) : Long.ZERO,
+      leafHash: isSet(object.leafHash) ? bytesFromBase64(object.leafHash) : new Uint8Array(),
+      aunts: Array.isArray(object?.aunts) ? object.aunts.map((e: any) => bytesFromBase64(e)) : [],
+    };
   },
 
   toJSON(message: Proof): unknown {
     const obj: any = {};
-    message.total !== undefined &&
-      (obj.total = (message.total || Long.ZERO).toString());
-    message.index !== undefined &&
-      (obj.index = (message.index || Long.ZERO).toString());
+    message.total !== undefined && (obj.total = (message.total || Long.ZERO).toString());
+    message.index !== undefined && (obj.index = (message.index || Long.ZERO).toString());
     message.leafHash !== undefined &&
-      (obj.leafHash = base64FromBytes(
-        message.leafHash !== undefined ? message.leafHash : new Uint8Array()
-      ));
+      (obj.leafHash = base64FromBytes(message.leafHash !== undefined ? message.leafHash : new Uint8Array()));
     if (message.aunts) {
-      obj.aunts = message.aunts.map((e) =>
-        base64FromBytes(e !== undefined ? e : new Uint8Array())
-      );
+      obj.aunts = message.aunts.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
     } else {
       obj.aunts = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Proof>): Proof {
+    return Proof.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Proof>): Proof {
-    const message = { ...baseProof } as Proof;
-    message.total =
-      object.total !== undefined && object.total !== null
-        ? Long.fromValue(object.total)
-        : Long.ZERO;
-    message.index =
-      object.index !== undefined && object.index !== null
-        ? Long.fromValue(object.index)
-        : Long.ZERO;
+    const message = createBaseProof();
+    message.total = (object.total !== undefined && object.total !== null) ? Long.fromValue(object.total) : Long.ZERO;
+    message.index = (object.index !== undefined && object.index !== null) ? Long.fromValue(object.index) : Long.ZERO;
     message.leafHash = object.leafHash ?? new Uint8Array();
-    message.aunts = (object.aunts ?? []).map((e) => e);
+    message.aunts = object.aunts?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseValueOp: object = {};
+function createBaseValueOp(): ValueOp {
+  return { key: new Uint8Array(), proof: undefined };
+}
 
 export const ValueOp = {
-  encode(
-    message: ValueOp,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ValueOp, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key.length !== 0) {
       writer.uint32(10).bytes(message.key);
     }
@@ -159,69 +158,68 @@ export const ValueOp = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ValueOp {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseValueOp } as ValueOp;
-    message.key = new Uint8Array();
+    const message = createBaseValueOp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.proof = Proof.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ValueOp {
-    const message = { ...baseValueOp } as ValueOp;
-    message.key =
-      object.key !== undefined && object.key !== null
-        ? bytesFromBase64(object.key)
-        : new Uint8Array();
-    message.proof =
-      object.proof !== undefined && object.proof !== null
-        ? Proof.fromJSON(object.proof)
-        : undefined;
-    return message;
+    return {
+      key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
+      proof: isSet(object.proof) ? Proof.fromJSON(object.proof) : undefined,
+    };
   },
 
   toJSON(message: ValueOp): unknown {
     const obj: any = {};
     message.key !== undefined &&
-      (obj.key = base64FromBytes(
-        message.key !== undefined ? message.key : new Uint8Array()
-      ));
-    message.proof !== undefined &&
-      (obj.proof = message.proof ? Proof.toJSON(message.proof) : undefined);
+      (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
+    message.proof !== undefined && (obj.proof = message.proof ? Proof.toJSON(message.proof) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<ValueOp>): ValueOp {
+    return ValueOp.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ValueOp>): ValueOp {
-    const message = { ...baseValueOp } as ValueOp;
+    const message = createBaseValueOp();
     message.key = object.key ?? new Uint8Array();
-    message.proof =
-      object.proof !== undefined && object.proof !== null
-        ? Proof.fromPartial(object.proof)
-        : undefined;
+    message.proof = (object.proof !== undefined && object.proof !== null) ? Proof.fromPartial(object.proof) : undefined;
     return message;
   },
 };
 
-const baseDominoOp: object = { key: "", input: "", output: "" };
+function createBaseDominoOp(): DominoOp {
+  return { key: "", input: "", output: "" };
+}
 
 export const DominoOp = {
-  encode(
-    message: DominoOp,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DominoOp, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -235,42 +233,48 @@ export const DominoOp = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DominoOp {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDominoOp } as DominoOp;
+    const message = createBaseDominoOp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.input = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.output = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DominoOp {
-    const message = { ...baseDominoOp } as DominoOp;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.input =
-      object.input !== undefined && object.input !== null
-        ? String(object.input)
-        : "";
-    message.output =
-      object.output !== undefined && object.output !== null
-        ? String(object.output)
-        : "";
-    return message;
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      input: isSet(object.input) ? String(object.input) : "",
+      output: isSet(object.output) ? String(object.output) : "",
+    };
   },
 
   toJSON(message: DominoOp): unknown {
@@ -281,8 +285,12 @@ export const DominoOp = {
     return obj;
   },
 
+  create(base?: DeepPartial<DominoOp>): DominoOp {
+    return DominoOp.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DominoOp>): DominoOp {
-    const message = { ...baseDominoOp } as DominoOp;
+    const message = createBaseDominoOp();
     message.key = object.key ?? "";
     message.input = object.input ?? "";
     message.output = object.output ?? "";
@@ -290,13 +298,12 @@ export const DominoOp = {
   },
 };
 
-const baseProofOp: object = { type: "" };
+function createBaseProofOp(): ProofOp {
+  return { type: "", key: new Uint8Array(), data: new Uint8Array() };
+}
 
 export const ProofOp = {
-  encode(
-    message: ProofOp,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProofOp, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.type !== "") {
       writer.uint32(10).string(message.type);
     }
@@ -310,64 +317,66 @@ export const ProofOp = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ProofOp {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseProofOp } as ProofOp;
-    message.key = new Uint8Array();
-    message.data = new Uint8Array();
+    const message = createBaseProofOp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.key = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.data = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ProofOp {
-    const message = { ...baseProofOp } as ProofOp;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    message.key =
-      object.key !== undefined && object.key !== null
-        ? bytesFromBase64(object.key)
-        : new Uint8Array();
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? bytesFromBase64(object.data)
-        : new Uint8Array();
-    return message;
+    return {
+      type: isSet(object.type) ? String(object.type) : "",
+      key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
+      data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+    };
   },
 
   toJSON(message: ProofOp): unknown {
     const obj: any = {};
     message.type !== undefined && (obj.type = message.type);
     message.key !== undefined &&
-      (obj.key = base64FromBytes(
-        message.key !== undefined ? message.key : new Uint8Array()
-      ));
+      (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
     message.data !== undefined &&
-      (obj.data = base64FromBytes(
-        message.data !== undefined ? message.data : new Uint8Array()
-      ));
+      (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<ProofOp>): ProofOp {
+    return ProofOp.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ProofOp>): ProofOp {
-    const message = { ...baseProofOp } as ProofOp;
+    const message = createBaseProofOp();
     message.type = object.type ?? "";
     message.key = object.key ?? new Uint8Array();
     message.data = object.data ?? new Uint8Array();
@@ -375,13 +384,12 @@ export const ProofOp = {
   },
 };
 
-const baseProofOps: object = {};
+function createBaseProofOps(): ProofOps {
+  return { ops: [] };
+}
 
 export const ProofOps = {
-  encode(
-    message: ProofOps,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ProofOps, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.ops) {
       ProofOp.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -389,43 +397,49 @@ export const ProofOps = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ProofOps {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseProofOps } as ProofOps;
-    message.ops = [];
+    const message = createBaseProofOps();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.ops.push(ProofOp.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ProofOps {
-    const message = { ...baseProofOps } as ProofOps;
-    message.ops = (object.ops ?? []).map((e: any) => ProofOp.fromJSON(e));
-    return message;
+    return { ops: Array.isArray(object?.ops) ? object.ops.map((e: any) => ProofOp.fromJSON(e)) : [] };
   },
 
   toJSON(message: ProofOps): unknown {
     const obj: any = {};
     if (message.ops) {
-      obj.ops = message.ops.map((e) => (e ? ProofOp.toJSON(e) : undefined));
+      obj.ops = message.ops.map((e) => e ? ProofOp.toJSON(e) : undefined);
     } else {
       obj.ops = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<ProofOps>): ProofOps {
+    return ProofOps.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ProofOps>): ProofOps {
-    const message = { ...baseProofOps } as ProofOps;
-    message.ops = (object.ops ?? []).map((e) => ProofOp.fromPartial(e));
+    const message = createBaseProofOps();
+    message.ops = object.ops?.map((e) => ProofOp.fromPartial(e)) || [];
     return message;
   },
 };
@@ -433,58 +447,60 @@ export const ProofOps = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

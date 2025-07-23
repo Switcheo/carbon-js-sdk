@@ -24,7 +24,8 @@ export interface MsgSoftwareUpgrade {
  *
  * Since: cosmos-sdk 0.46
  */
-export interface MsgSoftwareUpgradeResponse {}
+export interface MsgSoftwareUpgradeResponse {
+}
 
 /**
  * MsgCancelUpgrade is the Msg/CancelUpgrade request type.
@@ -41,15 +42,15 @@ export interface MsgCancelUpgrade {
  *
  * Since: cosmos-sdk 0.46
  */
-export interface MsgCancelUpgradeResponse {}
+export interface MsgCancelUpgradeResponse {
+}
 
-const baseMsgSoftwareUpgrade: object = { authority: "" };
+function createBaseMsgSoftwareUpgrade(): MsgSoftwareUpgrade {
+  return { authority: "", plan: undefined };
+}
 
 export const MsgSoftwareUpgrade = {
-  encode(
-    message: MsgSoftwareUpgrade,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSoftwareUpgrade, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -60,93 +61,88 @@ export const MsgSoftwareUpgrade = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSoftwareUpgrade {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSoftwareUpgrade } as MsgSoftwareUpgrade;
+    const message = createBaseMsgSoftwareUpgrade();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.plan = Plan.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSoftwareUpgrade {
-    const message = { ...baseMsgSoftwareUpgrade } as MsgSoftwareUpgrade;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.plan =
-      object.plan !== undefined && object.plan !== null
-        ? Plan.fromJSON(object.plan)
-        : undefined;
-    return message;
+    return {
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      plan: isSet(object.plan) ? Plan.fromJSON(object.plan) : undefined,
+    };
   },
 
   toJSON(message: MsgSoftwareUpgrade): unknown {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
-    message.plan !== undefined &&
-      (obj.plan = message.plan ? Plan.toJSON(message.plan) : undefined);
+    message.plan !== undefined && (obj.plan = message.plan ? Plan.toJSON(message.plan) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSoftwareUpgrade>): MsgSoftwareUpgrade {
+    return MsgSoftwareUpgrade.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgSoftwareUpgrade>): MsgSoftwareUpgrade {
-    const message = { ...baseMsgSoftwareUpgrade } as MsgSoftwareUpgrade;
+    const message = createBaseMsgSoftwareUpgrade();
     message.authority = object.authority ?? "";
-    message.plan =
-      object.plan !== undefined && object.plan !== null
-        ? Plan.fromPartial(object.plan)
-        : undefined;
+    message.plan = (object.plan !== undefined && object.plan !== null) ? Plan.fromPartial(object.plan) : undefined;
     return message;
   },
 };
 
-const baseMsgSoftwareUpgradeResponse: object = {};
+function createBaseMsgSoftwareUpgradeResponse(): MsgSoftwareUpgradeResponse {
+  return {};
+}
 
 export const MsgSoftwareUpgradeResponse = {
-  encode(
-    _: MsgSoftwareUpgradeResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSoftwareUpgradeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSoftwareUpgradeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSoftwareUpgradeResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgSoftwareUpgradeResponse,
-    } as MsgSoftwareUpgradeResponse;
+    const message = createBaseMsgSoftwareUpgradeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSoftwareUpgradeResponse {
-    const message = {
-      ...baseMsgSoftwareUpgradeResponse,
-    } as MsgSoftwareUpgradeResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSoftwareUpgradeResponse): unknown {
@@ -154,23 +150,22 @@ export const MsgSoftwareUpgradeResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgSoftwareUpgradeResponse>
-  ): MsgSoftwareUpgradeResponse {
-    const message = {
-      ...baseMsgSoftwareUpgradeResponse,
-    } as MsgSoftwareUpgradeResponse;
+  create(base?: DeepPartial<MsgSoftwareUpgradeResponse>): MsgSoftwareUpgradeResponse {
+    return MsgSoftwareUpgradeResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgSoftwareUpgradeResponse>): MsgSoftwareUpgradeResponse {
+    const message = createBaseMsgSoftwareUpgradeResponse();
     return message;
   },
 };
 
-const baseMsgCancelUpgrade: object = { authority: "" };
+function createBaseMsgCancelUpgrade(): MsgCancelUpgrade {
+  return { authority: "" };
+}
 
 export const MsgCancelUpgrade = {
-  encode(
-    message: MsgCancelUpgrade,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCancelUpgrade, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -178,30 +173,30 @@ export const MsgCancelUpgrade = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCancelUpgrade {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCancelUpgrade } as MsgCancelUpgrade;
+    const message = createBaseMsgCancelUpgrade();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCancelUpgrade {
-    const message = { ...baseMsgCancelUpgrade } as MsgCancelUpgrade;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    return message;
+    return { authority: isSet(object.authority) ? String(object.authority) : "" };
   },
 
   toJSON(message: MsgCancelUpgrade): unknown {
@@ -210,48 +205,44 @@ export const MsgCancelUpgrade = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgCancelUpgrade>): MsgCancelUpgrade {
+    return MsgCancelUpgrade.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgCancelUpgrade>): MsgCancelUpgrade {
-    const message = { ...baseMsgCancelUpgrade } as MsgCancelUpgrade;
+    const message = createBaseMsgCancelUpgrade();
     message.authority = object.authority ?? "";
     return message;
   },
 };
 
-const baseMsgCancelUpgradeResponse: object = {};
+function createBaseMsgCancelUpgradeResponse(): MsgCancelUpgradeResponse {
+  return {};
+}
 
 export const MsgCancelUpgradeResponse = {
-  encode(
-    _: MsgCancelUpgradeResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgCancelUpgradeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCancelUpgradeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCancelUpgradeResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCancelUpgradeResponse,
-    } as MsgCancelUpgradeResponse;
+    const message = createBaseMsgCancelUpgradeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgCancelUpgradeResponse {
-    const message = {
-      ...baseMsgCancelUpgradeResponse,
-    } as MsgCancelUpgradeResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgCancelUpgradeResponse): unknown {
@@ -259,12 +250,12 @@ export const MsgCancelUpgradeResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgCancelUpgradeResponse>
-  ): MsgCancelUpgradeResponse {
-    const message = {
-      ...baseMsgCancelUpgradeResponse,
-    } as MsgCancelUpgradeResponse;
+  create(base?: DeepPartial<MsgCancelUpgradeResponse>): MsgCancelUpgradeResponse {
+    return MsgCancelUpgradeResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgCancelUpgradeResponse>): MsgCancelUpgradeResponse {
+    const message = createBaseMsgCancelUpgradeResponse();
     return message;
   },
 };
@@ -276,9 +267,7 @@ export interface Msg {
    *
    * Since: cosmos-sdk 0.46
    */
-  SoftwareUpgrade(
-    request: MsgSoftwareUpgrade
-  ): Promise<MsgSoftwareUpgradeResponse>;
+  SoftwareUpgrade(request: MsgSoftwareUpgrade): Promise<MsgSoftwareUpgradeResponse>;
   /**
    * CancelUpgrade is a governance operation for cancelling a previously
    * approved software upgrade.
@@ -290,67 +279,43 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.upgrade.v1beta1.Msg";
     this.rpc = rpc;
     this.SoftwareUpgrade = this.SoftwareUpgrade.bind(this);
     this.CancelUpgrade = this.CancelUpgrade.bind(this);
   }
-  SoftwareUpgrade(
-    request: MsgSoftwareUpgrade
-  ): Promise<MsgSoftwareUpgradeResponse> {
+  SoftwareUpgrade(request: MsgSoftwareUpgrade): Promise<MsgSoftwareUpgradeResponse> {
     const data = MsgSoftwareUpgrade.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.upgrade.v1beta1.Msg",
-      "SoftwareUpgrade",
-      data
-    );
-    return promise.then((data) =>
-      MsgSoftwareUpgradeResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "SoftwareUpgrade", data);
+    return promise.then((data) => MsgSoftwareUpgradeResponse.decode(_m0.Reader.create(data)));
   }
 
   CancelUpgrade(request: MsgCancelUpgrade): Promise<MsgCancelUpgradeResponse> {
     const data = MsgCancelUpgrade.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.upgrade.v1beta1.Msg",
-      "CancelUpgrade",
-      data
-    );
-    return promise.then((data) =>
-      MsgCancelUpgradeResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "CancelUpgrade", data);
+    return promise.then((data) => MsgCancelUpgradeResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

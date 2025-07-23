@@ -14,13 +14,12 @@ export interface Sequence {
   sequenceNumber: Long;
 }
 
-const baseGenesisState: object = {};
+function createBaseGenesisState(): GenesisState {
+  return { sequences: [] };
+}
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.sequences) {
       Sequence.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -28,60 +27,61 @@ export const GenesisState = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
-    message.sequences = [];
+    const message = createBaseGenesisState();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.sequences.push(Sequence.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.sequences = (object.sequences ?? []).map((e: any) =>
-      Sequence.fromJSON(e)
-    );
-    return message;
+    return {
+      sequences: Array.isArray(object?.sequences) ? object.sequences.map((e: any) => Sequence.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
     if (message.sequences) {
-      obj.sequences = message.sequences.map((e) =>
-        e ? Sequence.toJSON(e) : undefined
-      );
+      obj.sequences = message.sequences.map((e) => e ? Sequence.toJSON(e) : undefined);
     } else {
       obj.sequences = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisState>): GenesisState {
+    return GenesisState.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.sequences = (object.sequences ?? []).map((e) =>
-      Sequence.fromPartial(e)
-    );
+    const message = createBaseGenesisState();
+    message.sequences = object.sequences?.map((e) => Sequence.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseSequence: object = { key: "", sequenceNumber: Long.UZERO };
+function createBaseSequence(): Sequence {
+  return { key: "", sequenceNumber: Long.UZERO };
+}
 
 export const Sequence = {
-  encode(
-    message: Sequence,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Sequence, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -92,77 +92,76 @@ export const Sequence = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Sequence {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSequence } as Sequence;
+    const message = createBaseSequence();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.sequenceNumber = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Sequence {
-    const message = { ...baseSequence } as Sequence;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.sequenceNumber =
-      object.sequenceNumber !== undefined && object.sequenceNumber !== null
-        ? Long.fromString(object.sequenceNumber)
-        : Long.UZERO;
-    return message;
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      sequenceNumber: isSet(object.sequenceNumber) ? Long.fromValue(object.sequenceNumber) : Long.UZERO,
+    };
   },
 
   toJSON(message: Sequence): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
-    message.sequenceNumber !== undefined &&
-      (obj.sequenceNumber = (message.sequenceNumber || Long.UZERO).toString());
+    message.sequenceNumber !== undefined && (obj.sequenceNumber = (message.sequenceNumber || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<Sequence>): Sequence {
+    return Sequence.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Sequence>): Sequence {
-    const message = { ...baseSequence } as Sequence;
+    const message = createBaseSequence();
     message.key = object.key ?? "";
-    message.sequenceNumber =
-      object.sequenceNumber !== undefined && object.sequenceNumber !== null
-        ? Long.fromValue(object.sequenceNumber)
-        : Long.UZERO;
+    message.sequenceNumber = (object.sequenceNumber !== undefined && object.sequenceNumber !== null)
+      ? Long.fromValue(object.sequenceNumber)
+      : Long.UZERO;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

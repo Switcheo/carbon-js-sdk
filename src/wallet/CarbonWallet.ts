@@ -38,6 +38,7 @@ import { utils } from "ethers";
 import { jwtDecode } from "jwt-decode";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
+import { toUint8Array } from '@carbon-sdk/util/bytes'
 
 dayjs.extend(utc)
 
@@ -279,7 +280,7 @@ export class CarbonWallet {
 
       if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
 
-      this.signer = new CarbonPrivateKeySigner(this.privateKey, prefix);
+      this.signer = new CarbonPrivateKeySigner(toUint8Array(this.privateKey), prefix);
     } else if (opts.bech32Address) {
       // read-only wallet, without private/public keys
       this.signer = new CarbonNonSigner();

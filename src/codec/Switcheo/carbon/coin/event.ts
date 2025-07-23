@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { GroupedTokenConfig, TokenGroup } from "./group";
 import { Token } from "./token";
-import { TokenGroup, GroupedTokenConfig } from "./group";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -67,13 +67,12 @@ export interface WithdrawFromGroupEvent {
   chequeAmount: string;
 }
 
-const baseNewTokenEvent: object = { type: "" };
+function createBaseNewTokenEvent(): NewTokenEvent {
+  return { token: undefined, type: "" };
+}
 
 export const NewTokenEvent = {
-  encode(
-    message: NewTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: NewTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.token !== undefined) {
       Token.encode(message.token, writer.uint32(10).fork()).ldelim();
     }
@@ -84,65 +83,67 @@ export const NewTokenEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NewTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseNewTokenEvent } as NewTokenEvent;
+    const message = createBaseNewTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.token = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewTokenEvent {
-    const message = { ...baseNewTokenEvent } as NewTokenEvent;
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Token.fromJSON(object.token)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      token: isSet(object.token) ? Token.fromJSON(object.token) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: NewTokenEvent): unknown {
     const obj: any = {};
-    message.token !== undefined &&
-      (obj.token = message.token ? Token.toJSON(message.token) : undefined);
+    message.token !== undefined && (obj.token = message.token ? Token.toJSON(message.token) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
+  create(base?: DeepPartial<NewTokenEvent>): NewTokenEvent {
+    return NewTokenEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<NewTokenEvent>): NewTokenEvent {
-    const message = { ...baseNewTokenEvent } as NewTokenEvent;
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Token.fromPartial(object.token)
-        : undefined;
+    const message = createBaseNewTokenEvent();
+    message.token = (object.token !== undefined && object.token !== null) ? Token.fromPartial(object.token) : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseSyncTokenEvent: object = {};
+function createBaseSyncTokenEvent(): SyncTokenEvent {
+  return { token: undefined };
+}
 
 export const SyncTokenEvent = {
-  encode(
-    message: SyncTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SyncTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.token !== undefined) {
       Token.encode(message.token, writer.uint32(10).fork()).ldelim();
     }
@@ -150,56 +151,55 @@ export const SyncTokenEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SyncTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSyncTokenEvent } as SyncTokenEvent;
+    const message = createBaseSyncTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.token = Token.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SyncTokenEvent {
-    const message = { ...baseSyncTokenEvent } as SyncTokenEvent;
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Token.fromJSON(object.token)
-        : undefined;
-    return message;
+    return { token: isSet(object.token) ? Token.fromJSON(object.token) : undefined };
   },
 
   toJSON(message: SyncTokenEvent): unknown {
     const obj: any = {};
-    message.token !== undefined &&
-      (obj.token = message.token ? Token.toJSON(message.token) : undefined);
+    message.token !== undefined && (obj.token = message.token ? Token.toJSON(message.token) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<SyncTokenEvent>): SyncTokenEvent {
+    return SyncTokenEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SyncTokenEvent>): SyncTokenEvent {
-    const message = { ...baseSyncTokenEvent } as SyncTokenEvent;
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Token.fromPartial(object.token)
-        : undefined;
+    const message = createBaseSyncTokenEvent();
+    message.token = (object.token !== undefined && object.token !== null) ? Token.fromPartial(object.token) : undefined;
     return message;
   },
 };
 
-const baseBindTokenEvent: object = { sourceDenom: "", wrappedDenom: "" };
+function createBaseBindTokenEvent(): BindTokenEvent {
+  return { sourceDenom: "", wrappedDenom: "" };
+}
 
 export const BindTokenEvent = {
-  encode(
-    message: BindTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BindTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sourceDenom !== "") {
       writer.uint32(10).string(message.sourceDenom);
     }
@@ -210,63 +210,67 @@ export const BindTokenEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BindTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBindTokenEvent } as BindTokenEvent;
+    const message = createBaseBindTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.sourceDenom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.wrappedDenom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BindTokenEvent {
-    const message = { ...baseBindTokenEvent } as BindTokenEvent;
-    message.sourceDenom =
-      object.sourceDenom !== undefined && object.sourceDenom !== null
-        ? String(object.sourceDenom)
-        : "";
-    message.wrappedDenom =
-      object.wrappedDenom !== undefined && object.wrappedDenom !== null
-        ? String(object.wrappedDenom)
-        : "";
-    return message;
+    return {
+      sourceDenom: isSet(object.sourceDenom) ? String(object.sourceDenom) : "",
+      wrappedDenom: isSet(object.wrappedDenom) ? String(object.wrappedDenom) : "",
+    };
   },
 
   toJSON(message: BindTokenEvent): unknown {
     const obj: any = {};
-    message.sourceDenom !== undefined &&
-      (obj.sourceDenom = message.sourceDenom);
-    message.wrappedDenom !== undefined &&
-      (obj.wrappedDenom = message.wrappedDenom);
+    message.sourceDenom !== undefined && (obj.sourceDenom = message.sourceDenom);
+    message.wrappedDenom !== undefined && (obj.wrappedDenom = message.wrappedDenom);
     return obj;
   },
 
+  create(base?: DeepPartial<BindTokenEvent>): BindTokenEvent {
+    return BindTokenEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BindTokenEvent>): BindTokenEvent {
-    const message = { ...baseBindTokenEvent } as BindTokenEvent;
+    const message = createBaseBindTokenEvent();
     message.sourceDenom = object.sourceDenom ?? "";
     message.wrappedDenom = object.wrappedDenom ?? "";
     return message;
   },
 };
 
-const baseUnbindTokenEvent: object = { wrappedDenom: "" };
+function createBaseUnbindTokenEvent(): UnbindTokenEvent {
+  return { wrappedDenom: "" };
+}
 
 export const UnbindTokenEvent = {
-  encode(
-    message: UnbindTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UnbindTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.wrappedDenom !== "") {
       writer.uint32(10).string(message.wrappedDenom);
     }
@@ -274,53 +278,55 @@ export const UnbindTokenEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UnbindTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
+    const message = createBaseUnbindTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.wrappedDenom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UnbindTokenEvent {
-    const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
-    message.wrappedDenom =
-      object.wrappedDenom !== undefined && object.wrappedDenom !== null
-        ? String(object.wrappedDenom)
-        : "";
-    return message;
+    return { wrappedDenom: isSet(object.wrappedDenom) ? String(object.wrappedDenom) : "" };
   },
 
   toJSON(message: UnbindTokenEvent): unknown {
     const obj: any = {};
-    message.wrappedDenom !== undefined &&
-      (obj.wrappedDenom = message.wrappedDenom);
+    message.wrappedDenom !== undefined && (obj.wrappedDenom = message.wrappedDenom);
     return obj;
   },
 
+  create(base?: DeepPartial<UnbindTokenEvent>): UnbindTokenEvent {
+    return UnbindTokenEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UnbindTokenEvent>): UnbindTokenEvent {
-    const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
+    const message = createBaseUnbindTokenEvent();
     message.wrappedDenom = object.wrappedDenom ?? "";
     return message;
   },
 };
 
-const baseLinkTokenEvent: object = { type: "" };
+function createBaseLinkTokenEvent(): LinkTokenEvent {
+  return { token: undefined, type: "" };
+}
 
 export const LinkTokenEvent = {
-  encode(
-    message: LinkTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LinkTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.token !== undefined) {
       Token.encode(message.token, writer.uint32(10).fork()).ldelim();
     }
@@ -331,65 +337,67 @@ export const LinkTokenEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LinkTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLinkTokenEvent } as LinkTokenEvent;
+    const message = createBaseLinkTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.token = Token.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LinkTokenEvent {
-    const message = { ...baseLinkTokenEvent } as LinkTokenEvent;
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Token.fromJSON(object.token)
-        : undefined;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
-    return message;
+    return {
+      token: isSet(object.token) ? Token.fromJSON(object.token) : undefined,
+      type: isSet(object.type) ? String(object.type) : "",
+    };
   },
 
   toJSON(message: LinkTokenEvent): unknown {
     const obj: any = {};
-    message.token !== undefined &&
-      (obj.token = message.token ? Token.toJSON(message.token) : undefined);
+    message.token !== undefined && (obj.token = message.token ? Token.toJSON(message.token) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
+  create(base?: DeepPartial<LinkTokenEvent>): LinkTokenEvent {
+    return LinkTokenEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<LinkTokenEvent>): LinkTokenEvent {
-    const message = { ...baseLinkTokenEvent } as LinkTokenEvent;
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Token.fromPartial(object.token)
-        : undefined;
+    const message = createBaseLinkTokenEvent();
+    message.token = (object.token !== undefined && object.token !== null) ? Token.fromPartial(object.token) : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseNewGroupEvent: object = {};
+function createBaseNewGroupEvent(): NewGroupEvent {
+  return { tokenGroup: undefined };
+}
 
 export const NewGroupEvent = {
-  encode(
-    message: NewGroupEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: NewGroupEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.tokenGroup !== undefined) {
       TokenGroup.encode(message.tokenGroup, writer.uint32(10).fork()).ldelim();
     }
@@ -397,58 +405,58 @@ export const NewGroupEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NewGroupEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseNewGroupEvent } as NewGroupEvent;
+    const message = createBaseNewGroupEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.tokenGroup = TokenGroup.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewGroupEvent {
-    const message = { ...baseNewGroupEvent } as NewGroupEvent;
-    message.tokenGroup =
-      object.tokenGroup !== undefined && object.tokenGroup !== null
-        ? TokenGroup.fromJSON(object.tokenGroup)
-        : undefined;
-    return message;
+    return { tokenGroup: isSet(object.tokenGroup) ? TokenGroup.fromJSON(object.tokenGroup) : undefined };
   },
 
   toJSON(message: NewGroupEvent): unknown {
     const obj: any = {};
     message.tokenGroup !== undefined &&
-      (obj.tokenGroup = message.tokenGroup
-        ? TokenGroup.toJSON(message.tokenGroup)
-        : undefined);
+      (obj.tokenGroup = message.tokenGroup ? TokenGroup.toJSON(message.tokenGroup) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<NewGroupEvent>): NewGroupEvent {
+    return NewGroupEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<NewGroupEvent>): NewGroupEvent {
-    const message = { ...baseNewGroupEvent } as NewGroupEvent;
-    message.tokenGroup =
-      object.tokenGroup !== undefined && object.tokenGroup !== null
-        ? TokenGroup.fromPartial(object.tokenGroup)
-        : undefined;
+    const message = createBaseNewGroupEvent();
+    message.tokenGroup = (object.tokenGroup !== undefined && object.tokenGroup !== null)
+      ? TokenGroup.fromPartial(object.tokenGroup)
+      : undefined;
     return message;
   },
 };
 
-const baseUpdateGroupEvent: object = {};
+function createBaseUpdateGroupEvent(): UpdateGroupEvent {
+  return { tokenGroup: undefined };
+}
 
 export const UpdateGroupEvent = {
-  encode(
-    message: UpdateGroupEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateGroupEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.tokenGroup !== undefined) {
       TokenGroup.encode(message.tokenGroup, writer.uint32(10).fork()).ldelim();
     }
@@ -456,58 +464,58 @@ export const UpdateGroupEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UpdateGroupEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateGroupEvent } as UpdateGroupEvent;
+    const message = createBaseUpdateGroupEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.tokenGroup = TokenGroup.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateGroupEvent {
-    const message = { ...baseUpdateGroupEvent } as UpdateGroupEvent;
-    message.tokenGroup =
-      object.tokenGroup !== undefined && object.tokenGroup !== null
-        ? TokenGroup.fromJSON(object.tokenGroup)
-        : undefined;
-    return message;
+    return { tokenGroup: isSet(object.tokenGroup) ? TokenGroup.fromJSON(object.tokenGroup) : undefined };
   },
 
   toJSON(message: UpdateGroupEvent): unknown {
     const obj: any = {};
     message.tokenGroup !== undefined &&
-      (obj.tokenGroup = message.tokenGroup
-        ? TokenGroup.toJSON(message.tokenGroup)
-        : undefined);
+      (obj.tokenGroup = message.tokenGroup ? TokenGroup.toJSON(message.tokenGroup) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<UpdateGroupEvent>): UpdateGroupEvent {
+    return UpdateGroupEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UpdateGroupEvent>): UpdateGroupEvent {
-    const message = { ...baseUpdateGroupEvent } as UpdateGroupEvent;
-    message.tokenGroup =
-      object.tokenGroup !== undefined && object.tokenGroup !== null
-        ? TokenGroup.fromPartial(object.tokenGroup)
-        : undefined;
+    const message = createBaseUpdateGroupEvent();
+    message.tokenGroup = (object.tokenGroup !== undefined && object.tokenGroup !== null)
+      ? TokenGroup.fromPartial(object.tokenGroup)
+      : undefined;
     return message;
   },
 };
 
-const baseRegisterToGroupEvent: object = { groupId: Long.UZERO, denom: "" };
+function createBaseRegisterToGroupEvent(): RegisterToGroupEvent {
+  return { groupId: Long.UZERO, denom: "" };
+}
 
 export const RegisterToGroupEvent = {
-  encode(
-    message: RegisterToGroupEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RegisterToGroupEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.groupId.isZero()) {
       writer.uint32(8).uint64(message.groupId);
     }
@@ -517,69 +525,70 @@ export const RegisterToGroupEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RegisterToGroupEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterToGroupEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRegisterToGroupEvent } as RegisterToGroupEvent;
+    const message = createBaseRegisterToGroupEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.groupId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RegisterToGroupEvent {
-    const message = { ...baseRegisterToGroupEvent } as RegisterToGroupEvent;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromString(object.groupId)
-        : Long.UZERO;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    return message;
+    return {
+      groupId: isSet(object.groupId) ? Long.fromValue(object.groupId) : Long.UZERO,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+    };
   },
 
   toJSON(message: RegisterToGroupEvent): unknown {
     const obj: any = {};
-    message.groupId !== undefined &&
-      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.groupId !== undefined && (obj.groupId = (message.groupId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     return obj;
   },
 
+  create(base?: DeepPartial<RegisterToGroupEvent>): RegisterToGroupEvent {
+    return RegisterToGroupEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RegisterToGroupEvent>): RegisterToGroupEvent {
-    const message = { ...baseRegisterToGroupEvent } as RegisterToGroupEvent;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromValue(object.groupId)
-        : Long.UZERO;
+    const message = createBaseRegisterToGroupEvent();
+    message.groupId = (object.groupId !== undefined && object.groupId !== null)
+      ? Long.fromValue(object.groupId)
+      : Long.UZERO;
     message.denom = object.denom ?? "";
     return message;
   },
 };
 
-const baseDeregisterFromGroupEvent: object = { groupId: Long.UZERO, denom: "" };
+function createBaseDeregisterFromGroupEvent(): DeregisterFromGroupEvent {
+  return { groupId: Long.UZERO, denom: "" };
+}
 
 export const DeregisterFromGroupEvent = {
-  encode(
-    message: DeregisterFromGroupEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DeregisterFromGroupEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.groupId.isZero()) {
       writer.uint32(8).uint64(message.groupId);
     }
@@ -589,161 +598,134 @@ export const DeregisterFromGroupEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): DeregisterFromGroupEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeregisterFromGroupEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseDeregisterFromGroupEvent,
-    } as DeregisterFromGroupEvent;
+    const message = createBaseDeregisterFromGroupEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.groupId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DeregisterFromGroupEvent {
-    const message = {
-      ...baseDeregisterFromGroupEvent,
-    } as DeregisterFromGroupEvent;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromString(object.groupId)
-        : Long.UZERO;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    return message;
+    return {
+      groupId: isSet(object.groupId) ? Long.fromValue(object.groupId) : Long.UZERO,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+    };
   },
 
   toJSON(message: DeregisterFromGroupEvent): unknown {
     const obj: any = {};
-    message.groupId !== undefined &&
-      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.groupId !== undefined && (obj.groupId = (message.groupId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<DeregisterFromGroupEvent>
-  ): DeregisterFromGroupEvent {
-    const message = {
-      ...baseDeregisterFromGroupEvent,
-    } as DeregisterFromGroupEvent;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromValue(object.groupId)
-        : Long.UZERO;
+  create(base?: DeepPartial<DeregisterFromGroupEvent>): DeregisterFromGroupEvent {
+    return DeregisterFromGroupEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<DeregisterFromGroupEvent>): DeregisterFromGroupEvent {
+    const message = createBaseDeregisterFromGroupEvent();
+    message.groupId = (object.groupId !== undefined && object.groupId !== null)
+      ? Long.fromValue(object.groupId)
+      : Long.UZERO;
     message.denom = object.denom ?? "";
     return message;
   },
 };
 
-const baseSetGroupedTokenConfigEvent: object = {};
+function createBaseSetGroupedTokenConfigEvent(): SetGroupedTokenConfigEvent {
+  return { groupedTokenConfig: undefined };
+}
 
 export const SetGroupedTokenConfigEvent = {
-  encode(
-    message: SetGroupedTokenConfigEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetGroupedTokenConfigEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.groupedTokenConfig !== undefined) {
-      GroupedTokenConfig.encode(
-        message.groupedTokenConfig,
-        writer.uint32(10).fork()
-      ).ldelim();
+      GroupedTokenConfig.encode(message.groupedTokenConfig, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetGroupedTokenConfigEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetGroupedTokenConfigEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetGroupedTokenConfigEvent,
-    } as SetGroupedTokenConfigEvent;
+    const message = createBaseSetGroupedTokenConfigEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.groupedTokenConfig = GroupedTokenConfig.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.groupedTokenConfig = GroupedTokenConfig.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetGroupedTokenConfigEvent {
-    const message = {
-      ...baseSetGroupedTokenConfigEvent,
-    } as SetGroupedTokenConfigEvent;
-    message.groupedTokenConfig =
-      object.groupedTokenConfig !== undefined &&
-      object.groupedTokenConfig !== null
+    return {
+      groupedTokenConfig: isSet(object.groupedTokenConfig)
         ? GroupedTokenConfig.fromJSON(object.groupedTokenConfig)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: SetGroupedTokenConfigEvent): unknown {
     const obj: any = {};
-    message.groupedTokenConfig !== undefined &&
-      (obj.groupedTokenConfig = message.groupedTokenConfig
-        ? GroupedTokenConfig.toJSON(message.groupedTokenConfig)
-        : undefined);
+    message.groupedTokenConfig !== undefined && (obj.groupedTokenConfig = message.groupedTokenConfig
+      ? GroupedTokenConfig.toJSON(message.groupedTokenConfig)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetGroupedTokenConfigEvent>
-  ): SetGroupedTokenConfigEvent {
-    const message = {
-      ...baseSetGroupedTokenConfigEvent,
-    } as SetGroupedTokenConfigEvent;
-    message.groupedTokenConfig =
-      object.groupedTokenConfig !== undefined &&
-      object.groupedTokenConfig !== null
-        ? GroupedTokenConfig.fromPartial(object.groupedTokenConfig)
-        : undefined;
+  create(base?: DeepPartial<SetGroupedTokenConfigEvent>): SetGroupedTokenConfigEvent {
+    return SetGroupedTokenConfigEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetGroupedTokenConfigEvent>): SetGroupedTokenConfigEvent {
+    const message = createBaseSetGroupedTokenConfigEvent();
+    message.groupedTokenConfig = (object.groupedTokenConfig !== undefined && object.groupedTokenConfig !== null)
+      ? GroupedTokenConfig.fromPartial(object.groupedTokenConfig)
+      : undefined;
     return message;
   },
 };
 
-const baseDepositToGroupEvent: object = {
-  groupId: Long.UZERO,
-  denom: "",
-  amount: "",
-  chequeDenom: "",
-  chequeAmount: "",
-};
+function createBaseDepositToGroupEvent(): DepositToGroupEvent {
+  return { groupId: Long.UZERO, denom: "", amount: "", chequeDenom: "", chequeAmount: "" };
+}
 
 export const DepositToGroupEvent = {
-  encode(
-    message: DepositToGroupEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DepositToGroupEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.groupId.isZero()) {
       writer.uint32(8).uint64(message.groupId);
     }
@@ -763,79 +745,85 @@ export const DepositToGroupEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DepositToGroupEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDepositToGroupEvent } as DepositToGroupEvent;
+    const message = createBaseDepositToGroupEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.groupId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.chequeDenom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.chequeAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DepositToGroupEvent {
-    const message = { ...baseDepositToGroupEvent } as DepositToGroupEvent;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromString(object.groupId)
-        : Long.UZERO;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.chequeDenom =
-      object.chequeDenom !== undefined && object.chequeDenom !== null
-        ? String(object.chequeDenom)
-        : "";
-    message.chequeAmount =
-      object.chequeAmount !== undefined && object.chequeAmount !== null
-        ? String(object.chequeAmount)
-        : "";
-    return message;
+    return {
+      groupId: isSet(object.groupId) ? Long.fromValue(object.groupId) : Long.UZERO,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      chequeDenom: isSet(object.chequeDenom) ? String(object.chequeDenom) : "",
+      chequeAmount: isSet(object.chequeAmount) ? String(object.chequeAmount) : "",
+    };
   },
 
   toJSON(message: DepositToGroupEvent): unknown {
     const obj: any = {};
-    message.groupId !== undefined &&
-      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.groupId !== undefined && (obj.groupId = (message.groupId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
-    message.chequeDenom !== undefined &&
-      (obj.chequeDenom = message.chequeDenom);
-    message.chequeAmount !== undefined &&
-      (obj.chequeAmount = message.chequeAmount);
+    message.chequeDenom !== undefined && (obj.chequeDenom = message.chequeDenom);
+    message.chequeAmount !== undefined && (obj.chequeAmount = message.chequeAmount);
     return obj;
   },
 
+  create(base?: DeepPartial<DepositToGroupEvent>): DepositToGroupEvent {
+    return DepositToGroupEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DepositToGroupEvent>): DepositToGroupEvent {
-    const message = { ...baseDepositToGroupEvent } as DepositToGroupEvent;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromValue(object.groupId)
-        : Long.UZERO;
+    const message = createBaseDepositToGroupEvent();
+    message.groupId = (object.groupId !== undefined && object.groupId !== null)
+      ? Long.fromValue(object.groupId)
+      : Long.UZERO;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.chequeDenom = object.chequeDenom ?? "";
@@ -844,19 +832,12 @@ export const DepositToGroupEvent = {
   },
 };
 
-const baseWithdrawFromGroupEvent: object = {
-  groupId: Long.UZERO,
-  denom: "",
-  amount: "",
-  chequeDenom: "",
-  chequeAmount: "",
-};
+function createBaseWithdrawFromGroupEvent(): WithdrawFromGroupEvent {
+  return { groupId: Long.UZERO, denom: "", amount: "", chequeDenom: "", chequeAmount: "" };
+}
 
 export const WithdrawFromGroupEvent = {
-  encode(
-    message: WithdrawFromGroupEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: WithdrawFromGroupEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.groupId.isZero()) {
       writer.uint32(8).uint64(message.groupId);
     }
@@ -875,85 +856,86 @@ export const WithdrawFromGroupEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): WithdrawFromGroupEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawFromGroupEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseWithdrawFromGroupEvent } as WithdrawFromGroupEvent;
+    const message = createBaseWithdrawFromGroupEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.groupId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.chequeDenom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.chequeAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): WithdrawFromGroupEvent {
-    const message = { ...baseWithdrawFromGroupEvent } as WithdrawFromGroupEvent;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromString(object.groupId)
-        : Long.UZERO;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.chequeDenom =
-      object.chequeDenom !== undefined && object.chequeDenom !== null
-        ? String(object.chequeDenom)
-        : "";
-    message.chequeAmount =
-      object.chequeAmount !== undefined && object.chequeAmount !== null
-        ? String(object.chequeAmount)
-        : "";
-    return message;
+    return {
+      groupId: isSet(object.groupId) ? Long.fromValue(object.groupId) : Long.UZERO,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      chequeDenom: isSet(object.chequeDenom) ? String(object.chequeDenom) : "",
+      chequeAmount: isSet(object.chequeAmount) ? String(object.chequeAmount) : "",
+    };
   },
 
   toJSON(message: WithdrawFromGroupEvent): unknown {
     const obj: any = {};
-    message.groupId !== undefined &&
-      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.groupId !== undefined && (obj.groupId = (message.groupId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
-    message.chequeDenom !== undefined &&
-      (obj.chequeDenom = message.chequeDenom);
-    message.chequeAmount !== undefined &&
-      (obj.chequeAmount = message.chequeAmount);
+    message.chequeDenom !== undefined && (obj.chequeDenom = message.chequeDenom);
+    message.chequeAmount !== undefined && (obj.chequeAmount = message.chequeAmount);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<WithdrawFromGroupEvent>
-  ): WithdrawFromGroupEvent {
-    const message = { ...baseWithdrawFromGroupEvent } as WithdrawFromGroupEvent;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromValue(object.groupId)
-        : Long.UZERO;
+  create(base?: DeepPartial<WithdrawFromGroupEvent>): WithdrawFromGroupEvent {
+    return WithdrawFromGroupEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<WithdrawFromGroupEvent>): WithdrawFromGroupEvent {
+    const message = createBaseWithdrawFromGroupEvent();
+    message.groupId = (object.groupId !== undefined && object.groupId !== null)
+      ? Long.fromValue(object.groupId)
+      : Long.UZERO;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.chequeDenom = object.chequeDenom ?? "";
@@ -962,27 +944,19 @@ export const WithdrawFromGroupEvent = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

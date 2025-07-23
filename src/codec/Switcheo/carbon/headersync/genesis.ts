@@ -40,122 +40,113 @@ export interface GenesisState_ZionCheckpointHashesEntry {
   value: Uint8Array;
 }
 
-const baseGenesisState: object = {};
+function createBaseGenesisState(): GenesisState {
+  return { consensusPeers: {}, checkpointHashes: {}, zionConsensusPeers: {}, zionCheckpointHashes: {} };
+}
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     Object.entries(message.consensusPeers).forEach(([key, value]) => {
-      GenesisState_ConsensusPeersEntry.encode(
-        { key: key as any, value },
-        writer.uint32(10).fork()
-      ).ldelim();
+      GenesisState_ConsensusPeersEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
     });
     Object.entries(message.checkpointHashes).forEach(([key, value]) => {
-      GenesisState_CheckpointHashesEntry.encode(
-        { key: key as any, value },
-        writer.uint32(18).fork()
-      ).ldelim();
+      GenesisState_CheckpointHashesEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
     Object.entries(message.zionConsensusPeers).forEach(([key, value]) => {
-      GenesisState_ZionConsensusPeersEntry.encode(
-        { key: key as any, value },
-        writer.uint32(26).fork()
-      ).ldelim();
+      GenesisState_ZionConsensusPeersEntry.encode({ key: key as any, value }, writer.uint32(26).fork()).ldelim();
     });
     Object.entries(message.zionCheckpointHashes).forEach(([key, value]) => {
-      GenesisState_ZionCheckpointHashesEntry.encode(
-        { key: key as any, value },
-        writer.uint32(34).fork()
-      ).ldelim();
+      GenesisState_ZionCheckpointHashesEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).ldelim();
     });
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
-    message.consensusPeers = {};
-    message.checkpointHashes = {};
-    message.zionConsensusPeers = {};
-    message.zionCheckpointHashes = {};
+    const message = createBaseGenesisState();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          const entry1 = GenesisState_ConsensusPeersEntry.decode(
-            reader,
-            reader.uint32()
-          );
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = GenesisState_ConsensusPeersEntry.decode(reader, reader.uint32());
           if (entry1.value !== undefined) {
             message.consensusPeers[entry1.key] = entry1.value;
           }
-          break;
+          continue;
         case 2:
-          const entry2 = GenesisState_CheckpointHashesEntry.decode(
-            reader,
-            reader.uint32()
-          );
+          if (tag !== 18) {
+            break;
+          }
+
+          const entry2 = GenesisState_CheckpointHashesEntry.decode(reader, reader.uint32());
           if (entry2.value !== undefined) {
             message.checkpointHashes[entry2.key] = entry2.value;
           }
-          break;
+          continue;
         case 3:
-          const entry3 = GenesisState_ZionConsensusPeersEntry.decode(
-            reader,
-            reader.uint32()
-          );
+          if (tag !== 26) {
+            break;
+          }
+
+          const entry3 = GenesisState_ZionConsensusPeersEntry.decode(reader, reader.uint32());
           if (entry3.value !== undefined) {
             message.zionConsensusPeers[entry3.key] = entry3.value;
           }
-          break;
+          continue;
         case 4:
-          const entry4 = GenesisState_ZionCheckpointHashesEntry.decode(
-            reader,
-            reader.uint32()
-          );
+          if (tag !== 34) {
+            break;
+          }
+
+          const entry4 = GenesisState_ZionCheckpointHashesEntry.decode(reader, reader.uint32());
           if (entry4.value !== undefined) {
             message.zionCheckpointHashes[entry4.key] = entry4.value;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.consensusPeers = Object.entries(
-      object.consensusPeers ?? {}
-    ).reduce<{ [key: string]: ConsensusPeers }>((acc, [key, value]) => {
-      acc[key] = ConsensusPeers.fromJSON(value);
-      return acc;
-    }, {});
-    message.checkpointHashes = Object.entries(
-      object.checkpointHashes ?? {}
-    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
-      acc[key] = bytesFromBase64(value as string);
-      return acc;
-    }, {});
-    message.zionConsensusPeers = Object.entries(
-      object.zionConsensusPeers ?? {}
-    ).reduce<{ [key: string]: ZionConsensusPeers }>((acc, [key, value]) => {
-      acc[key] = ZionConsensusPeers.fromJSON(value);
-      return acc;
-    }, {});
-    message.zionCheckpointHashes = Object.entries(
-      object.zionCheckpointHashes ?? {}
-    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
-      acc[key] = bytesFromBase64(value as string);
-      return acc;
-    }, {});
-    return message;
+    return {
+      consensusPeers: isObject(object.consensusPeers)
+        ? Object.entries(object.consensusPeers).reduce<{ [key: string]: ConsensusPeers }>((acc, [key, value]) => {
+          acc[key] = ConsensusPeers.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+      checkpointHashes: isObject(object.checkpointHashes)
+        ? Object.entries(object.checkpointHashes).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+          acc[key] = bytesFromBase64(value as string);
+          return acc;
+        }, {})
+        : {},
+      zionConsensusPeers: isObject(object.zionConsensusPeers)
+        ? Object.entries(object.zionConsensusPeers).reduce<{ [key: string]: ZionConsensusPeers }>(
+          (acc, [key, value]) => {
+            acc[key] = ZionConsensusPeers.fromJSON(value);
+            return acc;
+          },
+          {},
+        )
+        : {},
+      zionCheckpointHashes: isObject(object.zionCheckpointHashes)
+        ? Object.entries(object.zionCheckpointHashes).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+          acc[key] = bytesFromBase64(value as string);
+          return acc;
+        }, {})
+        : {},
+    };
   },
 
   toJSON(message: GenesisState): unknown {
@@ -187,35 +178,41 @@ export const GenesisState = {
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisState>): GenesisState {
+    return GenesisState.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.consensusPeers = Object.entries(
-      object.consensusPeers ?? {}
-    ).reduce<{ [key: string]: ConsensusPeers }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = ConsensusPeers.fromPartial(value);
-      }
-      return acc;
-    }, {});
-    message.checkpointHashes = Object.entries(
-      object.checkpointHashes ?? {}
-    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-    message.zionConsensusPeers = Object.entries(
-      object.zionConsensusPeers ?? {}
-    ).reduce<{ [key: string]: ZionConsensusPeers }>((acc, [key, value]) => {
+    const message = createBaseGenesisState();
+    message.consensusPeers = Object.entries(object.consensusPeers ?? {}).reduce<{ [key: string]: ConsensusPeers }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = ConsensusPeers.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.checkpointHashes = Object.entries(object.checkpointHashes ?? {}).reduce<{ [key: string]: Uint8Array }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {},
+    );
+    message.zionConsensusPeers = Object.entries(object.zionConsensusPeers ?? {}).reduce<
+      { [key: string]: ZionConsensusPeers }
+    >((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = ZionConsensusPeers.fromPartial(value);
       }
       return acc;
     }, {});
-    message.zionCheckpointHashes = Object.entries(
-      object.zionCheckpointHashes ?? {}
-    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+    message.zionCheckpointHashes = Object.entries(object.zionCheckpointHashes ?? {}).reduce<
+      { [key: string]: Uint8Array }
+    >((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = value;
       }
@@ -225,13 +222,12 @@ export const GenesisState = {
   },
 };
 
-const baseGenesisState_ConsensusPeersEntry: object = { key: "" };
+function createBaseGenesisState_ConsensusPeersEntry(): GenesisState_ConsensusPeersEntry {
+  return { key: "", value: undefined };
+}
 
 export const GenesisState_ConsensusPeersEntry = {
-  encode(
-    message: GenesisState_ConsensusPeersEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState_ConsensusPeersEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -241,77 +237,70 @@ export const GenesisState_ConsensusPeersEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GenesisState_ConsensusPeersEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState_ConsensusPeersEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGenesisState_ConsensusPeersEntry,
-    } as GenesisState_ConsensusPeersEntry;
+    const message = createBaseGenesisState_ConsensusPeersEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = ConsensusPeers.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState_ConsensusPeersEntry {
-    const message = {
-      ...baseGenesisState_ConsensusPeersEntry,
-    } as GenesisState_ConsensusPeersEntry;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? ConsensusPeers.fromJSON(object.value)
-        : undefined;
-    return message;
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? ConsensusPeers.fromJSON(object.value) : undefined,
+    };
   },
 
   toJSON(message: GenesisState_ConsensusPeersEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined &&
-      (obj.value = message.value
-        ? ConsensusPeers.toJSON(message.value)
-        : undefined);
+    message.value !== undefined && (obj.value = message.value ? ConsensusPeers.toJSON(message.value) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GenesisState_ConsensusPeersEntry>
-  ): GenesisState_ConsensusPeersEntry {
-    const message = {
-      ...baseGenesisState_ConsensusPeersEntry,
-    } as GenesisState_ConsensusPeersEntry;
+  create(base?: DeepPartial<GenesisState_ConsensusPeersEntry>): GenesisState_ConsensusPeersEntry {
+    return GenesisState_ConsensusPeersEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<GenesisState_ConsensusPeersEntry>): GenesisState_ConsensusPeersEntry {
+    const message = createBaseGenesisState_ConsensusPeersEntry();
     message.key = object.key ?? "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? ConsensusPeers.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? ConsensusPeers.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
-const baseGenesisState_CheckpointHashesEntry: object = { key: "" };
+function createBaseGenesisState_CheckpointHashesEntry(): GenesisState_CheckpointHashesEntry {
+  return { key: "", value: new Uint8Array() };
+}
 
 export const GenesisState_CheckpointHashesEntry = {
-  encode(
-    message: GenesisState_CheckpointHashesEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState_CheckpointHashesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -321,158 +310,142 @@ export const GenesisState_CheckpointHashesEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GenesisState_CheckpointHashesEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState_CheckpointHashesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGenesisState_CheckpointHashesEntry,
-    } as GenesisState_CheckpointHashesEntry;
-    message.value = new Uint8Array();
+    const message = createBaseGenesisState_CheckpointHashesEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState_CheckpointHashesEntry {
-    const message = {
-      ...baseGenesisState_CheckpointHashesEntry,
-    } as GenesisState_CheckpointHashesEntry;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? bytesFromBase64(object.value)
-        : new Uint8Array();
-    return message;
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? bytesFromBase64(object.value) : new Uint8Array(),
+    };
   },
 
   toJSON(message: GenesisState_CheckpointHashesEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
-      (obj.value = base64FromBytes(
-        message.value !== undefined ? message.value : new Uint8Array()
-      ));
+      (obj.value = base64FromBytes(message.value !== undefined ? message.value : new Uint8Array()));
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GenesisState_CheckpointHashesEntry>
-  ): GenesisState_CheckpointHashesEntry {
-    const message = {
-      ...baseGenesisState_CheckpointHashesEntry,
-    } as GenesisState_CheckpointHashesEntry;
+  create(base?: DeepPartial<GenesisState_CheckpointHashesEntry>): GenesisState_CheckpointHashesEntry {
+    return GenesisState_CheckpointHashesEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<GenesisState_CheckpointHashesEntry>): GenesisState_CheckpointHashesEntry {
+    const message = createBaseGenesisState_CheckpointHashesEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? new Uint8Array();
     return message;
   },
 };
 
-const baseGenesisState_ZionConsensusPeersEntry: object = { key: "" };
+function createBaseGenesisState_ZionConsensusPeersEntry(): GenesisState_ZionConsensusPeersEntry {
+  return { key: "", value: undefined };
+}
 
 export const GenesisState_ZionConsensusPeersEntry = {
-  encode(
-    message: GenesisState_ZionConsensusPeersEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState_ZionConsensusPeersEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
-      ZionConsensusPeers.encode(
-        message.value,
-        writer.uint32(18).fork()
-      ).ldelim();
+      ZionConsensusPeers.encode(message.value, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GenesisState_ZionConsensusPeersEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState_ZionConsensusPeersEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGenesisState_ZionConsensusPeersEntry,
-    } as GenesisState_ZionConsensusPeersEntry;
+    const message = createBaseGenesisState_ZionConsensusPeersEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = ZionConsensusPeers.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState_ZionConsensusPeersEntry {
-    const message = {
-      ...baseGenesisState_ZionConsensusPeersEntry,
-    } as GenesisState_ZionConsensusPeersEntry;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? ZionConsensusPeers.fromJSON(object.value)
-        : undefined;
-    return message;
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? ZionConsensusPeers.fromJSON(object.value) : undefined,
+    };
   },
 
   toJSON(message: GenesisState_ZionConsensusPeersEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined &&
-      (obj.value = message.value
-        ? ZionConsensusPeers.toJSON(message.value)
-        : undefined);
+    message.value !== undefined && (obj.value = message.value ? ZionConsensusPeers.toJSON(message.value) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GenesisState_ZionConsensusPeersEntry>
-  ): GenesisState_ZionConsensusPeersEntry {
-    const message = {
-      ...baseGenesisState_ZionConsensusPeersEntry,
-    } as GenesisState_ZionConsensusPeersEntry;
+  create(base?: DeepPartial<GenesisState_ZionConsensusPeersEntry>): GenesisState_ZionConsensusPeersEntry {
+    return GenesisState_ZionConsensusPeersEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<GenesisState_ZionConsensusPeersEntry>): GenesisState_ZionConsensusPeersEntry {
+    const message = createBaseGenesisState_ZionConsensusPeersEntry();
     message.key = object.key ?? "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? ZionConsensusPeers.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? ZionConsensusPeers.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
 
-const baseGenesisState_ZionCheckpointHashesEntry: object = { key: "" };
+function createBaseGenesisState_ZionCheckpointHashesEntry(): GenesisState_ZionCheckpointHashesEntry {
+  return { key: "", value: new Uint8Array() };
+}
 
 export const GenesisState_ZionCheckpointHashesEntry = {
-  encode(
-    message: GenesisState_ZionCheckpointHashesEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState_ZionCheckpointHashesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -482,62 +455,57 @@ export const GenesisState_ZionCheckpointHashesEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GenesisState_ZionCheckpointHashesEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState_ZionCheckpointHashesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGenesisState_ZionCheckpointHashesEntry,
-    } as GenesisState_ZionCheckpointHashesEntry;
-    message.value = new Uint8Array();
+    const message = createBaseGenesisState_ZionCheckpointHashesEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState_ZionCheckpointHashesEntry {
-    const message = {
-      ...baseGenesisState_ZionCheckpointHashesEntry,
-    } as GenesisState_ZionCheckpointHashesEntry;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? bytesFromBase64(object.value)
-        : new Uint8Array();
-    return message;
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? bytesFromBase64(object.value) : new Uint8Array(),
+    };
   },
 
   toJSON(message: GenesisState_ZionCheckpointHashesEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
-      (obj.value = base64FromBytes(
-        message.value !== undefined ? message.value : new Uint8Array()
-      ));
+      (obj.value = base64FromBytes(message.value !== undefined ? message.value : new Uint8Array()));
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GenesisState_ZionCheckpointHashesEntry>
-  ): GenesisState_ZionCheckpointHashesEntry {
-    const message = {
-      ...baseGenesisState_ZionCheckpointHashesEntry,
-    } as GenesisState_ZionCheckpointHashesEntry;
+  create(base?: DeepPartial<GenesisState_ZionCheckpointHashesEntry>): GenesisState_ZionCheckpointHashesEntry {
+    return GenesisState_ZionCheckpointHashesEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<GenesisState_ZionCheckpointHashesEntry>): GenesisState_ZionCheckpointHashesEntry {
+    const message = createBaseGenesisState_ZionCheckpointHashesEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? new Uint8Array();
     return message;
@@ -547,58 +515,64 @@ export const GenesisState_ZionCheckpointHashesEntry = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

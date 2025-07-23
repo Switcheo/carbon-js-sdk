@@ -38,8 +38,9 @@ export function typeToJSON(object: Type): string {
       return "TYPE_UNSPECIFIED";
     case Type.TYPE_EXECUTE_TX:
       return "TYPE_EXECUTE_TX";
+    case Type.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -55,13 +56,12 @@ export interface CosmosTx {
   messages: Any[];
 }
 
-const baseInterchainAccountPacketData: object = { type: 0, memo: "" };
+function createBaseInterchainAccountPacketData(): InterchainAccountPacketData {
+  return { type: 0, data: new Uint8Array(), memo: "" };
+}
 
 export const InterchainAccountPacketData = {
-  encode(
-    message: InterchainAccountPacketData,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: InterchainAccountPacketData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.type !== 0) {
       writer.uint32(8).int32(message.type);
     }
@@ -74,72 +74,66 @@ export const InterchainAccountPacketData = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): InterchainAccountPacketData {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): InterchainAccountPacketData {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseInterchainAccountPacketData,
-    } as InterchainAccountPacketData;
-    message.data = new Uint8Array();
+    const message = createBaseInterchainAccountPacketData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.type = reader.int32() as any;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.data = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.memo = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): InterchainAccountPacketData {
-    const message = {
-      ...baseInterchainAccountPacketData,
-    } as InterchainAccountPacketData;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? typeFromJSON(object.type)
-        : 0;
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? bytesFromBase64(object.data)
-        : new Uint8Array();
-    message.memo =
-      object.memo !== undefined && object.memo !== null
-        ? String(object.memo)
-        : "";
-    return message;
+    return {
+      type: isSet(object.type) ? typeFromJSON(object.type) : 0,
+      data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+      memo: isSet(object.memo) ? String(object.memo) : "",
+    };
   },
 
   toJSON(message: InterchainAccountPacketData): unknown {
     const obj: any = {};
     message.type !== undefined && (obj.type = typeToJSON(message.type));
     message.data !== undefined &&
-      (obj.data = base64FromBytes(
-        message.data !== undefined ? message.data : new Uint8Array()
-      ));
+      (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
     message.memo !== undefined && (obj.memo = message.memo);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<InterchainAccountPacketData>
-  ): InterchainAccountPacketData {
-    const message = {
-      ...baseInterchainAccountPacketData,
-    } as InterchainAccountPacketData;
+  create(base?: DeepPartial<InterchainAccountPacketData>): InterchainAccountPacketData {
+    return InterchainAccountPacketData.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<InterchainAccountPacketData>): InterchainAccountPacketData {
+    const message = createBaseInterchainAccountPacketData();
     message.type = object.type ?? 0;
     message.data = object.data ?? new Uint8Array();
     message.memo = object.memo ?? "";
@@ -147,13 +141,12 @@ export const InterchainAccountPacketData = {
   },
 };
 
-const baseCosmosTx: object = {};
+function createBaseCosmosTx(): CosmosTx {
+  return { messages: [] };
+}
 
 export const CosmosTx = {
-  encode(
-    message: CosmosTx,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CosmosTx, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.messages) {
       Any.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -161,45 +154,49 @@ export const CosmosTx = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CosmosTx {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCosmosTx } as CosmosTx;
-    message.messages = [];
+    const message = createBaseCosmosTx();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.messages.push(Any.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CosmosTx {
-    const message = { ...baseCosmosTx } as CosmosTx;
-    message.messages = (object.messages ?? []).map((e: any) => Any.fromJSON(e));
-    return message;
+    return { messages: Array.isArray(object?.messages) ? object.messages.map((e: any) => Any.fromJSON(e)) : [] };
   },
 
   toJSON(message: CosmosTx): unknown {
     const obj: any = {};
     if (message.messages) {
-      obj.messages = message.messages.map((e) =>
-        e ? Any.toJSON(e) : undefined
-      );
+      obj.messages = message.messages.map((e) => e ? Any.toJSON(e) : undefined);
     } else {
       obj.messages = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<CosmosTx>): CosmosTx {
+    return CosmosTx.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CosmosTx>): CosmosTx {
-    const message = { ...baseCosmosTx } as CosmosTx;
-    message.messages = (object.messages ?? []).map((e) => Any.fromPartial(e));
+    const message = createBaseCosmosTx();
+    message.messages = object.messages?.map((e) => Any.fromPartial(e)) || [];
     return message;
   },
 };
@@ -207,58 +204,60 @@ export const CosmosTx = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

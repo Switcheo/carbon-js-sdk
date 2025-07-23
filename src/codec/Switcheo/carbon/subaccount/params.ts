@@ -13,51 +13,47 @@ export interface ParamsToUpdate {
   tradingFeeDelegateCooldown?: Duration;
 }
 
-const baseParams: object = {};
+function createBaseParams(): Params {
+  return { tradingFeeDelegateCooldown: undefined };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.tradingFeeDelegateCooldown !== undefined) {
-      Duration.encode(
-        message.tradingFeeDelegateCooldown,
-        writer.uint32(10).fork()
-      ).ldelim();
+      Duration.encode(message.tradingFeeDelegateCooldown, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.tradingFeeDelegateCooldown = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.tradingFeeDelegateCooldown = Duration.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.tradingFeeDelegateCooldown =
-      object.tradingFeeDelegateCooldown !== undefined &&
-      object.tradingFeeDelegateCooldown !== null
+    return {
+      tradingFeeDelegateCooldown: isSet(object.tradingFeeDelegateCooldown)
         ? Duration.fromJSON(object.tradingFeeDelegateCooldown)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: Params): unknown {
@@ -69,62 +65,61 @@ export const Params = {
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.tradingFeeDelegateCooldown =
-      object.tradingFeeDelegateCooldown !== undefined &&
-      object.tradingFeeDelegateCooldown !== null
+      (object.tradingFeeDelegateCooldown !== undefined && object.tradingFeeDelegateCooldown !== null)
         ? Duration.fromPartial(object.tradingFeeDelegateCooldown)
         : undefined;
     return message;
   },
 };
 
-const baseParamsToUpdate: object = {};
+function createBaseParamsToUpdate(): ParamsToUpdate {
+  return { tradingFeeDelegateCooldown: undefined };
+}
 
 export const ParamsToUpdate = {
-  encode(
-    message: ParamsToUpdate,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ParamsToUpdate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.tradingFeeDelegateCooldown !== undefined) {
-      Duration.encode(
-        message.tradingFeeDelegateCooldown,
-        writer.uint32(10).fork()
-      ).ldelim();
+      Duration.encode(message.tradingFeeDelegateCooldown, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ParamsToUpdate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    const message = createBaseParamsToUpdate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.tradingFeeDelegateCooldown = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.tradingFeeDelegateCooldown = Duration.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.tradingFeeDelegateCooldown =
-      object.tradingFeeDelegateCooldown !== undefined &&
-      object.tradingFeeDelegateCooldown !== null
+    return {
+      tradingFeeDelegateCooldown: isSet(object.tradingFeeDelegateCooldown)
         ? Duration.fromJSON(object.tradingFeeDelegateCooldown)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: ParamsToUpdate): unknown {
@@ -136,38 +131,33 @@ export const ParamsToUpdate = {
     return obj;
   },
 
+  create(base?: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
+    return ParamsToUpdate.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    const message = createBaseParamsToUpdate();
     message.tradingFeeDelegateCooldown =
-      object.tradingFeeDelegateCooldown !== undefined &&
-      object.tradingFeeDelegateCooldown !== null
+      (object.tradingFeeDelegateCooldown !== undefined && object.tradingFeeDelegateCooldown !== null)
         ? Duration.fromPartial(object.tradingFeeDelegateCooldown)
         : undefined;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
