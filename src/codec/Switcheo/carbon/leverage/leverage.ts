@@ -16,7 +16,7 @@ export interface MarketLeverageRecord {
 }
 
 function createBaseMarketLeverage(): MarketLeverage {
-  return { marketId: "", leverage: "", isCross: false };
+  return { marketId: "", leverage: "" };
 }
 
 export const MarketLeverage = {
@@ -54,13 +54,6 @@ export const MarketLeverage = {
 
           message.leverage = reader.string();
           continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.isCross = reader.bool();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -74,7 +67,6 @@ export const MarketLeverage = {
     return {
       marketId: isSet(object.marketId) ? String(object.marketId) : "",
       leverage: isSet(object.leverage) ? String(object.leverage) : "",
-      isCross: isSet(object.isCross) ? Boolean(object.isCross) : false,
     };
   },
 

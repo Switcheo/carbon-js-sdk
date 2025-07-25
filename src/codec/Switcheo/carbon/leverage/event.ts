@@ -13,7 +13,7 @@ export interface LeverageEvent {
 }
 
 function createBaseLeverageEvent(): LeverageEvent {
-  return { leverage: "", type: "", marketId: "", address: "", isCross: false };
+  return { leverage: "", type: "", marketId: "", address: "" };
 }
 
 export const LeverageEvent = {
@@ -71,13 +71,6 @@ export const LeverageEvent = {
 
           message.address = reader.string();
           continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
-          message.isCross = reader.bool();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -93,7 +86,6 @@ export const LeverageEvent = {
       type: isSet(object.type) ? String(object.type) : "",
       marketId: isSet(object.marketId) ? String(object.marketId) : "",
       address: isSet(object.address) ? String(object.address) : "",
-      isCross: isSet(object.isCross) ? Boolean(object.isCross) : false,
     };
   },
 

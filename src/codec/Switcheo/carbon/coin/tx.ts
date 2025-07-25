@@ -5,7 +5,6 @@ import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { BoolValue, Int64Value, StringValue } from "../../../google/protobuf/wrappers";
 import { Bridge } from "./bridge";
 import { GroupedTokenConfig, TokenGroup } from "./group";
-import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -289,16 +288,6 @@ export interface UpdateGroupedTokenConfigParams {
 
 export interface MsgUpdateGroupedTokenConfigResponse {
   groupedTokenConfig?: GroupedTokenConfig;
-}
-
-export interface MsgUpdateParams {
-  /** authority is the address of the governance account. */
-  authority: string;
-  /** params defines the optional parameters to update. */
-  params?: ParamsToUpdate;
-}
-
-export interface MsgUpdateParamsResponse {
 }
 
 function createBaseMsgCreateToken(): MsgCreateToken {
@@ -948,7 +937,7 @@ export const MsgSyncTokenResponse = {
 };
 
 function createBaseMsgMintToken(): MsgMintToken {
-  return { creator: "", denom: "", amount: "", to: "", toFuturesAccount: false };
+  return { creator: "", denom: "", amount: "", to: "" };
 }
 
 export const MsgMintToken = {
@@ -1006,13 +995,6 @@ export const MsgMintToken = {
 
           message.to = reader.string();
           continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
-          message.toFuturesAccount = reader.bool();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1028,7 +1010,6 @@ export const MsgMintToken = {
       denom: isSet(object.denom) ? String(object.denom) : "",
       amount: isSet(object.amount) ? String(object.amount) : "",
       to: isSet(object.to) ? String(object.to) : "",
-      toFuturesAccount: isSet(object.toFuturesAccount) ? Boolean(object.toFuturesAccount) : false,
     };
   },
 
@@ -3944,151 +3925,6 @@ export const MsgWithdrawFromGroupResponse = {
   },
 };
 
-function createBaseMsgTransferCoinsWithinAccount(): MsgTransferCoinsWithinAccount {
-  return { creator: "", from: "", to: "", amount: [] };
-}
-
-export const MsgTransferCoinsWithinAccount = {
-  encode(message: MsgTransferCoinsWithinAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.from !== "") {
-      writer.uint32(18).string(message.from);
-    }
-    if (message.to !== "") {
-      writer.uint32(26).string(message.to);
-    }
-    for (const v of message.amount) {
-      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgTransferCoinsWithinAccount {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgTransferCoinsWithinAccount();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.creator = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.from = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.to = reader.string();
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.amount.push(Coin.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgTransferCoinsWithinAccount {
-    return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
-      from: isSet(object.from) ? String(object.from) : "",
-      to: isSet(object.to) ? String(object.to) : "",
-      amount: Array.isArray(object?.amount) ? object.amount.map((e: any) => Coin.fromJSON(e)) : [],
-    };
-  },
-
-  toJSON(message: MsgTransferCoinsWithinAccount): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.from !== undefined && (obj.from = message.from);
-    message.to !== undefined && (obj.to = message.to);
-    if (message.amount) {
-      obj.amount = message.amount.map((e) => e ? Coin.toJSON(e) : undefined);
-    } else {
-      obj.amount = [];
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<MsgTransferCoinsWithinAccount>): MsgTransferCoinsWithinAccount {
-    return MsgTransferCoinsWithinAccount.fromPartial(base ?? {});
-  },
-
-  fromPartial(object: DeepPartial<MsgTransferCoinsWithinAccount>): MsgTransferCoinsWithinAccount {
-    const message = createBaseMsgTransferCoinsWithinAccount();
-    message.creator = object.creator ?? "";
-    message.from = object.from ?? "";
-    message.to = object.to ?? "";
-    message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
-    return message;
-  },
-};
-
-function createBaseMsgTransferCoinsWithinAccountResponse(): MsgTransferCoinsWithinAccountResponse {
-  return {};
-}
-
-export const MsgTransferCoinsWithinAccountResponse = {
-  encode(_: MsgTransferCoinsWithinAccountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgTransferCoinsWithinAccountResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgTransferCoinsWithinAccountResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgTransferCoinsWithinAccountResponse {
-    return {};
-  },
-
-  toJSON(_: MsgTransferCoinsWithinAccountResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  create(base?: DeepPartial<MsgTransferCoinsWithinAccountResponse>): MsgTransferCoinsWithinAccountResponse {
-    return MsgTransferCoinsWithinAccountResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial(_: DeepPartial<MsgTransferCoinsWithinAccountResponse>): MsgTransferCoinsWithinAccountResponse {
-    const message = createBaseMsgTransferCoinsWithinAccountResponse();
-    return message;
-  },
-};
-
 function createBaseMsgUpdateGroupedTokenConfig(): MsgUpdateGroupedTokenConfig {
   return { creator: "", denom: "", updateGroupedTokenConfigParams: undefined };
 }
@@ -4301,123 +4137,6 @@ export const MsgUpdateGroupedTokenConfigResponse = {
   },
 };
 
-function createBaseMsgUpdateParams(): MsgUpdateParams {
-  return { authority: "", params: undefined };
-}
-
-export const MsgUpdateParams = {
-  encode(message: MsgUpdateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.authority !== "") {
-      writer.uint32(10).string(message.authority);
-    }
-    if (message.params !== undefined) {
-      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgUpdateParams();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.authority = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.params = ParamsToUpdate.decode(reader, reader.uint32());
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgUpdateParams {
-    return {
-      authority: isSet(object.authority) ? String(object.authority) : "",
-      params: isSet(object.params) ? ParamsToUpdate.fromJSON(object.params) : undefined,
-    };
-  },
-
-  toJSON(message: MsgUpdateParams): unknown {
-    const obj: any = {};
-    message.authority !== undefined && (obj.authority = message.authority);
-    message.params !== undefined && (obj.params = message.params ? ParamsToUpdate.toJSON(message.params) : undefined);
-    return obj;
-  },
-
-  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
-    return MsgUpdateParams.fromPartial(base ?? {});
-  },
-
-  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
-    const message = createBaseMsgUpdateParams();
-    message.authority = object.authority ?? "";
-    message.params = (object.params !== undefined && object.params !== null)
-      ? ParamsToUpdate.fromPartial(object.params)
-      : undefined;
-    return message;
-  },
-};
-
-function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
-  return {};
-}
-
-export const MsgUpdateParamsResponse = {
-  encode(_: MsgUpdateParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgUpdateParamsResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgUpdateParamsResponse {
-    return {};
-  },
-
-  toJSON(_: MsgUpdateParamsResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
-    return MsgUpdateParamsResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
-    const message = createBaseMsgUpdateParamsResponse();
-    return message;
-  },
-};
-
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse>;
@@ -4442,10 +4161,8 @@ export interface Msg {
   DeregisterFromGroup(request: MsgDeregisterFromGroup): Promise<MsgDeregisterFromGroupResponse>;
   DepositToGroup(request: MsgDepositToGroup): Promise<MsgDepositToGroupResponse>;
   WithdrawFromGroup(request: MsgWithdrawFromGroup): Promise<MsgWithdrawFromGroupResponse>;
-  UpdateGroupedTokenConfig(request: MsgUpdateGroupedTokenConfig): Promise<MsgUpdateGroupedTokenConfigResponse>;
-  TransferCoinsWithinAccount(request: MsgTransferCoinsWithinAccount): Promise<MsgTransferCoinsWithinAccountResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
+  UpdateGroupedTokenConfig(request: MsgUpdateGroupedTokenConfig): Promise<MsgUpdateGroupedTokenConfigResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -4616,18 +4333,6 @@ export class MsgClientImpl implements Msg {
     const data = MsgUpdateGroupedTokenConfig.encode(request).finish();
     const promise = this.rpc.request(this.service, "UpdateGroupedTokenConfig", data);
     return promise.then((data) => MsgUpdateGroupedTokenConfigResponse.decode(_m0.Reader.create(data)));
-  }
-
-  TransferCoinsWithinAccount(request: MsgTransferCoinsWithinAccount): Promise<MsgTransferCoinsWithinAccountResponse> {
-    const data = MsgTransferCoinsWithinAccount.encode(request).finish();
-    const promise = this.rpc.request(this.service, "TransferCoinsWithinAccount", data);
-    return promise.then((data) => MsgTransferCoinsWithinAccountResponse.decode(_m0.Reader.create(data)));
-  }
-
-  UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
-    const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request(this.service, "UpdateParams", data);
-    return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
   }
 }
 

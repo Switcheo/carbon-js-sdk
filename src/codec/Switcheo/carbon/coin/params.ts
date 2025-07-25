@@ -9,18 +9,16 @@ export const protobufPackage = "Switcheo.carbon.coin";
 export interface Params {
   withdrawalWindow?: Duration;
   withdrawalThreshold: string;
-  assetsRouteToFutures: string[];
 }
 
 /** ParamsToUpdate allows optional fields for Params. */
 export interface ParamsToUpdate {
   withdrawalWindow?: Duration;
   withdrawalThreshold: string;
-  assetsRouteToFutures: string[];
 }
 
 function createBaseParams(): Params {
-  return { withdrawalWindow: undefined, withdrawalThreshold: "", assetsRouteToFutures: [] };
+  return { withdrawalWindow: undefined, withdrawalThreshold: "" };
 }
 
 export const Params = {
@@ -30,9 +28,6 @@ export const Params = {
     }
     if (message.withdrawalThreshold !== "") {
       writer.uint32(18).string(message.withdrawalThreshold);
-    }
-    for (const v of message.assetsRouteToFutures) {
-      writer.uint32(26).string(v!);
     }
     return writer;
   },
@@ -58,13 +53,6 @@ export const Params = {
 
           message.withdrawalThreshold = reader.string();
           continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.assetsRouteToFutures.push(reader.string());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -78,9 +66,6 @@ export const Params = {
     return {
       withdrawalWindow: isSet(object.withdrawalWindow) ? Duration.fromJSON(object.withdrawalWindow) : undefined,
       withdrawalThreshold: isSet(object.withdrawalThreshold) ? String(object.withdrawalThreshold) : "",
-      assetsRouteToFutures: Array.isArray(object?.assetsRouteToFutures)
-        ? object.assetsRouteToFutures.map((e: any) => String(e))
-        : [],
     };
   },
 
@@ -89,11 +74,6 @@ export const Params = {
     message.withdrawalWindow !== undefined &&
       (obj.withdrawalWindow = message.withdrawalWindow ? Duration.toJSON(message.withdrawalWindow) : undefined);
     message.withdrawalThreshold !== undefined && (obj.withdrawalThreshold = message.withdrawalThreshold);
-    if (message.assetsRouteToFutures) {
-      obj.assetsRouteToFutures = message.assetsRouteToFutures.map((e) => e);
-    } else {
-      obj.assetsRouteToFutures = [];
-    }
     return obj;
   },
 
@@ -107,13 +87,12 @@ export const Params = {
       ? Duration.fromPartial(object.withdrawalWindow)
       : undefined;
     message.withdrawalThreshold = object.withdrawalThreshold ?? "";
-    message.assetsRouteToFutures = object.assetsRouteToFutures?.map((e) => e) || [];
     return message;
   },
 };
 
 function createBaseParamsToUpdate(): ParamsToUpdate {
-  return { withdrawalWindow: undefined, withdrawalThreshold: "", assetsRouteToFutures: [] };
+  return { withdrawalWindow: undefined, withdrawalThreshold: "" };
 }
 
 export const ParamsToUpdate = {
@@ -123,9 +102,6 @@ export const ParamsToUpdate = {
     }
     if (message.withdrawalThreshold !== "") {
       writer.uint32(18).string(message.withdrawalThreshold);
-    }
-    for (const v of message.assetsRouteToFutures) {
-      writer.uint32(26).string(v!);
     }
     return writer;
   },
@@ -151,13 +127,6 @@ export const ParamsToUpdate = {
 
           message.withdrawalThreshold = reader.string();
           continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.assetsRouteToFutures.push(reader.string());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -171,9 +140,6 @@ export const ParamsToUpdate = {
     return {
       withdrawalWindow: isSet(object.withdrawalWindow) ? Duration.fromJSON(object.withdrawalWindow) : undefined,
       withdrawalThreshold: isSet(object.withdrawalThreshold) ? String(object.withdrawalThreshold) : "",
-      assetsRouteToFutures: Array.isArray(object?.assetsRouteToFutures)
-        ? object.assetsRouteToFutures.map((e: any) => String(e))
-        : [],
     };
   },
 
@@ -182,11 +148,6 @@ export const ParamsToUpdate = {
     message.withdrawalWindow !== undefined &&
       (obj.withdrawalWindow = message.withdrawalWindow ? Duration.toJSON(message.withdrawalWindow) : undefined);
     message.withdrawalThreshold !== undefined && (obj.withdrawalThreshold = message.withdrawalThreshold);
-    if (message.assetsRouteToFutures) {
-      obj.assetsRouteToFutures = message.assetsRouteToFutures.map((e) => e);
-    } else {
-      obj.assetsRouteToFutures = [];
-    }
     return obj;
   },
 
@@ -200,7 +161,6 @@ export const ParamsToUpdate = {
       ? Duration.fromPartial(object.withdrawalWindow)
       : undefined;
     message.withdrawalThreshold = object.withdrawalThreshold ?? "";
-    message.assetsRouteToFutures = object.assetsRouteToFutures?.map((e) => e) || [];
     return message;
   },
 };

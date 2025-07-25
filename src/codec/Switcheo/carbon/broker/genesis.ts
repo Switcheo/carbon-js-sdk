@@ -2,7 +2,6 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PerpsAmm, SpotAmm } from "./amm";
-import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
@@ -18,7 +17,7 @@ export interface GenesisState {
 }
 
 function createBaseGenesisState(): GenesisState {
-  return { spotAmms: [], perpsAmms: [], params: undefined };
+  return { spotAmms: [], perpsAmms: [] };
 }
 
 export const GenesisState = {
@@ -56,13 +55,6 @@ export const GenesisState = {
 
           message.perpsAmms.push(PerpsAmm.decode(reader, reader.uint32()));
           continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.params = Params.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -76,7 +68,6 @@ export const GenesisState = {
     return {
       spotAmms: Array.isArray(object?.spotAmms) ? object.spotAmms.map((e: any) => SpotAmm.fromJSON(e)) : [],
       perpsAmms: Array.isArray(object?.perpsAmms) ? object.perpsAmms.map((e: any) => PerpsAmm.fromJSON(e)) : [],
-      params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
     };
   },
 
@@ -104,9 +95,6 @@ export const GenesisState = {
     const message = createBaseGenesisState();
     message.spotAmms = object.spotAmms?.map((e) => SpotAmm.fromPartial(e)) || [];
     message.perpsAmms = object.perpsAmms?.map((e) => PerpsAmm.fromPartial(e)) || [];
-    message.params = (object.params !== undefined && object.params !== null)
-      ? Params.fromPartial(object.params)
-      : undefined;
     return message;
   },
 };
