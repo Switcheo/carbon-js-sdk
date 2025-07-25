@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Bridge } from "./bridge";
 import { TokenGroupDetails } from "./group";
+import { Params } from "./params";
 import { LockedCoinsRecord, PositionPool, Token } from "./token";
 
 export const protobufPackage = "Switcheo.carbon.coin";
@@ -26,7 +27,15 @@ export interface GenesisState_WrapperMappingsEntry {
 }
 
 function createBaseGenesisState(): GenesisState {
-  return { tokens: [], wrapperMappings: {}, lockedCoins: [], positionPools: [], bridges: [], groups: [] };
+  return {
+    tokens: [],
+    wrapperMappings: {},
+    lockedCoins: [],
+    positionPools: [],
+    bridges: [],
+    groups: [],
+    params: undefined,
+  };
 }
 
 export const GenesisState = {
@@ -107,6 +116,13 @@ export const GenesisState = {
 
           message.groups.push(TokenGroupDetails.decode(reader, reader.uint32()));
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.params = Params.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -133,6 +149,7 @@ export const GenesisState = {
         : [],
       bridges: Array.isArray(object?.bridges) ? object.bridges.map((e: any) => Bridge.fromJSON(e)) : [],
       groups: Array.isArray(object?.groups) ? object.groups.map((e: any) => TokenGroupDetails.fromJSON(e)) : [],
+      params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
     };
   },
 
@@ -193,6 +210,9 @@ export const GenesisState = {
     message.positionPools = object.positionPools?.map((e) => PositionPool.fromPartial(e)) || [];
     message.bridges = object.bridges?.map((e) => Bridge.fromPartial(e)) || [];
     message.groups = object.groups?.map((e) => TokenGroupDetails.fromPartial(e)) || [];
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };

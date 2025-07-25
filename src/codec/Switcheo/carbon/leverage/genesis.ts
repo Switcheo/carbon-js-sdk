@@ -17,7 +17,7 @@ export interface GenesisState {
 }
 
 function createBaseGenesisState(): GenesisState {
-  return { marketLeverageRecords: [] };
+  return { marketLeverageRecords: [], params: undefined };
 }
 
 export const GenesisState = {
@@ -45,6 +45,13 @@ export const GenesisState = {
 
           message.marketLeverageRecords.push(MarketLeverageRecord.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.params = Params.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -59,6 +66,7 @@ export const GenesisState = {
       marketLeverageRecords: Array.isArray(object?.marketLeverageRecords)
         ? object.marketLeverageRecords.map((e: any) => MarketLeverageRecord.fromJSON(e))
         : [],
+      params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
     };
   },
 
@@ -82,6 +90,9 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = createBaseGenesisState();
     message.marketLeverageRecords = object.marketLeverageRecords?.map((e) => MarketLeverageRecord.fromPartial(e)) || [];
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
