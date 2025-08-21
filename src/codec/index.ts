@@ -16399,6 +16399,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "allocated_margin_amount",
         "type": "string"
+      },
+      {
+        "name": "is_cross",
+        "type": "bool"
       }
     ],
     "Positions": [
@@ -16504,6 +16508,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "exit_count",
         "type": "uint64"
+      },
+      {
+        "name": "is_cross",
+        "type": "bool"
       }
     ],
     "PositionAllocatedMargin": [
