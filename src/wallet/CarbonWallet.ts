@@ -281,62 +281,68 @@ export class CarbonWallet {
     };
 
     switch (opts.mode) {
-      case "mnemonic":
+      case "mnemonic": {
         this.mnemonic = opts.mnemonic;
         this.privateKey = AddressUtils.SWTHAddress.mnemonicToPrivateKey(this.mnemonic);
         this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
         this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
 
-        let mnemonicPrefix = addressOpts.bech32Prefix;
-        if (!addressOpts.bech32Prefix) mnemonicPrefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
-        if (!mnemonicPrefix) throw new Error("cannot instantiate wallet signer, no prefix");
+        let prefix = addressOpts.bech32Prefix;
+        if (!addressOpts.bech32Prefix) prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
+        if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
 
-        this.signer = new CarbonPrivateKeySigner(toUint8Array(this.privateKey), mnemonicPrefix);
+        this.signer = new CarbonPrivateKeySigner(toUint8Array(this.privateKey), prefix);
         break;
-      case "privateKey":
+      }
+
+      case "privateKey": {
         this.privateKey = AddressUtils.stringOrBufferToBuffer(opts.privateKey)!;
         this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
         this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
 
-        let privateKeyPrefix = addressOpts.bech32Prefix;
-        if (!addressOpts.bech32Prefix) privateKeyPrefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
-        if (!privateKeyPrefix) throw new Error("cannot instantiate wallet signer, no prefix");
+        let prefix = addressOpts.bech32Prefix;
+        if (!addressOpts.bech32Prefix) prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
+        if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
 
-        this.signer = new CarbonPrivateKeySigner(toUint8Array(this.privateKey), privateKeyPrefix);
+        this.signer = new CarbonPrivateKeySigner(toUint8Array(this.privateKey), prefix);
         break;
+      }
 
-      case "customSigner":
+      case "customSigner": {
         this.signer = opts.signer;
         this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64")
         this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
         break;
+      }
 
-      case "viewOnly":
+      case "viewOnly": {
         this.signer = new CarbonNonSigner();
         this.publicKey = Buffer.from([],);
         this.bech32Address = opts.bech32Address;
         break;
+      }
 
-      case "qr":
+      case "qr": {
         if (!opts.mnemonic || !opts.grantee || !opts.expiry || !opts.granter) throw new Error("grantee and expiry must be provided to create grantee wallet");
         this.publicKey = Buffer.from([],);
         this.bech32Address = opts.granter;
 
-        const granteePrivateKey = AddressUtils.SWTHAddress.mnemonicToPrivateKey(opts.mnemonic);
-        let granteePrivateKeyPrefix = addressOpts.bech32Prefix;
-        if (!addressOpts.bech32Prefix) granteePrivateKeyPrefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
-        if (!granteePrivateKeyPrefix) throw new Error("cannot instantiate wallet signer, no prefix");
-        
-        const signer = new CarbonPrivateKeySigner(toUint8Array(granteePrivateKey), granteePrivateKeyPrefix);
-        
+        let prefix = addressOpts.bech32Prefix;
+        if (!addressOpts.bech32Prefix) prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
+        if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
+
+        const pkSigner = new CarbonPrivateKeySigner(toUint8Array(AddressUtils.SWTHAddress.mnemonicToPrivateKey(opts.mnemonic)), prefix);
+
+        this.signer = pkSigner;
         this.setGrantee(
           {
             expiry: opts.expiry,
-            signer,
+            signer: pkSigner,
           }
         )
 
         break;
+      }
     }
 
     const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
@@ -371,7 +377,7 @@ export class CarbonWallet {
     return wallet;
   }
 
-  public static withSigner(signer: CarbonSigner, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "mode" |"signer"> = {}) {
+  public static withSigner(signer: CarbonSigner, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
     return new CarbonWallet({
       mode: "customSigner",
       ...opts,
