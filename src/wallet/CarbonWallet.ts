@@ -146,12 +146,10 @@ export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
     | {
       // connect with address (view only) and grantee (for transactions)
       mode: "qr";
-      mnemonic?: string;
       bech32Address?: string;
-      grantee?: string;
+      mnemonic?: string;
       granter?: string;
       expiry?: Date;
-      msgs?: string[];
     }
   )
 
@@ -323,7 +321,7 @@ export class CarbonWallet {
       }
 
       case "qr": {
-        if (!opts.mnemonic || !opts.grantee || !opts.expiry || !opts.granter) throw new Error("grantee and expiry must be provided to create grantee wallet");
+        if (!opts.mnemonic || !opts.expiry || !opts.granter) throw new Error("grantee and expiry must be provided to create grantee wallet");
         this.publicKey = Buffer.from([],);
         this.bech32Address = opts.granter;
 
@@ -432,6 +430,16 @@ export class CarbonWallet {
       mode: "viewOnly",
       ...opts,
       bech32Address,
+    });
+  }
+
+  public static withQr(granteeMnemonic: string, granterAddress: string, expiry: Date, opts: Omit<CarbonWalletInitOpts, "mode" | "mnemonic"> = {}) {
+    return new CarbonWallet({
+      mode: "qr",
+      mnemonic: granteeMnemonic,
+      granter: granterAddress,
+      expiry,
+      ...opts,
     });
   }
 

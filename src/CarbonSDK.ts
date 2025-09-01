@@ -587,6 +587,15 @@ class CarbonSDK {
     return this.connect(wallet, opts);
   }
 
+  public async connectWithQr(granteeMnemonic: string, granterAddress: string, expiry: Date, opts?: CarbonWalletGenericOpts) {
+    const wallet = CarbonWallet.withQr(granteeMnemonic, granterAddress, expiry, {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    });
+    return this.connect(wallet, opts);
+  }
+
   public getConfig(): NetworkConfig {
     return this.networkConfig;
   }
