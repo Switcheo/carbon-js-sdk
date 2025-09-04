@@ -23,7 +23,7 @@ interface ETHTxParams {
   gasLimit?: BigNumber;
   ethAddress: string;
   signer: ethers.Signer;
-  nonce?: number;
+  nonce?: number
 }
 
 export interface BridgeParams {
@@ -61,44 +61,42 @@ export interface EthersTransactionResponse extends ethers.Transaction {
 export const FEE_MULTIPLIER = ethers.BigNumber.from(2);
 
 export class ETHClient {
+
   private constructor(
     public readonly configProvider: NetworkConfigProvider,
     public readonly blockchain: EVMChain,
     public readonly tokenClient: TokenClient,
-    public readonly rpcURL: string
-  ) {}
+    public readonly rpcURL: string,
+  ) { }
 
   public static instance(opts: ETHClientOpts) {
     const { configProvider, blockchain, tokenClient, rpcURL } = opts;
 
-    if (!BlockchainUtils.isEvmChain(blockchain) || blockchain === "Carbon") {
+    if (!BlockchainUtils.isEvmChain(blockchain) || blockchain === 'Carbon') {
       throw new Error(`unsupported blockchain - ${blockchain}`);
     }
 
     return new ETHClient(configProvider, blockchain, tokenClient, rpcURL);
   }
 
-  public async getExternalBalances(
-    api: CarbonSDK,
-    address: string,
-    whitelistDenoms?: string[],
-    version = "V1"
-  ): Promise<TokensWithExternalBalance[]> {
+  public async getExternalBalances(api: CarbonSDK, address: string, whitelistDenoms?: string[], version = "V1"): Promise<TokensWithExternalBalance[]> {
     const tokenQueryResults = await api.token.getAllTokens();
     const lockProxyAddress = this.getLockProxyAddress().toLowerCase();
-    const tokens = tokenQueryResults.filter((token) => {
-      const isCorrectBlockchain =
-        version === "V2"
-          ? this.tokenClient.getBlockchainV2(token.denom) == this.blockchain
-          : blockchainForChainId(token.chainId.toNumber(), api.network) == BLOCKCHAIN_V2_TO_V1_MAPPING[this.blockchain];
-      return (
-        isCorrectBlockchain &&
-        token.tokenAddress.length == 40 &&
-        token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
-        (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
-        this.verifyChecksum(appendHexPrefix(token.tokenAddress))
-      );
-    });
+    const tokens = tokenQueryResults.filter(
+      (token) => {
+        const isCorrectBlockchain =
+          version === "V2"
+            ?
+            this.tokenClient.getBlockchainV2(token.denom) == this.blockchain
+            :
+            blockchainForChainId(token.chainId.toNumber(), api.network) == BLOCKCHAIN_V2_TO_V1_MAPPING[this.blockchain]
+        return isCorrectBlockchain &&
+          token.tokenAddress.length == 40 &&
+          token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
+          (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
+          this.verifyChecksum(appendHexPrefix(token.tokenAddress))
+      }
+    );
     const assetIds = tokens.map((token) => {
       return this.verifyChecksum(appendHexPrefix(token.tokenAddress));
     });
@@ -129,13 +127,13 @@ export class ETHClient {
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
 
-    const approvalAmount = ethers.BigNumber.from(amount?.toString(10) ?? ethers.constants.MaxUint256);
+    const approvalAmount = ethers.BigNumber.from(amount?.toString(10) ?? ethers.constants.MaxUint256)
 
     const nonce = await this.getTxNonce(ethAddress, params.nonce, rpcProvider);
     const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, approvalAmount, {
       nonce,
-      ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
-      ...(gasLimit && { gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+      ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+      ...gasLimit && ({ gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
     });
 
     return approveResultTx;
@@ -167,7 +165,7 @@ export class ETHClient {
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
 
-    const recoveryAddrRegex = new RegExp(`^${networkConfig.Bech32Prefix}[a-z0-9]{39}$`);
+    const recoveryAddrRegex = new RegExp(`^${networkConfig.Bech32Prefix}[a-z0-9]{39}$`)
     if (!recoveryAddress.match(recoveryAddrRegex)) {
       throw new Error("Invalid recovery address");
     }
@@ -209,8 +207,8 @@ export class ETHClient {
         amount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
       ], // callAmount
       {
-        ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
-        ...(gasLimit && { gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
         nonce,
         value: ethAmount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
       }
@@ -257,8 +255,8 @@ export class ETHClient {
       {
         nonce,
         value: "0",
-        ...(gasPriceGwei && { gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
-        ...(gasLimit && { gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.dp(0, BigNumber.ROUND_FLOOR).toString(10) }),
 
         // add tx value for ETH deposits, omit if ERC20 token
         ...(token.tokenAddress === "0000000000000000000000000000000000000000" && {
@@ -364,10 +362,7 @@ export class ETHClient {
     if (!feeInfo.deposit_fee) {
       throw new Error("unsupported token");
     }
-    if (
-      blockchainForChainId(token.chainId.toNumber(), this.configProvider.getConfig().network) !==
-      BLOCKCHAIN_V2_TO_V1_MAPPING[this.blockchain]
-    ) {
+    if (blockchainForChainId(token.chainId.toNumber(), this.configProvider.getConfig().network) !== BLOCKCHAIN_V2_TO_V1_MAPPING[this.blockchain]) {
       throw new Error("unsupported token");
     }
 

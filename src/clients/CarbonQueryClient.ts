@@ -189,7 +189,7 @@ class CarbonQueryClient {
     this.ethermint = {
       evm: new EthermintEVMQueryClient(rpcClient),
       feeMarket: new EthermintFeeMarketQueryClient(rpcClient),
-    };
+    }
   }
 }
 

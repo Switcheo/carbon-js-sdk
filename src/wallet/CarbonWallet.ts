@@ -5,16 +5,7 @@ import { TxTypes, registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
-import {
-  CarbonEvmChainIDs,
-  DEFAULT_FEE_DENOM,
-  DEFAULT_GAS,
-  DEFAULT_NETWORK,
-  Network,
-  NetworkConfig,
-  NetworkConfigs,
-  SupportedEip6963Provider,
-} from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs, SupportedEip6963Provider } from "@carbon-sdk/constant";
 import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { GrantModule } from "@carbon-sdk/modules/grant";
@@ -34,12 +25,7 @@ import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
 import { DecodeObject, EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
-import {
-  BroadcastTxAsyncResponse,
-  BroadcastTxSyncResponse,
-  TxResponse,
-  broadcastTxSyncSuccess,
-} from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
+import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
 import { sleep } from "@cosmjs/utils";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import { Leap } from "@cosmos-kit/leap-extension";
@@ -50,19 +36,11 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { utils } from "ethers";
 import { jwtDecode } from "jwt-decode";
-import {
-  CarbonEIP712Signer,
-  CarbonLedgerSigner,
-  CarbonNonSigner,
-  CarbonPrivateKeySigner,
-  CarbonSigner,
-  CarbonSignerTypes,
-  isCarbonEIP712Signer,
-} from "./CarbonSigner";
+import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
-import { toUint8Array } from "@carbon-sdk/util/bytes";
+import { toUint8Array } from '@carbon-sdk/util/bytes'
 
-dayjs.extend(utc);
+dayjs.extend(utc)
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint37Client;
@@ -78,7 +56,7 @@ export interface CarbonWalletGenericOpts {
   isRainbowKit?: boolean;
   enableJwtAuth?: boolean;
   authMessage?: string;
-  jwt?: AccessTokenResponse;
+  jwt?: AccessTokenResponse
   /**
    * Optional callback that will be called before signing is requested/executed.
    */
@@ -102,17 +80,17 @@ export interface CarbonWalletGenericOpts {
   /**
    * Optional callback that will be called before authentication is requested
    */
-  onRequestAuth?: CarbonWallet.OnRequestAuthCallback;
+  onRequestAuth?: CarbonWallet.OnRequestAuthCallback
 
   /**
-   * Optional callback that will be called after authentication is complete
-   */
-  onAuthComplete?: CarbonWallet.OnAuthComplete;
+  * Optional callback that will be called after authentication is complete
+  */
+  onAuthComplete?: CarbonWallet.OnAuthComplete
 }
 
 export interface AuthInfo {
-  message: string;
-  signature: string;
+  message: string
+  signature: string
 }
 
 export interface EvmWalletOpts {
@@ -126,54 +104,54 @@ export interface RainbowKitWalletOpts extends EvmWalletOpts {
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
   (
     | {
-        // connect with mnemonic
-        mode: "mnemonic";
-        mnemonic: string;
-        privateKey?: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with mnemonic
+      mode: "mnemonic";
+      mnemonic: string;
+      privateKey?: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
     | {
-        // connect with private key
-        mode: "privateKey";
-        mnemonic?: string;
-        privateKey: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with private key
+      mode: "privateKey";
+      mnemonic?: string;
+      privateKey: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
     | {
-        // connect with custom signer
-        mode: "customSigner";
-        mnemonic?: string;
-        privateKey?: string | Buffer;
-        signer: CarbonSigner;
-        publicKeyBase64: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
-      }
+      // connect with custom signer
+      mode: "customSigner";
+      mnemonic?: string;
+      privateKey?: string | Buffer;
+      signer: CarbonSigner;
+      publicKeyBase64: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
+    }
     | {
-        // connect with address (view only)
-        mode: "viewOnly";
-        mnemonic?: string;
-        privateKey?: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with address (view only)
+      mode: "viewOnly";
+      mnemonic?: string;
+      privateKey?: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
     | {
-        // connect with address (view only) and grantee (for transactions)
-        mode: "qr";
-        bech32Address?: string;
-        mnemonic?: string;
-        granter?: string;
-        expiry?: Date;
-      }
-  );
+      // connect with address (view only) and grantee (for transactions)
+      mode: "qr";
+      bech32Address?: string;
+      mnemonic?: string;
+      granter?: string;
+      expiry?: Date;
+    }
+  )
 
 export interface AccountInfo extends Account {
   chainId: string;
@@ -238,9 +216,9 @@ export class CarbonWallet {
 
   disableRetryOnSequenceError: boolean;
 
-  isRainbowKit: boolean = false;
+  isRainbowKit: boolean = false
 
-  jwt?: AccessTokenResponse;
+  jwt?: AccessTokenResponse
 
   // for analytics
   providerAgent?: ProviderAgent | string;
@@ -259,8 +237,8 @@ export class CarbonWallet {
   private txSignManager: QueueManager<SignTxRequest>;
   private txDispatchManager: QueueManager<BroadcastTxRequest>;
 
+
   constructor(opts: CarbonWalletInitOpts) {
-    console.log("xxx sdk constructor", JSON.stringify(opts));
     const network = opts.network ?? DEFAULT_NETWORK;
     this.network = network;
     this.txDefaultBroadCastMode = opts.txDefaultBroadcastMode;
@@ -269,13 +247,13 @@ export class CarbonWallet {
     this.providerAgent = opts.providerAgent;
     this.defaultTimeoutBlocks = opts.defaultTimeoutBlocks ?? 30; // default ~1 minute
     this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
-    this.triggerMerge = opts.triggerMerge ?? false;
-    this.jwt = opts?.jwt;
+    this.triggerMerge = opts.triggerMerge ?? false
+    this.jwt = opts?.jwt
 
     this.gasFee = opts.gasFee;
 
     this.updateNetwork(network);
-    this.isRainbowKit = opts.isRainbowKit ?? false;
+    this.isRainbowKit = opts.isRainbowKit ?? false
 
     this.onRequestSign = opts.onRequestSign;
     this.onSignComplete = opts.onSignComplete;
@@ -330,23 +308,21 @@ export class CarbonWallet {
 
       case "customSigner": {
         this.signer = opts.signer;
-        this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64");
+        this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64")
         this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
         break;
       }
 
       case "viewOnly": {
         this.signer = new CarbonNonSigner();
-        this.publicKey = Buffer.from([]);
+        this.publicKey = Buffer.from([],);
         this.bech32Address = opts.bech32Address;
         break;
       }
 
       case "qr": {
-        console.log("xxx sdk qr", JSON.stringify(this));
-        if (!opts.mnemonic || !opts.expiry || !opts.granter)
-          throw new Error("grantee and expiry must be provided to create grantee wallet");
-        this.publicKey = Buffer.from([]);
+        if (!opts.mnemonic || !opts.expiry || !opts.granter) throw new Error("grantee and expiry must be provided to create grantee wallet");
+        this.publicKey = Buffer.from([],);
         this.bech32Address = opts.granter;
 
         let prefix = addressOpts.bech32Prefix;
@@ -356,19 +332,22 @@ export class CarbonWallet {
         const pkSigner = new CarbonPrivateKeySigner(toUint8Array(AddressUtils.SWTHAddress.mnemonicToPrivateKey(opts.mnemonic)), prefix);
 
         this.signer = pkSigner;
-        this.setGrantee({
-          expiry: opts.expiry,
-          signer: pkSigner,
-        });
+        this.setGrantee(
+          {
+            expiry: opts.expiry,
+            signer: pkSigner,
+          }
+        )
 
         break;
       }
     }
-    console.log("xxx sdk", JSON.stringify(this));
+
     const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
-    this.evmHexAddress = opts.bech32Address ? "" : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
-    this.evmBech32Address = opts.bech32Address ? "" : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts);
+    this.evmHexAddress = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+    this.evmBech32Address = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
+
   }
 
   public static withPrivateKey(privateKey: string | Buffer, opts: Omit<CarbonWalletInitOpts, "mode" | "privateKey"> = {}) {
@@ -406,9 +385,7 @@ export class CarbonWallet {
   }
 
   public static withKeplr(keplr: Keplr, chainInfo: ChainInfo, keplrKey: Key, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
-    const signer = keplrKey.isNanoLedger
-      ? KeplrAccount.createKeplrSignerAmino(keplr, chainInfo, keplrKey)
-      : KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey);
+    const signer = keplrKey.isNanoLedger ? KeplrAccount.createKeplrSignerAmino(keplr, chainInfo, keplrKey) : KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey);
     const publicKeyBase64 = Buffer.from(keplrKey.pubKey).toString("base64");
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
@@ -429,13 +406,7 @@ export class CarbonWallet {
     return wallet;
   }
 
-  public static withMetamask(
-    metamask: MetaMask,
-    evmChainId: string,
-    compressedPubKeyBase64: string,
-    addressOptions: SWTHAddressOptions,
-    opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}
-  ) {
+  public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
     const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64, addressOptions);
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
       providerAgent: ProviderAgent.MetamaskExtension,
@@ -444,15 +415,8 @@ export class CarbonWallet {
     return wallet;
   }
 
-  public static withRainbowKit(
-    rainbowKit: RainbowKitAccount,
-    evmChainId: string,
-    compressedPubKeyBase64: string,
-    addressOptions: SWTHAddressOptions,
-    walletProvider: SupportedEip6963Provider,
-    opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}
-  ) {
-    const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, compressedPubKeyBase64, addressOptions);
+  public static withRainbowKit(rainbowKit: RainbowKitAccount, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, walletProvider: SupportedEip6963Provider, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
+    const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, compressedPubKeyBase64, addressOptions)
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
       ...opts,
       providerAgent: walletProvider,
@@ -469,15 +433,9 @@ export class CarbonWallet {
     });
   }
 
-  public static withQr(
-    granteeMnemonic: string,
-    granterAddress: string,
-    expiry: Date,
-    opts: Omit<CarbonWalletInitOpts, "mode" | "mnemonic"> = {}
-  ) {
+  public static withQr(granteeMnemonic: string, granterAddress: string, expiry: Date, opts: Omit<CarbonWalletInitOpts, "mode" | "mnemonic"> = {}) {
     return new CarbonWallet({
       mode: "qr",
-      bech32Address: granterAddress,
       mnemonic: granteeMnemonic,
       granter: granterAddress,
       expiry,
@@ -485,22 +443,23 @@ export class CarbonWallet {
     });
   }
 
-  public async initialize(
-    queryClient: CarbonQueryClient,
-    gasFee: GasFee,
-    fallbackConfig: OverrideConfig | null = null,
-    opts?: CarbonWalletGenericOpts
-  ): Promise<CarbonWallet> {
+  public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee, fallbackConfig: OverrideConfig | null = null, opts?: CarbonWalletGenericOpts): Promise<CarbonWallet> {
     this.query = queryClient;
     this.gasFee = gasFee;
 
-    const promises: Promise<unknown>[] = [this.reloadAccountSequence(), this.reloadMergeAccountStatus()];
+    const promises: Promise<unknown>[] = [
+      this.reloadAccountSequence(),
+      this.reloadMergeAccountStatus(),
+    ];
 
-    if (!this.tmClient) promises.push(this.reconnectTmClient(fallbackConfig));
+    if (!this.tmClient)
+      promises.push(this.reconnectTmClient(fallbackConfig));
 
-    if (opts?.enableJwtAuth && !this.isViewOnlyWallet()) promises.push(this.reloadJwtToken(undefined, opts?.authMessage));
+    if (opts?.enableJwtAuth && !this.isViewOnlyWallet())
+      promises.push(this.reloadJwtToken(undefined, opts?.authMessage));
 
-    if (this.isViewOnlyWallet()) promises.push(this.queryViewOnlyEvmHexAddress());
+    if (this.isViewOnlyWallet())
+      promises.push(this.queryViewOnlyEvmHexAddress())
 
     await Promise.all(promises);
 
@@ -511,28 +470,28 @@ export class CarbonWallet {
   public async reloadJwtToken(request?: GrantRequest, authMessage: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
     const network = this.network;
     if (this.jwt) {
-      const { iss, exp } = jwtDecode(this.jwt.access_token);
-      if (!isValidIssuer(iss, network)) return this.getNewJwtToken(authMessage, request);
-      const accessTokenExpired = hasExpired(exp);
+      const { iss, exp } = jwtDecode(this.jwt.access_token)
+      if (!isValidIssuer(iss, network)) return this.getNewJwtToken(authMessage, request)
+      const accessTokenExpired = hasExpired(exp)
       if (accessTokenExpired) {
-        if (!hasRefreshTokenExpired(this.jwt.refresh_token)) return this.refreshJwtToken(this.jwt.refresh_token);
-        return this.getNewJwtToken(authMessage, request);
+        if (!hasRefreshTokenExpired(this.jwt.refresh_token)) return this.refreshJwtToken(this.jwt.refresh_token)
+        return this.getNewJwtToken(authMessage, request)
       }
-      return;
+      return
     }
-    return this.getNewJwtToken(authMessage, request);
+    return this.getNewJwtToken(authMessage, request)
   }
 
   public async queryViewOnlyEvmHexAddress() {
     const queryClient = this.getQueryClient();
     const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address });
-    const evmBech32Address = response?.mappedAddress;
-    if (!evmBech32Address) return;
-    this.evmBech32Address = evmBech32Address;
-    const addressBytes = SWTHAddress.getAddressBytes(evmBech32Address, this.network);
+    const evmBech32Address = response?.mappedAddress
+    if (!evmBech32Address) return
+    this.evmBech32Address = evmBech32Address
+    const addressBytes = SWTHAddress.getAddressBytes(evmBech32Address, this.network)
     if (addressBytes.length === 20) {
-      const lowerCaseAddress = "0x" + Buffer.from(addressBytes).toString("hex");
-      this.evmHexAddress = utils.getAddress(lowerCaseAddress);
+      const lowerCaseAddress = '0x' + Buffer.from(addressBytes).toString('hex')
+      this.evmHexAddress = utils.getAddress(lowerCaseAddress)
     }
   }
 
@@ -540,31 +499,31 @@ export class CarbonWallet {
     const request = {
       grant_type: GrantType.RefreshToken,
       refresh_token: refreshToken,
-    };
-    const response = await axios.post(this.networkConfig.authUrl, request);
-    this.jwt = response.data.result;
+    }
+    const response = await axios.post(this.networkConfig.authUrl, request)
+    this.jwt = response.data.result
   }
 
   private async getNewJwtToken(authMessage: string, request?: GrantRequest) {
-    const req = request ?? (await this.constructGrantRequest(authMessage));
-    const response = await axios.post(this.networkConfig.authUrl, req);
-    this.jwt = response.data.result;
+    const req = request ?? await this.constructGrantRequest(authMessage)
+    const response = await axios.post(this.networkConfig.authUrl, req)
+    this.jwt = response.data.result
   }
 
   private async constructGrantRequest(authMessage: string) {
     try {
-      await GenericUtils.callIgnoreError(() => this.onRequestAuth?.());
-      const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address;
-      const message = AuthUtils.getAuthMessage(authMessage);
-      const signature = await this.signer.signMessage(address, message);
+      await GenericUtils.callIgnoreError(() => this.onRequestAuth?.())
+      const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
+      const message = AuthUtils.getAuthMessage(authMessage)
+      const signature = await this.signer.signMessage(address, message)
       return {
         grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
         message,
-        public_key: this.publicKey.toString("hex"),
+        public_key: this.publicKey.toString('hex'),
         signature,
-      };
+      }
     } finally {
-      await GenericUtils.callIgnoreError(() => this.onAuthComplete?.());
+      await GenericUtils.callIgnoreError(() => this.onAuthComplete?.())
     }
   }
 
@@ -573,9 +532,9 @@ export class CarbonWallet {
   }
 
   public isGranteeValid(): boolean {
-    if (!this.grantee) return false;
+    if (!this.grantee) return false
     const { expiry } = this.grantee;
-    const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(BUFFER_PERIOD, "seconds"));
+    const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(BUFFER_PERIOD, 'seconds'));
     return hasNotExpired && !!this.grantee.signer;
   }
 
@@ -603,7 +562,7 @@ export class CarbonWallet {
     const [account] = await this.signer.getAccounts();
 
     let signature: StdSignature | null = null;
-    const evmChainId = this.evmChainId;
+    const evmChainId = this.evmChainId
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
       const signerData: CarbonSignerData = {
@@ -618,16 +577,17 @@ export class CarbonWallet {
       let sig;
       if (isCarbonEIP712Signer(this.signer)) {
         if ((this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
-          const feePayerSigBz = ExtensionOptionsWeb3Tx.decode(TxBody.decode(txRaw.bodyBytes).extensionOptions[0].value).feePayerSig;
-          sig = Uint8Array.from(Buffer.from(feePayerSigBz.slice(0, -1)));
-        } else {
-          sig = txRaw.signatures[0];
+          const feePayerSigBz = ExtensionOptionsWeb3Tx.decode(TxBody.decode(txRaw.bodyBytes).extensionOptions[0].value).feePayerSig
+          sig = Uint8Array.from(Buffer.from(feePayerSigBz.slice(0, -1)))
+        }
+        else {
+          sig = txRaw.signatures[0]
         }
         signature = encodeSecp256k1Signature(account.pubkey, sig);
         signature = {
           ...signature,
           pub_key: { ...signature.pub_key, type: ETH_SECP256K1_TYPE },
-        };
+        }
         return txRaw;
       }
       signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
@@ -636,6 +596,7 @@ export class CarbonWallet {
       await GenericUtils.callIgnoreError(() => this.onSignComplete?.(signature));
     }
   }
+
 
   /**
    * broadcast TX and wait for block confirmation
@@ -649,7 +610,7 @@ export class CarbonWallet {
     const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
-      throw new CarbonCustomError(`[${response.code}] ${response.rawLog}`, ErrorType.BLOCK_FAIL, response);
+      throw new CarbonCustomError(`[${response.code}] ${response.rawLog}`, ErrorType.BLOCK_FAIL, response)
     }
     return response;
   }
@@ -666,7 +627,7 @@ export class CarbonWallet {
       // tx failed
       throw new CarbonCustomError(`[${response.code}] ${response.log}`, ErrorType.BROADCAST_FAIL, response);
     }
-    return response;
+    return response
   }
 
   /**
@@ -685,7 +646,7 @@ export class CarbonWallet {
     broadcastOpts?: CarbonTx.BroadcastTxOpts
   ): Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse> {
     const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse>((resolve, reject) => {
-      const msgs = signOpts?.processMsgs?.(messages) ?? messages;
+      const msgs = signOpts?.processMsgs?.(messages) ?? messages
       this.txSignManager.enqueue({
         signerAddress: this.bech32Address,
         messages: msgs,
@@ -707,16 +668,14 @@ export class CarbonWallet {
       messages,
       handler: { resolve, reject },
     } = txRequest;
-    const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl));
+    const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
     if (this.isGranteeValid() && isAuthorized) {
-      await this.signWithGrantee(txRequest);
+      await this.signWithGrantee(txRequest)
     } else {
       try {
-        if (
-          !this.accountInfo ||
-          this.accountInfo?.address === this.evmBech32Address || // refresh to check if carbon acc is present
-          this.sequenceInvalidated
-        )
+        if (!this.accountInfo
+          || this.accountInfo?.address === this.evmBech32Address // refresh to check if carbon acc is present
+          || this.sequenceInvalidated)
           await this.reloadAccountSequence();
 
         let timeoutHeight;
@@ -724,9 +683,9 @@ export class CarbonWallet {
         if (!isCarbonEIP712Signer(this.signer)) {
           timeoutHeight = await this.getTimeoutHeight();
         }
-        let sequence: number;
+        let sequence: number
         if (!this.accountInfo) {
-          sequence = signOpts?.sequence ?? 0;
+          sequence = signOpts?.sequence ?? 0
         } else {
           sequence = this.accountInfo!.sequence;
           this.accountInfo = {
@@ -742,7 +701,7 @@ export class CarbonWallet {
             ...signOpts?.explicitSignerData,
           },
         };
-        const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts);
+        const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
         this.txDispatchManager.enqueue({
           reattempts,
           signerAddress,
@@ -783,7 +742,7 @@ export class CarbonWallet {
         throw new Error("grantee account not initialized");
       }
 
-      const msgExecMessages = GrantModule.wrapInMsgExec(granteeAddress, messages);
+      const msgExecMessages = GrantModule.wrapInMsgExec(granteeAddress, messages)
 
       const timeoutHeight = await this.getTimeoutHeight();
       const fee = signOpts?.fee ?? this.estimateTxFee(msgExecMessages, signOpts?.feeDenom);
@@ -797,7 +756,7 @@ export class CarbonWallet {
           timeoutHeight,
           ...signOpts?.explicitSignerData,
         },
-      };
+      }
 
       const signerData: CarbonSignerData = {
         accountNumber,
@@ -816,20 +775,18 @@ export class CarbonWallet {
         signedTx,
         signOpts: _signOpts,
         handler: { resolve, reject, requestId: `${sequence}` },
-      });
+      })
     } catch (error) {
-      reject(error);
+      reject(error)
     }
   }
 
   private getBroadcastFunc(broadcastMode?: BroadcastTxMode) {
     switch (broadcastMode) {
-      case BroadcastTxMode.BroadcastTxSync:
-        return this.broadcastTxToMempoolWithoutConfirm.bind(this);
-      case BroadcastTxMode.BroadcastTxAsync:
-        return this.broadcastTxWithoutConfirm.bind(this);
+      case BroadcastTxMode.BroadcastTxSync: return this.broadcastTxToMempoolWithoutConfirm.bind(this);
+      case BroadcastTxMode.BroadcastTxAsync: return this.broadcastTxWithoutConfirm.bind(this);
     }
-    return this.broadcastTx.bind(this);
+    return this.broadcastTx.bind(this)
   }
 
   private async dispatchTx(txRequest: BroadcastTxRequest) {
@@ -859,6 +816,7 @@ export class CarbonWallet {
           signOpts: txRequest.signOpts,
           handler: { resolve, reject },
         });
+
       } else {
         reject(error);
       }
@@ -867,60 +825,59 @@ export class CarbonWallet {
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     if (this.triggerMerge || opts?.triggerMerge) {
-      await this.sendInitialMergeAccountTx(msgs, opts);
+      await this.sendInitialMergeAccountTx(msgs, opts)
     }
     try {
-      const result = await this.signAndBroadcast(msgs, opts);
+      const result = await this.signAndBroadcast(msgs, opts)
       if (msgs[0].typeUrl === CarbonTx.Types.MsgMergeAccount) {
-        this.updateMergeAccountStatus();
+        this.updateMergeAccountStatus()
       }
       await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.(msgs));
       return result as DeliverTxResponse;
-    } catch (error) {
+    }
+    catch (error) {
       await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.(msgs));
-      throw error;
+      throw error
     }
   }
 
   async sendInitialMergeAccountTx(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts) {
-    let msg: EncodeObject;
-    await this.reloadMergeAccountStatus();
+    let msg: EncodeObject
+    await this.reloadMergeAccountStatus()
     if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
-      const accountInfo = await this.reloadAccountInfo();
+      const accountInfo = await this.reloadAccountInfo()
       if (!accountInfo) {
-        throw new Error("Account not found!");
+        throw new Error('Account not found!')
       }
-      const { address, sequence, accountNumber } = accountInfo;
+      const { address, sequence, accountNumber } = accountInfo
       try {
         msg = {
           typeUrl: CarbonTx.Types.MsgMergeAccount,
           value: Carbon.Evmmerge.MsgMergeAccount.fromPartial({
             creator: address,
-            pubKey: this.publicKey.toString("hex"),
+            pubKey: this.publicKey.toString('hex'),
           }),
-        };
+        }
         const modifiedOpts = {
           ...opts,
           sequence,
           accountNumber,
-        };
-        await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock });
-        this.updateMergeAccountStatus();
+        }
+        await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
+        this.updateMergeAccountStatus()
         await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.([msg]));
-      } catch (error) {
+      }
+      catch (error) {
         await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.([msg]));
-        throw error;
+        throw error
       }
     }
   }
 
-  async sendTxsWithoutConfirm(
-    msgs: EncodeObject[],
-    opts?: CarbonTx.SignTxOpts
-  ): Promise<CarbonWallet.SendTxToMempoolWithoutConfirmResponse> {
-    await this.reloadMergeAccountStatus();
+  async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxToMempoolWithoutConfirmResponse> {
+    await this.reloadMergeAccountStatus()
     if (this.triggerMerge || opts?.triggerMerge) {
-      await this.sendInitialMergeAccountTx(msgs, opts);
+      await this.sendInitialMergeAccountTx(msgs, opts)
     }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
     return result as BroadcastTxSyncResponse;
@@ -930,58 +887,42 @@ export class CarbonWallet {
     return this.sendTxs([msg], opts);
   }
 
-  async waitForTx(
-    txHash: string,
-    throwIfNotIncludedInBlock: boolean = false,
-    timeoutMs: number = 30000,
-    pollIntervalMs: number = 500
-  ): Promise<TxResponse> {
-    const txId = txHash.toUpperCase();
-    let timedOut = false;
+  async waitForTx(txHash: string, throwIfNotIncludedInBlock: boolean = false, timeoutMs: number = 30000, pollIntervalMs: number = 500): Promise<TxResponse> {
+    const txId = txHash.toUpperCase()
+    let timedOut = false
     const txPollTimeout = setTimeout(() => {
-      timedOut = true;
-    }, timeoutMs);
+      timedOut = true
+    }, timeoutMs)
 
     const pollForTx = async (txId: string): Promise<TxResponse> => {
       try {
         if (timedOut) {
-          throw new TimeoutError(
-            `Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${
-              timeoutMs / 1000
-            } seconds.`,
-            txId
-          );
+          throw new TimeoutError(`Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txId)
         }
-        const hash = Uint8Array.from(Buffer.from(txId, "hex"));
+        const hash = Uint8Array.from(Buffer.from(txId, 'hex'));
         const tmClient = await this.getTmClient();
-        const response = await tmClient.tx({ hash });
-        const { result } = response;
-        const isDeliverTxFailure = result.code !== 0;
-        if (isDeliverTxFailure && throwIfNotIncludedInBlock)
-          throw new CarbonCustomError(`[${result.code}] ${result.log}`, ErrorType.BLOCK_FAIL, response);
-        return response;
+        const response = await tmClient.tx({ hash })
+        const { result } = response
+        const isDeliverTxFailure = result.code !== 0
+        if (isDeliverTxFailure && throwIfNotIncludedInBlock) throw new CarbonCustomError(`[${result.code}] ${result.log}`, ErrorType.BLOCK_FAIL, response)
+        return response
       } catch (err) {
-        const error = err as Error;
+        const error = err as Error
         if (this.isTxHashNotFound(error, txId)) {
-          await sleep(pollIntervalMs);
-          return pollForTx(txId);
+          await sleep(pollIntervalMs)
+          return pollForTx(txId)
         }
-        throw err;
+        throw err
       }
-    };
+    }
 
-    return new Promise((resolve, reject) =>
-      pollForTx(txId).then(
-        (value) => {
-          clearTimeout(txPollTimeout);
-          resolve(value);
-        },
-        (error) => {
-          clearTimeout(txPollTimeout);
-          reject(error);
-        }
-      )
-    );
+    return new Promise((resolve, reject) => pollForTx(txId).then((value) => {
+      clearTimeout(txPollTimeout)
+      resolve(value)
+    }, (error) => {
+      clearTimeout(txPollTimeout)
+      reject(error)
+    }))
   }
 
   async getSigningClient(): Promise<CarbonSigningClient> {
@@ -1033,10 +974,7 @@ export class CarbonWallet {
   }
 
   isLedgerViaBrowserExtension() {
-    return (
-      (this.providerAgent === ProviderAgent.KeplrExtension || this.providerAgent === ProviderAgent.LeapExtension) &&
-      !isOfflineDirectSigner(this.signer)
-    );
+    return (this.providerAgent === ProviderAgent.KeplrExtension || this.providerAgent === ProviderAgent.LeapExtension) && !isOfflineDirectSigner(this.signer);
   }
 
   isPrivateKeySigner() {
@@ -1052,7 +990,7 @@ export class CarbonWallet {
   }
 
   isSmartWalletEnabled() {
-    return !!(this.mnemonic || this.privateKey);
+    return !!(this.mnemonic || this.privateKey)
   }
 
   public getSmartWalletPrivateKey(blockchain: SmartWalletBlockchain = SmartWalletBlockchain.Ethereum) {
@@ -1062,7 +1000,7 @@ export class CarbonWallet {
         case SmartWalletBlockchain.BinanceSmartChain:
           return ETHAddress.mnemonicToPrivateKey(this.mnemonic);
         default:
-          return null;
+          return null
       }
     }
 
@@ -1077,54 +1015,55 @@ export class CarbonWallet {
       const errorTyped = err as Error;
       if (errorTyped.message.includes("Failed to fetch") && fallbackConfig) {
         this.chainId = fallbackConfig.chainId;
-        this.evmChainId = fallbackConfig.evmChainId;
+        this.evmChainId = fallbackConfig.evmChainId
       }
     }
   }
 
   private async reloadAccountInfo() {
     // carbon account always takes priority
-    let evmBech32Acc = null;
-    const bech32Acc = this.bech32Address && (await this.getAccount(this.bech32Address));
+    let evmBech32Acc = null
+    const bech32Acc = this.bech32Address && await this.getAccount(this.bech32Address)
     if (!bech32Acc && this.evmBech32Address) {
-      evmBech32Acc = await this.getAccount(this.evmBech32Address);
+      evmBech32Acc = await this.getAccount(this.evmBech32Address)
     }
-    return bech32Acc ?? evmBech32Acc ?? undefined;
+    return bech32Acc ?? evmBech32Acc ?? undefined
   }
 
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   private async getAccount(queryAddress: string, retryCount: number = 0): Promise<Account | undefined> {
     try {
-      const result = await this.getQueryClient().auth.Account({ address: queryAddress });
+      const result = await this.getQueryClient().auth.Account({ address: queryAddress })
       if (result?.account) {
-        const { accountNumber, sequence, address } = BaseAccount.decode(result.account.value);
+        const { accountNumber, sequence, address } = BaseAccount.decode(result.account.value)
         return {
           address,
           pubkey: null,
           accountNumber: accountNumber.toNumber(),
           sequence: sequence.toNumber(),
-        };
+        }
       }
     } catch (error: any) {
-      if (!this.isAccountNotFoundError(error, queryAddress)) throw error;
+      if (!this.isAccountNotFoundError(error, queryAddress))
+        throw error
     }
     // when grant is just created, querying grantee account info immediately may fail maybe due to backend caching
     // retry query after 1s to buffer for backend to catch up
     if (retryCount < 1) {
       await this.delay(1000);
-      return this.getAccount(queryAddress, retryCount + 1);
+      return this.getAccount(queryAddress, retryCount + 1)
     }
 
-    return undefined;
+    return undefined
   }
 
   public async reloadAccountSequence() {
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
-    const info = await this.reloadAccountInfo();
+    const info = await this.reloadAccountInfo()
     const pubkey = this.accountInfo?.pubkey ?? {
       type: "tendermint/PubKeySecp256k1",
       value: this.publicKey.toString("base64"),
@@ -1148,9 +1087,9 @@ export class CarbonWallet {
   }
 
   public updateMergeAccountStatus() {
-    this.accountMerged = true;
+    this.accountMerged = true
     // invalidate sequence after merging
-    this.sequenceInvalidated = true;
+    this.sequenceInvalidated = true
   }
 
   public isEvmWallet() {
@@ -1158,7 +1097,7 @@ export class CarbonWallet {
   }
 
   public isViewOnlyWallet() {
-    return this.signer.type === CarbonSignerTypes.PublicKey;
+    return this.signer.type === CarbonSignerTypes.PublicKey
   }
 
   private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = DEFAULT_FEE_DENOM) {
@@ -1195,15 +1134,14 @@ export class CarbonWallet {
 
   private addAdditionalGasCost(message: EncodeObject) {
     switch (message.typeUrl) {
-      case TxTypes.MsgExec:
-        return this.getExecGasCost(message.value as MsgExec);
+      case TxTypes.MsgExec: return this.getExecGasCost(message.value as MsgExec);
     }
     return BN_ZERO;
   }
 
   private getExecGasCost(message: MsgExec) {
     const msgs: DecodeObject[] = message.msgs;
-    const encodedMsgs: EncodeObject[] = msgs.map((m) => {
+    const encodedMsgs: EncodeObject[] = msgs.map(m => {
       const decoded = registry.decode(m);
       return {
         typeUrl: m.typeUrl,
@@ -1222,8 +1160,9 @@ export class CarbonWallet {
     return error.message?.includes(`tx (${hash}) not found`);
   };
 
+
   private isNonceMismatchError = (error?: Error) => {
-    const errorMessage = "account sequence mismatch";
+    const errorMessage = 'account sequence mismatch'
     const includes = error?.message.includes(errorMessage);
     if (includes) {
       return {
@@ -1231,7 +1170,7 @@ export class CarbonWallet {
       };
     }
 
-    return false;
+    return false
   };
 
   private getQueryClient(): CarbonQueryClient {
@@ -1252,6 +1191,6 @@ export namespace CarbonWallet {
   export type OnBroadcastTxSuccessCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export interface TxRaw extends StargateTxRaw {}
+  export interface TxRaw extends StargateTxRaw { }
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }

@@ -1,11 +1,4 @@
-import {
-  MsgMintToken,
-  MsgWithdraw,
-  MsgDepositToGroup,
-  MsgWithdrawFromGroup,
-  MsgAddBridgeAddress,
-  MsgCreateToken,
-} from "@carbon-sdk/codec/Switcheo/carbon/coin/tx";
+import { MsgMintToken, MsgWithdraw, MsgDepositToGroup, MsgWithdrawFromGroup, MsgAddBridgeAddress, MsgCreateToken } from "@carbon-sdk/codec/Switcheo/carbon/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { CarbonTx } from "@carbon-sdk/util";
 import { EncodeObject } from "@cosmjs/proto-signing";
@@ -62,7 +55,7 @@ export class CoinModule extends BaseModule {
     const value = MsgDepositToGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       depositCoin: params.depositCoin,
-    });
+    })
 
     return await wallet.sendTx(
       {
@@ -70,12 +63,12 @@ export class CoinModule extends BaseModule {
         value,
       },
       opts
-    );
+    )
   }
 
   public async convertToGroup(params: CoinModule.DepositToGroupParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const messages: EncodeObject[] = params.map((param) => ({
+    const messages: EncodeObject[] = params.map(param => ({
       typeUrl: CarbonTx.Types.MsgDepositToGroup,
       value: MsgDepositToGroup.fromPartial({
         creator: param.creator ?? wallet.bech32Address,
@@ -83,7 +76,10 @@ export class CoinModule extends BaseModule {
       }),
     }));
 
-    return await wallet.sendTxs(messages, opts);
+    return await wallet.sendTxs(
+      messages,
+      opts
+    )
   }
 
   public async withdrawFromGroup(params: CoinModule.WithdrawFromGroupParams, opts?: CarbonTx.SignTxOpts) {
@@ -92,7 +88,7 @@ export class CoinModule extends BaseModule {
     const value = MsgWithdrawFromGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       sourceCoin: params.sourceCoin,
-    });
+    })
 
     return await wallet.sendTx(
       {
@@ -100,7 +96,7 @@ export class CoinModule extends BaseModule {
         value,
       },
       opts
-    );
+    )
   }
 
   public async addBridgeAddress(params: CoinModule.AddBridgeAddressParams, opts?: CarbonTx.SignTxOpts) {
@@ -110,7 +106,7 @@ export class CoinModule extends BaseModule {
       chainId: params.chainId,
       bridgeId: params.bridgeId,
       bridgeAddress: params.bridgeAddress,
-    });
+    })
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgAddBridgeAddress,
@@ -134,7 +130,7 @@ export class CoinModule extends BaseModule {
         bridgeAddress: params.bridgeAddress,
         tokenAddress: params.tokenAddress,
       },
-    });
+    })
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgCreateToken,
@@ -143,6 +139,7 @@ export class CoinModule extends BaseModule {
       opts
     );
   }
+
 }
 
 export namespace CoinModule {

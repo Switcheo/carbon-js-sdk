@@ -156,6 +156,7 @@ export interface PersistenceRewardsEntry {
   traders: PersistenceTraders[];
 }
 
+
 export interface QueryGetPNLCompetitionLeaderboardResponse {
   entries: PNLLeaderboardEntry[];
   meta: TimeMeta;
@@ -211,8 +212,8 @@ export interface QueryPnlLeaderboardResponse {
   result: {
     entries: {
       rows: PersistencePnl[];
-    };
-  };
+    }
+  }
 }
 
 export interface PersistencePnl {

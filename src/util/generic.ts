@@ -1,6 +1,6 @@
 import { sha256 } from "@cosmjs/crypto";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
-import { toUint8Array } from "@carbon-sdk/util/bytes";
+import { toUint8Array } from '@carbon-sdk/util/bytes'
 
 export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) => {
   const result: T = { ...defaults };
@@ -157,7 +157,7 @@ export namespace QueueManager {
   }
 }
 
-export const getBestRpcTmClient = async (rpcUrls: string[]): Promise<{ client: Tendermint37Client; rpcUrl: string }> => {
+export const getBestRpcTmClient = async (rpcUrls: string[]): Promise<{ client: Tendermint37Client, rpcUrl: string }> => {
   for (const rpcUrl of rpcUrls) {
     try {
       return {
@@ -165,11 +165,11 @@ export const getBestRpcTmClient = async (rpcUrls: string[]): Promise<{ client: T
         rpcUrl,
       };
     } catch (error) {
-      console.debug("failed to connect RPC:" + rpcUrl);
-      console.debug(error);
-      continue;
+      console.debug("failed to connect RPC:" + rpcUrl)
+      console.debug(error)
+      continue
     }
   }
 
   throw new Error("Could not get available RPC service");
-};
+}

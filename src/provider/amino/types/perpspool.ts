@@ -84,6 +84,7 @@ const MsgReleaseUserVaultWithdrawal: AminoInit = {
   },
 };
 
+
 const PerpspoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),
   [CarbonTx.Types.MsgUpdatePool]: generateAminoType(MsgUpdatePool),

@@ -269,11 +269,11 @@ export interface WsSubscribeTokenSupplyByDenom extends WsSubscribeParams {
   denom: string;
 }
 
-export interface WsSubscribeMarketLiquidityUsageMultiplier extends WsSubscribeParams {}
+export interface WsSubscribeMarketLiquidityUsageMultiplier extends WsSubscribeParams { }
 
 export interface WsSubscribeOTCRFQsByAddress extends WsSubscribeParams {
   address: string;
-}
+ }
 export interface WsSubscribeOTCQuotesForRfq extends WsSubscribeParams {
   rfq_id: string;
 }

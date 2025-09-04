@@ -54,7 +54,7 @@ export interface LiquidationEntry {
   last_updated_block_height: string;
 }
 
-export interface GetLiquidationAndADLQueryParams extends QueryByPageRequest {}
+export interface GetLiquidationAndADLQueryParams extends QueryByPageRequest { }
 
 export interface QueryGetLiquidationAndADLResponse {
   entries: LiquidationEntry[];
@@ -62,7 +62,7 @@ export interface QueryGetLiquidationAndADLResponse {
 }
 
 //Liquidation Engine
-export interface GetLiquidationEngineParams extends QueryByPageRequest {}
+export interface GetLiquidationEngineParams extends QueryByPageRequest { }
 
 export interface QueryGetLiquidationEngineResponse {
   entries: LiquidationEntry[];
@@ -105,7 +105,7 @@ export interface GetPositionStatsPathParams {
   address: string;
 }
 
-export interface GetPositionStatsQueryParams extends QueryByTimeRequest {}
+export interface GetPositionStatsQueryParams extends QueryByTimeRequest { }
 
 export interface GetPositionStatsEntry {
   time: string;
@@ -117,5 +117,5 @@ export interface GetPositionStatsEntry {
 }
 export interface QueryGetPositionStatsResponse {
   entries: GetPositionStatsEntry[];
-  meta: TimeMeta;
+  meta: TimeMeta
 }

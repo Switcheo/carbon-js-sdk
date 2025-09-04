@@ -3,28 +3,28 @@ import { StdFee } from "@cosmjs/stargate";
 
 type MsgSignData = {
   // cosmos bech32
-  signer: string;
+  signer: string
   // base64 encoded
-  data: string;
-};
+  data: string
+}
 export const constructAdr36SignDoc = (address: string, message: string): StdSignDoc => {
-  const msgSignData: MsgSignData = constructMsgSignData(address, message);
-  const msgs: AminoMsg[] = [{ type: "sign/MsgSignData", value: msgSignData }];
+  const msgSignData: MsgSignData = constructMsgSignData(address, message)
+  const msgs: AminoMsg[] = [{ type: 'sign/MsgSignData', value: msgSignData }]
   const fee: StdFee = {
-    gas: "0",
+    gas: '0',
     amount: [],
-  };
+  }
   const signDoc: StdSignDoc = {
-    chain_id: "",
-    account_number: "0",
-    sequence: "0",
+    chain_id: '',
+    account_number: '0',
+    sequence: '0',
     fee,
     msgs,
-    memo: "",
-  };
-  return signDoc;
-};
+    memo: '',
+  }
+  return signDoc
+}
 
 const constructMsgSignData = (address: string, message: string): MsgSignData => {
-  return { signer: address, data: Buffer.from(message).toString("base64") };
-};
+  return { signer: address, data: Buffer.from(message).toString('base64') }
+}

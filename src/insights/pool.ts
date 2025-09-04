@@ -42,7 +42,7 @@ export interface PoolsLiquidity {
   tokens: PoolTokens[];
 }
 
-export interface QueryGetPoolsRequest extends QueryByPageRequest {}
+export interface QueryGetPoolsRequest extends QueryByPageRequest { }
 
 export interface QueryGetPoolsResponse {
   models: Pool[];
@@ -105,7 +105,7 @@ export interface PositionHistoryEntry {
 }
 
 export interface QueryGetPerpPoolHistoryRequest extends QueryByPageRequest {
-  address: string;
+  address: string
 }
 
 export interface QueryVaultAPY extends QueryByPageRequest {
@@ -229,6 +229,7 @@ export interface ClaimTransactionEntry {
   timestamp: string;
   hash?: string;
   tokens: TokenAmounts[];
+
 }
 
 export interface QueryGetUserRewardsClaimHistoryResponse {

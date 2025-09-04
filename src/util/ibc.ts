@@ -22,8 +22,10 @@ export function makeIBCMinimalDenom(sourceChannelId: string, coinMinimalDenom: s
   const sourceChannelIdProcess =
     sourceChannelId.indexOf("transfer/") === 0 ? sourceChannelId.split("/").splice(1).join("/") : sourceChannelId;
   const bytes = Buffer.from(`transfer/${sourceChannelIdProcess}/${coinMinimalDenom}`);
-  const hash = ethers.utils.sha256(bytes).replace(/0x/i, "").toUpperCase();
-  return `ibc/${hash}`;
+  const hash = ethers.utils.sha256(bytes)
+    .replace(/0x/i, "")
+    .toUpperCase();
+  return `ibc/${hash}`
 }
 
 export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce(
@@ -49,12 +51,12 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
     const assetsObj: SimpleMap<AppCurrency> = {};
     const channelsObj = swthChannels[chainInfo.chainId];
     chainInfo.currencies.forEach((currency: AppCurrency) => {
-      const channelSet: ChannelSet | undefined =
-        "type" in currency && channelsObj.cw20 ? (channelsObj.cw20 as ChannelSet) : channelsObj.ibc;
-      let ibcAddr =
-        currency.coinDenom.toLowerCase() === "swth"
-          ? currency.coinMinimalDenom
-          : makeIBCMinimalDenom(channelSet?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
+      const channelSet: ChannelSet | undefined = ("type" in currency) && channelsObj.cw20
+        ? channelsObj.cw20 as ChannelSet
+        : channelsObj.ibc;
+      let ibcAddr = currency.coinDenom.toLowerCase() === "swth"
+        ? currency.coinMinimalDenom
+        : makeIBCMinimalDenom(channelSet?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
 
       // TODO: Remove when implementing dynamic ibc chain info
       if (currency.coinMinimalDenom === "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858") {
@@ -136,8 +138,9 @@ export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
       if (currency.coinDenom.toLowerCase() === "swth") {
         newPrev[currency.coinMinimalDenom] = ChainIdBlockchainMap[chainInfo.chainId];
       } else {
-        const channelSet: ChannelSet | undefined =
-          "type" in currency && channelsObj.cw20 ? (channelsObj.cw20 as ChannelSet) : channelsObj.ibc;
+        const channelSet: ChannelSet | undefined = ("type" in currency) && channelsObj.cw20
+          ? channelsObj.cw20 as ChannelSet
+          : channelsObj.ibc;
         const ibcAddr = makeIBCMinimalDenom(channelSet?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
         newPrev[ibcAddr] = ChainIdBlockchainMap[chainInfo.chainId];
       }
@@ -164,10 +167,10 @@ export const calculateMaxFee = (gasStep: GasPriceStep = DefaultGasPriceStep, gas
   return gasStep.high * gas;
 };
 
-export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0, stepId: keyof GasPriceStep = "average") => {
+export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0, stepId: keyof GasPriceStep = 'average') => {
   const currentGasStep = gasStep[stepId] ?? 0;
   return currentGasStep * gas;
-};
+}
 
 export const isCw20Token = (currency: AppCurrency): boolean => {
   if (!("type" in currency)) return false;

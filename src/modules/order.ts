@@ -7,7 +7,9 @@ import { EncodeObject } from "@cosmjs/proto-signing";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
 
+
 export class OrderModule extends BaseModule {
+
   public async create(param: OrderModule.CreateOrderParams, opts?: CarbonTx.SignTxOpts) {
     return this.createOrders([param], opts);
   }
@@ -16,7 +18,7 @@ export class OrderModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs: EncodeObject[] = params.map((param) => {
-      const creator = param.creator ?? wallet.bech32Address;
+      const creator = param.creator ?? wallet.bech32Address
 
       if ("leverage" in param) {
         return {
@@ -26,7 +28,7 @@ export class OrderModule extends BaseModule {
             marketId: param.marketId,
             leverage: param.leverage.shiftedBy(18).toString(10),
           }),
-        };
+        }
       }
 
       return {
@@ -47,7 +49,7 @@ export class OrderModule extends BaseModule {
           referralCommission: param.referralCommission,
           referralKickback: param.referralKickback,
         }),
-      };
+      }
     });
 
     return await wallet.sendTxs(msgs, opts);
@@ -55,8 +57,8 @@ export class OrderModule extends BaseModule {
 
   public async cancel(params: OrderModule.CancelOrderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const creator = params.creator ?? wallet.bech32Address;
-    const id = params.id;
+    const creator = params.creator ?? wallet.bech32Address
+    const id = params.id
     const value: MsgCancelOrder = {
       creator,
       id,
@@ -75,7 +77,7 @@ export class OrderModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map((p) => {
-      const creator = p.creator ?? wallet.bech32Address;
+      const creator = p.creator ?? wallet.bech32Address
       const value: MsgCancelOrder = {
         creator,
         id: p.id,
@@ -92,7 +94,7 @@ export class OrderModule extends BaseModule {
 
   public async edit(params: OrderModule.EditOrderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const creator = params.creator ?? wallet.bech32Address;
+    const creator = params.creator ?? wallet.bech32Address
 
     const value = MsgEditOrder.fromPartial({
       creator,
@@ -115,7 +117,7 @@ export class OrderModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map((param) => {
-      const creator = param.creator ?? wallet.bech32Address;
+      const creator = param.creator ?? wallet.bech32Address
       const value = MsgEditOrder.fromPartial({
         creator,
         id: param.id,
@@ -135,7 +137,7 @@ export class OrderModule extends BaseModule {
 
   public async cancelAll(params: OrderModule.CancelAllParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const creator = params.creator ?? wallet.bech32Address;
+    const creator = params.creator ?? wallet.bech32Address
 
     const value = MsgCancelAll.fromPartial({
       creator,

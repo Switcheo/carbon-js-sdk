@@ -11,9 +11,9 @@ export class BridgeModule extends BaseModule {
     const config = this.sdkProvider.getTokenClient().configProvider.getConfig();
     const url = `${config.hydrogenUrl}/bridge_fees?fee_denom=${relayDenom}&connection_id=${connectionId}`;
     const requestOptions = {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
     const result: BridgeModule.BridgeRelayFees = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
@@ -21,9 +21,17 @@ export class BridgeModule extends BaseModule {
   }
 
   public async withdraw(params: BridgeModule.WithdrawParams, opts?: CarbonTx.SignTxOpts) {
-    const { connectionId, receiver, tokenDenom, tokenAmount, relayDenom, relayAmount, expirySeconds } = params;
+    const {
+      connectionId,
+      receiver,
+      tokenDenom,
+      tokenAmount,
+      relayDenom,
+      relayAmount,
+      expirySeconds,
+    } = params;
     const wallet = this.getWallet();
-    const walletAddress = wallet.bech32Address ?? "";
+    const walletAddress = wallet.bech32Address ?? '';
     const expiryDuration = Duration.fromPartial({
       seconds: new Long(expirySeconds),
     });
@@ -46,19 +54,25 @@ export class BridgeModule extends BaseModule {
       expiryDuration,
     });
 
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgWithdrawToken,
-        value,
-      },
-      opts
-    );
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgWithdrawToken,
+      value,
+    }, opts);
   }
 
   // withdrawing + unwrapping to the native token (wETH => ETH)
   public async withdrawAndExecute(params: BridgeModule.WithdrawAndExecuteParams, opts?: CarbonTx.SignTxOpts) {
-    const { connectionId, executionContract, executionBytes, tokenDenom, tokenAmount, relayDenom, relayAmount, expirySeconds } = params;
-    const method = "withdraw_native";
+    const {
+      connectionId,
+      executionContract,
+      executionBytes,
+      tokenDenom,
+      tokenAmount,
+      relayDenom,
+      relayAmount,
+      expirySeconds,
+    } = params;
+    const method = 'withdraw_native';
     const wallet = this.getWallet();
     const walletAddress = wallet.bech32Address;
     const expiryDuration = Duration.fromPartial({
@@ -81,13 +95,10 @@ export class BridgeModule extends BaseModule {
       expiryDuration,
     });
 
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgExecuteFromCarbon,
-        value,
-      },
-      opts
-    );
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgExecuteFromCarbon,
+      value,
+    }, opts);
   }
 }
 
@@ -114,12 +125,12 @@ export namespace BridgeModule {
   }
 
   export interface BridgeRelayFees {
-    deposit: string;
-    withdraw: string;
-    execute: string;
-    withdraw_and_execute: string;
-    register_token: string;
-    deregister_token: string;
-    time_quoted_at: string;
+    deposit: string,
+    withdraw: string,
+    execute: string,
+    withdraw_and_execute: string,
+    register_token: string,
+    deregister_token: string,
+    time_quoted_at: string,
   }
 }

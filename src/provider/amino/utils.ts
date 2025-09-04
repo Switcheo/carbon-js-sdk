@@ -25,7 +25,7 @@ export type AminoValueMap =
   | SimpleMap<SimpleMap<SimpleMap<SimpleMap<SimpleMap<ConvertEncType>>>>>
   | SimpleMap<SimpleMap<ConvertEncType> | ConvertEncType>
   | SimpleMap<SimpleMap<SimpleMap<SimpleMap<ConvertEncType> | ConvertEncType>>>
-  | SimpleMap<SimpleMap<SimpleMap<SimpleMap<SimpleMap<ConvertEncType> | ConvertEncType>>>>;
+  | SimpleMap<SimpleMap<SimpleMap<SimpleMap<SimpleMap<ConvertEncType> | ConvertEncType>>>>
 export interface AminoInit {
   aminoType: string;
   valueMap: AminoValueMap;
@@ -46,22 +46,20 @@ export interface AminoProcess {
  * @param value value to check
  */
 const typeCheck = (value: any): boolean => {
-  return (
-    Long.isLong(value) ||
-    BigNumber.isBigNumber(value) ||
-    value instanceof Date ||
-    value instanceof Uint8Array ||
-    (value.seconds !== undefined && Long.isLong(value.seconds) && value.nanos !== undefined && typeof value.nanos === "number")
-  ); // Check for Duration interface
+  return Long.isLong(value)
+    || BigNumber.isBigNumber(value)
+    || value instanceof Date
+    || value instanceof Uint8Array
+    || ((value.seconds !== undefined && Long.isLong(value.seconds)) && (value.nanos !== undefined && typeof value.nanos === 'number')); // Check for Duration interface
 };
 
 const isArrayOfStrings = (value: unknown): value is string[] => {
-  return Array.isArray(value) && value.length !== 0 && value.every((item) => typeof item === "string");
-};
+  return Array.isArray(value) && value.length !== 0 && value.every(item => typeof item === "string");
+}
 
 const isConvertEncType = (value: any): value is ConvertEncType => {
-  return Object.values(ConvertEncType).includes(value as ConvertEncType);
-};
+  return Object.values(ConvertEncType).includes(value as ConvertEncType)
+}
 
 /**
  * checks maps object to amino or direct form
@@ -89,7 +87,7 @@ export const mapEachIndiv = (
       if (typeCheck(mapItem[key]) || typeof mapItem[key] !== "object") {
         if (!keyMap && mapItem[key] instanceof Date) {
           directMap[altKey] = paramConverter(mapItem[key], ConvertEncType.Date, toAmino);
-          return;
+          return
         }
         directMap[altKey] = paramConverter(mapItem[key], keyMap, toAmino);
         return;
@@ -97,8 +95,8 @@ export const mapEachIndiv = (
     }
     if (mapItem[key].length && typeof mapItem[key] === "object") {
       if (isArrayOfStrings(mapItem[key])) {
-        directMap[altKey] = mapItem[key];
-        return;
+        directMap[altKey] = mapItem[key]
+        return
       }
       // If value is an array of objects, iterate through objects and call mapToObj function
       directMap[altKey] = mapItem[key].map((newMap: any) => {
@@ -107,12 +105,13 @@ export const mapEachIndiv = (
       return;
     } else {
       if (TypeUtils.isDurationType(mapItem[key])) {
+
         directMap[altKey] = paramConverter(mapItem[key], keyMap as ConvertEncType, toAmino);
         return;
       }
       if (mapItem[key]?.length === 0) {
-        directMap[altKey] = [];
-        return;
+        directMap[altKey] = []
+        return
       }
       directMap[altKey] = mapEachIndiv(mapItem[key], keyMap as AminoValueMap, toAmino);
     }
@@ -120,7 +119,7 @@ export const mapEachIndiv = (
   return directMap;
 };
 
-export const NANOS_IN_ONE_SECOND = new Long(10 ** 9);
+export const NANOS_IN_ONE_SECOND = new Long(10 ** 9)
 
 /**
  * convert direct params to corresponding amino params
@@ -166,14 +165,14 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
         const seconds = (value?.seconds as Long) ?? new Long(0);
         return `${nanosBN.plus(seconds.mul(NANOS_IN_ONE_SECOND).toString()).toString(10)}`;
       } else {
-        const totalNanos = Long.fromString(value);
+        const totalNanos = Long.fromString(value)
         return {
           seconds: totalNanos.divide(NANOS_IN_ONE_SECOND),
           nanos: totalNanos.mod(NANOS_IN_ONE_SECOND).toNumber(),
         };
       }
     case ConvertEncType.Uint8Array:
-      return toAmino ? Buffer.from(value).toString("base64") : new Uint8Array(Buffer.from(value, "base64"));
+      return toAmino ? Buffer.from(value).toString('base64') : new Uint8Array(Buffer.from(value, 'base64'));
     default:
       return value;
   }
@@ -184,9 +183,7 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
   return {
     ...amino,
     toAmino: (input: TypeUtils.SimpleMap<any>) => {
-      const processRes: AminoProcessOutput | undefined = aminoProcess?.toAminoProcess
-        ? aminoProcess.toAminoProcess(valueMap, input, AminoTypesMap)
-        : {};
+      const processRes: AminoProcessOutput | undefined = aminoProcess?.toAminoProcess ? aminoProcess.toAminoProcess(valueMap, input, AminoTypesMap) : {};
       const { input: newInput = input, amino: newAminoMap = valueMap } = processRes;
 
       const aminoObj: TypeUtils.SimpleMap<any> = {};
@@ -195,17 +192,17 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         if (!newInput[key]) return;
         if (typeCheck(newInput[key])) {
           aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true);
-          if (aminoObj[snakeKey] === null) delete aminoObj[snakeKey];
+          if (aminoObj[snakeKey] === null) delete aminoObj[snakeKey]
           return;
         }
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
           aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true);
-          if (aminoObj[snakeKey] === null) delete aminoObj[snakeKey];
+          if (aminoObj[snakeKey] === null) delete aminoObj[snakeKey]
         } else {
           // empty array should be mapped over too
           if (newInput[key]?.length === 0) {
-            aminoObj[snakeKey] = [];
-            return;
+            aminoObj[snakeKey] = []
+            return
           }
           if (newInput[key]?.length && typeof newInput[key] === "object") {
             aminoObj[snakeKey] = newInput[key].map((newItem: any) =>
@@ -228,12 +225,12 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         const camelKey = TypeUtils.snakeToCamel(key);
 
         if (isConvertEncType(newAminoMap[key])) {
-          aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as ConvertEncType, false);
-          return;
+          aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as ConvertEncType, false)
+          return
         }
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
           aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as ConvertEncType, false);
-          if (aminoObj[camelKey] === null) delete aminoObj[camelKey];
+          if (aminoObj[camelKey] === null) delete aminoObj[camelKey]
         } else {
           if (newInput[key]?.length && typeof newInput[key] === "object") {
             aminoObj[camelKey] = newInput[key].map((newItem: any) =>
@@ -260,7 +257,7 @@ export const pruneAmino = (value: any, pruneMap: TypeUtils.SimpleMap<ConvertEncT
         if (Long.isLong(value) && value.isZero()) {
           delete newMsg[key];
         }
-        break;
+        break
       default:
         if (typeof value === "boolean" && !value) {
           delete newMsg[key];

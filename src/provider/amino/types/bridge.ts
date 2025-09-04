@@ -3,6 +3,7 @@ import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
+
 const TxTypes: TypeUtils.SimpleMap<string> = {
   WithdrawTokenTx: "bridge/MsgWithdrawToken",
   WithdrawAndExecuteTokenTx: "bridge/MsgExecuteFromCarbon",
@@ -21,6 +22,7 @@ const MsgWithdrawAndExecuteToken: AminoInit = {
     executionBytes: ConvertEncType.Uint8Array,
   },
 };
+
 
 const BridgeAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgWithdrawToken]: generateAminoType(MsgWithdrawToken),

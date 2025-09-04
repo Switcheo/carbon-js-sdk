@@ -15,7 +15,7 @@ export class ERC20Module extends BaseModule {
       coin,
       receiver: params.receiverAddress?.toLowerCase() ?? wallet.evmHexAddress.toLowerCase(),
       sender: params.senderAddress?.toLowerCase() ?? wallet.bech32Address.toLowerCase(),
-    });
+    })
 
     return await wallet.sendTx(
       {
@@ -34,7 +34,7 @@ export class ERC20Module extends BaseModule {
       amount: params.amount,
       receiver: params.receiverAddress?.toLowerCase() ?? wallet.bech32Address.toLowerCase(),
       sender: params.senderAddress?.toLowerCase() ?? wallet.bech32Address.toLowerCase(),
-    });
+    })
 
     return await wallet.sendTx(
       {

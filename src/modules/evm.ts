@@ -1,17 +1,11 @@
 import { Any, registry } from "@carbon-sdk/codec";
-import {
-  AccessListTx,
-  DynamicFeeTx,
-  LegacyTx,
-  MsgEthereumTx,
-  protobufPackage as evmTxProtobufPackage,
-} from "@carbon-sdk/codec/ethermint/evm/v1/tx";
+import { AccessListTx, DynamicFeeTx, LegacyTx, MsgEthereumTx, protobufPackage as evmTxProtobufPackage } from "@carbon-sdk/codec/ethermint/evm/v1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { ethers } from "ethers";
 import { accessListify, arrayify } from "ethers/lib/utils";
 import BaseModule from "./base";
 
-export type TxData = LegacyTx | AccessListTx | DynamicFeeTx;
+export type TxData = LegacyTx | AccessListTx | DynamicFeeTx
 
 export class EvmModule extends BaseModule {
   public async sendEvmTx(req: ethers.providers.TransactionRequest, opts?: CarbonTx.SignTxOpts) {
@@ -19,23 +13,20 @@ export class EvmModule extends BaseModule {
 
     const value = MsgEthereumTx.fromPartial({
       data: constructTxDataAny(req),
-    });
+    })
 
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgEthereumTx,
-        value,
-      },
-      opts
-    );
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgEthereumTx,
+      value,
+    }, opts);
   }
 }
 
-// Referenced from ethermint v0.21.0 Switcheo/ethermint/x/evm/types/msg.go
+// Referenced from ethermint v0.21.0 Switcheo/ethermint/x/evm/types/msg.go 
 export function constructTxDataAny(req: ethers.providers.TransactionRequest): Any {
-  const accessList = req?.accessList ? accessListify(req.accessList).length > 0 : false;
-  let txData: TxData = LegacyTx.fromPartial({});
-  let txType = "";
+  const accessList = req?.accessList ? accessListify(req.accessList).length > 0 : false
+  let txData: TxData = LegacyTx.fromPartial({})
+  let txType = ""
   if (!accessList) {
     txData = LegacyTx.fromPartial({
       nonce: req.nonce?.toString() ?? "0",
@@ -44,8 +35,8 @@ export function constructTxDataAny(req: ethers.providers.TransactionRequest): An
       gas: req.gasLimit?.toString() ?? "0",
       gasPrice: req.gasPrice?.toString() ?? "0",
       data: req.data ? arrayify(req.data) : undefined,
-    });
-    txType = "LegacyTx";
+    })
+    txType = 'LegacyTx';
   }
   if (accessList && req?.maxPriorityFeePerGas && req?.maxFeePerGas) {
     txData = DynamicFeeTx.fromPartial({
@@ -59,7 +50,7 @@ export function constructTxDataAny(req: ethers.providers.TransactionRequest): An
       data: req.data ? arrayify(req.data) : undefined,
       accesses: req.accessList ? accessListify(req.accessList) : undefined,
     });
-    txType = "DynamicFeeTx";
+    txType = 'DynamicFeeTx';
   }
   if (accessList) {
     txData = AccessListTx.fromPartial({
@@ -72,7 +63,7 @@ export function constructTxDataAny(req: ethers.providers.TransactionRequest): An
       data: req.data ? arrayify(req.data) : undefined,
       accesses: req.accessList ? accessListify(req.accessList) : undefined,
     });
-    txType = "AccessListTx";
+    txType = 'AccessListTx';
   }
   return registry.encodeAsAny({
     typeUrl: `/${evmTxProtobufPackage}.${txType}`,
@@ -115,3 +106,8 @@ export namespace EvmModule {
     cancunBlock: number;
   }
 }
+
+
+
+
+

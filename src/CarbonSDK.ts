@@ -51,15 +51,7 @@ import RainbowKitAccount from "./provider/rainbowKit/RainbowKitAccount";
 import { SWTHAddressOptions } from "./util/address";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
-import {
-  CarbonLedgerSigner,
-  CarbonSigner,
-  CarbonSignerTypes,
-  CarbonWallet,
-  CarbonWalletGenericOpts,
-  EvmWalletOpts,
-  RainbowKitWalletOpts,
-} from "./wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, EvmWalletOpts, RainbowKitWalletOpts } from "./wallet";
 import { GrantRequest, GrantType } from "./util/auth";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
@@ -98,8 +90,8 @@ export interface CarbonSDKInitOpts {
 }
 
 export interface OverrideConfig {
-  chainId: string;
-  evmChainId: string;
+  chainId: string,
+  evmChainId: string,
 }
 
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
@@ -165,7 +157,7 @@ class CarbonSDK {
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
     this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
-    this.gasFee = opts.gasFee;
+    this.gasFee = opts.gasFee
 
     this.tmClient = opts.tmClient;
     this.wallet = opts.wallet;
@@ -178,11 +170,9 @@ class CarbonSDK {
       if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
         const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
 
-        grpcClient =
-          opts.grpcQueryClient ??
-          new GrpcQueryClient(this.networkConfig.restUrl, {
-            transport,
-          });
+        grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.restUrl, {
+          transport,
+        });
       }
       carbonQueryClient = new CarbonQueryClient({
         tmClient: this.tmClient,
@@ -190,7 +180,7 @@ class CarbonSDK {
       });
     }
 
-    this.query = (opts.query ?? carbonQueryClient)!;
+    this.query = (opts.query ?? carbonQueryClient)!
     this.insights = opts.insights ?? new InsightsQueryClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
     this.hydrogen = opts.hydrogen ?? new HydrogenClient(this.networkConfig, this.token);
@@ -228,8 +218,7 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const tmClient: Tendermint37Client =
-      opts.tmClient ?? new (Tendermint37Client as any)(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
+    const tmClient: Tendermint37Client = opts.tmClient ?? new (Tendermint37Client as any)(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
     let chainId = networkConfig.chainId; // fallback chain ID
     let normalInit = true;
     try {
@@ -240,14 +229,7 @@ class CarbonSDK {
       normalInit = false;
     }
 
-    const sdk = new CarbonSDK({
-      network,
-      config: configOverride,
-      tmClient,
-      defaultTimeoutBlocks,
-      chainId,
-      useTmAbciQuery: opts.useTmAbciQuery,
-    });
+    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
 
     if (!normalInit) return sdk;
 
@@ -325,7 +307,7 @@ class CarbonSDK {
   public static async instanceWithMetamask(
     metamask: MetaMask,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
-    walletOpts?: CarbonWalletGenericOpts
+    walletOpts?: CarbonWalletGenericOpts,
   ) {
     const sdk = await CarbonSDK.instance(sdkOpts);
     return sdk.connectWithMetamask(metamask, walletOpts);
@@ -335,7 +317,7 @@ class CarbonSDK {
     rainbowKit: RainbowKitAccount,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     rainbowKitWalletOpts: RainbowKitWalletOpts,
-    walletOpts?: CarbonWalletGenericOpts
+    walletOpts?: CarbonWalletGenericOpts,
   ) {
     const sdk = await CarbonSDK.instance(sdkOpts);
     return sdk.connectWithRainbowKit(rainbowKit, rainbowKitWalletOpts, walletOpts);
@@ -354,7 +336,7 @@ class CarbonSDK {
     const fees = await this.getGasFee();
     const chainId = await this.query.chain.getChainId();
     this.chainId = chainId;
-    this.gasFee = fees;
+    this.gasFee = fees
     await this.token.initialize();
     if (this.wallet) {
       await this.wallet.initialize(this.query, fees);
@@ -366,7 +348,7 @@ class CarbonSDK {
   async getGasFee() {
     if (this.gasFee) return this.gasFee;
 
-    const queryClient = this.query;
+    const queryClient = this.query
     const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({
       pagination: PAGINATE_10K,
     });
@@ -385,7 +367,7 @@ class CarbonSDK {
       return result;
     }, {} as SimpleMap<BigNumber>);
 
-    return new GasFee(txGasCosts, txGasPrices);
+    return new GasFee(txGasCosts, txGasPrices)
   }
 
   public clone(): CarbonSDK {
@@ -417,7 +399,7 @@ class CarbonSDK {
         const overrideConfig: OverrideConfig = {
           chainId: this.chainId,
           evmChainId: this.evmChainId,
-        };
+        }
         const gasFee = await this.getGasFee();
         await wallet.initialize(this.query, gasFee, overrideConfig, opts);
       } catch (err) {
@@ -520,19 +502,19 @@ class CarbonSDK {
       bech32Prefix: this.networkConfig.Bech32Prefix,
     };
 
-    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt;
+    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt
 
-    const signMessageRequired = !evmWalletOpts?.publicKeyBase64 || noJwtProvided;
+    const signMessageRequired = !evmWalletOpts?.publicKeyBase64 || noJwtProvided
 
-    let pubKey = evmWalletOpts?.publicKeyBase64;
-    let message: string | undefined;
-    let signature: string | undefined;
+    let pubKey = evmWalletOpts?.publicKeyBase64
+    let message: string | undefined
+    let signature: string | undefined
 
     if (signMessageRequired) {
-      const result = await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth, opts?.authMessage);
-      pubKey = result.publicKey;
-      message = result.message;
-      signature = result.signature;
+      const result = await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth, opts?.authMessage)
+      pubKey = result.publicKey
+      message = result.message
+      signature = result.signature
     }
 
     const wallet = CarbonWallet.withMetamask(metamask, evmChainId, pubKey!, addressOptions, {
@@ -541,59 +523,56 @@ class CarbonSDK {
       config: this.configOverride,
     });
 
+
     if (noJwtProvided) {
       const authRequest: GrantRequest = {
         grant_type: GrantType.SignatureEth,
         message: message!,
-        public_key: Buffer.from(pubKey!, "base64").toString("hex"),
+        public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
         signature: signature!,
-      };
-      await wallet.reloadJwtToken(authRequest, opts?.authMessage);
+      }
+      await wallet.reloadJwtToken(authRequest, opts?.authMessage)
     }
 
     return this.connect(wallet, opts);
   }
 
-  public async connectWithRainbowKit(
-    rainbowKit: RainbowKitAccount,
-    rainbowKitWalletOpts: RainbowKitWalletOpts,
-    opts?: CarbonWalletGenericOpts
-  ) {
+  public async connectWithRainbowKit(rainbowKit: RainbowKitAccount, rainbowKitWalletOpts: RainbowKitWalletOpts, opts?: CarbonWalletGenericOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix,
     };
 
-    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt;
+    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt
 
-    const signMessageRequired = !rainbowKitWalletOpts?.publicKeyBase64 || noJwtProvided;
+    const signMessageRequired = !rainbowKitWalletOpts?.publicKeyBase64 || noJwtProvided
 
-    let pubKey = rainbowKitWalletOpts?.publicKeyBase64;
-    let message: string | undefined;
-    let signature: string | undefined;
+    let pubKey = rainbowKitWalletOpts?.publicKeyBase64
+    let message: string | undefined
+    let signature: string | undefined
 
     if (signMessageRequired) {
-      const result = await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth, opts?.authMessage);
-      pubKey = result.publicKey;
-      message = result.message;
-      signature = result.signature;
+      const result = await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth, opts?.authMessage)
+      pubKey = result.publicKey
+      message = result.message
+      signature = result.signature
     }
 
     const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, pubKey!, addressOptions, rainbowKitWalletOpts.walletProvider, {
       ...opts,
       network: this.network,
       config: this.configOverride,
-    });
+    })
 
     if (noJwtProvided) {
       const authRequest: GrantRequest = {
         grant_type: GrantType.SignatureEth,
         message: message!,
-        public_key: Buffer.from(pubKey!, "base64").toString("hex"),
+        public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
         signature: signature!,
-      };
-      await wallet.reloadJwtToken(authRequest, opts?.authMessage);
+      }
+      await wallet.reloadJwtToken(authRequest, opts?.authMessage)
     }
 
     return this.connect(wallet, opts);
@@ -642,6 +621,7 @@ class CarbonSDK {
   }
 
   public static parseNetwork = NetworkUtils.parseNetwork;
+
 }
 
 export class ConnectedCarbonSDK extends CarbonSDK {

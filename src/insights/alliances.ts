@@ -11,10 +11,10 @@ export interface AlliancesStake {
     stakedValue: number;
     totalStakedValue: number;
     height: number;
-  }[];
+  }[],
 }
 
-export interface QueryGetAlliancesStakeRequest extends QueryByTimeRequest {}
+export interface QueryGetAlliancesStakeRequest extends QueryByTimeRequest { }
 
 export interface QueryGetAlliancesStakeResponse {
   entries: AlliancesStake[];
@@ -32,10 +32,10 @@ export interface AlliancesRewards {
     rewardsValue: number;
     totalRewardsValue: number;
     height: number;
-  }[];
+  }[]
 }
 
-export interface QueryGetAlliancesRewardsRequest extends QueryByTimeRequest {}
+export interface QueryGetAlliancesRewardsRequest extends QueryByTimeRequest { }
 
 export interface QueryGetAlliancesRewardsResponse {
   entries: AlliancesRewards[];

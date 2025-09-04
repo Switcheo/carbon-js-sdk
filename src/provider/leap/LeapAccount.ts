@@ -34,22 +34,22 @@ class LeapAccount {
     const signDirect = async (signerAddress: string, doc: SignDoc) => {
       return await signTransactionWrapper(async () => {
         const signOpts = { preferNoSetFee: true };
-        const { bodyBytes, authInfoBytes, chainId, accountNumber } = doc;
+        const { bodyBytes, authInfoBytes, chainId, accountNumber } = doc
         const parsedDoc: Models.Tx.SignDoc = {
           bodyBytes,
           authInfoBytes,
           chainId,
           accountNumber: new Long(Number(accountNumber)),
-        };
+        }
         return await leap!.signDirect(chainId, signerAddress, parsedDoc, signOpts);
-      });
+      })
     };
 
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
       return await signTransactionWrapper(async () => {
         const signOpts = { preferNoSetFee: true };
         return await leap!.signAmino(chainId, signerAddress, doc, signOpts);
-      });
+      })
     };
 
     const getAccounts = async () => {
@@ -63,37 +63,38 @@ class LeapAccount {
       ];
     };
 
-    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => {
-      // eslint-disable-line
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => { // eslint-disable-line
       try {
         // workaround for version mismatch in cosmos-kit/leap and leap-extension
-        const leapInterface = leap as any;
-        if (typeof (leapInterface as any).signEthereum === "function") {
-          const unsignedTx = await populateUnsignedEvmTranscation(api, req);
-          const signedTx = (await leapInterface!.signEthereum(
+        const leapInterface = leap as any
+        if (typeof (leapInterface as any).signEthereum === 'function') {
+
+          const unsignedTx = await populateUnsignedEvmTranscation(api, req)
+          const signedTx = await leapInterface!.signEthereum(
             // carbon chain id
-            api.wallet?.getChainId() ?? "",
+            api.wallet?.getChainId() ?? '',
             // cosmos address
-            api.wallet?.bech32Address ?? "",
+            api.wallet?.bech32Address ?? '',
             JSON.stringify(unsignedTx),
-            EthSignType.TRANSACTION
-          )) as Uint8Array;
-          const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx);
-          const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl);
-          return (await provider.sendTransaction(rlpEncodedHex)).hash;
+            EthSignType.TRANSACTION,
+          ) as Uint8Array
+          const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
+          const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+          return (await provider.sendTransaction(rlpEncodedHex)).hash
         } else {
-          throw new Error("signing not available");
+          throw new Error("signing not available")
         }
-      } catch (error) {
-        console.error(error);
-        throw parseEvmError(error as Error);
       }
-    };
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error))
+      }
+    }
 
     const signMessage = async (address: string, message: string): Promise<string> => {
-      const { signature } = await leap.signArbitrary(chainId, address, message);
-      return Buffer.from(signature, "base64").toString("hex");
-    };
+      const { signature } = await leap.signArbitrary(chainId, address, message)
+      return Buffer.from(signature, 'base64').toString('hex')
+    }
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
@@ -110,7 +111,7 @@ class LeapAccount {
       return await signTransactionWrapper(async () => {
         const signOpts = { preferNoSetFee: true };
         return await leap!.signAmino(chainId, signerAddress, doc, signOpts);
-      });
+      })
     };
 
     const getAccounts = async () => {
@@ -124,36 +125,38 @@ class LeapAccount {
       ];
     };
 
-    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => {
-      // eslint-disable-line
+
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => { // eslint-disable-line
       try {
-        const leapInterface = leap as any;
-        if (typeof (leapInterface as any).signEthereum === "function") {
-          const unsignedTx = await populateUnsignedEvmTranscation(api, req);
-          const signedTx = (await leapInterface!.signEthereum(
+        const leapInterface = leap as any
+        if (typeof (leapInterface as any).signEthereum === 'function') {
+
+          const unsignedTx = await populateUnsignedEvmTranscation(api, req)
+          const signedTx = await leapInterface!.signEthereum(
             // carbon chain id
-            api.wallet?.getChainId() ?? "",
+            api.wallet?.getChainId() ?? '',
             // cosmos address
-            api.wallet?.bech32Address ?? "",
+            api.wallet?.bech32Address ?? '',
             JSON.stringify(unsignedTx),
-            EthSignType.TRANSACTION
-          )) as Uint8Array;
-          const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx);
-          const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl);
-          return (await provider.sendTransaction(rlpEncodedHex)).hash;
+            EthSignType.TRANSACTION,
+          ) as Uint8Array
+          const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
+          const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+          return (await provider.sendTransaction(rlpEncodedHex)).hash
         } else {
-          throw new Error("signing not available");
+          throw new Error("signing not available")
         }
-      } catch (error) {
-        console.error(error);
-        throw parseEvmError(error as Error);
       }
-    };
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error))
+      }
+    }
 
     const signMessage = async (address: string, message: string): Promise<string> => {
-      const { signature } = await leap.signArbitrary(chainId, address, message);
-      return Buffer.from(signature, "base64").toString("hex");
-    };
+      const { signature } = await leap.signArbitrary(chainId, address, message)
+      return Buffer.from(signature, 'base64').toString('hex')
+    }
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
@@ -222,7 +225,7 @@ class LeapAccount {
   }
 }
 
-namespace LeapAccount {}
+namespace LeapAccount { }
 
 export interface LeapExtended extends Leap {
   experimentalSuggestChain(chainInfo: ChainInfo): Promise<void>;

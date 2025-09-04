@@ -69,7 +69,7 @@ const CreateGroup: AminoValueMap = {
       oraclieId: ConvertEncType.Long,
     },
   },
-};
+}
 
 const UpdateGroup: AminoValueMap = {
   value: {
@@ -81,7 +81,7 @@ const UpdateGroup: AminoValueMap = {
       },
     },
   },
-};
+}
 
 const RegisterToGroup: AminoValueMap = {
   value: {
@@ -91,7 +91,7 @@ const RegisterToGroup: AminoValueMap = {
       denom: ConvertEncType.Long,
     },
   },
-};
+}
 
 const DeregisterFromGroup: AminoValueMap = {
   value: {
@@ -101,7 +101,7 @@ const DeregisterFromGroup: AminoValueMap = {
       denom: ConvertEncType.Long,
     },
   },
-};
+}
 
 const UpdateGroupConfig: AminoValueMap = {
   value: {
@@ -113,7 +113,7 @@ const UpdateGroupConfig: AminoValueMap = {
       },
     },
   },
-};
+}
 
 const UpdatePool: AminoValueMap = {
   value: {
@@ -149,6 +149,7 @@ const SetRewardWeights: AminoValueMap = {
     },
   },
 };
+
 
 const UpdateMarket: AminoValueMap = {
   value: {

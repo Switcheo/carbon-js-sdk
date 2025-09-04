@@ -1006,7 +1006,7 @@ export namespace AdminModule {
   }
 
   export interface GroupName {
-    name: string;
+    name: string
   }
 
   export interface RegisterDeregisterToGroupParams {
@@ -1022,7 +1022,7 @@ export namespace AdminModule {
   }
 
   export interface IsGroupActive {
-    isActive: boolean;
+    isActive: boolean
   }
 }
 

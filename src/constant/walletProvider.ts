@@ -7,5 +7,5 @@ export enum ProviderAgent {
   // For legacy metamask
   Metamask = "metamask",
   Web3Auth = "web3auth",
-  Rainbow = "rainbow",
+  Rainbow = 'rainbow',
 }

@@ -32,23 +32,24 @@ class KeplrAccount {
 
   static createKeplrSigner(keplr: Keplr, chainInfo: ChainInfo, account: Key): CarbonSigner {
     const signDirect = async (signerAddress: string, doc: SignDoc) => {
-      return await signTransactionWrapper(async () => {
-        const signOpts = { preferNoSetFee: true };
-        const { bodyBytes, authInfoBytes, chainId, accountNumber } = doc;
-        const parsedDoc: Models.Tx.SignDoc = {
-          bodyBytes,
-          authInfoBytes,
-          chainId,
-          accountNumber: new Long(Number(accountNumber)),
-        };
-        return await keplr!.signDirect(chainInfo.chainId, signerAddress, parsedDoc, signOpts);
-      });
+      return await signTransactionWrapper(
+        async () => {
+          const signOpts = { preferNoSetFee: true };
+          const { bodyBytes, authInfoBytes, chainId, accountNumber } = doc
+          const parsedDoc: Models.Tx.SignDoc = {
+            bodyBytes,
+            authInfoBytes,
+            chainId,
+            accountNumber: new Long(Number(accountNumber)),
+          }
+          return await keplr!.signDirect(chainInfo.chainId, signerAddress, parsedDoc, signOpts);
+        })
     };
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
       return await signTransactionWrapper(async () => {
         const signOpts = { preferNoSetFee: true };
         return await keplr!.signAmino(chainInfo.chainId, signerAddress, doc, signOpts);
-      });
+      })
     };
 
     const getAccounts = async () => [
@@ -61,28 +62,29 @@ class KeplrAccount {
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
-        const unsignedTx = await populateUnsignedEvmTranscation(api, req);
+        const unsignedTx = await populateUnsignedEvmTranscation(api, req)
         const signedTx = await keplr!.signEthereum(
           // carbon chain id
-          api.wallet?.getChainId() ?? "",
+          api.wallet?.getChainId() ?? '',
           // cosmos address
-          api.wallet?.bech32Address ?? "",
+          api.wallet?.bech32Address ?? '',
           JSON.stringify(unsignedTx),
-          EthSignType.TRANSACTION
-        );
-        const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx);
-        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl);
-        return (await provider.sendTransaction(rlpEncodedHex)).hash;
-      } catch (error) {
-        console.error(error);
-        throw parseEvmError(error as Error);
+          EthSignType.TRANSACTION,
+        )
+        const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
+        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+        return (await provider.sendTransaction(rlpEncodedHex)).hash
       }
-    };
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error))
+      }
+    }
     const signMessage = async (address: string, message: string): Promise<string> => {
-      const chainId = chainInfo.chainId;
-      const { signature } = await keplr.signArbitrary(chainId, address, message);
-      return Buffer.from(signature, "base64").toString("hex");
-    };
+      const chainId = chainInfo.chainId
+      const { signature } = await keplr.signArbitrary(chainId, address, message)
+      return Buffer.from(signature, 'base64').toString('hex')
+    }
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
@@ -110,30 +112,32 @@ class KeplrAccount {
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
-        const unsignedTx = await populateUnsignedEvmTranscation(api, req);
+        const unsignedTx = await populateUnsignedEvmTranscation(api, req)
         const signedTx = await keplr!.signEthereum(
           // carbon chain id
-          api.wallet?.getChainId() ?? "",
+          api.wallet?.getChainId() ?? '',
           // cosmos address
-          api.wallet?.bech32Address ?? "",
+          api.wallet?.bech32Address ?? '',
           JSON.stringify(unsignedTx),
-          EthSignType.TRANSACTION
-        );
+          EthSignType.TRANSACTION,
+        )
         // const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`
-        const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx);
-        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl);
-        return (await provider.sendTransaction(rlpEncodedHex)).hash;
-      } catch (error) {
-        console.error(error);
-        throw parseEvmError(error as Error);
+        const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
+        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+        return (await provider.sendTransaction(rlpEncodedHex)).hash
       }
-    };
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error))
+      }
+    }
 
     const signMessage = async (address: string, message: string): Promise<string> => {
-      const chainId = chainInfo.chainId;
-      const { signature } = await keplr.signArbitrary(chainId, address, message);
-      return Buffer.from(signature, "base64").toString("hex");
-    };
+      const chainId = chainInfo.chainId
+      const { signature } = await keplr.signArbitrary(chainId, address, message)
+      return Buffer.from(signature, 'base64').toString('hex')
+    }
+
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
@@ -195,19 +199,19 @@ class KeplrAccount {
     const isMainnet = config.network === Network.MainNet;
 
     const chainId = config.chainId;
-    const url = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json";
-    let keplrChainInfo;
+    const url = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json"
+    let keplrChainInfo
     try {
       keplrChainInfo = await (await FetchUtils.fetch(url)).json();
     } catch (error) {
-      console.warn(error);
+      console.warn(error)
     }
 
     if (isMainnet && keplrChainInfo) {
       if (keplrChainInfo.nodeProvider) {
         delete keplrChainInfo.nodeProvider;
       }
-      return keplrChainInfo as ChainInfo;
+      return keplrChainInfo as ChainInfo
     }
 
     const feeCurrencies = await this.queryFeeCurrencies(configProvider);
@@ -224,7 +228,7 @@ class KeplrAccount {
       rpc: config.tmRpcUrl,
       chainName: `Carbon (${config.network})`,
       chainId: chainId,
-      ...(isMainnet && {
+      ...isMainnet && ({
         evm: {
           chainId: Number(parseChainId(CarbonEvmChainIDs[config.network])),
           rpc: config.evmJsonRpcUrl,
@@ -244,15 +248,19 @@ class KeplrAccount {
 
   static async signPublicKeyMergeAccount(publicKey: string, address: string, chainId: string, keplr: Keplr) {
     const message = `${PUBLIC_KEY_SIGNING_TEXT}${publicKey}`;
-    return KeplrAccount.signArbitrary(address, chainId, message, keplr);
+    return KeplrAccount.signArbitrary(address, chainId, message, keplr)
   }
 
   static async signArbitrary(signerAddress: string, chainId: string, message: string, keplr: Keplr) {
-    const signature = await keplr.signArbitrary(chainId, signerAddress, message);
-    return Buffer.from(signature.signature, "base64").toString("hex");
+    const signature = await keplr.signArbitrary(
+      chainId,
+      signerAddress,
+      message,
+    )
+    return Buffer.from(signature.signature, 'base64').toString('hex')
   }
 }
 
-namespace KeplrAccount {}
+namespace KeplrAccount { }
 
 export default KeplrAccount;

@@ -250,7 +250,7 @@ export const SWTHAddress: SWTHAddressType = {
 type ETHAddressType = AddressBuilder<AddressOptions> & {
   encode(hash: string | Buffer, opts?: SWTHAddressOptions): string;
   publicKeyToBech32Address(publicKey: string | Buffer, opts?: SWTHAddressOptions): string;
-};
+}
 
 export const ETHAddress: ETHAddressType = {
   coinType: (): number => {
@@ -268,8 +268,8 @@ export const ETHAddress: ETHAddressType = {
   },
 
   publicKeyToBech32Address: (publicKey: string | Buffer, opts?: SWTHAddressOptions): string => {
-    const hexAddress = ETHAddress.publicKeyToAddress(publicKey);
-    return ETHAddress.encode(hexAddress.split("0x")[1], opts);
+    const hexAddress = ETHAddress.publicKeyToAddress(publicKey)
+    return ETHAddress.encode(hexAddress.split('0x')[1], opts)
   },
 
   encodePublicKey: (unencodedPublicKey: string | Buffer): Buffer => {

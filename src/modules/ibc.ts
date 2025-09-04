@@ -1,18 +1,7 @@
 import { Token } from "@carbon-sdk/codec/Switcheo/carbon/coin/token";
 import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
-import {
-  Asset,
-  ChainRegistryItem,
-  CosmosChainsObj,
-  DenomUnit,
-  ExtendedChainInfo,
-  FeeToken,
-  IBCAddress,
-  cw20TokenRegex,
-  ibcNetworkRegex,
-  ibcTransferChannelRegex,
-} from "@carbon-sdk/constant";
+import { Asset, ChainRegistryItem, CosmosChainsObj, DenomUnit, ExtendedChainInfo, FeeToken, IBCAddress, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";
 import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency, Currency } from "@keplr-wallet/types";
@@ -55,7 +44,7 @@ export class IBCModule extends BaseModule {
         typeUrl: CarbonTx.Types.MsgTransfer,
         value,
       },
-      msgOpts
+      msgOpts,
     );
   }
 
@@ -71,13 +60,13 @@ export class IBCModule extends BaseModule {
       },
       sender: params.sender ?? wallet.bech32Address,
       receiver: params.receiver,
-      ...(params.timeoutHeight && {
+      ...params.timeoutHeight && ({
         timeoutHeight: {
           revisionHeight: new Long(params.timeoutHeight.revisionHeight.toNumber()),
           revisionNumber: new Long(params.timeoutHeight.revisionNumber.toNumber()),
         },
       }),
-      ...(params.timeoutTimestamp && {
+      ...params.timeoutTimestamp && ({
         timeoutTimestamp: params.timeoutTimestamp.toNumber(),
       }),
       memo: params.memo,
@@ -88,7 +77,7 @@ export class IBCModule extends BaseModule {
         typeUrl: CarbonTx.Types.MsgTransfer,
         value,
       },
-      msgOpts
+      msgOpts,
     );
   }
 
@@ -97,8 +86,9 @@ export class IBCModule extends BaseModule {
 
     const ibcBridges = tokenClient.bridges.ibc;
     const chainsResponse = await fetch(`https://chains.cosmos.directory/`);
-    const chainsData = (await chainsResponse.json()) as CosmosChainsObj;
+    const chainsData = (await chainsResponse.json() as CosmosChainsObj);
     const chainInfoMap: TypeUtils.SimpleMap<ExtendedChainInfo> = {};
+
 
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
       const ibcBridge = ibcBridges[ibc];
@@ -106,7 +96,7 @@ export class IBCModule extends BaseModule {
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
       const chainData = chainsData.chains.find((d) => d.chain_id === chainId);
       let chainInfo: ChainInfo | undefined = await this.getChainInfo(chainName);
-
+      
       if (chainInfo === undefined) {
         const fallbackChainInfo = await this.getAssembledChainInfo(chainId, chainData);
         chainInfo = fallbackChainInfo;
@@ -133,7 +123,7 @@ export class IBCModule extends BaseModule {
     for (const key in denomTraces) {
       const denomTrace = denomTraces[key];
       const denom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
-      const token = tokenClient.tokenForDenom(denom);
+      const token = tokenClient.tokenForDenom(denom)
       if (!token) continue;
 
       const isChainNativeToken = denomTrace.path.split("/").length === 2;
@@ -142,12 +132,10 @@ export class IBCModule extends BaseModule {
       if (chainId && chainInfoMap[chainId]) {
         const cw20RegexArr = denomTrace.baseDenom.match(cw20TokenRegex);
         const coinGeckoId = tokenClient.geckoTokenNames?.[denom] ?? tokenClient.geckoTokenNames?.[denomTrace.baseDenom];
-        const dstDenom = isChainNativeToken
-          ? denomTrace.baseDenom.replace(/:/g, "/")
-          : IBCUtils.makeIBCMinimalDenom(denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, ""), denomTrace.baseDenom);
+        const dstDenom = isChainNativeToken ? denomTrace.baseDenom.replace(/:/g, '/') : IBCUtils.makeIBCMinimalDenom(denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, ''), denomTrace.baseDenom);
         const chainInfo = chainInfoMap[chainId];
         chainInfo.minimalDenomMap[token.denom] = dstDenom;
-        const existingCurrencyIndex = chainInfo.currencies.findIndex((c) => c.coinMinimalDenom === dstDenom);
+        const existingCurrencyIndex = chainInfo.currencies.findIndex(c => c.coinMinimalDenom === dstDenom);
         if (existingCurrencyIndex !== -1) {
           continue;
         }
@@ -165,7 +153,7 @@ export class IBCModule extends BaseModule {
       coinMinimalDenom: coinMinimalDenom,
       coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
       coinGeckoId: coinGeckoId,
-      ...(cw20RegexArr?.length && {
+      ...cw20RegexArr?.length && ({
         type: "cw20",
         contractAddress: cw20RegexArr[1] ?? "",
       }),
@@ -173,11 +161,10 @@ export class IBCModule extends BaseModule {
     return appCurrency as AppCurrency;
   }
 
+
   async getChainInfo(chainName: string): Promise<ChainInfo | undefined> {
-    if (!chainName || chainName === "mainnet") return undefined;
-    const chainInfoResponse = await fetch(
-      `https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`
-    );
+    if (!chainName || chainName === "mainnet") return undefined
+    const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`)
     if (!chainInfoResponse.ok) {
       if (chainInfoResponse.status === 404) {
         return undefined;
@@ -191,13 +178,9 @@ export class IBCModule extends BaseModule {
     const defaultChainInfo = IBCUtils.EmbedChainInfos[chainId];
     if (chainData) {
       try {
-        const chainInfoResponse = await fetch(
-          `https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/chain.json`
-        );
+        const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/chain.json`);
         const chainInfoJson = await chainInfoResponse.json();
-        const chainAssetListResponse = await fetch(
-          `https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/assetlist.json`
-        );
+        const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/assetlist.json`);
         const assetListJson = await chainAssetListResponse.json();
         const features: string[] = [];
         if (chainData.cosmwasm_enabled) {
@@ -205,7 +188,8 @@ export class IBCModule extends BaseModule {
         }
 
         // Extract the staking currency denomination from chainInfoJson (min. denom)
-        const stakingCurrencyDenom = chainInfoJson.staking.staking_tokens?.[0]?.denom || "";
+        const stakingCurrencyDenom = chainInfoJson.staking.staking_tokens?.[0]?.denom || '';
+
 
         // Find the asset that matches the stakingCurrencyDenom
         const stakingAsset = assetListJson.assets.find((asset: Asset) => {
@@ -214,20 +198,21 @@ export class IBCModule extends BaseModule {
 
         // Find the highest denom unit
         const maxExponentDenomUnit = stakingAsset.denom_units.reduce((prev: DenomUnit, current: DenomUnit) => {
-          return prev.exponent > current.exponent ? prev : current;
+          return (prev.exponent > current.exponent) ? prev : current;
         });
 
         const stakeCurrency: Currency = {
           coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
           coinMinimalDenom: stakingCurrencyDenom,
           coinDecimals: maxExponentDenomUnit.exponent,
-          coinGeckoId: stakingAsset?.coingecko_id ?? "",
+          coinGeckoId: stakingAsset?.coingecko_id ?? '',
         };
+
 
         const currencies = assetListJson.assets.map((asset: Asset) => {
           // Find the denom_unit with the maximum exponent
           const maxExponentDenomUnit = asset.denom_units.reduce((prev, current) => {
-            return prev.exponent > current.exponent ? prev : current;
+            return (prev.exponent > current.exponent) ? prev : current;
           });
           return {
             coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
@@ -247,7 +232,7 @@ export class IBCModule extends BaseModule {
           const correspondingAsset = assetListJson.assets.find((asset: Asset) => asset.base === feeToken.denom);
           // Find the denom_unit with the maximum exponent
           const maxExponentDenomUnit = correspondingAsset.denom_units.reduce((prev: DenomUnit, current: DenomUnit) => {
-            return prev.exponent > current.exponent ? prev : current;
+            return (prev.exponent > current.exponent) ? prev : current;
           });
           return {
             coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
@@ -267,18 +252,23 @@ export class IBCModule extends BaseModule {
           rest: defaultChainInfo.rest ?? chainInfoJson.apis.rest[0].address,
           chainId: chainInfoJson.chain_id,
           chainName: chainInfoJson.chain_name,
-          bip44: {
+          bip44:
+          {
             coinType: chainInfoJson.slip44,
           },
           bech32Config: IBCAddress.defaultBech32Config(chainInfoJson.bech32_prefix),
           stakeCurrency: stakeCurrency,
           currencies: currencies,
           feeCurrencies: feeCurrencies,
-          features: ["ibc-transfer", "ibc-go"],
+          features: [
+            "ibc-transfer",
+            "ibc-go",
+          ],
         };
       } catch (error) {
         return defaultChainInfo;
       }
+
     } else {
       return defaultChainInfo;
     }

@@ -64,19 +64,19 @@ export class SubAccountModule extends BaseModule {
 export namespace SubAccountModule {
   export interface CreateSubAccountParams {
     subAddress: string;
-    mainAddress: string;
-    role: "trading-fee-delegate" | "oracle-delegate";
+    mainAddress: string,
+    role: "trading-fee-delegate" | "oracle-delegate",
   }
 
   export interface ActivateSubAccountParams {
     mainAddress: string;
     subAddress: string;
-    role: "trading-fee-delegate" | "oracle-delegate";
+    role: "trading-fee-delegate" | "oracle-delegate",
   }
 
   export interface RemoveSubAccountParams {
     mainAddress: string;
     subAddress: string;
-    role: "trading-fee-delegate" | "oracle-delegate";
+    role: "trading-fee-delegate" | "oracle-delegate",
   }
 }

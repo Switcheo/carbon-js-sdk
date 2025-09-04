@@ -12,6 +12,7 @@ const MsgUpdateParams: AminoInit = {
   valueMap: {},
 };
 
+
 const FeeMarketAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateParams]: generateAminoType(MsgUpdateParams),
 };
