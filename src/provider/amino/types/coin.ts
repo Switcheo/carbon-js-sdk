@@ -23,12 +23,12 @@ const MsgMintToken: AminoInit = {
 const MsgDepositToGroup: AminoInit = {
   aminoType: TxTypes.DepositToGroup,
   valueMap: {},
-}
+};
 
 const MsgWithdrawFromGroup: AminoInit = {
   aminoType: TxTypes.WithdrawFromGroup,
   valueMap: {},
-}
+};
 
 const CoinAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgWithdraw]: generateAminoType(MsgWithdraw),

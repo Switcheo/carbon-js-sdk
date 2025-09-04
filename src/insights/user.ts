@@ -65,7 +65,6 @@ export interface RawUserFundings {
   amount: string;
 }
 
-
 export interface RawFundingBreakdown {
   market: string;
   amount: string;
@@ -80,21 +79,21 @@ export interface QueryGetUserProfileResponse {
   entries: Profile;
 }
 
-export interface QueryGetActiveAccountsRequest extends QueryByTimeRequest { }
+export interface QueryGetActiveAccountsRequest extends QueryByTimeRequest {}
 
 export interface QueryGetActiveAccountsResponse {
   entries: ActiveAccounts[];
   meta: TimeMeta;
 }
 
-export interface QueryGetUserGrowthRequest extends QueryByTimeRequest { }
+export interface QueryGetUserGrowthRequest extends QueryByTimeRequest {}
 
 export interface QueryGetUserGrowthResponse {
   entries: UserGrowth[];
   meta: TimeMeta;
 }
 
-export interface QueryGetTotalUsersRequest extends QueryByTimeRequest { }
+export interface QueryGetTotalUsersRequest extends QueryByTimeRequest {}
 
 export interface QueryGetTotalUsersResponse {
   entries: TotalUser[];
@@ -105,7 +104,7 @@ export interface QueryGetUserVolumePathParams {
   address: string;
 }
 
-export interface QueryGetUserVolumeQueryParams extends QueryByTimeRequest { }
+export interface QueryGetUserVolumeQueryParams extends QueryByTimeRequest {}
 
 export interface QueryGetUserVolumeResponse {
   entries: UserVolume[];
@@ -116,7 +115,7 @@ export interface QueryGetUserPnlPathParams {
   address: string;
 }
 
-export interface QueryGetUserPnlQueryParams extends QueryByTimeRequest { }
+export interface QueryGetUserPnlQueryParams extends QueryByTimeRequest {}
 
 export interface QueryGetUserPnlResponse {
   pnl: string;
@@ -127,7 +126,7 @@ export interface QueryGetUserBalanceGraphPathParams {
   address: string;
 }
 
-export interface QueryGetUserBalanceGraphQueryParams extends QueryByTimeRequest { }
+export interface QueryGetUserBalanceGraphQueryParams extends QueryByTimeRequest {}
 
 export interface QueryGetUserBalanceGraphResponse {
   entries: RawUserBalanceGraphCoordinate[];
@@ -138,7 +137,7 @@ export interface QueryGetUserPnlGraphPathParams {
   address: string;
 }
 
-export interface QueryGetUserPnlGraphQueryParams extends QueryByTimeRequest { }
+export interface QueryGetUserPnlGraphQueryParams extends QueryByTimeRequest {}
 
 export interface QueryGetUserPnlGraphResponse {
   entries: RawUserPnlGraphCoordinate[];
@@ -149,7 +148,7 @@ export interface QueryGetUserFundingsPathParams {
   address: string;
 }
 
-export interface QueryGetUserFundingsQueryParams extends QueryByTimeRequest { }
+export interface QueryGetUserFundingsQueryParams extends QueryByTimeRequest {}
 
 export interface QueryGetUserFundingsResponse {
   entries: RawUserFundings[];
@@ -160,7 +159,7 @@ export interface QueryGetFundingBreakdownChartPathParams {
   address: string;
 }
 
-export interface QueryGetFundingBreakdownChartQueryParams extends QueryByTimeRequest { }
+export interface QueryGetFundingBreakdownChartQueryParams extends QueryByTimeRequest {}
 
 export interface QueryGetFundingBreakdownChartResponse {
   paid: RawFundingBreakdown[];
@@ -169,10 +168,10 @@ export interface QueryGetFundingBreakdownChartResponse {
 }
 
 export interface ConnectedWalletParams {
-  address: string,
-  walletType: string,
+  address: string;
+  walletType: string;
 }
 
 export interface ConnectedWalletResponse {
-  status: string
+  status: string;
 }

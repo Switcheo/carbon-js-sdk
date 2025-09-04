@@ -1,9 +1,4 @@
-import {
-  isJsonRpcErrorResponse,
-  JsonRpcRequest,
-  JsonRpcSuccessResponse,
-  parseJsonRpcResponse,
-} from "@cosmjs/json-rpc";
+import { isJsonRpcErrorResponse, JsonRpcRequest, JsonRpcSuccessResponse, parseJsonRpcResponse } from "@cosmjs/json-rpc";
 
 import { http } from "@cosmjs/tendermint-rpc/build/rpcclients/http";
 import { HttpEndpoint } from "@cosmjs/tendermint-rpc/build/rpcclients/httpclient";
@@ -48,7 +43,7 @@ class BatchQueryClient implements RpcClient {
       this.url = endpoint.url;
       this.headers = endpoint.headers;
     }
-    this.timer = (setInterval(() => this.tick(), options.dispatchInterval)) as unknown as NodeJS.Timer;
+    this.timer = setInterval(() => this.tick(), options.dispatchInterval) as unknown as NodeJS.Timer;
     this.validate();
   }
 
@@ -69,11 +64,7 @@ class BatchQueryClient implements RpcClient {
   }
 
   private validate(): void {
-    if (
-      !this.options.batchSizeLimit ||
-      !Number.isSafeInteger(this.options.batchSizeLimit) ||
-      this.options.batchSizeLimit < 1
-    ) {
+    if (!this.options.batchSizeLimit || !Number.isSafeInteger(this.options.batchSizeLimit) || this.options.batchSizeLimit < 1) {
       throw new Error("batchSizeLimit must be a safe integer >= 1");
     }
   }
@@ -114,7 +105,7 @@ class BatchQueryClient implements RpcClient {
           if (!req) return;
           req.reject(error);
         }
-      },
+      }
     );
   }
 }

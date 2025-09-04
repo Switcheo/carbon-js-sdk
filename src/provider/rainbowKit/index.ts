@@ -1,1 +1,1 @@
-export { default as RainbowKitAccount } from './RainbowKitAccount'
+export { default as RainbowKitAccount } from "./RainbowKitAccount";

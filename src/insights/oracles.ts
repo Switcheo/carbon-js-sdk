@@ -14,7 +14,7 @@ export interface QueryGetOraclesPriceRequest extends QueryByTimeRequest {
 export interface QueryGetOraclesPriceResponse {
   entries: {
     timestamp: string;
-    tokens: OraclesPrice[]
+    tokens: OraclesPrice[];
   }[];
   meta: TimeMeta;
 }

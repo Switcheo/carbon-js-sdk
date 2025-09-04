@@ -60,7 +60,7 @@ class InsightsQueryClient {
   async Inflation(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetInflation>> {
     const request = this.apiManager.path("chain/inflation");
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetInflation>
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetInflation>;
   }
 
   // User api
@@ -93,20 +93,20 @@ class InsightsQueryClient {
     query: Insights.QueryGetUserVolumeQueryParams
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserVolumeResponse>> {
     const request = this.apiManager.path("user/volume", req, query);
-    const response = await request.get()
-    const rawEntries = response.data.result.entries as Insights.RawUserVolume[]
-    const meta = response.data.result.meta as Insights.TimeMeta
-    const parsedEntries = rawEntries.map(entry => ({
+    const response = await request.get();
+    const rawEntries = response.data.result.entries as Insights.RawUserVolume[];
+    const meta = response.data.result.meta as Insights.TimeMeta;
+    const parsedEntries = rawEntries.map((entry) => ({
       lastHeight: entry.lastHeight,
       time: dayjs(entry.time),
       volumeValue: new BigNumber(entry.volumeValue),
-    }))
+    }));
     const parsedMeta = {
       from: dayjs(meta.from),
       until: dayjs(meta.until),
       interval: meta.interval,
-    }
-    return { result: { entries: parsedEntries, meta: parsedMeta } }
+    };
+    return { result: { entries: parsedEntries, meta: parsedMeta } };
   }
 
   async TotalUsers(
@@ -202,34 +202,22 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPerpPoolHistoryResponse>;
   }
 
-  async PerpPoolApy(
-    query: Insights.QueryVaultAPY
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>> {
+  async PerpPoolApy(query: Insights.QueryVaultAPY): Promise<Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>> {
     const routeParams = { id: query.id };
-    const request = this.apiManager.path(
-      "pool/perp/apy",
-      routeParams,
-      {
-        limit: query.limit ?? 10,
-        offset: query.offset ?? 0,
-      }
-    );
+    const request = this.apiManager.path("pool/perp/apy", routeParams, {
+      limit: query.limit ?? 10,
+      offset: query.offset ?? 0,
+    });
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>;
   }
 
-  async UserVaultApy(
-    query: Insights.QueryVaultAPY
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>> {
+  async UserVaultApy(query: Insights.QueryVaultAPY): Promise<Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>> {
     const routeParams = { id: query.id };
-    const request = this.apiManager.path(
-      "vault/user/apy",
-      routeParams,
-      {
-        limit: query.limit ?? 10,
-        offset: query.offset ?? 0,
-      }
-    );
+    const request = this.apiManager.path("vault/user/apy", routeParams, {
+      limit: query.limit ?? 10,
+      offset: query.offset ?? 0,
+    });
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryVaultAPYResponse>;
   }
@@ -238,14 +226,10 @@ class InsightsQueryClient {
     query: Insights.QueryUserVaultDepositors
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorsResponse>> {
     const routeParams = { id: query.id };
-    const request = this.apiManager.path(
-      "vault/user/depositors",
-      routeParams,
-      {
-        limit: query.limit ?? 10,
-        offset: query.offset ?? 0,
-      }
-    );
+    const request = this.apiManager.path("vault/user/depositors", routeParams, {
+      limit: query.limit ?? 10,
+      offset: query.offset ?? 0,
+    });
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorsResponse>;
   }
@@ -254,14 +238,10 @@ class InsightsQueryClient {
     query: Insights.QueryUserVaultActions
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryUserVaultActionsResponse>> {
     const routeParams = { id: query.id };
-    const request = this.apiManager.path(
-      "vault/user/actions",
-      routeParams,
-      {
-        limit: query.limit ?? 10,
-        offset: query.offset ?? 0,
-      }
-    );
+    const request = this.apiManager.path("vault/user/actions", routeParams, {
+      limit: query.limit ?? 10,
+      offset: query.offset ?? 0,
+    });
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryUserVaultActionsResponse>;
   }
@@ -270,14 +250,10 @@ class InsightsQueryClient {
     query: Insights.QueryVaultDepositorActions
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryVaultDepositorActionsResponse>> {
     const routeParams = { address: query.address };
-    const request = this.apiManager.path(
-      "vault/depositor/actions",
-      routeParams,
-      {
-        limit: query.limit ?? 10,
-        offset: query.offset ?? 0,
-      }
-    );
+    const request = this.apiManager.path("vault/depositor/actions", routeParams, {
+      limit: query.limit ?? 10,
+      offset: query.offset ?? 0,
+    });
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryVaultDepositorActionsResponse>;
   }
@@ -286,31 +262,22 @@ class InsightsQueryClient {
     query: Insights.QueryVaultDepositorActions
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryVaultDepositorActionsResponse>> {
     const routeParams = { address: query.address };
-    const request = this.apiManager.path(
-      "pool/perp/depositor/actions",
-      routeParams,
-      {
-        limit: query.limit ?? 10,
-        offset: query.offset ?? 0,
-      }
-    );
+    const request = this.apiManager.path("pool/perp/depositor/actions", routeParams, {
+      limit: query.limit ?? 10,
+      offset: query.offset ?? 0,
+    });
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryVaultDepositorActionsResponse>;
   }
-
 
   async UserVaultDepositorDeposits(
     query: Insights.QueryUserVaultDepositorDeposits
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorDepositsResponse>> {
     const routeParams = { address: query.address };
-    const request = this.apiManager.path(
-      "vault/depositor/deposits",
-      routeParams,
-      {
-        limit: query.limit ?? 10,
-        offset: query.offset ?? 0,
-      }
-    );
+    const request = this.apiManager.path("vault/depositor/deposits", routeParams, {
+      limit: query.limit ?? 10,
+      offset: query.offset ?? 0,
+    });
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryUserVaultDepositorDepositsResponse>;
   }
@@ -343,16 +310,16 @@ class InsightsQueryClient {
   async UserRewardsClaimHistory(
     req: Insights.QueryGetUserRewardsClaimHistoryRequest
   ): Promise<InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>> {
-    const routeParams = { address: req.address }
+    const routeParams = { address: req.address };
     const request = this.apiManager.path("user/pool/rewards", routeParams, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>;
   }
 
   async UserWalletConnected(body: ConnectedWalletParams): Promise<ConnectedWalletResponse> {
-    const request = this.apiManager.path('user/connected/wallet')
-    const response = await request.post({ body })
-    return response.data
+    const request = this.apiManager.path("user/connected/wallet");
+    const response = await request.post({ body });
+    return response.data;
   }
   async CompetitionList(
     req: Insights.QueryGetCompetitionListRequest = {}
@@ -380,7 +347,7 @@ class InsightsQueryClient {
   }
   /**
    * endpoint for Perps Trading Competition on Demex (14 Nov 2023 - 28 Nov 2023).
-  */
+   */
   async PerpsTradingCompetitionVolume(
     req: Insights.QueryGetPerpsCompTradingVolumeRequest
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPerpsCompTradingVolumeResponse>> {
@@ -472,7 +439,7 @@ class InsightsQueryClient {
     req: Insights.QueryCarbonCreditsRewardsRequest
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryCarbonCreditsRewardsResponse>> {
     const routeParams: Insights.QueryCarbonCreditsRewardsRequest = { epoch: req.epoch, unixStart: req.unixStart };
-    const request = this.apiManager.path('reward/epoch', routeParams, {});
+    const request = this.apiManager.path("reward/epoch", routeParams, {});
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryCarbonCreditsRewardsResponse>;
   }
@@ -480,14 +447,14 @@ class InsightsQueryClient {
   async PnlLeaderboard(
     req: Insights.QueryPnlLeaderboardRequest
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryPnlLeaderboardResponse>> {
-    const routeParams: Insights.QueryPnlLeaderboardRequest = { unixStart: req.unixStart, unixEnd: req.unixEnd }
+    const routeParams: Insights.QueryPnlLeaderboardRequest = { unixStart: req.unixStart, unixEnd: req.unixEnd };
     const queryParams = {
       limit: req.limit ?? 100,
-      market: req.market ?? '',
+      market: req.market ?? "",
       offset: 0,
-      sort: 'DESC',
+      sort: "DESC",
     };
-    const request = this.apiManager.path('reward/leaderboard', routeParams, queryParams);
+    const request = this.apiManager.path("reward/leaderboard", routeParams, queryParams);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryPnlLeaderboardResponse>;
   }
@@ -620,7 +587,7 @@ class InsightsQueryClient {
     req: Insights.GetPositionStatsPathParams,
     query: Insights.GetPositionStatsQueryParams
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPositionStatsResponse>> {
-    const request = this.apiManager.path("position/stats", req, query)
+    const request = this.apiManager.path("position/stats", req, query);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPositionStatsResponse>;
   }
@@ -655,7 +622,7 @@ class InsightsQueryClient {
       "market/funding/history",
       {},
       {
-        market: query.market?.replace('%2F', '/') ?? "",
+        market: query.market?.replace("%2F", "/") ?? "",
       }
     );
     const response = await request.get();
@@ -690,11 +657,7 @@ class InsightsQueryClient {
     req: Insights.GetDelegationsPathParams,
     query: Insights.GetDelegationsQueryParams
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetDelegationsResponse>> {
-    const request = this.apiManager.path(
-      "delegations/delegator",
-      req,
-      query
-    );
+    const request = this.apiManager.path("delegations/delegator", req, query);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetDelegationsResponse>;
   }
@@ -707,22 +670,26 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetOraclesPriceResponse>;
   }
 
-  async AlliancesStake(req: Insights.QueryGetAlliancesStakeRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAlliancesStakeResponse>> {
+  async AlliancesStake(
+    req: Insights.QueryGetAlliancesStakeRequest = {}
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAlliancesStakeResponse>> {
     const request = this.apiManager.path("alliances/stake", {}, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAlliancesStakeResponse>;
   }
 
-  async AlliancesRewards(req: Insights.QueryGetAlliancesRewardsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAlliancesRewardsResponse>> {
+  async AlliancesRewards(
+    req: Insights.QueryGetAlliancesRewardsRequest = {}
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAlliancesRewardsResponse>> {
     const request = this.apiManager.path("alliances/rewards", {}, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAlliancesRewardsResponse>;
   }
 
   async CrosschainVolumes(req: Insights.QueryCrosschainVolumeRequest = {}): Promise<Insights.InsightsQueryResponse<CrossChainVolume[]>> {
-    const request = this.apiManager.path("crosschain/volume", {}, req)
-    const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<CrossChainVolume[]>
+    const request = this.apiManager.path("crosschain/volume", {}, req);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<CrossChainVolume[]>;
   }
 }
 

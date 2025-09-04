@@ -12,7 +12,6 @@ export const CarbonChainIDs = {
   [Network.LocalHost]: "carbon-localhost",
 } as const;
 
-
 export const CarbonEvmChainIDs = {
   [Network.MainNet]: "carbon_9790-1",
   [Network.TestNet]: "carbon_9792-1",
@@ -23,7 +22,7 @@ export const CarbonEvmChainIDs = {
 export const DEFAULT_NETWORK = Network.MainNet;
 
 export interface BasicNetworkConfig {
-  rpcURL: string
+  rpcURL: string;
 }
 
 export interface EthNetworkConfig extends BasicNetworkConfig {
@@ -95,7 +94,7 @@ const EthNetworkConfigFallback: EthNetworkConfig = {
   lockProxyAddr: "",
   balanceReader: "",
   byteCodeHash: "",
-}
+};
 
 export const NetworkConfigs: {
   [key in Network]: NetworkConfig;
@@ -407,7 +406,6 @@ export const NetworkConfigs: {
       byteCodeHash: "",
     },
 
-
     neo: {
       rpcURL: "https://g30trj885e.execute-api.ap-southeast-1.amazonaws.com",
       wrapperScriptHash: "f46719e2d16bf50cddcef9d4bbfece901f73cbb6",
@@ -520,7 +518,6 @@ export const NetworkConfigs: {
       balanceReader: "",
       byteCodeHash: "",
     },
-
 
     neo: {
       rpcURL: "https://g30trj885e.execute-api.ap-southeast-1.amazonaws.com",

@@ -87,7 +87,7 @@ export class AllianceModule extends BaseModule {
     const wallet = this.getWallet();
     const walletAddress = wallet.bech32Address;
     const msgs = params.delegations.map((delegation) => {
-      return getRewardWithdrawalMsg(walletAddress, delegation.denom, delegation.validatorAddress, params.delegatorAddress)
+      return getRewardWithdrawalMsg(walletAddress, delegation.denom, delegation.validatorAddress, params.delegatorAddress);
     });
     return wallet.sendTxs(msgs, opts);
   }
@@ -121,8 +121,8 @@ export namespace AllianceModule {
   export interface WithdrawAllRewardsParams {
     delegatorAddress?: string;
     delegations: {
-      validatorAddress: string,
-      denom: string,
+      validatorAddress: string;
+      denom: string;
     }[];
   }
 }

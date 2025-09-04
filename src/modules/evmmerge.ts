@@ -2,8 +2,6 @@ import { CarbonTx } from "@carbon-sdk/util";
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import BaseModule from "./base";
 
-
-
 export class EvmMergeModule extends BaseModule {
   public async mergeAccount(params: EvmMergeModule.MergeAccountParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
@@ -13,10 +11,13 @@ export class EvmMergeModule extends BaseModule {
       pubKeySig: params.pubKeySig,
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgMergeAccount,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgMergeAccount,
+        value,
+      },
+      opts
+    );
   }
 }
 
@@ -27,8 +28,3 @@ export namespace EvmMergeModule {
     pubKeySig: string;
   }
 }
-
-
-
-
-

@@ -1,2 +1,1 @@
-
-export const BUFFER_PERIOD = 20
+export const BUFFER_PERIOD = 20;

@@ -8,7 +8,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   ConvertCoin: "erc20/MsgConvertCoin",
 };
 
-
 const MsgConvertERC20: AminoInit = {
   aminoType: TxTypes.ConvertERC20,
   valueMap: {},
@@ -17,7 +16,6 @@ const MsgConvertCoin: AminoInit = {
   aminoType: TxTypes.ConvertCoin,
   valueMap: {},
 };
-
 
 const ERC20Amino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgConvertERC20]: generateAminoType(MsgConvertERC20),

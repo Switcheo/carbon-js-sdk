@@ -2,7 +2,12 @@ import { Carbon, TxTypes } from "@carbon-sdk/codec";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { MsgWithdrawDelegatorReward } from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 
-export const getRewardWithdrawalMsg = (walletAddress: string, denom: string, validatorAddress: string, delegatorAddress?: string): EncodeObject => {
+export const getRewardWithdrawalMsg = (
+  walletAddress: string,
+  denom: string,
+  validatorAddress: string,
+  delegatorAddress?: string
+): EncodeObject => {
   if (denom === "swth") {
     return {
       typeUrl: TxTypes.MsgWithdrawDelegatorReward,
@@ -21,4 +26,4 @@ export const getRewardWithdrawalMsg = (walletAddress: string, denom: string, val
       }),
     };
   }
-}
+};

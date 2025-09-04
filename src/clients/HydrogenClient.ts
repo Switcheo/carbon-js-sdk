@@ -15,7 +15,7 @@ import {
   RelaysResponse,
 } from "../hydrogen";
 import { GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
-import TokenClient from './TokenClient'
+import TokenClient from "./TokenClient";
 
 export const HydrogenEndpoints = {
   // Status api
@@ -124,15 +124,15 @@ const formatFeeQuoteV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2):
 const getBridgeBlockchainFromId = (bridgeId: number): BlockchainUtils.BlockchainV2 => {
   switch (bridgeId) {
     case 1:
-      return 'Polynetwork'
+      return "Polynetwork";
     case 2:
-      return 'Ibc'
+      return "Ibc";
     case 3:
-      return 'Axelar'
+      return "Axelar";
     default:
-      return 'Polynetwork'
+      return "Polynetwork";
   }
-}
+};
 
 class HydrogenClient {
   private readonly apiManager: APIUtils.APIManager<typeof HydrogenEndpoints>;
@@ -140,7 +140,7 @@ class HydrogenClient {
 
   constructor(private config: NetworkConfig, tokenClient: TokenClient) {
     this.apiManager = new APIUtils.APIManager(config.hydrogenUrl, HydrogenEndpoints);
-    this.tokenClient = tokenClient
+    this.tokenClient = tokenClient;
   }
 
   public static instance(config: NetworkConfig, tokenClient: TokenClient) {
@@ -159,32 +159,40 @@ class HydrogenClient {
     if (typeof value !== "object") return value;
     // brdg tokens will all be chain_id 0 which will also be deprecated in future
     // hence for brdg tokens cannot use chain_id to differentiate between blockchains
-    const isBridgeToken = this.tokenClient.isBridgedToken(value.carbon_token_id)
+    const isBridgeToken = this.tokenClient.isBridgedToken(value.carbon_token_id);
     return {
       ...value,
       created_at: formatDateField(value.created_at?.toString()),
       updated_at: formatDateField(value.updated_at?.toString()),
-      source_blockchain: isBridgeToken ? getFormattedBlockchainName(value.source_blockchain) : this.tokenClient.getBlockchainV2FromIDs(Number(value.from_chain_id), value.bridge_id),
+      source_blockchain: isBridgeToken
+        ? getFormattedBlockchainName(value.source_blockchain)
+        : this.tokenClient.getBlockchainV2FromIDs(Number(value.from_chain_id), value.bridge_id),
       bridging_blockchain: getBridgeBlockchainFromId(value.bridge_id),
-      destination_blockchain: isBridgeToken ? getFormattedBlockchainName(value.destination_blockchain) : this.tokenClient.getBlockchainV2FromIDs(Number(value.to_chain_id), value.bridge_id),
-      source_event: formatChainEventV2(value.source_event, value.source_blockchain ?? ''),
+      destination_blockchain: isBridgeToken
+        ? getFormattedBlockchainName(value.destination_blockchain)
+        : this.tokenClient.getBlockchainV2FromIDs(Number(value.to_chain_id), value.bridge_id),
+      source_event: formatChainEventV2(value.source_event, value.source_blockchain ?? ""),
       bridging_event: formatChainEventV2(value.bridging_event, getBridgeBlockchainFromId(value.bridge_id)),
-      destination_event: formatChainEventV2(value.destination_event, value.destination_blockchain ?? ''),
+      destination_event: formatChainEventV2(value.destination_event, value.destination_blockchain ?? ""),
       relay: formatRelaysTransfers(value.relay),
     };
   };
 
   public formatCrossChainTransferDetailedV2 = (value: any): CrossChainTransferDetailed => {
     if (!value || typeof value !== "object") return value;
-    const isBridgeToken = this.tokenClient.isBridgedToken(value.carbon_token_id)
-    const source_blockchain = isBridgeToken ? getFormattedBlockchainName(value.source_blockchain) : this.tokenClient.getBlockchainV2FromIDs(Number(value.from_chain_id), value.bridge_id)
-    const destination_blockchain = isBridgeToken ? getFormattedBlockchainName(value.destination_blockchain) : this.tokenClient.getBlockchainV2FromIDs(Number(value.to_chain_id), value.bridge_id)
-    const bridging_blockchain = getBridgeBlockchainFromId(value.bridge_id)
+    const isBridgeToken = this.tokenClient.isBridgedToken(value.carbon_token_id);
+    const source_blockchain = isBridgeToken
+      ? getFormattedBlockchainName(value.source_blockchain)
+      : this.tokenClient.getBlockchainV2FromIDs(Number(value.from_chain_id), value.bridge_id);
+    const destination_blockchain = isBridgeToken
+      ? getFormattedBlockchainName(value.destination_blockchain)
+      : this.tokenClient.getBlockchainV2FromIDs(Number(value.to_chain_id), value.bridge_id);
+    const bridging_blockchain = getBridgeBlockchainFromId(value.bridge_id);
     return {
       ...this.formatCrossChainTransferV2(value),
-      source_event: formatChainEventV2(value.source_event, source_blockchain ?? ''),
+      source_event: formatChainEventV2(value.source_event, source_blockchain ?? ""),
       bridging_event: formatChainEventV2(value.bridging_event, bridging_blockchain),
-      destination_event: formatChainEventV2(value.destination_event, destination_blockchain ?? ''),
+      destination_event: formatChainEventV2(value.destination_event, destination_blockchain ?? ""),
     };
   };
 
@@ -198,11 +206,7 @@ class HydrogenClient {
 
   async getTransfers(req: GetTransfersRequest, version = "V1"): Promise<GetTransfersResponse> {
     this.checkState();
-    const request = this.apiManager.path(
-      "transfer_payloads",
-      {},
-      { ...req }
-    );
+    const request = this.apiManager.path("transfer_payloads", {}, { ...req });
     const response = await request.get();
     const result = response.data;
 
@@ -250,7 +254,11 @@ class HydrogenClient {
     };
   }
 
-  async getFeeQuote(req: GetFeeQuoteRequest, blockchain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2 | undefined = undefined, version = "V1"): Promise<GetFeeQuoteResponse> {
+  async getFeeQuote(
+    req: GetFeeQuoteRequest,
+    blockchain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2 | undefined = undefined,
+    version = "V1"
+  ): Promise<GetFeeQuoteResponse> {
     this.checkState();
     const request = this.apiManager.path(
       "fee_quote",

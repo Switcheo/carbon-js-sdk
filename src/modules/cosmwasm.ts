@@ -9,12 +9,12 @@ import { getBestRpcTmClient } from "@carbon-sdk/util/generic";
 import { ExtendedChainInfo } from "@carbon-sdk/constant";
 
 export interface BalanceResponse {
-  contractAddress: string
-  balance: BigNumber
+  contractAddress: string;
+  balance: BigNumber;
 }
 
 export class CosmWasmModule extends BaseModule {
-  private cosmWasmClient: CosmWasmQueryClient
+  private cosmWasmClient: CosmWasmQueryClient;
 
   constructor(sdkProvider: SDKProvider, cosmClient: CosmWasmQueryClient) {
     super(sdkProvider);
@@ -25,13 +25,13 @@ export class CosmWasmModule extends BaseModule {
     if (chainInfo.activeRpc) {
       try {
         const tmClient = await Tendermint37Client.connect(chainInfo.activeRpc);
-        return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient)
+        return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient);
       } catch (error) {
         // empty catch
       }
     }
 
-    const { client, rpcUrl } = await getBestRpcTmClient(chainInfo.bestRpcs.map(r => r.address));
+    const { client, rpcUrl } = await getBestRpcTmClient(chainInfo.bestRpcs.map((r) => r.address));
     chainInfo.activeRpc = rpcUrl;
     return CosmWasmModule.instanceWithTmClient(sdkProvider, client);
   }
@@ -52,7 +52,7 @@ export class CosmWasmModule extends BaseModule {
     const finalResult: BalanceResponse = {
       contractAddress: contractAddr,
       balance: NumberUtils.BN_ZERO,
-    }
+    };
     try {
       const smartContract = await this.cosmWasmClient.SmartContractState({
         address: contractAddr,
@@ -68,7 +68,9 @@ export class CosmWasmModule extends BaseModule {
   }
 
   public async queryCosmwasmBalances(walletAddress: string, contractAddresses: string[]): Promise<TypeUtils.SimpleMap<BigNumber>> {
-    const balancesMap = await Promise.all(contractAddresses.map((contractAddr: string) => this.queryCosmwasmBalance(walletAddress, contractAddr)));
+    const balancesMap = await Promise.all(
+      contractAddresses.map((contractAddr: string) => this.queryCosmwasmBalance(walletAddress, contractAddr))
+    );
     return balancesMap.reduce((prev: TypeUtils.SimpleMap<BigNumber>, balance: BalanceResponse) => {
       prev[balance.contractAddress] = balance.balance;
       return prev;

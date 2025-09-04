@@ -18,7 +18,7 @@ export class PerpspoolModule extends BaseModule {
       depositFee: params.depositFee,
       withdrawalFee: params.withdrawalFee,
       baseBorrowFeePerFundingInterval: params.borrowFee,
-    })
+    });
 
     return await wallet.sendTx(
       {
@@ -29,7 +29,6 @@ export class PerpspoolModule extends BaseModule {
     );
   }
 
-
   public async updatePerpetualsPool(params: PerpspoolModule.UpdatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -39,13 +38,13 @@ export class PerpspoolModule extends BaseModule {
       depositFee: params.depositFee,
       withdrawalFee: params.withdrawalFee,
       baseBorrowFeePerFundingInterval: params.borrowFee,
-    }
+    };
 
     const value = Carbon.Perpspool.MsgUpdatePool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       updatePoolParams: updatePoolParam,
-    })
+    });
 
     return await wallet.sendTx(
       {
@@ -64,7 +63,7 @@ export class PerpspoolModule extends BaseModule {
       poolId: params.poolId,
       depositAmount: params.depositAmount,
       minShareAmount: params.minShareAmount,
-    })
+    });
 
     return await wallet.sendTx(
       {
@@ -83,7 +82,7 @@ export class PerpspoolModule extends BaseModule {
       poolId: params.poolId,
       shareAmount: params.shareAmount,
       minReceiveAmount: params.minReceiveAmount,
-    })
+    });
 
     return await wallet.sendTx(
       {
@@ -101,7 +100,7 @@ export class PerpspoolModule extends BaseModule {
       creator: wallet.bech32Address,
       poolId: params.poolId,
       marketId: params.marketId,
-    })
+    });
 
     return await wallet.sendTx(
       {
@@ -118,7 +117,7 @@ export class PerpspoolModule extends BaseModule {
     const value = Carbon.Perpspool.MsgDeregisterFromPool.fromPartial({
       creator: wallet.bech32Address,
       marketId: params.marketId,
-    })
+    });
 
     return await wallet.sendTx(
       {
@@ -182,7 +181,7 @@ export class PerpspoolModule extends BaseModule {
 
   public async releaseUserVaultWithdrawal(params: PerpspoolModule.ReleaseUserVaultWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const creator = params.creator ?? wallet.bech32Address
+    const creator = params.creator ?? wallet.bech32Address;
 
     const value = Carbon.Perpspool.MsgReleaseUserVaultWithdrawal.fromPartial({
       creator,
@@ -200,50 +199,48 @@ export class PerpspoolModule extends BaseModule {
   public async releaseUserVaultWithdrawals(params: PerpspoolModule.ReleaseUserVaultWithdrawalParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const msgs: EncodeObject[] = params.map(p => {
+    const msgs: EncodeObject[] = params.map((p) => {
       return {
         typeUrl: CarbonTx.Types.MsgReleaseUserVaultWithdrawal,
         value: Carbon.Perpspool.MsgReleaseUserVaultWithdrawal.fromPartial({
           creator: p.creator ?? wallet.bech32Address,
           ...p,
         }),
-      }
-    })
-    return await wallet.sendTxs(msgs, opts)
+      };
+    });
+    return await wallet.sendTxs(msgs, opts);
   }
 
   public async addControllers(params: PerpspoolModule.AddControllersParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet()
+    const wallet = this.getWallet();
 
-    const { controllers, expiry } = params
+    const { controllers, expiry } = params;
 
     const grants: GrantModule.GrantParams[] = controllers.map((controller) => ({
       grantee: controller,
       granter: wallet.bech32Address,
       expiry,
       msgs: [],
-    }))
-    const client: FeeGrantQueryClient = this.sdkProvider.query.feegrant
+    }));
+    const client: FeeGrantQueryClient = this.sdkProvider.query.feegrant;
 
-    const messages = (await Promise.all(grants.map(async (g) => await GrantModule.getGrantMsgs(g, client)))).flat()
-    return await wallet.sendTxs(messages, opts)
+    const messages = (await Promise.all(grants.map(async (g) => await GrantModule.getGrantMsgs(g, client)))).flat();
+    return await wallet.sendTxs(messages, opts);
   }
 
-
   public async removeControllers(params: PerpspoolModule.RemoveControllersParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet()
+    const wallet = this.getWallet();
 
-    const { controllers } = params
+    const { controllers } = params;
 
     const grants: GrantModule.RevokeGrantParams[] = controllers.map((controller) => ({
       grantee: controller,
       granter: wallet.bech32Address,
-    }))
+    }));
 
-    const messages = (await Promise.all(grants.map(async (g) => await GrantModule.getRevokeMsgs(g)))).flat()
-    return await wallet.sendTxs(messages, opts)
+    const messages = (await Promise.all(grants.map(async (g) => await GrantModule.getRevokeMsgs(g)))).flat();
+    return await wallet.sendTxs(messages, opts);
   }
-
 }
 
 export namespace PerpspoolModule {
@@ -298,9 +295,9 @@ export namespace PerpspoolModule {
     controllers: string[];
   }
 
-  export type CreateUserVaultParams = OmitCreator<MsgCreateUserVault>
-  export type CloseUserVaultParams = OmitCreator<MsgCloseUserVault>
-  export type UpdateUserVaultParams = OmitCreator<MsgUpdateUserVault>
+  export type CreateUserVaultParams = OmitCreator<MsgCreateUserVault>;
+  export type CloseUserVaultParams = OmitCreator<MsgCloseUserVault>;
+  export type UpdateUserVaultParams = OmitCreator<MsgUpdateUserVault>;
   export interface ReleaseUserVaultWithdrawalParams {
     creator?: string;
     vaultId: Long;

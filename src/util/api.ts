@@ -134,9 +134,9 @@ export class HTTP<PathSpecs> {
     });
   };
 
-/**
- * Executes HTTP PUT request with fetch
- */
+  /**
+   * Executes HTTP PUT request with fetch
+   */
   public put = (options: any) => {
     return fetch(options.url, {
       method: "PUT",
@@ -230,8 +230,7 @@ export class APIManager<M extends EndpointMap> implements APIHandler<M> {
       this.http.post({ url, ...options }).then(parser),
     delete: async (options: RequestOpts = {}, parser: ResponseParser = this.responseParser) =>
       this.http.del({ url, ...options }).then(parser),
-    put: async (options: RequestOpts = {}, parser: ResponseParser = this.responseParser) =>
-      this.http.put({ url, ...options }).then(parser),
+    put: async (options: RequestOpts = {}, parser: ResponseParser = this.responseParser) => this.http.put({ url, ...options }).then(parser),
     raw: async (options: RequestOpts = {}, parser: ResponseParser = this.responseParser) => this.http.raw({ url, ...options }).then(parser),
   });
 

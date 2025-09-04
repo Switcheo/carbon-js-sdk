@@ -5,7 +5,7 @@ import { StdFee } from "@cosmjs/amino";
 import { SignerData } from "@cosmjs/stargate";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
 import { EncodeObject } from "@cosmjs/proto-signing";
-import { toUint8Array } from '@carbon-sdk/util/bytes'
+import { toUint8Array } from "@carbon-sdk/util/bytes";
 export { StdSignDoc } from "@cosmjs/amino";
 
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
@@ -154,12 +154,12 @@ export enum ErrorType {
 }
 
 export class CarbonCustomError extends Error {
-  readonly type?: ErrorType
-  readonly data?: any
+  readonly type?: ErrorType;
+  readonly data?: any;
   constructor(msg: string, type?: ErrorType, data?: any) {
     super(msg);
-    this.type = type
-    this.data = data
+    this.type = type;
+    this.data = data;
   }
 }
 
@@ -181,15 +181,14 @@ export const TxGasCostTypeMap = {
   [TxTypes.MsgUnstakePoolToken]: "unstake_pool_token",
 };
 
-const LibPackages: string[] = ['ibc', 'cosmos', 'alliance']
+const LibPackages: string[] = ["ibc", "cosmos", "alliance"];
 
 const BacklistedMessages: string[] = [
-  '/cosmos.authz.v1beta1.MsgExec',
-  '/cosmos.authz.v1beta1.MsgGrant',
-  '/cosmos.feegrant.v1beta1.MsgGrantAllowance',
-  '/cosmos.feegrant.v1beta1.MsgRevokeAllowance',
-]
-
+  "/cosmos.authz.v1beta1.MsgExec",
+  "/cosmos.authz.v1beta1.MsgGrant",
+  "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
+  "/cosmos.feegrant.v1beta1.MsgRevokeAllowance",
+];
 
 // to use signDirect for metamask signing if messages are from libraries (cosmos-sdk, ibc, alliance).
 // Reasons:
@@ -199,12 +198,12 @@ const BacklistedMessages: string[] = [
 // 3. Ethermint is still using legacyMsg.getSigners() to verify many amino signed eip712 txs. However, getSigners() is deprecated and not implmented in messages from cosmos-sdk anymore.
 // 4. as of comsos-sdk v0.50 --> very few messages are using legacyDec so we can safely use signDirect
 export const useSignDirectForMetamask = (messages: readonly EncodeObject[]): boolean => {
-  const typeUrls = messages.map(m => m.typeUrl)
-  return !!Object.values(TxTypes).find(typeUrl => isLibMsg(typeUrl) && typeUrls.includes(typeUrl))
-}
+  const typeUrls = messages.map((m) => m.typeUrl);
+  return !!Object.values(TxTypes).find((typeUrl) => isLibMsg(typeUrl) && typeUrls.includes(typeUrl));
+};
 
 export const isLibMsg = (typeUrl: string): boolean => {
   // /ibc.core.client.v1.UpgradeProposal --> ibc
-  const pkg = typeUrl.split('.')[0].substring(1)
-  return LibPackages.includes(pkg) && !BacklistedMessages.includes(typeUrl)
-}
+  const pkg = typeUrl.split(".")[0].substring(1);
+  return LibPackages.includes(pkg) && !BacklistedMessages.includes(typeUrl);
+};

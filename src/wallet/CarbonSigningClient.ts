@@ -123,7 +123,7 @@ export class CarbonSigningClient extends StargateClient {
   ): Promise<TxRaw> {
     if (isCarbonEIP712Signer(this.signer)) {
       if ((this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
-        return this.signLegacyEip712(signerAddress, messages, fee, memo, signerData)
+        return this.signLegacyEip712(signerAddress, messages, fee, memo, signerData);
       }
       // workaround to use signDirect
 
@@ -145,15 +145,17 @@ export class CarbonSigningClient extends StargateClient {
     fee: StdFee,
     memo: string,
     { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData,
-    granterAddress?: string,
+    granterAddress?: string
   ): Promise<TxRaw> {
     const signer = this.signer as OfflineDirectSigner;
     const accountFromSigner = (await this.signer.getAccounts()).find((account) => account.address === signerAddress);
     if (!isCarbonEIP712Signer(this.signer) && !accountFromSigner) {
       throw new Error("Failed to retrieve account from signer");
     }
-    const pubKeyBz = accountFromSigner ? accountFromSigner.pubkey : (await this.signer.getAccounts())[0].pubkey
-    const pubkey = isCarbonEIP712Signer(this.signer) ? encodeAnyEthSecp256k1PubKey(pubKeyBz) : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
+    const pubKeyBz = accountFromSigner ? accountFromSigner.pubkey : (await this.signer.getAccounts())[0].pubkey;
+    const pubkey = isCarbonEIP712Signer(this.signer)
+      ? encodeAnyEthSecp256k1PubKey(pubKeyBz)
+      : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
     const txBodyEncodeObject: EncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
       value: {
@@ -166,7 +168,13 @@ export class CarbonSigningClient extends StargateClient {
     };
     const txBodyBytes = this.registry.encode(txBodyEncodeObject);
     const gasLimit = Int53.fromString(fee.gas).toNumber();
-    const authInfoBytes = makeAuthInfoBytes([{ pubkey, sequence }], fee.amount, gasLimit, granterAddress, (granterAddress ? signerAddress : undefined));
+    const authInfoBytes = makeAuthInfoBytes(
+      [{ pubkey, sequence }],
+      fee.amount,
+      gasLimit,
+      granterAddress,
+      granterAddress ? signerAddress : undefined
+    );
     const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, chainId, accountNumber);
     const { signature, signed } = await signer.signDirect(signerAddress, signDoc);
     return TxRaw.fromPartial({
@@ -190,8 +198,10 @@ export class CarbonSigningClient extends StargateClient {
     if (!isCarbonEIP712Signer(this.signer) && !accountFromSigner) {
       throw new Error("Failed to retrieve account from signer");
     }
-    const pubKeyBz = accountFromSigner ? accountFromSigner.pubkey : (await this.signer.getAccounts())[0].pubkey
-    const pubkey = isCarbonEIP712Signer(this.signer) ? encodeAnyEthSecp256k1PubKey(pubKeyBz) : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
+    const pubKeyBz = accountFromSigner ? accountFromSigner.pubkey : (await this.signer.getAccounts())[0].pubkey;
+    const pubkey = isCarbonEIP712Signer(this.signer)
+      ? encodeAnyEthSecp256k1PubKey(pubKeyBz)
+      : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
     const signMode: SignMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
     const msgs = messages.map((msg) => this.aminoTypes.toAmino(msg));
     const signDoc = makeSignDocAmino(msgs, fee, chainId, memo, accountNumber, sequence, timeoutHeight ?? 0);
@@ -211,7 +221,14 @@ export class CarbonSigningClient extends StargateClient {
     const signedTxBodyBytes = this.registry.encode(signedTxBodyEncodeObject);
     const signedGasLimit = Int53.fromString(signed.fee.gas).toNumber();
     const signedSequence = Int53.fromString(signed.sequence).toNumber();
-    const signedAuthInfoBytes = makeAuthInfoBytes([{ pubkey, sequence: signedSequence }], signed.fee.amount, signedGasLimit, granterAddress, (granterAddress ? signerAddress : undefined), signMode);
+    const signedAuthInfoBytes = makeAuthInfoBytes(
+      [{ pubkey, sequence: signedSequence }],
+      signed.fee.amount,
+      signedGasLimit,
+      granterAddress,
+      granterAddress ? signerAddress : undefined,
+      signMode
+    );
     return TxRaw.fromPartial({
       bodyBytes: signedTxBodyBytes,
       authInfoBytes: signedAuthInfoBytes,
@@ -225,13 +242,13 @@ export class CarbonSigningClient extends StargateClient {
     fee: StdFee,
     memo: string,
     { accountNumber, sequence, evmChainId }: CarbonSignerData,
-    granterAddress?: string,
+    granterAddress?: string
   ): Promise<TxRaw> {
     if (!evmChainId) {
       throw new Error("evmChainId required for legacyEip712 tx");
     }
     const signer = this.signer as CarbonEIP712Signer;
-    const pubKeyBz = (await this.signer.getAccounts())[0].pubkey
+    const pubKeyBz = (await this.signer.getAccounts())[0].pubkey;
     const pubkey = encodeAnyEthSecp256k1PubKey(pubKeyBz);
     const signMode: SignMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
     const msgs = messages.map((msg) => this.aminoTypes.toAmino(msg));
@@ -240,15 +257,24 @@ export class CarbonSigningClient extends StargateClient {
 
     const eip712ExtensionOptions: EncodeObject = {
       typeUrl: "/ethermint.types.v1.ExtensionOptionsWeb3Tx",
-      value: ExtensionOptionsWeb3Tx.encode(ExtensionOptionsWeb3Tx.fromPartial({
-        typedDataChainId: parseChainId(evmChainId),
-        feePayer,
-        feePayerSig: fromBase64(signature.signature),
-      })).finish(),
-    }
+      value: ExtensionOptionsWeb3Tx.encode(
+        ExtensionOptionsWeb3Tx.fromPartial({
+          typedDataChainId: parseChainId(evmChainId),
+          feePayer,
+          feePayerSig: fromBase64(signature.signature),
+        })
+      ).finish(),
+    };
     const signedGasLimit = Int53.fromString(signed.fee.gas).toNumber();
     const signedSequence = Int53.fromString(signed.sequence).toNumber();
-    const signedAuthInfoBytes = makeAuthInfoBytes([{ pubkey, sequence: signedSequence }], signed.fee.amount, signedGasLimit, granterAddress, (granterAddress ? signerAddress : undefined), signMode);
+    const signedAuthInfoBytes = makeAuthInfoBytes(
+      [{ pubkey, sequence: signedSequence }],
+      signed.fee.amount,
+      signedGasLimit,
+      granterAddress,
+      granterAddress ? signerAddress : undefined,
+      signMode
+    );
 
     const signedTxBody = {
       messages: signed.msgs.map((msg) => this.aminoTypes.fromAmino(msg)),

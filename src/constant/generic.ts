@@ -12,7 +12,7 @@ export const DEFAULT_GAS_PRICE = new BigNumber(10);
 
 export const DEFAULT_GAS = new BigNumber(100_000_000);
 
-export const PAGINATE_10K = PageRequest.fromPartial({ limit: new Long(10_000) })
+export const PAGINATE_10K = PageRequest.fromPartial({ limit: new Long(10_000) });
 
 export const DEFAULT_FEE: StdFee = {
   amount: coins(DEFAULT_GAS_PRICE.times(DEFAULT_GAS).dp(0).toString(), "swth"),
@@ -38,7 +38,7 @@ export interface RequestArguments {
 
 export type EVMChain = EVMChainV2;
 
-export interface SyncResult  {
+export interface SyncResult {
   blockchain?: Blockchain | BlockchainV2;
   chainId?: number;
 }

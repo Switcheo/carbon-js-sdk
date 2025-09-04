@@ -34,36 +34,39 @@ export class GrpcQueryClient implements ProtobufRpcClient {
 
   request(serviceName: string, methodName: string, data: Uint8Array): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
-      grpc.unary({
-        methodName,
-        service: { serviceName },
-        requestStream: false,
-        responseStream: false,
-        requestType: {} as any,
-        responseType: {
-          deserializeBinary: (data: Uint8Array) => data,
-        } as any,
-      }, {
-        request: {
-          ...data,
-          toObject: () => data,
-          serializeBinary: () => data,
+      grpc.unary(
+        {
+          methodName,
+          service: { serviceName },
+          requestStream: false,
+          responseStream: false,
+          requestType: {} as any,
+          responseType: {
+            deserializeBinary: (data: Uint8Array) => data,
+          } as any,
         },
-        host: this.host,
-        metadata: this.options.metadata,
-        transport: this.options.transport,
-        debug: false,
-        onEnd: function (response) {
-          if (response.status === grpc.Code.OK) {
-            resolve(response.message as unknown as Uint8Array);
-          } else {
-            const err = new Error(response.statusMessage) as any;
-            err.code = response.status;
-            err.metadata = response.trailers;
-            reject(err);
-          }
-        },
-      });
+        {
+          request: {
+            ...data,
+            toObject: () => data,
+            serializeBinary: () => data,
+          },
+          host: this.host,
+          metadata: this.options.metadata,
+          transport: this.options.transport,
+          debug: false,
+          onEnd: function (response) {
+            if (response.status === grpc.Code.OK) {
+              resolve(response.message as unknown as Uint8Array);
+            } else {
+              const err = new Error(response.statusMessage) as any;
+              err.code = response.status;
+              err.metadata = response.trailers;
+              reject(err);
+            }
+          },
+        }
+      );
     });
   }
 }

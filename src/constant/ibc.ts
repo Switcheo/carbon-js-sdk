@@ -343,7 +343,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     chainId: "regen-1",
     chainName: "Regen Network",
     stakeCurrency: {
-    coinDenom: "REGEN",
+      coinDenom: "REGEN",
       coinMinimalDenom: "uregen",
       coinDecimals: 6,
       coinGeckoId: "regen",
@@ -1661,9 +1661,9 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
       },
       {
-        "coinDenom": "stEVMOS",
-        "coinMinimalDenom": "staevmos",
-        "coinDecimals": 18,
+        coinDenom: "stEVMOS",
+        coinMinimalDenom: "staevmos",
+        coinDecimals: 18,
       },
     ],
     feeCurrencies: [
@@ -1920,23 +1920,27 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       coinType: 118,
     },
     bech32Config: IBCAddress.defaultBech32Config("omniflix"),
-    currencies: [{
-      coinDenom: "FLIX",
-      coinMinimalDenom: "uflix",
-      coinDecimals: 6,
-      coinGeckoId: "omniflix-network",
-    }],
-    feeCurrencies: [{
-      coinDenom: "FLIX",
-      coinMinimalDenom: "uflix",
-      coinDecimals: 6,
-      coinGeckoId: "omniflix-network",
-      gasPriceStep: {
-        low: 0.001,
-        average: 0.0025,
-        high: 0.025,
+    currencies: [
+      {
+        coinDenom: "FLIX",
+        coinMinimalDenom: "uflix",
+        coinDecimals: 6,
+        coinGeckoId: "omniflix-network",
       },
-    }],
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "FLIX",
+        coinMinimalDenom: "uflix",
+        coinDecimals: 6,
+        coinGeckoId: "omniflix-network",
+        gasPriceStep: {
+          low: 0.001,
+          average: 0.0025,
+          high: 0.025,
+        },
+      },
+    ],
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/omniflix/txs/{txHash}",
   },
@@ -2146,7 +2150,7 @@ export const ibcGasOverride: {
   [index in ChainIds]?: number;
 } = {
   [ChainIds.Osmosis]: 500000,
-}
+};
 
 export const DefaultGasPriceStep: GasPriceStep = {
   low: 0.01,
@@ -2194,11 +2198,11 @@ export interface DenomUnit {
 }
 
 export interface FeeToken {
-  denom: string,
-  fixed_min_gas_price: number,
-  low_gas_price: number,
-  average_gas_price: number,
-  high_gas_price: number
+  denom: string;
+  fixed_min_gas_price: number;
+  low_gas_price: number;
+  average_gas_price: number;
+  high_gas_price: number;
 }
 
 interface LogoURIs {
@@ -2213,7 +2217,6 @@ interface Prices {
 interface Coingecko {
   usd: number;
 }
-
 
 export interface ChainRegistryItem {
   name: string;

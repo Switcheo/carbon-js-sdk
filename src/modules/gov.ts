@@ -8,7 +8,7 @@ import BaseModule from "./base";
 export class GovModule extends BaseModule {
   public async submit(proposalMsg: MsgSubmitProposal, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const { initialDeposit, messages, metadata, title, summary, proposer } = proposalMsg
+    const { initialDeposit, messages, metadata, title, summary, proposer } = proposalMsg;
 
     const finalProposalMsg = MsgSubmitProposal.fromPartial({
       initialDeposit,
@@ -17,7 +17,7 @@ export class GovModule extends BaseModule {
       title,
       summary,
       proposer,
-    })
+    });
 
     return await wallet.sendTx(
       {

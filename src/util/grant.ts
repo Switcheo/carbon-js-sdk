@@ -33,7 +33,7 @@ export interface ValueDecoded {
 export const emptyValue = {
   typeUrl: "",
   value: {},
-}
+};
 
 export const decodeContent = (content?: Any): ValueDecoded => {
   if (!content) {
@@ -45,22 +45,22 @@ export const decodeContent = (content?: Any): ValueDecoded => {
       return {
         ...content,
         value: GenericAuthorization.decode(content.value),
-      }
+      };
     }
     case GrantTypes.AllowedMsgAllowance: {
-      const value = AllowedMsgAllowance.decode(content.value)
+      const value = AllowedMsgAllowance.decode(content.value);
       return {
         ...content,
         value: { ...value, allowance: { ...decodeContent(value.allowance) } },
-      }
+      };
     }
     case GrantTypes.BasicAllowance: {
       return {
         ...content,
         value: BasicAllowance.decode(content.value),
-      }
+      };
     }
     default:
       return emptyValue;
   }
-}
+};

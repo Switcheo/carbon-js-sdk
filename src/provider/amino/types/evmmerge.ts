@@ -12,7 +12,6 @@ const MsgMergeAccount: AminoInit = {
   valueMap: {},
 };
 
-
 const EvmMergeAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgMergeAccount]: generateAminoType(MsgMergeAccount),
 };

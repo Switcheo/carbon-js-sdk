@@ -179,13 +179,13 @@ export class LiquidityPoolModule extends BaseModule {
   }
 
   public async getWeeklyRewardsRealInflation(): Promise<BigNumber> {
-    const mintDataResponse: QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
-    let weeklyRewards = BN_ZERO
+    const mintDataResponse: QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({});
+    let weeklyRewards = BN_ZERO;
     if (mintDataResponse.mintData) {
-      const mintData = mintDataResponse.mintData
-      const currentSupply = new BigNumber(mintData.currentSupply)
-      const swthInflationRate = new BigNumber(mintData.inflationRate).shiftedBy(-18)
-      weeklyRewards = currentSupply.times(swthInflationRate).div(52)
+      const mintData = mintDataResponse.mintData;
+      const currentSupply = new BigNumber(mintData.currentSupply);
+      const swthInflationRate = new BigNumber(mintData.inflationRate).shiftedBy(-18);
+      weeklyRewards = currentSupply.times(swthInflationRate).div(52);
     }
 
     // Calculate weekly rewards earned by liquidity providers
@@ -211,7 +211,6 @@ export class LiquidityPoolModule extends BaseModule {
       opts
     );
   }
-
 }
 
 export namespace LiquidityPoolModule {
@@ -286,5 +285,4 @@ export namespace LiquidityPoolModule {
     marketId: string;
     poolIds: Long[];
   }
-
 }

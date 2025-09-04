@@ -27,12 +27,15 @@ export const parseNetwork = (network: string, defaultNetwork: Network | null = D
   return defaultNetwork;
 };
 
-
 export const carbonNetworkFromChainId = (parsedEvmChainId: string) => {
   switch (parsedEvmChainId) {
-    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.LocalHost]): return CarbonSDK.Network.LocalHost;
-    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.DevNet]): return CarbonSDK.Network.DevNet;
-    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.TestNet]): return CarbonSDK.Network.TestNet;
-    default: return CarbonSDK.Network.MainNet;
+    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.LocalHost]):
+      return CarbonSDK.Network.LocalHost;
+    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.DevNet]):
+      return CarbonSDK.Network.DevNet;
+    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.TestNet]):
+      return CarbonSDK.Network.TestNet;
+    default:
+      return CarbonSDK.Network.MainNet;
   }
-}
+};

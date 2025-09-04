@@ -36,7 +36,7 @@ export interface QueryGetFundingHistoryRequest {
 // Period is the duration (in number of days) that the query should return results for
 export interface QueryGetFundingHistoryGraphDataRequest {
   market: string;
-  period?: number;       
+  period?: number;
 }
 
 export interface FundingHistoryGraphData {
@@ -46,5 +46,5 @@ export interface FundingHistoryGraphData {
 }
 
 export interface QueryGetFundingHistoryGraphDataResponse {
-  entries: FundingHistoryGraphData[]
+  entries: FundingHistoryGraphData[];
 }

@@ -132,20 +132,20 @@ class CosmosLedger {
 
     // checks if the Ledger is connected and the app is open
     await this.isReady();
-  
+
     return this;
   }
 
   async disconnect() {
-    await this.cosmosApp.transport.close()
+    await this.cosmosApp.transport.close();
   }
 
   async getDeviceName() {
-    const deviceName = await this.cosmosApp.transport?.deviceModel?.productName
+    const deviceName = await this.cosmosApp.transport?.deviceModel?.productName;
     if (deviceName) {
-      return deviceName
+      return deviceName;
     }
-    return undefined
+    return undefined;
   }
 
   // returns the cosmos app version as a string like "1.1.0"
@@ -245,7 +245,7 @@ class CosmosLedger {
     await this.connect();
     const response = await signTransactionWrapper(async () => {
       return await this.cosmosApp.sign(this.hdPath, signMessage);
-    })
+    });
     await this.checkLedgerErrors(response);
     // we have to parse the signature from Ledger as it's in DER format
     const parsedSignature = signatureImport(response.signature);
@@ -261,8 +261,8 @@ class CosmosLedger {
     if (device_locked) {
       throw new Error(`Ledger's screensaver mode is on`);
     }
-    if (error_message !== 'No errors') {
-      await this.disconnect()
+    if (error_message !== "No errors") {
+      await this.disconnect();
     }
     switch (error_message) {
       case `U2F: Timeout`:
