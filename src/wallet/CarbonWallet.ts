@@ -438,6 +438,7 @@ export class CarbonWallet {
       mode: "qr",
       mnemonic: granteeMnemonic,
       granter: granterAddress,
+      bech32Address: granterAddress,
       expiry,
       ...opts,
     });
