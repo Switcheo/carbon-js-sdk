@@ -19,21 +19,14 @@ export interface ParamsToUpdate {
   assetsRouteToFutures: string[];
 }
 
-const baseParams: object = {
-  withdrawalThreshold: "",
-  assetsRouteToFutures: "",
-};
+function createBaseParams(): Params {
+  return { withdrawalWindow: undefined, withdrawalThreshold: "", assetsRouteToFutures: [] };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.withdrawalWindow !== undefined) {
-      Duration.encode(
-        message.withdrawalWindow,
-        writer.uint32(10).fork()
-      ).ldelim();
+      Duration.encode(message.withdrawalWindow, writer.uint32(10).fork()).ldelim();
     }
     if (message.withdrawalThreshold !== "") {
       writer.uint32(18).string(message.withdrawalThreshold);
@@ -45,55 +38,57 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    message.assetsRouteToFutures = [];
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.withdrawalWindow = Duration.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.withdrawalThreshold = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.assetsRouteToFutures.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.withdrawalWindow =
-      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
-        ? Duration.fromJSON(object.withdrawalWindow)
-        : undefined;
-    message.withdrawalThreshold =
-      object.withdrawalThreshold !== undefined &&
-      object.withdrawalThreshold !== null
-        ? String(object.withdrawalThreshold)
-        : "";
-    message.assetsRouteToFutures = (object.assetsRouteToFutures ?? []).map(
-      (e: any) => String(e)
-    );
-    return message;
+    return {
+      withdrawalWindow: isSet(object.withdrawalWindow) ? Duration.fromJSON(object.withdrawalWindow) : undefined,
+      withdrawalThreshold: isSet(object.withdrawalThreshold) ? String(object.withdrawalThreshold) : "",
+      assetsRouteToFutures: Array.isArray(object?.assetsRouteToFutures)
+        ? object.assetsRouteToFutures.map((e: any) => String(e))
+        : [],
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     message.withdrawalWindow !== undefined &&
-      (obj.withdrawalWindow = message.withdrawalWindow
-        ? Duration.toJSON(message.withdrawalWindow)
-        : undefined);
-    message.withdrawalThreshold !== undefined &&
-      (obj.withdrawalThreshold = message.withdrawalThreshold);
+      (obj.withdrawalWindow = message.withdrawalWindow ? Duration.toJSON(message.withdrawalWindow) : undefined);
+    message.withdrawalThreshold !== undefined && (obj.withdrawalThreshold = message.withdrawalThreshold);
     if (message.assetsRouteToFutures) {
       obj.assetsRouteToFutures = message.assetsRouteToFutures.map((e) => e);
     } else {
@@ -102,35 +97,29 @@ export const Params = {
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.withdrawalWindow =
-      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
-        ? Duration.fromPartial(object.withdrawalWindow)
-        : undefined;
+    const message = createBaseParams();
+    message.withdrawalWindow = (object.withdrawalWindow !== undefined && object.withdrawalWindow !== null)
+      ? Duration.fromPartial(object.withdrawalWindow)
+      : undefined;
     message.withdrawalThreshold = object.withdrawalThreshold ?? "";
-    message.assetsRouteToFutures = (object.assetsRouteToFutures ?? []).map(
-      (e) => e
-    );
+    message.assetsRouteToFutures = object.assetsRouteToFutures?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseParamsToUpdate: object = {
-  withdrawalThreshold: "",
-  assetsRouteToFutures: "",
-};
+function createBaseParamsToUpdate(): ParamsToUpdate {
+  return { withdrawalWindow: undefined, withdrawalThreshold: "", assetsRouteToFutures: [] };
+}
 
 export const ParamsToUpdate = {
-  encode(
-    message: ParamsToUpdate,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ParamsToUpdate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.withdrawalWindow !== undefined) {
-      Duration.encode(
-        message.withdrawalWindow,
-        writer.uint32(10).fork()
-      ).ldelim();
+      Duration.encode(message.withdrawalWindow, writer.uint32(10).fork()).ldelim();
     }
     if (message.withdrawalThreshold !== "") {
       writer.uint32(18).string(message.withdrawalThreshold);
@@ -142,55 +131,57 @@ export const ParamsToUpdate = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ParamsToUpdate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.assetsRouteToFutures = [];
+    const message = createBaseParamsToUpdate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.withdrawalWindow = Duration.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.withdrawalThreshold = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.assetsRouteToFutures.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.withdrawalWindow =
-      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
-        ? Duration.fromJSON(object.withdrawalWindow)
-        : undefined;
-    message.withdrawalThreshold =
-      object.withdrawalThreshold !== undefined &&
-      object.withdrawalThreshold !== null
-        ? String(object.withdrawalThreshold)
-        : "";
-    message.assetsRouteToFutures = (object.assetsRouteToFutures ?? []).map(
-      (e: any) => String(e)
-    );
-    return message;
+    return {
+      withdrawalWindow: isSet(object.withdrawalWindow) ? Duration.fromJSON(object.withdrawalWindow) : undefined,
+      withdrawalThreshold: isSet(object.withdrawalThreshold) ? String(object.withdrawalThreshold) : "",
+      assetsRouteToFutures: Array.isArray(object?.assetsRouteToFutures)
+        ? object.assetsRouteToFutures.map((e: any) => String(e))
+        : [],
+    };
   },
 
   toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
     message.withdrawalWindow !== undefined &&
-      (obj.withdrawalWindow = message.withdrawalWindow
-        ? Duration.toJSON(message.withdrawalWindow)
-        : undefined);
-    message.withdrawalThreshold !== undefined &&
-      (obj.withdrawalThreshold = message.withdrawalThreshold);
+      (obj.withdrawalWindow = message.withdrawalWindow ? Duration.toJSON(message.withdrawalWindow) : undefined);
+    message.withdrawalThreshold !== undefined && (obj.withdrawalThreshold = message.withdrawalThreshold);
     if (message.assetsRouteToFutures) {
       obj.assetsRouteToFutures = message.assetsRouteToFutures.map((e) => e);
     } else {
@@ -199,41 +190,34 @@ export const ParamsToUpdate = {
     return obj;
   },
 
+  create(base?: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
+    return ParamsToUpdate.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.withdrawalWindow =
-      object.withdrawalWindow !== undefined && object.withdrawalWindow !== null
-        ? Duration.fromPartial(object.withdrawalWindow)
-        : undefined;
+    const message = createBaseParamsToUpdate();
+    message.withdrawalWindow = (object.withdrawalWindow !== undefined && object.withdrawalWindow !== null)
+      ? Duration.fromPartial(object.withdrawalWindow)
+      : undefined;
     message.withdrawalThreshold = object.withdrawalThreshold ?? "";
-    message.assetsRouteToFutures = (object.assetsRouteToFutures ?? []).map(
-      (e) => e
-    );
+    message.assetsRouteToFutures = object.assetsRouteToFutures?.map((e) => e) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -95,18 +95,14 @@ export interface StakeEquivalence {
   ratio: string;
 }
 
-const baseFeeStructure: object = {};
+function createBaseFeeStructure(): FeeStructure {
+  return { feeCategory: undefined, feeTiers: [] };
+}
 
 export const FeeStructure = {
-  encode(
-    message: FeeStructure,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FeeStructure, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.feeCategory !== undefined) {
-      FeeCategory.encode(
-        message.feeCategory,
-        writer.uint32(10).fork()
-      ).ldelim();
+      FeeCategory.encode(message.feeCategory, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.feeTiers) {
       FeeTier.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -115,79 +111,74 @@ export const FeeStructure = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FeeStructure {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFeeStructure } as FeeStructure;
-    message.feeTiers = [];
+    const message = createBaseFeeStructure();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.feeCategory = FeeCategory.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.feeTiers.push(FeeTier.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FeeStructure {
-    const message = { ...baseFeeStructure } as FeeStructure;
-    message.feeCategory =
-      object.feeCategory !== undefined && object.feeCategory !== null
-        ? FeeCategory.fromJSON(object.feeCategory)
-        : undefined;
-    message.feeTiers = (object.feeTiers ?? []).map((e: any) =>
-      FeeTier.fromJSON(e)
-    );
-    return message;
+    return {
+      feeCategory: isSet(object.feeCategory) ? FeeCategory.fromJSON(object.feeCategory) : undefined,
+      feeTiers: Array.isArray(object?.feeTiers) ? object.feeTiers.map((e: any) => FeeTier.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: FeeStructure): unknown {
     const obj: any = {};
     message.feeCategory !== undefined &&
-      (obj.feeCategory = message.feeCategory
-        ? FeeCategory.toJSON(message.feeCategory)
-        : undefined);
+      (obj.feeCategory = message.feeCategory ? FeeCategory.toJSON(message.feeCategory) : undefined);
     if (message.feeTiers) {
-      obj.feeTiers = message.feeTiers.map((e) =>
-        e ? FeeTier.toJSON(e) : undefined
-      );
+      obj.feeTiers = message.feeTiers.map((e) => e ? FeeTier.toJSON(e) : undefined);
     } else {
       obj.feeTiers = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<FeeStructure>): FeeStructure {
+    return FeeStructure.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FeeStructure>): FeeStructure {
-    const message = { ...baseFeeStructure } as FeeStructure;
-    message.feeCategory =
-      object.feeCategory !== undefined && object.feeCategory !== null
-        ? FeeCategory.fromPartial(object.feeCategory)
-        : undefined;
-    message.feeTiers = (object.feeTiers ?? []).map((e) =>
-      FeeTier.fromPartial(e)
-    );
+    const message = createBaseFeeStructure();
+    message.feeCategory = (object.feeCategory !== undefined && object.feeCategory !== null)
+      ? FeeCategory.fromPartial(object.feeCategory)
+      : undefined;
+    message.feeTiers = object.feeTiers?.map((e) => FeeTier.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseFeeCategory: object = {
-  marketType: "",
-  marketId: "",
-  whitelistedAddress: "",
-};
+function createBaseFeeCategory(): FeeCategory {
+  return { marketType: "", marketId: "", whitelistedAddress: "" };
+}
 
 export const FeeCategory = {
-  encode(
-    message: FeeCategory,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FeeCategory, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketType !== "") {
       writer.uint32(10).string(message.marketType);
     }
@@ -201,58 +192,64 @@ export const FeeCategory = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FeeCategory {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFeeCategory } as FeeCategory;
+    const message = createBaseFeeCategory();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketType = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.whitelistedAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FeeCategory {
-    const message = { ...baseFeeCategory } as FeeCategory;
-    message.marketType =
-      object.marketType !== undefined && object.marketType !== null
-        ? String(object.marketType)
-        : "";
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.whitelistedAddress =
-      object.whitelistedAddress !== undefined &&
-      object.whitelistedAddress !== null
-        ? String(object.whitelistedAddress)
-        : "";
-    return message;
+    return {
+      marketType: isSet(object.marketType) ? String(object.marketType) : "",
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      whitelistedAddress: isSet(object.whitelistedAddress) ? String(object.whitelistedAddress) : "",
+    };
   },
 
   toJSON(message: FeeCategory): unknown {
     const obj: any = {};
     message.marketType !== undefined && (obj.marketType = message.marketType);
     message.marketId !== undefined && (obj.marketId = message.marketId);
-    message.whitelistedAddress !== undefined &&
-      (obj.whitelistedAddress = message.whitelistedAddress);
+    message.whitelistedAddress !== undefined && (obj.whitelistedAddress = message.whitelistedAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<FeeCategory>): FeeCategory {
+    return FeeCategory.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FeeCategory>): FeeCategory {
-    const message = { ...baseFeeCategory } as FeeCategory;
+    const message = createBaseFeeCategory();
     message.marketType = object.marketType ?? "";
     message.marketId = object.marketId ?? "";
     message.whitelistedAddress = object.whitelistedAddress ?? "";
@@ -260,88 +257,86 @@ export const FeeCategory = {
   },
 };
 
-const baseFeeTier: object = { requiredStake: "" };
+function createBaseFeeTier(): FeeTier {
+  return { requiredStake: "", tradingFees: undefined };
+}
 
 export const FeeTier = {
-  encode(
-    message: FeeTier,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: FeeTier, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.requiredStake !== "") {
       writer.uint32(10).string(message.requiredStake);
     }
     if (message.tradingFees !== undefined) {
-      TradingFees.encode(
-        message.tradingFees,
-        writer.uint32(18).fork()
-      ).ldelim();
+      TradingFees.encode(message.tradingFees, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FeeTier {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseFeeTier } as FeeTier;
+    const message = createBaseFeeTier();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.requiredStake = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.tradingFees = TradingFees.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): FeeTier {
-    const message = { ...baseFeeTier } as FeeTier;
-    message.requiredStake =
-      object.requiredStake !== undefined && object.requiredStake !== null
-        ? String(object.requiredStake)
-        : "";
-    message.tradingFees =
-      object.tradingFees !== undefined && object.tradingFees !== null
-        ? TradingFees.fromJSON(object.tradingFees)
-        : undefined;
-    return message;
+    return {
+      requiredStake: isSet(object.requiredStake) ? String(object.requiredStake) : "",
+      tradingFees: isSet(object.tradingFees) ? TradingFees.fromJSON(object.tradingFees) : undefined,
+    };
   },
 
   toJSON(message: FeeTier): unknown {
     const obj: any = {};
-    message.requiredStake !== undefined &&
-      (obj.requiredStake = message.requiredStake);
+    message.requiredStake !== undefined && (obj.requiredStake = message.requiredStake);
     message.tradingFees !== undefined &&
-      (obj.tradingFees = message.tradingFees
-        ? TradingFees.toJSON(message.tradingFees)
-        : undefined);
+      (obj.tradingFees = message.tradingFees ? TradingFees.toJSON(message.tradingFees) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<FeeTier>): FeeTier {
+    return FeeTier.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FeeTier>): FeeTier {
-    const message = { ...baseFeeTier } as FeeTier;
+    const message = createBaseFeeTier();
     message.requiredStake = object.requiredStake ?? "";
-    message.tradingFees =
-      object.tradingFees !== undefined && object.tradingFees !== null
-        ? TradingFees.fromPartial(object.tradingFees)
-        : undefined;
+    message.tradingFees = (object.tradingFees !== undefined && object.tradingFees !== null)
+      ? TradingFees.fromPartial(object.tradingFees)
+      : undefined;
     return message;
   },
 };
 
-const baseTradingFees: object = { takerFee: "", makerFee: "" };
+function createBaseTradingFees(): TradingFees {
+  return { takerFee: "", makerFee: "" };
+}
 
 export const TradingFees = {
-  encode(
-    message: TradingFees,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TradingFees, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.takerFee !== "") {
       writer.uint32(42).string(message.takerFee);
     }
@@ -352,37 +347,40 @@ export const TradingFees = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TradingFees {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTradingFees } as TradingFees;
+    const message = createBaseTradingFees();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.takerFee = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.makerFee = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TradingFees {
-    const message = { ...baseTradingFees } as TradingFees;
-    message.takerFee =
-      object.takerFee !== undefined && object.takerFee !== null
-        ? String(object.takerFee)
-        : "";
-    message.makerFee =
-      object.makerFee !== undefined && object.makerFee !== null
-        ? String(object.makerFee)
-        : "";
-    return message;
+    return {
+      takerFee: isSet(object.takerFee) ? String(object.takerFee) : "",
+      makerFee: isSet(object.makerFee) ? String(object.makerFee) : "",
+    };
   },
 
   toJSON(message: TradingFees): unknown {
@@ -392,21 +390,24 @@ export const TradingFees = {
     return obj;
   },
 
+  create(base?: DeepPartial<TradingFees>): TradingFees {
+    return TradingFees.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TradingFees>): TradingFees {
-    const message = { ...baseTradingFees } as TradingFees;
+    const message = createBaseTradingFees();
     message.takerFee = object.takerFee ?? "";
     message.makerFee = object.makerFee ?? "";
     return message;
   },
 };
 
-const baseStakeEquivalence: object = { denom: "", ratio: "" };
+function createBaseStakeEquivalence(): StakeEquivalence {
+  return { denom: "", ratio: "" };
+}
 
 export const StakeEquivalence = {
-  encode(
-    message: StakeEquivalence,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: StakeEquivalence, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -417,37 +418,40 @@ export const StakeEquivalence = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): StakeEquivalence {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseStakeEquivalence } as StakeEquivalence;
+    const message = createBaseStakeEquivalence();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.ratio = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): StakeEquivalence {
-    const message = { ...baseStakeEquivalence } as StakeEquivalence;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.ratio =
-      object.ratio !== undefined && object.ratio !== null
-        ? String(object.ratio)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      ratio: isSet(object.ratio) ? String(object.ratio) : "",
+    };
   },
 
   toJSON(message: StakeEquivalence): unknown {
@@ -457,35 +461,31 @@ export const StakeEquivalence = {
     return obj;
   },
 
+  create(base?: DeepPartial<StakeEquivalence>): StakeEquivalence {
+    return StakeEquivalence.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<StakeEquivalence>): StakeEquivalence {
-    const message = { ...baseStakeEquivalence } as StakeEquivalence;
+    const message = createBaseStakeEquivalence();
     message.denom = object.denom ?? "";
     message.ratio = object.ratio ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

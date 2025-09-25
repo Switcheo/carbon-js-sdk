@@ -1,12 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Header } from "../../../tendermint/types/types";
 import { Any } from "../../../google/protobuf/any";
 import { Duration } from "../../../google/protobuf/duration";
-import { Coin } from "../../base/v1beta1/coin";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 import { ValidatorUpdate } from "../../../tendermint/abci/types";
+import { Header } from "../../../tendermint/types/types";
+import { Coin } from "../../base/v1beta1/coin";
 
 export const protobufPackage = "cosmos.staking.v1beta1";
 
@@ -54,8 +54,9 @@ export function bondStatusToJSON(object: BondStatus): string {
       return "BOND_STATUS_UNBONDING";
     case BondStatus.BOND_STATUS_BONDED:
       return "BOND_STATUS_BONDED";
+    case BondStatus.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -96,8 +97,9 @@ export function infractionToJSON(object: Infraction): string {
       return "INFRACTION_DOUBLE_SIGN";
     case Infraction.INFRACTION_DOWNTIME:
       return "INFRACTION_DOWNTIME";
+    case Infraction.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -363,13 +365,12 @@ export interface ValidatorUpdates {
   updates: ValidatorUpdate[];
 }
 
-const baseHistoricalInfo: object = {};
+function createBaseHistoricalInfo(): HistoricalInfo {
+  return { header: undefined, valset: [] };
+}
 
 export const HistoricalInfo = {
-  encode(
-    message: HistoricalInfo,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: HistoricalInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.header !== undefined) {
       Header.encode(message.header, writer.uint32(10).fork()).ldelim();
     }
@@ -380,75 +381,73 @@ export const HistoricalInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): HistoricalInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseHistoricalInfo } as HistoricalInfo;
-    message.valset = [];
+    const message = createBaseHistoricalInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.header = Header.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.valset.push(Validator.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): HistoricalInfo {
-    const message = { ...baseHistoricalInfo } as HistoricalInfo;
-    message.header =
-      object.header !== undefined && object.header !== null
-        ? Header.fromJSON(object.header)
-        : undefined;
-    message.valset = (object.valset ?? []).map((e: any) =>
-      Validator.fromJSON(e)
-    );
-    return message;
+    return {
+      header: isSet(object.header) ? Header.fromJSON(object.header) : undefined,
+      valset: Array.isArray(object?.valset) ? object.valset.map((e: any) => Validator.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: HistoricalInfo): unknown {
     const obj: any = {};
-    message.header !== undefined &&
-      (obj.header = message.header ? Header.toJSON(message.header) : undefined);
+    message.header !== undefined && (obj.header = message.header ? Header.toJSON(message.header) : undefined);
     if (message.valset) {
-      obj.valset = message.valset.map((e) =>
-        e ? Validator.toJSON(e) : undefined
-      );
+      obj.valset = message.valset.map((e) => e ? Validator.toJSON(e) : undefined);
     } else {
       obj.valset = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<HistoricalInfo>): HistoricalInfo {
+    return HistoricalInfo.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<HistoricalInfo>): HistoricalInfo {
-    const message = { ...baseHistoricalInfo } as HistoricalInfo;
-    message.header =
-      object.header !== undefined && object.header !== null
-        ? Header.fromPartial(object.header)
-        : undefined;
-    message.valset = (object.valset ?? []).map((e) => Validator.fromPartial(e));
+    const message = createBaseHistoricalInfo();
+    message.header = (object.header !== undefined && object.header !== null)
+      ? Header.fromPartial(object.header)
+      : undefined;
+    message.valset = object.valset?.map((e) => Validator.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseCommissionRates: object = {
-  rate: "",
-  maxRate: "",
-  maxChangeRate: "",
-};
+function createBaseCommissionRates(): CommissionRates {
+  return { rate: "", maxRate: "", maxChangeRate: "" };
+}
 
 export const CommissionRates = {
-  encode(
-    message: CommissionRates,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommissionRates, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rate !== "") {
       writer.uint32(10).string(message.rate);
     }
@@ -462,57 +461,64 @@ export const CommissionRates = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CommissionRates {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommissionRates } as CommissionRates;
+    const message = createBaseCommissionRates();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.rate = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.maxRate = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.maxChangeRate = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CommissionRates {
-    const message = { ...baseCommissionRates } as CommissionRates;
-    message.rate =
-      object.rate !== undefined && object.rate !== null
-        ? String(object.rate)
-        : "";
-    message.maxRate =
-      object.maxRate !== undefined && object.maxRate !== null
-        ? String(object.maxRate)
-        : "";
-    message.maxChangeRate =
-      object.maxChangeRate !== undefined && object.maxChangeRate !== null
-        ? String(object.maxChangeRate)
-        : "";
-    return message;
+    return {
+      rate: isSet(object.rate) ? String(object.rate) : "",
+      maxRate: isSet(object.maxRate) ? String(object.maxRate) : "",
+      maxChangeRate: isSet(object.maxChangeRate) ? String(object.maxChangeRate) : "",
+    };
   },
 
   toJSON(message: CommissionRates): unknown {
     const obj: any = {};
     message.rate !== undefined && (obj.rate = message.rate);
     message.maxRate !== undefined && (obj.maxRate = message.maxRate);
-    message.maxChangeRate !== undefined &&
-      (obj.maxChangeRate = message.maxChangeRate);
+    message.maxChangeRate !== undefined && (obj.maxChangeRate = message.maxChangeRate);
     return obj;
   },
 
+  create(base?: DeepPartial<CommissionRates>): CommissionRates {
+    return CommissionRates.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CommissionRates>): CommissionRates {
-    const message = { ...baseCommissionRates } as CommissionRates;
+    const message = createBaseCommissionRates();
     message.rate = object.rate ?? "";
     message.maxRate = object.maxRate ?? "";
     message.maxChangeRate = object.maxChangeRate ?? "";
@@ -520,102 +526,86 @@ export const CommissionRates = {
   },
 };
 
-const baseCommission: object = {};
+function createBaseCommission(): Commission {
+  return { commissionRates: undefined, updateTime: undefined };
+}
 
 export const Commission = {
-  encode(
-    message: Commission,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Commission, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.commissionRates !== undefined) {
-      CommissionRates.encode(
-        message.commissionRates,
-        writer.uint32(10).fork()
-      ).ldelim();
+      CommissionRates.encode(message.commissionRates, writer.uint32(10).fork()).ldelim();
     }
     if (message.updateTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.updateTime),
-        writer.uint32(18).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.updateTime), writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Commission {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommission } as Commission;
+    const message = createBaseCommission();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.commissionRates = CommissionRates.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.commissionRates = CommissionRates.decode(reader, reader.uint32());
+          continue;
         case 2:
-          message.updateTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.updateTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Commission {
-    const message = { ...baseCommission } as Commission;
-    message.commissionRates =
-      object.commissionRates !== undefined && object.commissionRates !== null
-        ? CommissionRates.fromJSON(object.commissionRates)
-        : undefined;
-    message.updateTime =
-      object.updateTime !== undefined && object.updateTime !== null
-        ? fromJsonTimestamp(object.updateTime)
-        : undefined;
-    return message;
+    return {
+      commissionRates: isSet(object.commissionRates) ? CommissionRates.fromJSON(object.commissionRates) : undefined,
+      updateTime: isSet(object.updateTime) ? fromJsonTimestamp(object.updateTime) : undefined,
+    };
   },
 
   toJSON(message: Commission): unknown {
     const obj: any = {};
     message.commissionRates !== undefined &&
-      (obj.commissionRates = message.commissionRates
-        ? CommissionRates.toJSON(message.commissionRates)
-        : undefined);
-    message.updateTime !== undefined &&
-      (obj.updateTime = message.updateTime.toISOString());
+      (obj.commissionRates = message.commissionRates ? CommissionRates.toJSON(message.commissionRates) : undefined);
+    message.updateTime !== undefined && (obj.updateTime = message.updateTime.toISOString());
     return obj;
   },
 
+  create(base?: DeepPartial<Commission>): Commission {
+    return Commission.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Commission>): Commission {
-    const message = { ...baseCommission } as Commission;
-    message.commissionRates =
-      object.commissionRates !== undefined && object.commissionRates !== null
-        ? CommissionRates.fromPartial(object.commissionRates)
-        : undefined;
+    const message = createBaseCommission();
+    message.commissionRates = (object.commissionRates !== undefined && object.commissionRates !== null)
+      ? CommissionRates.fromPartial(object.commissionRates)
+      : undefined;
     message.updateTime = object.updateTime ?? undefined;
     return message;
   },
 };
 
-const baseDescription: object = {
-  moniker: "",
-  identity: "",
-  website: "",
-  securityContact: "",
-  details: "",
-};
+function createBaseDescription(): Description {
+  return { moniker: "", identity: "", website: "", securityContact: "", details: "" };
+}
 
 export const Description = {
-  encode(
-    message: Description,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Description, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.moniker !== "") {
       writer.uint32(10).string(message.moniker);
     }
@@ -635,58 +625,64 @@ export const Description = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Description {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDescription } as Description;
+    const message = createBaseDescription();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.moniker = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.identity = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.website = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.securityContact = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.details = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Description {
-    const message = { ...baseDescription } as Description;
-    message.moniker =
-      object.moniker !== undefined && object.moniker !== null
-        ? String(object.moniker)
-        : "";
-    message.identity =
-      object.identity !== undefined && object.identity !== null
-        ? String(object.identity)
-        : "";
-    message.website =
-      object.website !== undefined && object.website !== null
-        ? String(object.website)
-        : "";
-    message.securityContact =
-      object.securityContact !== undefined && object.securityContact !== null
-        ? String(object.securityContact)
-        : "";
-    message.details =
-      object.details !== undefined && object.details !== null
-        ? String(object.details)
-        : "";
-    return message;
+    return {
+      moniker: isSet(object.moniker) ? String(object.moniker) : "",
+      identity: isSet(object.identity) ? String(object.identity) : "",
+      website: isSet(object.website) ? String(object.website) : "",
+      securityContact: isSet(object.securityContact) ? String(object.securityContact) : "",
+      details: isSet(object.details) ? String(object.details) : "",
+    };
   },
 
   toJSON(message: Description): unknown {
@@ -694,14 +690,17 @@ export const Description = {
     message.moniker !== undefined && (obj.moniker = message.moniker);
     message.identity !== undefined && (obj.identity = message.identity);
     message.website !== undefined && (obj.website = message.website);
-    message.securityContact !== undefined &&
-      (obj.securityContact = message.securityContact);
+    message.securityContact !== undefined && (obj.securityContact = message.securityContact);
     message.details !== undefined && (obj.details = message.details);
     return obj;
   },
 
+  create(base?: DeepPartial<Description>): Description {
+    return Description.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Description>): Description {
-    const message = { ...baseDescription } as Description;
+    const message = createBaseDescription();
     message.moniker = object.moniker ?? "";
     message.identity = object.identity ?? "";
     message.website = object.website ?? "";
@@ -711,23 +710,26 @@ export const Description = {
   },
 };
 
-const baseValidator: object = {
-  operatorAddress: "",
-  jailed: false,
-  status: 0,
-  tokens: "",
-  delegatorShares: "",
-  unbondingHeight: Long.ZERO,
-  minSelfDelegation: "",
-  unbondingOnHoldRefCount: Long.ZERO,
-  unbondingIds: Long.UZERO,
-};
+function createBaseValidator(): Validator {
+  return {
+    operatorAddress: "",
+    consensusPubkey: undefined,
+    jailed: false,
+    status: 0,
+    tokens: "",
+    delegatorShares: "",
+    description: undefined,
+    unbondingHeight: Long.ZERO,
+    unbondingTime: undefined,
+    commission: undefined,
+    minSelfDelegation: "",
+    unbondingOnHoldRefCount: Long.ZERO,
+    unbondingIds: [],
+  };
+}
 
 export const Validator = {
-  encode(
-    message: Validator,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Validator, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.operatorAddress !== "") {
       writer.uint32(10).string(message.operatorAddress);
     }
@@ -747,19 +749,13 @@ export const Validator = {
       writer.uint32(50).string(message.delegatorShares);
     }
     if (message.description !== undefined) {
-      Description.encode(
-        message.description,
-        writer.uint32(58).fork()
-      ).ldelim();
+      Description.encode(message.description, writer.uint32(58).fork()).ldelim();
     }
     if (!message.unbondingHeight.isZero()) {
       writer.uint32(64).int64(message.unbondingHeight);
     }
     if (message.unbondingTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.unbondingTime),
-        writer.uint32(74).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.unbondingTime), writer.uint32(74).fork()).ldelim();
     }
     if (message.commission !== undefined) {
       Commission.encode(message.commission, writer.uint32(82).fork()).ldelim();
@@ -779,213 +775,208 @@ export const Validator = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Validator {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseValidator } as Validator;
-    message.unbondingIds = [];
+    const message = createBaseValidator();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.operatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.consensusPubkey = Any.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.jailed = reader.bool();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.status = reader.int32() as any;
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.tokens = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.delegatorShares = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.description = Description.decode(reader, reader.uint32());
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.unbondingHeight = reader.int64() as Long;
-          break;
+          continue;
         case 9:
-          message.unbondingTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 74) {
+            break;
+          }
+
+          message.unbondingTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.commission = Commission.decode(reader, reader.uint32());
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.minSelfDelegation = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 96) {
+            break;
+          }
+
           message.unbondingOnHoldRefCount = reader.int64() as Long;
-          break;
+          continue;
         case 13:
-          if ((tag & 7) === 2) {
+          if (tag === 104) {
+            message.unbondingIds.push(reader.uint64() as Long);
+
+            continue;
+          }
+
+          if (tag === 106) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.unbondingIds.push(reader.uint64() as Long);
             }
-          } else {
-            message.unbondingIds.push(reader.uint64() as Long);
+
+            continue;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
+
           break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Validator {
-    const message = { ...baseValidator } as Validator;
-    message.operatorAddress =
-      object.operatorAddress !== undefined && object.operatorAddress !== null
-        ? String(object.operatorAddress)
-        : "";
-    message.consensusPubkey =
-      object.consensusPubkey !== undefined && object.consensusPubkey !== null
-        ? Any.fromJSON(object.consensusPubkey)
-        : undefined;
-    message.jailed =
-      object.jailed !== undefined && object.jailed !== null
-        ? Boolean(object.jailed)
-        : false;
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? bondStatusFromJSON(object.status)
-        : 0;
-    message.tokens =
-      object.tokens !== undefined && object.tokens !== null
-        ? String(object.tokens)
-        : "";
-    message.delegatorShares =
-      object.delegatorShares !== undefined && object.delegatorShares !== null
-        ? String(object.delegatorShares)
-        : "";
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? Description.fromJSON(object.description)
-        : undefined;
-    message.unbondingHeight =
-      object.unbondingHeight !== undefined && object.unbondingHeight !== null
-        ? Long.fromString(object.unbondingHeight)
-        : Long.ZERO;
-    message.unbondingTime =
-      object.unbondingTime !== undefined && object.unbondingTime !== null
-        ? fromJsonTimestamp(object.unbondingTime)
-        : undefined;
-    message.commission =
-      object.commission !== undefined && object.commission !== null
-        ? Commission.fromJSON(object.commission)
-        : undefined;
-    message.minSelfDelegation =
-      object.minSelfDelegation !== undefined &&
-      object.minSelfDelegation !== null
-        ? String(object.minSelfDelegation)
-        : "";
-    message.unbondingOnHoldRefCount =
-      object.unbondingOnHoldRefCount !== undefined &&
-      object.unbondingOnHoldRefCount !== null
-        ? Long.fromString(object.unbondingOnHoldRefCount)
-        : Long.ZERO;
-    message.unbondingIds = (object.unbondingIds ?? []).map((e: any) =>
-      Long.fromString(e)
-    );
-    return message;
+    return {
+      operatorAddress: isSet(object.operatorAddress) ? String(object.operatorAddress) : "",
+      consensusPubkey: isSet(object.consensusPubkey) ? Any.fromJSON(object.consensusPubkey) : undefined,
+      jailed: isSet(object.jailed) ? Boolean(object.jailed) : false,
+      status: isSet(object.status) ? bondStatusFromJSON(object.status) : 0,
+      tokens: isSet(object.tokens) ? String(object.tokens) : "",
+      delegatorShares: isSet(object.delegatorShares) ? String(object.delegatorShares) : "",
+      description: isSet(object.description) ? Description.fromJSON(object.description) : undefined,
+      unbondingHeight: isSet(object.unbondingHeight) ? Long.fromValue(object.unbondingHeight) : Long.ZERO,
+      unbondingTime: isSet(object.unbondingTime) ? fromJsonTimestamp(object.unbondingTime) : undefined,
+      commission: isSet(object.commission) ? Commission.fromJSON(object.commission) : undefined,
+      minSelfDelegation: isSet(object.minSelfDelegation) ? String(object.minSelfDelegation) : "",
+      unbondingOnHoldRefCount: isSet(object.unbondingOnHoldRefCount)
+        ? Long.fromValue(object.unbondingOnHoldRefCount)
+        : Long.ZERO,
+      unbondingIds: Array.isArray(object?.unbondingIds) ? object.unbondingIds.map((e: any) => Long.fromValue(e)) : [],
+    };
   },
 
   toJSON(message: Validator): unknown {
     const obj: any = {};
-    message.operatorAddress !== undefined &&
-      (obj.operatorAddress = message.operatorAddress);
+    message.operatorAddress !== undefined && (obj.operatorAddress = message.operatorAddress);
     message.consensusPubkey !== undefined &&
-      (obj.consensusPubkey = message.consensusPubkey
-        ? Any.toJSON(message.consensusPubkey)
-        : undefined);
+      (obj.consensusPubkey = message.consensusPubkey ? Any.toJSON(message.consensusPubkey) : undefined);
     message.jailed !== undefined && (obj.jailed = message.jailed);
-    message.status !== undefined &&
-      (obj.status = bondStatusToJSON(message.status));
+    message.status !== undefined && (obj.status = bondStatusToJSON(message.status));
     message.tokens !== undefined && (obj.tokens = message.tokens);
-    message.delegatorShares !== undefined &&
-      (obj.delegatorShares = message.delegatorShares);
+    message.delegatorShares !== undefined && (obj.delegatorShares = message.delegatorShares);
     message.description !== undefined &&
-      (obj.description = message.description
-        ? Description.toJSON(message.description)
-        : undefined);
-    message.unbondingHeight !== undefined &&
-      (obj.unbondingHeight = (message.unbondingHeight || Long.ZERO).toString());
-    message.unbondingTime !== undefined &&
-      (obj.unbondingTime = message.unbondingTime.toISOString());
+      (obj.description = message.description ? Description.toJSON(message.description) : undefined);
+    message.unbondingHeight !== undefined && (obj.unbondingHeight = (message.unbondingHeight || Long.ZERO).toString());
+    message.unbondingTime !== undefined && (obj.unbondingTime = message.unbondingTime.toISOString());
     message.commission !== undefined &&
-      (obj.commission = message.commission
-        ? Commission.toJSON(message.commission)
-        : undefined);
-    message.minSelfDelegation !== undefined &&
-      (obj.minSelfDelegation = message.minSelfDelegation);
+      (obj.commission = message.commission ? Commission.toJSON(message.commission) : undefined);
+    message.minSelfDelegation !== undefined && (obj.minSelfDelegation = message.minSelfDelegation);
     message.unbondingOnHoldRefCount !== undefined &&
-      (obj.unbondingOnHoldRefCount = (
-        message.unbondingOnHoldRefCount || Long.ZERO
-      ).toString());
+      (obj.unbondingOnHoldRefCount = (message.unbondingOnHoldRefCount || Long.ZERO).toString());
     if (message.unbondingIds) {
-      obj.unbondingIds = message.unbondingIds.map((e) =>
-        (e || Long.UZERO).toString()
-      );
+      obj.unbondingIds = message.unbondingIds.map((e) => (e || Long.UZERO).toString());
     } else {
       obj.unbondingIds = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Validator>): Validator {
+    return Validator.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Validator>): Validator {
-    const message = { ...baseValidator } as Validator;
+    const message = createBaseValidator();
     message.operatorAddress = object.operatorAddress ?? "";
-    message.consensusPubkey =
-      object.consensusPubkey !== undefined && object.consensusPubkey !== null
-        ? Any.fromPartial(object.consensusPubkey)
-        : undefined;
+    message.consensusPubkey = (object.consensusPubkey !== undefined && object.consensusPubkey !== null)
+      ? Any.fromPartial(object.consensusPubkey)
+      : undefined;
     message.jailed = object.jailed ?? false;
     message.status = object.status ?? 0;
     message.tokens = object.tokens ?? "";
     message.delegatorShares = object.delegatorShares ?? "";
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? Description.fromPartial(object.description)
-        : undefined;
-    message.unbondingHeight =
-      object.unbondingHeight !== undefined && object.unbondingHeight !== null
-        ? Long.fromValue(object.unbondingHeight)
-        : Long.ZERO;
+    message.description = (object.description !== undefined && object.description !== null)
+      ? Description.fromPartial(object.description)
+      : undefined;
+    message.unbondingHeight = (object.unbondingHeight !== undefined && object.unbondingHeight !== null)
+      ? Long.fromValue(object.unbondingHeight)
+      : Long.ZERO;
     message.unbondingTime = object.unbondingTime ?? undefined;
-    message.commission =
-      object.commission !== undefined && object.commission !== null
-        ? Commission.fromPartial(object.commission)
-        : undefined;
+    message.commission = (object.commission !== undefined && object.commission !== null)
+      ? Commission.fromPartial(object.commission)
+      : undefined;
     message.minSelfDelegation = object.minSelfDelegation ?? "";
     message.unbondingOnHoldRefCount =
-      object.unbondingOnHoldRefCount !== undefined &&
-      object.unbondingOnHoldRefCount !== null
+      (object.unbondingOnHoldRefCount !== undefined && object.unbondingOnHoldRefCount !== null)
         ? Long.fromValue(object.unbondingOnHoldRefCount)
         : Long.ZERO;
-    message.unbondingIds = (object.unbondingIds ?? []).map((e) =>
-      Long.fromValue(e)
-    );
+    message.unbondingIds = object.unbondingIds?.map((e) => Long.fromValue(e)) || [];
     return message;
   },
 };
 
-const baseValAddresses: object = { addresses: "" };
+function createBaseValAddresses(): ValAddresses {
+  return { addresses: [] };
+}
 
 export const ValAddresses = {
-  encode(
-    message: ValAddresses,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ValAddresses, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.addresses) {
       writer.uint32(10).string(v!);
     }
@@ -993,28 +984,30 @@ export const ValAddresses = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ValAddresses {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseValAddresses } as ValAddresses;
-    message.addresses = [];
+    const message = createBaseValAddresses();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.addresses.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ValAddresses {
-    const message = { ...baseValAddresses } as ValAddresses;
-    message.addresses = (object.addresses ?? []).map((e: any) => String(e));
-    return message;
+    return { addresses: Array.isArray(object?.addresses) ? object.addresses.map((e: any) => String(e)) : [] };
   },
 
   toJSON(message: ValAddresses): unknown {
@@ -1027,20 +1020,23 @@ export const ValAddresses = {
     return obj;
   },
 
+  create(base?: DeepPartial<ValAddresses>): ValAddresses {
+    return ValAddresses.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ValAddresses>): ValAddresses {
-    const message = { ...baseValAddresses } as ValAddresses;
-    message.addresses = (object.addresses ?? []).map((e) => e);
+    const message = createBaseValAddresses();
+    message.addresses = object.addresses?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseDVPair: object = { delegatorAddress: "", validatorAddress: "" };
+function createBaseDVPair(): DVPair {
+  return { delegatorAddress: "", validatorAddress: "" };
+}
 
 export const DVPair = {
-  encode(
-    message: DVPair,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DVPair, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -1051,63 +1047,67 @@ export const DVPair = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DVPair {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDVPair } as DVPair;
+    const message = createBaseDVPair();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DVPair {
-    const message = { ...baseDVPair } as DVPair;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.validatorAddress =
-      object.validatorAddress !== undefined && object.validatorAddress !== null
-        ? String(object.validatorAddress)
-        : "";
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
+    };
   },
 
   toJSON(message: DVPair): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.validatorAddress !== undefined &&
-      (obj.validatorAddress = message.validatorAddress);
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<DVPair>): DVPair {
+    return DVPair.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DVPair>): DVPair {
-    const message = { ...baseDVPair } as DVPair;
+    const message = createBaseDVPair();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
 
-const baseDVPairs: object = {};
+function createBaseDVPairs(): DVPairs {
+  return { pairs: [] };
+}
 
 export const DVPairs = {
-  encode(
-    message: DVPairs,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DVPairs, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.pairs) {
       DVPair.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1115,58 +1115,59 @@ export const DVPairs = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DVPairs {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDVPairs } as DVPairs;
-    message.pairs = [];
+    const message = createBaseDVPairs();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pairs.push(DVPair.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DVPairs {
-    const message = { ...baseDVPairs } as DVPairs;
-    message.pairs = (object.pairs ?? []).map((e: any) => DVPair.fromJSON(e));
-    return message;
+    return { pairs: Array.isArray(object?.pairs) ? object.pairs.map((e: any) => DVPair.fromJSON(e)) : [] };
   },
 
   toJSON(message: DVPairs): unknown {
     const obj: any = {};
     if (message.pairs) {
-      obj.pairs = message.pairs.map((e) => (e ? DVPair.toJSON(e) : undefined));
+      obj.pairs = message.pairs.map((e) => e ? DVPair.toJSON(e) : undefined);
     } else {
       obj.pairs = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<DVPairs>): DVPairs {
+    return DVPairs.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DVPairs>): DVPairs {
-    const message = { ...baseDVPairs } as DVPairs;
-    message.pairs = (object.pairs ?? []).map((e) => DVPair.fromPartial(e));
+    const message = createBaseDVPairs();
+    message.pairs = object.pairs?.map((e) => DVPair.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseDVVTriplet: object = {
-  delegatorAddress: "",
-  validatorSrcAddress: "",
-  validatorDstAddress: "",
-};
+function createBaseDVVTriplet(): DVVTriplet {
+  return { delegatorAddress: "", validatorSrcAddress: "", validatorDstAddress: "" };
+}
 
 export const DVVTriplet = {
-  encode(
-    message: DVVTriplet,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DVVTriplet, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -1180,61 +1181,64 @@ export const DVVTriplet = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DVVTriplet {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDVVTriplet } as DVVTriplet;
+    const message = createBaseDVVTriplet();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorSrcAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.validatorDstAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DVVTriplet {
-    const message = { ...baseDVVTriplet } as DVVTriplet;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.validatorSrcAddress =
-      object.validatorSrcAddress !== undefined &&
-      object.validatorSrcAddress !== null
-        ? String(object.validatorSrcAddress)
-        : "";
-    message.validatorDstAddress =
-      object.validatorDstAddress !== undefined &&
-      object.validatorDstAddress !== null
-        ? String(object.validatorDstAddress)
-        : "";
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      validatorSrcAddress: isSet(object.validatorSrcAddress) ? String(object.validatorSrcAddress) : "",
+      validatorDstAddress: isSet(object.validatorDstAddress) ? String(object.validatorDstAddress) : "",
+    };
   },
 
   toJSON(message: DVVTriplet): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.validatorSrcAddress !== undefined &&
-      (obj.validatorSrcAddress = message.validatorSrcAddress);
-    message.validatorDstAddress !== undefined &&
-      (obj.validatorDstAddress = message.validatorDstAddress);
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.validatorSrcAddress !== undefined && (obj.validatorSrcAddress = message.validatorSrcAddress);
+    message.validatorDstAddress !== undefined && (obj.validatorDstAddress = message.validatorDstAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<DVVTriplet>): DVVTriplet {
+    return DVVTriplet.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DVVTriplet>): DVVTriplet {
-    const message = { ...baseDVVTriplet } as DVVTriplet;
+    const message = createBaseDVVTriplet();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorSrcAddress = object.validatorSrcAddress ?? "";
     message.validatorDstAddress = object.validatorDstAddress ?? "";
@@ -1242,13 +1246,12 @@ export const DVVTriplet = {
   },
 };
 
-const baseDVVTriplets: object = {};
+function createBaseDVVTriplets(): DVVTriplets {
+  return { triplets: [] };
+}
 
 export const DVVTriplets = {
-  encode(
-    message: DVVTriplets,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DVVTriplets, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.triplets) {
       DVVTriplet.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1256,64 +1259,59 @@ export const DVVTriplets = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DVVTriplets {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDVVTriplets } as DVVTriplets;
-    message.triplets = [];
+    const message = createBaseDVVTriplets();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.triplets.push(DVVTriplet.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DVVTriplets {
-    const message = { ...baseDVVTriplets } as DVVTriplets;
-    message.triplets = (object.triplets ?? []).map((e: any) =>
-      DVVTriplet.fromJSON(e)
-    );
-    return message;
+    return { triplets: Array.isArray(object?.triplets) ? object.triplets.map((e: any) => DVVTriplet.fromJSON(e)) : [] };
   },
 
   toJSON(message: DVVTriplets): unknown {
     const obj: any = {};
     if (message.triplets) {
-      obj.triplets = message.triplets.map((e) =>
-        e ? DVVTriplet.toJSON(e) : undefined
-      );
+      obj.triplets = message.triplets.map((e) => e ? DVVTriplet.toJSON(e) : undefined);
     } else {
       obj.triplets = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<DVVTriplets>): DVVTriplets {
+    return DVVTriplets.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DVVTriplets>): DVVTriplets {
-    const message = { ...baseDVVTriplets } as DVVTriplets;
-    message.triplets = (object.triplets ?? []).map((e) =>
-      DVVTriplet.fromPartial(e)
-    );
+    const message = createBaseDVVTriplets();
+    message.triplets = object.triplets?.map((e) => DVVTriplet.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseDelegation: object = {
-  delegatorAddress: "",
-  validatorAddress: "",
-  shares: "",
-};
+function createBaseDelegation(): Delegation {
+  return { delegatorAddress: "", validatorAddress: "", shares: "" };
+}
 
 export const Delegation = {
-  encode(
-    message: Delegation,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Delegation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -1327,58 +1325,64 @@ export const Delegation = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Delegation {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDelegation } as Delegation;
+    const message = createBaseDelegation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.shares = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Delegation {
-    const message = { ...baseDelegation } as Delegation;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.validatorAddress =
-      object.validatorAddress !== undefined && object.validatorAddress !== null
-        ? String(object.validatorAddress)
-        : "";
-    message.shares =
-      object.shares !== undefined && object.shares !== null
-        ? String(object.shares)
-        : "";
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
+      shares: isSet(object.shares) ? String(object.shares) : "",
+    };
   },
 
   toJSON(message: Delegation): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.validatorAddress !== undefined &&
-      (obj.validatorAddress = message.validatorAddress);
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     message.shares !== undefined && (obj.shares = message.shares);
     return obj;
   },
 
+  create(base?: DeepPartial<Delegation>): Delegation {
+    return Delegation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Delegation>): Delegation {
-    const message = { ...baseDelegation } as Delegation;
+    const message = createBaseDelegation();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
     message.shares = object.shares ?? "";
@@ -1386,16 +1390,12 @@ export const Delegation = {
   },
 };
 
-const baseUnbondingDelegation: object = {
-  delegatorAddress: "",
-  validatorAddress: "",
-};
+function createBaseUnbondingDelegation(): UnbondingDelegation {
+  return { delegatorAddress: "", validatorAddress: "", entries: [] };
+}
 
 export const UnbondingDelegation = {
-  encode(
-    message: UnbondingDelegation,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UnbondingDelegation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -1409,96 +1409,95 @@ export const UnbondingDelegation = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UnbondingDelegation {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnbondingDelegation } as UnbondingDelegation;
-    message.entries = [];
+    const message = createBaseUnbondingDelegation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorAddress = reader.string();
-          break;
+          continue;
         case 3:
-          message.entries.push(
-            UnbondingDelegationEntry.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.entries.push(UnbondingDelegationEntry.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UnbondingDelegation {
-    const message = { ...baseUnbondingDelegation } as UnbondingDelegation;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.validatorAddress =
-      object.validatorAddress !== undefined && object.validatorAddress !== null
-        ? String(object.validatorAddress)
-        : "";
-    message.entries = (object.entries ?? []).map((e: any) =>
-      UnbondingDelegationEntry.fromJSON(e)
-    );
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      validatorAddress: isSet(object.validatorAddress) ? String(object.validatorAddress) : "",
+      entries: Array.isArray(object?.entries)
+        ? object.entries.map((e: any) => UnbondingDelegationEntry.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: UnbondingDelegation): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.validatorAddress !== undefined &&
-      (obj.validatorAddress = message.validatorAddress);
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.validatorAddress !== undefined && (obj.validatorAddress = message.validatorAddress);
     if (message.entries) {
-      obj.entries = message.entries.map((e) =>
-        e ? UnbondingDelegationEntry.toJSON(e) : undefined
-      );
+      obj.entries = message.entries.map((e) => e ? UnbondingDelegationEntry.toJSON(e) : undefined);
     } else {
       obj.entries = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<UnbondingDelegation>): UnbondingDelegation {
+    return UnbondingDelegation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UnbondingDelegation>): UnbondingDelegation {
-    const message = { ...baseUnbondingDelegation } as UnbondingDelegation;
+    const message = createBaseUnbondingDelegation();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
-    message.entries = (object.entries ?? []).map((e) =>
-      UnbondingDelegationEntry.fromPartial(e)
-    );
+    message.entries = object.entries?.map((e) => UnbondingDelegationEntry.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseUnbondingDelegationEntry: object = {
-  creationHeight: Long.ZERO,
-  initialBalance: "",
-  balance: "",
-  unbondingId: Long.UZERO,
-  unbondingOnHoldRefCount: Long.ZERO,
-};
+function createBaseUnbondingDelegationEntry(): UnbondingDelegationEntry {
+  return {
+    creationHeight: Long.ZERO,
+    completionTime: undefined,
+    initialBalance: "",
+    balance: "",
+    unbondingId: Long.UZERO,
+    unbondingOnHoldRefCount: Long.ZERO,
+  };
+}
 
 export const UnbondingDelegationEntry = {
-  encode(
-    message: UnbondingDelegationEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UnbondingDelegationEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.creationHeight.isZero()) {
       writer.uint32(8).int64(message.creationHeight);
     }
     if (message.completionTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.completionTime),
-        writer.uint32(18).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.completionTime), writer.uint32(18).fork()).ldelim();
     }
     if (message.initialBalance !== "") {
       writer.uint32(26).string(message.initialBalance);
@@ -1515,143 +1514,130 @@ export const UnbondingDelegationEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UnbondingDelegationEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UnbondingDelegationEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUnbondingDelegationEntry,
-    } as UnbondingDelegationEntry;
+    const message = createBaseUnbondingDelegationEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.creationHeight = reader.int64() as Long;
-          break;
+          continue;
         case 2:
-          message.completionTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.completionTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.initialBalance = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.balance = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.unbondingId = reader.uint64() as Long;
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.unbondingOnHoldRefCount = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UnbondingDelegationEntry {
-    const message = {
-      ...baseUnbondingDelegationEntry,
-    } as UnbondingDelegationEntry;
-    message.creationHeight =
-      object.creationHeight !== undefined && object.creationHeight !== null
-        ? Long.fromString(object.creationHeight)
-        : Long.ZERO;
-    message.completionTime =
-      object.completionTime !== undefined && object.completionTime !== null
-        ? fromJsonTimestamp(object.completionTime)
-        : undefined;
-    message.initialBalance =
-      object.initialBalance !== undefined && object.initialBalance !== null
-        ? String(object.initialBalance)
-        : "";
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? String(object.balance)
-        : "";
-    message.unbondingId =
-      object.unbondingId !== undefined && object.unbondingId !== null
-        ? Long.fromString(object.unbondingId)
-        : Long.UZERO;
-    message.unbondingOnHoldRefCount =
-      object.unbondingOnHoldRefCount !== undefined &&
-      object.unbondingOnHoldRefCount !== null
-        ? Long.fromString(object.unbondingOnHoldRefCount)
-        : Long.ZERO;
-    return message;
+    return {
+      creationHeight: isSet(object.creationHeight) ? Long.fromValue(object.creationHeight) : Long.ZERO,
+      completionTime: isSet(object.completionTime) ? fromJsonTimestamp(object.completionTime) : undefined,
+      initialBalance: isSet(object.initialBalance) ? String(object.initialBalance) : "",
+      balance: isSet(object.balance) ? String(object.balance) : "",
+      unbondingId: isSet(object.unbondingId) ? Long.fromValue(object.unbondingId) : Long.UZERO,
+      unbondingOnHoldRefCount: isSet(object.unbondingOnHoldRefCount)
+        ? Long.fromValue(object.unbondingOnHoldRefCount)
+        : Long.ZERO,
+    };
   },
 
   toJSON(message: UnbondingDelegationEntry): unknown {
     const obj: any = {};
-    message.creationHeight !== undefined &&
-      (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
-    message.completionTime !== undefined &&
-      (obj.completionTime = message.completionTime.toISOString());
-    message.initialBalance !== undefined &&
-      (obj.initialBalance = message.initialBalance);
+    message.creationHeight !== undefined && (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
+    message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
+    message.initialBalance !== undefined && (obj.initialBalance = message.initialBalance);
     message.balance !== undefined && (obj.balance = message.balance);
-    message.unbondingId !== undefined &&
-      (obj.unbondingId = (message.unbondingId || Long.UZERO).toString());
+    message.unbondingId !== undefined && (obj.unbondingId = (message.unbondingId || Long.UZERO).toString());
     message.unbondingOnHoldRefCount !== undefined &&
-      (obj.unbondingOnHoldRefCount = (
-        message.unbondingOnHoldRefCount || Long.ZERO
-      ).toString());
+      (obj.unbondingOnHoldRefCount = (message.unbondingOnHoldRefCount || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UnbondingDelegationEntry>
-  ): UnbondingDelegationEntry {
-    const message = {
-      ...baseUnbondingDelegationEntry,
-    } as UnbondingDelegationEntry;
-    message.creationHeight =
-      object.creationHeight !== undefined && object.creationHeight !== null
-        ? Long.fromValue(object.creationHeight)
-        : Long.ZERO;
+  create(base?: DeepPartial<UnbondingDelegationEntry>): UnbondingDelegationEntry {
+    return UnbondingDelegationEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UnbondingDelegationEntry>): UnbondingDelegationEntry {
+    const message = createBaseUnbondingDelegationEntry();
+    message.creationHeight = (object.creationHeight !== undefined && object.creationHeight !== null)
+      ? Long.fromValue(object.creationHeight)
+      : Long.ZERO;
     message.completionTime = object.completionTime ?? undefined;
     message.initialBalance = object.initialBalance ?? "";
     message.balance = object.balance ?? "";
-    message.unbondingId =
-      object.unbondingId !== undefined && object.unbondingId !== null
-        ? Long.fromValue(object.unbondingId)
-        : Long.UZERO;
+    message.unbondingId = (object.unbondingId !== undefined && object.unbondingId !== null)
+      ? Long.fromValue(object.unbondingId)
+      : Long.UZERO;
     message.unbondingOnHoldRefCount =
-      object.unbondingOnHoldRefCount !== undefined &&
-      object.unbondingOnHoldRefCount !== null
+      (object.unbondingOnHoldRefCount !== undefined && object.unbondingOnHoldRefCount !== null)
         ? Long.fromValue(object.unbondingOnHoldRefCount)
         : Long.ZERO;
     return message;
   },
 };
 
-const baseRedelegationEntry: object = {
-  creationHeight: Long.ZERO,
-  initialBalance: "",
-  sharesDst: "",
-  unbondingId: Long.UZERO,
-  unbondingOnHoldRefCount: Long.ZERO,
-};
+function createBaseRedelegationEntry(): RedelegationEntry {
+  return {
+    creationHeight: Long.ZERO,
+    completionTime: undefined,
+    initialBalance: "",
+    sharesDst: "",
+    unbondingId: Long.UZERO,
+    unbondingOnHoldRefCount: Long.ZERO,
+  };
+}
 
 export const RedelegationEntry = {
-  encode(
-    message: RedelegationEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RedelegationEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.creationHeight.isZero()) {
       writer.uint32(8).int64(message.creationHeight);
     }
     if (message.completionTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.completionTime),
-        writer.uint32(18).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.completionTime), writer.uint32(18).fork()).ldelim();
     }
     if (message.initialBalance !== "") {
       writer.uint32(26).string(message.initialBalance);
@@ -1669,121 +1655,117 @@ export const RedelegationEntry = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RedelegationEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRedelegationEntry } as RedelegationEntry;
+    const message = createBaseRedelegationEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.creationHeight = reader.int64() as Long;
-          break;
+          continue;
         case 2:
-          message.completionTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.completionTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.initialBalance = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.sharesDst = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.unbondingId = reader.uint64() as Long;
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.unbondingOnHoldRefCount = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RedelegationEntry {
-    const message = { ...baseRedelegationEntry } as RedelegationEntry;
-    message.creationHeight =
-      object.creationHeight !== undefined && object.creationHeight !== null
-        ? Long.fromString(object.creationHeight)
-        : Long.ZERO;
-    message.completionTime =
-      object.completionTime !== undefined && object.completionTime !== null
-        ? fromJsonTimestamp(object.completionTime)
-        : undefined;
-    message.initialBalance =
-      object.initialBalance !== undefined && object.initialBalance !== null
-        ? String(object.initialBalance)
-        : "";
-    message.sharesDst =
-      object.sharesDst !== undefined && object.sharesDst !== null
-        ? String(object.sharesDst)
-        : "";
-    message.unbondingId =
-      object.unbondingId !== undefined && object.unbondingId !== null
-        ? Long.fromString(object.unbondingId)
-        : Long.UZERO;
-    message.unbondingOnHoldRefCount =
-      object.unbondingOnHoldRefCount !== undefined &&
-      object.unbondingOnHoldRefCount !== null
-        ? Long.fromString(object.unbondingOnHoldRefCount)
-        : Long.ZERO;
-    return message;
+    return {
+      creationHeight: isSet(object.creationHeight) ? Long.fromValue(object.creationHeight) : Long.ZERO,
+      completionTime: isSet(object.completionTime) ? fromJsonTimestamp(object.completionTime) : undefined,
+      initialBalance: isSet(object.initialBalance) ? String(object.initialBalance) : "",
+      sharesDst: isSet(object.sharesDst) ? String(object.sharesDst) : "",
+      unbondingId: isSet(object.unbondingId) ? Long.fromValue(object.unbondingId) : Long.UZERO,
+      unbondingOnHoldRefCount: isSet(object.unbondingOnHoldRefCount)
+        ? Long.fromValue(object.unbondingOnHoldRefCount)
+        : Long.ZERO,
+    };
   },
 
   toJSON(message: RedelegationEntry): unknown {
     const obj: any = {};
-    message.creationHeight !== undefined &&
-      (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
-    message.completionTime !== undefined &&
-      (obj.completionTime = message.completionTime.toISOString());
-    message.initialBalance !== undefined &&
-      (obj.initialBalance = message.initialBalance);
+    message.creationHeight !== undefined && (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
+    message.completionTime !== undefined && (obj.completionTime = message.completionTime.toISOString());
+    message.initialBalance !== undefined && (obj.initialBalance = message.initialBalance);
     message.sharesDst !== undefined && (obj.sharesDst = message.sharesDst);
-    message.unbondingId !== undefined &&
-      (obj.unbondingId = (message.unbondingId || Long.UZERO).toString());
+    message.unbondingId !== undefined && (obj.unbondingId = (message.unbondingId || Long.UZERO).toString());
     message.unbondingOnHoldRefCount !== undefined &&
-      (obj.unbondingOnHoldRefCount = (
-        message.unbondingOnHoldRefCount || Long.ZERO
-      ).toString());
+      (obj.unbondingOnHoldRefCount = (message.unbondingOnHoldRefCount || Long.ZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<RedelegationEntry>): RedelegationEntry {
+    return RedelegationEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RedelegationEntry>): RedelegationEntry {
-    const message = { ...baseRedelegationEntry } as RedelegationEntry;
-    message.creationHeight =
-      object.creationHeight !== undefined && object.creationHeight !== null
-        ? Long.fromValue(object.creationHeight)
-        : Long.ZERO;
+    const message = createBaseRedelegationEntry();
+    message.creationHeight = (object.creationHeight !== undefined && object.creationHeight !== null)
+      ? Long.fromValue(object.creationHeight)
+      : Long.ZERO;
     message.completionTime = object.completionTime ?? undefined;
     message.initialBalance = object.initialBalance ?? "";
     message.sharesDst = object.sharesDst ?? "";
-    message.unbondingId =
-      object.unbondingId !== undefined && object.unbondingId !== null
-        ? Long.fromValue(object.unbondingId)
-        : Long.UZERO;
+    message.unbondingId = (object.unbondingId !== undefined && object.unbondingId !== null)
+      ? Long.fromValue(object.unbondingId)
+      : Long.UZERO;
     message.unbondingOnHoldRefCount =
-      object.unbondingOnHoldRefCount !== undefined &&
-      object.unbondingOnHoldRefCount !== null
+      (object.unbondingOnHoldRefCount !== undefined && object.unbondingOnHoldRefCount !== null)
         ? Long.fromValue(object.unbondingOnHoldRefCount)
         : Long.ZERO;
     return message;
   },
 };
 
-const baseRedelegation: object = {
-  delegatorAddress: "",
-  validatorSrcAddress: "",
-  validatorDstAddress: "",
-};
+function createBaseRedelegation(): Redelegation {
+  return { delegatorAddress: "", validatorSrcAddress: "", validatorDstAddress: "", entries: [] };
+}
 
 export const Redelegation = {
-  encode(
-    message: Redelegation,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Redelegation, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegatorAddress !== "") {
       writer.uint32(10).string(message.delegatorAddress);
     }
@@ -1800,100 +1782,98 @@ export const Redelegation = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Redelegation {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRedelegation } as Redelegation;
-    message.entries = [];
+    const message = createBaseRedelegation();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegatorAddress = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.validatorSrcAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.validatorDstAddress = reader.string();
-          break;
+          continue;
         case 4:
-          message.entries.push(
-            RedelegationEntry.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 34) {
+            break;
+          }
+
+          message.entries.push(RedelegationEntry.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Redelegation {
-    const message = { ...baseRedelegation } as Redelegation;
-    message.delegatorAddress =
-      object.delegatorAddress !== undefined && object.delegatorAddress !== null
-        ? String(object.delegatorAddress)
-        : "";
-    message.validatorSrcAddress =
-      object.validatorSrcAddress !== undefined &&
-      object.validatorSrcAddress !== null
-        ? String(object.validatorSrcAddress)
-        : "";
-    message.validatorDstAddress =
-      object.validatorDstAddress !== undefined &&
-      object.validatorDstAddress !== null
-        ? String(object.validatorDstAddress)
-        : "";
-    message.entries = (object.entries ?? []).map((e: any) =>
-      RedelegationEntry.fromJSON(e)
-    );
-    return message;
+    return {
+      delegatorAddress: isSet(object.delegatorAddress) ? String(object.delegatorAddress) : "",
+      validatorSrcAddress: isSet(object.validatorSrcAddress) ? String(object.validatorSrcAddress) : "",
+      validatorDstAddress: isSet(object.validatorDstAddress) ? String(object.validatorDstAddress) : "",
+      entries: Array.isArray(object?.entries) ? object.entries.map((e: any) => RedelegationEntry.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: Redelegation): unknown {
     const obj: any = {};
-    message.delegatorAddress !== undefined &&
-      (obj.delegatorAddress = message.delegatorAddress);
-    message.validatorSrcAddress !== undefined &&
-      (obj.validatorSrcAddress = message.validatorSrcAddress);
-    message.validatorDstAddress !== undefined &&
-      (obj.validatorDstAddress = message.validatorDstAddress);
+    message.delegatorAddress !== undefined && (obj.delegatorAddress = message.delegatorAddress);
+    message.validatorSrcAddress !== undefined && (obj.validatorSrcAddress = message.validatorSrcAddress);
+    message.validatorDstAddress !== undefined && (obj.validatorDstAddress = message.validatorDstAddress);
     if (message.entries) {
-      obj.entries = message.entries.map((e) =>
-        e ? RedelegationEntry.toJSON(e) : undefined
-      );
+      obj.entries = message.entries.map((e) => e ? RedelegationEntry.toJSON(e) : undefined);
     } else {
       obj.entries = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Redelegation>): Redelegation {
+    return Redelegation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Redelegation>): Redelegation {
-    const message = { ...baseRedelegation } as Redelegation;
+    const message = createBaseRedelegation();
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorSrcAddress = object.validatorSrcAddress ?? "";
     message.validatorDstAddress = object.validatorDstAddress ?? "";
-    message.entries = (object.entries ?? []).map((e) =>
-      RedelegationEntry.fromPartial(e)
-    );
+    message.entries = object.entries?.map((e) => RedelegationEntry.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseParams: object = {
-  maxValidators: 0,
-  maxEntries: 0,
-  historicalEntries: 0,
-  bondDenom: "",
-  minCommissionRate: "",
-};
+function createBaseParams(): Params {
+  return {
+    unbondingTime: undefined,
+    maxValidators: 0,
+    maxEntries: 0,
+    historicalEntries: 0,
+    bondDenom: "",
+    minCommissionRate: "",
+  };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.unbondingTime !== undefined) {
       Duration.encode(message.unbondingTime, writer.uint32(10).fork()).ldelim();
     }
@@ -1916,92 +1896,95 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.unbondingTime = Duration.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.maxValidators = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.maxEntries = reader.uint32();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.historicalEntries = reader.uint32();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.bondDenom = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.minCommissionRate = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.unbondingTime =
-      object.unbondingTime !== undefined && object.unbondingTime !== null
-        ? Duration.fromJSON(object.unbondingTime)
-        : undefined;
-    message.maxValidators =
-      object.maxValidators !== undefined && object.maxValidators !== null
-        ? Number(object.maxValidators)
-        : 0;
-    message.maxEntries =
-      object.maxEntries !== undefined && object.maxEntries !== null
-        ? Number(object.maxEntries)
-        : 0;
-    message.historicalEntries =
-      object.historicalEntries !== undefined &&
-      object.historicalEntries !== null
-        ? Number(object.historicalEntries)
-        : 0;
-    message.bondDenom =
-      object.bondDenom !== undefined && object.bondDenom !== null
-        ? String(object.bondDenom)
-        : "";
-    message.minCommissionRate =
-      object.minCommissionRate !== undefined &&
-      object.minCommissionRate !== null
-        ? String(object.minCommissionRate)
-        : "";
-    return message;
+    return {
+      unbondingTime: isSet(object.unbondingTime) ? Duration.fromJSON(object.unbondingTime) : undefined,
+      maxValidators: isSet(object.maxValidators) ? Number(object.maxValidators) : 0,
+      maxEntries: isSet(object.maxEntries) ? Number(object.maxEntries) : 0,
+      historicalEntries: isSet(object.historicalEntries) ? Number(object.historicalEntries) : 0,
+      bondDenom: isSet(object.bondDenom) ? String(object.bondDenom) : "",
+      minCommissionRate: isSet(object.minCommissionRate) ? String(object.minCommissionRate) : "",
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     message.unbondingTime !== undefined &&
-      (obj.unbondingTime = message.unbondingTime
-        ? Duration.toJSON(message.unbondingTime)
-        : undefined);
-    message.maxValidators !== undefined &&
-      (obj.maxValidators = message.maxValidators);
-    message.maxEntries !== undefined && (obj.maxEntries = message.maxEntries);
-    message.historicalEntries !== undefined &&
-      (obj.historicalEntries = message.historicalEntries);
+      (obj.unbondingTime = message.unbondingTime ? Duration.toJSON(message.unbondingTime) : undefined);
+    message.maxValidators !== undefined && (obj.maxValidators = Math.round(message.maxValidators));
+    message.maxEntries !== undefined && (obj.maxEntries = Math.round(message.maxEntries));
+    message.historicalEntries !== undefined && (obj.historicalEntries = Math.round(message.historicalEntries));
     message.bondDenom !== undefined && (obj.bondDenom = message.bondDenom);
-    message.minCommissionRate !== undefined &&
-      (obj.minCommissionRate = message.minCommissionRate);
+    message.minCommissionRate !== undefined && (obj.minCommissionRate = message.minCommissionRate);
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.unbondingTime =
-      object.unbondingTime !== undefined && object.unbondingTime !== null
-        ? Duration.fromPartial(object.unbondingTime)
-        : undefined;
+    const message = createBaseParams();
+    message.unbondingTime = (object.unbondingTime !== undefined && object.unbondingTime !== null)
+      ? Duration.fromPartial(object.unbondingTime)
+      : undefined;
     message.maxValidators = object.maxValidators ?? 0;
     message.maxEntries = object.maxEntries ?? 0;
     message.historicalEntries = object.historicalEntries ?? 0;
@@ -2011,13 +1994,12 @@ export const Params = {
   },
 };
 
-const baseDelegationResponse: object = {};
+function createBaseDelegationResponse(): DelegationResponse {
+  return { delegation: undefined, balance: undefined };
+}
 
 export const DelegationResponse = {
-  encode(
-    message: DelegationResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DelegationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.delegation !== undefined) {
       Delegation.encode(message.delegation, writer.uint32(10).fork()).ldelim();
     }
@@ -2028,78 +2010,74 @@ export const DelegationResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DelegationResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDelegationResponse } as DelegationResponse;
+    const message = createBaseDelegationResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.delegation = Delegation.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.balance = Coin.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DelegationResponse {
-    const message = { ...baseDelegationResponse } as DelegationResponse;
-    message.delegation =
-      object.delegation !== undefined && object.delegation !== null
-        ? Delegation.fromJSON(object.delegation)
-        : undefined;
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? Coin.fromJSON(object.balance)
-        : undefined;
-    return message;
+    return {
+      delegation: isSet(object.delegation) ? Delegation.fromJSON(object.delegation) : undefined,
+      balance: isSet(object.balance) ? Coin.fromJSON(object.balance) : undefined,
+    };
   },
 
   toJSON(message: DelegationResponse): unknown {
     const obj: any = {};
     message.delegation !== undefined &&
-      (obj.delegation = message.delegation
-        ? Delegation.toJSON(message.delegation)
-        : undefined);
-    message.balance !== undefined &&
-      (obj.balance = message.balance
-        ? Coin.toJSON(message.balance)
-        : undefined);
+      (obj.delegation = message.delegation ? Delegation.toJSON(message.delegation) : undefined);
+    message.balance !== undefined && (obj.balance = message.balance ? Coin.toJSON(message.balance) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<DelegationResponse>): DelegationResponse {
+    return DelegationResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DelegationResponse>): DelegationResponse {
-    const message = { ...baseDelegationResponse } as DelegationResponse;
-    message.delegation =
-      object.delegation !== undefined && object.delegation !== null
-        ? Delegation.fromPartial(object.delegation)
-        : undefined;
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? Coin.fromPartial(object.balance)
-        : undefined;
+    const message = createBaseDelegationResponse();
+    message.delegation = (object.delegation !== undefined && object.delegation !== null)
+      ? Delegation.fromPartial(object.delegation)
+      : undefined;
+    message.balance = (object.balance !== undefined && object.balance !== null)
+      ? Coin.fromPartial(object.balance)
+      : undefined;
     return message;
   },
 };
 
-const baseRedelegationEntryResponse: object = { balance: "" };
+function createBaseRedelegationEntryResponse(): RedelegationEntryResponse {
+  return { redelegationEntry: undefined, balance: "" };
+}
 
 export const RedelegationEntryResponse = {
-  encode(
-    message: RedelegationEntryResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RedelegationEntryResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.redelegationEntry !== undefined) {
-      RedelegationEntry.encode(
-        message.redelegationEntry,
-        writer.uint32(10).fork()
-      ).ldelim();
+      RedelegationEntry.encode(message.redelegationEntry, writer.uint32(10).fork()).ldelim();
     }
     if (message.balance !== "") {
       writer.uint32(34).string(message.balance);
@@ -2107,89 +2085,76 @@ export const RedelegationEntryResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RedelegationEntryResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RedelegationEntryResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseRedelegationEntryResponse,
-    } as RedelegationEntryResponse;
+    const message = createBaseRedelegationEntryResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.redelegationEntry = RedelegationEntry.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.redelegationEntry = RedelegationEntry.decode(reader, reader.uint32());
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.balance = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RedelegationEntryResponse {
-    const message = {
-      ...baseRedelegationEntryResponse,
-    } as RedelegationEntryResponse;
-    message.redelegationEntry =
-      object.redelegationEntry !== undefined &&
-      object.redelegationEntry !== null
+    return {
+      redelegationEntry: isSet(object.redelegationEntry)
         ? RedelegationEntry.fromJSON(object.redelegationEntry)
-        : undefined;
-    message.balance =
-      object.balance !== undefined && object.balance !== null
-        ? String(object.balance)
-        : "";
-    return message;
+        : undefined,
+      balance: isSet(object.balance) ? String(object.balance) : "",
+    };
   },
 
   toJSON(message: RedelegationEntryResponse): unknown {
     const obj: any = {};
-    message.redelegationEntry !== undefined &&
-      (obj.redelegationEntry = message.redelegationEntry
-        ? RedelegationEntry.toJSON(message.redelegationEntry)
-        : undefined);
+    message.redelegationEntry !== undefined && (obj.redelegationEntry = message.redelegationEntry
+      ? RedelegationEntry.toJSON(message.redelegationEntry)
+      : undefined);
     message.balance !== undefined && (obj.balance = message.balance);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RedelegationEntryResponse>
-  ): RedelegationEntryResponse {
-    const message = {
-      ...baseRedelegationEntryResponse,
-    } as RedelegationEntryResponse;
-    message.redelegationEntry =
-      object.redelegationEntry !== undefined &&
-      object.redelegationEntry !== null
-        ? RedelegationEntry.fromPartial(object.redelegationEntry)
-        : undefined;
+  create(base?: DeepPartial<RedelegationEntryResponse>): RedelegationEntryResponse {
+    return RedelegationEntryResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<RedelegationEntryResponse>): RedelegationEntryResponse {
+    const message = createBaseRedelegationEntryResponse();
+    message.redelegationEntry = (object.redelegationEntry !== undefined && object.redelegationEntry !== null)
+      ? RedelegationEntry.fromPartial(object.redelegationEntry)
+      : undefined;
     message.balance = object.balance ?? "";
     return message;
   },
 };
 
-const baseRedelegationResponse: object = {};
+function createBaseRedelegationResponse(): RedelegationResponse {
+  return { redelegation: undefined, entries: [] };
+}
 
 export const RedelegationResponse = {
-  encode(
-    message: RedelegationResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RedelegationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.redelegation !== undefined) {
-      Redelegation.encode(
-        message.redelegation,
-        writer.uint32(10).fork()
-      ).ldelim();
+      Redelegation.encode(message.redelegation, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.entries) {
       RedelegationEntryResponse.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -2197,75 +2162,74 @@ export const RedelegationResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RedelegationResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RedelegationResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRedelegationResponse } as RedelegationResponse;
-    message.entries = [];
+    const message = createBaseRedelegationResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.redelegation = Redelegation.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
-          message.entries.push(
-            RedelegationEntryResponse.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.entries.push(RedelegationEntryResponse.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RedelegationResponse {
-    const message = { ...baseRedelegationResponse } as RedelegationResponse;
-    message.redelegation =
-      object.redelegation !== undefined && object.redelegation !== null
-        ? Redelegation.fromJSON(object.redelegation)
-        : undefined;
-    message.entries = (object.entries ?? []).map((e: any) =>
-      RedelegationEntryResponse.fromJSON(e)
-    );
-    return message;
+    return {
+      redelegation: isSet(object.redelegation) ? Redelegation.fromJSON(object.redelegation) : undefined,
+      entries: Array.isArray(object?.entries)
+        ? object.entries.map((e: any) => RedelegationEntryResponse.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: RedelegationResponse): unknown {
     const obj: any = {};
     message.redelegation !== undefined &&
-      (obj.redelegation = message.redelegation
-        ? Redelegation.toJSON(message.redelegation)
-        : undefined);
+      (obj.redelegation = message.redelegation ? Redelegation.toJSON(message.redelegation) : undefined);
     if (message.entries) {
-      obj.entries = message.entries.map((e) =>
-        e ? RedelegationEntryResponse.toJSON(e) : undefined
-      );
+      obj.entries = message.entries.map((e) => e ? RedelegationEntryResponse.toJSON(e) : undefined);
     } else {
       obj.entries = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<RedelegationResponse>): RedelegationResponse {
+    return RedelegationResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RedelegationResponse>): RedelegationResponse {
-    const message = { ...baseRedelegationResponse } as RedelegationResponse;
-    message.redelegation =
-      object.redelegation !== undefined && object.redelegation !== null
-        ? Redelegation.fromPartial(object.redelegation)
-        : undefined;
-    message.entries = (object.entries ?? []).map((e) =>
-      RedelegationEntryResponse.fromPartial(e)
-    );
+    const message = createBaseRedelegationResponse();
+    message.redelegation = (object.redelegation !== undefined && object.redelegation !== null)
+      ? Redelegation.fromPartial(object.redelegation)
+      : undefined;
+    message.entries = object.entries?.map((e) => RedelegationEntryResponse.fromPartial(e)) || [];
     return message;
   },
 };
 
-const basePool: object = { notBondedTokens: "", bondedTokens: "" };
+function createBasePool(): Pool {
+  return { notBondedTokens: "", bondedTokens: "" };
+}
 
 export const Pool = {
   encode(message: Pool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -2279,63 +2243,67 @@ export const Pool = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Pool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePool } as Pool;
+    const message = createBasePool();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.notBondedTokens = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.bondedTokens = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Pool {
-    const message = { ...basePool } as Pool;
-    message.notBondedTokens =
-      object.notBondedTokens !== undefined && object.notBondedTokens !== null
-        ? String(object.notBondedTokens)
-        : "";
-    message.bondedTokens =
-      object.bondedTokens !== undefined && object.bondedTokens !== null
-        ? String(object.bondedTokens)
-        : "";
-    return message;
+    return {
+      notBondedTokens: isSet(object.notBondedTokens) ? String(object.notBondedTokens) : "",
+      bondedTokens: isSet(object.bondedTokens) ? String(object.bondedTokens) : "",
+    };
   },
 
   toJSON(message: Pool): unknown {
     const obj: any = {};
-    message.notBondedTokens !== undefined &&
-      (obj.notBondedTokens = message.notBondedTokens);
-    message.bondedTokens !== undefined &&
-      (obj.bondedTokens = message.bondedTokens);
+    message.notBondedTokens !== undefined && (obj.notBondedTokens = message.notBondedTokens);
+    message.bondedTokens !== undefined && (obj.bondedTokens = message.bondedTokens);
     return obj;
   },
 
+  create(base?: DeepPartial<Pool>): Pool {
+    return Pool.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Pool>): Pool {
-    const message = { ...basePool } as Pool;
+    const message = createBasePool();
     message.notBondedTokens = object.notBondedTokens ?? "";
     message.bondedTokens = object.bondedTokens ?? "";
     return message;
   },
 };
 
-const baseValidatorUpdates: object = {};
+function createBaseValidatorUpdates(): ValidatorUpdates {
+  return { updates: [] };
+}
 
 export const ValidatorUpdates = {
-  encode(
-    message: ValidatorUpdates,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ValidatorUpdates, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.updates) {
       ValidatorUpdate.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -2343,71 +2311,61 @@ export const ValidatorUpdates = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ValidatorUpdates {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseValidatorUpdates } as ValidatorUpdates;
-    message.updates = [];
+    const message = createBaseValidatorUpdates();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.updates.push(ValidatorUpdate.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ValidatorUpdates {
-    const message = { ...baseValidatorUpdates } as ValidatorUpdates;
-    message.updates = (object.updates ?? []).map((e: any) =>
-      ValidatorUpdate.fromJSON(e)
-    );
-    return message;
+    return {
+      updates: Array.isArray(object?.updates) ? object.updates.map((e: any) => ValidatorUpdate.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: ValidatorUpdates): unknown {
     const obj: any = {};
     if (message.updates) {
-      obj.updates = message.updates.map((e) =>
-        e ? ValidatorUpdate.toJSON(e) : undefined
-      );
+      obj.updates = message.updates.map((e) => e ? ValidatorUpdate.toJSON(e) : undefined);
     } else {
       obj.updates = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<ValidatorUpdates>): ValidatorUpdates {
+    return ValidatorUpdates.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ValidatorUpdates>): ValidatorUpdates {
-    const message = { ...baseValidatorUpdates } as ValidatorUpdates;
-    message.updates = (object.updates ?? []).map((e) =>
-      ValidatorUpdate.fromPartial(e)
-    );
+    const message = createBaseValidatorUpdates();
+    message.updates = object.updates?.map((e) => ValidatorUpdate.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -2417,8 +2375,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -2439,4 +2397,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

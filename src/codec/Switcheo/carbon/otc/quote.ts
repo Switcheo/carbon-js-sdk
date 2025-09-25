@@ -19,7 +19,9 @@ export interface QuoteWithStatus {
   status: string;
 }
 
-const baseQuote: object = { id: "", quoter: "", rfqId: "" };
+function createBaseQuote(): Quote {
+  return { id: "", quoter: "", rfqId: "", coin: undefined, expiryTime: undefined };
+}
 
 export const Quote = {
   encode(message: Quote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -36,67 +38,70 @@ export const Quote = {
       Coin.encode(message.coin, writer.uint32(34).fork()).ldelim();
     }
     if (message.expiryTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.expiryTime),
-        writer.uint32(42).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.expiryTime), writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Quote {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQuote } as Quote;
+    const message = createBaseQuote();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.quoter = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.rfqId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.coin = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 5:
-          message.expiryTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 42) {
+            break;
+          }
+
+          message.expiryTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Quote {
-    const message = { ...baseQuote } as Quote;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.quoter =
-      object.quoter !== undefined && object.quoter !== null
-        ? String(object.quoter)
-        : "";
-    message.rfqId =
-      object.rfqId !== undefined && object.rfqId !== null
-        ? String(object.rfqId)
-        : "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromJSON(object.coin)
-        : undefined;
-    message.expiryTime =
-      object.expiryTime !== undefined && object.expiryTime !== null
-        ? fromJsonTimestamp(object.expiryTime)
-        : undefined;
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      quoter: isSet(object.quoter) ? String(object.quoter) : "",
+      rfqId: isSet(object.rfqId) ? String(object.rfqId) : "",
+      coin: isSet(object.coin) ? Coin.fromJSON(object.coin) : undefined,
+      expiryTime: isSet(object.expiryTime) ? fromJsonTimestamp(object.expiryTime) : undefined,
+    };
   },
 
   toJSON(message: Quote): unknown {
@@ -104,34 +109,32 @@ export const Quote = {
     message.id !== undefined && (obj.id = message.id);
     message.quoter !== undefined && (obj.quoter = message.quoter);
     message.rfqId !== undefined && (obj.rfqId = message.rfqId);
-    message.coin !== undefined &&
-      (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
-    message.expiryTime !== undefined &&
-      (obj.expiryTime = message.expiryTime.toISOString());
+    message.coin !== undefined && (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
+    message.expiryTime !== undefined && (obj.expiryTime = message.expiryTime.toISOString());
     return obj;
   },
 
+  create(base?: DeepPartial<Quote>): Quote {
+    return Quote.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Quote>): Quote {
-    const message = { ...baseQuote } as Quote;
+    const message = createBaseQuote();
     message.id = object.id ?? "";
     message.quoter = object.quoter ?? "";
     message.rfqId = object.rfqId ?? "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromPartial(object.coin)
-        : undefined;
+    message.coin = (object.coin !== undefined && object.coin !== null) ? Coin.fromPartial(object.coin) : undefined;
     message.expiryTime = object.expiryTime ?? undefined;
     return message;
   },
 };
 
-const baseQuoteWithStatus: object = { status: "" };
+function createBaseQuoteWithStatus(): QuoteWithStatus {
+  return { quote: undefined, status: "" };
+}
 
 export const QuoteWithStatus = {
-  encode(
-    message: QuoteWithStatus,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QuoteWithStatus, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.quote !== undefined) {
       Quote.encode(message.quote, writer.uint32(10).fork()).ldelim();
     }
@@ -142,76 +145,67 @@ export const QuoteWithStatus = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QuoteWithStatus {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQuoteWithStatus } as QuoteWithStatus;
+    const message = createBaseQuoteWithStatus();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.quote = Quote.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.status = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QuoteWithStatus {
-    const message = { ...baseQuoteWithStatus } as QuoteWithStatus;
-    message.quote =
-      object.quote !== undefined && object.quote !== null
-        ? Quote.fromJSON(object.quote)
-        : undefined;
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? String(object.status)
-        : "";
-    return message;
+    return {
+      quote: isSet(object.quote) ? Quote.fromJSON(object.quote) : undefined,
+      status: isSet(object.status) ? String(object.status) : "",
+    };
   },
 
   toJSON(message: QuoteWithStatus): unknown {
     const obj: any = {};
-    message.quote !== undefined &&
-      (obj.quote = message.quote ? Quote.toJSON(message.quote) : undefined);
+    message.quote !== undefined && (obj.quote = message.quote ? Quote.toJSON(message.quote) : undefined);
     message.status !== undefined && (obj.status = message.status);
     return obj;
   },
 
+  create(base?: DeepPartial<QuoteWithStatus>): QuoteWithStatus {
+    return QuoteWithStatus.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QuoteWithStatus>): QuoteWithStatus {
-    const message = { ...baseQuoteWithStatus } as QuoteWithStatus;
-    message.quote =
-      object.quote !== undefined && object.quote !== null
-        ? Quote.fromPartial(object.quote)
-        : undefined;
+    const message = createBaseQuoteWithStatus();
+    message.quote = (object.quote !== undefined && object.quote !== null) ? Quote.fromPartial(object.quote) : undefined;
     message.status = object.status ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -221,8 +215,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -243,4 +237,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

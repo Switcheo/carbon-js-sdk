@@ -54,8 +54,9 @@ export function storageTypeToJSON(object: StorageType): string {
       return "STORAGE_TYPE_MEMORY";
     case StorageType.STORAGE_TYPE_TRANSIENT:
       return "STORAGE_TYPE_TRANSIENT";
+    case StorageType.UNRECOGNIZED:
     default:
-      return "UNKNOWN";
+      return "UNRECOGNIZED";
   }
 }
 
@@ -90,18 +91,14 @@ export interface ModuleSchemaDescriptor_FileEntry {
   storageType: StorageType;
 }
 
-const baseModuleSchemaDescriptor: object = {};
+function createBaseModuleSchemaDescriptor(): ModuleSchemaDescriptor {
+  return { schemaFile: [], prefix: new Uint8Array() };
+}
 
 export const ModuleSchemaDescriptor = {
-  encode(
-    message: ModuleSchemaDescriptor,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleSchemaDescriptor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.schemaFile) {
-      ModuleSchemaDescriptor_FileEntry.encode(
-        v!,
-        writer.uint32(10).fork()
-      ).ldelim();
+      ModuleSchemaDescriptor_FileEntry.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.prefix.length !== 0) {
       writer.uint32(18).bytes(message.prefix);
@@ -109,85 +106,75 @@ export const ModuleSchemaDescriptor = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ModuleSchemaDescriptor {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleSchemaDescriptor {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModuleSchemaDescriptor } as ModuleSchemaDescriptor;
-    message.schemaFile = [];
-    message.prefix = new Uint8Array();
+    const message = createBaseModuleSchemaDescriptor();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.schemaFile.push(
-            ModuleSchemaDescriptor_FileEntry.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.schemaFile.push(ModuleSchemaDescriptor_FileEntry.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.prefix = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleSchemaDescriptor {
-    const message = { ...baseModuleSchemaDescriptor } as ModuleSchemaDescriptor;
-    message.schemaFile = (object.schemaFile ?? []).map((e: any) =>
-      ModuleSchemaDescriptor_FileEntry.fromJSON(e)
-    );
-    message.prefix =
-      object.prefix !== undefined && object.prefix !== null
-        ? bytesFromBase64(object.prefix)
-        : new Uint8Array();
-    return message;
+    return {
+      schemaFile: Array.isArray(object?.schemaFile)
+        ? object.schemaFile.map((e: any) => ModuleSchemaDescriptor_FileEntry.fromJSON(e))
+        : [],
+      prefix: isSet(object.prefix) ? bytesFromBase64(object.prefix) : new Uint8Array(),
+    };
   },
 
   toJSON(message: ModuleSchemaDescriptor): unknown {
     const obj: any = {};
     if (message.schemaFile) {
-      obj.schemaFile = message.schemaFile.map((e) =>
-        e ? ModuleSchemaDescriptor_FileEntry.toJSON(e) : undefined
-      );
+      obj.schemaFile = message.schemaFile.map((e) => e ? ModuleSchemaDescriptor_FileEntry.toJSON(e) : undefined);
     } else {
       obj.schemaFile = [];
     }
     message.prefix !== undefined &&
-      (obj.prefix = base64FromBytes(
-        message.prefix !== undefined ? message.prefix : new Uint8Array()
-      ));
+      (obj.prefix = base64FromBytes(message.prefix !== undefined ? message.prefix : new Uint8Array()));
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ModuleSchemaDescriptor>
-  ): ModuleSchemaDescriptor {
-    const message = { ...baseModuleSchemaDescriptor } as ModuleSchemaDescriptor;
-    message.schemaFile = (object.schemaFile ?? []).map((e) =>
-      ModuleSchemaDescriptor_FileEntry.fromPartial(e)
-    );
+  create(base?: DeepPartial<ModuleSchemaDescriptor>): ModuleSchemaDescriptor {
+    return ModuleSchemaDescriptor.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ModuleSchemaDescriptor>): ModuleSchemaDescriptor {
+    const message = createBaseModuleSchemaDescriptor();
+    message.schemaFile = object.schemaFile?.map((e) => ModuleSchemaDescriptor_FileEntry.fromPartial(e)) || [];
     message.prefix = object.prefix ?? new Uint8Array();
     return message;
   },
 };
 
-const baseModuleSchemaDescriptor_FileEntry: object = {
-  id: 0,
-  protoFileName: "",
-  storageType: 0,
-};
+function createBaseModuleSchemaDescriptor_FileEntry(): ModuleSchemaDescriptor_FileEntry {
+  return { id: 0, protoFileName: "", storageType: 0 };
+}
 
 export const ModuleSchemaDescriptor_FileEntry = {
-  encode(
-    message: ModuleSchemaDescriptor_FileEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleSchemaDescriptor_FileEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint32(message.id);
     }
@@ -200,68 +187,65 @@ export const ModuleSchemaDescriptor_FileEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ModuleSchemaDescriptor_FileEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleSchemaDescriptor_FileEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseModuleSchemaDescriptor_FileEntry,
-    } as ModuleSchemaDescriptor_FileEntry;
+    const message = createBaseModuleSchemaDescriptor_FileEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.id = reader.uint32();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.protoFileName = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.storageType = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleSchemaDescriptor_FileEntry {
-    const message = {
-      ...baseModuleSchemaDescriptor_FileEntry,
-    } as ModuleSchemaDescriptor_FileEntry;
-    message.id =
-      object.id !== undefined && object.id !== null ? Number(object.id) : 0;
-    message.protoFileName =
-      object.protoFileName !== undefined && object.protoFileName !== null
-        ? String(object.protoFileName)
-        : "";
-    message.storageType =
-      object.storageType !== undefined && object.storageType !== null
-        ? storageTypeFromJSON(object.storageType)
-        : 0;
-    return message;
+    return {
+      id: isSet(object.id) ? Number(object.id) : 0,
+      protoFileName: isSet(object.protoFileName) ? String(object.protoFileName) : "",
+      storageType: isSet(object.storageType) ? storageTypeFromJSON(object.storageType) : 0,
+    };
   },
 
   toJSON(message: ModuleSchemaDescriptor_FileEntry): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.protoFileName !== undefined &&
-      (obj.protoFileName = message.protoFileName);
-    message.storageType !== undefined &&
-      (obj.storageType = storageTypeToJSON(message.storageType));
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.protoFileName !== undefined && (obj.protoFileName = message.protoFileName);
+    message.storageType !== undefined && (obj.storageType = storageTypeToJSON(message.storageType));
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ModuleSchemaDescriptor_FileEntry>
-  ): ModuleSchemaDescriptor_FileEntry {
-    const message = {
-      ...baseModuleSchemaDescriptor_FileEntry,
-    } as ModuleSchemaDescriptor_FileEntry;
+  create(base?: DeepPartial<ModuleSchemaDescriptor_FileEntry>): ModuleSchemaDescriptor_FileEntry {
+    return ModuleSchemaDescriptor_FileEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ModuleSchemaDescriptor_FileEntry>): ModuleSchemaDescriptor_FileEntry {
+    const message = createBaseModuleSchemaDescriptor_FileEntry();
     message.id = object.id ?? 0;
     message.protoFileName = object.protoFileName ?? "";
     message.storageType = object.storageType ?? 0;
@@ -272,58 +256,60 @@ export const ModuleSchemaDescriptor_FileEntry = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

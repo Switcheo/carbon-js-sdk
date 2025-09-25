@@ -114,13 +114,12 @@ export interface Metadata {
   uriHash: string;
 }
 
-const baseParams: object = { defaultSendEnabled: false };
+function createBaseParams(): Params {
+  return { sendEnabled: [], defaultSendEnabled: false };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.sendEnabled) {
       SendEnabled.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -131,71 +130,73 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    message.sendEnabled = [];
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.sendEnabled.push(SendEnabled.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.defaultSendEnabled = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.sendEnabled = (object.sendEnabled ?? []).map((e: any) =>
-      SendEnabled.fromJSON(e)
-    );
-    message.defaultSendEnabled =
-      object.defaultSendEnabled !== undefined &&
-      object.defaultSendEnabled !== null
-        ? Boolean(object.defaultSendEnabled)
-        : false;
-    return message;
+    return {
+      sendEnabled: Array.isArray(object?.sendEnabled)
+        ? object.sendEnabled.map((e: any) => SendEnabled.fromJSON(e))
+        : [],
+      defaultSendEnabled: isSet(object.defaultSendEnabled) ? Boolean(object.defaultSendEnabled) : false,
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     if (message.sendEnabled) {
-      obj.sendEnabled = message.sendEnabled.map((e) =>
-        e ? SendEnabled.toJSON(e) : undefined
-      );
+      obj.sendEnabled = message.sendEnabled.map((e) => e ? SendEnabled.toJSON(e) : undefined);
     } else {
       obj.sendEnabled = [];
     }
-    message.defaultSendEnabled !== undefined &&
-      (obj.defaultSendEnabled = message.defaultSendEnabled);
+    message.defaultSendEnabled !== undefined && (obj.defaultSendEnabled = message.defaultSendEnabled);
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.sendEnabled = (object.sendEnabled ?? []).map((e) =>
-      SendEnabled.fromPartial(e)
-    );
+    const message = createBaseParams();
+    message.sendEnabled = object.sendEnabled?.map((e) => SendEnabled.fromPartial(e)) || [];
     message.defaultSendEnabled = object.defaultSendEnabled ?? false;
     return message;
   },
 };
 
-const baseSendEnabled: object = { denom: "", enabled: false };
+function createBaseSendEnabled(): SendEnabled {
+  return { denom: "", enabled: false };
+}
 
 export const SendEnabled = {
-  encode(
-    message: SendEnabled,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SendEnabled, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -206,37 +207,40 @@ export const SendEnabled = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SendEnabled {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSendEnabled } as SendEnabled;
+    const message = createBaseSendEnabled();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.enabled = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SendEnabled {
-    const message = { ...baseSendEnabled } as SendEnabled;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.enabled =
-      object.enabled !== undefined && object.enabled !== null
-        ? Boolean(object.enabled)
-        : false;
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      enabled: isSet(object.enabled) ? Boolean(object.enabled) : false,
+    };
   },
 
   toJSON(message: SendEnabled): unknown {
@@ -246,15 +250,21 @@ export const SendEnabled = {
     return obj;
   },
 
+  create(base?: DeepPartial<SendEnabled>): SendEnabled {
+    return SendEnabled.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SendEnabled>): SendEnabled {
-    const message = { ...baseSendEnabled } as SendEnabled;
+    const message = createBaseSendEnabled();
     message.denom = object.denom ?? "";
     message.enabled = object.enabled ?? false;
     return message;
   },
 };
 
-const baseInput: object = { address: "" };
+function createBaseInput(): Input {
+  return { address: "", coins: [] };
+}
 
 export const Input = {
   encode(message: Input, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -268,63 +278,71 @@ export const Input = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Input {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseInput } as Input;
-    message.coins = [];
+    const message = createBaseInput();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.coins.push(Coin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Input {
-    const message = { ...baseInput } as Input;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: Input): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     if (message.coins) {
-      obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
+      obj.coins = message.coins.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.coins = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Input>): Input {
+    return Input.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Input>): Input {
-    const message = { ...baseInput } as Input;
+    const message = createBaseInput();
     message.address = object.address ?? "";
-    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseOutput: object = { address: "" };
+function createBaseOutput(): Output {
+  return { address: "", coins: [] };
+}
 
 export const Output = {
-  encode(
-    message: Output,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Output, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -335,63 +353,71 @@ export const Output = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Output {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOutput } as Output;
-    message.coins = [];
+    const message = createBaseOutput();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.coins.push(Coin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Output {
-    const message = { ...baseOutput } as Output;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      coins: Array.isArray(object?.coins) ? object.coins.map((e: any) => Coin.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: Output): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     if (message.coins) {
-      obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
+      obj.coins = message.coins.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.coins = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Output>): Output {
+    return Output.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Output>): Output {
-    const message = { ...baseOutput } as Output;
+    const message = createBaseOutput();
     message.address = object.address ?? "";
-    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseSupply: object = {};
+function createBaseSupply(): Supply {
+  return { total: [] };
+}
 
 export const Supply = {
-  encode(
-    message: Supply,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Supply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.total) {
       Coin.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -399,54 +425,59 @@ export const Supply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Supply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSupply } as Supply;
-    message.total = [];
+    const message = createBaseSupply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.total.push(Coin.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Supply {
-    const message = { ...baseSupply } as Supply;
-    message.total = (object.total ?? []).map((e: any) => Coin.fromJSON(e));
-    return message;
+    return { total: Array.isArray(object?.total) ? object.total.map((e: any) => Coin.fromJSON(e)) : [] };
   },
 
   toJSON(message: Supply): unknown {
     const obj: any = {};
     if (message.total) {
-      obj.total = message.total.map((e) => (e ? Coin.toJSON(e) : undefined));
+      obj.total = message.total.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
       obj.total = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Supply>): Supply {
+    return Supply.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Supply>): Supply {
-    const message = { ...baseSupply } as Supply;
-    message.total = (object.total ?? []).map((e) => Coin.fromPartial(e));
+    const message = createBaseSupply();
+    message.total = object.total?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseDenomUnit: object = { denom: "", exponent: 0, aliases: "" };
+function createBaseDenomUnit(): DenomUnit {
+  return { denom: "", exponent: 0, aliases: [] };
+}
 
 export const DenomUnit = {
-  encode(
-    message: DenomUnit,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DenomUnit, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -460,48 +491,54 @@ export const DenomUnit = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DenomUnit {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDenomUnit } as DenomUnit;
-    message.aliases = [];
+    const message = createBaseDenomUnit();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.exponent = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.aliases.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DenomUnit {
-    const message = { ...baseDenomUnit } as DenomUnit;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.exponent =
-      object.exponent !== undefined && object.exponent !== null
-        ? Number(object.exponent)
-        : 0;
-    message.aliases = (object.aliases ?? []).map((e: any) => String(e));
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      exponent: isSet(object.exponent) ? Number(object.exponent) : 0,
+      aliases: Array.isArray(object?.aliases) ? object.aliases.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: DenomUnit): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.exponent !== undefined && (obj.exponent = message.exponent);
+    message.exponent !== undefined && (obj.exponent = Math.round(message.exponent));
     if (message.aliases) {
       obj.aliases = message.aliases.map((e) => e);
     } else {
@@ -510,30 +547,25 @@ export const DenomUnit = {
     return obj;
   },
 
+  create(base?: DeepPartial<DenomUnit>): DenomUnit {
+    return DenomUnit.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DenomUnit>): DenomUnit {
-    const message = { ...baseDenomUnit } as DenomUnit;
+    const message = createBaseDenomUnit();
     message.denom = object.denom ?? "";
     message.exponent = object.exponent ?? 0;
-    message.aliases = (object.aliases ?? []).map((e) => e);
+    message.aliases = object.aliases?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseMetadata: object = {
-  description: "",
-  base: "",
-  display: "",
-  name: "",
-  symbol: "",
-  uri: "",
-  uriHash: "",
-};
+function createBaseMetadata(): Metadata {
+  return { description: "", denomUnits: [], base: "", display: "", name: "", symbol: "", uri: "", uriHash: "" };
+}
 
 export const Metadata = {
-  encode(
-    message: Metadata,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Metadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.description !== "") {
       writer.uint32(10).string(message.description);
     }
@@ -562,87 +594,95 @@ export const Metadata = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Metadata {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMetadata } as Metadata;
-    message.denomUnits = [];
+    const message = createBaseMetadata();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.description = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denomUnits.push(DenomUnit.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.base = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.display = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.symbol = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.uri = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.uriHash = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Metadata {
-    const message = { ...baseMetadata } as Metadata;
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? String(object.description)
-        : "";
-    message.denomUnits = (object.denomUnits ?? []).map((e: any) =>
-      DenomUnit.fromJSON(e)
-    );
-    message.base =
-      object.base !== undefined && object.base !== null
-        ? String(object.base)
-        : "";
-    message.display =
-      object.display !== undefined && object.display !== null
-        ? String(object.display)
-        : "";
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.symbol =
-      object.symbol !== undefined && object.symbol !== null
-        ? String(object.symbol)
-        : "";
-    message.uri =
-      object.uri !== undefined && object.uri !== null ? String(object.uri) : "";
-    message.uriHash =
-      object.uriHash !== undefined && object.uriHash !== null
-        ? String(object.uriHash)
-        : "";
-    return message;
+    return {
+      description: isSet(object.description) ? String(object.description) : "",
+      denomUnits: Array.isArray(object?.denomUnits) ? object.denomUnits.map((e: any) => DenomUnit.fromJSON(e)) : [],
+      base: isSet(object.base) ? String(object.base) : "",
+      display: isSet(object.display) ? String(object.display) : "",
+      name: isSet(object.name) ? String(object.name) : "",
+      symbol: isSet(object.symbol) ? String(object.symbol) : "",
+      uri: isSet(object.uri) ? String(object.uri) : "",
+      uriHash: isSet(object.uriHash) ? String(object.uriHash) : "",
+    };
   },
 
   toJSON(message: Metadata): unknown {
     const obj: any = {};
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     if (message.denomUnits) {
-      obj.denomUnits = message.denomUnits.map((e) =>
-        e ? DenomUnit.toJSON(e) : undefined
-      );
+      obj.denomUnits = message.denomUnits.map((e) => e ? DenomUnit.toJSON(e) : undefined);
     } else {
       obj.denomUnits = [];
     }
@@ -655,12 +695,14 @@ export const Metadata = {
     return obj;
   },
 
+  create(base?: DeepPartial<Metadata>): Metadata {
+    return Metadata.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Metadata>): Metadata {
-    const message = { ...baseMetadata } as Metadata;
+    const message = createBaseMetadata();
     message.description = object.description ?? "";
-    message.denomUnits = (object.denomUnits ?? []).map((e) =>
-      DenomUnit.fromPartial(e)
-    );
+    message.denomUnits = object.denomUnits?.map((e) => DenomUnit.fromPartial(e)) || [];
     message.base = object.base ?? "";
     message.display = object.display ?? "";
     message.name = object.name ?? "";
@@ -671,27 +713,19 @@ export const Metadata = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

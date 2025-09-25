@@ -6,7 +6,8 @@ import { ModuleOptions } from "./options";
 export const protobufPackage = "cosmos.autocli.v1";
 
 /** AppOptionsRequest is the RemoteInfoService/AppOptions request type. */
-export interface AppOptionsRequest {}
+export interface AppOptionsRequest {
+}
 
 /** AppOptionsResponse is the RemoteInfoService/AppOptions response type. */
 export interface AppOptionsResponse {
@@ -19,34 +20,33 @@ export interface AppOptionsResponse_ModuleOptionsEntry {
   value?: ModuleOptions;
 }
 
-const baseAppOptionsRequest: object = {};
+function createBaseAppOptionsRequest(): AppOptionsRequest {
+  return {};
+}
 
 export const AppOptionsRequest = {
-  encode(
-    _: AppOptionsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: AppOptionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AppOptionsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAppOptionsRequest } as AppOptionsRequest;
+    const message = createBaseAppOptionsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): AppOptionsRequest {
-    const message = { ...baseAppOptionsRequest } as AppOptionsRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: AppOptionsRequest): unknown {
@@ -54,62 +54,63 @@ export const AppOptionsRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<AppOptionsRequest>): AppOptionsRequest {
+    return AppOptionsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<AppOptionsRequest>): AppOptionsRequest {
-    const message = { ...baseAppOptionsRequest } as AppOptionsRequest;
+    const message = createBaseAppOptionsRequest();
     return message;
   },
 };
 
-const baseAppOptionsResponse: object = {};
+function createBaseAppOptionsResponse(): AppOptionsResponse {
+  return { moduleOptions: {} };
+}
 
 export const AppOptionsResponse = {
-  encode(
-    message: AppOptionsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AppOptionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     Object.entries(message.moduleOptions).forEach(([key, value]) => {
-      AppOptionsResponse_ModuleOptionsEntry.encode(
-        { key: key as any, value },
-        writer.uint32(10).fork()
-      ).ldelim();
+      AppOptionsResponse_ModuleOptionsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
     });
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AppOptionsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAppOptionsResponse } as AppOptionsResponse;
-    message.moduleOptions = {};
+    const message = createBaseAppOptionsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          const entry1 = AppOptionsResponse_ModuleOptionsEntry.decode(
-            reader,
-            reader.uint32()
-          );
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = AppOptionsResponse_ModuleOptionsEntry.decode(reader, reader.uint32());
           if (entry1.value !== undefined) {
             message.moduleOptions[entry1.key] = entry1.value;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AppOptionsResponse {
-    const message = { ...baseAppOptionsResponse } as AppOptionsResponse;
-    message.moduleOptions = Object.entries(object.moduleOptions ?? {}).reduce<{
-      [key: string]: ModuleOptions;
-    }>((acc, [key, value]) => {
-      acc[key] = ModuleOptions.fromJSON(value);
-      return acc;
-    }, {});
-    return message;
+    return {
+      moduleOptions: isObject(object.moduleOptions)
+        ? Object.entries(object.moduleOptions).reduce<{ [key: string]: ModuleOptions }>((acc, [key, value]) => {
+          acc[key] = ModuleOptions.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+    };
   },
 
   toJSON(message: AppOptionsResponse): unknown {
@@ -123,27 +124,31 @@ export const AppOptionsResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<AppOptionsResponse>): AppOptionsResponse {
+    return AppOptionsResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<AppOptionsResponse>): AppOptionsResponse {
-    const message = { ...baseAppOptionsResponse } as AppOptionsResponse;
-    message.moduleOptions = Object.entries(object.moduleOptions ?? {}).reduce<{
-      [key: string]: ModuleOptions;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = ModuleOptions.fromPartial(value);
-      }
-      return acc;
-    }, {});
+    const message = createBaseAppOptionsResponse();
+    message.moduleOptions = Object.entries(object.moduleOptions ?? {}).reduce<{ [key: string]: ModuleOptions }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = ModuleOptions.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 };
 
-const baseAppOptionsResponse_ModuleOptionsEntry: object = { key: "" };
+function createBaseAppOptionsResponse_ModuleOptionsEntry(): AppOptionsResponse_ModuleOptionsEntry {
+  return { key: "", value: undefined };
+}
 
 export const AppOptionsResponse_ModuleOptionsEntry = {
-  encode(
-    message: AppOptionsResponse_ModuleOptionsEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AppOptionsResponse_ModuleOptionsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -153,66 +158,60 @@ export const AppOptionsResponse_ModuleOptionsEntry = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): AppOptionsResponse_ModuleOptionsEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AppOptionsResponse_ModuleOptionsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseAppOptionsResponse_ModuleOptionsEntry,
-    } as AppOptionsResponse_ModuleOptionsEntry;
+    const message = createBaseAppOptionsResponse_ModuleOptionsEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = ModuleOptions.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AppOptionsResponse_ModuleOptionsEntry {
-    const message = {
-      ...baseAppOptionsResponse_ModuleOptionsEntry,
-    } as AppOptionsResponse_ModuleOptionsEntry;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? ModuleOptions.fromJSON(object.value)
-        : undefined;
-    return message;
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? ModuleOptions.fromJSON(object.value) : undefined,
+    };
   },
 
   toJSON(message: AppOptionsResponse_ModuleOptionsEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined &&
-      (obj.value = message.value
-        ? ModuleOptions.toJSON(message.value)
-        : undefined);
+    message.value !== undefined && (obj.value = message.value ? ModuleOptions.toJSON(message.value) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<AppOptionsResponse_ModuleOptionsEntry>
-  ): AppOptionsResponse_ModuleOptionsEntry {
-    const message = {
-      ...baseAppOptionsResponse_ModuleOptionsEntry,
-    } as AppOptionsResponse_ModuleOptionsEntry;
+  create(base?: DeepPartial<AppOptionsResponse_ModuleOptionsEntry>): AppOptionsResponse_ModuleOptionsEntry {
+    return AppOptionsResponse_ModuleOptionsEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<AppOptionsResponse_ModuleOptionsEntry>): AppOptionsResponse_ModuleOptionsEntry {
+    const message = createBaseAppOptionsResponse_ModuleOptionsEntry();
     message.key = object.key ?? "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? ModuleOptions.fromPartial(object.value)
-        : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? ModuleOptions.fromPartial(object.value)
+      : undefined;
     return message;
   },
 };
@@ -228,52 +227,40 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.autocli.v1.Query";
     this.rpc = rpc;
     this.AppOptions = this.AppOptions.bind(this);
   }
   AppOptions(request: AppOptionsRequest): Promise<AppOptionsResponse> {
     const data = AppOptionsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.autocli.v1.Query",
-      "AppOptions",
-      data
-    );
-    return promise.then((data) =>
-      AppOptionsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "AppOptions", data);
+    return promise.then((data) => AppOptionsResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -10,18 +10,14 @@ export interface StablecoinInterestInfo {
   stablecoinInterestRate: string;
 }
 
-const baseStablecoinInterestInfo: object = { stablecoinInterestRate: "" };
+function createBaseStablecoinInterestInfo(): StablecoinInterestInfo {
+  return { lastUpdatedTime: undefined, stablecoinInterestRate: "" };
+}
 
 export const StablecoinInterestInfo = {
-  encode(
-    message: StablecoinInterestInfo,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: StablecoinInterestInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.lastUpdatedTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.lastUpdatedTime),
-        writer.uint32(10).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.lastUpdatedTime), writer.uint32(10).fork()).ldelim();
     }
     if (message.stablecoinInterestRate !== "") {
       writer.uint32(18).string(message.stablecoinInterestRate);
@@ -29,83 +25,68 @@ export const StablecoinInterestInfo = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): StablecoinInterestInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): StablecoinInterestInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseStablecoinInterestInfo } as StablecoinInterestInfo;
+    const message = createBaseStablecoinInterestInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.lastUpdatedTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.lastUpdatedTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.stablecoinInterestRate = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): StablecoinInterestInfo {
-    const message = { ...baseStablecoinInterestInfo } as StablecoinInterestInfo;
-    message.lastUpdatedTime =
-      object.lastUpdatedTime !== undefined && object.lastUpdatedTime !== null
-        ? fromJsonTimestamp(object.lastUpdatedTime)
-        : undefined;
-    message.stablecoinInterestRate =
-      object.stablecoinInterestRate !== undefined &&
-      object.stablecoinInterestRate !== null
-        ? String(object.stablecoinInterestRate)
-        : "";
-    return message;
+    return {
+      lastUpdatedTime: isSet(object.lastUpdatedTime) ? fromJsonTimestamp(object.lastUpdatedTime) : undefined,
+      stablecoinInterestRate: isSet(object.stablecoinInterestRate) ? String(object.stablecoinInterestRate) : "",
+    };
   },
 
   toJSON(message: StablecoinInterestInfo): unknown {
     const obj: any = {};
-    message.lastUpdatedTime !== undefined &&
-      (obj.lastUpdatedTime = message.lastUpdatedTime.toISOString());
-    message.stablecoinInterestRate !== undefined &&
-      (obj.stablecoinInterestRate = message.stablecoinInterestRate);
+    message.lastUpdatedTime !== undefined && (obj.lastUpdatedTime = message.lastUpdatedTime.toISOString());
+    message.stablecoinInterestRate !== undefined && (obj.stablecoinInterestRate = message.stablecoinInterestRate);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<StablecoinInterestInfo>
-  ): StablecoinInterestInfo {
-    const message = { ...baseStablecoinInterestInfo } as StablecoinInterestInfo;
+  create(base?: DeepPartial<StablecoinInterestInfo>): StablecoinInterestInfo {
+    return StablecoinInterestInfo.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<StablecoinInterestInfo>): StablecoinInterestInfo {
+    const message = createBaseStablecoinInterestInfo();
     message.lastUpdatedTime = object.lastUpdatedTime ?? undefined;
     message.stablecoinInterestRate = object.stablecoinInterestRate ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -115,8 +96,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -137,4 +118,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

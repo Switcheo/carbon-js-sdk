@@ -30,26 +30,25 @@ export interface UnlockEvent {
   nonce: string;
 }
 
-const baseLockEvent: object = {
-  denom: "",
-  fromLockProxy: "",
-  fromAssetId: "",
-  fromAddress: "",
-  toChainId: "",
-  toLockProxy: "",
-  toAssetId: "",
-  toAddress: "",
-  amount: "",
-  feeAmount: "",
-  feeAddress: "",
-  nonce: "",
-};
+function createBaseLockEvent(): LockEvent {
+  return {
+    denom: "",
+    fromLockProxy: "",
+    fromAssetId: "",
+    fromAddress: "",
+    toChainId: "",
+    toLockProxy: "",
+    toAssetId: "",
+    toAddress: "",
+    amount: "",
+    feeAmount: "",
+    feeAddress: "",
+    nonce: "",
+  };
+}
 
 export const LockEvent = {
-  encode(
-    message: LockEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LockEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -90,121 +89,130 @@ export const LockEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LockEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLockEvent } as LockEvent;
+    const message = createBaseLockEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.fromLockProxy = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.fromAssetId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.fromAddress = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.toChainId = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.toLockProxy = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.toAssetId = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.toAddress = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.feeAmount = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.feeAddress = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.nonce = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LockEvent {
-    const message = { ...baseLockEvent } as LockEvent;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.fromLockProxy =
-      object.fromLockProxy !== undefined && object.fromLockProxy !== null
-        ? String(object.fromLockProxy)
-        : "";
-    message.fromAssetId =
-      object.fromAssetId !== undefined && object.fromAssetId !== null
-        ? String(object.fromAssetId)
-        : "";
-    message.fromAddress =
-      object.fromAddress !== undefined && object.fromAddress !== null
-        ? String(object.fromAddress)
-        : "";
-    message.toChainId =
-      object.toChainId !== undefined && object.toChainId !== null
-        ? String(object.toChainId)
-        : "";
-    message.toLockProxy =
-      object.toLockProxy !== undefined && object.toLockProxy !== null
-        ? String(object.toLockProxy)
-        : "";
-    message.toAssetId =
-      object.toAssetId !== undefined && object.toAssetId !== null
-        ? String(object.toAssetId)
-        : "";
-    message.toAddress =
-      object.toAddress !== undefined && object.toAddress !== null
-        ? String(object.toAddress)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.feeAmount =
-      object.feeAmount !== undefined && object.feeAmount !== null
-        ? String(object.feeAmount)
-        : "";
-    message.feeAddress =
-      object.feeAddress !== undefined && object.feeAddress !== null
-        ? String(object.feeAddress)
-        : "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? String(object.nonce)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      fromLockProxy: isSet(object.fromLockProxy) ? String(object.fromLockProxy) : "",
+      fromAssetId: isSet(object.fromAssetId) ? String(object.fromAssetId) : "",
+      fromAddress: isSet(object.fromAddress) ? String(object.fromAddress) : "",
+      toChainId: isSet(object.toChainId) ? String(object.toChainId) : "",
+      toLockProxy: isSet(object.toLockProxy) ? String(object.toLockProxy) : "",
+      toAssetId: isSet(object.toAssetId) ? String(object.toAssetId) : "",
+      toAddress: isSet(object.toAddress) ? String(object.toAddress) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      feeAmount: isSet(object.feeAmount) ? String(object.feeAmount) : "",
+      feeAddress: isSet(object.feeAddress) ? String(object.feeAddress) : "",
+      nonce: isSet(object.nonce) ? String(object.nonce) : "",
+    };
   },
 
   toJSON(message: LockEvent): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.fromLockProxy !== undefined &&
-      (obj.fromLockProxy = message.fromLockProxy);
-    message.fromAssetId !== undefined &&
-      (obj.fromAssetId = message.fromAssetId);
-    message.fromAddress !== undefined &&
-      (obj.fromAddress = message.fromAddress);
+    message.fromLockProxy !== undefined && (obj.fromLockProxy = message.fromLockProxy);
+    message.fromAssetId !== undefined && (obj.fromAssetId = message.fromAssetId);
+    message.fromAddress !== undefined && (obj.fromAddress = message.fromAddress);
     message.toChainId !== undefined && (obj.toChainId = message.toChainId);
-    message.toLockProxy !== undefined &&
-      (obj.toLockProxy = message.toLockProxy);
+    message.toLockProxy !== undefined && (obj.toLockProxy = message.toLockProxy);
     message.toAssetId !== undefined && (obj.toAssetId = message.toAssetId);
     message.toAddress !== undefined && (obj.toAddress = message.toAddress);
     message.amount !== undefined && (obj.amount = message.amount);
@@ -214,8 +222,12 @@ export const LockEvent = {
     return obj;
   },
 
+  create(base?: DeepPartial<LockEvent>): LockEvent {
+    return LockEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<LockEvent>): LockEvent {
-    const message = { ...baseLockEvent } as LockEvent;
+    const message = createBaseLockEvent();
     message.denom = object.denom ?? "";
     message.fromLockProxy = object.fromLockProxy ?? "";
     message.fromAssetId = object.fromAssetId ?? "";
@@ -232,22 +244,21 @@ export const LockEvent = {
   },
 };
 
-const baseUnlockEvent: object = {
-  toAssetId: "",
-  toAddress: "",
-  amount: "",
-  fromAddress: "",
-  fromAssetId: "",
-  feeAmount: "",
-  feeAddress: "",
-  nonce: "",
-};
+function createBaseUnlockEvent(): UnlockEvent {
+  return {
+    toAssetId: "",
+    toAddress: "",
+    amount: "",
+    fromAddress: "",
+    fromAssetId: "",
+    feeAmount: "",
+    feeAddress: "",
+    nonce: "",
+  };
+}
 
 export const UnlockEvent = {
-  encode(
-    message: UnlockEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UnlockEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.toAssetId !== "") {
       writer.uint32(10).string(message.toAssetId);
     }
@@ -276,79 +287,88 @@ export const UnlockEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UnlockEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnlockEvent } as UnlockEvent;
+    const message = createBaseUnlockEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.toAssetId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.toAddress = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.fromAddress = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.fromAssetId = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.feeAmount = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.feeAddress = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.nonce = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UnlockEvent {
-    const message = { ...baseUnlockEvent } as UnlockEvent;
-    message.toAssetId =
-      object.toAssetId !== undefined && object.toAssetId !== null
-        ? String(object.toAssetId)
-        : "";
-    message.toAddress =
-      object.toAddress !== undefined && object.toAddress !== null
-        ? String(object.toAddress)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.fromAddress =
-      object.fromAddress !== undefined && object.fromAddress !== null
-        ? String(object.fromAddress)
-        : "";
-    message.fromAssetId =
-      object.fromAssetId !== undefined && object.fromAssetId !== null
-        ? String(object.fromAssetId)
-        : "";
-    message.feeAmount =
-      object.feeAmount !== undefined && object.feeAmount !== null
-        ? String(object.feeAmount)
-        : "";
-    message.feeAddress =
-      object.feeAddress !== undefined && object.feeAddress !== null
-        ? String(object.feeAddress)
-        : "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? String(object.nonce)
-        : "";
-    return message;
+    return {
+      toAssetId: isSet(object.toAssetId) ? String(object.toAssetId) : "",
+      toAddress: isSet(object.toAddress) ? String(object.toAddress) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      fromAddress: isSet(object.fromAddress) ? String(object.fromAddress) : "",
+      fromAssetId: isSet(object.fromAssetId) ? String(object.fromAssetId) : "",
+      feeAmount: isSet(object.feeAmount) ? String(object.feeAmount) : "",
+      feeAddress: isSet(object.feeAddress) ? String(object.feeAddress) : "",
+      nonce: isSet(object.nonce) ? String(object.nonce) : "",
+    };
   },
 
   toJSON(message: UnlockEvent): unknown {
@@ -356,18 +376,20 @@ export const UnlockEvent = {
     message.toAssetId !== undefined && (obj.toAssetId = message.toAssetId);
     message.toAddress !== undefined && (obj.toAddress = message.toAddress);
     message.amount !== undefined && (obj.amount = message.amount);
-    message.fromAddress !== undefined &&
-      (obj.fromAddress = message.fromAddress);
-    message.fromAssetId !== undefined &&
-      (obj.fromAssetId = message.fromAssetId);
+    message.fromAddress !== undefined && (obj.fromAddress = message.fromAddress);
+    message.fromAssetId !== undefined && (obj.fromAssetId = message.fromAssetId);
     message.feeAmount !== undefined && (obj.feeAmount = message.feeAmount);
     message.feeAddress !== undefined && (obj.feeAddress = message.feeAddress);
     message.nonce !== undefined && (obj.nonce = message.nonce);
     return obj;
   },
 
+  create(base?: DeepPartial<UnlockEvent>): UnlockEvent {
+    return UnlockEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UnlockEvent>): UnlockEvent {
-    const message = { ...baseUnlockEvent } as UnlockEvent;
+    const message = createBaseUnlockEvent();
     message.toAssetId = object.toAssetId ?? "";
     message.toAddress = object.toAddress ?? "";
     message.amount = object.amount ?? "";
@@ -380,27 +402,19 @@ export const UnlockEvent = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

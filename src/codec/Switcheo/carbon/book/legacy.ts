@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Switcheo.carbon.book";
 
-export interface StopbookV2320 {
+export interface StopBookV2320 {
   marketId: string;
   asks: string[];
   bids: string[];
@@ -12,19 +12,12 @@ export interface StopbookV2320 {
   stopType: string;
 }
 
-const baseStopbookV2320: object = {
-  marketId: "",
-  asks: "",
-  bids: "",
-  trigger: "",
-  stopType: "",
-};
+function createBaseStopBookV2320(): StopBookV2320 {
+  return { marketId: "", asks: [], bids: [], trigger: "", stopType: "" };
+}
 
-export const StopbookV2320 = {
-  encode(
-    message: StopbookV2320,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+export const StopBookV2320 = {
+  encode(message: StopBookV2320, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -43,58 +36,68 @@ export const StopbookV2320 = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): StopbookV2320 {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): StopBookV2320 {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseStopbookV2320 } as StopbookV2320;
-    message.asks = [];
-    message.bids = [];
+    const message = createBaseStopBookV2320();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.asks.push(reader.string());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.bids.push(reader.string());
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.trigger = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.stopType = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): StopbookV2320 {
-    const message = { ...baseStopbookV2320 } as StopbookV2320;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.asks = (object.asks ?? []).map((e: any) => String(e));
-    message.bids = (object.bids ?? []).map((e: any) => String(e));
-    message.trigger =
-      object.trigger !== undefined && object.trigger !== null
-        ? String(object.trigger)
-        : "";
-    message.stopType =
-      object.stopType !== undefined && object.stopType !== null
-        ? String(object.stopType)
-        : "";
-    return message;
+  fromJSON(object: any): StopBookV2320 {
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      asks: Array.isArray(object?.asks) ? object.asks.map((e: any) => String(e)) : [],
+      bids: Array.isArray(object?.bids) ? object.bids.map((e: any) => String(e)) : [],
+      trigger: isSet(object.trigger) ? String(object.trigger) : "",
+      stopType: isSet(object.stopType) ? String(object.stopType) : "",
+    };
   },
 
-  toJSON(message: StopbookV2320): unknown {
+  toJSON(message: StopBookV2320): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.asks) {
@@ -112,38 +115,34 @@ export const StopbookV2320 = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<StopbookV2320>): StopbookV2320 {
-    const message = { ...baseStopbookV2320 } as StopbookV2320;
+  create(base?: DeepPartial<StopBookV2320>): StopBookV2320 {
+    return StopBookV2320.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<StopBookV2320>): StopBookV2320 {
+    const message = createBaseStopBookV2320();
     message.marketId = object.marketId ?? "";
-    message.asks = (object.asks ?? []).map((e) => e);
-    message.bids = (object.bids ?? []).map((e) => e);
+    message.asks = object.asks?.map((e) => e) || [];
+    message.bids = object.bids?.map((e) => e) || [];
     message.trigger = object.trigger ?? "";
     message.stopType = object.stopType ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

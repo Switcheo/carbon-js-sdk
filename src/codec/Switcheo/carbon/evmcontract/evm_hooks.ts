@@ -33,13 +33,12 @@ export interface ModuleContracts {
   contracts: EVMContract[];
 }
 
-const baseQueryBalanceRequest: object = { denom: "" };
+function createBaseQueryBalanceRequest(): QueryBalanceRequest {
+  return { carbonAddress: new Uint8Array(), evmAddress: new Uint8Array(), denom: "", caller: new Uint8Array() };
+}
 
 export const QueryBalanceRequest = {
-  encode(
-    message: QueryBalanceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBalanceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.carbonAddress.length !== 0) {
       writer.uint32(10).bytes(message.carbonAddress);
     }
@@ -56,78 +55,78 @@ export const QueryBalanceRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryBalanceRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
-    message.carbonAddress = new Uint8Array();
-    message.evmAddress = new Uint8Array();
-    message.caller = new Uint8Array();
+    const message = createBaseQueryBalanceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.carbonAddress = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.evmAddress = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.caller = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBalanceRequest {
-    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
-    message.carbonAddress =
-      object.carbonAddress !== undefined && object.carbonAddress !== null
-        ? bytesFromBase64(object.carbonAddress)
-        : new Uint8Array();
-    message.evmAddress =
-      object.evmAddress !== undefined && object.evmAddress !== null
-        ? bytesFromBase64(object.evmAddress)
-        : new Uint8Array();
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.caller =
-      object.caller !== undefined && object.caller !== null
-        ? bytesFromBase64(object.caller)
-        : new Uint8Array();
-    return message;
+    return {
+      carbonAddress: isSet(object.carbonAddress) ? bytesFromBase64(object.carbonAddress) : new Uint8Array(),
+      evmAddress: isSet(object.evmAddress) ? bytesFromBase64(object.evmAddress) : new Uint8Array(),
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      caller: isSet(object.caller) ? bytesFromBase64(object.caller) : new Uint8Array(),
+    };
   },
 
   toJSON(message: QueryBalanceRequest): unknown {
     const obj: any = {};
     message.carbonAddress !== undefined &&
       (obj.carbonAddress = base64FromBytes(
-        message.carbonAddress !== undefined
-          ? message.carbonAddress
-          : new Uint8Array()
+        message.carbonAddress !== undefined ? message.carbonAddress : new Uint8Array(),
       ));
     message.evmAddress !== undefined &&
-      (obj.evmAddress = base64FromBytes(
-        message.evmAddress !== undefined ? message.evmAddress : new Uint8Array()
-      ));
+      (obj.evmAddress = base64FromBytes(message.evmAddress !== undefined ? message.evmAddress : new Uint8Array()));
     message.denom !== undefined && (obj.denom = message.denom);
     message.caller !== undefined &&
-      (obj.caller = base64FromBytes(
-        message.caller !== undefined ? message.caller : new Uint8Array()
-      ));
+      (obj.caller = base64FromBytes(message.caller !== undefined ? message.caller : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<QueryBalanceRequest>): QueryBalanceRequest {
+    return QueryBalanceRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryBalanceRequest>): QueryBalanceRequest {
-    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
+    const message = createBaseQueryBalanceRequest();
     message.carbonAddress = object.carbonAddress ?? new Uint8Array();
     message.evmAddress = object.evmAddress ?? new Uint8Array();
     message.denom = object.denom ?? "";
@@ -136,13 +135,12 @@ export const QueryBalanceRequest = {
   },
 };
 
-const baseQueryBalanceQueue: object = {};
+function createBaseQueryBalanceQueue(): QueryBalanceQueue {
+  return { contractAddress: new Uint8Array(), requests: [] };
+}
 
 export const QueryBalanceQueue = {
-  encode(
-    message: QueryBalanceQueue,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBalanceQueue, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.contractAddress.length !== 0) {
       writer.uint32(10).bytes(message.contractAddress);
     }
@@ -153,82 +151,74 @@ export const QueryBalanceQueue = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryBalanceQueue {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBalanceQueue } as QueryBalanceQueue;
-    message.requests = [];
-    message.contractAddress = new Uint8Array();
+    const message = createBaseQueryBalanceQueue();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contractAddress = reader.bytes();
-          break;
+          continue;
         case 2:
-          message.requests.push(
-            QueryBalanceRequest.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.requests.push(QueryBalanceRequest.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBalanceQueue {
-    const message = { ...baseQueryBalanceQueue } as QueryBalanceQueue;
-    message.contractAddress =
-      object.contractAddress !== undefined && object.contractAddress !== null
-        ? bytesFromBase64(object.contractAddress)
-        : new Uint8Array();
-    message.requests = (object.requests ?? []).map((e: any) =>
-      QueryBalanceRequest.fromJSON(e)
-    );
-    return message;
+    return {
+      contractAddress: isSet(object.contractAddress) ? bytesFromBase64(object.contractAddress) : new Uint8Array(),
+      requests: Array.isArray(object?.requests) ? object.requests.map((e: any) => QueryBalanceRequest.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: QueryBalanceQueue): unknown {
     const obj: any = {};
     message.contractAddress !== undefined &&
       (obj.contractAddress = base64FromBytes(
-        message.contractAddress !== undefined
-          ? message.contractAddress
-          : new Uint8Array()
+        message.contractAddress !== undefined ? message.contractAddress : new Uint8Array(),
       ));
     if (message.requests) {
-      obj.requests = message.requests.map((e) =>
-        e ? QueryBalanceRequest.toJSON(e) : undefined
-      );
+      obj.requests = message.requests.map((e) => e ? QueryBalanceRequest.toJSON(e) : undefined);
     } else {
       obj.requests = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<QueryBalanceQueue>): QueryBalanceQueue {
+    return QueryBalanceQueue.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryBalanceQueue>): QueryBalanceQueue {
-    const message = { ...baseQueryBalanceQueue } as QueryBalanceQueue;
+    const message = createBaseQueryBalanceQueue();
     message.contractAddress = object.contractAddress ?? new Uint8Array();
-    message.requests = (object.requests ?? []).map((e) =>
-      QueryBalanceRequest.fromPartial(e)
-    );
+    message.requests = object.requests?.map((e) => QueryBalanceRequest.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseEVMContract: object = {
-  version: Long.UZERO,
-  contractType: "",
-  address: "",
-  active: false,
-};
+function createBaseEVMContract(): EVMContract {
+  return { version: Long.UZERO, contractType: "", address: "", active: false };
+}
 
 export const EVMContract = {
-  encode(
-    message: EVMContract,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EVMContract, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.version.isZero()) {
       writer.uint32(8).uint64(message.version);
     }
@@ -245,70 +235,76 @@ export const EVMContract = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EVMContract {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEVMContract } as EVMContract;
+    const message = createBaseEVMContract();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.version = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contractType = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.active = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EVMContract {
-    const message = { ...baseEVMContract } as EVMContract;
-    message.version =
-      object.version !== undefined && object.version !== null
-        ? Long.fromString(object.version)
-        : Long.UZERO;
-    message.contractType =
-      object.contractType !== undefined && object.contractType !== null
-        ? String(object.contractType)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.active =
-      object.active !== undefined && object.active !== null
-        ? Boolean(object.active)
-        : false;
-    return message;
+    return {
+      version: isSet(object.version) ? Long.fromValue(object.version) : Long.UZERO,
+      contractType: isSet(object.contractType) ? String(object.contractType) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+      active: isSet(object.active) ? Boolean(object.active) : false,
+    };
   },
 
   toJSON(message: EVMContract): unknown {
     const obj: any = {};
-    message.version !== undefined &&
-      (obj.version = (message.version || Long.UZERO).toString());
-    message.contractType !== undefined &&
-      (obj.contractType = message.contractType);
+    message.version !== undefined && (obj.version = (message.version || Long.UZERO).toString());
+    message.contractType !== undefined && (obj.contractType = message.contractType);
     message.address !== undefined && (obj.address = message.address);
     message.active !== undefined && (obj.active = message.active);
     return obj;
   },
 
+  create(base?: DeepPartial<EVMContract>): EVMContract {
+    return EVMContract.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EVMContract>): EVMContract {
-    const message = { ...baseEVMContract } as EVMContract;
-    message.version =
-      object.version !== undefined && object.version !== null
-        ? Long.fromValue(object.version)
-        : Long.UZERO;
+    const message = createBaseEVMContract();
+    message.version = (object.version !== undefined && object.version !== null)
+      ? Long.fromValue(object.version)
+      : Long.UZERO;
     message.contractType = object.contractType ?? "";
     message.address = object.address ?? "";
     message.active = object.active ?? false;
@@ -316,13 +312,12 @@ export const EVMContract = {
   },
 };
 
-const baseModuleEVMAddress: object = { name: "", address: "" };
+function createBaseModuleEVMAddress(): ModuleEVMAddress {
+  return { name: "", address: "" };
+}
 
 export const ModuleEVMAddress = {
-  encode(
-    message: ModuleEVMAddress,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleEVMAddress, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -333,37 +328,40 @@ export const ModuleEVMAddress = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ModuleEVMAddress {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModuleEVMAddress } as ModuleEVMAddress;
+    const message = createBaseModuleEVMAddress();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleEVMAddress {
-    const message = { ...baseModuleEVMAddress } as ModuleEVMAddress;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
+    return {
+      name: isSet(object.name) ? String(object.name) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+    };
   },
 
   toJSON(message: ModuleEVMAddress): unknown {
@@ -373,21 +371,24 @@ export const ModuleEVMAddress = {
     return obj;
   },
 
+  create(base?: DeepPartial<ModuleEVMAddress>): ModuleEVMAddress {
+    return ModuleEVMAddress.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ModuleEVMAddress>): ModuleEVMAddress {
-    const message = { ...baseModuleEVMAddress } as ModuleEVMAddress;
+    const message = createBaseModuleEVMAddress();
     message.name = object.name ?? "";
     message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseModuleContracts: object = { moduleName: "" };
+function createBaseModuleContracts(): ModuleContracts {
+  return { moduleName: "", contracts: [] };
+}
 
 export const ModuleContracts = {
-  encode(
-    message: ModuleContracts,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleContracts, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.moduleName !== "") {
       writer.uint32(10).string(message.moduleName);
     }
@@ -398,58 +399,61 @@ export const ModuleContracts = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ModuleContracts {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModuleContracts } as ModuleContracts;
-    message.contracts = [];
+    const message = createBaseModuleContracts();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.moduleName = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contracts.push(EVMContract.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleContracts {
-    const message = { ...baseModuleContracts } as ModuleContracts;
-    message.moduleName =
-      object.moduleName !== undefined && object.moduleName !== null
-        ? String(object.moduleName)
-        : "";
-    message.contracts = (object.contracts ?? []).map((e: any) =>
-      EVMContract.fromJSON(e)
-    );
-    return message;
+    return {
+      moduleName: isSet(object.moduleName) ? String(object.moduleName) : "",
+      contracts: Array.isArray(object?.contracts) ? object.contracts.map((e: any) => EVMContract.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: ModuleContracts): unknown {
     const obj: any = {};
     message.moduleName !== undefined && (obj.moduleName = message.moduleName);
     if (message.contracts) {
-      obj.contracts = message.contracts.map((e) =>
-        e ? EVMContract.toJSON(e) : undefined
-      );
+      obj.contracts = message.contracts.map((e) => e ? EVMContract.toJSON(e) : undefined);
     } else {
       obj.contracts = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<ModuleContracts>): ModuleContracts {
+    return ModuleContracts.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ModuleContracts>): ModuleContracts {
-    const message = { ...baseModuleContracts } as ModuleContracts;
+    const message = createBaseModuleContracts();
     message.moduleName = object.moduleName ?? "";
-    message.contracts = (object.contracts ?? []).map((e) =>
-      EVMContract.fromPartial(e)
-    );
+    message.contracts = object.contracts?.map((e) => EVMContract.fromPartial(e)) || [];
     return message;
   },
 };
@@ -457,58 +461,60 @@ export const ModuleContracts = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

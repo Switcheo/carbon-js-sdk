@@ -1,13 +1,9 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Duration } from "../../../google/protobuf/duration";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
-import {
-  UInt64Value,
-  StringValue,
-  BoolValue,
-} from "../../../google/protobuf/wrappers";
+import { Duration } from "../../../google/protobuf/duration";
+import { BoolValue, StringValue, UInt64Value } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
@@ -73,64 +69,53 @@ export interface ParamsToUpdate {
   volatilitySpreadBlacklist?: string;
 }
 
-const baseParams: object = {
-  quoteIndexPriceFluctuationToleranceRatio: "",
-  navPerShareSnapshots: Long.UZERO,
-  poolTradeCommissionRatio: "",
-  poolFeeCommissionRatio: "",
-  poolCommissionAddress: "",
-  userVaultMinOwnerRatio: "",
-  userVaultProfitShareCap: "",
-  userVaultDepositFeeCap: "",
-  userVaultWithdrawalFeeCap: "",
-  userVaultTradeCommissionRatio: "",
-  userVaultFeeCommissionRatio: "",
-  volatilitySpreadEnabled: false,
-  volatilitySpreadBlacklist: "",
-};
+function createBaseParams(): Params {
+  return {
+    quoteIndexPriceFluctuationToleranceRatio: "",
+    quoteExpiryDuration: undefined,
+    marketUtilizationSnapshotInterval: undefined,
+    maxMarketUtilizationSnapshotWindow: undefined,
+    navPerShareSnapshots: Long.UZERO,
+    navPerShareSnapshotInterval: undefined,
+    indexLastUpdatedAtThreshold: undefined,
+    poolTradeCommissionRatio: "",
+    poolFeeCommissionRatio: "",
+    poolCommissionAddress: "",
+    userVaultMinOwnerDeposit: undefined,
+    userVaultMinOwnerRatio: "",
+    userVaultProfitShareCap: "",
+    userVaultDepositFeeCap: "",
+    userVaultWithdrawalFeeCap: "",
+    userVaultTradeCommissionRatio: "",
+    userVaultFeeCommissionRatio: "",
+    stalePriceAllowance: undefined,
+    volatilitySpreadEnabled: false,
+    volatilitySpreadBlacklist: "",
+  };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.quoteIndexPriceFluctuationToleranceRatio !== "") {
-      writer
-        .uint32(10)
-        .string(message.quoteIndexPriceFluctuationToleranceRatio);
+      writer.uint32(10).string(message.quoteIndexPriceFluctuationToleranceRatio);
     }
     if (message.quoteExpiryDuration !== undefined) {
-      Duration.encode(
-        message.quoteExpiryDuration,
-        writer.uint32(18).fork()
-      ).ldelim();
+      Duration.encode(message.quoteExpiryDuration, writer.uint32(18).fork()).ldelim();
     }
     if (message.marketUtilizationSnapshotInterval !== undefined) {
-      Duration.encode(
-        message.marketUtilizationSnapshotInterval,
-        writer.uint32(26).fork()
-      ).ldelim();
+      Duration.encode(message.marketUtilizationSnapshotInterval, writer.uint32(26).fork()).ldelim();
     }
     if (message.maxMarketUtilizationSnapshotWindow !== undefined) {
-      Duration.encode(
-        message.maxMarketUtilizationSnapshotWindow,
-        writer.uint32(34).fork()
-      ).ldelim();
+      Duration.encode(message.maxMarketUtilizationSnapshotWindow, writer.uint32(34).fork()).ldelim();
     }
     if (!message.navPerShareSnapshots.isZero()) {
       writer.uint32(40).uint64(message.navPerShareSnapshots);
     }
     if (message.navPerShareSnapshotInterval !== undefined) {
-      Duration.encode(
-        message.navPerShareSnapshotInterval,
-        writer.uint32(50).fork()
-      ).ldelim();
+      Duration.encode(message.navPerShareSnapshotInterval, writer.uint32(50).fork()).ldelim();
     }
     if (message.indexLastUpdatedAtThreshold !== undefined) {
-      Duration.encode(
-        message.indexLastUpdatedAtThreshold,
-        writer.uint32(58).fork()
-      ).ldelim();
+      Duration.encode(message.indexLastUpdatedAtThreshold, writer.uint32(58).fork()).ldelim();
     }
     if (message.poolTradeCommissionRatio !== "") {
       writer.uint32(66).string(message.poolTradeCommissionRatio);
@@ -142,10 +127,7 @@ export const Params = {
       writer.uint32(82).string(message.poolCommissionAddress);
     }
     if (message.userVaultMinOwnerDeposit !== undefined) {
-      Coin.encode(
-        message.userVaultMinOwnerDeposit,
-        writer.uint32(90).fork()
-      ).ldelim();
+      Coin.encode(message.userVaultMinOwnerDeposit, writer.uint32(90).fork()).ldelim();
     }
     if (message.userVaultMinOwnerRatio !== "") {
       writer.uint32(98).string(message.userVaultMinOwnerRatio);
@@ -166,10 +148,7 @@ export const Params = {
       writer.uint32(138).string(message.userVaultFeeCommissionRatio);
     }
     if (message.stalePriceAllowance !== undefined) {
-      Duration.encode(
-        message.stalePriceAllowance,
-        writer.uint32(146).fork()
-      ).ldelim();
+      Duration.encode(message.stalePriceAllowance, writer.uint32(146).fork()).ldelim();
     }
     if (message.volatilitySpreadEnabled === true) {
       writer.uint32(152).bool(message.volatilitySpreadEnabled);
@@ -181,229 +160,230 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.quoteIndexPriceFluctuationToleranceRatio = reader.string();
-          break;
+          continue;
         case 2:
-          message.quoteExpiryDuration = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.quoteExpiryDuration = Duration.decode(reader, reader.uint32());
+          continue;
         case 3:
-          message.marketUtilizationSnapshotInterval = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.marketUtilizationSnapshotInterval = Duration.decode(reader, reader.uint32());
+          continue;
         case 4:
-          message.maxMarketUtilizationSnapshotWindow = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 34) {
+            break;
+          }
+
+          message.maxMarketUtilizationSnapshotWindow = Duration.decode(reader, reader.uint32());
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.navPerShareSnapshots = reader.uint64() as Long;
-          break;
+          continue;
         case 6:
-          message.navPerShareSnapshotInterval = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 50) {
+            break;
+          }
+
+          message.navPerShareSnapshotInterval = Duration.decode(reader, reader.uint32());
+          continue;
         case 7:
-          message.indexLastUpdatedAtThreshold = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 58) {
+            break;
+          }
+
+          message.indexLastUpdatedAtThreshold = Duration.decode(reader, reader.uint32());
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.poolTradeCommissionRatio = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.poolFeeCommissionRatio = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.poolCommissionAddress = reader.string();
-          break;
+          continue;
         case 11:
-          message.userVaultMinOwnerDeposit = Coin.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 90) {
+            break;
+          }
+
+          message.userVaultMinOwnerDeposit = Coin.decode(reader, reader.uint32());
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.userVaultMinOwnerRatio = reader.string();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.userVaultProfitShareCap = reader.string();
-          break;
+          continue;
         case 14:
+          if (tag !== 114) {
+            break;
+          }
+
           message.userVaultDepositFeeCap = reader.string();
-          break;
+          continue;
         case 15:
+          if (tag !== 122) {
+            break;
+          }
+
           message.userVaultWithdrawalFeeCap = reader.string();
-          break;
+          continue;
         case 16:
+          if (tag !== 130) {
+            break;
+          }
+
           message.userVaultTradeCommissionRatio = reader.string();
-          break;
+          continue;
         case 17:
+          if (tag !== 138) {
+            break;
+          }
+
           message.userVaultFeeCommissionRatio = reader.string();
-          break;
+          continue;
         case 18:
-          message.stalePriceAllowance = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 146) {
+            break;
+          }
+
+          message.stalePriceAllowance = Duration.decode(reader, reader.uint32());
+          continue;
         case 19:
+          if (tag !== 152) {
+            break;
+          }
+
           message.volatilitySpreadEnabled = reader.bool();
-          break;
+          continue;
         case 20:
+          if (tag !== 162) {
+            break;
+          }
+
           message.volatilitySpreadBlacklist = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.quoteIndexPriceFluctuationToleranceRatio =
-      object.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
-      object.quoteIndexPriceFluctuationToleranceRatio !== null
+    return {
+      quoteIndexPriceFluctuationToleranceRatio: isSet(object.quoteIndexPriceFluctuationToleranceRatio)
         ? String(object.quoteIndexPriceFluctuationToleranceRatio)
-        : "";
-    message.quoteExpiryDuration =
-      object.quoteExpiryDuration !== undefined &&
-      object.quoteExpiryDuration !== null
+        : "",
+      quoteExpiryDuration: isSet(object.quoteExpiryDuration)
         ? Duration.fromJSON(object.quoteExpiryDuration)
-        : undefined;
-    message.marketUtilizationSnapshotInterval =
-      object.marketUtilizationSnapshotInterval !== undefined &&
-      object.marketUtilizationSnapshotInterval !== null
+        : undefined,
+      marketUtilizationSnapshotInterval: isSet(object.marketUtilizationSnapshotInterval)
         ? Duration.fromJSON(object.marketUtilizationSnapshotInterval)
-        : undefined;
-    message.maxMarketUtilizationSnapshotWindow =
-      object.maxMarketUtilizationSnapshotWindow !== undefined &&
-      object.maxMarketUtilizationSnapshotWindow !== null
+        : undefined,
+      maxMarketUtilizationSnapshotWindow: isSet(object.maxMarketUtilizationSnapshotWindow)
         ? Duration.fromJSON(object.maxMarketUtilizationSnapshotWindow)
-        : undefined;
-    message.navPerShareSnapshots =
-      object.navPerShareSnapshots !== undefined &&
-      object.navPerShareSnapshots !== null
-        ? Long.fromString(object.navPerShareSnapshots)
-        : Long.UZERO;
-    message.navPerShareSnapshotInterval =
-      object.navPerShareSnapshotInterval !== undefined &&
-      object.navPerShareSnapshotInterval !== null
+        : undefined,
+      navPerShareSnapshots: isSet(object.navPerShareSnapshots)
+        ? Long.fromValue(object.navPerShareSnapshots)
+        : Long.UZERO,
+      navPerShareSnapshotInterval: isSet(object.navPerShareSnapshotInterval)
         ? Duration.fromJSON(object.navPerShareSnapshotInterval)
-        : undefined;
-    message.indexLastUpdatedAtThreshold =
-      object.indexLastUpdatedAtThreshold !== undefined &&
-      object.indexLastUpdatedAtThreshold !== null
+        : undefined,
+      indexLastUpdatedAtThreshold: isSet(object.indexLastUpdatedAtThreshold)
         ? Duration.fromJSON(object.indexLastUpdatedAtThreshold)
-        : undefined;
-    message.poolTradeCommissionRatio =
-      object.poolTradeCommissionRatio !== undefined &&
-      object.poolTradeCommissionRatio !== null
-        ? String(object.poolTradeCommissionRatio)
-        : "";
-    message.poolFeeCommissionRatio =
-      object.poolFeeCommissionRatio !== undefined &&
-      object.poolFeeCommissionRatio !== null
-        ? String(object.poolFeeCommissionRatio)
-        : "";
-    message.poolCommissionAddress =
-      object.poolCommissionAddress !== undefined &&
-      object.poolCommissionAddress !== null
-        ? String(object.poolCommissionAddress)
-        : "";
-    message.userVaultMinOwnerDeposit =
-      object.userVaultMinOwnerDeposit !== undefined &&
-      object.userVaultMinOwnerDeposit !== null
+        : undefined,
+      poolTradeCommissionRatio: isSet(object.poolTradeCommissionRatio) ? String(object.poolTradeCommissionRatio) : "",
+      poolFeeCommissionRatio: isSet(object.poolFeeCommissionRatio) ? String(object.poolFeeCommissionRatio) : "",
+      poolCommissionAddress: isSet(object.poolCommissionAddress) ? String(object.poolCommissionAddress) : "",
+      userVaultMinOwnerDeposit: isSet(object.userVaultMinOwnerDeposit)
         ? Coin.fromJSON(object.userVaultMinOwnerDeposit)
-        : undefined;
-    message.userVaultMinOwnerRatio =
-      object.userVaultMinOwnerRatio !== undefined &&
-      object.userVaultMinOwnerRatio !== null
-        ? String(object.userVaultMinOwnerRatio)
-        : "";
-    message.userVaultProfitShareCap =
-      object.userVaultProfitShareCap !== undefined &&
-      object.userVaultProfitShareCap !== null
-        ? String(object.userVaultProfitShareCap)
-        : "";
-    message.userVaultDepositFeeCap =
-      object.userVaultDepositFeeCap !== undefined &&
-      object.userVaultDepositFeeCap !== null
-        ? String(object.userVaultDepositFeeCap)
-        : "";
-    message.userVaultWithdrawalFeeCap =
-      object.userVaultWithdrawalFeeCap !== undefined &&
-      object.userVaultWithdrawalFeeCap !== null
+        : undefined,
+      userVaultMinOwnerRatio: isSet(object.userVaultMinOwnerRatio) ? String(object.userVaultMinOwnerRatio) : "",
+      userVaultProfitShareCap: isSet(object.userVaultProfitShareCap) ? String(object.userVaultProfitShareCap) : "",
+      userVaultDepositFeeCap: isSet(object.userVaultDepositFeeCap) ? String(object.userVaultDepositFeeCap) : "",
+      userVaultWithdrawalFeeCap: isSet(object.userVaultWithdrawalFeeCap)
         ? String(object.userVaultWithdrawalFeeCap)
-        : "";
-    message.userVaultTradeCommissionRatio =
-      object.userVaultTradeCommissionRatio !== undefined &&
-      object.userVaultTradeCommissionRatio !== null
+        : "",
+      userVaultTradeCommissionRatio: isSet(object.userVaultTradeCommissionRatio)
         ? String(object.userVaultTradeCommissionRatio)
-        : "";
-    message.userVaultFeeCommissionRatio =
-      object.userVaultFeeCommissionRatio !== undefined &&
-      object.userVaultFeeCommissionRatio !== null
+        : "",
+      userVaultFeeCommissionRatio: isSet(object.userVaultFeeCommissionRatio)
         ? String(object.userVaultFeeCommissionRatio)
-        : "";
-    message.stalePriceAllowance =
-      object.stalePriceAllowance !== undefined &&
-      object.stalePriceAllowance !== null
+        : "",
+      stalePriceAllowance: isSet(object.stalePriceAllowance)
         ? Duration.fromJSON(object.stalePriceAllowance)
-        : undefined;
-    message.volatilitySpreadEnabled =
-      object.volatilitySpreadEnabled !== undefined &&
-      object.volatilitySpreadEnabled !== null
-        ? Boolean(object.volatilitySpreadEnabled)
-        : false;
-    message.volatilitySpreadBlacklist =
-      object.volatilitySpreadBlacklist !== undefined &&
-      object.volatilitySpreadBlacklist !== null
+        : undefined,
+      volatilitySpreadEnabled: isSet(object.volatilitySpreadEnabled) ? Boolean(object.volatilitySpreadEnabled) : false,
+      volatilitySpreadBlacklist: isSet(object.volatilitySpreadBlacklist)
         ? String(object.volatilitySpreadBlacklist)
-        : "";
-    return message;
+        : "",
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     message.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
-      (obj.quoteIndexPriceFluctuationToleranceRatio =
-        message.quoteIndexPriceFluctuationToleranceRatio);
+      (obj.quoteIndexPriceFluctuationToleranceRatio = message.quoteIndexPriceFluctuationToleranceRatio);
     message.quoteExpiryDuration !== undefined &&
       (obj.quoteExpiryDuration = message.quoteExpiryDuration
         ? Duration.toJSON(message.quoteExpiryDuration)
         : undefined);
     message.marketUtilizationSnapshotInterval !== undefined &&
-      (obj.marketUtilizationSnapshotInterval =
-        message.marketUtilizationSnapshotInterval
-          ? Duration.toJSON(message.marketUtilizationSnapshotInterval)
-          : undefined);
+      (obj.marketUtilizationSnapshotInterval = message.marketUtilizationSnapshotInterval
+        ? Duration.toJSON(message.marketUtilizationSnapshotInterval)
+        : undefined);
     message.maxMarketUtilizationSnapshotWindow !== undefined &&
-      (obj.maxMarketUtilizationSnapshotWindow =
-        message.maxMarketUtilizationSnapshotWindow
-          ? Duration.toJSON(message.maxMarketUtilizationSnapshotWindow)
-          : undefined);
+      (obj.maxMarketUtilizationSnapshotWindow = message.maxMarketUtilizationSnapshotWindow
+        ? Duration.toJSON(message.maxMarketUtilizationSnapshotWindow)
+        : undefined);
     message.navPerShareSnapshots !== undefined &&
-      (obj.navPerShareSnapshots = (
-        message.navPerShareSnapshots || Long.UZERO
-      ).toString());
+      (obj.navPerShareSnapshots = (message.navPerShareSnapshots || Long.UZERO).toString());
     message.navPerShareSnapshotInterval !== undefined &&
       (obj.navPerShareSnapshotInterval = message.navPerShareSnapshotInterval
         ? Duration.toJSON(message.navPerShareSnapshotInterval)
@@ -412,158 +392,129 @@ export const Params = {
       (obj.indexLastUpdatedAtThreshold = message.indexLastUpdatedAtThreshold
         ? Duration.toJSON(message.indexLastUpdatedAtThreshold)
         : undefined);
-    message.poolTradeCommissionRatio !== undefined &&
-      (obj.poolTradeCommissionRatio = message.poolTradeCommissionRatio);
-    message.poolFeeCommissionRatio !== undefined &&
-      (obj.poolFeeCommissionRatio = message.poolFeeCommissionRatio);
-    message.poolCommissionAddress !== undefined &&
-      (obj.poolCommissionAddress = message.poolCommissionAddress);
-    message.userVaultMinOwnerDeposit !== undefined &&
-      (obj.userVaultMinOwnerDeposit = message.userVaultMinOwnerDeposit
-        ? Coin.toJSON(message.userVaultMinOwnerDeposit)
-        : undefined);
-    message.userVaultMinOwnerRatio !== undefined &&
-      (obj.userVaultMinOwnerRatio = message.userVaultMinOwnerRatio);
-    message.userVaultProfitShareCap !== undefined &&
-      (obj.userVaultProfitShareCap = message.userVaultProfitShareCap);
-    message.userVaultDepositFeeCap !== undefined &&
-      (obj.userVaultDepositFeeCap = message.userVaultDepositFeeCap);
+    message.poolTradeCommissionRatio !== undefined && (obj.poolTradeCommissionRatio = message.poolTradeCommissionRatio);
+    message.poolFeeCommissionRatio !== undefined && (obj.poolFeeCommissionRatio = message.poolFeeCommissionRatio);
+    message.poolCommissionAddress !== undefined && (obj.poolCommissionAddress = message.poolCommissionAddress);
+    message.userVaultMinOwnerDeposit !== undefined && (obj.userVaultMinOwnerDeposit = message.userVaultMinOwnerDeposit
+      ? Coin.toJSON(message.userVaultMinOwnerDeposit)
+      : undefined);
+    message.userVaultMinOwnerRatio !== undefined && (obj.userVaultMinOwnerRatio = message.userVaultMinOwnerRatio);
+    message.userVaultProfitShareCap !== undefined && (obj.userVaultProfitShareCap = message.userVaultProfitShareCap);
+    message.userVaultDepositFeeCap !== undefined && (obj.userVaultDepositFeeCap = message.userVaultDepositFeeCap);
     message.userVaultWithdrawalFeeCap !== undefined &&
       (obj.userVaultWithdrawalFeeCap = message.userVaultWithdrawalFeeCap);
     message.userVaultTradeCommissionRatio !== undefined &&
-      (obj.userVaultTradeCommissionRatio =
-        message.userVaultTradeCommissionRatio);
+      (obj.userVaultTradeCommissionRatio = message.userVaultTradeCommissionRatio);
     message.userVaultFeeCommissionRatio !== undefined &&
       (obj.userVaultFeeCommissionRatio = message.userVaultFeeCommissionRatio);
     message.stalePriceAllowance !== undefined &&
       (obj.stalePriceAllowance = message.stalePriceAllowance
         ? Duration.toJSON(message.stalePriceAllowance)
         : undefined);
-    message.volatilitySpreadEnabled !== undefined &&
-      (obj.volatilitySpreadEnabled = message.volatilitySpreadEnabled);
+    message.volatilitySpreadEnabled !== undefined && (obj.volatilitySpreadEnabled = message.volatilitySpreadEnabled);
     message.volatilitySpreadBlacklist !== undefined &&
       (obj.volatilitySpreadBlacklist = message.volatilitySpreadBlacklist);
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.quoteIndexPriceFluctuationToleranceRatio =
-      object.quoteIndexPriceFluctuationToleranceRatio ?? "";
-    message.quoteExpiryDuration =
-      object.quoteExpiryDuration !== undefined &&
-      object.quoteExpiryDuration !== null
-        ? Duration.fromPartial(object.quoteExpiryDuration)
-        : undefined;
+    const message = createBaseParams();
+    message.quoteIndexPriceFluctuationToleranceRatio = object.quoteIndexPriceFluctuationToleranceRatio ?? "";
+    message.quoteExpiryDuration = (object.quoteExpiryDuration !== undefined && object.quoteExpiryDuration !== null)
+      ? Duration.fromPartial(object.quoteExpiryDuration)
+      : undefined;
     message.marketUtilizationSnapshotInterval =
-      object.marketUtilizationSnapshotInterval !== undefined &&
-      object.marketUtilizationSnapshotInterval !== null
+      (object.marketUtilizationSnapshotInterval !== undefined && object.marketUtilizationSnapshotInterval !== null)
         ? Duration.fromPartial(object.marketUtilizationSnapshotInterval)
         : undefined;
     message.maxMarketUtilizationSnapshotWindow =
-      object.maxMarketUtilizationSnapshotWindow !== undefined &&
-      object.maxMarketUtilizationSnapshotWindow !== null
+      (object.maxMarketUtilizationSnapshotWindow !== undefined && object.maxMarketUtilizationSnapshotWindow !== null)
         ? Duration.fromPartial(object.maxMarketUtilizationSnapshotWindow)
         : undefined;
-    message.navPerShareSnapshots =
-      object.navPerShareSnapshots !== undefined &&
-      object.navPerShareSnapshots !== null
-        ? Long.fromValue(object.navPerShareSnapshots)
-        : Long.UZERO;
+    message.navPerShareSnapshots = (object.navPerShareSnapshots !== undefined && object.navPerShareSnapshots !== null)
+      ? Long.fromValue(object.navPerShareSnapshots)
+      : Long.UZERO;
     message.navPerShareSnapshotInterval =
-      object.navPerShareSnapshotInterval !== undefined &&
-      object.navPerShareSnapshotInterval !== null
+      (object.navPerShareSnapshotInterval !== undefined && object.navPerShareSnapshotInterval !== null)
         ? Duration.fromPartial(object.navPerShareSnapshotInterval)
         : undefined;
     message.indexLastUpdatedAtThreshold =
-      object.indexLastUpdatedAtThreshold !== undefined &&
-      object.indexLastUpdatedAtThreshold !== null
+      (object.indexLastUpdatedAtThreshold !== undefined && object.indexLastUpdatedAtThreshold !== null)
         ? Duration.fromPartial(object.indexLastUpdatedAtThreshold)
         : undefined;
     message.poolTradeCommissionRatio = object.poolTradeCommissionRatio ?? "";
     message.poolFeeCommissionRatio = object.poolFeeCommissionRatio ?? "";
     message.poolCommissionAddress = object.poolCommissionAddress ?? "";
     message.userVaultMinOwnerDeposit =
-      object.userVaultMinOwnerDeposit !== undefined &&
-      object.userVaultMinOwnerDeposit !== null
+      (object.userVaultMinOwnerDeposit !== undefined && object.userVaultMinOwnerDeposit !== null)
         ? Coin.fromPartial(object.userVaultMinOwnerDeposit)
         : undefined;
     message.userVaultMinOwnerRatio = object.userVaultMinOwnerRatio ?? "";
     message.userVaultProfitShareCap = object.userVaultProfitShareCap ?? "";
     message.userVaultDepositFeeCap = object.userVaultDepositFeeCap ?? "";
     message.userVaultWithdrawalFeeCap = object.userVaultWithdrawalFeeCap ?? "";
-    message.userVaultTradeCommissionRatio =
-      object.userVaultTradeCommissionRatio ?? "";
-    message.userVaultFeeCommissionRatio =
-      object.userVaultFeeCommissionRatio ?? "";
-    message.stalePriceAllowance =
-      object.stalePriceAllowance !== undefined &&
-      object.stalePriceAllowance !== null
-        ? Duration.fromPartial(object.stalePriceAllowance)
-        : undefined;
+    message.userVaultTradeCommissionRatio = object.userVaultTradeCommissionRatio ?? "";
+    message.userVaultFeeCommissionRatio = object.userVaultFeeCommissionRatio ?? "";
+    message.stalePriceAllowance = (object.stalePriceAllowance !== undefined && object.stalePriceAllowance !== null)
+      ? Duration.fromPartial(object.stalePriceAllowance)
+      : undefined;
     message.volatilitySpreadEnabled = object.volatilitySpreadEnabled ?? false;
     message.volatilitySpreadBlacklist = object.volatilitySpreadBlacklist ?? "";
     return message;
   },
 };
 
-const baseParamsToUpdate: object = {
-  quoteIndexPriceFluctuationToleranceRatio: "",
-  poolTradeCommissionRatio: "",
-  poolFeeCommissionRatio: "",
-  userVaultMinOwnerRatio: "",
-  userVaultProfitShareCap: "",
-  userVaultDepositFeeCap: "",
-  userVaultWithdrawalFeeCap: "",
-  userVaultTradeCommissionRatio: "",
-  userVaultFeeCommissionRatio: "",
-};
+function createBaseParamsToUpdate(): ParamsToUpdate {
+  return {
+    quoteIndexPriceFluctuationToleranceRatio: "",
+    quoteExpiryDuration: undefined,
+    marketUtilizationSnapshotInterval: undefined,
+    maxMarketUtilizationSnapshotWindow: undefined,
+    navPerShareSnapshots: undefined,
+    navPerShareSnapshotInterval: undefined,
+    indexLastUpdatedAtThreshold: undefined,
+    poolTradeCommissionRatio: "",
+    poolFeeCommissionRatio: "",
+    poolCommissionAddress: undefined,
+    userVaultMinOwnerDeposit: undefined,
+    userVaultMinOwnerRatio: "",
+    userVaultProfitShareCap: "",
+    userVaultDepositFeeCap: "",
+    userVaultWithdrawalFeeCap: "",
+    userVaultTradeCommissionRatio: "",
+    userVaultFeeCommissionRatio: "",
+    stalePriceAllowance: undefined,
+    volatilitySpreadEnabled: undefined,
+    volatilitySpreadBlacklist: undefined,
+  };
+}
 
 export const ParamsToUpdate = {
-  encode(
-    message: ParamsToUpdate,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ParamsToUpdate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.quoteIndexPriceFluctuationToleranceRatio !== "") {
-      writer
-        .uint32(10)
-        .string(message.quoteIndexPriceFluctuationToleranceRatio);
+      writer.uint32(10).string(message.quoteIndexPriceFluctuationToleranceRatio);
     }
     if (message.quoteExpiryDuration !== undefined) {
-      Duration.encode(
-        message.quoteExpiryDuration,
-        writer.uint32(18).fork()
-      ).ldelim();
+      Duration.encode(message.quoteExpiryDuration, writer.uint32(18).fork()).ldelim();
     }
     if (message.marketUtilizationSnapshotInterval !== undefined) {
-      Duration.encode(
-        message.marketUtilizationSnapshotInterval,
-        writer.uint32(26).fork()
-      ).ldelim();
+      Duration.encode(message.marketUtilizationSnapshotInterval, writer.uint32(26).fork()).ldelim();
     }
     if (message.maxMarketUtilizationSnapshotWindow !== undefined) {
-      Duration.encode(
-        message.maxMarketUtilizationSnapshotWindow,
-        writer.uint32(34).fork()
-      ).ldelim();
+      Duration.encode(message.maxMarketUtilizationSnapshotWindow, writer.uint32(34).fork()).ldelim();
     }
     if (message.navPerShareSnapshots !== undefined) {
-      UInt64Value.encode(
-        { value: message.navPerShareSnapshots! },
-        writer.uint32(42).fork()
-      ).ldelim();
+      UInt64Value.encode({ value: message.navPerShareSnapshots! }, writer.uint32(42).fork()).ldelim();
     }
     if (message.navPerShareSnapshotInterval !== undefined) {
-      Duration.encode(
-        message.navPerShareSnapshotInterval,
-        writer.uint32(50).fork()
-      ).ldelim();
+      Duration.encode(message.navPerShareSnapshotInterval, writer.uint32(50).fork()).ldelim();
     }
     if (message.indexLastUpdatedAtThreshold !== undefined) {
-      Duration.encode(
-        message.indexLastUpdatedAtThreshold,
-        writer.uint32(58).fork()
-      ).ldelim();
+      Duration.encode(message.indexLastUpdatedAtThreshold, writer.uint32(58).fork()).ldelim();
     }
     if (message.poolTradeCommissionRatio !== "") {
       writer.uint32(66).string(message.poolTradeCommissionRatio);
@@ -572,16 +523,10 @@ export const ParamsToUpdate = {
       writer.uint32(74).string(message.poolFeeCommissionRatio);
     }
     if (message.poolCommissionAddress !== undefined) {
-      StringValue.encode(
-        { value: message.poolCommissionAddress! },
-        writer.uint32(82).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.poolCommissionAddress! }, writer.uint32(82).fork()).ldelim();
     }
     if (message.userVaultMinOwnerDeposit !== undefined) {
-      Coin.encode(
-        message.userVaultMinOwnerDeposit,
-        writer.uint32(90).fork()
-      ).ldelim();
+      Coin.encode(message.userVaultMinOwnerDeposit, writer.uint32(90).fork()).ldelim();
     }
     if (message.userVaultMinOwnerRatio !== "") {
       writer.uint32(98).string(message.userVaultMinOwnerRatio);
@@ -602,260 +547,243 @@ export const ParamsToUpdate = {
       writer.uint32(138).string(message.userVaultFeeCommissionRatio);
     }
     if (message.stalePriceAllowance !== undefined) {
-      Duration.encode(
-        message.stalePriceAllowance,
-        writer.uint32(146).fork()
-      ).ldelim();
+      Duration.encode(message.stalePriceAllowance, writer.uint32(146).fork()).ldelim();
     }
     if (message.volatilitySpreadEnabled !== undefined) {
-      BoolValue.encode(
-        { value: message.volatilitySpreadEnabled! },
-        writer.uint32(154).fork()
-      ).ldelim();
+      BoolValue.encode({ value: message.volatilitySpreadEnabled! }, writer.uint32(154).fork()).ldelim();
     }
     if (message.volatilitySpreadBlacklist !== undefined) {
-      StringValue.encode(
-        { value: message.volatilitySpreadBlacklist! },
-        writer.uint32(162).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.volatilitySpreadBlacklist! }, writer.uint32(162).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ParamsToUpdate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    const message = createBaseParamsToUpdate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.quoteIndexPriceFluctuationToleranceRatio = reader.string();
-          break;
+          continue;
         case 2:
-          message.quoteExpiryDuration = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.quoteExpiryDuration = Duration.decode(reader, reader.uint32());
+          continue;
         case 3:
-          message.marketUtilizationSnapshotInterval = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.marketUtilizationSnapshotInterval = Duration.decode(reader, reader.uint32());
+          continue;
         case 4:
-          message.maxMarketUtilizationSnapshotWindow = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 34) {
+            break;
+          }
+
+          message.maxMarketUtilizationSnapshotWindow = Duration.decode(reader, reader.uint32());
+          continue;
         case 5:
-          message.navPerShareSnapshots = UInt64Value.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 42) {
+            break;
+          }
+
+          message.navPerShareSnapshots = UInt64Value.decode(reader, reader.uint32()).value;
+          continue;
         case 6:
-          message.navPerShareSnapshotInterval = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 50) {
+            break;
+          }
+
+          message.navPerShareSnapshotInterval = Duration.decode(reader, reader.uint32());
+          continue;
         case 7:
-          message.indexLastUpdatedAtThreshold = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 58) {
+            break;
+          }
+
+          message.indexLastUpdatedAtThreshold = Duration.decode(reader, reader.uint32());
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.poolTradeCommissionRatio = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.poolFeeCommissionRatio = reader.string();
-          break;
+          continue;
         case 10:
-          message.poolCommissionAddress = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 82) {
+            break;
+          }
+
+          message.poolCommissionAddress = StringValue.decode(reader, reader.uint32()).value;
+          continue;
         case 11:
-          message.userVaultMinOwnerDeposit = Coin.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 90) {
+            break;
+          }
+
+          message.userVaultMinOwnerDeposit = Coin.decode(reader, reader.uint32());
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.userVaultMinOwnerRatio = reader.string();
-          break;
+          continue;
         case 13:
+          if (tag !== 106) {
+            break;
+          }
+
           message.userVaultProfitShareCap = reader.string();
-          break;
+          continue;
         case 14:
+          if (tag !== 114) {
+            break;
+          }
+
           message.userVaultDepositFeeCap = reader.string();
-          break;
+          continue;
         case 15:
+          if (tag !== 122) {
+            break;
+          }
+
           message.userVaultWithdrawalFeeCap = reader.string();
-          break;
+          continue;
         case 16:
+          if (tag !== 130) {
+            break;
+          }
+
           message.userVaultTradeCommissionRatio = reader.string();
-          break;
+          continue;
         case 17:
+          if (tag !== 138) {
+            break;
+          }
+
           message.userVaultFeeCommissionRatio = reader.string();
-          break;
+          continue;
         case 18:
-          message.stalePriceAllowance = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 146) {
+            break;
+          }
+
+          message.stalePriceAllowance = Duration.decode(reader, reader.uint32());
+          continue;
         case 19:
-          message.volatilitySpreadEnabled = BoolValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 154) {
+            break;
+          }
+
+          message.volatilitySpreadEnabled = BoolValue.decode(reader, reader.uint32()).value;
+          continue;
         case 20:
-          message.volatilitySpreadBlacklist = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 162) {
+            break;
+          }
+
+          message.volatilitySpreadBlacklist = StringValue.decode(reader, reader.uint32()).value;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.quoteIndexPriceFluctuationToleranceRatio =
-      object.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
-      object.quoteIndexPriceFluctuationToleranceRatio !== null
+    return {
+      quoteIndexPriceFluctuationToleranceRatio: isSet(object.quoteIndexPriceFluctuationToleranceRatio)
         ? String(object.quoteIndexPriceFluctuationToleranceRatio)
-        : "";
-    message.quoteExpiryDuration =
-      object.quoteExpiryDuration !== undefined &&
-      object.quoteExpiryDuration !== null
+        : "",
+      quoteExpiryDuration: isSet(object.quoteExpiryDuration)
         ? Duration.fromJSON(object.quoteExpiryDuration)
-        : undefined;
-    message.marketUtilizationSnapshotInterval =
-      object.marketUtilizationSnapshotInterval !== undefined &&
-      object.marketUtilizationSnapshotInterval !== null
+        : undefined,
+      marketUtilizationSnapshotInterval: isSet(object.marketUtilizationSnapshotInterval)
         ? Duration.fromJSON(object.marketUtilizationSnapshotInterval)
-        : undefined;
-    message.maxMarketUtilizationSnapshotWindow =
-      object.maxMarketUtilizationSnapshotWindow !== undefined &&
-      object.maxMarketUtilizationSnapshotWindow !== null
+        : undefined,
+      maxMarketUtilizationSnapshotWindow: isSet(object.maxMarketUtilizationSnapshotWindow)
         ? Duration.fromJSON(object.maxMarketUtilizationSnapshotWindow)
-        : undefined;
-    message.navPerShareSnapshots =
-      object.navPerShareSnapshots !== undefined &&
-      object.navPerShareSnapshots !== null
+        : undefined,
+      navPerShareSnapshots: isSet(object.navPerShareSnapshots)
         ? Long.fromValue(object.navPerShareSnapshots)
-        : undefined;
-    message.navPerShareSnapshotInterval =
-      object.navPerShareSnapshotInterval !== undefined &&
-      object.navPerShareSnapshotInterval !== null
+        : undefined,
+      navPerShareSnapshotInterval: isSet(object.navPerShareSnapshotInterval)
         ? Duration.fromJSON(object.navPerShareSnapshotInterval)
-        : undefined;
-    message.indexLastUpdatedAtThreshold =
-      object.indexLastUpdatedAtThreshold !== undefined &&
-      object.indexLastUpdatedAtThreshold !== null
+        : undefined,
+      indexLastUpdatedAtThreshold: isSet(object.indexLastUpdatedAtThreshold)
         ? Duration.fromJSON(object.indexLastUpdatedAtThreshold)
-        : undefined;
-    message.poolTradeCommissionRatio =
-      object.poolTradeCommissionRatio !== undefined &&
-      object.poolTradeCommissionRatio !== null
-        ? String(object.poolTradeCommissionRatio)
-        : "";
-    message.poolFeeCommissionRatio =
-      object.poolFeeCommissionRatio !== undefined &&
-      object.poolFeeCommissionRatio !== null
-        ? String(object.poolFeeCommissionRatio)
-        : "";
-    message.poolCommissionAddress =
-      object.poolCommissionAddress !== undefined &&
-      object.poolCommissionAddress !== null
-        ? String(object.poolCommissionAddress)
-        : undefined;
-    message.userVaultMinOwnerDeposit =
-      object.userVaultMinOwnerDeposit !== undefined &&
-      object.userVaultMinOwnerDeposit !== null
+        : undefined,
+      poolTradeCommissionRatio: isSet(object.poolTradeCommissionRatio) ? String(object.poolTradeCommissionRatio) : "",
+      poolFeeCommissionRatio: isSet(object.poolFeeCommissionRatio) ? String(object.poolFeeCommissionRatio) : "",
+      poolCommissionAddress: isSet(object.poolCommissionAddress) ? String(object.poolCommissionAddress) : undefined,
+      userVaultMinOwnerDeposit: isSet(object.userVaultMinOwnerDeposit)
         ? Coin.fromJSON(object.userVaultMinOwnerDeposit)
-        : undefined;
-    message.userVaultMinOwnerRatio =
-      object.userVaultMinOwnerRatio !== undefined &&
-      object.userVaultMinOwnerRatio !== null
-        ? String(object.userVaultMinOwnerRatio)
-        : "";
-    message.userVaultProfitShareCap =
-      object.userVaultProfitShareCap !== undefined &&
-      object.userVaultProfitShareCap !== null
-        ? String(object.userVaultProfitShareCap)
-        : "";
-    message.userVaultDepositFeeCap =
-      object.userVaultDepositFeeCap !== undefined &&
-      object.userVaultDepositFeeCap !== null
-        ? String(object.userVaultDepositFeeCap)
-        : "";
-    message.userVaultWithdrawalFeeCap =
-      object.userVaultWithdrawalFeeCap !== undefined &&
-      object.userVaultWithdrawalFeeCap !== null
+        : undefined,
+      userVaultMinOwnerRatio: isSet(object.userVaultMinOwnerRatio) ? String(object.userVaultMinOwnerRatio) : "",
+      userVaultProfitShareCap: isSet(object.userVaultProfitShareCap) ? String(object.userVaultProfitShareCap) : "",
+      userVaultDepositFeeCap: isSet(object.userVaultDepositFeeCap) ? String(object.userVaultDepositFeeCap) : "",
+      userVaultWithdrawalFeeCap: isSet(object.userVaultWithdrawalFeeCap)
         ? String(object.userVaultWithdrawalFeeCap)
-        : "";
-    message.userVaultTradeCommissionRatio =
-      object.userVaultTradeCommissionRatio !== undefined &&
-      object.userVaultTradeCommissionRatio !== null
+        : "",
+      userVaultTradeCommissionRatio: isSet(object.userVaultTradeCommissionRatio)
         ? String(object.userVaultTradeCommissionRatio)
-        : "";
-    message.userVaultFeeCommissionRatio =
-      object.userVaultFeeCommissionRatio !== undefined &&
-      object.userVaultFeeCommissionRatio !== null
+        : "",
+      userVaultFeeCommissionRatio: isSet(object.userVaultFeeCommissionRatio)
         ? String(object.userVaultFeeCommissionRatio)
-        : "";
-    message.stalePriceAllowance =
-      object.stalePriceAllowance !== undefined &&
-      object.stalePriceAllowance !== null
+        : "",
+      stalePriceAllowance: isSet(object.stalePriceAllowance)
         ? Duration.fromJSON(object.stalePriceAllowance)
-        : undefined;
-    message.volatilitySpreadEnabled =
-      object.volatilitySpreadEnabled !== undefined &&
-      object.volatilitySpreadEnabled !== null
+        : undefined,
+      volatilitySpreadEnabled: isSet(object.volatilitySpreadEnabled)
         ? Boolean(object.volatilitySpreadEnabled)
-        : undefined;
-    message.volatilitySpreadBlacklist =
-      object.volatilitySpreadBlacklist !== undefined &&
-      object.volatilitySpreadBlacklist !== null
+        : undefined,
+      volatilitySpreadBlacklist: isSet(object.volatilitySpreadBlacklist)
         ? String(object.volatilitySpreadBlacklist)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
     message.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
-      (obj.quoteIndexPriceFluctuationToleranceRatio =
-        message.quoteIndexPriceFluctuationToleranceRatio);
+      (obj.quoteIndexPriceFluctuationToleranceRatio = message.quoteIndexPriceFluctuationToleranceRatio);
     message.quoteExpiryDuration !== undefined &&
       (obj.quoteExpiryDuration = message.quoteExpiryDuration
         ? Duration.toJSON(message.quoteExpiryDuration)
         : undefined);
     message.marketUtilizationSnapshotInterval !== undefined &&
-      (obj.marketUtilizationSnapshotInterval =
-        message.marketUtilizationSnapshotInterval
-          ? Duration.toJSON(message.marketUtilizationSnapshotInterval)
-          : undefined);
+      (obj.marketUtilizationSnapshotInterval = message.marketUtilizationSnapshotInterval
+        ? Duration.toJSON(message.marketUtilizationSnapshotInterval)
+        : undefined);
     message.maxMarketUtilizationSnapshotWindow !== undefined &&
-      (obj.maxMarketUtilizationSnapshotWindow =
-        message.maxMarketUtilizationSnapshotWindow
-          ? Duration.toJSON(message.maxMarketUtilizationSnapshotWindow)
-          : undefined);
-    message.navPerShareSnapshots !== undefined &&
-      (obj.navPerShareSnapshots = message.navPerShareSnapshots);
+      (obj.maxMarketUtilizationSnapshotWindow = message.maxMarketUtilizationSnapshotWindow
+        ? Duration.toJSON(message.maxMarketUtilizationSnapshotWindow)
+        : undefined);
+    message.navPerShareSnapshots !== undefined && (obj.navPerShareSnapshots = message.navPerShareSnapshots);
     message.navPerShareSnapshotInterval !== undefined &&
       (obj.navPerShareSnapshotInterval = message.navPerShareSnapshotInterval
         ? Duration.toJSON(message.navPerShareSnapshotInterval)
@@ -864,124 +792,95 @@ export const ParamsToUpdate = {
       (obj.indexLastUpdatedAtThreshold = message.indexLastUpdatedAtThreshold
         ? Duration.toJSON(message.indexLastUpdatedAtThreshold)
         : undefined);
-    message.poolTradeCommissionRatio !== undefined &&
-      (obj.poolTradeCommissionRatio = message.poolTradeCommissionRatio);
-    message.poolFeeCommissionRatio !== undefined &&
-      (obj.poolFeeCommissionRatio = message.poolFeeCommissionRatio);
-    message.poolCommissionAddress !== undefined &&
-      (obj.poolCommissionAddress = message.poolCommissionAddress);
-    message.userVaultMinOwnerDeposit !== undefined &&
-      (obj.userVaultMinOwnerDeposit = message.userVaultMinOwnerDeposit
-        ? Coin.toJSON(message.userVaultMinOwnerDeposit)
-        : undefined);
-    message.userVaultMinOwnerRatio !== undefined &&
-      (obj.userVaultMinOwnerRatio = message.userVaultMinOwnerRatio);
-    message.userVaultProfitShareCap !== undefined &&
-      (obj.userVaultProfitShareCap = message.userVaultProfitShareCap);
-    message.userVaultDepositFeeCap !== undefined &&
-      (obj.userVaultDepositFeeCap = message.userVaultDepositFeeCap);
+    message.poolTradeCommissionRatio !== undefined && (obj.poolTradeCommissionRatio = message.poolTradeCommissionRatio);
+    message.poolFeeCommissionRatio !== undefined && (obj.poolFeeCommissionRatio = message.poolFeeCommissionRatio);
+    message.poolCommissionAddress !== undefined && (obj.poolCommissionAddress = message.poolCommissionAddress);
+    message.userVaultMinOwnerDeposit !== undefined && (obj.userVaultMinOwnerDeposit = message.userVaultMinOwnerDeposit
+      ? Coin.toJSON(message.userVaultMinOwnerDeposit)
+      : undefined);
+    message.userVaultMinOwnerRatio !== undefined && (obj.userVaultMinOwnerRatio = message.userVaultMinOwnerRatio);
+    message.userVaultProfitShareCap !== undefined && (obj.userVaultProfitShareCap = message.userVaultProfitShareCap);
+    message.userVaultDepositFeeCap !== undefined && (obj.userVaultDepositFeeCap = message.userVaultDepositFeeCap);
     message.userVaultWithdrawalFeeCap !== undefined &&
       (obj.userVaultWithdrawalFeeCap = message.userVaultWithdrawalFeeCap);
     message.userVaultTradeCommissionRatio !== undefined &&
-      (obj.userVaultTradeCommissionRatio =
-        message.userVaultTradeCommissionRatio);
+      (obj.userVaultTradeCommissionRatio = message.userVaultTradeCommissionRatio);
     message.userVaultFeeCommissionRatio !== undefined &&
       (obj.userVaultFeeCommissionRatio = message.userVaultFeeCommissionRatio);
     message.stalePriceAllowance !== undefined &&
       (obj.stalePriceAllowance = message.stalePriceAllowance
         ? Duration.toJSON(message.stalePriceAllowance)
         : undefined);
-    message.volatilitySpreadEnabled !== undefined &&
-      (obj.volatilitySpreadEnabled = message.volatilitySpreadEnabled);
+    message.volatilitySpreadEnabled !== undefined && (obj.volatilitySpreadEnabled = message.volatilitySpreadEnabled);
     message.volatilitySpreadBlacklist !== undefined &&
       (obj.volatilitySpreadBlacklist = message.volatilitySpreadBlacklist);
     return obj;
   },
 
+  create(base?: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
+    return ParamsToUpdate.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.quoteIndexPriceFluctuationToleranceRatio =
-      object.quoteIndexPriceFluctuationToleranceRatio ?? "";
-    message.quoteExpiryDuration =
-      object.quoteExpiryDuration !== undefined &&
-      object.quoteExpiryDuration !== null
-        ? Duration.fromPartial(object.quoteExpiryDuration)
-        : undefined;
+    const message = createBaseParamsToUpdate();
+    message.quoteIndexPriceFluctuationToleranceRatio = object.quoteIndexPriceFluctuationToleranceRatio ?? "";
+    message.quoteExpiryDuration = (object.quoteExpiryDuration !== undefined && object.quoteExpiryDuration !== null)
+      ? Duration.fromPartial(object.quoteExpiryDuration)
+      : undefined;
     message.marketUtilizationSnapshotInterval =
-      object.marketUtilizationSnapshotInterval !== undefined &&
-      object.marketUtilizationSnapshotInterval !== null
+      (object.marketUtilizationSnapshotInterval !== undefined && object.marketUtilizationSnapshotInterval !== null)
         ? Duration.fromPartial(object.marketUtilizationSnapshotInterval)
         : undefined;
     message.maxMarketUtilizationSnapshotWindow =
-      object.maxMarketUtilizationSnapshotWindow !== undefined &&
-      object.maxMarketUtilizationSnapshotWindow !== null
+      (object.maxMarketUtilizationSnapshotWindow !== undefined && object.maxMarketUtilizationSnapshotWindow !== null)
         ? Duration.fromPartial(object.maxMarketUtilizationSnapshotWindow)
         : undefined;
-    message.navPerShareSnapshots =
-      object.navPerShareSnapshots !== undefined &&
-      object.navPerShareSnapshots !== null
-        ? Long.fromValue(object.navPerShareSnapshots)
-        : undefined;
+    message.navPerShareSnapshots = (object.navPerShareSnapshots !== undefined && object.navPerShareSnapshots !== null)
+      ? Long.fromValue(object.navPerShareSnapshots)
+      : undefined;
     message.navPerShareSnapshotInterval =
-      object.navPerShareSnapshotInterval !== undefined &&
-      object.navPerShareSnapshotInterval !== null
+      (object.navPerShareSnapshotInterval !== undefined && object.navPerShareSnapshotInterval !== null)
         ? Duration.fromPartial(object.navPerShareSnapshotInterval)
         : undefined;
     message.indexLastUpdatedAtThreshold =
-      object.indexLastUpdatedAtThreshold !== undefined &&
-      object.indexLastUpdatedAtThreshold !== null
+      (object.indexLastUpdatedAtThreshold !== undefined && object.indexLastUpdatedAtThreshold !== null)
         ? Duration.fromPartial(object.indexLastUpdatedAtThreshold)
         : undefined;
     message.poolTradeCommissionRatio = object.poolTradeCommissionRatio ?? "";
     message.poolFeeCommissionRatio = object.poolFeeCommissionRatio ?? "";
     message.poolCommissionAddress = object.poolCommissionAddress ?? undefined;
     message.userVaultMinOwnerDeposit =
-      object.userVaultMinOwnerDeposit !== undefined &&
-      object.userVaultMinOwnerDeposit !== null
+      (object.userVaultMinOwnerDeposit !== undefined && object.userVaultMinOwnerDeposit !== null)
         ? Coin.fromPartial(object.userVaultMinOwnerDeposit)
         : undefined;
     message.userVaultMinOwnerRatio = object.userVaultMinOwnerRatio ?? "";
     message.userVaultProfitShareCap = object.userVaultProfitShareCap ?? "";
     message.userVaultDepositFeeCap = object.userVaultDepositFeeCap ?? "";
     message.userVaultWithdrawalFeeCap = object.userVaultWithdrawalFeeCap ?? "";
-    message.userVaultTradeCommissionRatio =
-      object.userVaultTradeCommissionRatio ?? "";
-    message.userVaultFeeCommissionRatio =
-      object.userVaultFeeCommissionRatio ?? "";
-    message.stalePriceAllowance =
-      object.stalePriceAllowance !== undefined &&
-      object.stalePriceAllowance !== null
-        ? Duration.fromPartial(object.stalePriceAllowance)
-        : undefined;
-    message.volatilitySpreadEnabled =
-      object.volatilitySpreadEnabled ?? undefined;
-    message.volatilitySpreadBlacklist =
-      object.volatilitySpreadBlacklist ?? undefined;
+    message.userVaultTradeCommissionRatio = object.userVaultTradeCommissionRatio ?? "";
+    message.userVaultFeeCommissionRatio = object.userVaultFeeCommissionRatio ?? "";
+    message.stalePriceAllowance = (object.stalePriceAllowance !== undefined && object.stalePriceAllowance !== null)
+      ? Duration.fromPartial(object.stalePriceAllowance)
+      : undefined;
+    message.volatilitySpreadEnabled = object.volatilitySpreadEnabled ?? undefined;
+    message.volatilitySpreadBlacklist = object.volatilitySpreadBlacklist ?? undefined;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

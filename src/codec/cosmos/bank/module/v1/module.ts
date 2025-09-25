@@ -23,17 +23,12 @@ export interface Module {
   restrictionsOrder: string[];
 }
 
-const baseModule: object = {
-  blockedModuleAccountsOverride: "",
-  authority: "",
-  restrictionsOrder: "",
-};
+function createBaseModule(): Module {
+  return { blockedModuleAccountsOverride: [], authority: "", restrictionsOrder: [] };
+}
 
 export const Module = {
-  encode(
-    message: Module,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Module, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.blockedModuleAccountsOverride) {
       writer.uint32(10).string(v!);
     }
@@ -47,51 +42,58 @@ export const Module = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Module {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModule } as Module;
-    message.blockedModuleAccountsOverride = [];
-    message.restrictionsOrder = [];
+    const message = createBaseModule();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.blockedModuleAccountsOverride.push(reader.string());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.restrictionsOrder.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Module {
-    const message = { ...baseModule } as Module;
-    message.blockedModuleAccountsOverride = (
-      object.blockedModuleAccountsOverride ?? []
-    ).map((e: any) => String(e));
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.restrictionsOrder = (object.restrictionsOrder ?? []).map((e: any) =>
-      String(e)
-    );
-    return message;
+    return {
+      blockedModuleAccountsOverride: Array.isArray(object?.blockedModuleAccountsOverride)
+        ? object.blockedModuleAccountsOverride.map((e: any) => String(e))
+        : [],
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      restrictionsOrder: Array.isArray(object?.restrictionsOrder)
+        ? object.restrictionsOrder.map((e: any) => String(e))
+        : [],
+    };
   },
 
   toJSON(message: Module): unknown {
     const obj: any = {};
     if (message.blockedModuleAccountsOverride) {
-      obj.blockedModuleAccountsOverride =
-        message.blockedModuleAccountsOverride.map((e) => e);
+      obj.blockedModuleAccountsOverride = message.blockedModuleAccountsOverride.map((e) => e);
     } else {
       obj.blockedModuleAccountsOverride = [];
     }
@@ -104,38 +106,32 @@ export const Module = {
     return obj;
   },
 
+  create(base?: DeepPartial<Module>): Module {
+    return Module.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Module>): Module {
-    const message = { ...baseModule } as Module;
-    message.blockedModuleAccountsOverride = (
-      object.blockedModuleAccountsOverride ?? []
-    ).map((e) => e);
+    const message = createBaseModule();
+    message.blockedModuleAccountsOverride = object.blockedModuleAccountsOverride?.map((e) => e) || [];
     message.authority = object.authority ?? "";
-    message.restrictionsOrder = (object.restrictionsOrder ?? []).map((e) => e);
+    message.restrictionsOrder = object.restrictionsOrder?.map((e) => e) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

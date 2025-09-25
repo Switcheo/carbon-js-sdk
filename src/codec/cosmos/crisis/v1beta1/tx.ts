@@ -16,7 +16,8 @@ export interface MsgVerifyInvariant {
 }
 
 /** MsgVerifyInvariantResponse defines the Msg/VerifyInvariant response type. */
-export interface MsgVerifyInvariantResponse {}
+export interface MsgVerifyInvariantResponse {
+}
 
 /**
  * MsgUpdateParams is the Msg/UpdateParams request type.
@@ -36,19 +37,15 @@ export interface MsgUpdateParams {
  *
  * Since: cosmos-sdk 0.47
  */
-export interface MsgUpdateParamsResponse {}
+export interface MsgUpdateParamsResponse {
+}
 
-const baseMsgVerifyInvariant: object = {
-  sender: "",
-  invariantModuleName: "",
-  invariantRoute: "",
-};
+function createBaseMsgVerifyInvariant(): MsgVerifyInvariant {
+  return { sender: "", invariantModuleName: "", invariantRoute: "" };
+}
 
 export const MsgVerifyInvariant = {
-  encode(
-    message: MsgVerifyInvariant,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgVerifyInvariant, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sender !== "") {
       writer.uint32(10).string(message.sender);
     }
@@ -62,59 +59,64 @@ export const MsgVerifyInvariant = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgVerifyInvariant {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgVerifyInvariant } as MsgVerifyInvariant;
+    const message = createBaseMsgVerifyInvariant();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.invariantModuleName = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.invariantRoute = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgVerifyInvariant {
-    const message = { ...baseMsgVerifyInvariant } as MsgVerifyInvariant;
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.invariantModuleName =
-      object.invariantModuleName !== undefined &&
-      object.invariantModuleName !== null
-        ? String(object.invariantModuleName)
-        : "";
-    message.invariantRoute =
-      object.invariantRoute !== undefined && object.invariantRoute !== null
-        ? String(object.invariantRoute)
-        : "";
-    return message;
+    return {
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      invariantModuleName: isSet(object.invariantModuleName) ? String(object.invariantModuleName) : "",
+      invariantRoute: isSet(object.invariantRoute) ? String(object.invariantRoute) : "",
+    };
   },
 
   toJSON(message: MsgVerifyInvariant): unknown {
     const obj: any = {};
     message.sender !== undefined && (obj.sender = message.sender);
-    message.invariantModuleName !== undefined &&
-      (obj.invariantModuleName = message.invariantModuleName);
-    message.invariantRoute !== undefined &&
-      (obj.invariantRoute = message.invariantRoute);
+    message.invariantModuleName !== undefined && (obj.invariantModuleName = message.invariantModuleName);
+    message.invariantRoute !== undefined && (obj.invariantRoute = message.invariantRoute);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgVerifyInvariant>): MsgVerifyInvariant {
+    return MsgVerifyInvariant.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgVerifyInvariant>): MsgVerifyInvariant {
-    const message = { ...baseMsgVerifyInvariant } as MsgVerifyInvariant;
+    const message = createBaseMsgVerifyInvariant();
     message.sender = object.sender ?? "";
     message.invariantModuleName = object.invariantModuleName ?? "";
     message.invariantRoute = object.invariantRoute ?? "";
@@ -122,41 +124,33 @@ export const MsgVerifyInvariant = {
   },
 };
 
-const baseMsgVerifyInvariantResponse: object = {};
+function createBaseMsgVerifyInvariantResponse(): MsgVerifyInvariantResponse {
+  return {};
+}
 
 export const MsgVerifyInvariantResponse = {
-  encode(
-    _: MsgVerifyInvariantResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgVerifyInvariantResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgVerifyInvariantResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgVerifyInvariantResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgVerifyInvariantResponse,
-    } as MsgVerifyInvariantResponse;
+    const message = createBaseMsgVerifyInvariantResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgVerifyInvariantResponse {
-    const message = {
-      ...baseMsgVerifyInvariantResponse,
-    } as MsgVerifyInvariantResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgVerifyInvariantResponse): unknown {
@@ -164,23 +158,22 @@ export const MsgVerifyInvariantResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgVerifyInvariantResponse>
-  ): MsgVerifyInvariantResponse {
-    const message = {
-      ...baseMsgVerifyInvariantResponse,
-    } as MsgVerifyInvariantResponse;
+  create(base?: DeepPartial<MsgVerifyInvariantResponse>): MsgVerifyInvariantResponse {
+    return MsgVerifyInvariantResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgVerifyInvariantResponse>): MsgVerifyInvariantResponse {
+    const message = createBaseMsgVerifyInvariantResponse();
     return message;
   },
 };
 
-const baseMsgUpdateParams: object = { authority: "" };
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return { authority: "", constantFee: undefined };
+}
 
 export const MsgUpdateParams = {
-  encode(
-    message: MsgUpdateParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -191,95 +184,91 @@ export const MsgUpdateParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.constantFee = Coin.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.constantFee =
-      object.constantFee !== undefined && object.constantFee !== null
-        ? Coin.fromJSON(object.constantFee)
-        : undefined;
-    return message;
+    return {
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      constantFee: isSet(object.constantFee) ? Coin.fromJSON(object.constantFee) : undefined,
+    };
   },
 
   toJSON(message: MsgUpdateParams): unknown {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
     message.constantFee !== undefined &&
-      (obj.constantFee = message.constantFee
-        ? Coin.toJSON(message.constantFee)
-        : undefined);
+      (obj.constantFee = message.constantFee ? Coin.toJSON(message.constantFee) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     message.authority = object.authority ?? "";
-    message.constantFee =
-      object.constantFee !== undefined && object.constantFee !== null
-        ? Coin.fromPartial(object.constantFee)
-        : undefined;
+    message.constantFee = (object.constantFee !== undefined && object.constantFee !== null)
+      ? Coin.fromPartial(object.constantFee)
+      : undefined;
     return message;
   },
 };
 
-const baseMsgUpdateParamsResponse: object = {};
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
 
 export const MsgUpdateParamsResponse = {
-  encode(
-    _: MsgUpdateParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+    const message = createBaseMsgUpdateParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateParamsResponse): unknown {
@@ -287,12 +276,12 @@ export const MsgUpdateParamsResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateParamsResponse>
-  ): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
     return message;
   },
 };
@@ -300,9 +289,7 @@ export const MsgUpdateParamsResponse = {
 /** Msg defines the bank Msg service. */
 export interface Msg {
   /** VerifyInvariant defines a method to verify a particular invariant. */
-  VerifyInvariant(
-    request: MsgVerifyInvariant
-  ): Promise<MsgVerifyInvariantResponse>;
+  VerifyInvariant(request: MsgVerifyInvariant): Promise<MsgVerifyInvariantResponse>;
   /**
    * UpdateParams defines a governance operation for updating the x/crisis module
    * parameters. The authority is defined in the keeper.
@@ -314,67 +301,43 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.crisis.v1beta1.Msg";
     this.rpc = rpc;
     this.VerifyInvariant = this.VerifyInvariant.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
   }
-  VerifyInvariant(
-    request: MsgVerifyInvariant
-  ): Promise<MsgVerifyInvariantResponse> {
+  VerifyInvariant(request: MsgVerifyInvariant): Promise<MsgVerifyInvariantResponse> {
     const data = MsgVerifyInvariant.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.crisis.v1beta1.Msg",
-      "VerifyInvariant",
-      data
-    );
-    return promise.then((data) =>
-      MsgVerifyInvariantResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "VerifyInvariant", data);
+    return promise.then((data) => MsgVerifyInvariantResponse.decode(_m0.Reader.create(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.crisis.v1beta1.Msg",
-      "UpdateParams",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateParams", data);
+    return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

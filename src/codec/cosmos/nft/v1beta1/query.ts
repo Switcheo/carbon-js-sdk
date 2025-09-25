@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../../base/query/v1beta1/pagination";
-import { NFT, Class } from "./nft";
+import { Class, NFT } from "./nft";
 
 export const protobufPackage = "cosmos.nft.v1beta1";
 
@@ -104,13 +104,12 @@ export interface QueryClassesResponse {
   pagination?: PageResponse;
 }
 
-const baseQueryBalanceRequest: object = { classId: "", owner: "" };
+function createBaseQueryBalanceRequest(): QueryBalanceRequest {
+  return { classId: "", owner: "" };
+}
 
 export const QueryBalanceRequest = {
-  encode(
-    message: QueryBalanceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBalanceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -121,37 +120,40 @@ export const QueryBalanceRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryBalanceRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
+    const message = createBaseQueryBalanceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.owner = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBalanceRequest {
-    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    return message;
+    return {
+      classId: isSet(object.classId) ? String(object.classId) : "",
+      owner: isSet(object.owner) ? String(object.owner) : "",
+    };
   },
 
   toJSON(message: QueryBalanceRequest): unknown {
@@ -161,81 +163,82 @@ export const QueryBalanceRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryBalanceRequest>): QueryBalanceRequest {
+    return QueryBalanceRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryBalanceRequest>): QueryBalanceRequest {
-    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
+    const message = createBaseQueryBalanceRequest();
     message.classId = object.classId ?? "";
     message.owner = object.owner ?? "";
     return message;
   },
 };
 
-const baseQueryBalanceResponse: object = { amount: Long.UZERO };
+function createBaseQueryBalanceResponse(): QueryBalanceResponse {
+  return { amount: Long.UZERO };
+}
 
 export const QueryBalanceResponse = {
-  encode(
-    message: QueryBalanceResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBalanceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.amount.isZero()) {
       writer.uint32(8).uint64(message.amount);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryBalanceResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBalanceResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBalanceResponse } as QueryBalanceResponse;
+    const message = createBaseQueryBalanceResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.amount = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBalanceResponse {
-    const message = { ...baseQueryBalanceResponse } as QueryBalanceResponse;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? Long.fromString(object.amount)
-        : Long.UZERO;
-    return message;
+    return { amount: isSet(object.amount) ? Long.fromValue(object.amount) : Long.UZERO };
   },
 
   toJSON(message: QueryBalanceResponse): unknown {
     const obj: any = {};
-    message.amount !== undefined &&
-      (obj.amount = (message.amount || Long.UZERO).toString());
+    message.amount !== undefined && (obj.amount = (message.amount || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<QueryBalanceResponse>): QueryBalanceResponse {
+    return QueryBalanceResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryBalanceResponse>): QueryBalanceResponse {
-    const message = { ...baseQueryBalanceResponse } as QueryBalanceResponse;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? Long.fromValue(object.amount)
-        : Long.UZERO;
+    const message = createBaseQueryBalanceResponse();
+    message.amount = (object.amount !== undefined && object.amount !== null)
+      ? Long.fromValue(object.amount)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseQueryOwnerRequest: object = { classId: "", id: "" };
+function createBaseQueryOwnerRequest(): QueryOwnerRequest {
+  return { classId: "", id: "" };
+}
 
 export const QueryOwnerRequest = {
-  encode(
-    message: QueryOwnerRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryOwnerRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -246,35 +249,40 @@ export const QueryOwnerRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryOwnerRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryOwnerRequest } as QueryOwnerRequest;
+    const message = createBaseQueryOwnerRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryOwnerRequest {
-    const message = { ...baseQueryOwnerRequest } as QueryOwnerRequest;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    return message;
+    return {
+      classId: isSet(object.classId) ? String(object.classId) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+    };
   },
 
   toJSON(message: QueryOwnerRequest): unknown {
@@ -284,21 +292,24 @@ export const QueryOwnerRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryOwnerRequest>): QueryOwnerRequest {
+    return QueryOwnerRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryOwnerRequest>): QueryOwnerRequest {
-    const message = { ...baseQueryOwnerRequest } as QueryOwnerRequest;
+    const message = createBaseQueryOwnerRequest();
     message.classId = object.classId ?? "";
     message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseQueryOwnerResponse: object = { owner: "" };
+function createBaseQueryOwnerResponse(): QueryOwnerResponse {
+  return { owner: "" };
+}
 
 export const QueryOwnerResponse = {
-  encode(
-    message: QueryOwnerResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryOwnerResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
@@ -306,30 +317,30 @@ export const QueryOwnerResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryOwnerResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryOwnerResponse } as QueryOwnerResponse;
+    const message = createBaseQueryOwnerResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.owner = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryOwnerResponse {
-    const message = { ...baseQueryOwnerResponse } as QueryOwnerResponse;
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    return message;
+    return { owner: isSet(object.owner) ? String(object.owner) : "" };
   },
 
   toJSON(message: QueryOwnerResponse): unknown {
@@ -338,20 +349,23 @@ export const QueryOwnerResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryOwnerResponse>): QueryOwnerResponse {
+    return QueryOwnerResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryOwnerResponse>): QueryOwnerResponse {
-    const message = { ...baseQueryOwnerResponse } as QueryOwnerResponse;
+    const message = createBaseQueryOwnerResponse();
     message.owner = object.owner ?? "";
     return message;
   },
 };
 
-const baseQuerySupplyRequest: object = { classId: "" };
+function createBaseQuerySupplyRequest(): QuerySupplyRequest {
+  return { classId: "" };
+}
 
 export const QuerySupplyRequest = {
-  encode(
-    message: QuerySupplyRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QuerySupplyRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -359,30 +373,30 @@ export const QuerySupplyRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QuerySupplyRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQuerySupplyRequest } as QuerySupplyRequest;
+    const message = createBaseQuerySupplyRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QuerySupplyRequest {
-    const message = { ...baseQuerySupplyRequest } as QuerySupplyRequest;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    return message;
+    return { classId: isSet(object.classId) ? String(object.classId) : "" };
   },
 
   toJSON(message: QuerySupplyRequest): unknown {
@@ -391,20 +405,23 @@ export const QuerySupplyRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QuerySupplyRequest>): QuerySupplyRequest {
+    return QuerySupplyRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QuerySupplyRequest>): QuerySupplyRequest {
-    const message = { ...baseQuerySupplyRequest } as QuerySupplyRequest;
+    const message = createBaseQuerySupplyRequest();
     message.classId = object.classId ?? "";
     return message;
   },
 };
 
-const baseQuerySupplyResponse: object = { amount: Long.UZERO };
+function createBaseQuerySupplyResponse(): QuerySupplyResponse {
+  return { amount: Long.UZERO };
+}
 
 export const QuerySupplyResponse = {
-  encode(
-    message: QuerySupplyResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QuerySupplyResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.amount.isZero()) {
       writer.uint32(8).uint64(message.amount);
     }
@@ -412,56 +429,57 @@ export const QuerySupplyResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QuerySupplyResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQuerySupplyResponse } as QuerySupplyResponse;
+    const message = createBaseQuerySupplyResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.amount = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QuerySupplyResponse {
-    const message = { ...baseQuerySupplyResponse } as QuerySupplyResponse;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? Long.fromString(object.amount)
-        : Long.UZERO;
-    return message;
+    return { amount: isSet(object.amount) ? Long.fromValue(object.amount) : Long.UZERO };
   },
 
   toJSON(message: QuerySupplyResponse): unknown {
     const obj: any = {};
-    message.amount !== undefined &&
-      (obj.amount = (message.amount || Long.UZERO).toString());
+    message.amount !== undefined && (obj.amount = (message.amount || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<QuerySupplyResponse>): QuerySupplyResponse {
+    return QuerySupplyResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QuerySupplyResponse>): QuerySupplyResponse {
-    const message = { ...baseQuerySupplyResponse } as QuerySupplyResponse;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? Long.fromValue(object.amount)
-        : Long.UZERO;
+    const message = createBaseQuerySupplyResponse();
+    message.amount = (object.amount !== undefined && object.amount !== null)
+      ? Long.fromValue(object.amount)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseQueryNFTsRequest: object = { classId: "", owner: "" };
+function createBaseQueryNFTsRequest(): QueryNFTsRequest {
+  return { classId: "", owner: "", pagination: undefined };
+}
 
 export const QueryNFTsRequest = {
-  encode(
-    message: QueryNFTsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryNFTsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -475,44 +493,48 @@ export const QueryNFTsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryNFTsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryNFTsRequest } as QueryNFTsRequest;
+    const message = createBaseQueryNFTsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.owner = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryNFTsRequest {
-    const message = { ...baseQueryNFTsRequest } as QueryNFTsRequest;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    message.owner =
-      object.owner !== undefined && object.owner !== null
-        ? String(object.owner)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      classId: isSet(object.classId) ? String(object.classId) : "",
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryNFTsRequest): unknown {
@@ -520,107 +542,109 @@ export const QueryNFTsRequest = {
     message.classId !== undefined && (obj.classId = message.classId);
     message.owner !== undefined && (obj.owner = message.owner);
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryNFTsRequest>): QueryNFTsRequest {
+    return QueryNFTsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryNFTsRequest>): QueryNFTsRequest {
-    const message = { ...baseQueryNFTsRequest } as QueryNFTsRequest;
+    const message = createBaseQueryNFTsRequest();
     message.classId = object.classId ?? "";
     message.owner = object.owner ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryNFTsResponse: object = {};
+function createBaseQueryNFTsResponse(): QueryNFTsResponse {
+  return { nfts: [], pagination: undefined };
+}
 
 export const QueryNFTsResponse = {
-  encode(
-    message: QueryNFTsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryNFTsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.nfts) {
       NFT.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryNFTsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryNFTsResponse } as QueryNFTsResponse;
-    message.nfts = [];
+    const message = createBaseQueryNFTsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.nfts.push(NFT.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryNFTsResponse {
-    const message = { ...baseQueryNFTsResponse } as QueryNFTsResponse;
-    message.nfts = (object.nfts ?? []).map((e: any) => NFT.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      nfts: Array.isArray(object?.nfts) ? object.nfts.map((e: any) => NFT.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryNFTsResponse): unknown {
     const obj: any = {};
     if (message.nfts) {
-      obj.nfts = message.nfts.map((e) => (e ? NFT.toJSON(e) : undefined));
+      obj.nfts = message.nfts.map((e) => e ? NFT.toJSON(e) : undefined);
     } else {
       obj.nfts = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryNFTsResponse>): QueryNFTsResponse {
+    return QueryNFTsResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryNFTsResponse>): QueryNFTsResponse {
-    const message = { ...baseQueryNFTsResponse } as QueryNFTsResponse;
-    message.nfts = (object.nfts ?? []).map((e) => NFT.fromPartial(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+    const message = createBaseQueryNFTsResponse();
+    message.nfts = object.nfts?.map((e) => NFT.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryNFTRequest: object = { classId: "", id: "" };
+function createBaseQueryNFTRequest(): QueryNFTRequest {
+  return { classId: "", id: "" };
+}
 
 export const QueryNFTRequest = {
-  encode(
-    message: QueryNFTRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryNFTRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -631,35 +655,40 @@ export const QueryNFTRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryNFTRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryNFTRequest } as QueryNFTRequest;
+    const message = createBaseQueryNFTRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryNFTRequest {
-    const message = { ...baseQueryNFTRequest } as QueryNFTRequest;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    return message;
+    return {
+      classId: isSet(object.classId) ? String(object.classId) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+    };
   },
 
   toJSON(message: QueryNFTRequest): unknown {
@@ -669,21 +698,24 @@ export const QueryNFTRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryNFTRequest>): QueryNFTRequest {
+    return QueryNFTRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryNFTRequest>): QueryNFTRequest {
-    const message = { ...baseQueryNFTRequest } as QueryNFTRequest;
+    const message = createBaseQueryNFTRequest();
     message.classId = object.classId ?? "";
     message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseQueryNFTResponse: object = {};
+function createBaseQueryNFTResponse(): QueryNFTResponse {
+  return { nft: undefined };
+}
 
 export const QueryNFTResponse = {
-  encode(
-    message: QueryNFTResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryNFTResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.nft !== undefined) {
       NFT.encode(message.nft, writer.uint32(10).fork()).ldelim();
     }
@@ -691,56 +723,55 @@ export const QueryNFTResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryNFTResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryNFTResponse } as QueryNFTResponse;
+    const message = createBaseQueryNFTResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.nft = NFT.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryNFTResponse {
-    const message = { ...baseQueryNFTResponse } as QueryNFTResponse;
-    message.nft =
-      object.nft !== undefined && object.nft !== null
-        ? NFT.fromJSON(object.nft)
-        : undefined;
-    return message;
+    return { nft: isSet(object.nft) ? NFT.fromJSON(object.nft) : undefined };
   },
 
   toJSON(message: QueryNFTResponse): unknown {
     const obj: any = {};
-    message.nft !== undefined &&
-      (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
+    message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryNFTResponse>): QueryNFTResponse {
+    return QueryNFTResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryNFTResponse>): QueryNFTResponse {
-    const message = { ...baseQueryNFTResponse } as QueryNFTResponse;
-    message.nft =
-      object.nft !== undefined && object.nft !== null
-        ? NFT.fromPartial(object.nft)
-        : undefined;
+    const message = createBaseQueryNFTResponse();
+    message.nft = (object.nft !== undefined && object.nft !== null) ? NFT.fromPartial(object.nft) : undefined;
     return message;
   },
 };
 
-const baseQueryClassRequest: object = { classId: "" };
+function createBaseQueryClassRequest(): QueryClassRequest {
+  return { classId: "" };
+}
 
 export const QueryClassRequest = {
-  encode(
-    message: QueryClassRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryClassRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== "") {
       writer.uint32(10).string(message.classId);
     }
@@ -748,30 +779,30 @@ export const QueryClassRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryClassRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryClassRequest } as QueryClassRequest;
+    const message = createBaseQueryClassRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryClassRequest {
-    const message = { ...baseQueryClassRequest } as QueryClassRequest;
-    message.classId =
-      object.classId !== undefined && object.classId !== null
-        ? String(object.classId)
-        : "";
-    return message;
+    return { classId: isSet(object.classId) ? String(object.classId) : "" };
   },
 
   toJSON(message: QueryClassRequest): unknown {
@@ -780,20 +811,23 @@ export const QueryClassRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryClassRequest>): QueryClassRequest {
+    return QueryClassRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryClassRequest>): QueryClassRequest {
-    const message = { ...baseQueryClassRequest } as QueryClassRequest;
+    const message = createBaseQueryClassRequest();
     message.classId = object.classId ?? "";
     return message;
   },
 };
 
-const baseQueryClassResponse: object = {};
+function createBaseQueryClassResponse(): QueryClassResponse {
+  return { class: undefined };
+}
 
 export const QueryClassResponse = {
-  encode(
-    message: QueryClassResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryClassResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.class !== undefined) {
       Class.encode(message.class, writer.uint32(10).fork()).ldelim();
     }
@@ -801,56 +835,55 @@ export const QueryClassResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryClassResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryClassResponse } as QueryClassResponse;
+    const message = createBaseQueryClassResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.class = Class.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryClassResponse {
-    const message = { ...baseQueryClassResponse } as QueryClassResponse;
-    message.class =
-      object.class !== undefined && object.class !== null
-        ? Class.fromJSON(object.class)
-        : undefined;
-    return message;
+    return { class: isSet(object.class) ? Class.fromJSON(object.class) : undefined };
   },
 
   toJSON(message: QueryClassResponse): unknown {
     const obj: any = {};
-    message.class !== undefined &&
-      (obj.class = message.class ? Class.toJSON(message.class) : undefined);
+    message.class !== undefined && (obj.class = message.class ? Class.toJSON(message.class) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryClassResponse>): QueryClassResponse {
+    return QueryClassResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryClassResponse>): QueryClassResponse {
-    const message = { ...baseQueryClassResponse } as QueryClassResponse;
-    message.class =
-      object.class !== undefined && object.class !== null
-        ? Class.fromPartial(object.class)
-        : undefined;
+    const message = createBaseQueryClassResponse();
+    message.class = (object.class !== undefined && object.class !== null) ? Class.fromPartial(object.class) : undefined;
     return message;
   },
 };
 
-const baseQueryClassesRequest: object = {};
+function createBaseQueryClassesRequest(): QueryClassesRequest {
+  return { pagination: undefined };
+}
 
 export const QueryClassesRequest = {
-  encode(
-    message: QueryClassesRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryClassesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
@@ -858,128 +891,126 @@ export const QueryClassesRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryClassesRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryClassesRequest } as QueryClassesRequest;
+    const message = createBaseQueryClassesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryClassesRequest {
-    const message = { ...baseQueryClassesRequest } as QueryClassesRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
   },
 
   toJSON(message: QueryClassesRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryClassesRequest>): QueryClassesRequest {
+    return QueryClassesRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryClassesRequest>): QueryClassesRequest {
-    const message = { ...baseQueryClassesRequest } as QueryClassesRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    const message = createBaseQueryClassesRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryClassesResponse: object = {};
+function createBaseQueryClassesResponse(): QueryClassesResponse {
+  return { classes: [], pagination: undefined };
+}
 
 export const QueryClassesResponse = {
-  encode(
-    message: QueryClassesResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryClassesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.classes) {
       Class.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryClassesResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryClassesResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryClassesResponse } as QueryClassesResponse;
-    message.classes = [];
+    const message = createBaseQueryClassesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.classes.push(Class.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryClassesResponse {
-    const message = { ...baseQueryClassesResponse } as QueryClassesResponse;
-    message.classes = (object.classes ?? []).map((e: any) => Class.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      classes: Array.isArray(object?.classes) ? object.classes.map((e: any) => Class.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryClassesResponse): unknown {
     const obj: any = {};
     if (message.classes) {
-      obj.classes = message.classes.map((e) =>
-        e ? Class.toJSON(e) : undefined
-      );
+      obj.classes = message.classes.map((e) => e ? Class.toJSON(e) : undefined);
     } else {
       obj.classes = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryClassesResponse>): QueryClassesResponse {
+    return QueryClassesResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryClassesResponse>): QueryClassesResponse {
-    const message = { ...baseQueryClassesResponse } as QueryClassesResponse;
-    message.classes = (object.classes ?? []).map((e) => Class.fromPartial(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+    const message = createBaseQueryClassesResponse();
+    message.classes = object.classes?.map((e) => Class.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
@@ -1007,7 +1038,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "cosmos.nft.v1beta1.Query";
     this.rpc = rpc;
     this.Balance = this.Balance.bind(this);
     this.Owner = this.Owner.bind(this);
@@ -1019,102 +1052,64 @@ export class QueryClientImpl implements Query {
   }
   Balance(request: QueryBalanceRequest): Promise<QueryBalanceResponse> {
     const data = QueryBalanceRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.nft.v1beta1.Query",
-      "Balance",
-      data
-    );
-    return promise.then((data) =>
-      QueryBalanceResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Balance", data);
+    return promise.then((data) => QueryBalanceResponse.decode(_m0.Reader.create(data)));
   }
 
   Owner(request: QueryOwnerRequest): Promise<QueryOwnerResponse> {
     const data = QueryOwnerRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.nft.v1beta1.Query", "Owner", data);
-    return promise.then((data) =>
-      QueryOwnerResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Owner", data);
+    return promise.then((data) => QueryOwnerResponse.decode(_m0.Reader.create(data)));
   }
 
   Supply(request: QuerySupplyRequest): Promise<QuerySupplyResponse> {
     const data = QuerySupplyRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.nft.v1beta1.Query",
-      "Supply",
-      data
-    );
-    return promise.then((data) =>
-      QuerySupplyResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Supply", data);
+    return promise.then((data) => QuerySupplyResponse.decode(_m0.Reader.create(data)));
   }
 
   NFTs(request: QueryNFTsRequest): Promise<QueryNFTsResponse> {
     const data = QueryNFTsRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.nft.v1beta1.Query", "NFTs", data);
-    return promise.then((data) =>
-      QueryNFTsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "NFTs", data);
+    return promise.then((data) => QueryNFTsResponse.decode(_m0.Reader.create(data)));
   }
 
   NFT(request: QueryNFTRequest): Promise<QueryNFTResponse> {
     const data = QueryNFTRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.nft.v1beta1.Query", "NFT", data);
-    return promise.then((data) =>
-      QueryNFTResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "NFT", data);
+    return promise.then((data) => QueryNFTResponse.decode(_m0.Reader.create(data)));
   }
 
   Class(request: QueryClassRequest): Promise<QueryClassResponse> {
     const data = QueryClassRequest.encode(request).finish();
-    const promise = this.rpc.request("cosmos.nft.v1beta1.Query", "Class", data);
-    return promise.then((data) =>
-      QueryClassResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Class", data);
+    return promise.then((data) => QueryClassResponse.decode(_m0.Reader.create(data)));
   }
 
   Classes(request: QueryClassesRequest): Promise<QueryClassesResponse> {
     const data = QueryClassesRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "cosmos.nft.v1beta1.Query",
-      "Classes",
-      data
-    );
-    return promise.then((data) =>
-      QueryClassesResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Classes", data);
+    return promise.then((data) => QueryClassesResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

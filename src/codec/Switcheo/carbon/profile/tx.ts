@@ -11,15 +11,15 @@ export interface MsgUpdateProfile {
   twitter: string;
 }
 
-export interface MsgUpdateProfileResponse {}
+export interface MsgUpdateProfileResponse {
+}
 
-const baseMsgUpdateProfile: object = { creator: "", username: "", twitter: "" };
+function createBaseMsgUpdateProfile(): MsgUpdateProfile {
+  return { creator: "", username: "", twitter: "" };
+}
 
 export const MsgUpdateProfile = {
-  encode(
-    message: MsgUpdateProfile,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateProfile, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -33,44 +33,48 @@ export const MsgUpdateProfile = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateProfile {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateProfile } as MsgUpdateProfile;
+    const message = createBaseMsgUpdateProfile();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.username = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.twitter = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateProfile {
-    const message = { ...baseMsgUpdateProfile } as MsgUpdateProfile;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.username =
-      object.username !== undefined && object.username !== null
-        ? String(object.username)
-        : "";
-    message.twitter =
-      object.twitter !== undefined && object.twitter !== null
-        ? String(object.twitter)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      username: isSet(object.username) ? String(object.username) : "",
+      twitter: isSet(object.twitter) ? String(object.twitter) : "",
+    };
   },
 
   toJSON(message: MsgUpdateProfile): unknown {
@@ -81,8 +85,12 @@ export const MsgUpdateProfile = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdateProfile>): MsgUpdateProfile {
+    return MsgUpdateProfile.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdateProfile>): MsgUpdateProfile {
-    const message = { ...baseMsgUpdateProfile } as MsgUpdateProfile;
+    const message = createBaseMsgUpdateProfile();
     message.creator = object.creator ?? "";
     message.username = object.username ?? "";
     message.twitter = object.twitter ?? "";
@@ -90,41 +98,33 @@ export const MsgUpdateProfile = {
   },
 };
 
-const baseMsgUpdateProfileResponse: object = {};
+function createBaseMsgUpdateProfileResponse(): MsgUpdateProfileResponse {
+  return {};
+}
 
 export const MsgUpdateProfileResponse = {
-  encode(
-    _: MsgUpdateProfileResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateProfileResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateProfileResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateProfileResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateProfileResponse,
-    } as MsgUpdateProfileResponse;
+    const message = createBaseMsgUpdateProfileResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateProfileResponse {
-    const message = {
-      ...baseMsgUpdateProfileResponse,
-    } as MsgUpdateProfileResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateProfileResponse): unknown {
@@ -132,12 +132,12 @@ export const MsgUpdateProfileResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateProfileResponse>
-  ): MsgUpdateProfileResponse {
-    const message = {
-      ...baseMsgUpdateProfileResponse,
-    } as MsgUpdateProfileResponse;
+  create(base?: DeepPartial<MsgUpdateProfileResponse>): MsgUpdateProfileResponse {
+    return MsgUpdateProfileResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateProfileResponse>): MsgUpdateProfileResponse {
+    const message = createBaseMsgUpdateProfileResponse();
     return message;
   },
 };
@@ -150,52 +150,36 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.profile.Msg";
     this.rpc = rpc;
     this.UpdateProfile = this.UpdateProfile.bind(this);
   }
   UpdateProfile(request: MsgUpdateProfile): Promise<MsgUpdateProfileResponse> {
     const data = MsgUpdateProfile.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.profile.Msg",
-      "UpdateProfile",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateProfileResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateProfile", data);
+    return promise.then((data) => MsgUpdateProfileResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

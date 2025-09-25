@@ -54,13 +54,12 @@ export interface EventConvertERC20 {
   contractAddress: string;
 }
 
-const baseEventRegisterPair: object = { denom: "", erc20Address: "" };
+function createBaseEventRegisterPair(): EventRegisterPair {
+  return { denom: "", erc20Address: "" };
+}
 
 export const EventRegisterPair = {
-  encode(
-    message: EventRegisterPair,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventRegisterPair, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -71,62 +70,67 @@ export const EventRegisterPair = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventRegisterPair {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventRegisterPair } as EventRegisterPair;
+    const message = createBaseEventRegisterPair();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.erc20Address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventRegisterPair {
-    const message = { ...baseEventRegisterPair } as EventRegisterPair;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.erc20Address =
-      object.erc20Address !== undefined && object.erc20Address !== null
-        ? String(object.erc20Address)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      erc20Address: isSet(object.erc20Address) ? String(object.erc20Address) : "",
+    };
   },
 
   toJSON(message: EventRegisterPair): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.erc20Address !== undefined &&
-      (obj.erc20Address = message.erc20Address);
+    message.erc20Address !== undefined && (obj.erc20Address = message.erc20Address);
     return obj;
   },
 
+  create(base?: DeepPartial<EventRegisterPair>): EventRegisterPair {
+    return EventRegisterPair.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventRegisterPair>): EventRegisterPair {
-    const message = { ...baseEventRegisterPair } as EventRegisterPair;
+    const message = createBaseEventRegisterPair();
     message.denom = object.denom ?? "";
     message.erc20Address = object.erc20Address ?? "";
     return message;
   },
 };
 
-const baseEventToggleTokenConversion: object = { denom: "", erc20Address: "" };
+function createBaseEventToggleTokenConversion(): EventToggleTokenConversion {
+  return { denom: "", erc20Address: "" };
+}
 
 export const EventToggleTokenConversion = {
-  encode(
-    message: EventToggleTokenConversion,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventToggleTokenConversion, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
@@ -136,80 +140,68 @@ export const EventToggleTokenConversion = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): EventToggleTokenConversion {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): EventToggleTokenConversion {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseEventToggleTokenConversion,
-    } as EventToggleTokenConversion;
+    const message = createBaseEventToggleTokenConversion();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.erc20Address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventToggleTokenConversion {
-    const message = {
-      ...baseEventToggleTokenConversion,
-    } as EventToggleTokenConversion;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.erc20Address =
-      object.erc20Address !== undefined && object.erc20Address !== null
-        ? String(object.erc20Address)
-        : "";
-    return message;
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      erc20Address: isSet(object.erc20Address) ? String(object.erc20Address) : "",
+    };
   },
 
   toJSON(message: EventToggleTokenConversion): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.erc20Address !== undefined &&
-      (obj.erc20Address = message.erc20Address);
+    message.erc20Address !== undefined && (obj.erc20Address = message.erc20Address);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<EventToggleTokenConversion>
-  ): EventToggleTokenConversion {
-    const message = {
-      ...baseEventToggleTokenConversion,
-    } as EventToggleTokenConversion;
+  create(base?: DeepPartial<EventToggleTokenConversion>): EventToggleTokenConversion {
+    return EventToggleTokenConversion.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<EventToggleTokenConversion>): EventToggleTokenConversion {
+    const message = createBaseEventToggleTokenConversion();
     message.denom = object.denom ?? "";
     message.erc20Address = object.erc20Address ?? "";
     return message;
   },
 };
 
-const baseEventConvertCoin: object = {
-  sender: "",
-  receiver: "",
-  amount: "",
-  denom: "",
-  erc20Address: "",
-};
+function createBaseEventConvertCoin(): EventConvertCoin {
+  return { sender: "", receiver: "", amount: "", denom: "", erc20Address: "" };
+}
 
 export const EventConvertCoin = {
-  encode(
-    message: EventConvertCoin,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventConvertCoin, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sender !== "") {
       writer.uint32(10).string(message.sender);
     }
@@ -229,58 +221,64 @@ export const EventConvertCoin = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventConvertCoin {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventConvertCoin } as EventConvertCoin;
+    const message = createBaseEventConvertCoin();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.erc20Address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventConvertCoin {
-    const message = { ...baseEventConvertCoin } as EventConvertCoin;
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.erc20Address =
-      object.erc20Address !== undefined && object.erc20Address !== null
-        ? String(object.erc20Address)
-        : "";
-    return message;
+    return {
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      erc20Address: isSet(object.erc20Address) ? String(object.erc20Address) : "",
+    };
   },
 
   toJSON(message: EventConvertCoin): unknown {
@@ -289,13 +287,16 @@ export const EventConvertCoin = {
     message.receiver !== undefined && (obj.receiver = message.receiver);
     message.amount !== undefined && (obj.amount = message.amount);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.erc20Address !== undefined &&
-      (obj.erc20Address = message.erc20Address);
+    message.erc20Address !== undefined && (obj.erc20Address = message.erc20Address);
     return obj;
   },
 
+  create(base?: DeepPartial<EventConvertCoin>): EventConvertCoin {
+    return EventConvertCoin.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventConvertCoin>): EventConvertCoin {
-    const message = { ...baseEventConvertCoin } as EventConvertCoin;
+    const message = createBaseEventConvertCoin();
     message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
     message.amount = object.amount ?? "";
@@ -305,19 +306,12 @@ export const EventConvertCoin = {
   },
 };
 
-const baseEventConvertERC20: object = {
-  sender: "",
-  receiver: "",
-  amount: "",
-  denom: "",
-  contractAddress: "",
-};
+function createBaseEventConvertERC20(): EventConvertERC20 {
+  return { sender: "", receiver: "", amount: "", denom: "", contractAddress: "" };
+}
 
 export const EventConvertERC20 = {
-  encode(
-    message: EventConvertERC20,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: EventConvertERC20, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sender !== "") {
       writer.uint32(10).string(message.sender);
     }
@@ -337,58 +331,64 @@ export const EventConvertERC20 = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventConvertERC20 {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventConvertERC20 } as EventConvertERC20;
+    const message = createBaseEventConvertERC20();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.contractAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventConvertERC20 {
-    const message = { ...baseEventConvertERC20 } as EventConvertERC20;
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.contractAddress =
-      object.contractAddress !== undefined && object.contractAddress !== null
-        ? String(object.contractAddress)
-        : "";
-    return message;
+    return {
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
+    };
   },
 
   toJSON(message: EventConvertERC20): unknown {
@@ -397,13 +397,16 @@ export const EventConvertERC20 = {
     message.receiver !== undefined && (obj.receiver = message.receiver);
     message.amount !== undefined && (obj.amount = message.amount);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.contractAddress !== undefined &&
-      (obj.contractAddress = message.contractAddress);
+    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     return obj;
   },
 
+  create(base?: DeepPartial<EventConvertERC20>): EventConvertERC20 {
+    return EventConvertERC20.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EventConvertERC20>): EventConvertERC20 {
-    const message = { ...baseEventConvertERC20 } as EventConvertERC20;
+    const message = createBaseEventConvertERC20();
     message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
     message.amount = object.amount ?? "";
@@ -413,27 +416,19 @@ export const EventConvertERC20 = {
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

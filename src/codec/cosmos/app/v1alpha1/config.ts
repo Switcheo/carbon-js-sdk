@@ -61,13 +61,12 @@ export interface GolangBinding {
   implementation: string;
 }
 
-const baseConfig: object = {};
+function createBaseConfig(): Config {
+  return { modules: [], golangBindings: [] };
+}
 
 export const Config = {
-  encode(
-    message: Config,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Config, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.modules) {
       ModuleConfig.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -78,79 +77,77 @@ export const Config = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Config {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseConfig } as Config;
-    message.modules = [];
-    message.golangBindings = [];
+    const message = createBaseConfig();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.modules.push(ModuleConfig.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
-          message.golangBindings.push(
-            GolangBinding.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.golangBindings.push(GolangBinding.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Config {
-    const message = { ...baseConfig } as Config;
-    message.modules = (object.modules ?? []).map((e: any) =>
-      ModuleConfig.fromJSON(e)
-    );
-    message.golangBindings = (object.golangBindings ?? []).map((e: any) =>
-      GolangBinding.fromJSON(e)
-    );
-    return message;
+    return {
+      modules: Array.isArray(object?.modules) ? object.modules.map((e: any) => ModuleConfig.fromJSON(e)) : [],
+      golangBindings: Array.isArray(object?.golangBindings)
+        ? object.golangBindings.map((e: any) => GolangBinding.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: Config): unknown {
     const obj: any = {};
     if (message.modules) {
-      obj.modules = message.modules.map((e) =>
-        e ? ModuleConfig.toJSON(e) : undefined
-      );
+      obj.modules = message.modules.map((e) => e ? ModuleConfig.toJSON(e) : undefined);
     } else {
       obj.modules = [];
     }
     if (message.golangBindings) {
-      obj.golangBindings = message.golangBindings.map((e) =>
-        e ? GolangBinding.toJSON(e) : undefined
-      );
+      obj.golangBindings = message.golangBindings.map((e) => e ? GolangBinding.toJSON(e) : undefined);
     } else {
       obj.golangBindings = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<Config>): Config {
+    return Config.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Config>): Config {
-    const message = { ...baseConfig } as Config;
-    message.modules = (object.modules ?? []).map((e) =>
-      ModuleConfig.fromPartial(e)
-    );
-    message.golangBindings = (object.golangBindings ?? []).map((e) =>
-      GolangBinding.fromPartial(e)
-    );
+    const message = createBaseConfig();
+    message.modules = object.modules?.map((e) => ModuleConfig.fromPartial(e)) || [];
+    message.golangBindings = object.golangBindings?.map((e) => GolangBinding.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseModuleConfig: object = { name: "" };
+function createBaseModuleConfig(): ModuleConfig {
+  return { name: "", config: undefined, golangBindings: [] };
+}
 
 export const ModuleConfig = {
-  encode(
-    message: ModuleConfig,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleConfig, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -164,84 +161,85 @@ export const ModuleConfig = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ModuleConfig {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModuleConfig } as ModuleConfig;
-    message.golangBindings = [];
+    const message = createBaseModuleConfig();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.config = Any.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
-          message.golangBindings.push(
-            GolangBinding.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.golangBindings.push(GolangBinding.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleConfig {
-    const message = { ...baseModuleConfig } as ModuleConfig;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.config =
-      object.config !== undefined && object.config !== null
-        ? Any.fromJSON(object.config)
-        : undefined;
-    message.golangBindings = (object.golangBindings ?? []).map((e: any) =>
-      GolangBinding.fromJSON(e)
-    );
-    return message;
+    return {
+      name: isSet(object.name) ? String(object.name) : "",
+      config: isSet(object.config) ? Any.fromJSON(object.config) : undefined,
+      golangBindings: Array.isArray(object?.golangBindings)
+        ? object.golangBindings.map((e: any) => GolangBinding.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: ModuleConfig): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
-    message.config !== undefined &&
-      (obj.config = message.config ? Any.toJSON(message.config) : undefined);
+    message.config !== undefined && (obj.config = message.config ? Any.toJSON(message.config) : undefined);
     if (message.golangBindings) {
-      obj.golangBindings = message.golangBindings.map((e) =>
-        e ? GolangBinding.toJSON(e) : undefined
-      );
+      obj.golangBindings = message.golangBindings.map((e) => e ? GolangBinding.toJSON(e) : undefined);
     } else {
       obj.golangBindings = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<ModuleConfig>): ModuleConfig {
+    return ModuleConfig.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ModuleConfig>): ModuleConfig {
-    const message = { ...baseModuleConfig } as ModuleConfig;
+    const message = createBaseModuleConfig();
     message.name = object.name ?? "";
-    message.config =
-      object.config !== undefined && object.config !== null
-        ? Any.fromPartial(object.config)
-        : undefined;
-    message.golangBindings = (object.golangBindings ?? []).map((e) =>
-      GolangBinding.fromPartial(e)
-    );
+    message.config = (object.config !== undefined && object.config !== null)
+      ? Any.fromPartial(object.config)
+      : undefined;
+    message.golangBindings = object.golangBindings?.map((e) => GolangBinding.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseGolangBinding: object = { interfaceType: "", implementation: "" };
+function createBaseGolangBinding(): GolangBinding {
+  return { interfaceType: "", implementation: "" };
+}
 
 export const GolangBinding = {
-  encode(
-    message: GolangBinding,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GolangBinding, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.interfaceType !== "") {
       writer.uint32(10).string(message.interfaceType);
     }
@@ -252,77 +250,74 @@ export const GolangBinding = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GolangBinding {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGolangBinding } as GolangBinding;
+    const message = createBaseGolangBinding();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.interfaceType = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.implementation = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GolangBinding {
-    const message = { ...baseGolangBinding } as GolangBinding;
-    message.interfaceType =
-      object.interfaceType !== undefined && object.interfaceType !== null
-        ? String(object.interfaceType)
-        : "";
-    message.implementation =
-      object.implementation !== undefined && object.implementation !== null
-        ? String(object.implementation)
-        : "";
-    return message;
+    return {
+      interfaceType: isSet(object.interfaceType) ? String(object.interfaceType) : "",
+      implementation: isSet(object.implementation) ? String(object.implementation) : "",
+    };
   },
 
   toJSON(message: GolangBinding): unknown {
     const obj: any = {};
-    message.interfaceType !== undefined &&
-      (obj.interfaceType = message.interfaceType);
-    message.implementation !== undefined &&
-      (obj.implementation = message.implementation);
+    message.interfaceType !== undefined && (obj.interfaceType = message.interfaceType);
+    message.implementation !== undefined && (obj.implementation = message.implementation);
     return obj;
   },
 
+  create(base?: DeepPartial<GolangBinding>): GolangBinding {
+    return GolangBinding.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GolangBinding>): GolangBinding {
-    const message = { ...baseGolangBinding } as GolangBinding;
+    const message = createBaseGolangBinding();
     message.interfaceType = object.interfaceType ?? "";
     message.implementation = object.implementation ?? "";
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -3,11 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
 import { Timestamp } from "../../../google/protobuf/timestamp";
-import {
-  StringValue,
-  UInt32Value,
-  BoolValue,
-} from "../../../google/protobuf/wrappers";
+import { BoolValue, StringValue, UInt32Value } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
@@ -90,51 +86,47 @@ export interface IncomingSpotMarketsToDisable {
   ids: string[];
 }
 
-const baseControlledParams: object = {};
+function createBaseControlledParams(): ControlledParams {
+  return { perpetualsFundingInterval: undefined };
+}
 
 export const ControlledParams = {
-  encode(
-    message: ControlledParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ControlledParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.perpetualsFundingInterval !== undefined) {
-      Duration.encode(
-        message.perpetualsFundingInterval,
-        writer.uint32(10).fork()
-      ).ldelim();
+      Duration.encode(message.perpetualsFundingInterval, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ControlledParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseControlledParams } as ControlledParams;
+    const message = createBaseControlledParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsFundingInterval = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.perpetualsFundingInterval = Duration.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ControlledParams {
-    const message = { ...baseControlledParams } as ControlledParams;
-    message.perpetualsFundingInterval =
-      object.perpetualsFundingInterval !== undefined &&
-      object.perpetualsFundingInterval !== null
+    return {
+      perpetualsFundingInterval: isSet(object.perpetualsFundingInterval)
         ? Duration.fromJSON(object.perpetualsFundingInterval)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: ControlledParams): unknown {
@@ -146,52 +138,57 @@ export const ControlledParams = {
     return obj;
   },
 
+  create(base?: DeepPartial<ControlledParams>): ControlledParams {
+    return ControlledParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ControlledParams>): ControlledParams {
-    const message = { ...baseControlledParams } as ControlledParams;
+    const message = createBaseControlledParams();
     message.perpetualsFundingInterval =
-      object.perpetualsFundingInterval !== undefined &&
-      object.perpetualsFundingInterval !== null
+      (object.perpetualsFundingInterval !== undefined && object.perpetualsFundingInterval !== null)
         ? Duration.fromPartial(object.perpetualsFundingInterval)
         : undefined;
     return message;
   },
 };
 
-const baseMarket: object = {
-  id: "",
-  displayName: "",
-  description: "",
-  marketType: "",
-  base: "",
-  quote: "",
-  basePrecision: Long.ZERO,
-  quotePrecision: Long.ZERO,
-  lotSize: "",
-  tickSize: "",
-  minQuantity: "",
-  createdBlockHeight: Long.UZERO,
-  riskStepSize: "",
-  initialMarginBase: "",
-  initialMarginStep: "",
-  maintenanceMarginRatio: "",
-  maxLiquidationOrderTicket: "",
-  impactSize: "",
-  markPriceBand: 0,
-  lastPriceProtectedBand: 0,
-  indexOracleId: "",
-  isActive: false,
-  isSettled: false,
-  closedBlockHeight: Long.UZERO,
-  tradingBandwidth: 0,
-  maxOpenInterest: "",
-  creator: "",
-};
+function createBaseMarket(): Market {
+  return {
+    id: "",
+    displayName: "",
+    description: "",
+    marketType: "",
+    base: "",
+    quote: "",
+    basePrecision: Long.ZERO,
+    quotePrecision: Long.ZERO,
+    lotSize: "",
+    tickSize: "",
+    minQuantity: "",
+    createdBlockHeight: Long.UZERO,
+    riskStepSize: "",
+    initialMarginBase: "",
+    initialMarginStep: "",
+    maintenanceMarginRatio: "",
+    maxLiquidationOrderTicket: "",
+    maxLiquidationOrderDuration: undefined,
+    impactSize: "",
+    markPriceBand: 0,
+    lastPriceProtectedBand: 0,
+    indexOracleId: "",
+    expiryTime: undefined,
+    isActive: false,
+    isSettled: false,
+    closedBlockHeight: Long.UZERO,
+    tradingBandwidth: 0,
+    maxOpenInterest: "",
+    staleIndexPriceAllowance: undefined,
+    creator: "",
+  };
+}
 
 export const Market = {
-  encode(
-    message: Market,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Market, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -244,10 +241,7 @@ export const Market = {
       writer.uint32(834).string(message.maxLiquidationOrderTicket);
     }
     if (message.maxLiquidationOrderDuration !== undefined) {
-      Duration.encode(
-        message.maxLiquidationOrderDuration,
-        writer.uint32(842).fork()
-      ).ldelim();
+      Duration.encode(message.maxLiquidationOrderDuration, writer.uint32(842).fork()).ldelim();
     }
     if (message.impactSize !== "") {
       writer.uint32(850).string(message.impactSize);
@@ -262,10 +256,7 @@ export const Market = {
       writer.uint32(874).string(message.indexOracleId);
     }
     if (message.expiryTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.expiryTime),
-        writer.uint32(882).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.expiryTime), writer.uint32(882).fork()).ldelim();
     }
     if (message.isActive === true) {
       writer.uint32(888).bool(message.isActive);
@@ -283,10 +274,7 @@ export const Market = {
       writer.uint32(922).string(message.maxOpenInterest);
     }
     if (message.staleIndexPriceAllowance !== undefined) {
-      Duration.encode(
-        message.staleIndexPriceAllowance,
-        writer.uint32(930).fork()
-      ).ldelim();
+      Duration.encode(message.staleIndexPriceAllowance, writer.uint32(930).fork()).ldelim();
     }
     if (message.creator !== "") {
       writer.uint32(938).string(message.creator);
@@ -295,280 +283,291 @@ export const Market = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Market {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMarket } as Market;
+    const message = createBaseMarket();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.displayName = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.description = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.marketType = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.base = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.quote = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.basePrecision = reader.int64() as Long;
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.quotePrecision = reader.int64() as Long;
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.lotSize = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.tickSize = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.minQuantity = reader.string();
-          break;
+          continue;
         case 14:
+          if (tag !== 112) {
+            break;
+          }
+
           message.createdBlockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 100:
+          if (tag !== 802) {
+            break;
+          }
+
           message.riskStepSize = reader.string();
-          break;
+          continue;
         case 101:
+          if (tag !== 810) {
+            break;
+          }
+
           message.initialMarginBase = reader.string();
-          break;
+          continue;
         case 102:
+          if (tag !== 818) {
+            break;
+          }
+
           message.initialMarginStep = reader.string();
-          break;
+          continue;
         case 103:
+          if (tag !== 826) {
+            break;
+          }
+
           message.maintenanceMarginRatio = reader.string();
-          break;
+          continue;
         case 104:
+          if (tag !== 834) {
+            break;
+          }
+
           message.maxLiquidationOrderTicket = reader.string();
-          break;
+          continue;
         case 105:
-          message.maxLiquidationOrderDuration = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 842) {
+            break;
+          }
+
+          message.maxLiquidationOrderDuration = Duration.decode(reader, reader.uint32());
+          continue;
         case 106:
+          if (tag !== 850) {
+            break;
+          }
+
           message.impactSize = reader.string();
-          break;
+          continue;
         case 107:
+          if (tag !== 856) {
+            break;
+          }
+
           message.markPriceBand = reader.uint32();
-          break;
+          continue;
         case 108:
+          if (tag !== 864) {
+            break;
+          }
+
           message.lastPriceProtectedBand = reader.uint32();
-          break;
+          continue;
         case 109:
+          if (tag !== 874) {
+            break;
+          }
+
           message.indexOracleId = reader.string();
-          break;
+          continue;
         case 110:
-          message.expiryTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 882) {
+            break;
+          }
+
+          message.expiryTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 111:
+          if (tag !== 888) {
+            break;
+          }
+
           message.isActive = reader.bool();
-          break;
+          continue;
         case 112:
+          if (tag !== 896) {
+            break;
+          }
+
           message.isSettled = reader.bool();
-          break;
+          continue;
         case 113:
+          if (tag !== 904) {
+            break;
+          }
+
           message.closedBlockHeight = reader.uint64() as Long;
-          break;
+          continue;
         case 114:
+          if (tag !== 912) {
+            break;
+          }
+
           message.tradingBandwidth = reader.uint32();
-          break;
+          continue;
         case 115:
+          if (tag !== 922) {
+            break;
+          }
+
           message.maxOpenInterest = reader.string();
-          break;
+          continue;
         case 116:
-          message.staleIndexPriceAllowance = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 930) {
+            break;
+          }
+
+          message.staleIndexPriceAllowance = Duration.decode(reader, reader.uint32());
+          continue;
         case 117:
+          if (tag !== 938) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Market {
-    const message = { ...baseMarket } as Market;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.displayName =
-      object.displayName !== undefined && object.displayName !== null
-        ? String(object.displayName)
-        : "";
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? String(object.description)
-        : "";
-    message.marketType =
-      object.marketType !== undefined && object.marketType !== null
-        ? String(object.marketType)
-        : "";
-    message.base =
-      object.base !== undefined && object.base !== null
-        ? String(object.base)
-        : "";
-    message.quote =
-      object.quote !== undefined && object.quote !== null
-        ? String(object.quote)
-        : "";
-    message.basePrecision =
-      object.basePrecision !== undefined && object.basePrecision !== null
-        ? Long.fromString(object.basePrecision)
-        : Long.ZERO;
-    message.quotePrecision =
-      object.quotePrecision !== undefined && object.quotePrecision !== null
-        ? Long.fromString(object.quotePrecision)
-        : Long.ZERO;
-    message.lotSize =
-      object.lotSize !== undefined && object.lotSize !== null
-        ? String(object.lotSize)
-        : "";
-    message.tickSize =
-      object.tickSize !== undefined && object.tickSize !== null
-        ? String(object.tickSize)
-        : "";
-    message.minQuantity =
-      object.minQuantity !== undefined && object.minQuantity !== null
-        ? String(object.minQuantity)
-        : "";
-    message.createdBlockHeight =
-      object.createdBlockHeight !== undefined &&
-      object.createdBlockHeight !== null
-        ? Long.fromString(object.createdBlockHeight)
-        : Long.UZERO;
-    message.riskStepSize =
-      object.riskStepSize !== undefined && object.riskStepSize !== null
-        ? String(object.riskStepSize)
-        : "";
-    message.initialMarginBase =
-      object.initialMarginBase !== undefined &&
-      object.initialMarginBase !== null
-        ? String(object.initialMarginBase)
-        : "";
-    message.initialMarginStep =
-      object.initialMarginStep !== undefined &&
-      object.initialMarginStep !== null
-        ? String(object.initialMarginStep)
-        : "";
-    message.maintenanceMarginRatio =
-      object.maintenanceMarginRatio !== undefined &&
-      object.maintenanceMarginRatio !== null
-        ? String(object.maintenanceMarginRatio)
-        : "";
-    message.maxLiquidationOrderTicket =
-      object.maxLiquidationOrderTicket !== undefined &&
-      object.maxLiquidationOrderTicket !== null
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      displayName: isSet(object.displayName) ? String(object.displayName) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      marketType: isSet(object.marketType) ? String(object.marketType) : "",
+      base: isSet(object.base) ? String(object.base) : "",
+      quote: isSet(object.quote) ? String(object.quote) : "",
+      basePrecision: isSet(object.basePrecision) ? Long.fromValue(object.basePrecision) : Long.ZERO,
+      quotePrecision: isSet(object.quotePrecision) ? Long.fromValue(object.quotePrecision) : Long.ZERO,
+      lotSize: isSet(object.lotSize) ? String(object.lotSize) : "",
+      tickSize: isSet(object.tickSize) ? String(object.tickSize) : "",
+      minQuantity: isSet(object.minQuantity) ? String(object.minQuantity) : "",
+      createdBlockHeight: isSet(object.createdBlockHeight) ? Long.fromValue(object.createdBlockHeight) : Long.UZERO,
+      riskStepSize: isSet(object.riskStepSize) ? String(object.riskStepSize) : "",
+      initialMarginBase: isSet(object.initialMarginBase) ? String(object.initialMarginBase) : "",
+      initialMarginStep: isSet(object.initialMarginStep) ? String(object.initialMarginStep) : "",
+      maintenanceMarginRatio: isSet(object.maintenanceMarginRatio) ? String(object.maintenanceMarginRatio) : "",
+      maxLiquidationOrderTicket: isSet(object.maxLiquidationOrderTicket)
         ? String(object.maxLiquidationOrderTicket)
-        : "";
-    message.maxLiquidationOrderDuration =
-      object.maxLiquidationOrderDuration !== undefined &&
-      object.maxLiquidationOrderDuration !== null
+        : "",
+      maxLiquidationOrderDuration: isSet(object.maxLiquidationOrderDuration)
         ? Duration.fromJSON(object.maxLiquidationOrderDuration)
-        : undefined;
-    message.impactSize =
-      object.impactSize !== undefined && object.impactSize !== null
-        ? String(object.impactSize)
-        : "";
-    message.markPriceBand =
-      object.markPriceBand !== undefined && object.markPriceBand !== null
-        ? Number(object.markPriceBand)
-        : 0;
-    message.lastPriceProtectedBand =
-      object.lastPriceProtectedBand !== undefined &&
-      object.lastPriceProtectedBand !== null
-        ? Number(object.lastPriceProtectedBand)
-        : 0;
-    message.indexOracleId =
-      object.indexOracleId !== undefined && object.indexOracleId !== null
-        ? String(object.indexOracleId)
-        : "";
-    message.expiryTime =
-      object.expiryTime !== undefined && object.expiryTime !== null
-        ? fromJsonTimestamp(object.expiryTime)
-        : undefined;
-    message.isActive =
-      object.isActive !== undefined && object.isActive !== null
-        ? Boolean(object.isActive)
-        : false;
-    message.isSettled =
-      object.isSettled !== undefined && object.isSettled !== null
-        ? Boolean(object.isSettled)
-        : false;
-    message.closedBlockHeight =
-      object.closedBlockHeight !== undefined &&
-      object.closedBlockHeight !== null
-        ? Long.fromString(object.closedBlockHeight)
-        : Long.UZERO;
-    message.tradingBandwidth =
-      object.tradingBandwidth !== undefined && object.tradingBandwidth !== null
-        ? Number(object.tradingBandwidth)
-        : 0;
-    message.maxOpenInterest =
-      object.maxOpenInterest !== undefined && object.maxOpenInterest !== null
-        ? String(object.maxOpenInterest)
-        : "";
-    message.staleIndexPriceAllowance =
-      object.staleIndexPriceAllowance !== undefined &&
-      object.staleIndexPriceAllowance !== null
+        : undefined,
+      impactSize: isSet(object.impactSize) ? String(object.impactSize) : "",
+      markPriceBand: isSet(object.markPriceBand) ? Number(object.markPriceBand) : 0,
+      lastPriceProtectedBand: isSet(object.lastPriceProtectedBand) ? Number(object.lastPriceProtectedBand) : 0,
+      indexOracleId: isSet(object.indexOracleId) ? String(object.indexOracleId) : "",
+      expiryTime: isSet(object.expiryTime) ? fromJsonTimestamp(object.expiryTime) : undefined,
+      isActive: isSet(object.isActive) ? Boolean(object.isActive) : false,
+      isSettled: isSet(object.isSettled) ? Boolean(object.isSettled) : false,
+      closedBlockHeight: isSet(object.closedBlockHeight) ? Long.fromValue(object.closedBlockHeight) : Long.UZERO,
+      tradingBandwidth: isSet(object.tradingBandwidth) ? Number(object.tradingBandwidth) : 0,
+      maxOpenInterest: isSet(object.maxOpenInterest) ? String(object.maxOpenInterest) : "",
+      staleIndexPriceAllowance: isSet(object.staleIndexPriceAllowance)
         ? Duration.fromJSON(object.staleIndexPriceAllowance)
-        : undefined;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    return message;
+        : undefined,
+      creator: isSet(object.creator) ? String(object.creator) : "",
+    };
   },
 
   toJSON(message: Market): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.displayName !== undefined &&
-      (obj.displayName = message.displayName);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.displayName !== undefined && (obj.displayName = message.displayName);
+    message.description !== undefined && (obj.description = message.description);
     message.marketType !== undefined && (obj.marketType = message.marketType);
     message.base !== undefined && (obj.base = message.base);
     message.quote !== undefined && (obj.quote = message.quote);
-    message.basePrecision !== undefined &&
-      (obj.basePrecision = (message.basePrecision || Long.ZERO).toString());
-    message.quotePrecision !== undefined &&
-      (obj.quotePrecision = (message.quotePrecision || Long.ZERO).toString());
+    message.basePrecision !== undefined && (obj.basePrecision = (message.basePrecision || Long.ZERO).toString());
+    message.quotePrecision !== undefined && (obj.quotePrecision = (message.quotePrecision || Long.ZERO).toString());
     message.lotSize !== undefined && (obj.lotSize = message.lotSize);
     message.tickSize !== undefined && (obj.tickSize = message.tickSize);
-    message.minQuantity !== undefined &&
-      (obj.minQuantity = message.minQuantity);
+    message.minQuantity !== undefined && (obj.minQuantity = message.minQuantity);
     message.createdBlockHeight !== undefined &&
-      (obj.createdBlockHeight = (
-        message.createdBlockHeight || Long.UZERO
-      ).toString());
-    message.riskStepSize !== undefined &&
-      (obj.riskStepSize = message.riskStepSize);
-    message.initialMarginBase !== undefined &&
-      (obj.initialMarginBase = message.initialMarginBase);
-    message.initialMarginStep !== undefined &&
-      (obj.initialMarginStep = message.initialMarginStep);
-    message.maintenanceMarginRatio !== undefined &&
-      (obj.maintenanceMarginRatio = message.maintenanceMarginRatio);
+      (obj.createdBlockHeight = (message.createdBlockHeight || Long.UZERO).toString());
+    message.riskStepSize !== undefined && (obj.riskStepSize = message.riskStepSize);
+    message.initialMarginBase !== undefined && (obj.initialMarginBase = message.initialMarginBase);
+    message.initialMarginStep !== undefined && (obj.initialMarginStep = message.initialMarginStep);
+    message.maintenanceMarginRatio !== undefined && (obj.maintenanceMarginRatio = message.maintenanceMarginRatio);
     message.maxLiquidationOrderTicket !== undefined &&
       (obj.maxLiquidationOrderTicket = message.maxLiquidationOrderTicket);
     message.maxLiquidationOrderDuration !== undefined &&
@@ -576,64 +575,55 @@ export const Market = {
         ? Duration.toJSON(message.maxLiquidationOrderDuration)
         : undefined);
     message.impactSize !== undefined && (obj.impactSize = message.impactSize);
-    message.markPriceBand !== undefined &&
-      (obj.markPriceBand = message.markPriceBand);
+    message.markPriceBand !== undefined && (obj.markPriceBand = Math.round(message.markPriceBand));
     message.lastPriceProtectedBand !== undefined &&
-      (obj.lastPriceProtectedBand = message.lastPriceProtectedBand);
-    message.indexOracleId !== undefined &&
-      (obj.indexOracleId = message.indexOracleId);
-    message.expiryTime !== undefined &&
-      (obj.expiryTime = message.expiryTime.toISOString());
+      (obj.lastPriceProtectedBand = Math.round(message.lastPriceProtectedBand));
+    message.indexOracleId !== undefined && (obj.indexOracleId = message.indexOracleId);
+    message.expiryTime !== undefined && (obj.expiryTime = message.expiryTime.toISOString());
     message.isActive !== undefined && (obj.isActive = message.isActive);
     message.isSettled !== undefined && (obj.isSettled = message.isSettled);
     message.closedBlockHeight !== undefined &&
-      (obj.closedBlockHeight = (
-        message.closedBlockHeight || Long.UZERO
-      ).toString());
-    message.tradingBandwidth !== undefined &&
-      (obj.tradingBandwidth = message.tradingBandwidth);
-    message.maxOpenInterest !== undefined &&
-      (obj.maxOpenInterest = message.maxOpenInterest);
-    message.staleIndexPriceAllowance !== undefined &&
-      (obj.staleIndexPriceAllowance = message.staleIndexPriceAllowance
-        ? Duration.toJSON(message.staleIndexPriceAllowance)
-        : undefined);
+      (obj.closedBlockHeight = (message.closedBlockHeight || Long.UZERO).toString());
+    message.tradingBandwidth !== undefined && (obj.tradingBandwidth = Math.round(message.tradingBandwidth));
+    message.maxOpenInterest !== undefined && (obj.maxOpenInterest = message.maxOpenInterest);
+    message.staleIndexPriceAllowance !== undefined && (obj.staleIndexPriceAllowance = message.staleIndexPriceAllowance
+      ? Duration.toJSON(message.staleIndexPriceAllowance)
+      : undefined);
     message.creator !== undefined && (obj.creator = message.creator);
     return obj;
   },
 
+  create(base?: DeepPartial<Market>): Market {
+    return Market.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Market>): Market {
-    const message = { ...baseMarket } as Market;
+    const message = createBaseMarket();
     message.id = object.id ?? "";
     message.displayName = object.displayName ?? "";
     message.description = object.description ?? "";
     message.marketType = object.marketType ?? "";
     message.base = object.base ?? "";
     message.quote = object.quote ?? "";
-    message.basePrecision =
-      object.basePrecision !== undefined && object.basePrecision !== null
-        ? Long.fromValue(object.basePrecision)
-        : Long.ZERO;
-    message.quotePrecision =
-      object.quotePrecision !== undefined && object.quotePrecision !== null
-        ? Long.fromValue(object.quotePrecision)
-        : Long.ZERO;
+    message.basePrecision = (object.basePrecision !== undefined && object.basePrecision !== null)
+      ? Long.fromValue(object.basePrecision)
+      : Long.ZERO;
+    message.quotePrecision = (object.quotePrecision !== undefined && object.quotePrecision !== null)
+      ? Long.fromValue(object.quotePrecision)
+      : Long.ZERO;
     message.lotSize = object.lotSize ?? "";
     message.tickSize = object.tickSize ?? "";
     message.minQuantity = object.minQuantity ?? "";
-    message.createdBlockHeight =
-      object.createdBlockHeight !== undefined &&
-      object.createdBlockHeight !== null
-        ? Long.fromValue(object.createdBlockHeight)
-        : Long.UZERO;
+    message.createdBlockHeight = (object.createdBlockHeight !== undefined && object.createdBlockHeight !== null)
+      ? Long.fromValue(object.createdBlockHeight)
+      : Long.UZERO;
     message.riskStepSize = object.riskStepSize ?? "";
     message.initialMarginBase = object.initialMarginBase ?? "";
     message.initialMarginStep = object.initialMarginStep ?? "";
     message.maintenanceMarginRatio = object.maintenanceMarginRatio ?? "";
     message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket ?? "";
     message.maxLiquidationOrderDuration =
-      object.maxLiquidationOrderDuration !== undefined &&
-      object.maxLiquidationOrderDuration !== null
+      (object.maxLiquidationOrderDuration !== undefined && object.maxLiquidationOrderDuration !== null)
         ? Duration.fromPartial(object.maxLiquidationOrderDuration)
         : undefined;
     message.impactSize = object.impactSize ?? "";
@@ -643,16 +633,13 @@ export const Market = {
     message.expiryTime = object.expiryTime ?? undefined;
     message.isActive = object.isActive ?? false;
     message.isSettled = object.isSettled ?? false;
-    message.closedBlockHeight =
-      object.closedBlockHeight !== undefined &&
-      object.closedBlockHeight !== null
-        ? Long.fromValue(object.closedBlockHeight)
-        : Long.UZERO;
+    message.closedBlockHeight = (object.closedBlockHeight !== undefined && object.closedBlockHeight !== null)
+      ? Long.fromValue(object.closedBlockHeight)
+      : Long.UZERO;
     message.tradingBandwidth = object.tradingBandwidth ?? 0;
     message.maxOpenInterest = object.maxOpenInterest ?? "";
     message.staleIndexPriceAllowance =
-      object.staleIndexPriceAllowance !== undefined &&
-      object.staleIndexPriceAllowance !== null
+      (object.staleIndexPriceAllowance !== undefined && object.staleIndexPriceAllowance !== null)
         ? Duration.fromPartial(object.staleIndexPriceAllowance)
         : undefined;
     message.creator = object.creator ?? "";
@@ -660,39 +647,41 @@ export const Market = {
   },
 };
 
-const baseMarketParams: object = {
-  id: "",
-  lotSize: "",
-  tickSize: "",
-  minQuantity: "",
-  riskStepSize: "",
-  initialMarginBase: "",
-  initialMarginStep: "",
-  maintenanceMarginRatio: "",
-  maxLiquidationOrderTicket: "",
-  impactSize: "",
-  maxOpenInterest: "",
-};
+function createBaseMarketParams(): MarketParams {
+  return {
+    id: "",
+    displayName: undefined,
+    description: undefined,
+    lotSize: "",
+    tickSize: "",
+    minQuantity: "",
+    riskStepSize: "",
+    initialMarginBase: "",
+    initialMarginStep: "",
+    maintenanceMarginRatio: "",
+    maxLiquidationOrderTicket: "",
+    maxLiquidationOrderDuration: undefined,
+    impactSize: "",
+    markPriceBand: undefined,
+    lastPriceProtectedBand: undefined,
+    isActive: undefined,
+    tradingBandwidth: undefined,
+    expiryTime: undefined,
+    maxOpenInterest: "",
+    staleIndexPriceAllowance: undefined,
+  };
+}
 
 export const MarketParams = {
-  encode(
-    message: MarketParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MarketParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     if (message.displayName !== undefined) {
-      StringValue.encode(
-        { value: message.displayName! },
-        writer.uint32(18).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.displayName! }, writer.uint32(18).fork()).ldelim();
     }
     if (message.description !== undefined) {
-      StringValue.encode(
-        { value: message.description! },
-        writer.uint32(26).fork()
-      ).ldelim();
+      StringValue.encode({ value: message.description! }, writer.uint32(26).fork()).ldelim();
     }
     if (message.lotSize !== "") {
       writer.uint32(82).string(message.lotSize);
@@ -719,263 +708,234 @@ export const MarketParams = {
       writer.uint32(834).string(message.maxLiquidationOrderTicket);
     }
     if (message.maxLiquidationOrderDuration !== undefined) {
-      Duration.encode(
-        message.maxLiquidationOrderDuration,
-        writer.uint32(842).fork()
-      ).ldelim();
+      Duration.encode(message.maxLiquidationOrderDuration, writer.uint32(842).fork()).ldelim();
     }
     if (message.impactSize !== "") {
       writer.uint32(850).string(message.impactSize);
     }
     if (message.markPriceBand !== undefined) {
-      UInt32Value.encode(
-        { value: message.markPriceBand! },
-        writer.uint32(858).fork()
-      ).ldelim();
+      UInt32Value.encode({ value: message.markPriceBand! }, writer.uint32(858).fork()).ldelim();
     }
     if (message.lastPriceProtectedBand !== undefined) {
-      UInt32Value.encode(
-        { value: message.lastPriceProtectedBand! },
-        writer.uint32(866).fork()
-      ).ldelim();
+      UInt32Value.encode({ value: message.lastPriceProtectedBand! }, writer.uint32(866).fork()).ldelim();
     }
     if (message.isActive !== undefined) {
-      BoolValue.encode(
-        { value: message.isActive! },
-        writer.uint32(890).fork()
-      ).ldelim();
+      BoolValue.encode({ value: message.isActive! }, writer.uint32(890).fork()).ldelim();
     }
     if (message.tradingBandwidth !== undefined) {
-      UInt32Value.encode(
-        { value: message.tradingBandwidth! },
-        writer.uint32(914).fork()
-      ).ldelim();
+      UInt32Value.encode({ value: message.tradingBandwidth! }, writer.uint32(914).fork()).ldelim();
     }
     if (message.expiryTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.expiryTime),
-        writer.uint32(922).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.expiryTime), writer.uint32(922).fork()).ldelim();
     }
     if (message.maxOpenInterest !== "") {
       writer.uint32(930).string(message.maxOpenInterest);
     }
     if (message.staleIndexPriceAllowance !== undefined) {
-      Duration.encode(
-        message.staleIndexPriceAllowance,
-        writer.uint32(938).fork()
-      ).ldelim();
+      Duration.encode(message.staleIndexPriceAllowance, writer.uint32(938).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MarketParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMarketParams } as MarketParams;
+    const message = createBaseMarketParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
-          message.displayName = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.displayName = StringValue.decode(reader, reader.uint32()).value;
+          continue;
         case 3:
-          message.description = StringValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.description = StringValue.decode(reader, reader.uint32()).value;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.lotSize = reader.string();
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.tickSize = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 98) {
+            break;
+          }
+
           message.minQuantity = reader.string();
-          break;
+          continue;
         case 100:
+          if (tag !== 802) {
+            break;
+          }
+
           message.riskStepSize = reader.string();
-          break;
+          continue;
         case 101:
+          if (tag !== 810) {
+            break;
+          }
+
           message.initialMarginBase = reader.string();
-          break;
+          continue;
         case 102:
+          if (tag !== 818) {
+            break;
+          }
+
           message.initialMarginStep = reader.string();
-          break;
+          continue;
         case 103:
+          if (tag !== 826) {
+            break;
+          }
+
           message.maintenanceMarginRatio = reader.string();
-          break;
+          continue;
         case 104:
+          if (tag !== 834) {
+            break;
+          }
+
           message.maxLiquidationOrderTicket = reader.string();
-          break;
+          continue;
         case 105:
-          message.maxLiquidationOrderDuration = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 842) {
+            break;
+          }
+
+          message.maxLiquidationOrderDuration = Duration.decode(reader, reader.uint32());
+          continue;
         case 106:
+          if (tag !== 850) {
+            break;
+          }
+
           message.impactSize = reader.string();
-          break;
+          continue;
         case 107:
-          message.markPriceBand = UInt32Value.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 858) {
+            break;
+          }
+
+          message.markPriceBand = UInt32Value.decode(reader, reader.uint32()).value;
+          continue;
         case 108:
-          message.lastPriceProtectedBand = UInt32Value.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 866) {
+            break;
+          }
+
+          message.lastPriceProtectedBand = UInt32Value.decode(reader, reader.uint32()).value;
+          continue;
         case 111:
+          if (tag !== 890) {
+            break;
+          }
+
           message.isActive = BoolValue.decode(reader, reader.uint32()).value;
-          break;
+          continue;
         case 114:
-          message.tradingBandwidth = UInt32Value.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
+          if (tag !== 914) {
+            break;
+          }
+
+          message.tradingBandwidth = UInt32Value.decode(reader, reader.uint32()).value;
+          continue;
         case 115:
-          message.expiryTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 922) {
+            break;
+          }
+
+          message.expiryTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 116:
+          if (tag !== 930) {
+            break;
+          }
+
           message.maxOpenInterest = reader.string();
-          break;
+          continue;
         case 117:
-          message.staleIndexPriceAllowance = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 938) {
+            break;
+          }
+
+          message.staleIndexPriceAllowance = Duration.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MarketParams {
-    const message = { ...baseMarketParams } as MarketParams;
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.displayName =
-      object.displayName !== undefined && object.displayName !== null
-        ? String(object.displayName)
-        : undefined;
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? String(object.description)
-        : undefined;
-    message.lotSize =
-      object.lotSize !== undefined && object.lotSize !== null
-        ? String(object.lotSize)
-        : "";
-    message.tickSize =
-      object.tickSize !== undefined && object.tickSize !== null
-        ? String(object.tickSize)
-        : "";
-    message.minQuantity =
-      object.minQuantity !== undefined && object.minQuantity !== null
-        ? String(object.minQuantity)
-        : "";
-    message.riskStepSize =
-      object.riskStepSize !== undefined && object.riskStepSize !== null
-        ? String(object.riskStepSize)
-        : "";
-    message.initialMarginBase =
-      object.initialMarginBase !== undefined &&
-      object.initialMarginBase !== null
-        ? String(object.initialMarginBase)
-        : "";
-    message.initialMarginStep =
-      object.initialMarginStep !== undefined &&
-      object.initialMarginStep !== null
-        ? String(object.initialMarginStep)
-        : "";
-    message.maintenanceMarginRatio =
-      object.maintenanceMarginRatio !== undefined &&
-      object.maintenanceMarginRatio !== null
-        ? String(object.maintenanceMarginRatio)
-        : "";
-    message.maxLiquidationOrderTicket =
-      object.maxLiquidationOrderTicket !== undefined &&
-      object.maxLiquidationOrderTicket !== null
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      displayName: isSet(object.displayName) ? String(object.displayName) : undefined,
+      description: isSet(object.description) ? String(object.description) : undefined,
+      lotSize: isSet(object.lotSize) ? String(object.lotSize) : "",
+      tickSize: isSet(object.tickSize) ? String(object.tickSize) : "",
+      minQuantity: isSet(object.minQuantity) ? String(object.minQuantity) : "",
+      riskStepSize: isSet(object.riskStepSize) ? String(object.riskStepSize) : "",
+      initialMarginBase: isSet(object.initialMarginBase) ? String(object.initialMarginBase) : "",
+      initialMarginStep: isSet(object.initialMarginStep) ? String(object.initialMarginStep) : "",
+      maintenanceMarginRatio: isSet(object.maintenanceMarginRatio) ? String(object.maintenanceMarginRatio) : "",
+      maxLiquidationOrderTicket: isSet(object.maxLiquidationOrderTicket)
         ? String(object.maxLiquidationOrderTicket)
-        : "";
-    message.maxLiquidationOrderDuration =
-      object.maxLiquidationOrderDuration !== undefined &&
-      object.maxLiquidationOrderDuration !== null
+        : "",
+      maxLiquidationOrderDuration: isSet(object.maxLiquidationOrderDuration)
         ? Duration.fromJSON(object.maxLiquidationOrderDuration)
-        : undefined;
-    message.impactSize =
-      object.impactSize !== undefined && object.impactSize !== null
-        ? String(object.impactSize)
-        : "";
-    message.markPriceBand =
-      object.markPriceBand !== undefined && object.markPriceBand !== null
-        ? Number(object.markPriceBand)
-        : undefined;
-    message.lastPriceProtectedBand =
-      object.lastPriceProtectedBand !== undefined &&
-      object.lastPriceProtectedBand !== null
-        ? Number(object.lastPriceProtectedBand)
-        : undefined;
-    message.isActive =
-      object.isActive !== undefined && object.isActive !== null
-        ? Boolean(object.isActive)
-        : undefined;
-    message.tradingBandwidth =
-      object.tradingBandwidth !== undefined && object.tradingBandwidth !== null
-        ? Number(object.tradingBandwidth)
-        : undefined;
-    message.expiryTime =
-      object.expiryTime !== undefined && object.expiryTime !== null
-        ? fromJsonTimestamp(object.expiryTime)
-        : undefined;
-    message.maxOpenInterest =
-      object.maxOpenInterest !== undefined && object.maxOpenInterest !== null
-        ? String(object.maxOpenInterest)
-        : "";
-    message.staleIndexPriceAllowance =
-      object.staleIndexPriceAllowance !== undefined &&
-      object.staleIndexPriceAllowance !== null
+        : undefined,
+      impactSize: isSet(object.impactSize) ? String(object.impactSize) : "",
+      markPriceBand: isSet(object.markPriceBand) ? Number(object.markPriceBand) : undefined,
+      lastPriceProtectedBand: isSet(object.lastPriceProtectedBand) ? Number(object.lastPriceProtectedBand) : undefined,
+      isActive: isSet(object.isActive) ? Boolean(object.isActive) : undefined,
+      tradingBandwidth: isSet(object.tradingBandwidth) ? Number(object.tradingBandwidth) : undefined,
+      expiryTime: isSet(object.expiryTime) ? fromJsonTimestamp(object.expiryTime) : undefined,
+      maxOpenInterest: isSet(object.maxOpenInterest) ? String(object.maxOpenInterest) : "",
+      staleIndexPriceAllowance: isSet(object.staleIndexPriceAllowance)
         ? Duration.fromJSON(object.staleIndexPriceAllowance)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MarketParams): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.displayName !== undefined &&
-      (obj.displayName = message.displayName);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.displayName !== undefined && (obj.displayName = message.displayName);
+    message.description !== undefined && (obj.description = message.description);
     message.lotSize !== undefined && (obj.lotSize = message.lotSize);
     message.tickSize !== undefined && (obj.tickSize = message.tickSize);
-    message.minQuantity !== undefined &&
-      (obj.minQuantity = message.minQuantity);
-    message.riskStepSize !== undefined &&
-      (obj.riskStepSize = message.riskStepSize);
-    message.initialMarginBase !== undefined &&
-      (obj.initialMarginBase = message.initialMarginBase);
-    message.initialMarginStep !== undefined &&
-      (obj.initialMarginStep = message.initialMarginStep);
-    message.maintenanceMarginRatio !== undefined &&
-      (obj.maintenanceMarginRatio = message.maintenanceMarginRatio);
+    message.minQuantity !== undefined && (obj.minQuantity = message.minQuantity);
+    message.riskStepSize !== undefined && (obj.riskStepSize = message.riskStepSize);
+    message.initialMarginBase !== undefined && (obj.initialMarginBase = message.initialMarginBase);
+    message.initialMarginStep !== undefined && (obj.initialMarginStep = message.initialMarginStep);
+    message.maintenanceMarginRatio !== undefined && (obj.maintenanceMarginRatio = message.maintenanceMarginRatio);
     message.maxLiquidationOrderTicket !== undefined &&
       (obj.maxLiquidationOrderTicket = message.maxLiquidationOrderTicket);
     message.maxLiquidationOrderDuration !== undefined &&
@@ -983,26 +943,24 @@ export const MarketParams = {
         ? Duration.toJSON(message.maxLiquidationOrderDuration)
         : undefined);
     message.impactSize !== undefined && (obj.impactSize = message.impactSize);
-    message.markPriceBand !== undefined &&
-      (obj.markPriceBand = message.markPriceBand);
-    message.lastPriceProtectedBand !== undefined &&
-      (obj.lastPriceProtectedBand = message.lastPriceProtectedBand);
+    message.markPriceBand !== undefined && (obj.markPriceBand = message.markPriceBand);
+    message.lastPriceProtectedBand !== undefined && (obj.lastPriceProtectedBand = message.lastPriceProtectedBand);
     message.isActive !== undefined && (obj.isActive = message.isActive);
-    message.tradingBandwidth !== undefined &&
-      (obj.tradingBandwidth = message.tradingBandwidth);
-    message.expiryTime !== undefined &&
-      (obj.expiryTime = message.expiryTime.toISOString());
-    message.maxOpenInterest !== undefined &&
-      (obj.maxOpenInterest = message.maxOpenInterest);
-    message.staleIndexPriceAllowance !== undefined &&
-      (obj.staleIndexPriceAllowance = message.staleIndexPriceAllowance
-        ? Duration.toJSON(message.staleIndexPriceAllowance)
-        : undefined);
+    message.tradingBandwidth !== undefined && (obj.tradingBandwidth = message.tradingBandwidth);
+    message.expiryTime !== undefined && (obj.expiryTime = message.expiryTime.toISOString());
+    message.maxOpenInterest !== undefined && (obj.maxOpenInterest = message.maxOpenInterest);
+    message.staleIndexPriceAllowance !== undefined && (obj.staleIndexPriceAllowance = message.staleIndexPriceAllowance
+      ? Duration.toJSON(message.staleIndexPriceAllowance)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MarketParams>): MarketParams {
+    return MarketParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MarketParams>): MarketParams {
-    const message = { ...baseMarketParams } as MarketParams;
+    const message = createBaseMarketParams();
     message.id = object.id ?? "";
     message.displayName = object.displayName ?? undefined;
     message.description = object.description ?? undefined;
@@ -1015,8 +973,7 @@ export const MarketParams = {
     message.maintenanceMarginRatio = object.maintenanceMarginRatio ?? "";
     message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket ?? "";
     message.maxLiquidationOrderDuration =
-      object.maxLiquidationOrderDuration !== undefined &&
-      object.maxLiquidationOrderDuration !== null
+      (object.maxLiquidationOrderDuration !== undefined && object.maxLiquidationOrderDuration !== null)
         ? Duration.fromPartial(object.maxLiquidationOrderDuration)
         : undefined;
     message.impactSize = object.impactSize ?? "";
@@ -1027,57 +984,50 @@ export const MarketParams = {
     message.expiryTime = object.expiryTime ?? undefined;
     message.maxOpenInterest = object.maxOpenInterest ?? "";
     message.staleIndexPriceAllowance =
-      object.staleIndexPriceAllowance !== undefined &&
-      object.staleIndexPriceAllowance !== null
+      (object.staleIndexPriceAllowance !== undefined && object.staleIndexPriceAllowance !== null)
         ? Duration.fromPartial(object.staleIndexPriceAllowance)
         : undefined;
     return message;
   },
 };
 
-const baseIncomingSpotMarketsToDisable: object = { ids: "" };
+function createBaseIncomingSpotMarketsToDisable(): IncomingSpotMarketsToDisable {
+  return { ids: [] };
+}
 
 export const IncomingSpotMarketsToDisable = {
-  encode(
-    message: IncomingSpotMarketsToDisable,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: IncomingSpotMarketsToDisable, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.ids) {
       writer.uint32(10).string(v!);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): IncomingSpotMarketsToDisable {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): IncomingSpotMarketsToDisable {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseIncomingSpotMarketsToDisable,
-    } as IncomingSpotMarketsToDisable;
-    message.ids = [];
+    const message = createBaseIncomingSpotMarketsToDisable();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.ids.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): IncomingSpotMarketsToDisable {
-    const message = {
-      ...baseIncomingSpotMarketsToDisable,
-    } as IncomingSpotMarketsToDisable;
-    message.ids = (object.ids ?? []).map((e: any) => String(e));
-    return message;
+    return { ids: Array.isArray(object?.ids) ? object.ids.map((e: any) => String(e)) : [] };
   },
 
   toJSON(message: IncomingSpotMarketsToDisable): unknown {
@@ -1090,35 +1040,23 @@ export const IncomingSpotMarketsToDisable = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<IncomingSpotMarketsToDisable>
-  ): IncomingSpotMarketsToDisable {
-    const message = {
-      ...baseIncomingSpotMarketsToDisable,
-    } as IncomingSpotMarketsToDisable;
-    message.ids = (object.ids ?? []).map((e) => e);
+  create(base?: DeepPartial<IncomingSpotMarketsToDisable>): IncomingSpotMarketsToDisable {
+    return IncomingSpotMarketsToDisable.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<IncomingSpotMarketsToDisable>): IncomingSpotMarketsToDisable {
+    const message = createBaseIncomingSpotMarketsToDisable();
+    message.ids = object.ids?.map((e) => e) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -1128,8 +1066,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -1150,4 +1088,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

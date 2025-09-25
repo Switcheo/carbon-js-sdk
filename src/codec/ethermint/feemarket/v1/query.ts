@@ -6,7 +6,8 @@ import { Params } from "./feemarket";
 export const protobufPackage = "ethermint.feemarket.v1";
 
 /** QueryParamsRequest defines the request type for querying x/evm parameters. */
-export interface QueryParamsRequest {}
+export interface QueryParamsRequest {
+}
 
 /** QueryParamsResponse defines the response type for querying x/evm parameters. */
 export interface QueryParamsResponse {
@@ -18,7 +19,8 @@ export interface QueryParamsResponse {
  * QueryBaseFeeRequest defines the request type for querying the EIP1559 base
  * fee.
  */
-export interface QueryBaseFeeRequest {}
+export interface QueryBaseFeeRequest {
+}
 
 /** QueryBaseFeeResponse returns the EIP1559 base fee. */
 export interface QueryBaseFeeResponse {
@@ -30,7 +32,8 @@ export interface QueryBaseFeeResponse {
  * QueryBlockGasRequest defines the request type for querying the EIP1559 base
  * fee.
  */
-export interface QueryBlockGasRequest {}
+export interface QueryBlockGasRequest {
+}
 
 /** QueryBlockGasResponse returns block gas used for a given height. */
 export interface QueryBlockGasResponse {
@@ -38,34 +41,33 @@ export interface QueryBlockGasResponse {
   gas: Long;
 }
 
-const baseQueryParamsRequest: object = {};
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+  return {};
+}
 
 export const QueryParamsRequest = {
-  encode(
-    _: QueryParamsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryParamsRequest): unknown {
@@ -73,19 +75,22 @@ export const QueryParamsRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    return QueryParamsRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
-    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    const message = createBaseQueryParamsRequest();
     return message;
   },
 };
 
-const baseQueryParamsResponse: object = {};
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+  return { params: undefined };
+}
 
 export const QueryParamsResponse = {
-  encode(
-    message: QueryParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -93,77 +98,78 @@ export const QueryParamsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    const message = createBaseQueryParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.params = Params.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
-        : undefined;
-    return message;
+    return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
   },
 
   toJSON(message: QueryParamsResponse): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    return QueryParamsResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
-    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+    const message = createBaseQueryParamsResponse();
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryBaseFeeRequest: object = {};
+function createBaseQueryBaseFeeRequest(): QueryBaseFeeRequest {
+  return {};
+}
 
 export const QueryBaseFeeRequest = {
-  encode(
-    _: QueryBaseFeeRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryBaseFeeRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryBaseFeeRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBaseFeeRequest } as QueryBaseFeeRequest;
+    const message = createBaseQueryBaseFeeRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): QueryBaseFeeRequest {
-    const message = { ...baseQueryBaseFeeRequest } as QueryBaseFeeRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryBaseFeeRequest): unknown {
@@ -171,53 +177,53 @@ export const QueryBaseFeeRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryBaseFeeRequest>): QueryBaseFeeRequest {
+    return QueryBaseFeeRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<QueryBaseFeeRequest>): QueryBaseFeeRequest {
-    const message = { ...baseQueryBaseFeeRequest } as QueryBaseFeeRequest;
+    const message = createBaseQueryBaseFeeRequest();
     return message;
   },
 };
 
-const baseQueryBaseFeeResponse: object = { baseFee: "" };
+function createBaseQueryBaseFeeResponse(): QueryBaseFeeResponse {
+  return { baseFee: "" };
+}
 
 export const QueryBaseFeeResponse = {
-  encode(
-    message: QueryBaseFeeResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBaseFeeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.baseFee !== "") {
       writer.uint32(10).string(message.baseFee);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryBaseFeeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBaseFeeResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBaseFeeResponse } as QueryBaseFeeResponse;
+    const message = createBaseQueryBaseFeeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.baseFee = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBaseFeeResponse {
-    const message = { ...baseQueryBaseFeeResponse } as QueryBaseFeeResponse;
-    message.baseFee =
-      object.baseFee !== undefined && object.baseFee !== null
-        ? String(object.baseFee)
-        : "";
-    return message;
+    return { baseFee: isSet(object.baseFee) ? String(object.baseFee) : "" };
   },
 
   toJSON(message: QueryBaseFeeResponse): unknown {
@@ -226,44 +232,44 @@ export const QueryBaseFeeResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryBaseFeeResponse>): QueryBaseFeeResponse {
+    return QueryBaseFeeResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryBaseFeeResponse>): QueryBaseFeeResponse {
-    const message = { ...baseQueryBaseFeeResponse } as QueryBaseFeeResponse;
+    const message = createBaseQueryBaseFeeResponse();
     message.baseFee = object.baseFee ?? "";
     return message;
   },
 };
 
-const baseQueryBlockGasRequest: object = {};
+function createBaseQueryBlockGasRequest(): QueryBlockGasRequest {
+  return {};
+}
 
 export const QueryBlockGasRequest = {
-  encode(
-    _: QueryBlockGasRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryBlockGasRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryBlockGasRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBlockGasRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBlockGasRequest } as QueryBlockGasRequest;
+    const message = createBaseQueryBlockGasRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): QueryBlockGasRequest {
-    const message = { ...baseQueryBlockGasRequest } as QueryBlockGasRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryBlockGasRequest): unknown {
@@ -271,70 +277,68 @@ export const QueryBlockGasRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryBlockGasRequest>): QueryBlockGasRequest {
+    return QueryBlockGasRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<QueryBlockGasRequest>): QueryBlockGasRequest {
-    const message = { ...baseQueryBlockGasRequest } as QueryBlockGasRequest;
+    const message = createBaseQueryBlockGasRequest();
     return message;
   },
 };
 
-const baseQueryBlockGasResponse: object = { gas: Long.ZERO };
+function createBaseQueryBlockGasResponse(): QueryBlockGasResponse {
+  return { gas: Long.ZERO };
+}
 
 export const QueryBlockGasResponse = {
-  encode(
-    message: QueryBlockGasResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryBlockGasResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.gas.isZero()) {
       writer.uint32(8).int64(message.gas);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryBlockGasResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBlockGasResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryBlockGasResponse } as QueryBlockGasResponse;
+    const message = createBaseQueryBlockGasResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.gas = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryBlockGasResponse {
-    const message = { ...baseQueryBlockGasResponse } as QueryBlockGasResponse;
-    message.gas =
-      object.gas !== undefined && object.gas !== null
-        ? Long.fromString(object.gas)
-        : Long.ZERO;
-    return message;
+    return { gas: isSet(object.gas) ? Long.fromValue(object.gas) : Long.ZERO };
   },
 
   toJSON(message: QueryBlockGasResponse): unknown {
     const obj: any = {};
-    message.gas !== undefined &&
-      (obj.gas = (message.gas || Long.ZERO).toString());
+    message.gas !== undefined && (obj.gas = (message.gas || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryBlockGasResponse>
-  ): QueryBlockGasResponse {
-    const message = { ...baseQueryBlockGasResponse } as QueryBlockGasResponse;
-    message.gas =
-      object.gas !== undefined && object.gas !== null
-        ? Long.fromValue(object.gas)
-        : Long.ZERO;
+  create(base?: DeepPartial<QueryBlockGasResponse>): QueryBlockGasResponse {
+    return QueryBlockGasResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryBlockGasResponse>): QueryBlockGasResponse {
+    const message = createBaseQueryBlockGasResponse();
+    message.gas = (object.gas !== undefined && object.gas !== null) ? Long.fromValue(object.gas) : Long.ZERO;
     return message;
   },
 };
@@ -351,7 +355,9 @@ export interface Query {
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "ethermint.feemarket.v1.Query";
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.BaseFee = this.BaseFee.bind(this);
@@ -359,70 +365,40 @@ export class QueryClientImpl implements Query {
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "ethermint.feemarket.v1.Query",
-      "Params",
-      data
-    );
-    return promise.then((data) =>
-      QueryParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "Params", data);
+    return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
   }
 
   BaseFee(request: QueryBaseFeeRequest): Promise<QueryBaseFeeResponse> {
     const data = QueryBaseFeeRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "ethermint.feemarket.v1.Query",
-      "BaseFee",
-      data
-    );
-    return promise.then((data) =>
-      QueryBaseFeeResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "BaseFee", data);
+    return promise.then((data) => QueryBaseFeeResponse.decode(_m0.Reader.create(data)));
   }
 
   BlockGas(request: QueryBlockGasRequest): Promise<QueryBlockGasResponse> {
     const data = QueryBlockGasRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "ethermint.feemarket.v1.Query",
-      "BlockGas",
-      data
-    );
-    return promise.then((data) =>
-      QueryBlockGasResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "BlockGas", data);
+    return promise.then((data) => QueryBlockGasResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

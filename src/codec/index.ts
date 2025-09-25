@@ -146,6 +146,8 @@ registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidation", Carbon.Broke
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", Carbon.Broker.MsgInitiateLiquidationResponse);
 registry.register("/Switcheo.carbon.broker.MsgUpdateParams", Carbon.Broker.MsgUpdateParams);
 registry.register("/Switcheo.carbon.broker.MsgUpdateParamsResponse", Carbon.Broker.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.broker.MsgPayBadDebt", Carbon.Broker.MsgPayBadDebt);
+registry.register("/Switcheo.carbon.broker.MsgPayBadDebtResponse", Carbon.Broker.MsgPayBadDebtResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetGasCost", Carbon.Fee.MsgSetGasCost);
 registry.register("/Switcheo.carbon.fee.MsgSetGasCostResponse", Carbon.Fee.MsgSetGasCostResponse);
@@ -887,6 +889,8 @@ export const TxTypes = {
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
   "MsgBrokerUpdateParams": "/Switcheo.carbon.broker.MsgUpdateParams",
   "MsgBrokerUpdateParamsResponse": "/Switcheo.carbon.broker.MsgUpdateParamsResponse",
+  "MsgPayBadDebt": "/Switcheo.carbon.broker.MsgPayBadDebt",
+  "MsgPayBadDebtResponse": "/Switcheo.carbon.broker.MsgPayBadDebtResponse",
   "MsgSetGasCost": "/Switcheo.carbon.fee.MsgSetGasCost",
   "MsgSetGasCostResponse": "/Switcheo.carbon.fee.MsgSetGasCostResponse",
   "MsgSetMinGasPrice": "/Switcheo.carbon.fee.MsgSetMinGasPrice",
@@ -1484,7 +1488,7 @@ export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
 export { Empty } from "./google/protobuf/empty";
-export { Edition, editionFromJSON, editionToJSON, ExtensionRangeOptions_VerificationState, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FeatureSet_FieldPresence, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, FeatureSet_EnumType, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, FeatureSet_RepeatedFieldEncoding, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, FeatureSet_Utf8Validation, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, FeatureSet_MessageEncoding, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, FeatureSet_JsonFormat, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
+export { Edition, editionFromJSON, editionToJSON, SymbolVisibility, symbolVisibilityFromJSON, symbolVisibilityToJSON, ExtensionRangeOptions_VerificationState, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FeatureSet_FieldPresence, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, FeatureSet_EnumType, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, FeatureSet_RepeatedFieldEncoding, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, FeatureSet_Utf8Validation, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, FeatureSet_MessageEncoding, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, FeatureSet_JsonFormat, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, FeatureSet_EnforceNamingStyle, featureSet_EnforceNamingStyleFromJSON, featureSet_EnforceNamingStyleToJSON, FeatureSet_VisibilityFeature_DefaultSymbolVisibility, featureSet_VisibilityFeature_DefaultSymbolVisibilityFromJSON, featureSet_VisibilityFeature_DefaultSymbolVisibilityToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, FieldOptions_FeatureSupport, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSet_VisibilityFeature, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/alliance/gov";
 export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse, MsgCreateAlliance, MsgCreateAllianceResponse, MsgUpdateAlliance, MsgUpdateAllianceResponse, MsgDeleteAlliance, MsgDeleteAllianceResponse } from "./alliance/alliance/tx";
@@ -1528,6 +1532,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "weak_dependency",
         "type": "int32[]"
+      },
+      {
+        "name": "option_dependency",
+        "type": "string[]"
       },
       {
         "name": "message_type",
@@ -1617,6 +1625,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "reserved_name",
         "type": "string[]"
+      },
+      {
+        "name": "visibility",
+        "type": "",
+        "packageName": "/google.protobuf"
       }
     ],
     "ExtensionRangeOptions": [
@@ -1724,6 +1737,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "reserved_name",
         "type": "string[]"
+      },
+      {
+        "name": "visibility",
+        "type": "",
+        "packageName": "/google.protobuf"
       }
     ],
     "EnumValueDescriptorProto": [
@@ -1824,10 +1842,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "py_generic_services",
-        "type": "bool"
-      },
-      {
-        "name": "php_generic_services",
         "type": "bool"
       },
       {
@@ -1965,6 +1979,11 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/google.protobuf"
       },
       {
+        "name": "feature_support",
+        "type": "FeatureSupport",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -2019,6 +2038,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "debug_redact",
         "type": "bool"
+      },
+      {
+        "name": "feature_support",
+        "type": "FeatureSupport",
+        "packageName": "/google.protobuf.FieldOptions"
       },
       {
         "name": "uninterpreted_option",
@@ -2124,6 +2148,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "json_format",
         "type": "",
         "packageName": "/google.protobuf.FeatureSet"
+      },
+      {
+        "name": "enforce_naming_style",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet"
+      },
+      {
+        "name": "default_symbol_visibility",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet.VisibilityFeature"
       }
     ],
     "FeatureSetDefaults": [
@@ -4554,12 +4588,52 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "futures_invariant_buffer_bps",
         "type": "string"
+      },
+      {
+        "name": "should_system_liquidate",
+        "type": "bool"
+      },
+      {
+        "name": "max_liquidation_order_counterparty_delta_bps",
+        "type": "string"
+      },
+      {
+        "name": "max_bad_debt_threshold_usd",
+        "type": "string"
+      },
+      {
+        "name": "accepted_bad_debt_assets",
+        "type": "string[]"
+      },
+      {
+        "name": "is_trading_paused",
+        "type": "bool"
       }
     ],
     "ParamsToUpdate": [
       {
         "name": "futures_invariant_buffer_bps",
         "type": "string"
+      },
+      {
+        "name": "should_system_liquidate",
+        "type": "bool"
+      },
+      {
+        "name": "max_liquidation_order_counterparty_delta_bps",
+        "type": "string"
+      },
+      {
+        "name": "max_bad_debt_threshold_usd",
+        "type": "string"
+      },
+      {
+        "name": "accepted_bad_debt_assets",
+        "type": "string[]"
+      },
+      {
+        "name": "is_trading_paused",
+        "type": "bool"
       }
     ],
     "GenesisState": [
@@ -4711,6 +4785,13 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
+    "QueryBadDebtRequest": [],
+    "QueryBadDebtResponse": [
+      {
+        "name": "bad_debt",
+        "type": "string"
+      }
+    ],
     "LiquidatorPosition": [
       {
         "name": "market_id",
@@ -4744,7 +4825,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
-    "MsgUpdateParamsResponse": []
+    "MsgUpdateParamsResponse": [],
+    "MsgPayBadDebt": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "payment",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgPayBadDebtResponse": []
   },
   "/Switcheo.carbon.btcx": {
     "DenomInfo": [
@@ -6363,11 +6456,6 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryAssetLoansRequest": [
       {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
         "name": "denom",
         "type": "string"
       }
@@ -6385,11 +6473,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "loans",
         "type": "AssetLoan[]",
         "packageName": "/Switcheo.carbon.cdp"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "AssetLoan": [
@@ -8321,6 +8404,49 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "msg",
         "type": "CreateTokenParams",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "FuturesBalanceRecord": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "total",
+        "type": "string"
+      },
+      {
+        "name": "available",
+        "type": "string"
+      },
+      {
+        "name": "reserved",
+        "type": "string"
+      },
+      {
+        "name": "margin",
+        "type": "string"
+      },
+      {
+        "name": "unrealised_loss",
+        "type": "string"
+      },
+      {
+        "name": "margin_debt",
+        "type": "string"
+      }
+    ],
+    "QueryGetFuturesBalanceRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryGetFuturesBalanceResponse": [
+      {
+        "name": "balances",
+        "type": "FuturesBalanceRecord[]",
         "packageName": "/Switcheo.carbon.coin"
       }
     ],
@@ -16614,6 +16740,29 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "open_positions",
         "type": "Position[]",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "TotalMaintenanceMargin": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "QueryTotalMaintenanceMarginRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryTotalMaintenanceMarginResponse": [
+      {
+        "name": "total_maintenance_margin",
+        "type": "TotalMaintenanceMargin[]",
         "packageName": "/Switcheo.carbon.position"
       }
     ],

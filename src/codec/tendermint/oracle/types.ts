@@ -50,7 +50,9 @@ export interface GossipVotes {
   GossipVotes: GossipVote[];
 }
 
-const baseVote: object = { oracleId: "", timestamp: Long.UZERO, data: "" };
+function createBaseVote(): Vote {
+  return { validator: new Uint8Array(), oracleId: "", timestamp: Long.UZERO, data: "" };
+}
 
 export const Vote = {
   encode(message: Vote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -70,87 +72,97 @@ export const Vote = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Vote {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseVote } as Vote;
-    message.validator = new Uint8Array();
+    const message = createBaseVote();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validator = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.oracleId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.timestamp = reader.uint64() as Long;
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.data = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Vote {
-    const message = { ...baseVote } as Vote;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? bytesFromBase64(object.validator)
-        : new Uint8Array();
-    message.oracleId =
-      object.oracleId !== undefined && object.oracleId !== null
-        ? String(object.oracleId)
-        : "";
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromString(object.timestamp)
-        : Long.UZERO;
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? String(object.data)
-        : "";
-    return message;
+    return {
+      validator: isSet(object.validator) ? bytesFromBase64(object.validator) : new Uint8Array(),
+      oracleId: isSet(object.oracleId) ? String(object.oracleId) : "",
+      timestamp: isSet(object.timestamp) ? Long.fromValue(object.timestamp) : Long.UZERO,
+      data: isSet(object.data) ? String(object.data) : "",
+    };
   },
 
   toJSON(message: Vote): unknown {
     const obj: any = {};
     message.validator !== undefined &&
-      (obj.validator = base64FromBytes(
-        message.validator !== undefined ? message.validator : new Uint8Array()
-      ));
+      (obj.validator = base64FromBytes(message.validator !== undefined ? message.validator : new Uint8Array()));
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
-    message.timestamp !== undefined &&
-      (obj.timestamp = (message.timestamp || Long.UZERO).toString());
+    message.timestamp !== undefined && (obj.timestamp = (message.timestamp || Long.UZERO).toString());
     message.data !== undefined && (obj.data = message.data);
     return obj;
   },
 
+  create(base?: DeepPartial<Vote>): Vote {
+    return Vote.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Vote>): Vote {
-    const message = { ...baseVote } as Vote;
+    const message = createBaseVote();
     message.validator = object.validator ?? new Uint8Array();
     message.oracleId = object.oracleId ?? "";
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromValue(object.timestamp)
-        : Long.UZERO;
+    message.timestamp = (object.timestamp !== undefined && object.timestamp !== null)
+      ? Long.fromValue(object.timestamp)
+      : Long.UZERO;
     message.data = object.data ?? "";
     return message;
   },
 };
 
-const baseGossipVote: object = { signType: "", signedTimestamp: Long.UZERO };
+function createBaseGossipVote(): GossipVote {
+  return {
+    validator: new Uint8Array(),
+    publicKey: new Uint8Array(),
+    signType: "",
+    votes: [],
+    signedTimestamp: Long.UZERO,
+    signature: new Uint8Array(),
+  };
+}
 
 export const GossipVote = {
-  encode(
-    message: GossipVote,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GossipVote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.validator.length !== 0) {
       writer.uint32(10).bytes(message.validator);
     }
@@ -173,117 +185,116 @@ export const GossipVote = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GossipVote {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGossipVote } as GossipVote;
-    message.votes = [];
-    message.validator = new Uint8Array();
-    message.publicKey = new Uint8Array();
-    message.signature = new Uint8Array();
+    const message = createBaseGossipVote();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validator = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.publicKey = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.signType = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.votes.push(Vote.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.signedTimestamp = reader.uint64() as Long;
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.signature = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GossipVote {
-    const message = { ...baseGossipVote } as GossipVote;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? bytesFromBase64(object.validator)
-        : new Uint8Array();
-    message.publicKey =
-      object.publicKey !== undefined && object.publicKey !== null
-        ? bytesFromBase64(object.publicKey)
-        : new Uint8Array();
-    message.signType =
-      object.signType !== undefined && object.signType !== null
-        ? String(object.signType)
-        : "";
-    message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
-    message.signedTimestamp =
-      object.signedTimestamp !== undefined && object.signedTimestamp !== null
-        ? Long.fromString(object.signedTimestamp)
-        : Long.UZERO;
-    message.signature =
-      object.signature !== undefined && object.signature !== null
-        ? bytesFromBase64(object.signature)
-        : new Uint8Array();
-    return message;
+    return {
+      validator: isSet(object.validator) ? bytesFromBase64(object.validator) : new Uint8Array(),
+      publicKey: isSet(object.publicKey) ? bytesFromBase64(object.publicKey) : new Uint8Array(),
+      signType: isSet(object.signType) ? String(object.signType) : "",
+      votes: Array.isArray(object?.votes) ? object.votes.map((e: any) => Vote.fromJSON(e)) : [],
+      signedTimestamp: isSet(object.signedTimestamp) ? Long.fromValue(object.signedTimestamp) : Long.UZERO,
+      signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(),
+    };
   },
 
   toJSON(message: GossipVote): unknown {
     const obj: any = {};
     message.validator !== undefined &&
-      (obj.validator = base64FromBytes(
-        message.validator !== undefined ? message.validator : new Uint8Array()
-      ));
+      (obj.validator = base64FromBytes(message.validator !== undefined ? message.validator : new Uint8Array()));
     message.publicKey !== undefined &&
-      (obj.publicKey = base64FromBytes(
-        message.publicKey !== undefined ? message.publicKey : new Uint8Array()
-      ));
+      (obj.publicKey = base64FromBytes(message.publicKey !== undefined ? message.publicKey : new Uint8Array()));
     message.signType !== undefined && (obj.signType = message.signType);
     if (message.votes) {
-      obj.votes = message.votes.map((e) => (e ? Vote.toJSON(e) : undefined));
+      obj.votes = message.votes.map((e) => e ? Vote.toJSON(e) : undefined);
     } else {
       obj.votes = [];
     }
-    message.signedTimestamp !== undefined &&
-      (obj.signedTimestamp = (
-        message.signedTimestamp || Long.UZERO
-      ).toString());
+    message.signedTimestamp !== undefined && (obj.signedTimestamp = (message.signedTimestamp || Long.UZERO).toString());
     message.signature !== undefined &&
-      (obj.signature = base64FromBytes(
-        message.signature !== undefined ? message.signature : new Uint8Array()
-      ));
+      (obj.signature = base64FromBytes(message.signature !== undefined ? message.signature : new Uint8Array()));
     return obj;
   },
 
+  create(base?: DeepPartial<GossipVote>): GossipVote {
+    return GossipVote.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GossipVote>): GossipVote {
-    const message = { ...baseGossipVote } as GossipVote;
+    const message = createBaseGossipVote();
     message.validator = object.validator ?? new Uint8Array();
     message.publicKey = object.publicKey ?? new Uint8Array();
     message.signType = object.signType ?? "";
-    message.votes = (object.votes ?? []).map((e) => Vote.fromPartial(e));
-    message.signedTimestamp =
-      object.signedTimestamp !== undefined && object.signedTimestamp !== null
-        ? Long.fromValue(object.signedTimestamp)
-        : Long.UZERO;
+    message.votes = object.votes?.map((e) => Vote.fromPartial(e)) || [];
+    message.signedTimestamp = (object.signedTimestamp !== undefined && object.signedTimestamp !== null)
+      ? Long.fromValue(object.signedTimestamp)
+      : Long.UZERO;
     message.signature = object.signature ?? new Uint8Array();
     return message;
   },
 };
 
-const baseCanonicalGossipVote: object = { signType: "" };
+function createBaseCanonicalGossipVote(): CanonicalGossipVote {
+  return { validator: new Uint8Array(), publicKey: new Uint8Array(), signType: "", votes: [] };
+}
 
 export const CanonicalGossipVote = {
-  encode(
-    message: CanonicalGossipVote,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CanonicalGossipVote, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.validator.length !== 0) {
       writer.uint32(10).bytes(message.validator);
     }
@@ -300,100 +311,104 @@ export const CanonicalGossipVote = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CanonicalGossipVote {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCanonicalGossipVote } as CanonicalGossipVote;
-    message.votes = [];
-    message.validator = new Uint8Array();
-    message.publicKey = new Uint8Array();
+    const message = createBaseCanonicalGossipVote();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.validator = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.publicKey = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.signType = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.votes.push(Vote.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CanonicalGossipVote {
-    const message = { ...baseCanonicalGossipVote } as CanonicalGossipVote;
-    message.validator =
-      object.validator !== undefined && object.validator !== null
-        ? bytesFromBase64(object.validator)
-        : new Uint8Array();
-    message.publicKey =
-      object.publicKey !== undefined && object.publicKey !== null
-        ? bytesFromBase64(object.publicKey)
-        : new Uint8Array();
-    message.signType =
-      object.signType !== undefined && object.signType !== null
-        ? String(object.signType)
-        : "";
-    message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
-    return message;
+    return {
+      validator: isSet(object.validator) ? bytesFromBase64(object.validator) : new Uint8Array(),
+      publicKey: isSet(object.publicKey) ? bytesFromBase64(object.publicKey) : new Uint8Array(),
+      signType: isSet(object.signType) ? String(object.signType) : "",
+      votes: Array.isArray(object?.votes) ? object.votes.map((e: any) => Vote.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: CanonicalGossipVote): unknown {
     const obj: any = {};
     message.validator !== undefined &&
-      (obj.validator = base64FromBytes(
-        message.validator !== undefined ? message.validator : new Uint8Array()
-      ));
+      (obj.validator = base64FromBytes(message.validator !== undefined ? message.validator : new Uint8Array()));
     message.publicKey !== undefined &&
-      (obj.publicKey = base64FromBytes(
-        message.publicKey !== undefined ? message.publicKey : new Uint8Array()
-      ));
+      (obj.publicKey = base64FromBytes(message.publicKey !== undefined ? message.publicKey : new Uint8Array()));
     message.signType !== undefined && (obj.signType = message.signType);
     if (message.votes) {
-      obj.votes = message.votes.map((e) => (e ? Vote.toJSON(e) : undefined));
+      obj.votes = message.votes.map((e) => e ? Vote.toJSON(e) : undefined);
     } else {
       obj.votes = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<CanonicalGossipVote>): CanonicalGossipVote {
+    return CanonicalGossipVote.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<CanonicalGossipVote>): CanonicalGossipVote {
-    const message = { ...baseCanonicalGossipVote } as CanonicalGossipVote;
+    const message = createBaseCanonicalGossipVote();
     message.validator = object.validator ?? new Uint8Array();
     message.publicKey = object.publicKey ?? new Uint8Array();
     message.signType = object.signType ?? "";
-    message.votes = (object.votes ?? []).map((e) => Vote.fromPartial(e));
+    message.votes = object.votes?.map((e) => Vote.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseOracle: object = {
-  creator: "",
-  id: "",
-  description: "",
-  status: "",
-  minTurnoutPercentage: "",
-  maxResultAge: "",
-  securityType: "",
-  resultStrategy: "",
-  resolution: "",
-  spec: "",
-};
+function createBaseOracle(): Oracle {
+  return {
+    creator: "",
+    id: "",
+    description: "",
+    status: "",
+    minTurnoutPercentage: "",
+    maxResultAge: "",
+    securityType: "",
+    resultStrategy: "",
+    resolution: "",
+    spec: "",
+  };
+}
 
 export const Oracle = {
-  encode(
-    message: Oracle,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Oracle, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -428,116 +443,127 @@ export const Oracle = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Oracle {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOracle } as Oracle;
+    const message = createBaseOracle();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.description = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.status = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.minTurnoutPercentage = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.maxResultAge = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.securityType = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.resultStrategy = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.resolution = reader.string();
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.spec = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Oracle {
-    const message = { ...baseOracle } as Oracle;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.id =
-      object.id !== undefined && object.id !== null ? String(object.id) : "";
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? String(object.description)
-        : "";
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? String(object.status)
-        : "";
-    message.minTurnoutPercentage =
-      object.minTurnoutPercentage !== undefined &&
-      object.minTurnoutPercentage !== null
-        ? String(object.minTurnoutPercentage)
-        : "";
-    message.maxResultAge =
-      object.maxResultAge !== undefined && object.maxResultAge !== null
-        ? String(object.maxResultAge)
-        : "";
-    message.securityType =
-      object.securityType !== undefined && object.securityType !== null
-        ? String(object.securityType)
-        : "";
-    message.resultStrategy =
-      object.resultStrategy !== undefined && object.resultStrategy !== null
-        ? String(object.resultStrategy)
-        : "";
-    message.resolution =
-      object.resolution !== undefined && object.resolution !== null
-        ? String(object.resolution)
-        : "";
-    message.spec =
-      object.spec !== undefined && object.spec !== null
-        ? String(object.spec)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      status: isSet(object.status) ? String(object.status) : "",
+      minTurnoutPercentage: isSet(object.minTurnoutPercentage) ? String(object.minTurnoutPercentage) : "",
+      maxResultAge: isSet(object.maxResultAge) ? String(object.maxResultAge) : "",
+      securityType: isSet(object.securityType) ? String(object.securityType) : "",
+      resultStrategy: isSet(object.resultStrategy) ? String(object.resultStrategy) : "",
+      resolution: isSet(object.resolution) ? String(object.resolution) : "",
+      spec: isSet(object.spec) ? String(object.spec) : "",
+    };
   },
 
   toJSON(message: Oracle): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.id !== undefined && (obj.id = message.id);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.status !== undefined && (obj.status = message.status);
-    message.minTurnoutPercentage !== undefined &&
-      (obj.minTurnoutPercentage = message.minTurnoutPercentage);
-    message.maxResultAge !== undefined &&
-      (obj.maxResultAge = message.maxResultAge);
-    message.securityType !== undefined &&
-      (obj.securityType = message.securityType);
-    message.resultStrategy !== undefined &&
-      (obj.resultStrategy = message.resultStrategy);
+    message.minTurnoutPercentage !== undefined && (obj.minTurnoutPercentage = message.minTurnoutPercentage);
+    message.maxResultAge !== undefined && (obj.maxResultAge = message.maxResultAge);
+    message.securityType !== undefined && (obj.securityType = message.securityType);
+    message.resultStrategy !== undefined && (obj.resultStrategy = message.resultStrategy);
     message.resolution !== undefined && (obj.resolution = message.resolution);
     message.spec !== undefined && (obj.spec = message.spec);
     return obj;
   },
 
+  create(base?: DeepPartial<Oracle>): Oracle {
+    return Oracle.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Oracle>): Oracle {
-    const message = { ...baseOracle } as Oracle;
+    const message = createBaseOracle();
     message.creator = object.creator ?? "";
     message.id = object.id ?? "";
     message.description = object.description ?? "";
@@ -552,13 +578,12 @@ export const Oracle = {
   },
 };
 
-const baseResult: object = { oracleId: "", timestamp: Long.ZERO, data: "" };
+function createBaseResult(): Result {
+  return { oracleId: "", timestamp: Long.ZERO, data: "" };
+}
 
 export const Result = {
-  encode(
-    message: Result,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Result, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.oracleId !== "") {
       writer.uint32(10).string(message.oracleId);
     }
@@ -572,74 +597,79 @@ export const Result = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Result {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseResult } as Result;
+    const message = createBaseResult();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.oracleId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.timestamp = reader.int64() as Long;
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.data = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Result {
-    const message = { ...baseResult } as Result;
-    message.oracleId =
-      object.oracleId !== undefined && object.oracleId !== null
-        ? String(object.oracleId)
-        : "";
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromString(object.timestamp)
-        : Long.ZERO;
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? String(object.data)
-        : "";
-    return message;
+    return {
+      oracleId: isSet(object.oracleId) ? String(object.oracleId) : "",
+      timestamp: isSet(object.timestamp) ? Long.fromValue(object.timestamp) : Long.ZERO,
+      data: isSet(object.data) ? String(object.data) : "",
+    };
   },
 
   toJSON(message: Result): unknown {
     const obj: any = {};
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
-    message.timestamp !== undefined &&
-      (obj.timestamp = (message.timestamp || Long.ZERO).toString());
+    message.timestamp !== undefined && (obj.timestamp = (message.timestamp || Long.ZERO).toString());
     message.data !== undefined && (obj.data = message.data);
     return obj;
   },
 
+  create(base?: DeepPartial<Result>): Result {
+    return Result.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Result>): Result {
-    const message = { ...baseResult } as Result;
+    const message = createBaseResult();
     message.oracleId = object.oracleId ?? "";
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? Long.fromValue(object.timestamp)
-        : Long.ZERO;
+    message.timestamp = (object.timestamp !== undefined && object.timestamp !== null)
+      ? Long.fromValue(object.timestamp)
+      : Long.ZERO;
     message.data = object.data ?? "";
     return message;
   },
 };
 
-const baseGossipVotes: object = {};
+function createBaseGossipVotes(): GossipVotes {
+  return { GossipVotes: [] };
+}
 
 export const GossipVotes = {
-  encode(
-    message: GossipVotes,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GossipVotes, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.GossipVotes) {
       GossipVote.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -647,49 +677,51 @@ export const GossipVotes = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GossipVotes {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGossipVotes } as GossipVotes;
-    message.GossipVotes = [];
+    const message = createBaseGossipVotes();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.GossipVotes.push(GossipVote.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GossipVotes {
-    const message = { ...baseGossipVotes } as GossipVotes;
-    message.GossipVotes = (object.GossipVotes ?? []).map((e: any) =>
-      GossipVote.fromJSON(e)
-    );
-    return message;
+    return {
+      GossipVotes: Array.isArray(object?.GossipVotes) ? object.GossipVotes.map((e: any) => GossipVote.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: GossipVotes): unknown {
     const obj: any = {};
     if (message.GossipVotes) {
-      obj.GossipVotes = message.GossipVotes.map((e) =>
-        e ? GossipVote.toJSON(e) : undefined
-      );
+      obj.GossipVotes = message.GossipVotes.map((e) => e ? GossipVote.toJSON(e) : undefined);
     } else {
       obj.GossipVotes = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<GossipVotes>): GossipVotes {
+    return GossipVotes.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GossipVotes>): GossipVotes {
-    const message = { ...baseGossipVotes } as GossipVotes;
-    message.GossipVotes = (object.GossipVotes ?? []).map((e) =>
-      GossipVote.fromPartial(e)
-    );
+    const message = createBaseGossipVotes();
+    message.GossipVotes = object.GossipVotes?.map((e) => GossipVote.fromPartial(e)) || [];
     return message;
   },
 };
@@ -697,58 +729,60 @@ export const GossipVotes = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

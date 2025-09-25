@@ -48,17 +48,12 @@ export interface Params {
   sigVerifyCostSecp256k1: Long;
 }
 
-const baseBaseAccount: object = {
-  address: "",
-  accountNumber: Long.UZERO,
-  sequence: Long.UZERO,
-};
+function createBaseBaseAccount(): BaseAccount {
+  return { address: "", pubKey: undefined, accountNumber: Long.UZERO, sequence: Long.UZERO };
+}
 
 export const BaseAccount = {
-  encode(
-    message: BaseAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BaseAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
@@ -75,96 +70,95 @@ export const BaseAccount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BaseAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBaseAccount } as BaseAccount;
+    const message = createBaseBaseAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pubKey = Any.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.accountNumber = reader.uint64() as Long;
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.sequence = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BaseAccount {
-    const message = { ...baseBaseAccount } as BaseAccount;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.pubKey =
-      object.pubKey !== undefined && object.pubKey !== null
-        ? Any.fromJSON(object.pubKey)
-        : undefined;
-    message.accountNumber =
-      object.accountNumber !== undefined && object.accountNumber !== null
-        ? Long.fromString(object.accountNumber)
-        : Long.UZERO;
-    message.sequence =
-      object.sequence !== undefined && object.sequence !== null
-        ? Long.fromString(object.sequence)
-        : Long.UZERO;
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      pubKey: isSet(object.pubKey) ? Any.fromJSON(object.pubKey) : undefined,
+      accountNumber: isSet(object.accountNumber) ? Long.fromValue(object.accountNumber) : Long.UZERO,
+      sequence: isSet(object.sequence) ? Long.fromValue(object.sequence) : Long.UZERO,
+    };
   },
 
   toJSON(message: BaseAccount): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.pubKey !== undefined &&
-      (obj.pubKey = message.pubKey ? Any.toJSON(message.pubKey) : undefined);
-    message.accountNumber !== undefined &&
-      (obj.accountNumber = (message.accountNumber || Long.UZERO).toString());
-    message.sequence !== undefined &&
-      (obj.sequence = (message.sequence || Long.UZERO).toString());
+    message.pubKey !== undefined && (obj.pubKey = message.pubKey ? Any.toJSON(message.pubKey) : undefined);
+    message.accountNumber !== undefined && (obj.accountNumber = (message.accountNumber || Long.UZERO).toString());
+    message.sequence !== undefined && (obj.sequence = (message.sequence || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<BaseAccount>): BaseAccount {
+    return BaseAccount.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BaseAccount>): BaseAccount {
-    const message = { ...baseBaseAccount } as BaseAccount;
+    const message = createBaseBaseAccount();
     message.address = object.address ?? "";
-    message.pubKey =
-      object.pubKey !== undefined && object.pubKey !== null
-        ? Any.fromPartial(object.pubKey)
-        : undefined;
-    message.accountNumber =
-      object.accountNumber !== undefined && object.accountNumber !== null
-        ? Long.fromValue(object.accountNumber)
-        : Long.UZERO;
-    message.sequence =
-      object.sequence !== undefined && object.sequence !== null
-        ? Long.fromValue(object.sequence)
-        : Long.UZERO;
+    message.pubKey = (object.pubKey !== undefined && object.pubKey !== null)
+      ? Any.fromPartial(object.pubKey)
+      : undefined;
+    message.accountNumber = (object.accountNumber !== undefined && object.accountNumber !== null)
+      ? Long.fromValue(object.accountNumber)
+      : Long.UZERO;
+    message.sequence = (object.sequence !== undefined && object.sequence !== null)
+      ? Long.fromValue(object.sequence)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseModuleAccount: object = { name: "", permissions: "" };
+function createBaseModuleAccount(): ModuleAccount {
+  return { baseAccount: undefined, name: "", permissions: [] };
+}
 
 export const ModuleAccount = {
-  encode(
-    message: ModuleAccount,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleAccount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.baseAccount !== undefined) {
-      BaseAccount.encode(
-        message.baseAccount,
-        writer.uint32(10).fork()
-      ).ldelim();
+      BaseAccount.encode(message.baseAccount, writer.uint32(10).fork()).ldelim();
     }
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
@@ -176,50 +170,54 @@ export const ModuleAccount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ModuleAccount {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModuleAccount } as ModuleAccount;
-    message.permissions = [];
+    const message = createBaseModuleAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.baseAccount = BaseAccount.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.name = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.permissions.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleAccount {
-    const message = { ...baseModuleAccount } as ModuleAccount;
-    message.baseAccount =
-      object.baseAccount !== undefined && object.baseAccount !== null
-        ? BaseAccount.fromJSON(object.baseAccount)
-        : undefined;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.permissions = (object.permissions ?? []).map((e: any) => String(e));
-    return message;
+    return {
+      baseAccount: isSet(object.baseAccount) ? BaseAccount.fromJSON(object.baseAccount) : undefined,
+      name: isSet(object.name) ? String(object.name) : "",
+      permissions: Array.isArray(object?.permissions) ? object.permissions.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: ModuleAccount): unknown {
     const obj: any = {};
     message.baseAccount !== undefined &&
-      (obj.baseAccount = message.baseAccount
-        ? BaseAccount.toJSON(message.baseAccount)
-        : undefined);
+      (obj.baseAccount = message.baseAccount ? BaseAccount.toJSON(message.baseAccount) : undefined);
     message.name !== undefined && (obj.name = message.name);
     if (message.permissions) {
       obj.permissions = message.permissions.map((e) => e);
@@ -229,25 +227,27 @@ export const ModuleAccount = {
     return obj;
   },
 
+  create(base?: DeepPartial<ModuleAccount>): ModuleAccount {
+    return ModuleAccount.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ModuleAccount>): ModuleAccount {
-    const message = { ...baseModuleAccount } as ModuleAccount;
-    message.baseAccount =
-      object.baseAccount !== undefined && object.baseAccount !== null
-        ? BaseAccount.fromPartial(object.baseAccount)
-        : undefined;
+    const message = createBaseModuleAccount();
+    message.baseAccount = (object.baseAccount !== undefined && object.baseAccount !== null)
+      ? BaseAccount.fromPartial(object.baseAccount)
+      : undefined;
     message.name = object.name ?? "";
-    message.permissions = (object.permissions ?? []).map((e) => e);
+    message.permissions = object.permissions?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseModuleCredential: object = { moduleName: "" };
+function createBaseModuleCredential(): ModuleCredential {
+  return { moduleName: "", derivationKeys: [] };
+}
 
 export const ModuleCredential = {
-  encode(
-    message: ModuleCredential,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleCredential, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.moduleName !== "") {
       writer.uint32(10).string(message.moduleName);
     }
@@ -258,73 +258,79 @@ export const ModuleCredential = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ModuleCredential {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModuleCredential } as ModuleCredential;
-    message.derivationKeys = [];
+    const message = createBaseModuleCredential();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.moduleName = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.derivationKeys.push(reader.bytes());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleCredential {
-    const message = { ...baseModuleCredential } as ModuleCredential;
-    message.moduleName =
-      object.moduleName !== undefined && object.moduleName !== null
-        ? String(object.moduleName)
-        : "";
-    message.derivationKeys = (object.derivationKeys ?? []).map((e: any) =>
-      bytesFromBase64(e)
-    );
-    return message;
+    return {
+      moduleName: isSet(object.moduleName) ? String(object.moduleName) : "",
+      derivationKeys: Array.isArray(object?.derivationKeys)
+        ? object.derivationKeys.map((e: any) => bytesFromBase64(e))
+        : [],
+    };
   },
 
   toJSON(message: ModuleCredential): unknown {
     const obj: any = {};
     message.moduleName !== undefined && (obj.moduleName = message.moduleName);
     if (message.derivationKeys) {
-      obj.derivationKeys = message.derivationKeys.map((e) =>
-        base64FromBytes(e !== undefined ? e : new Uint8Array())
-      );
+      obj.derivationKeys = message.derivationKeys.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
     } else {
       obj.derivationKeys = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<ModuleCredential>): ModuleCredential {
+    return ModuleCredential.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ModuleCredential>): ModuleCredential {
-    const message = { ...baseModuleCredential } as ModuleCredential;
+    const message = createBaseModuleCredential();
     message.moduleName = object.moduleName ?? "";
-    message.derivationKeys = (object.derivationKeys ?? []).map((e) => e);
+    message.derivationKeys = object.derivationKeys?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseParams: object = {
-  maxMemoCharacters: Long.UZERO,
-  txSigLimit: Long.UZERO,
-  txSizeCostPerByte: Long.UZERO,
-  sigVerifyCostEd25519: Long.UZERO,
-  sigVerifyCostSecp256k1: Long.UZERO,
-};
+function createBaseParams(): Params {
+  return {
+    maxMemoCharacters: Long.UZERO,
+    txSigLimit: Long.UZERO,
+    txSizeCostPerByte: Long.UZERO,
+    sigVerifyCostEd25519: Long.UZERO,
+    sigVerifyCostSecp256k1: Long.UZERO,
+  };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.maxMemoCharacters.isZero()) {
       writer.uint32(8).uint64(message.maxMemoCharacters);
     }
@@ -344,111 +350,104 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.maxMemoCharacters = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.txSigLimit = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.txSizeCostPerByte = reader.uint64() as Long;
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.sigVerifyCostEd25519 = reader.uint64() as Long;
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.sigVerifyCostSecp256k1 = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.maxMemoCharacters =
-      object.maxMemoCharacters !== undefined &&
-      object.maxMemoCharacters !== null
-        ? Long.fromString(object.maxMemoCharacters)
-        : Long.UZERO;
-    message.txSigLimit =
-      object.txSigLimit !== undefined && object.txSigLimit !== null
-        ? Long.fromString(object.txSigLimit)
-        : Long.UZERO;
-    message.txSizeCostPerByte =
-      object.txSizeCostPerByte !== undefined &&
-      object.txSizeCostPerByte !== null
-        ? Long.fromString(object.txSizeCostPerByte)
-        : Long.UZERO;
-    message.sigVerifyCostEd25519 =
-      object.sigVerifyCostEd25519 !== undefined &&
-      object.sigVerifyCostEd25519 !== null
-        ? Long.fromString(object.sigVerifyCostEd25519)
-        : Long.UZERO;
-    message.sigVerifyCostSecp256k1 =
-      object.sigVerifyCostSecp256k1 !== undefined &&
-      object.sigVerifyCostSecp256k1 !== null
-        ? Long.fromString(object.sigVerifyCostSecp256k1)
-        : Long.UZERO;
-    return message;
+    return {
+      maxMemoCharacters: isSet(object.maxMemoCharacters) ? Long.fromValue(object.maxMemoCharacters) : Long.UZERO,
+      txSigLimit: isSet(object.txSigLimit) ? Long.fromValue(object.txSigLimit) : Long.UZERO,
+      txSizeCostPerByte: isSet(object.txSizeCostPerByte) ? Long.fromValue(object.txSizeCostPerByte) : Long.UZERO,
+      sigVerifyCostEd25519: isSet(object.sigVerifyCostEd25519)
+        ? Long.fromValue(object.sigVerifyCostEd25519)
+        : Long.UZERO,
+      sigVerifyCostSecp256k1: isSet(object.sigVerifyCostSecp256k1)
+        ? Long.fromValue(object.sigVerifyCostSecp256k1)
+        : Long.UZERO,
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
     message.maxMemoCharacters !== undefined &&
-      (obj.maxMemoCharacters = (
-        message.maxMemoCharacters || Long.UZERO
-      ).toString());
-    message.txSigLimit !== undefined &&
-      (obj.txSigLimit = (message.txSigLimit || Long.UZERO).toString());
+      (obj.maxMemoCharacters = (message.maxMemoCharacters || Long.UZERO).toString());
+    message.txSigLimit !== undefined && (obj.txSigLimit = (message.txSigLimit || Long.UZERO).toString());
     message.txSizeCostPerByte !== undefined &&
-      (obj.txSizeCostPerByte = (
-        message.txSizeCostPerByte || Long.UZERO
-      ).toString());
+      (obj.txSizeCostPerByte = (message.txSizeCostPerByte || Long.UZERO).toString());
     message.sigVerifyCostEd25519 !== undefined &&
-      (obj.sigVerifyCostEd25519 = (
-        message.sigVerifyCostEd25519 || Long.UZERO
-      ).toString());
+      (obj.sigVerifyCostEd25519 = (message.sigVerifyCostEd25519 || Long.UZERO).toString());
     message.sigVerifyCostSecp256k1 !== undefined &&
-      (obj.sigVerifyCostSecp256k1 = (
-        message.sigVerifyCostSecp256k1 || Long.UZERO
-      ).toString());
+      (obj.sigVerifyCostSecp256k1 = (message.sigVerifyCostSecp256k1 || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.maxMemoCharacters =
-      object.maxMemoCharacters !== undefined &&
-      object.maxMemoCharacters !== null
-        ? Long.fromValue(object.maxMemoCharacters)
-        : Long.UZERO;
-    message.txSigLimit =
-      object.txSigLimit !== undefined && object.txSigLimit !== null
-        ? Long.fromValue(object.txSigLimit)
-        : Long.UZERO;
-    message.txSizeCostPerByte =
-      object.txSizeCostPerByte !== undefined &&
-      object.txSizeCostPerByte !== null
-        ? Long.fromValue(object.txSizeCostPerByte)
-        : Long.UZERO;
-    message.sigVerifyCostEd25519 =
-      object.sigVerifyCostEd25519 !== undefined &&
-      object.sigVerifyCostEd25519 !== null
-        ? Long.fromValue(object.sigVerifyCostEd25519)
-        : Long.UZERO;
+    const message = createBaseParams();
+    message.maxMemoCharacters = (object.maxMemoCharacters !== undefined && object.maxMemoCharacters !== null)
+      ? Long.fromValue(object.maxMemoCharacters)
+      : Long.UZERO;
+    message.txSigLimit = (object.txSigLimit !== undefined && object.txSigLimit !== null)
+      ? Long.fromValue(object.txSigLimit)
+      : Long.UZERO;
+    message.txSizeCostPerByte = (object.txSizeCostPerByte !== undefined && object.txSizeCostPerByte !== null)
+      ? Long.fromValue(object.txSizeCostPerByte)
+      : Long.UZERO;
+    message.sigVerifyCostEd25519 = (object.sigVerifyCostEd25519 !== undefined && object.sigVerifyCostEd25519 !== null)
+      ? Long.fromValue(object.sigVerifyCostEd25519)
+      : Long.UZERO;
     message.sigVerifyCostSecp256k1 =
-      object.sigVerifyCostSecp256k1 !== undefined &&
-      object.sigVerifyCostSecp256k1 !== null
+      (object.sigVerifyCostSecp256k1 !== undefined && object.sigVerifyCostSecp256k1 !== null)
         ? Long.fromValue(object.sigVerifyCostSecp256k1)
         : Long.UZERO;
     return message;
@@ -458,58 +457,60 @@ export const Params = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

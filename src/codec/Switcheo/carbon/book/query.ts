@@ -1,11 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
 import { OrderBook, StopBook } from "./book";
-import {
-  PageRequest,
-  PageResponse,
-} from "../../../cosmos/base/query/v1beta1/pagination";
 
 export const protobufPackage = "Switcheo.carbon.book";
 
@@ -55,13 +52,12 @@ export interface QueryAllStopBookResponse {
   pagination?: PageResponse;
 }
 
-const baseQueryImpactPriceRequest: object = { marketId: "", quoteAmount: "" };
+function createBaseQueryImpactPriceRequest(): QueryImpactPriceRequest {
+  return { marketId: "", quoteAmount: "" };
+}
 
 export const QueryImpactPriceRequest = {
-  encode(
-    message: QueryImpactPriceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryImpactPriceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -71,78 +67,68 @@ export const QueryImpactPriceRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryImpactPriceRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryImpactPriceRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryImpactPriceRequest,
-    } as QueryImpactPriceRequest;
+    const message = createBaseQueryImpactPriceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.quoteAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryImpactPriceRequest {
-    const message = {
-      ...baseQueryImpactPriceRequest,
-    } as QueryImpactPriceRequest;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.quoteAmount =
-      object.quoteAmount !== undefined && object.quoteAmount !== null
-        ? String(object.quoteAmount)
-        : "";
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      quoteAmount: isSet(object.quoteAmount) ? String(object.quoteAmount) : "",
+    };
   },
 
   toJSON(message: QueryImpactPriceRequest): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
-    message.quoteAmount !== undefined &&
-      (obj.quoteAmount = message.quoteAmount);
+    message.quoteAmount !== undefined && (obj.quoteAmount = message.quoteAmount);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryImpactPriceRequest>
-  ): QueryImpactPriceRequest {
-    const message = {
-      ...baseQueryImpactPriceRequest,
-    } as QueryImpactPriceRequest;
+  create(base?: DeepPartial<QueryImpactPriceRequest>): QueryImpactPriceRequest {
+    return QueryImpactPriceRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryImpactPriceRequest>): QueryImpactPriceRequest {
+    const message = createBaseQueryImpactPriceRequest();
     message.marketId = object.marketId ?? "";
     message.quoteAmount = object.quoteAmount ?? "";
     return message;
   },
 };
 
-const baseQueryImpactPriceResponse: object = {
-  impactPrice: "",
-  baseAmount: "",
-  quoteAmount: "",
-};
+function createBaseQueryImpactPriceResponse(): QueryImpactPriceResponse {
+  return { impactPrice: "", baseAmount: "", quoteAmount: "" };
+}
 
 export const QueryImpactPriceResponse = {
-  encode(
-    message: QueryImpactPriceResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryImpactPriceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.impactPrice !== "") {
       writer.uint32(10).string(message.impactPrice);
     }
@@ -155,70 +141,65 @@ export const QueryImpactPriceResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryImpactPriceResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryImpactPriceResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryImpactPriceResponse,
-    } as QueryImpactPriceResponse;
+    const message = createBaseQueryImpactPriceResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.impactPrice = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.baseAmount = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.quoteAmount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryImpactPriceResponse {
-    const message = {
-      ...baseQueryImpactPriceResponse,
-    } as QueryImpactPriceResponse;
-    message.impactPrice =
-      object.impactPrice !== undefined && object.impactPrice !== null
-        ? String(object.impactPrice)
-        : "";
-    message.baseAmount =
-      object.baseAmount !== undefined && object.baseAmount !== null
-        ? String(object.baseAmount)
-        : "";
-    message.quoteAmount =
-      object.quoteAmount !== undefined && object.quoteAmount !== null
-        ? String(object.quoteAmount)
-        : "";
-    return message;
+    return {
+      impactPrice: isSet(object.impactPrice) ? String(object.impactPrice) : "",
+      baseAmount: isSet(object.baseAmount) ? String(object.baseAmount) : "",
+      quoteAmount: isSet(object.quoteAmount) ? String(object.quoteAmount) : "",
+    };
   },
 
   toJSON(message: QueryImpactPriceResponse): unknown {
     const obj: any = {};
-    message.impactPrice !== undefined &&
-      (obj.impactPrice = message.impactPrice);
+    message.impactPrice !== undefined && (obj.impactPrice = message.impactPrice);
     message.baseAmount !== undefined && (obj.baseAmount = message.baseAmount);
-    message.quoteAmount !== undefined &&
-      (obj.quoteAmount = message.quoteAmount);
+    message.quoteAmount !== undefined && (obj.quoteAmount = message.quoteAmount);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryImpactPriceResponse>
-  ): QueryImpactPriceResponse {
-    const message = {
-      ...baseQueryImpactPriceResponse,
-    } as QueryImpactPriceResponse;
+  create(base?: DeepPartial<QueryImpactPriceResponse>): QueryImpactPriceResponse {
+    return QueryImpactPriceResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryImpactPriceResponse>): QueryImpactPriceResponse {
+    const message = createBaseQueryImpactPriceResponse();
     message.impactPrice = object.impactPrice ?? "";
     message.baseAmount = object.baseAmount ?? "";
     message.quoteAmount = object.quoteAmount ?? "";
@@ -226,13 +207,12 @@ export const QueryImpactPriceResponse = {
   },
 };
 
-const baseQueryGetBookRequest: object = { marketId: "" };
+function createBaseQueryGetBookRequest(): QueryGetBookRequest {
+  return { marketId: "" };
+}
 
 export const QueryGetBookRequest = {
-  encode(
-    message: QueryGetBookRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetBookRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -240,30 +220,30 @@ export const QueryGetBookRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetBookRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
+    const message = createBaseQueryGetBookRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetBookRequest {
-    const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return { marketId: isSet(object.marketId) ? String(object.marketId) : "" };
   },
 
   toJSON(message: QueryGetBookRequest): unknown {
@@ -272,80 +252,79 @@ export const QueryGetBookRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<QueryGetBookRequest>): QueryGetBookRequest {
+    return QueryGetBookRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryGetBookRequest>): QueryGetBookRequest {
-    const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
+    const message = createBaseQueryGetBookRequest();
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseQueryGetBookResponse: object = {};
+function createBaseQueryGetBookResponse(): QueryGetBookResponse {
+  return { book: undefined };
+}
 
 export const QueryGetBookResponse = {
-  encode(
-    message: QueryGetBookResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetBookResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.book !== undefined) {
       OrderBook.encode(message.book, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetBookResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetBookResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryGetBookResponse } as QueryGetBookResponse;
+    const message = createBaseQueryGetBookResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.book = OrderBook.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetBookResponse {
-    const message = { ...baseQueryGetBookResponse } as QueryGetBookResponse;
-    message.book =
-      object.book !== undefined && object.book !== null
-        ? OrderBook.fromJSON(object.book)
-        : undefined;
-    return message;
+    return { book: isSet(object.book) ? OrderBook.fromJSON(object.book) : undefined };
   },
 
   toJSON(message: QueryGetBookResponse): unknown {
     const obj: any = {};
-    message.book !== undefined &&
-      (obj.book = message.book ? OrderBook.toJSON(message.book) : undefined);
+    message.book !== undefined && (obj.book = message.book ? OrderBook.toJSON(message.book) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryGetBookResponse>): QueryGetBookResponse {
+    return QueryGetBookResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryGetBookResponse>): QueryGetBookResponse {
-    const message = { ...baseQueryGetBookResponse } as QueryGetBookResponse;
-    message.book =
-      object.book !== undefined && object.book !== null
-        ? OrderBook.fromPartial(object.book)
-        : undefined;
+    const message = createBaseQueryGetBookResponse();
+    message.book = (object.book !== undefined && object.book !== null) ? OrderBook.fromPartial(object.book) : undefined;
     return message;
   },
 };
 
-const baseQueryAllBookRequest: object = {};
+function createBaseQueryAllBookRequest(): QueryAllBookRequest {
+  return { pagination: undefined };
+}
 
 export const QueryAllBookRequest = {
-  encode(
-    message: QueryAllBookRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllBookRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
@@ -353,177 +332,167 @@ export const QueryAllBookRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllBookRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllBookRequest } as QueryAllBookRequest;
+    const message = createBaseQueryAllBookRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllBookRequest {
-    const message = { ...baseQueryAllBookRequest } as QueryAllBookRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
   },
 
   toJSON(message: QueryAllBookRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryAllBookRequest>): QueryAllBookRequest {
+    return QueryAllBookRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryAllBookRequest>): QueryAllBookRequest {
-    const message = { ...baseQueryAllBookRequest } as QueryAllBookRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+    const message = createBaseQueryAllBookRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllBookResponse: object = {};
+function createBaseQueryAllBookResponse(): QueryAllBookResponse {
+  return { books: [], pagination: undefined };
+}
 
 export const QueryAllBookResponse = {
-  encode(
-    message: QueryAllBookResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllBookResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.books) {
       OrderBook.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllBookResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllBookResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.books = [];
+    const message = createBaseQueryAllBookResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.books.push(OrderBook.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllBookResponse {
-    const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.books = (object.books ?? []).map((e: any) => OrderBook.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      books: Array.isArray(object?.books) ? object.books.map((e: any) => OrderBook.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllBookResponse): unknown {
     const obj: any = {};
     if (message.books) {
-      obj.books = message.books.map((e) =>
-        e ? OrderBook.toJSON(e) : undefined
-      );
+      obj.books = message.books.map((e) => e ? OrderBook.toJSON(e) : undefined);
     } else {
       obj.books = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<QueryAllBookResponse>): QueryAllBookResponse {
+    return QueryAllBookResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<QueryAllBookResponse>): QueryAllBookResponse {
-    const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.books = (object.books ?? []).map((e) => OrderBook.fromPartial(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+    const message = createBaseQueryAllBookResponse();
+    message.books = object.books?.map((e) => OrderBook.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryGetStopBookRequest: object = { marketId: "" };
+function createBaseQueryGetStopBookRequest(): QueryGetStopBookRequest {
+  return { marketId: "" };
+}
 
 export const QueryGetStopBookRequest = {
-  encode(
-    message: QueryGetStopBookRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetStopBookRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetStopBookRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetStopBookRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetStopBookRequest,
-    } as QueryGetStopBookRequest;
+    const message = createBaseQueryGetStopBookRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetStopBookRequest {
-    const message = {
-      ...baseQueryGetStopBookRequest,
-    } as QueryGetStopBookRequest;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return { marketId: isSet(object.marketId) ? String(object.marketId) : "" };
   },
 
   toJSON(message: QueryGetStopBookRequest): unknown {
@@ -532,240 +501,210 @@ export const QueryGetStopBookRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetStopBookRequest>
-  ): QueryGetStopBookRequest {
-    const message = {
-      ...baseQueryGetStopBookRequest,
-    } as QueryGetStopBookRequest;
+  create(base?: DeepPartial<QueryGetStopBookRequest>): QueryGetStopBookRequest {
+    return QueryGetStopBookRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetStopBookRequest>): QueryGetStopBookRequest {
+    const message = createBaseQueryGetStopBookRequest();
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseQueryGetStopBookResponse: object = {};
+function createBaseQueryGetStopBookResponse(): QueryGetStopBookResponse {
+  return { books: [] };
+}
 
 export const QueryGetStopBookResponse = {
-  encode(
-    message: QueryGetStopBookResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetStopBookResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.books) {
       StopBook.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetStopBookResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetStopBookResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetStopBookResponse,
-    } as QueryGetStopBookResponse;
-    message.books = [];
+    const message = createBaseQueryGetStopBookResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.books.push(StopBook.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetStopBookResponse {
-    const message = {
-      ...baseQueryGetStopBookResponse,
-    } as QueryGetStopBookResponse;
-    message.books = (object.books ?? []).map((e: any) => StopBook.fromJSON(e));
-    return message;
+    return { books: Array.isArray(object?.books) ? object.books.map((e: any) => StopBook.fromJSON(e)) : [] };
   },
 
   toJSON(message: QueryGetStopBookResponse): unknown {
     const obj: any = {};
     if (message.books) {
-      obj.books = message.books.map((e) =>
-        e ? StopBook.toJSON(e) : undefined
-      );
+      obj.books = message.books.map((e) => e ? StopBook.toJSON(e) : undefined);
     } else {
       obj.books = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetStopBookResponse>
-  ): QueryGetStopBookResponse {
-    const message = {
-      ...baseQueryGetStopBookResponse,
-    } as QueryGetStopBookResponse;
-    message.books = (object.books ?? []).map((e) => StopBook.fromPartial(e));
+  create(base?: DeepPartial<QueryGetStopBookResponse>): QueryGetStopBookResponse {
+    return QueryGetStopBookResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetStopBookResponse>): QueryGetStopBookResponse {
+    const message = createBaseQueryGetStopBookResponse();
+    message.books = object.books?.map((e) => StopBook.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseQueryAllStopBookRequest: object = {};
+function createBaseQueryAllStopBookRequest(): QueryAllStopBookRequest {
+  return { pagination: undefined };
+}
 
 export const QueryAllStopBookRequest = {
-  encode(
-    message: QueryAllStopBookRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllStopBookRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllStopBookRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllStopBookRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllStopBookRequest,
-    } as QueryAllStopBookRequest;
+    const message = createBaseQueryAllStopBookRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllStopBookRequest {
-    const message = {
-      ...baseQueryAllStopBookRequest,
-    } as QueryAllStopBookRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
   },
 
   toJSON(message: QueryAllStopBookRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllStopBookRequest>
-  ): QueryAllStopBookRequest {
-    const message = {
-      ...baseQueryAllStopBookRequest,
-    } as QueryAllStopBookRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryAllStopBookRequest>): QueryAllStopBookRequest {
+    return QueryAllStopBookRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllStopBookRequest>): QueryAllStopBookRequest {
+    const message = createBaseQueryAllStopBookRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllStopBookResponse: object = {};
+function createBaseQueryAllStopBookResponse(): QueryAllStopBookResponse {
+  return { books: [], pagination: undefined };
+}
 
 export const QueryAllStopBookResponse = {
-  encode(
-    message: QueryAllStopBookResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllStopBookResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.books) {
       StopBook.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllStopBookResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllStopBookResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllStopBookResponse,
-    } as QueryAllStopBookResponse;
-    message.books = [];
+    const message = createBaseQueryAllStopBookResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.books.push(StopBook.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllStopBookResponse {
-    const message = {
-      ...baseQueryAllStopBookResponse,
-    } as QueryAllStopBookResponse;
-    message.books = (object.books ?? []).map((e: any) => StopBook.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      books: Array.isArray(object?.books) ? object.books.map((e: any) => StopBook.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllStopBookResponse): unknown {
     const obj: any = {};
     if (message.books) {
-      obj.books = message.books.map((e) =>
-        e ? StopBook.toJSON(e) : undefined
-      );
+      obj.books = message.books.map((e) => e ? StopBook.toJSON(e) : undefined);
     } else {
       obj.books = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllStopBookResponse>
-  ): QueryAllStopBookResponse {
-    const message = {
-      ...baseQueryAllStopBookResponse,
-    } as QueryAllStopBookResponse;
-    message.books = (object.books ?? []).map((e) => StopBook.fromPartial(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryAllStopBookResponse>): QueryAllStopBookResponse {
+    return QueryAllStopBookResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllStopBookResponse>): QueryAllStopBookResponse {
+    const message = createBaseQueryAllStopBookResponse();
+    message.books = object.books?.map((e) => StopBook.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
@@ -773,9 +712,7 @@ export const QueryAllStopBookResponse = {
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get impact price for a market */
-  ImpactPrice(
-    request: QueryImpactPriceRequest
-  ): Promise<QueryImpactPriceResponse>;
+  ImpactPrice(request: QueryImpactPriceRequest): Promise<QueryImpactPriceResponse>;
   /** Get combined order book for a market */
   CombinedBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
   /** Get concrete book for a market */
@@ -787,14 +724,14 @@ export interface Query {
   /** Get combined order books for all markets */
   CombinedBookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse>;
   /** Get all stop order book for a market */
-  StopBookAll(
-    request: QueryAllStopBookRequest
-  ): Promise<QueryAllStopBookResponse>;
+  StopBookAll(request: QueryAllStopBookRequest): Promise<QueryAllStopBookResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.book.Query";
     this.rpc = rpc;
     this.ImpactPrice = this.ImpactPrice.bind(this);
     this.CombinedBook = this.CombinedBook.bind(this);
@@ -804,126 +741,66 @@ export class QueryClientImpl implements Query {
     this.CombinedBookAll = this.CombinedBookAll.bind(this);
     this.StopBookAll = this.StopBookAll.bind(this);
   }
-  ImpactPrice(
-    request: QueryImpactPriceRequest
-  ): Promise<QueryImpactPriceResponse> {
+  ImpactPrice(request: QueryImpactPriceRequest): Promise<QueryImpactPriceResponse> {
     const data = QueryImpactPriceRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "ImpactPrice",
-      data
-    );
-    return promise.then((data) =>
-      QueryImpactPriceResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "ImpactPrice", data);
+    return promise.then((data) => QueryImpactPriceResponse.decode(_m0.Reader.create(data)));
   }
 
   CombinedBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
     const data = QueryGetBookRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "CombinedBook",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetBookResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "CombinedBook", data);
+    return promise.then((data) => QueryGetBookResponse.decode(_m0.Reader.create(data)));
   }
 
   ConcreteBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
     const data = QueryGetBookRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "ConcreteBook",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetBookResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "ConcreteBook", data);
+    return promise.then((data) => QueryGetBookResponse.decode(_m0.Reader.create(data)));
   }
 
   VirtualBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
     const data = QueryGetBookRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "VirtualBook",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetBookResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "VirtualBook", data);
+    return promise.then((data) => QueryGetBookResponse.decode(_m0.Reader.create(data)));
   }
 
-  StopBook(
-    request: QueryGetStopBookRequest
-  ): Promise<QueryGetStopBookResponse> {
+  StopBook(request: QueryGetStopBookRequest): Promise<QueryGetStopBookResponse> {
     const data = QueryGetStopBookRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "StopBook",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetStopBookResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "StopBook", data);
+    return promise.then((data) => QueryGetStopBookResponse.decode(_m0.Reader.create(data)));
   }
 
   CombinedBookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse> {
     const data = QueryAllBookRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "CombinedBookAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllBookResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "CombinedBookAll", data);
+    return promise.then((data) => QueryAllBookResponse.decode(_m0.Reader.create(data)));
   }
 
-  StopBookAll(
-    request: QueryAllStopBookRequest
-  ): Promise<QueryAllStopBookResponse> {
+  StopBookAll(request: QueryAllStopBookRequest): Promise<QueryAllStopBookResponse> {
     const data = QueryAllStopBookRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "StopBookAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllStopBookResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "StopBookAll", data);
+    return promise.then((data) => QueryAllStopBookResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

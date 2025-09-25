@@ -85,23 +85,24 @@ export interface ParamsToUpdate {
   cdpLiquidationPaused?: boolean;
 }
 
-const baseParams: object = {
-  interestFee: "",
-  liquidationFee: "",
-  stablecoinMintCap: "",
-  completeLiquidationThreshold: "",
-  minimumCloseFactor: "",
-  smallLiquidationSize: "",
-  cdpPaused: false,
-  stablecoinInterestRateAdjusterCoefficient: "",
-  cdpLiquidationPaused: false,
-};
+function createBaseParams(): Params {
+  return {
+    interestFee: "",
+    liquidationFee: "",
+    stablecoinMintCap: "",
+    completeLiquidationThreshold: "",
+    minimumCloseFactor: "",
+    smallLiquidationSize: "",
+    stalePriceGracePeriod: undefined,
+    cdpPaused: false,
+    stablecoinInterestRateEpoch: undefined,
+    stablecoinInterestRateAdjusterCoefficient: "",
+    cdpLiquidationPaused: false,
+  };
+}
 
 export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.interestFee !== "") {
       writer.uint32(10).string(message.interestFee);
     }
@@ -121,24 +122,16 @@ export const Params = {
       writer.uint32(58).string(message.smallLiquidationSize);
     }
     if (message.stalePriceGracePeriod !== undefined) {
-      Duration.encode(
-        message.stalePriceGracePeriod,
-        writer.uint32(66).fork()
-      ).ldelim();
+      Duration.encode(message.stalePriceGracePeriod, writer.uint32(66).fork()).ldelim();
     }
     if (message.cdpPaused === true) {
       writer.uint32(72).bool(message.cdpPaused);
     }
     if (message.stablecoinInterestRateEpoch !== undefined) {
-      Duration.encode(
-        message.stablecoinInterestRateEpoch,
-        writer.uint32(82).fork()
-      ).ldelim();
+      Duration.encode(message.stablecoinInterestRateEpoch, writer.uint32(82).fork()).ldelim();
     }
     if (message.stablecoinInterestRateAdjusterCoefficient !== "") {
-      writer
-        .uint32(90)
-        .string(message.stablecoinInterestRateAdjusterCoefficient);
+      writer.uint32(90).string(message.stablecoinInterestRateAdjusterCoefficient);
     }
     if (message.cdpLiquidationPaused === true) {
       writer.uint32(96).bool(message.cdpLiquidationPaused);
@@ -147,189 +140,190 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.interestFee = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.liquidationFee = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.stablecoinMintCap = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.completeLiquidationThreshold = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.minimumCloseFactor = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.smallLiquidationSize = reader.string();
-          break;
+          continue;
         case 8:
-          message.stalePriceGracePeriod = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 66) {
+            break;
+          }
+
+          message.stalePriceGracePeriod = Duration.decode(reader, reader.uint32());
+          continue;
         case 9:
+          if (tag !== 72) {
+            break;
+          }
+
           message.cdpPaused = reader.bool();
-          break;
+          continue;
         case 10:
-          message.stablecoinInterestRateEpoch = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 82) {
+            break;
+          }
+
+          message.stablecoinInterestRateEpoch = Duration.decode(reader, reader.uint32());
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.stablecoinInterestRateAdjusterCoefficient = reader.string();
-          break;
+          continue;
         case 12:
+          if (tag !== 96) {
+            break;
+          }
+
           message.cdpLiquidationPaused = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.interestFee =
-      object.interestFee !== undefined && object.interestFee !== null
-        ? String(object.interestFee)
-        : "";
-    message.liquidationFee =
-      object.liquidationFee !== undefined && object.liquidationFee !== null
-        ? String(object.liquidationFee)
-        : "";
-    message.stablecoinMintCap =
-      object.stablecoinMintCap !== undefined &&
-      object.stablecoinMintCap !== null
-        ? String(object.stablecoinMintCap)
-        : "";
-    message.completeLiquidationThreshold =
-      object.completeLiquidationThreshold !== undefined &&
-      object.completeLiquidationThreshold !== null
+    return {
+      interestFee: isSet(object.interestFee) ? String(object.interestFee) : "",
+      liquidationFee: isSet(object.liquidationFee) ? String(object.liquidationFee) : "",
+      stablecoinMintCap: isSet(object.stablecoinMintCap) ? String(object.stablecoinMintCap) : "",
+      completeLiquidationThreshold: isSet(object.completeLiquidationThreshold)
         ? String(object.completeLiquidationThreshold)
-        : "";
-    message.minimumCloseFactor =
-      object.minimumCloseFactor !== undefined &&
-      object.minimumCloseFactor !== null
-        ? String(object.minimumCloseFactor)
-        : "";
-    message.smallLiquidationSize =
-      object.smallLiquidationSize !== undefined &&
-      object.smallLiquidationSize !== null
-        ? String(object.smallLiquidationSize)
-        : "";
-    message.stalePriceGracePeriod =
-      object.stalePriceGracePeriod !== undefined &&
-      object.stalePriceGracePeriod !== null
+        : "",
+      minimumCloseFactor: isSet(object.minimumCloseFactor) ? String(object.minimumCloseFactor) : "",
+      smallLiquidationSize: isSet(object.smallLiquidationSize) ? String(object.smallLiquidationSize) : "",
+      stalePriceGracePeriod: isSet(object.stalePriceGracePeriod)
         ? Duration.fromJSON(object.stalePriceGracePeriod)
-        : undefined;
-    message.cdpPaused =
-      object.cdpPaused !== undefined && object.cdpPaused !== null
-        ? Boolean(object.cdpPaused)
-        : false;
-    message.stablecoinInterestRateEpoch =
-      object.stablecoinInterestRateEpoch !== undefined &&
-      object.stablecoinInterestRateEpoch !== null
+        : undefined,
+      cdpPaused: isSet(object.cdpPaused) ? Boolean(object.cdpPaused) : false,
+      stablecoinInterestRateEpoch: isSet(object.stablecoinInterestRateEpoch)
         ? Duration.fromJSON(object.stablecoinInterestRateEpoch)
-        : undefined;
-    message.stablecoinInterestRateAdjusterCoefficient =
-      object.stablecoinInterestRateAdjusterCoefficient !== undefined &&
-      object.stablecoinInterestRateAdjusterCoefficient !== null
+        : undefined,
+      stablecoinInterestRateAdjusterCoefficient: isSet(object.stablecoinInterestRateAdjusterCoefficient)
         ? String(object.stablecoinInterestRateAdjusterCoefficient)
-        : "";
-    message.cdpLiquidationPaused =
-      object.cdpLiquidationPaused !== undefined &&
-      object.cdpLiquidationPaused !== null
-        ? Boolean(object.cdpLiquidationPaused)
-        : false;
-    return message;
+        : "",
+      cdpLiquidationPaused: isSet(object.cdpLiquidationPaused) ? Boolean(object.cdpLiquidationPaused) : false,
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.interestFee !== undefined &&
-      (obj.interestFee = message.interestFee);
-    message.liquidationFee !== undefined &&
-      (obj.liquidationFee = message.liquidationFee);
-    message.stablecoinMintCap !== undefined &&
-      (obj.stablecoinMintCap = message.stablecoinMintCap);
+    message.interestFee !== undefined && (obj.interestFee = message.interestFee);
+    message.liquidationFee !== undefined && (obj.liquidationFee = message.liquidationFee);
+    message.stablecoinMintCap !== undefined && (obj.stablecoinMintCap = message.stablecoinMintCap);
     message.completeLiquidationThreshold !== undefined &&
       (obj.completeLiquidationThreshold = message.completeLiquidationThreshold);
-    message.minimumCloseFactor !== undefined &&
-      (obj.minimumCloseFactor = message.minimumCloseFactor);
-    message.smallLiquidationSize !== undefined &&
-      (obj.smallLiquidationSize = message.smallLiquidationSize);
-    message.stalePriceGracePeriod !== undefined &&
-      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
-        ? Duration.toJSON(message.stalePriceGracePeriod)
-        : undefined);
+    message.minimumCloseFactor !== undefined && (obj.minimumCloseFactor = message.minimumCloseFactor);
+    message.smallLiquidationSize !== undefined && (obj.smallLiquidationSize = message.smallLiquidationSize);
+    message.stalePriceGracePeriod !== undefined && (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
+      ? Duration.toJSON(message.stalePriceGracePeriod)
+      : undefined);
     message.cdpPaused !== undefined && (obj.cdpPaused = message.cdpPaused);
     message.stablecoinInterestRateEpoch !== undefined &&
       (obj.stablecoinInterestRateEpoch = message.stablecoinInterestRateEpoch
         ? Duration.toJSON(message.stablecoinInterestRateEpoch)
         : undefined);
     message.stablecoinInterestRateAdjusterCoefficient !== undefined &&
-      (obj.stablecoinInterestRateAdjusterCoefficient =
-        message.stablecoinInterestRateAdjusterCoefficient);
-    message.cdpLiquidationPaused !== undefined &&
-      (obj.cdpLiquidationPaused = message.cdpLiquidationPaused);
+      (obj.stablecoinInterestRateAdjusterCoefficient = message.stablecoinInterestRateAdjusterCoefficient);
+    message.cdpLiquidationPaused !== undefined && (obj.cdpLiquidationPaused = message.cdpLiquidationPaused);
     return obj;
   },
 
+  create(base?: DeepPartial<Params>): Params {
+    return Params.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
+    const message = createBaseParams();
     message.interestFee = object.interestFee ?? "";
     message.liquidationFee = object.liquidationFee ?? "";
     message.stablecoinMintCap = object.stablecoinMintCap ?? "";
-    message.completeLiquidationThreshold =
-      object.completeLiquidationThreshold ?? "";
+    message.completeLiquidationThreshold = object.completeLiquidationThreshold ?? "";
     message.minimumCloseFactor = object.minimumCloseFactor ?? "";
     message.smallLiquidationSize = object.smallLiquidationSize ?? "";
     message.stalePriceGracePeriod =
-      object.stalePriceGracePeriod !== undefined &&
-      object.stalePriceGracePeriod !== null
+      (object.stalePriceGracePeriod !== undefined && object.stalePriceGracePeriod !== null)
         ? Duration.fromPartial(object.stalePriceGracePeriod)
         : undefined;
     message.cdpPaused = object.cdpPaused ?? false;
     message.stablecoinInterestRateEpoch =
-      object.stablecoinInterestRateEpoch !== undefined &&
-      object.stablecoinInterestRateEpoch !== null
+      (object.stablecoinInterestRateEpoch !== undefined && object.stablecoinInterestRateEpoch !== null)
         ? Duration.fromPartial(object.stablecoinInterestRateEpoch)
         : undefined;
-    message.stablecoinInterestRateAdjusterCoefficient =
-      object.stablecoinInterestRateAdjusterCoefficient ?? "";
+    message.stablecoinInterestRateAdjusterCoefficient = object.stablecoinInterestRateAdjusterCoefficient ?? "";
     message.cdpLiquidationPaused = object.cdpLiquidationPaused ?? false;
     return message;
   },
 };
 
-const baseParamsToUpdate: object = {
-  interestFee: "",
-  liquidationFee: "",
-  stablecoinMintCap: "",
-  completeLiquidationThreshold: "",
-  minimumCloseFactor: "",
-  smallLiquidationSize: "",
-  stablecoinInterestRateAdjusterCoefficient: "",
-};
+function createBaseParamsToUpdate(): ParamsToUpdate {
+  return {
+    interestFee: "",
+    liquidationFee: "",
+    stablecoinMintCap: "",
+    completeLiquidationThreshold: "",
+    minimumCloseFactor: "",
+    smallLiquidationSize: "",
+    stalePriceGracePeriod: undefined,
+    cdpPaused: undefined,
+    stablecoinInterestRateEpoch: undefined,
+    stablecoinInterestRateAdjusterCoefficient: "",
+    cdpLiquidationPaused: undefined,
+  };
+}
 
 export const ParamsToUpdate = {
-  encode(
-    message: ParamsToUpdate,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ParamsToUpdate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.interestFee !== "") {
       writer.uint32(10).string(message.interestFee);
     }
@@ -349,230 +343,203 @@ export const ParamsToUpdate = {
       writer.uint32(58).string(message.smallLiquidationSize);
     }
     if (message.stalePriceGracePeriod !== undefined) {
-      Duration.encode(
-        message.stalePriceGracePeriod,
-        writer.uint32(66).fork()
-      ).ldelim();
+      Duration.encode(message.stalePriceGracePeriod, writer.uint32(66).fork()).ldelim();
     }
     if (message.cdpPaused !== undefined) {
-      BoolValue.encode(
-        { value: message.cdpPaused! },
-        writer.uint32(74).fork()
-      ).ldelim();
+      BoolValue.encode({ value: message.cdpPaused! }, writer.uint32(74).fork()).ldelim();
     }
     if (message.stablecoinInterestRateEpoch !== undefined) {
-      Duration.encode(
-        message.stablecoinInterestRateEpoch,
-        writer.uint32(82).fork()
-      ).ldelim();
+      Duration.encode(message.stablecoinInterestRateEpoch, writer.uint32(82).fork()).ldelim();
     }
     if (message.stablecoinInterestRateAdjusterCoefficient !== "") {
-      writer
-        .uint32(90)
-        .string(message.stablecoinInterestRateAdjusterCoefficient);
+      writer.uint32(90).string(message.stablecoinInterestRateAdjusterCoefficient);
     }
     if (message.cdpLiquidationPaused !== undefined) {
-      BoolValue.encode(
-        { value: message.cdpLiquidationPaused! },
-        writer.uint32(98).fork()
-      ).ldelim();
+      BoolValue.encode({ value: message.cdpLiquidationPaused! }, writer.uint32(98).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ParamsToUpdate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    const message = createBaseParamsToUpdate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.interestFee = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.liquidationFee = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.stablecoinMintCap = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.completeLiquidationThreshold = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.minimumCloseFactor = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.smallLiquidationSize = reader.string();
-          break;
+          continue;
         case 8:
-          message.stalePriceGracePeriod = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 66) {
+            break;
+          }
+
+          message.stalePriceGracePeriod = Duration.decode(reader, reader.uint32());
+          continue;
         case 9:
+          if (tag !== 74) {
+            break;
+          }
+
           message.cdpPaused = BoolValue.decode(reader, reader.uint32()).value;
-          break;
+          continue;
         case 10:
-          message.stablecoinInterestRateEpoch = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 82) {
+            break;
+          }
+
+          message.stablecoinInterestRateEpoch = Duration.decode(reader, reader.uint32());
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.stablecoinInterestRateAdjusterCoefficient = reader.string();
-          break;
+          continue;
         case 12:
-          message.cdpLiquidationPaused = BoolValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 98) {
+            break;
+          }
+
+          message.cdpLiquidationPaused = BoolValue.decode(reader, reader.uint32()).value;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.interestFee =
-      object.interestFee !== undefined && object.interestFee !== null
-        ? String(object.interestFee)
-        : "";
-    message.liquidationFee =
-      object.liquidationFee !== undefined && object.liquidationFee !== null
-        ? String(object.liquidationFee)
-        : "";
-    message.stablecoinMintCap =
-      object.stablecoinMintCap !== undefined &&
-      object.stablecoinMintCap !== null
-        ? String(object.stablecoinMintCap)
-        : "";
-    message.completeLiquidationThreshold =
-      object.completeLiquidationThreshold !== undefined &&
-      object.completeLiquidationThreshold !== null
+    return {
+      interestFee: isSet(object.interestFee) ? String(object.interestFee) : "",
+      liquidationFee: isSet(object.liquidationFee) ? String(object.liquidationFee) : "",
+      stablecoinMintCap: isSet(object.stablecoinMintCap) ? String(object.stablecoinMintCap) : "",
+      completeLiquidationThreshold: isSet(object.completeLiquidationThreshold)
         ? String(object.completeLiquidationThreshold)
-        : "";
-    message.minimumCloseFactor =
-      object.minimumCloseFactor !== undefined &&
-      object.minimumCloseFactor !== null
-        ? String(object.minimumCloseFactor)
-        : "";
-    message.smallLiquidationSize =
-      object.smallLiquidationSize !== undefined &&
-      object.smallLiquidationSize !== null
-        ? String(object.smallLiquidationSize)
-        : "";
-    message.stalePriceGracePeriod =
-      object.stalePriceGracePeriod !== undefined &&
-      object.stalePriceGracePeriod !== null
+        : "",
+      minimumCloseFactor: isSet(object.minimumCloseFactor) ? String(object.minimumCloseFactor) : "",
+      smallLiquidationSize: isSet(object.smallLiquidationSize) ? String(object.smallLiquidationSize) : "",
+      stalePriceGracePeriod: isSet(object.stalePriceGracePeriod)
         ? Duration.fromJSON(object.stalePriceGracePeriod)
-        : undefined;
-    message.cdpPaused =
-      object.cdpPaused !== undefined && object.cdpPaused !== null
-        ? Boolean(object.cdpPaused)
-        : undefined;
-    message.stablecoinInterestRateEpoch =
-      object.stablecoinInterestRateEpoch !== undefined &&
-      object.stablecoinInterestRateEpoch !== null
+        : undefined,
+      cdpPaused: isSet(object.cdpPaused) ? Boolean(object.cdpPaused) : undefined,
+      stablecoinInterestRateEpoch: isSet(object.stablecoinInterestRateEpoch)
         ? Duration.fromJSON(object.stablecoinInterestRateEpoch)
-        : undefined;
-    message.stablecoinInterestRateAdjusterCoefficient =
-      object.stablecoinInterestRateAdjusterCoefficient !== undefined &&
-      object.stablecoinInterestRateAdjusterCoefficient !== null
+        : undefined,
+      stablecoinInterestRateAdjusterCoefficient: isSet(object.stablecoinInterestRateAdjusterCoefficient)
         ? String(object.stablecoinInterestRateAdjusterCoefficient)
-        : "";
-    message.cdpLiquidationPaused =
-      object.cdpLiquidationPaused !== undefined &&
-      object.cdpLiquidationPaused !== null
-        ? Boolean(object.cdpLiquidationPaused)
-        : undefined;
-    return message;
+        : "",
+      cdpLiquidationPaused: isSet(object.cdpLiquidationPaused) ? Boolean(object.cdpLiquidationPaused) : undefined,
+    };
   },
 
   toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
-    message.interestFee !== undefined &&
-      (obj.interestFee = message.interestFee);
-    message.liquidationFee !== undefined &&
-      (obj.liquidationFee = message.liquidationFee);
-    message.stablecoinMintCap !== undefined &&
-      (obj.stablecoinMintCap = message.stablecoinMintCap);
+    message.interestFee !== undefined && (obj.interestFee = message.interestFee);
+    message.liquidationFee !== undefined && (obj.liquidationFee = message.liquidationFee);
+    message.stablecoinMintCap !== undefined && (obj.stablecoinMintCap = message.stablecoinMintCap);
     message.completeLiquidationThreshold !== undefined &&
       (obj.completeLiquidationThreshold = message.completeLiquidationThreshold);
-    message.minimumCloseFactor !== undefined &&
-      (obj.minimumCloseFactor = message.minimumCloseFactor);
-    message.smallLiquidationSize !== undefined &&
-      (obj.smallLiquidationSize = message.smallLiquidationSize);
-    message.stalePriceGracePeriod !== undefined &&
-      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
-        ? Duration.toJSON(message.stalePriceGracePeriod)
-        : undefined);
+    message.minimumCloseFactor !== undefined && (obj.minimumCloseFactor = message.minimumCloseFactor);
+    message.smallLiquidationSize !== undefined && (obj.smallLiquidationSize = message.smallLiquidationSize);
+    message.stalePriceGracePeriod !== undefined && (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
+      ? Duration.toJSON(message.stalePriceGracePeriod)
+      : undefined);
     message.cdpPaused !== undefined && (obj.cdpPaused = message.cdpPaused);
     message.stablecoinInterestRateEpoch !== undefined &&
       (obj.stablecoinInterestRateEpoch = message.stablecoinInterestRateEpoch
         ? Duration.toJSON(message.stablecoinInterestRateEpoch)
         : undefined);
     message.stablecoinInterestRateAdjusterCoefficient !== undefined &&
-      (obj.stablecoinInterestRateAdjusterCoefficient =
-        message.stablecoinInterestRateAdjusterCoefficient);
-    message.cdpLiquidationPaused !== undefined &&
-      (obj.cdpLiquidationPaused = message.cdpLiquidationPaused);
+      (obj.stablecoinInterestRateAdjusterCoefficient = message.stablecoinInterestRateAdjusterCoefficient);
+    message.cdpLiquidationPaused !== undefined && (obj.cdpLiquidationPaused = message.cdpLiquidationPaused);
     return obj;
   },
 
+  create(base?: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
+    return ParamsToUpdate.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
-    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    const message = createBaseParamsToUpdate();
     message.interestFee = object.interestFee ?? "";
     message.liquidationFee = object.liquidationFee ?? "";
     message.stablecoinMintCap = object.stablecoinMintCap ?? "";
-    message.completeLiquidationThreshold =
-      object.completeLiquidationThreshold ?? "";
+    message.completeLiquidationThreshold = object.completeLiquidationThreshold ?? "";
     message.minimumCloseFactor = object.minimumCloseFactor ?? "";
     message.smallLiquidationSize = object.smallLiquidationSize ?? "";
     message.stalePriceGracePeriod =
-      object.stalePriceGracePeriod !== undefined &&
-      object.stalePriceGracePeriod !== null
+      (object.stalePriceGracePeriod !== undefined && object.stalePriceGracePeriod !== null)
         ? Duration.fromPartial(object.stalePriceGracePeriod)
         : undefined;
     message.cdpPaused = object.cdpPaused ?? undefined;
     message.stablecoinInterestRateEpoch =
-      object.stablecoinInterestRateEpoch !== undefined &&
-      object.stablecoinInterestRateEpoch !== null
+      (object.stablecoinInterestRateEpoch !== undefined && object.stablecoinInterestRateEpoch !== null)
         ? Duration.fromPartial(object.stablecoinInterestRateEpoch)
         : undefined;
-    message.stablecoinInterestRateAdjusterCoefficient =
-      object.stablecoinInterestRateAdjusterCoefficient ?? "";
+    message.stablecoinInterestRateAdjusterCoefficient = object.stablecoinInterestRateAdjusterCoefficient ?? "";
     message.cdpLiquidationPaused = object.cdpLiquidationPaused ?? undefined;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

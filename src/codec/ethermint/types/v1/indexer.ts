@@ -31,21 +31,20 @@ export interface TxResult {
   cumulativeGasUsed: Long;
 }
 
-const baseTxResult: object = {
-  height: Long.ZERO,
-  txIndex: 0,
-  msgIndex: 0,
-  ethTxIndex: 0,
-  failed: false,
-  gasUsed: Long.UZERO,
-  cumulativeGasUsed: Long.UZERO,
-};
+function createBaseTxResult(): TxResult {
+  return {
+    height: Long.ZERO,
+    txIndex: 0,
+    msgIndex: 0,
+    ethTxIndex: 0,
+    failed: false,
+    gasUsed: Long.UZERO,
+    cumulativeGasUsed: Long.UZERO,
+  };
+}
 
 export const TxResult = {
-  encode(
-    message: TxResult,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: TxResult, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.height.isZero()) {
       writer.uint32(8).int64(message.height);
     }
@@ -71,136 +70,131 @@ export const TxResult = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): TxResult {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTxResult } as TxResult;
+    const message = createBaseTxResult();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.height = reader.int64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.txIndex = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.msgIndex = reader.uint32();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.ethTxIndex = reader.int32();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.failed = reader.bool();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.gasUsed = reader.uint64() as Long;
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.cumulativeGasUsed = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): TxResult {
-    const message = { ...baseTxResult } as TxResult;
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromString(object.height)
-        : Long.ZERO;
-    message.txIndex =
-      object.txIndex !== undefined && object.txIndex !== null
-        ? Number(object.txIndex)
-        : 0;
-    message.msgIndex =
-      object.msgIndex !== undefined && object.msgIndex !== null
-        ? Number(object.msgIndex)
-        : 0;
-    message.ethTxIndex =
-      object.ethTxIndex !== undefined && object.ethTxIndex !== null
-        ? Number(object.ethTxIndex)
-        : 0;
-    message.failed =
-      object.failed !== undefined && object.failed !== null
-        ? Boolean(object.failed)
-        : false;
-    message.gasUsed =
-      object.gasUsed !== undefined && object.gasUsed !== null
-        ? Long.fromString(object.gasUsed)
-        : Long.UZERO;
-    message.cumulativeGasUsed =
-      object.cumulativeGasUsed !== undefined &&
-      object.cumulativeGasUsed !== null
-        ? Long.fromString(object.cumulativeGasUsed)
-        : Long.UZERO;
-    return message;
+    return {
+      height: isSet(object.height) ? Long.fromValue(object.height) : Long.ZERO,
+      txIndex: isSet(object.txIndex) ? Number(object.txIndex) : 0,
+      msgIndex: isSet(object.msgIndex) ? Number(object.msgIndex) : 0,
+      ethTxIndex: isSet(object.ethTxIndex) ? Number(object.ethTxIndex) : 0,
+      failed: isSet(object.failed) ? Boolean(object.failed) : false,
+      gasUsed: isSet(object.gasUsed) ? Long.fromValue(object.gasUsed) : Long.UZERO,
+      cumulativeGasUsed: isSet(object.cumulativeGasUsed) ? Long.fromValue(object.cumulativeGasUsed) : Long.UZERO,
+    };
   },
 
   toJSON(message: TxResult): unknown {
     const obj: any = {};
-    message.height !== undefined &&
-      (obj.height = (message.height || Long.ZERO).toString());
-    message.txIndex !== undefined && (obj.txIndex = message.txIndex);
-    message.msgIndex !== undefined && (obj.msgIndex = message.msgIndex);
-    message.ethTxIndex !== undefined && (obj.ethTxIndex = message.ethTxIndex);
+    message.height !== undefined && (obj.height = (message.height || Long.ZERO).toString());
+    message.txIndex !== undefined && (obj.txIndex = Math.round(message.txIndex));
+    message.msgIndex !== undefined && (obj.msgIndex = Math.round(message.msgIndex));
+    message.ethTxIndex !== undefined && (obj.ethTxIndex = Math.round(message.ethTxIndex));
     message.failed !== undefined && (obj.failed = message.failed);
-    message.gasUsed !== undefined &&
-      (obj.gasUsed = (message.gasUsed || Long.UZERO).toString());
+    message.gasUsed !== undefined && (obj.gasUsed = (message.gasUsed || Long.UZERO).toString());
     message.cumulativeGasUsed !== undefined &&
-      (obj.cumulativeGasUsed = (
-        message.cumulativeGasUsed || Long.UZERO
-      ).toString());
+      (obj.cumulativeGasUsed = (message.cumulativeGasUsed || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<TxResult>): TxResult {
+    return TxResult.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<TxResult>): TxResult {
-    const message = { ...baseTxResult } as TxResult;
-    message.height =
-      object.height !== undefined && object.height !== null
-        ? Long.fromValue(object.height)
-        : Long.ZERO;
+    const message = createBaseTxResult();
+    message.height = (object.height !== undefined && object.height !== null)
+      ? Long.fromValue(object.height)
+      : Long.ZERO;
     message.txIndex = object.txIndex ?? 0;
     message.msgIndex = object.msgIndex ?? 0;
     message.ethTxIndex = object.ethTxIndex ?? 0;
     message.failed = object.failed ?? false;
-    message.gasUsed =
-      object.gasUsed !== undefined && object.gasUsed !== null
-        ? Long.fromValue(object.gasUsed)
-        : Long.UZERO;
-    message.cumulativeGasUsed =
-      object.cumulativeGasUsed !== undefined &&
-      object.cumulativeGasUsed !== null
-        ? Long.fromValue(object.cumulativeGasUsed)
-        : Long.UZERO;
+    message.gasUsed = (object.gasUsed !== undefined && object.gasUsed !== null)
+      ? Long.fromValue(object.gasUsed)
+      : Long.UZERO;
+    message.cumulativeGasUsed = (object.cumulativeGasUsed !== undefined && object.cumulativeGasUsed !== null)
+      ? Long.fromValue(object.cumulativeGasUsed)
+      : Long.UZERO;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

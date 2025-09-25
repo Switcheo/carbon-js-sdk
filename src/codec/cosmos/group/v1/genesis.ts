@@ -1,13 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  GroupInfo,
-  GroupMember,
-  GroupPolicyInfo,
-  Proposal,
-  Vote,
-} from "./types";
+import { GroupInfo, GroupMember, GroupPolicyInfo, Proposal, Vote } from "./types";
 
 export const protobufPackage = "cosmos.group.v1";
 
@@ -42,17 +36,21 @@ export interface GenesisState {
   votes: Vote[];
 }
 
-const baseGenesisState: object = {
-  groupSeq: Long.UZERO,
-  groupPolicySeq: Long.UZERO,
-  proposalSeq: Long.UZERO,
-};
+function createBaseGenesisState(): GenesisState {
+  return {
+    groupSeq: Long.UZERO,
+    groups: [],
+    groupMembers: [],
+    groupPolicySeq: Long.UZERO,
+    groupPolicies: [],
+    proposalSeq: Long.UZERO,
+    proposals: [],
+    votes: [],
+  };
+}
 
 export const GenesisState = {
-  encode(
-    message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.groupSeq.isZero()) {
       writer.uint32(8).uint64(message.groupSeq);
     }
@@ -81,177 +79,164 @@ export const GenesisState = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
-    message.groups = [];
-    message.groupMembers = [];
-    message.groupPolicies = [];
-    message.proposals = [];
-    message.votes = [];
+    const message = createBaseGenesisState();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.groupSeq = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.groups.push(GroupInfo.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 3:
-          message.groupMembers.push(
-            GroupMember.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.groupMembers.push(GroupMember.decode(reader, reader.uint32()));
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.groupPolicySeq = reader.uint64() as Long;
-          break;
+          continue;
         case 5:
-          message.groupPolicies.push(
-            GroupPolicyInfo.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 42) {
+            break;
+          }
+
+          message.groupPolicies.push(GroupPolicyInfo.decode(reader, reader.uint32()));
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.proposalSeq = reader.uint64() as Long;
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.proposals.push(Proposal.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.votes.push(Vote.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.groupSeq =
-      object.groupSeq !== undefined && object.groupSeq !== null
-        ? Long.fromString(object.groupSeq)
-        : Long.UZERO;
-    message.groups = (object.groups ?? []).map((e: any) =>
-      GroupInfo.fromJSON(e)
-    );
-    message.groupMembers = (object.groupMembers ?? []).map((e: any) =>
-      GroupMember.fromJSON(e)
-    );
-    message.groupPolicySeq =
-      object.groupPolicySeq !== undefined && object.groupPolicySeq !== null
-        ? Long.fromString(object.groupPolicySeq)
-        : Long.UZERO;
-    message.groupPolicies = (object.groupPolicies ?? []).map((e: any) =>
-      GroupPolicyInfo.fromJSON(e)
-    );
-    message.proposalSeq =
-      object.proposalSeq !== undefined && object.proposalSeq !== null
-        ? Long.fromString(object.proposalSeq)
-        : Long.UZERO;
-    message.proposals = (object.proposals ?? []).map((e: any) =>
-      Proposal.fromJSON(e)
-    );
-    message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
-    return message;
+    return {
+      groupSeq: isSet(object.groupSeq) ? Long.fromValue(object.groupSeq) : Long.UZERO,
+      groups: Array.isArray(object?.groups) ? object.groups.map((e: any) => GroupInfo.fromJSON(e)) : [],
+      groupMembers: Array.isArray(object?.groupMembers)
+        ? object.groupMembers.map((e: any) => GroupMember.fromJSON(e))
+        : [],
+      groupPolicySeq: isSet(object.groupPolicySeq) ? Long.fromValue(object.groupPolicySeq) : Long.UZERO,
+      groupPolicies: Array.isArray(object?.groupPolicies)
+        ? object.groupPolicies.map((e: any) => GroupPolicyInfo.fromJSON(e))
+        : [],
+      proposalSeq: isSet(object.proposalSeq) ? Long.fromValue(object.proposalSeq) : Long.UZERO,
+      proposals: Array.isArray(object?.proposals) ? object.proposals.map((e: any) => Proposal.fromJSON(e)) : [],
+      votes: Array.isArray(object?.votes) ? object.votes.map((e: any) => Vote.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    message.groupSeq !== undefined &&
-      (obj.groupSeq = (message.groupSeq || Long.UZERO).toString());
+    message.groupSeq !== undefined && (obj.groupSeq = (message.groupSeq || Long.UZERO).toString());
     if (message.groups) {
-      obj.groups = message.groups.map((e) =>
-        e ? GroupInfo.toJSON(e) : undefined
-      );
+      obj.groups = message.groups.map((e) => e ? GroupInfo.toJSON(e) : undefined);
     } else {
       obj.groups = [];
     }
     if (message.groupMembers) {
-      obj.groupMembers = message.groupMembers.map((e) =>
-        e ? GroupMember.toJSON(e) : undefined
-      );
+      obj.groupMembers = message.groupMembers.map((e) => e ? GroupMember.toJSON(e) : undefined);
     } else {
       obj.groupMembers = [];
     }
-    message.groupPolicySeq !== undefined &&
-      (obj.groupPolicySeq = (message.groupPolicySeq || Long.UZERO).toString());
+    message.groupPolicySeq !== undefined && (obj.groupPolicySeq = (message.groupPolicySeq || Long.UZERO).toString());
     if (message.groupPolicies) {
-      obj.groupPolicies = message.groupPolicies.map((e) =>
-        e ? GroupPolicyInfo.toJSON(e) : undefined
-      );
+      obj.groupPolicies = message.groupPolicies.map((e) => e ? GroupPolicyInfo.toJSON(e) : undefined);
     } else {
       obj.groupPolicies = [];
     }
-    message.proposalSeq !== undefined &&
-      (obj.proposalSeq = (message.proposalSeq || Long.UZERO).toString());
+    message.proposalSeq !== undefined && (obj.proposalSeq = (message.proposalSeq || Long.UZERO).toString());
     if (message.proposals) {
-      obj.proposals = message.proposals.map((e) =>
-        e ? Proposal.toJSON(e) : undefined
-      );
+      obj.proposals = message.proposals.map((e) => e ? Proposal.toJSON(e) : undefined);
     } else {
       obj.proposals = [];
     }
     if (message.votes) {
-      obj.votes = message.votes.map((e) => (e ? Vote.toJSON(e) : undefined));
+      obj.votes = message.votes.map((e) => e ? Vote.toJSON(e) : undefined);
     } else {
       obj.votes = [];
     }
     return obj;
   },
 
+  create(base?: DeepPartial<GenesisState>): GenesisState {
+    return GenesisState.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
-    message.groupSeq =
-      object.groupSeq !== undefined && object.groupSeq !== null
-        ? Long.fromValue(object.groupSeq)
-        : Long.UZERO;
-    message.groups = (object.groups ?? []).map((e) => GroupInfo.fromPartial(e));
-    message.groupMembers = (object.groupMembers ?? []).map((e) =>
-      GroupMember.fromPartial(e)
-    );
-    message.groupPolicySeq =
-      object.groupPolicySeq !== undefined && object.groupPolicySeq !== null
-        ? Long.fromValue(object.groupPolicySeq)
-        : Long.UZERO;
-    message.groupPolicies = (object.groupPolicies ?? []).map((e) =>
-      GroupPolicyInfo.fromPartial(e)
-    );
-    message.proposalSeq =
-      object.proposalSeq !== undefined && object.proposalSeq !== null
-        ? Long.fromValue(object.proposalSeq)
-        : Long.UZERO;
-    message.proposals = (object.proposals ?? []).map((e) =>
-      Proposal.fromPartial(e)
-    );
-    message.votes = (object.votes ?? []).map((e) => Vote.fromPartial(e));
+    const message = createBaseGenesisState();
+    message.groupSeq = (object.groupSeq !== undefined && object.groupSeq !== null)
+      ? Long.fromValue(object.groupSeq)
+      : Long.UZERO;
+    message.groups = object.groups?.map((e) => GroupInfo.fromPartial(e)) || [];
+    message.groupMembers = object.groupMembers?.map((e) => GroupMember.fromPartial(e)) || [];
+    message.groupPolicySeq = (object.groupPolicySeq !== undefined && object.groupPolicySeq !== null)
+      ? Long.fromValue(object.groupPolicySeq)
+      : Long.UZERO;
+    message.groupPolicies = object.groupPolicies?.map((e) => GroupPolicyInfo.fromPartial(e)) || [];
+    message.proposalSeq = (object.proposalSeq !== undefined && object.proposalSeq !== null)
+      ? Long.fromValue(object.proposalSeq)
+      : Long.UZERO;
+    message.proposals = object.proposals?.map((e) => Proposal.fromPartial(e)) || [];
+    message.votes = object.votes?.map((e) => Vote.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

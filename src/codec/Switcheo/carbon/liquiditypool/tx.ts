@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ParamsToUpdate } from "./params";
 import { Timestamp } from "../../../google/protobuf/timestamp";
+import { ParamsToUpdate } from "./params";
 import { RewardWeight } from "./reward";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
@@ -34,7 +34,8 @@ export interface MsgCreatePoolWithLiquidity {
   ampBps: Long;
 }
 
-export interface MsgCreatePoolWithLiquidityResponse {}
+export interface MsgCreatePoolWithLiquidityResponse {
+}
 
 export interface MsgAddLiquidity {
   creator: string;
@@ -44,7 +45,8 @@ export interface MsgAddLiquidity {
   minShares: string;
 }
 
-export interface MsgAddLiquidityResponse {}
+export interface MsgAddLiquidityResponse {
+}
 
 export interface MsgRemoveLiquidity {
   creator: string;
@@ -52,7 +54,8 @@ export interface MsgRemoveLiquidity {
   shares: string;
 }
 
-export interface MsgRemoveLiquidityResponse {}
+export interface MsgRemoveLiquidityResponse {
+}
 
 export interface LinkPoolParams {
   poolId: Long;
@@ -72,7 +75,8 @@ export interface SetRewardsWeightsParams {
   weights: RewardWeight[];
 }
 
-export interface MsgSetRewardsWeightsResponse {}
+export interface MsgSetRewardsWeightsResponse {
+}
 
 export interface MsgStakePoolToken {
   creator: string;
@@ -81,7 +85,8 @@ export interface MsgStakePoolToken {
   duration: Long;
 }
 
-export interface MsgStakePoolTokenResponse {}
+export interface MsgStakePoolTokenResponse {
+}
 
 export interface MsgUnstakePoolToken {
   creator: string;
@@ -89,14 +94,16 @@ export interface MsgUnstakePoolToken {
   amount: string;
 }
 
-export interface MsgUnstakePoolTokenResponse {}
+export interface MsgUnstakePoolTokenResponse {
+}
 
 export interface MsgClaimPoolRewards {
   creator: string;
   poolId: Long;
 }
 
-export interface MsgClaimPoolRewardsResponse {}
+export interface MsgClaimPoolRewardsResponse {
+}
 
 export interface MsgSetRewardCurve {
   creator: string;
@@ -112,7 +119,8 @@ export interface SetRewardCurveParams {
   finalRewardBps: number;
 }
 
-export interface MsgSetRewardCurveResponse {}
+export interface MsgSetRewardCurveResponse {
+}
 
 export interface MsgSetCommitmentCurve {
   creator: string;
@@ -124,7 +132,8 @@ export interface SetCommitmentCurveParams {
   maxRewardMultiplier: number;
 }
 
-export interface MsgSetCommitmentCurveResponse {}
+export interface MsgSetCommitmentCurveResponse {
+}
 
 export interface MsgUpdatePool {
   creator: string;
@@ -137,21 +146,24 @@ export interface UpdatePoolParams {
   numQuotes: Long;
 }
 
-export interface MsgUpdatePoolResponse {}
+export interface MsgUpdatePoolResponse {
+}
 
 export interface MsgDeprecatePool {
   creator: string;
   poolId: Long;
 }
 
-export interface MsgDeprecatePoolResponse {}
+export interface MsgDeprecatePoolResponse {
+}
 
 export interface MsgCreatePoolRoute {
   creator: string;
   createPoolRouteParams?: CreatePoolRouteParams;
 }
 
-export interface MsgCreatePoolRouteResponse {}
+export interface MsgCreatePoolRouteResponse {
+}
 
 export interface CreatePoolRouteParams {
   marketId: string;
@@ -164,7 +176,8 @@ export interface MsgRemovePoolRoute {
   removePoolRouteParams?: RemovePoolRouteParams;
 }
 
-export interface MsgRemovePoolRouteResponse {}
+export interface MsgRemovePoolRouteResponse {
+}
 
 export interface RemovePoolRouteParams {
   marketId: string;
@@ -176,7 +189,8 @@ export interface MsgUpdatePoolRoute {
   updatePoolRouteParams?: UpdatePoolRouteParams;
 }
 
-export interface MsgUpdatePoolRouteResponse {}
+export interface MsgUpdatePoolRouteResponse {
+}
 
 export interface UpdatePoolRouteParams {
   marketId: string;
@@ -202,23 +216,23 @@ export interface MsgUpdateParams {
  *
  * Since: cosmos-sdk 0.47
  */
-export interface MsgUpdateParamsResponse {}
+export interface MsgUpdateParamsResponse {
+}
 
-const baseMsgCreatePool: object = {
-  creator: "",
-  tokenADenom: "",
-  tokenBDenom: "",
-  tokenAWeight: "",
-  tokenBWeight: "",
-  swapFee: "",
-  ampBps: Long.UZERO,
-};
+function createBaseMsgCreatePool(): MsgCreatePool {
+  return {
+    creator: "",
+    tokenADenom: "",
+    tokenBDenom: "",
+    tokenAWeight: "",
+    tokenBWeight: "",
+    swapFee: "",
+    ampBps: Long.UZERO,
+  };
+}
 
 export const MsgCreatePool = {
-  encode(
-    message: MsgCreatePool,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreatePool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -244,186 +258,187 @@ export const MsgCreatePool = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreatePool } as MsgCreatePool;
+    const message = createBaseMsgCreatePool();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.tokenADenom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.tokenBDenom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.tokenAWeight = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.tokenBWeight = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.swapFee = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.ampBps = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreatePool {
-    const message = { ...baseMsgCreatePool } as MsgCreatePool;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.tokenADenom =
-      object.tokenADenom !== undefined && object.tokenADenom !== null
-        ? String(object.tokenADenom)
-        : "";
-    message.tokenBDenom =
-      object.tokenBDenom !== undefined && object.tokenBDenom !== null
-        ? String(object.tokenBDenom)
-        : "";
-    message.tokenAWeight =
-      object.tokenAWeight !== undefined && object.tokenAWeight !== null
-        ? String(object.tokenAWeight)
-        : "";
-    message.tokenBWeight =
-      object.tokenBWeight !== undefined && object.tokenBWeight !== null
-        ? String(object.tokenBWeight)
-        : "";
-    message.swapFee =
-      object.swapFee !== undefined && object.swapFee !== null
-        ? String(object.swapFee)
-        : "";
-    message.ampBps =
-      object.ampBps !== undefined && object.ampBps !== null
-        ? Long.fromString(object.ampBps)
-        : Long.UZERO;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      tokenADenom: isSet(object.tokenADenom) ? String(object.tokenADenom) : "",
+      tokenBDenom: isSet(object.tokenBDenom) ? String(object.tokenBDenom) : "",
+      tokenAWeight: isSet(object.tokenAWeight) ? String(object.tokenAWeight) : "",
+      tokenBWeight: isSet(object.tokenBWeight) ? String(object.tokenBWeight) : "",
+      swapFee: isSet(object.swapFee) ? String(object.swapFee) : "",
+      ampBps: isSet(object.ampBps) ? Long.fromValue(object.ampBps) : Long.UZERO,
+    };
   },
 
   toJSON(message: MsgCreatePool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.tokenADenom !== undefined &&
-      (obj.tokenADenom = message.tokenADenom);
-    message.tokenBDenom !== undefined &&
-      (obj.tokenBDenom = message.tokenBDenom);
-    message.tokenAWeight !== undefined &&
-      (obj.tokenAWeight = message.tokenAWeight);
-    message.tokenBWeight !== undefined &&
-      (obj.tokenBWeight = message.tokenBWeight);
+    message.tokenADenom !== undefined && (obj.tokenADenom = message.tokenADenom);
+    message.tokenBDenom !== undefined && (obj.tokenBDenom = message.tokenBDenom);
+    message.tokenAWeight !== undefined && (obj.tokenAWeight = message.tokenAWeight);
+    message.tokenBWeight !== undefined && (obj.tokenBWeight = message.tokenBWeight);
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    message.ampBps !== undefined &&
-      (obj.ampBps = (message.ampBps || Long.UZERO).toString());
+    message.ampBps !== undefined && (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<MsgCreatePool>): MsgCreatePool {
+    return MsgCreatePool.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgCreatePool>): MsgCreatePool {
-    const message = { ...baseMsgCreatePool } as MsgCreatePool;
+    const message = createBaseMsgCreatePool();
     message.creator = object.creator ?? "";
     message.tokenADenom = object.tokenADenom ?? "";
     message.tokenBDenom = object.tokenBDenom ?? "";
     message.tokenAWeight = object.tokenAWeight ?? "";
     message.tokenBWeight = object.tokenBWeight ?? "";
     message.swapFee = object.swapFee ?? "";
-    message.ampBps =
-      object.ampBps !== undefined && object.ampBps !== null
-        ? Long.fromValue(object.ampBps)
-        : Long.UZERO;
+    message.ampBps = (object.ampBps !== undefined && object.ampBps !== null)
+      ? Long.fromValue(object.ampBps)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgCreatePoolResponse: object = { poolId: Long.UZERO };
+function createBaseMsgCreatePoolResponse(): MsgCreatePoolResponse {
+  return { poolId: Long.UZERO };
+}
 
 export const MsgCreatePoolResponse = {
-  encode(
-    message: MsgCreatePoolResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreatePoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreatePoolResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePoolResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreatePoolResponse } as MsgCreatePoolResponse;
+    const message = createBaseMsgCreatePoolResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreatePoolResponse {
-    const message = { ...baseMsgCreatePoolResponse } as MsgCreatePoolResponse;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    return message;
+    return { poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO };
   },
 
   toJSON(message: MsgCreatePoolResponse): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgCreatePoolResponse>
-  ): MsgCreatePoolResponse {
-    const message = { ...baseMsgCreatePoolResponse } as MsgCreatePoolResponse;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+  create(base?: DeepPartial<MsgCreatePoolResponse>): MsgCreatePoolResponse {
+    return MsgCreatePoolResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgCreatePoolResponse>): MsgCreatePoolResponse {
+    const message = createBaseMsgCreatePoolResponse();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgCreatePoolWithLiquidity: object = {
-  creator: "",
-  tokenADenom: "",
-  tokenBDenom: "",
-  tokenAWeight: "",
-  tokenBWeight: "",
-  amountA: "",
-  amountB: "",
-  swapFee: "",
-  ampBps: Long.UZERO,
-};
+function createBaseMsgCreatePoolWithLiquidity(): MsgCreatePoolWithLiquidity {
+  return {
+    creator: "",
+    tokenADenom: "",
+    tokenBDenom: "",
+    tokenAWeight: "",
+    tokenBWeight: "",
+    amountA: "",
+    amountB: "",
+    swapFee: "",
+    ampBps: Long.UZERO,
+  };
+}
 
 export const MsgCreatePoolWithLiquidity = {
-  encode(
-    message: MsgCreatePoolWithLiquidity,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreatePoolWithLiquidity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -454,121 +469,119 @@ export const MsgCreatePoolWithLiquidity = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreatePoolWithLiquidity {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePoolWithLiquidity {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreatePoolWithLiquidity,
-    } as MsgCreatePoolWithLiquidity;
+    const message = createBaseMsgCreatePoolWithLiquidity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.tokenADenom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.tokenBDenom = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.tokenAWeight = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.tokenBWeight = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.amountA = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.amountB = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag !== 66) {
+            break;
+          }
+
           message.swapFee = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag !== 72) {
+            break;
+          }
+
           message.ampBps = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreatePoolWithLiquidity {
-    const message = {
-      ...baseMsgCreatePoolWithLiquidity,
-    } as MsgCreatePoolWithLiquidity;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.tokenADenom =
-      object.tokenADenom !== undefined && object.tokenADenom !== null
-        ? String(object.tokenADenom)
-        : "";
-    message.tokenBDenom =
-      object.tokenBDenom !== undefined && object.tokenBDenom !== null
-        ? String(object.tokenBDenom)
-        : "";
-    message.tokenAWeight =
-      object.tokenAWeight !== undefined && object.tokenAWeight !== null
-        ? String(object.tokenAWeight)
-        : "";
-    message.tokenBWeight =
-      object.tokenBWeight !== undefined && object.tokenBWeight !== null
-        ? String(object.tokenBWeight)
-        : "";
-    message.amountA =
-      object.amountA !== undefined && object.amountA !== null
-        ? String(object.amountA)
-        : "";
-    message.amountB =
-      object.amountB !== undefined && object.amountB !== null
-        ? String(object.amountB)
-        : "";
-    message.swapFee =
-      object.swapFee !== undefined && object.swapFee !== null
-        ? String(object.swapFee)
-        : "";
-    message.ampBps =
-      object.ampBps !== undefined && object.ampBps !== null
-        ? Long.fromString(object.ampBps)
-        : Long.UZERO;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      tokenADenom: isSet(object.tokenADenom) ? String(object.tokenADenom) : "",
+      tokenBDenom: isSet(object.tokenBDenom) ? String(object.tokenBDenom) : "",
+      tokenAWeight: isSet(object.tokenAWeight) ? String(object.tokenAWeight) : "",
+      tokenBWeight: isSet(object.tokenBWeight) ? String(object.tokenBWeight) : "",
+      amountA: isSet(object.amountA) ? String(object.amountA) : "",
+      amountB: isSet(object.amountB) ? String(object.amountB) : "",
+      swapFee: isSet(object.swapFee) ? String(object.swapFee) : "",
+      ampBps: isSet(object.ampBps) ? Long.fromValue(object.ampBps) : Long.UZERO,
+    };
   },
 
   toJSON(message: MsgCreatePoolWithLiquidity): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.tokenADenom !== undefined &&
-      (obj.tokenADenom = message.tokenADenom);
-    message.tokenBDenom !== undefined &&
-      (obj.tokenBDenom = message.tokenBDenom);
-    message.tokenAWeight !== undefined &&
-      (obj.tokenAWeight = message.tokenAWeight);
-    message.tokenBWeight !== undefined &&
-      (obj.tokenBWeight = message.tokenBWeight);
+    message.tokenADenom !== undefined && (obj.tokenADenom = message.tokenADenom);
+    message.tokenBDenom !== undefined && (obj.tokenBDenom = message.tokenBDenom);
+    message.tokenAWeight !== undefined && (obj.tokenAWeight = message.tokenAWeight);
+    message.tokenBWeight !== undefined && (obj.tokenBWeight = message.tokenBWeight);
     message.amountA !== undefined && (obj.amountA = message.amountA);
     message.amountB !== undefined && (obj.amountB = message.amountB);
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    message.ampBps !== undefined &&
-      (obj.ampBps = (message.ampBps || Long.UZERO).toString());
+    message.ampBps !== undefined && (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgCreatePoolWithLiquidity>
-  ): MsgCreatePoolWithLiquidity {
-    const message = {
-      ...baseMsgCreatePoolWithLiquidity,
-    } as MsgCreatePoolWithLiquidity;
+  create(base?: DeepPartial<MsgCreatePoolWithLiquidity>): MsgCreatePoolWithLiquidity {
+    return MsgCreatePoolWithLiquidity.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgCreatePoolWithLiquidity>): MsgCreatePoolWithLiquidity {
+    const message = createBaseMsgCreatePoolWithLiquidity();
     message.creator = object.creator ?? "";
     message.tokenADenom = object.tokenADenom ?? "";
     message.tokenBDenom = object.tokenBDenom ?? "";
@@ -577,49 +590,40 @@ export const MsgCreatePoolWithLiquidity = {
     message.amountA = object.amountA ?? "";
     message.amountB = object.amountB ?? "";
     message.swapFee = object.swapFee ?? "";
-    message.ampBps =
-      object.ampBps !== undefined && object.ampBps !== null
-        ? Long.fromValue(object.ampBps)
-        : Long.UZERO;
+    message.ampBps = (object.ampBps !== undefined && object.ampBps !== null)
+      ? Long.fromValue(object.ampBps)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgCreatePoolWithLiquidityResponse: object = {};
+function createBaseMsgCreatePoolWithLiquidityResponse(): MsgCreatePoolWithLiquidityResponse {
+  return {};
+}
 
 export const MsgCreatePoolWithLiquidityResponse = {
-  encode(
-    _: MsgCreatePoolWithLiquidityResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgCreatePoolWithLiquidityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreatePoolWithLiquidityResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePoolWithLiquidityResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreatePoolWithLiquidityResponse,
-    } as MsgCreatePoolWithLiquidityResponse;
+    const message = createBaseMsgCreatePoolWithLiquidityResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgCreatePoolWithLiquidityResponse {
-    const message = {
-      ...baseMsgCreatePoolWithLiquidityResponse,
-    } as MsgCreatePoolWithLiquidityResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgCreatePoolWithLiquidityResponse): unknown {
@@ -627,29 +631,22 @@ export const MsgCreatePoolWithLiquidityResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgCreatePoolWithLiquidityResponse>
-  ): MsgCreatePoolWithLiquidityResponse {
-    const message = {
-      ...baseMsgCreatePoolWithLiquidityResponse,
-    } as MsgCreatePoolWithLiquidityResponse;
+  create(base?: DeepPartial<MsgCreatePoolWithLiquidityResponse>): MsgCreatePoolWithLiquidityResponse {
+    return MsgCreatePoolWithLiquidityResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgCreatePoolWithLiquidityResponse>): MsgCreatePoolWithLiquidityResponse {
+    const message = createBaseMsgCreatePoolWithLiquidityResponse();
     return message;
   },
 };
 
-const baseMsgAddLiquidity: object = {
-  creator: "",
-  poolId: Long.UZERO,
-  amountA: "",
-  amountB: "",
-  minShares: "",
-};
+function createBaseMsgAddLiquidity(): MsgAddLiquidity {
+  return { creator: "", poolId: Long.UZERO, amountA: "", amountB: "", minShares: "" };
+}
 
 export const MsgAddLiquidity = {
-  encode(
-    message: MsgAddLiquidity,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgAddLiquidity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -669,78 +666,86 @@ export const MsgAddLiquidity = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddLiquidity {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgAddLiquidity } as MsgAddLiquidity;
+    const message = createBaseMsgAddLiquidity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amountA = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.amountB = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.minShares = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgAddLiquidity {
-    const message = { ...baseMsgAddLiquidity } as MsgAddLiquidity;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.amountA =
-      object.amountA !== undefined && object.amountA !== null
-        ? String(object.amountA)
-        : "";
-    message.amountB =
-      object.amountB !== undefined && object.amountB !== null
-        ? String(object.amountB)
-        : "";
-    message.minShares =
-      object.minShares !== undefined && object.minShares !== null
-        ? String(object.minShares)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      amountA: isSet(object.amountA) ? String(object.amountA) : "",
+      amountB: isSet(object.amountB) ? String(object.amountB) : "",
+      minShares: isSet(object.minShares) ? String(object.minShares) : "",
+    };
   },
 
   toJSON(message: MsgAddLiquidity): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.amountA !== undefined && (obj.amountA = message.amountA);
     message.amountB !== undefined && (obj.amountB = message.amountB);
     message.minShares !== undefined && (obj.minShares = message.minShares);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgAddLiquidity>): MsgAddLiquidity {
+    return MsgAddLiquidity.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgAddLiquidity>): MsgAddLiquidity {
-    const message = { ...baseMsgAddLiquidity } as MsgAddLiquidity;
+    const message = createBaseMsgAddLiquidity();
     message.creator = object.creator ?? "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.amountA = object.amountA ?? "";
     message.amountB = object.amountB ?? "";
     message.minShares = object.minShares ?? "";
@@ -748,41 +753,33 @@ export const MsgAddLiquidity = {
   },
 };
 
-const baseMsgAddLiquidityResponse: object = {};
+function createBaseMsgAddLiquidityResponse(): MsgAddLiquidityResponse {
+  return {};
+}
 
 export const MsgAddLiquidityResponse = {
-  encode(
-    _: MsgAddLiquidityResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgAddLiquidityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgAddLiquidityResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddLiquidityResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgAddLiquidityResponse,
-    } as MsgAddLiquidityResponse;
+    const message = createBaseMsgAddLiquidityResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgAddLiquidityResponse {
-    const message = {
-      ...baseMsgAddLiquidityResponse,
-    } as MsgAddLiquidityResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgAddLiquidityResponse): unknown {
@@ -790,27 +787,22 @@ export const MsgAddLiquidityResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgAddLiquidityResponse>
-  ): MsgAddLiquidityResponse {
-    const message = {
-      ...baseMsgAddLiquidityResponse,
-    } as MsgAddLiquidityResponse;
+  create(base?: DeepPartial<MsgAddLiquidityResponse>): MsgAddLiquidityResponse {
+    return MsgAddLiquidityResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgAddLiquidityResponse>): MsgAddLiquidityResponse {
+    const message = createBaseMsgAddLiquidityResponse();
     return message;
   },
 };
 
-const baseMsgRemoveLiquidity: object = {
-  creator: "",
-  poolId: Long.UZERO,
-  shares: "",
-};
+function createBaseMsgRemoveLiquidity(): MsgRemoveLiquidity {
+  return { creator: "", poolId: Long.UZERO, shares: "" };
+}
 
 export const MsgRemoveLiquidity = {
-  encode(
-    message: MsgRemoveLiquidity,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRemoveLiquidity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -824,102 +816,100 @@ export const MsgRemoveLiquidity = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveLiquidity {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRemoveLiquidity } as MsgRemoveLiquidity;
+    const message = createBaseMsgRemoveLiquidity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.shares = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRemoveLiquidity {
-    const message = { ...baseMsgRemoveLiquidity } as MsgRemoveLiquidity;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.shares =
-      object.shares !== undefined && object.shares !== null
-        ? String(object.shares)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      shares: isSet(object.shares) ? String(object.shares) : "",
+    };
   },
 
   toJSON(message: MsgRemoveLiquidity): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.shares !== undefined && (obj.shares = message.shares);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgRemoveLiquidity>): MsgRemoveLiquidity {
+    return MsgRemoveLiquidity.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgRemoveLiquidity>): MsgRemoveLiquidity {
-    const message = { ...baseMsgRemoveLiquidity } as MsgRemoveLiquidity;
+    const message = createBaseMsgRemoveLiquidity();
     message.creator = object.creator ?? "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.shares = object.shares ?? "";
     return message;
   },
 };
 
-const baseMsgRemoveLiquidityResponse: object = {};
+function createBaseMsgRemoveLiquidityResponse(): MsgRemoveLiquidityResponse {
+  return {};
+}
 
 export const MsgRemoveLiquidityResponse = {
-  encode(
-    _: MsgRemoveLiquidityResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgRemoveLiquidityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRemoveLiquidityResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveLiquidityResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRemoveLiquidityResponse,
-    } as MsgRemoveLiquidityResponse;
+    const message = createBaseMsgRemoveLiquidityResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgRemoveLiquidityResponse {
-    const message = {
-      ...baseMsgRemoveLiquidityResponse,
-    } as MsgRemoveLiquidityResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgRemoveLiquidityResponse): unknown {
@@ -927,23 +917,22 @@ export const MsgRemoveLiquidityResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgRemoveLiquidityResponse>
-  ): MsgRemoveLiquidityResponse {
-    const message = {
-      ...baseMsgRemoveLiquidityResponse,
-    } as MsgRemoveLiquidityResponse;
+  create(base?: DeepPartial<MsgRemoveLiquidityResponse>): MsgRemoveLiquidityResponse {
+    return MsgRemoveLiquidityResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgRemoveLiquidityResponse>): MsgRemoveLiquidityResponse {
+    const message = createBaseMsgRemoveLiquidityResponse();
     return message;
   },
 };
 
-const baseLinkPoolParams: object = { poolId: Long.UZERO, marketId: "" };
+function createBaseLinkPoolParams(): LinkPoolParams {
+  return { poolId: Long.UZERO, marketId: "" };
+}
 
 export const LinkPoolParams = {
-  encode(
-    message: LinkPoolParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: LinkPoolParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -954,65 +943,69 @@ export const LinkPoolParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LinkPoolParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLinkPoolParams } as LinkPoolParams;
+    const message = createBaseLinkPoolParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): LinkPoolParams {
-    const message = { ...baseLinkPoolParams } as LinkPoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+    };
   },
 
   toJSON(message: LinkPoolParams): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
+  create(base?: DeepPartial<LinkPoolParams>): LinkPoolParams {
+    return LinkPoolParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<LinkPoolParams>): LinkPoolParams {
-    const message = { ...baseLinkPoolParams } as LinkPoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    const message = createBaseLinkPoolParams();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseUnlinkPoolParams: object = { poolId: Long.UZERO };
+function createBaseUnlinkPoolParams(): UnlinkPoolParams {
+  return { poolId: Long.UZERO };
+}
 
 export const UnlinkPoolParams = {
-  encode(
-    message: UnlinkPoolParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UnlinkPoolParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -1020,238 +1013,216 @@ export const UnlinkPoolParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UnlinkPoolParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
+    const message = createBaseUnlinkPoolParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UnlinkPoolParams {
-    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    return message;
+    return { poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO };
   },
 
   toJSON(message: UnlinkPoolParams): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<UnlinkPoolParams>): UnlinkPoolParams {
+    return UnlinkPoolParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UnlinkPoolParams>): UnlinkPoolParams {
-    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    const message = createBaseUnlinkPoolParams();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgSetRewardsWeights: object = { creator: "" };
+function createBaseMsgSetRewardsWeights(): MsgSetRewardsWeights {
+  return { creator: "", setRewardsWeightsParams: undefined };
+}
 
 export const MsgSetRewardsWeights = {
-  encode(
-    message: MsgSetRewardsWeights,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSetRewardsWeights, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.setRewardsWeightsParams !== undefined) {
-      SetRewardsWeightsParams.encode(
-        message.setRewardsWeightsParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      SetRewardsWeightsParams.encode(message.setRewardsWeightsParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetRewardsWeights {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetRewardsWeights {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetRewardsWeights } as MsgSetRewardsWeights;
+    const message = createBaseMsgSetRewardsWeights();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
-          message.setRewardsWeightsParams = SetRewardsWeightsParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.setRewardsWeightsParams = SetRewardsWeightsParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSetRewardsWeights {
-    const message = { ...baseMsgSetRewardsWeights } as MsgSetRewardsWeights;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.setRewardsWeightsParams =
-      object.setRewardsWeightsParams !== undefined &&
-      object.setRewardsWeightsParams !== null
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      setRewardsWeightsParams: isSet(object.setRewardsWeightsParams)
         ? SetRewardsWeightsParams.fromJSON(object.setRewardsWeightsParams)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MsgSetRewardsWeights): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.setRewardsWeightsParams !== undefined &&
-      (obj.setRewardsWeightsParams = message.setRewardsWeightsParams
-        ? SetRewardsWeightsParams.toJSON(message.setRewardsWeightsParams)
-        : undefined);
+    message.setRewardsWeightsParams !== undefined && (obj.setRewardsWeightsParams = message.setRewardsWeightsParams
+      ? SetRewardsWeightsParams.toJSON(message.setRewardsWeightsParams)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSetRewardsWeights>): MsgSetRewardsWeights {
+    return MsgSetRewardsWeights.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgSetRewardsWeights>): MsgSetRewardsWeights {
-    const message = { ...baseMsgSetRewardsWeights } as MsgSetRewardsWeights;
+    const message = createBaseMsgSetRewardsWeights();
     message.creator = object.creator ?? "";
     message.setRewardsWeightsParams =
-      object.setRewardsWeightsParams !== undefined &&
-      object.setRewardsWeightsParams !== null
+      (object.setRewardsWeightsParams !== undefined && object.setRewardsWeightsParams !== null)
         ? SetRewardsWeightsParams.fromPartial(object.setRewardsWeightsParams)
         : undefined;
     return message;
   },
 };
 
-const baseSetRewardsWeightsParams: object = {};
+function createBaseSetRewardsWeightsParams(): SetRewardsWeightsParams {
+  return { weights: [] };
+}
 
 export const SetRewardsWeightsParams = {
-  encode(
-    message: SetRewardsWeightsParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetRewardsWeightsParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.weights) {
       RewardWeight.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetRewardsWeightsParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetRewardsWeightsParams {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetRewardsWeightsParams,
-    } as SetRewardsWeightsParams;
-    message.weights = [];
+    const message = createBaseSetRewardsWeightsParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.weights.push(RewardWeight.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetRewardsWeightsParams {
-    const message = {
-      ...baseSetRewardsWeightsParams,
-    } as SetRewardsWeightsParams;
-    message.weights = (object.weights ?? []).map((e: any) =>
-      RewardWeight.fromJSON(e)
-    );
-    return message;
+    return { weights: Array.isArray(object?.weights) ? object.weights.map((e: any) => RewardWeight.fromJSON(e)) : [] };
   },
 
   toJSON(message: SetRewardsWeightsParams): unknown {
     const obj: any = {};
     if (message.weights) {
-      obj.weights = message.weights.map((e) =>
-        e ? RewardWeight.toJSON(e) : undefined
-      );
+      obj.weights = message.weights.map((e) => e ? RewardWeight.toJSON(e) : undefined);
     } else {
       obj.weights = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetRewardsWeightsParams>
-  ): SetRewardsWeightsParams {
-    const message = {
-      ...baseSetRewardsWeightsParams,
-    } as SetRewardsWeightsParams;
-    message.weights = (object.weights ?? []).map((e) =>
-      RewardWeight.fromPartial(e)
-    );
+  create(base?: DeepPartial<SetRewardsWeightsParams>): SetRewardsWeightsParams {
+    return SetRewardsWeightsParams.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetRewardsWeightsParams>): SetRewardsWeightsParams {
+    const message = createBaseSetRewardsWeightsParams();
+    message.weights = object.weights?.map((e) => RewardWeight.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseMsgSetRewardsWeightsResponse: object = {};
+function createBaseMsgSetRewardsWeightsResponse(): MsgSetRewardsWeightsResponse {
+  return {};
+}
 
 export const MsgSetRewardsWeightsResponse = {
-  encode(
-    _: MsgSetRewardsWeightsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSetRewardsWeightsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetRewardsWeightsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetRewardsWeightsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgSetRewardsWeightsResponse,
-    } as MsgSetRewardsWeightsResponse;
+    const message = createBaseMsgSetRewardsWeightsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSetRewardsWeightsResponse {
-    const message = {
-      ...baseMsgSetRewardsWeightsResponse,
-    } as MsgSetRewardsWeightsResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSetRewardsWeightsResponse): unknown {
@@ -1259,28 +1230,22 @@ export const MsgSetRewardsWeightsResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgSetRewardsWeightsResponse>
-  ): MsgSetRewardsWeightsResponse {
-    const message = {
-      ...baseMsgSetRewardsWeightsResponse,
-    } as MsgSetRewardsWeightsResponse;
+  create(base?: DeepPartial<MsgSetRewardsWeightsResponse>): MsgSetRewardsWeightsResponse {
+    return MsgSetRewardsWeightsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgSetRewardsWeightsResponse>): MsgSetRewardsWeightsResponse {
+    const message = createBaseMsgSetRewardsWeightsResponse();
     return message;
   },
 };
 
-const baseMsgStakePoolToken: object = {
-  creator: "",
-  denom: "",
-  amount: "",
-  duration: Long.UZERO,
-};
+function createBaseMsgStakePoolToken(): MsgStakePoolToken {
+  return { creator: "", denom: "", amount: "", duration: Long.UZERO };
+}
 
 export const MsgStakePoolToken = {
-  encode(
-    message: MsgStakePoolToken,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgStakePoolToken, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -1297,51 +1262,56 @@ export const MsgStakePoolToken = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgStakePoolToken {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgStakePoolToken } as MsgStakePoolToken;
+    const message = createBaseMsgStakePoolToken();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.duration = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgStakePoolToken {
-    const message = { ...baseMsgStakePoolToken } as MsgStakePoolToken;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Long.fromString(object.duration)
-        : Long.UZERO;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      duration: isSet(object.duration) ? Long.fromValue(object.duration) : Long.UZERO,
+    };
   },
 
   toJSON(message: MsgStakePoolToken): unknown {
@@ -1349,59 +1319,53 @@ export const MsgStakePoolToken = {
     message.creator !== undefined && (obj.creator = message.creator);
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
-    message.duration !== undefined &&
-      (obj.duration = (message.duration || Long.UZERO).toString());
+    message.duration !== undefined && (obj.duration = (message.duration || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<MsgStakePoolToken>): MsgStakePoolToken {
+    return MsgStakePoolToken.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgStakePoolToken>): MsgStakePoolToken {
-    const message = { ...baseMsgStakePoolToken } as MsgStakePoolToken;
+    const message = createBaseMsgStakePoolToken();
     message.creator = object.creator ?? "";
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
-    message.duration =
-      object.duration !== undefined && object.duration !== null
-        ? Long.fromValue(object.duration)
-        : Long.UZERO;
+    message.duration = (object.duration !== undefined && object.duration !== null)
+      ? Long.fromValue(object.duration)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgStakePoolTokenResponse: object = {};
+function createBaseMsgStakePoolTokenResponse(): MsgStakePoolTokenResponse {
+  return {};
+}
 
 export const MsgStakePoolTokenResponse = {
-  encode(
-    _: MsgStakePoolTokenResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgStakePoolTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgStakePoolTokenResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgStakePoolTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgStakePoolTokenResponse,
-    } as MsgStakePoolTokenResponse;
+    const message = createBaseMsgStakePoolTokenResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgStakePoolTokenResponse {
-    const message = {
-      ...baseMsgStakePoolTokenResponse,
-    } as MsgStakePoolTokenResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgStakePoolTokenResponse): unknown {
@@ -1409,23 +1373,22 @@ export const MsgStakePoolTokenResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgStakePoolTokenResponse>
-  ): MsgStakePoolTokenResponse {
-    const message = {
-      ...baseMsgStakePoolTokenResponse,
-    } as MsgStakePoolTokenResponse;
+  create(base?: DeepPartial<MsgStakePoolTokenResponse>): MsgStakePoolTokenResponse {
+    return MsgStakePoolTokenResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgStakePoolTokenResponse>): MsgStakePoolTokenResponse {
+    const message = createBaseMsgStakePoolTokenResponse();
     return message;
   },
 };
 
-const baseMsgUnstakePoolToken: object = { creator: "", denom: "", amount: "" };
+function createBaseMsgUnstakePoolToken(): MsgUnstakePoolToken {
+  return { creator: "", denom: "", amount: "" };
+}
 
 export const MsgUnstakePoolToken = {
-  encode(
-    message: MsgUnstakePoolToken,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUnstakePoolToken, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -1439,44 +1402,48 @@ export const MsgUnstakePoolToken = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnstakePoolToken {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUnstakePoolToken } as MsgUnstakePoolToken;
+    const message = createBaseMsgUnstakePoolToken();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.amount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUnstakePoolToken {
-    const message = { ...baseMsgUnstakePoolToken } as MsgUnstakePoolToken;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+    };
   },
 
   toJSON(message: MsgUnstakePoolToken): unknown {
@@ -1487,8 +1454,12 @@ export const MsgUnstakePoolToken = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUnstakePoolToken>): MsgUnstakePoolToken {
+    return MsgUnstakePoolToken.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUnstakePoolToken>): MsgUnstakePoolToken {
-    const message = { ...baseMsgUnstakePoolToken } as MsgUnstakePoolToken;
+    const message = createBaseMsgUnstakePoolToken();
     message.creator = object.creator ?? "";
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
@@ -1496,41 +1467,33 @@ export const MsgUnstakePoolToken = {
   },
 };
 
-const baseMsgUnstakePoolTokenResponse: object = {};
+function createBaseMsgUnstakePoolTokenResponse(): MsgUnstakePoolTokenResponse {
+  return {};
+}
 
 export const MsgUnstakePoolTokenResponse = {
-  encode(
-    _: MsgUnstakePoolTokenResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUnstakePoolTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUnstakePoolTokenResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnstakePoolTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUnstakePoolTokenResponse,
-    } as MsgUnstakePoolTokenResponse;
+    const message = createBaseMsgUnstakePoolTokenResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUnstakePoolTokenResponse {
-    const message = {
-      ...baseMsgUnstakePoolTokenResponse,
-    } as MsgUnstakePoolTokenResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUnstakePoolTokenResponse): unknown {
@@ -1538,23 +1501,22 @@ export const MsgUnstakePoolTokenResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUnstakePoolTokenResponse>
-  ): MsgUnstakePoolTokenResponse {
-    const message = {
-      ...baseMsgUnstakePoolTokenResponse,
-    } as MsgUnstakePoolTokenResponse;
+  create(base?: DeepPartial<MsgUnstakePoolTokenResponse>): MsgUnstakePoolTokenResponse {
+    return MsgUnstakePoolTokenResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUnstakePoolTokenResponse>): MsgUnstakePoolTokenResponse {
+    const message = createBaseMsgUnstakePoolTokenResponse();
     return message;
   },
 };
 
-const baseMsgClaimPoolRewards: object = { creator: "", poolId: Long.UZERO };
+function createBaseMsgClaimPoolRewards(): MsgClaimPoolRewards {
+  return { creator: "", poolId: Long.UZERO };
+}
 
 export const MsgClaimPoolRewards = {
-  encode(
-    message: MsgClaimPoolRewards,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgClaimPoolRewards, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -1565,93 +1527,90 @@ export const MsgClaimPoolRewards = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgClaimPoolRewards {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgClaimPoolRewards } as MsgClaimPoolRewards;
+    const message = createBaseMsgClaimPoolRewards();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgClaimPoolRewards {
-    const message = { ...baseMsgClaimPoolRewards } as MsgClaimPoolRewards;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+    };
   },
 
   toJSON(message: MsgClaimPoolRewards): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<MsgClaimPoolRewards>): MsgClaimPoolRewards {
+    return MsgClaimPoolRewards.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgClaimPoolRewards>): MsgClaimPoolRewards {
-    const message = { ...baseMsgClaimPoolRewards } as MsgClaimPoolRewards;
+    const message = createBaseMsgClaimPoolRewards();
     message.creator = object.creator ?? "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgClaimPoolRewardsResponse: object = {};
+function createBaseMsgClaimPoolRewardsResponse(): MsgClaimPoolRewardsResponse {
+  return {};
+}
 
 export const MsgClaimPoolRewardsResponse = {
-  encode(
-    _: MsgClaimPoolRewardsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgClaimPoolRewardsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgClaimPoolRewardsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgClaimPoolRewardsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgClaimPoolRewardsResponse,
-    } as MsgClaimPoolRewardsResponse;
+    const message = createBaseMsgClaimPoolRewardsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgClaimPoolRewardsResponse {
-    const message = {
-      ...baseMsgClaimPoolRewardsResponse,
-    } as MsgClaimPoolRewardsResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgClaimPoolRewardsResponse): unknown {
@@ -1659,113 +1618,108 @@ export const MsgClaimPoolRewardsResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgClaimPoolRewardsResponse>
-  ): MsgClaimPoolRewardsResponse {
-    const message = {
-      ...baseMsgClaimPoolRewardsResponse,
-    } as MsgClaimPoolRewardsResponse;
+  create(base?: DeepPartial<MsgClaimPoolRewardsResponse>): MsgClaimPoolRewardsResponse {
+    return MsgClaimPoolRewardsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgClaimPoolRewardsResponse>): MsgClaimPoolRewardsResponse {
+    const message = createBaseMsgClaimPoolRewardsResponse();
     return message;
   },
 };
 
-const baseMsgSetRewardCurve: object = { creator: "" };
+function createBaseMsgSetRewardCurve(): MsgSetRewardCurve {
+  return { creator: "", setRewardCurveParams: undefined };
+}
 
 export const MsgSetRewardCurve = {
-  encode(
-    message: MsgSetRewardCurve,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSetRewardCurve, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.setRewardCurveParams !== undefined) {
-      SetRewardCurveParams.encode(
-        message.setRewardCurveParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      SetRewardCurveParams.encode(message.setRewardCurveParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetRewardCurve {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetRewardCurve } as MsgSetRewardCurve;
+    const message = createBaseMsgSetRewardCurve();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
-          message.setRewardCurveParams = SetRewardCurveParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.setRewardCurveParams = SetRewardCurveParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSetRewardCurve {
-    const message = { ...baseMsgSetRewardCurve } as MsgSetRewardCurve;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.setRewardCurveParams =
-      object.setRewardCurveParams !== undefined &&
-      object.setRewardCurveParams !== null
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      setRewardCurveParams: isSet(object.setRewardCurveParams)
         ? SetRewardCurveParams.fromJSON(object.setRewardCurveParams)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MsgSetRewardCurve): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.setRewardCurveParams !== undefined &&
-      (obj.setRewardCurveParams = message.setRewardCurveParams
-        ? SetRewardCurveParams.toJSON(message.setRewardCurveParams)
-        : undefined);
+    message.setRewardCurveParams !== undefined && (obj.setRewardCurveParams = message.setRewardCurveParams
+      ? SetRewardCurveParams.toJSON(message.setRewardCurveParams)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgSetRewardCurve>): MsgSetRewardCurve {
+    return MsgSetRewardCurve.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgSetRewardCurve>): MsgSetRewardCurve {
-    const message = { ...baseMsgSetRewardCurve } as MsgSetRewardCurve;
+    const message = createBaseMsgSetRewardCurve();
     message.creator = object.creator ?? "";
-    message.setRewardCurveParams =
-      object.setRewardCurveParams !== undefined &&
-      object.setRewardCurveParams !== null
-        ? SetRewardCurveParams.fromPartial(object.setRewardCurveParams)
-        : undefined;
+    message.setRewardCurveParams = (object.setRewardCurveParams !== undefined && object.setRewardCurveParams !== null)
+      ? SetRewardCurveParams.fromPartial(object.setRewardCurveParams)
+      : undefined;
     return message;
   },
 };
 
-const baseSetRewardCurveParams: object = {
-  initialRewardBps: 0,
-  reductionMultiplierBps: 0,
-  reductionIntervalSeconds: Long.UZERO,
-  reductions: 0,
-  finalRewardBps: 0,
-};
+function createBaseSetRewardCurveParams(): SetRewardCurveParams {
+  return {
+    startTime: undefined,
+    initialRewardBps: 0,
+    reductionMultiplierBps: 0,
+    reductionIntervalSeconds: Long.UZERO,
+    reductions: 0,
+    finalRewardBps: 0,
+  };
+}
 
 export const SetRewardCurveParams = {
-  encode(
-    message: SetRewardCurveParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetRewardCurveParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.startTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.startTime),
-        writer.uint32(10).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(10).fork()).ldelim();
     }
     if (message.initialRewardBps !== 0) {
       writer.uint32(16).uint32(message.initialRewardBps);
@@ -1785,101 +1739,101 @@ export const SetRewardCurveParams = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetRewardCurveParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetRewardCurveParams {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSetRewardCurveParams } as SetRewardCurveParams;
+    const message = createBaseSetRewardCurveParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.startTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.initialRewardBps = reader.uint32();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.reductionMultiplierBps = reader.uint32();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.reductionIntervalSeconds = reader.uint64() as Long;
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.reductions = reader.uint32();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.finalRewardBps = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetRewardCurveParams {
-    const message = { ...baseSetRewardCurveParams } as SetRewardCurveParams;
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? fromJsonTimestamp(object.startTime)
-        : undefined;
-    message.initialRewardBps =
-      object.initialRewardBps !== undefined && object.initialRewardBps !== null
-        ? Number(object.initialRewardBps)
-        : 0;
-    message.reductionMultiplierBps =
-      object.reductionMultiplierBps !== undefined &&
-      object.reductionMultiplierBps !== null
-        ? Number(object.reductionMultiplierBps)
-        : 0;
-    message.reductionIntervalSeconds =
-      object.reductionIntervalSeconds !== undefined &&
-      object.reductionIntervalSeconds !== null
-        ? Long.fromString(object.reductionIntervalSeconds)
-        : Long.UZERO;
-    message.reductions =
-      object.reductions !== undefined && object.reductions !== null
-        ? Number(object.reductions)
-        : 0;
-    message.finalRewardBps =
-      object.finalRewardBps !== undefined && object.finalRewardBps !== null
-        ? Number(object.finalRewardBps)
-        : 0;
-    return message;
+    return {
+      startTime: isSet(object.startTime) ? fromJsonTimestamp(object.startTime) : undefined,
+      initialRewardBps: isSet(object.initialRewardBps) ? Number(object.initialRewardBps) : 0,
+      reductionMultiplierBps: isSet(object.reductionMultiplierBps) ? Number(object.reductionMultiplierBps) : 0,
+      reductionIntervalSeconds: isSet(object.reductionIntervalSeconds)
+        ? Long.fromValue(object.reductionIntervalSeconds)
+        : Long.UZERO,
+      reductions: isSet(object.reductions) ? Number(object.reductions) : 0,
+      finalRewardBps: isSet(object.finalRewardBps) ? Number(object.finalRewardBps) : 0,
+    };
   },
 
   toJSON(message: SetRewardCurveParams): unknown {
     const obj: any = {};
-    message.startTime !== undefined &&
-      (obj.startTime = message.startTime.toISOString());
-    message.initialRewardBps !== undefined &&
-      (obj.initialRewardBps = message.initialRewardBps);
+    message.startTime !== undefined && (obj.startTime = message.startTime.toISOString());
+    message.initialRewardBps !== undefined && (obj.initialRewardBps = Math.round(message.initialRewardBps));
     message.reductionMultiplierBps !== undefined &&
-      (obj.reductionMultiplierBps = message.reductionMultiplierBps);
+      (obj.reductionMultiplierBps = Math.round(message.reductionMultiplierBps));
     message.reductionIntervalSeconds !== undefined &&
-      (obj.reductionIntervalSeconds = (
-        message.reductionIntervalSeconds || Long.UZERO
-      ).toString());
-    message.reductions !== undefined && (obj.reductions = message.reductions);
-    message.finalRewardBps !== undefined &&
-      (obj.finalRewardBps = message.finalRewardBps);
+      (obj.reductionIntervalSeconds = (message.reductionIntervalSeconds || Long.UZERO).toString());
+    message.reductions !== undefined && (obj.reductions = Math.round(message.reductions));
+    message.finalRewardBps !== undefined && (obj.finalRewardBps = Math.round(message.finalRewardBps));
     return obj;
   },
 
+  create(base?: DeepPartial<SetRewardCurveParams>): SetRewardCurveParams {
+    return SetRewardCurveParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SetRewardCurveParams>): SetRewardCurveParams {
-    const message = { ...baseSetRewardCurveParams } as SetRewardCurveParams;
+    const message = createBaseSetRewardCurveParams();
     message.startTime = object.startTime ?? undefined;
     message.initialRewardBps = object.initialRewardBps ?? 0;
     message.reductionMultiplierBps = object.reductionMultiplierBps ?? 0;
     message.reductionIntervalSeconds =
-      object.reductionIntervalSeconds !== undefined &&
-      object.reductionIntervalSeconds !== null
+      (object.reductionIntervalSeconds !== undefined && object.reductionIntervalSeconds !== null)
         ? Long.fromValue(object.reductionIntervalSeconds)
         : Long.UZERO;
     message.reductions = object.reductions ?? 0;
@@ -1888,41 +1842,33 @@ export const SetRewardCurveParams = {
   },
 };
 
-const baseMsgSetRewardCurveResponse: object = {};
+function createBaseMsgSetRewardCurveResponse(): MsgSetRewardCurveResponse {
+  return {};
+}
 
 export const MsgSetRewardCurveResponse = {
-  encode(
-    _: MsgSetRewardCurveResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSetRewardCurveResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetRewardCurveResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetRewardCurveResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgSetRewardCurveResponse,
-    } as MsgSetRewardCurveResponse;
+    const message = createBaseMsgSetRewardCurveResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSetRewardCurveResponse {
-    const message = {
-      ...baseMsgSetRewardCurveResponse,
-    } as MsgSetRewardCurveResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSetRewardCurveResponse): unknown {
@@ -1930,110 +1876,100 @@ export const MsgSetRewardCurveResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgSetRewardCurveResponse>
-  ): MsgSetRewardCurveResponse {
-    const message = {
-      ...baseMsgSetRewardCurveResponse,
-    } as MsgSetRewardCurveResponse;
+  create(base?: DeepPartial<MsgSetRewardCurveResponse>): MsgSetRewardCurveResponse {
+    return MsgSetRewardCurveResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgSetRewardCurveResponse>): MsgSetRewardCurveResponse {
+    const message = createBaseMsgSetRewardCurveResponse();
     return message;
   },
 };
 
-const baseMsgSetCommitmentCurve: object = { creator: "" };
+function createBaseMsgSetCommitmentCurve(): MsgSetCommitmentCurve {
+  return { creator: "", setCommitmentCurveParams: undefined };
+}
 
 export const MsgSetCommitmentCurve = {
-  encode(
-    message: MsgSetCommitmentCurve,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSetCommitmentCurve, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.setCommitmentCurveParams !== undefined) {
-      SetCommitmentCurveParams.encode(
-        message.setCommitmentCurveParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      SetCommitmentCurveParams.encode(message.setCommitmentCurveParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetCommitmentCurve {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetCommitmentCurve {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetCommitmentCurve } as MsgSetCommitmentCurve;
+    const message = createBaseMsgSetCommitmentCurve();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
-          message.setCommitmentCurveParams = SetCommitmentCurveParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.setCommitmentCurveParams = SetCommitmentCurveParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgSetCommitmentCurve {
-    const message = { ...baseMsgSetCommitmentCurve } as MsgSetCommitmentCurve;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.setCommitmentCurveParams =
-      object.setCommitmentCurveParams !== undefined &&
-      object.setCommitmentCurveParams !== null
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      setCommitmentCurveParams: isSet(object.setCommitmentCurveParams)
         ? SetCommitmentCurveParams.fromJSON(object.setCommitmentCurveParams)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MsgSetCommitmentCurve): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.setCommitmentCurveParams !== undefined &&
-      (obj.setCommitmentCurveParams = message.setCommitmentCurveParams
-        ? SetCommitmentCurveParams.toJSON(message.setCommitmentCurveParams)
-        : undefined);
+    message.setCommitmentCurveParams !== undefined && (obj.setCommitmentCurveParams = message.setCommitmentCurveParams
+      ? SetCommitmentCurveParams.toJSON(message.setCommitmentCurveParams)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgSetCommitmentCurve>
-  ): MsgSetCommitmentCurve {
-    const message = { ...baseMsgSetCommitmentCurve } as MsgSetCommitmentCurve;
+  create(base?: DeepPartial<MsgSetCommitmentCurve>): MsgSetCommitmentCurve {
+    return MsgSetCommitmentCurve.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgSetCommitmentCurve>): MsgSetCommitmentCurve {
+    const message = createBaseMsgSetCommitmentCurve();
     message.creator = object.creator ?? "";
     message.setCommitmentCurveParams =
-      object.setCommitmentCurveParams !== undefined &&
-      object.setCommitmentCurveParams !== null
+      (object.setCommitmentCurveParams !== undefined && object.setCommitmentCurveParams !== null)
         ? SetCommitmentCurveParams.fromPartial(object.setCommitmentCurveParams)
         : undefined;
     return message;
   },
 };
 
-const baseSetCommitmentCurveParams: object = {
-  maxDuration: Long.UZERO,
-  maxRewardMultiplier: 0,
-};
+function createBaseSetCommitmentCurveParams(): SetCommitmentCurveParams {
+  return { maxDuration: Long.UZERO, maxRewardMultiplier: 0 };
+}
 
 export const SetCommitmentCurveParams = {
-  encode(
-    message: SetCommitmentCurveParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: SetCommitmentCurveParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.maxDuration.isZero()) {
       writer.uint32(8).uint64(message.maxDuration);
     }
@@ -2043,107 +1979,91 @@ export const SetCommitmentCurveParams = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetCommitmentCurveParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetCommitmentCurveParams {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetCommitmentCurveParams,
-    } as SetCommitmentCurveParams;
+    const message = createBaseSetCommitmentCurveParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.maxDuration = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.maxRewardMultiplier = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): SetCommitmentCurveParams {
-    const message = {
-      ...baseSetCommitmentCurveParams,
-    } as SetCommitmentCurveParams;
-    message.maxDuration =
-      object.maxDuration !== undefined && object.maxDuration !== null
-        ? Long.fromString(object.maxDuration)
-        : Long.UZERO;
-    message.maxRewardMultiplier =
-      object.maxRewardMultiplier !== undefined &&
-      object.maxRewardMultiplier !== null
-        ? Number(object.maxRewardMultiplier)
-        : 0;
-    return message;
+    return {
+      maxDuration: isSet(object.maxDuration) ? Long.fromValue(object.maxDuration) : Long.UZERO,
+      maxRewardMultiplier: isSet(object.maxRewardMultiplier) ? Number(object.maxRewardMultiplier) : 0,
+    };
   },
 
   toJSON(message: SetCommitmentCurveParams): unknown {
     const obj: any = {};
-    message.maxDuration !== undefined &&
-      (obj.maxDuration = (message.maxDuration || Long.UZERO).toString());
-    message.maxRewardMultiplier !== undefined &&
-      (obj.maxRewardMultiplier = message.maxRewardMultiplier);
+    message.maxDuration !== undefined && (obj.maxDuration = (message.maxDuration || Long.UZERO).toString());
+    message.maxRewardMultiplier !== undefined && (obj.maxRewardMultiplier = Math.round(message.maxRewardMultiplier));
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetCommitmentCurveParams>
-  ): SetCommitmentCurveParams {
-    const message = {
-      ...baseSetCommitmentCurveParams,
-    } as SetCommitmentCurveParams;
-    message.maxDuration =
-      object.maxDuration !== undefined && object.maxDuration !== null
-        ? Long.fromValue(object.maxDuration)
-        : Long.UZERO;
+  create(base?: DeepPartial<SetCommitmentCurveParams>): SetCommitmentCurveParams {
+    return SetCommitmentCurveParams.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SetCommitmentCurveParams>): SetCommitmentCurveParams {
+    const message = createBaseSetCommitmentCurveParams();
+    message.maxDuration = (object.maxDuration !== undefined && object.maxDuration !== null)
+      ? Long.fromValue(object.maxDuration)
+      : Long.UZERO;
     message.maxRewardMultiplier = object.maxRewardMultiplier ?? 0;
     return message;
   },
 };
 
-const baseMsgSetCommitmentCurveResponse: object = {};
+function createBaseMsgSetCommitmentCurveResponse(): MsgSetCommitmentCurveResponse {
+  return {};
+}
 
 export const MsgSetCommitmentCurveResponse = {
-  encode(
-    _: MsgSetCommitmentCurveResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSetCommitmentCurveResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetCommitmentCurveResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetCommitmentCurveResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgSetCommitmentCurveResponse,
-    } as MsgSetCommitmentCurveResponse;
+    const message = createBaseMsgSetCommitmentCurveResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgSetCommitmentCurveResponse {
-    const message = {
-      ...baseMsgSetCommitmentCurveResponse,
-    } as MsgSetCommitmentCurveResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSetCommitmentCurveResponse): unknown {
@@ -2151,104 +2071,96 @@ export const MsgSetCommitmentCurveResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgSetCommitmentCurveResponse>
-  ): MsgSetCommitmentCurveResponse {
-    const message = {
-      ...baseMsgSetCommitmentCurveResponse,
-    } as MsgSetCommitmentCurveResponse;
+  create(base?: DeepPartial<MsgSetCommitmentCurveResponse>): MsgSetCommitmentCurveResponse {
+    return MsgSetCommitmentCurveResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgSetCommitmentCurveResponse>): MsgSetCommitmentCurveResponse {
+    const message = createBaseMsgSetCommitmentCurveResponse();
     return message;
   },
 };
 
-const baseMsgUpdatePool: object = { creator: "" };
+function createBaseMsgUpdatePool(): MsgUpdatePool {
+  return { creator: "", updatePoolParams: undefined };
+}
 
 export const MsgUpdatePool = {
-  encode(
-    message: MsgUpdatePool,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdatePool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.updatePoolParams !== undefined) {
-      UpdatePoolParams.encode(
-        message.updatePoolParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      UpdatePoolParams.encode(message.updatePoolParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
+    const message = createBaseMsgUpdatePool();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
-          message.updatePoolParams = UpdatePoolParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.updatePoolParams = UpdatePoolParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdatePool {
-    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.updatePoolParams =
-      object.updatePoolParams !== undefined && object.updatePoolParams !== null
-        ? UpdatePoolParams.fromJSON(object.updatePoolParams)
-        : undefined;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      updatePoolParams: isSet(object.updatePoolParams) ? UpdatePoolParams.fromJSON(object.updatePoolParams) : undefined,
+    };
   },
 
   toJSON(message: MsgUpdatePool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.updatePoolParams !== undefined &&
-      (obj.updatePoolParams = message.updatePoolParams
-        ? UpdatePoolParams.toJSON(message.updatePoolParams)
-        : undefined);
+      (obj.updatePoolParams = message.updatePoolParams ? UpdatePoolParams.toJSON(message.updatePoolParams) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdatePool>): MsgUpdatePool {
+    return MsgUpdatePool.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdatePool>): MsgUpdatePool {
-    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
+    const message = createBaseMsgUpdatePool();
     message.creator = object.creator ?? "";
-    message.updatePoolParams =
-      object.updatePoolParams !== undefined && object.updatePoolParams !== null
-        ? UpdatePoolParams.fromPartial(object.updatePoolParams)
-        : undefined;
+    message.updatePoolParams = (object.updatePoolParams !== undefined && object.updatePoolParams !== null)
+      ? UpdatePoolParams.fromPartial(object.updatePoolParams)
+      : undefined;
     return message;
   },
 };
 
-const baseUpdatePoolParams: object = {
-  poolId: Long.UZERO,
-  swapFee: "",
-  numQuotes: Long.UZERO,
-};
+function createBaseUpdatePoolParams(): UpdatePoolParams {
+  return { poolId: Long.UZERO, swapFee: "", numQuotes: Long.UZERO };
+}
 
 export const UpdatePoolParams = {
-  encode(
-    message: UpdatePoolParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdatePoolParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -2262,102 +2174,102 @@ export const UpdatePoolParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePoolParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
+    const message = createBaseUpdatePoolParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.swapFee = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.numQuotes = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdatePoolParams {
-    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.swapFee =
-      object.swapFee !== undefined && object.swapFee !== null
-        ? String(object.swapFee)
-        : "";
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromString(object.numQuotes)
-        : Long.UZERO;
-    return message;
+    return {
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+      swapFee: isSet(object.swapFee) ? String(object.swapFee) : "",
+      numQuotes: isSet(object.numQuotes) ? Long.fromValue(object.numQuotes) : Long.UZERO,
+    };
   },
 
   toJSON(message: UpdatePoolParams): unknown {
     const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
+    message.numQuotes !== undefined && (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<UpdatePoolParams>): UpdatePoolParams {
+    return UpdatePoolParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UpdatePoolParams>): UpdatePoolParams {
-    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    const message = createBaseUpdatePoolParams();
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     message.swapFee = object.swapFee ?? "";
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromValue(object.numQuotes)
-        : Long.UZERO;
+    message.numQuotes = (object.numQuotes !== undefined && object.numQuotes !== null)
+      ? Long.fromValue(object.numQuotes)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgUpdatePoolResponse: object = {};
+function createBaseMsgUpdatePoolResponse(): MsgUpdatePoolResponse {
+  return {};
+}
 
 export const MsgUpdatePoolResponse = {
-  encode(
-    _: MsgUpdatePoolResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdatePoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdatePoolResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePoolResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
+    const message = createBaseMsgUpdatePoolResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdatePoolResponse {
-    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdatePoolResponse): unknown {
@@ -2365,19 +2277,22 @@ export const MsgUpdatePoolResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdatePoolResponse>): MsgUpdatePoolResponse {
+    return MsgUpdatePoolResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(_: DeepPartial<MsgUpdatePoolResponse>): MsgUpdatePoolResponse {
-    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
+    const message = createBaseMsgUpdatePoolResponse();
     return message;
   },
 };
 
-const baseMsgDeprecatePool: object = { creator: "", poolId: Long.UZERO };
+function createBaseMsgDeprecatePool(): MsgDeprecatePool {
+  return { creator: "", poolId: Long.UZERO };
+}
 
 export const MsgDeprecatePool = {
-  encode(
-    message: MsgDeprecatePool,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgDeprecatePool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
@@ -2388,93 +2303,90 @@ export const MsgDeprecatePool = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeprecatePool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgDeprecatePool } as MsgDeprecatePool;
+    const message = createBaseMsgDeprecatePool();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.poolId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgDeprecatePool {
-    const message = { ...baseMsgDeprecatePool } as MsgDeprecatePool;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    return message;
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      poolId: isSet(object.poolId) ? Long.fromValue(object.poolId) : Long.UZERO,
+    };
   },
 
   toJSON(message: MsgDeprecatePool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.poolId !== undefined && (obj.poolId = (message.poolId || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<MsgDeprecatePool>): MsgDeprecatePool {
+    return MsgDeprecatePool.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgDeprecatePool>): MsgDeprecatePool {
-    const message = { ...baseMsgDeprecatePool } as MsgDeprecatePool;
+    const message = createBaseMsgDeprecatePool();
     message.creator = object.creator ?? "";
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
+    message.poolId = (object.poolId !== undefined && object.poolId !== null)
+      ? Long.fromValue(object.poolId)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgDeprecatePoolResponse: object = {};
+function createBaseMsgDeprecatePoolResponse(): MsgDeprecatePoolResponse {
+  return {};
+}
 
 export const MsgDeprecatePoolResponse = {
-  encode(
-    _: MsgDeprecatePoolResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgDeprecatePoolResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDeprecatePoolResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeprecatePoolResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDeprecatePoolResponse,
-    } as MsgDeprecatePoolResponse;
+    const message = createBaseMsgDeprecatePoolResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgDeprecatePoolResponse {
-    const message = {
-      ...baseMsgDeprecatePoolResponse,
-    } as MsgDeprecatePoolResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgDeprecatePoolResponse): unknown {
@@ -2482,130 +2394,121 @@ export const MsgDeprecatePoolResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgDeprecatePoolResponse>
-  ): MsgDeprecatePoolResponse {
-    const message = {
-      ...baseMsgDeprecatePoolResponse,
-    } as MsgDeprecatePoolResponse;
+  create(base?: DeepPartial<MsgDeprecatePoolResponse>): MsgDeprecatePoolResponse {
+    return MsgDeprecatePoolResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgDeprecatePoolResponse>): MsgDeprecatePoolResponse {
+    const message = createBaseMsgDeprecatePoolResponse();
     return message;
   },
 };
 
-const baseMsgCreatePoolRoute: object = { creator: "" };
+function createBaseMsgCreatePoolRoute(): MsgCreatePoolRoute {
+  return { creator: "", createPoolRouteParams: undefined };
+}
 
 export const MsgCreatePoolRoute = {
-  encode(
-    message: MsgCreatePoolRoute,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreatePoolRoute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.createPoolRouteParams !== undefined) {
-      CreatePoolRouteParams.encode(
-        message.createPoolRouteParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      CreatePoolRouteParams.encode(message.createPoolRouteParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePoolRoute {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreatePoolRoute } as MsgCreatePoolRoute;
+    const message = createBaseMsgCreatePoolRoute();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
-          message.createPoolRouteParams = CreatePoolRouteParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createPoolRouteParams = CreatePoolRouteParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgCreatePoolRoute {
-    const message = { ...baseMsgCreatePoolRoute } as MsgCreatePoolRoute;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.createPoolRouteParams =
-      object.createPoolRouteParams !== undefined &&
-      object.createPoolRouteParams !== null
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      createPoolRouteParams: isSet(object.createPoolRouteParams)
         ? CreatePoolRouteParams.fromJSON(object.createPoolRouteParams)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MsgCreatePoolRoute): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.createPoolRouteParams !== undefined &&
-      (obj.createPoolRouteParams = message.createPoolRouteParams
-        ? CreatePoolRouteParams.toJSON(message.createPoolRouteParams)
-        : undefined);
+    message.createPoolRouteParams !== undefined && (obj.createPoolRouteParams = message.createPoolRouteParams
+      ? CreatePoolRouteParams.toJSON(message.createPoolRouteParams)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgCreatePoolRoute>): MsgCreatePoolRoute {
+    return MsgCreatePoolRoute.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgCreatePoolRoute>): MsgCreatePoolRoute {
-    const message = { ...baseMsgCreatePoolRoute } as MsgCreatePoolRoute;
+    const message = createBaseMsgCreatePoolRoute();
     message.creator = object.creator ?? "";
     message.createPoolRouteParams =
-      object.createPoolRouteParams !== undefined &&
-      object.createPoolRouteParams !== null
+      (object.createPoolRouteParams !== undefined && object.createPoolRouteParams !== null)
         ? CreatePoolRouteParams.fromPartial(object.createPoolRouteParams)
         : undefined;
     return message;
   },
 };
 
-const baseMsgCreatePoolRouteResponse: object = {};
+function createBaseMsgCreatePoolRouteResponse(): MsgCreatePoolRouteResponse {
+  return {};
+}
 
 export const MsgCreatePoolRouteResponse = {
-  encode(
-    _: MsgCreatePoolRouteResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgCreatePoolRouteResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreatePoolRouteResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePoolRouteResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreatePoolRouteResponse,
-    } as MsgCreatePoolRouteResponse;
+    const message = createBaseMsgCreatePoolRouteResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgCreatePoolRouteResponse {
-    const message = {
-      ...baseMsgCreatePoolRouteResponse,
-    } as MsgCreatePoolRouteResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgCreatePoolRouteResponse): unknown {
@@ -2613,27 +2516,22 @@ export const MsgCreatePoolRouteResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgCreatePoolRouteResponse>
-  ): MsgCreatePoolRouteResponse {
-    const message = {
-      ...baseMsgCreatePoolRouteResponse,
-    } as MsgCreatePoolRouteResponse;
+  create(base?: DeepPartial<MsgCreatePoolRouteResponse>): MsgCreatePoolRouteResponse {
+    return MsgCreatePoolRouteResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgCreatePoolRouteResponse>): MsgCreatePoolRouteResponse {
+    const message = createBaseMsgCreatePoolRouteResponse();
     return message;
   },
 };
 
-const baseCreatePoolRouteParams: object = {
-  marketId: "",
-  poolIds: Long.UZERO,
-  numQuotes: Long.UZERO,
-};
+function createBaseCreatePoolRouteParams(): CreatePoolRouteParams {
+  return { marketId: "", poolIds: [], numQuotes: Long.UZERO };
+}
 
 export const CreatePoolRouteParams = {
-  encode(
-    message: CreatePoolRouteParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CreatePoolRouteParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -2648,55 +2546,59 @@ export const CreatePoolRouteParams = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): CreatePoolRouteParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): CreatePoolRouteParams {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCreatePoolRouteParams } as CreatePoolRouteParams;
-    message.poolIds = [];
+    const message = createBaseCreatePoolRouteParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
-          if ((tag & 7) === 2) {
+          if (tag === 16) {
+            message.poolIds.push(reader.uint64() as Long);
+
+            continue;
+          }
+
+          if (tag === 18) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.poolIds.push(reader.uint64() as Long);
             }
-          } else {
-            message.poolIds.push(reader.uint64() as Long);
+
+            continue;
           }
+
           break;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.numQuotes = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): CreatePoolRouteParams {
-    const message = { ...baseCreatePoolRouteParams } as CreatePoolRouteParams;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.poolIds = (object.poolIds ?? []).map((e: any) =>
-      Long.fromString(e)
-    );
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromString(object.numQuotes)
-        : Long.UZERO;
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      poolIds: Array.isArray(object?.poolIds) ? object.poolIds.map((e: any) => Long.fromValue(e)) : [],
+      numQuotes: isSet(object.numQuotes) ? Long.fromValue(object.numQuotes) : Long.UZERO,
+    };
   },
 
   toJSON(message: CreatePoolRouteParams): unknown {
@@ -2707,139 +2609,130 @@ export const CreatePoolRouteParams = {
     } else {
       obj.poolIds = [];
     }
-    message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
+    message.numQuotes !== undefined && (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<CreatePoolRouteParams>
-  ): CreatePoolRouteParams {
-    const message = { ...baseCreatePoolRouteParams } as CreatePoolRouteParams;
+  create(base?: DeepPartial<CreatePoolRouteParams>): CreatePoolRouteParams {
+    return CreatePoolRouteParams.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<CreatePoolRouteParams>): CreatePoolRouteParams {
+    const message = createBaseCreatePoolRouteParams();
     message.marketId = object.marketId ?? "";
-    message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromValue(object.numQuotes)
-        : Long.UZERO;
+    message.poolIds = object.poolIds?.map((e) => Long.fromValue(e)) || [];
+    message.numQuotes = (object.numQuotes !== undefined && object.numQuotes !== null)
+      ? Long.fromValue(object.numQuotes)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgRemovePoolRoute: object = { creator: "" };
+function createBaseMsgRemovePoolRoute(): MsgRemovePoolRoute {
+  return { creator: "", removePoolRouteParams: undefined };
+}
 
 export const MsgRemovePoolRoute = {
-  encode(
-    message: MsgRemovePoolRoute,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgRemovePoolRoute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.removePoolRouteParams !== undefined) {
-      RemovePoolRouteParams.encode(
-        message.removePoolRouteParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      RemovePoolRouteParams.encode(message.removePoolRouteParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemovePoolRoute {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRemovePoolRoute } as MsgRemovePoolRoute;
+    const message = createBaseMsgRemovePoolRoute();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
-          message.removePoolRouteParams = RemovePoolRouteParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.removePoolRouteParams = RemovePoolRouteParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgRemovePoolRoute {
-    const message = { ...baseMsgRemovePoolRoute } as MsgRemovePoolRoute;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.removePoolRouteParams =
-      object.removePoolRouteParams !== undefined &&
-      object.removePoolRouteParams !== null
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      removePoolRouteParams: isSet(object.removePoolRouteParams)
         ? RemovePoolRouteParams.fromJSON(object.removePoolRouteParams)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MsgRemovePoolRoute): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.removePoolRouteParams !== undefined &&
-      (obj.removePoolRouteParams = message.removePoolRouteParams
-        ? RemovePoolRouteParams.toJSON(message.removePoolRouteParams)
-        : undefined);
+    message.removePoolRouteParams !== undefined && (obj.removePoolRouteParams = message.removePoolRouteParams
+      ? RemovePoolRouteParams.toJSON(message.removePoolRouteParams)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgRemovePoolRoute>): MsgRemovePoolRoute {
+    return MsgRemovePoolRoute.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgRemovePoolRoute>): MsgRemovePoolRoute {
-    const message = { ...baseMsgRemovePoolRoute } as MsgRemovePoolRoute;
+    const message = createBaseMsgRemovePoolRoute();
     message.creator = object.creator ?? "";
     message.removePoolRouteParams =
-      object.removePoolRouteParams !== undefined &&
-      object.removePoolRouteParams !== null
+      (object.removePoolRouteParams !== undefined && object.removePoolRouteParams !== null)
         ? RemovePoolRouteParams.fromPartial(object.removePoolRouteParams)
         : undefined;
     return message;
   },
 };
 
-const baseMsgRemovePoolRouteResponse: object = {};
+function createBaseMsgRemovePoolRouteResponse(): MsgRemovePoolRouteResponse {
+  return {};
+}
 
 export const MsgRemovePoolRouteResponse = {
-  encode(
-    _: MsgRemovePoolRouteResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgRemovePoolRouteResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRemovePoolRouteResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemovePoolRouteResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRemovePoolRouteResponse,
-    } as MsgRemovePoolRouteResponse;
+    const message = createBaseMsgRemovePoolRouteResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgRemovePoolRouteResponse {
-    const message = {
-      ...baseMsgRemovePoolRouteResponse,
-    } as MsgRemovePoolRouteResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgRemovePoolRouteResponse): unknown {
@@ -2847,23 +2740,22 @@ export const MsgRemovePoolRouteResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgRemovePoolRouteResponse>
-  ): MsgRemovePoolRouteResponse {
-    const message = {
-      ...baseMsgRemovePoolRouteResponse,
-    } as MsgRemovePoolRouteResponse;
+  create(base?: DeepPartial<MsgRemovePoolRouteResponse>): MsgRemovePoolRouteResponse {
+    return MsgRemovePoolRouteResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgRemovePoolRouteResponse>): MsgRemovePoolRouteResponse {
+    const message = createBaseMsgRemovePoolRouteResponse();
     return message;
   },
 };
 
-const baseRemovePoolRouteParams: object = { marketId: "", poolIds: Long.UZERO };
+function createBaseRemovePoolRouteParams(): RemovePoolRouteParams {
+  return { marketId: "", poolIds: [] };
+}
 
 export const RemovePoolRouteParams = {
-  encode(
-    message: RemovePoolRouteParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RemovePoolRouteParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -2875,48 +2767,51 @@ export const RemovePoolRouteParams = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RemovePoolRouteParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RemovePoolRouteParams {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRemovePoolRouteParams } as RemovePoolRouteParams;
-    message.poolIds = [];
+    const message = createBaseRemovePoolRouteParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
-          if ((tag & 7) === 2) {
+          if (tag === 16) {
+            message.poolIds.push(reader.uint64() as Long);
+
+            continue;
+          }
+
+          if (tag === 18) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.poolIds.push(reader.uint64() as Long);
             }
-          } else {
-            message.poolIds.push(reader.uint64() as Long);
+
+            continue;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
+
           break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RemovePoolRouteParams {
-    const message = { ...baseRemovePoolRouteParams } as RemovePoolRouteParams;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.poolIds = (object.poolIds ?? []).map((e: any) =>
-      Long.fromString(e)
-    );
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      poolIds: Array.isArray(object?.poolIds) ? object.poolIds.map((e: any) => Long.fromValue(e)) : [],
+    };
   },
 
   toJSON(message: RemovePoolRouteParams): unknown {
@@ -2930,130 +2825,123 @@ export const RemovePoolRouteParams = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RemovePoolRouteParams>
-  ): RemovePoolRouteParams {
-    const message = { ...baseRemovePoolRouteParams } as RemovePoolRouteParams;
+  create(base?: DeepPartial<RemovePoolRouteParams>): RemovePoolRouteParams {
+    return RemovePoolRouteParams.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<RemovePoolRouteParams>): RemovePoolRouteParams {
+    const message = createBaseRemovePoolRouteParams();
     message.marketId = object.marketId ?? "";
-    message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
+    message.poolIds = object.poolIds?.map((e) => Long.fromValue(e)) || [];
     return message;
   },
 };
 
-const baseMsgUpdatePoolRoute: object = { creator: "" };
+function createBaseMsgUpdatePoolRoute(): MsgUpdatePoolRoute {
+  return { creator: "", updatePoolRouteParams: undefined };
+}
 
 export const MsgUpdatePoolRoute = {
-  encode(
-    message: MsgUpdatePoolRoute,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdatePoolRoute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (message.updatePoolRouteParams !== undefined) {
-      UpdatePoolRouteParams.encode(
-        message.updatePoolRouteParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+      UpdatePoolRouteParams.encode(message.updatePoolRouteParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePoolRoute {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdatePoolRoute } as MsgUpdatePoolRoute;
+    const message = createBaseMsgUpdatePoolRoute();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.creator = reader.string();
-          break;
+          continue;
         case 2:
-          message.updatePoolRouteParams = UpdatePoolRouteParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.updatePoolRouteParams = UpdatePoolRouteParams.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdatePoolRoute {
-    const message = { ...baseMsgUpdatePoolRoute } as MsgUpdatePoolRoute;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.updatePoolRouteParams =
-      object.updatePoolRouteParams !== undefined &&
-      object.updatePoolRouteParams !== null
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      updatePoolRouteParams: isSet(object.updatePoolRouteParams)
         ? UpdatePoolRouteParams.fromJSON(object.updatePoolRouteParams)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: MsgUpdatePoolRoute): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.updatePoolRouteParams !== undefined &&
-      (obj.updatePoolRouteParams = message.updatePoolRouteParams
-        ? UpdatePoolRouteParams.toJSON(message.updatePoolRouteParams)
-        : undefined);
+    message.updatePoolRouteParams !== undefined && (obj.updatePoolRouteParams = message.updatePoolRouteParams
+      ? UpdatePoolRouteParams.toJSON(message.updatePoolRouteParams)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdatePoolRoute>): MsgUpdatePoolRoute {
+    return MsgUpdatePoolRoute.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdatePoolRoute>): MsgUpdatePoolRoute {
-    const message = { ...baseMsgUpdatePoolRoute } as MsgUpdatePoolRoute;
+    const message = createBaseMsgUpdatePoolRoute();
     message.creator = object.creator ?? "";
     message.updatePoolRouteParams =
-      object.updatePoolRouteParams !== undefined &&
-      object.updatePoolRouteParams !== null
+      (object.updatePoolRouteParams !== undefined && object.updatePoolRouteParams !== null)
         ? UpdatePoolRouteParams.fromPartial(object.updatePoolRouteParams)
         : undefined;
     return message;
   },
 };
 
-const baseMsgUpdatePoolRouteResponse: object = {};
+function createBaseMsgUpdatePoolRouteResponse(): MsgUpdatePoolRouteResponse {
+  return {};
+}
 
 export const MsgUpdatePoolRouteResponse = {
-  encode(
-    _: MsgUpdatePoolRouteResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdatePoolRouteResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdatePoolRouteResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePoolRouteResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdatePoolRouteResponse,
-    } as MsgUpdatePoolRouteResponse;
+    const message = createBaseMsgUpdatePoolRouteResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdatePoolRouteResponse {
-    const message = {
-      ...baseMsgUpdatePoolRouteResponse,
-    } as MsgUpdatePoolRouteResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdatePoolRouteResponse): unknown {
@@ -3061,27 +2949,22 @@ export const MsgUpdatePoolRouteResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdatePoolRouteResponse>
-  ): MsgUpdatePoolRouteResponse {
-    const message = {
-      ...baseMsgUpdatePoolRouteResponse,
-    } as MsgUpdatePoolRouteResponse;
+  create(base?: DeepPartial<MsgUpdatePoolRouteResponse>): MsgUpdatePoolRouteResponse {
+    return MsgUpdatePoolRouteResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdatePoolRouteResponse>): MsgUpdatePoolRouteResponse {
+    const message = createBaseMsgUpdatePoolRouteResponse();
     return message;
   },
 };
 
-const baseUpdatePoolRouteParams: object = {
-  marketId: "",
-  poolIds: Long.UZERO,
-  numQuotes: Long.UZERO,
-};
+function createBaseUpdatePoolRouteParams(): UpdatePoolRouteParams {
+  return { marketId: "", poolIds: [], numQuotes: Long.UZERO };
+}
 
 export const UpdatePoolRouteParams = {
-  encode(
-    message: UpdatePoolRouteParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdatePoolRouteParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
@@ -3096,55 +2979,59 @@ export const UpdatePoolRouteParams = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdatePoolRouteParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePoolRouteParams {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdatePoolRouteParams } as UpdatePoolRouteParams;
-    message.poolIds = [];
+    const message = createBaseUpdatePoolRouteParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.marketId = reader.string();
-          break;
+          continue;
         case 2:
-          if ((tag & 7) === 2) {
+          if (tag === 16) {
+            message.poolIds.push(reader.uint64() as Long);
+
+            continue;
+          }
+
+          if (tag === 18) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.poolIds.push(reader.uint64() as Long);
             }
-          } else {
-            message.poolIds.push(reader.uint64() as Long);
+
+            continue;
           }
+
           break;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.numQuotes = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdatePoolRouteParams {
-    const message = { ...baseUpdatePoolRouteParams } as UpdatePoolRouteParams;
-    message.marketId =
-      object.marketId !== undefined && object.marketId !== null
-        ? String(object.marketId)
-        : "";
-    message.poolIds = (object.poolIds ?? []).map((e: any) =>
-      Long.fromString(e)
-    );
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromString(object.numQuotes)
-        : Long.UZERO;
-    return message;
+    return {
+      marketId: isSet(object.marketId) ? String(object.marketId) : "",
+      poolIds: Array.isArray(object?.poolIds) ? object.poolIds.map((e: any) => Long.fromValue(e)) : [],
+      numQuotes: isSet(object.numQuotes) ? Long.fromValue(object.numQuotes) : Long.UZERO,
+    };
   },
 
   toJSON(message: UpdatePoolRouteParams): unknown {
@@ -3155,32 +3042,31 @@ export const UpdatePoolRouteParams = {
     } else {
       obj.poolIds = [];
     }
-    message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
+    message.numQuotes !== undefined && (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdatePoolRouteParams>
-  ): UpdatePoolRouteParams {
-    const message = { ...baseUpdatePoolRouteParams } as UpdatePoolRouteParams;
+  create(base?: DeepPartial<UpdatePoolRouteParams>): UpdatePoolRouteParams {
+    return UpdatePoolRouteParams.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UpdatePoolRouteParams>): UpdatePoolRouteParams {
+    const message = createBaseUpdatePoolRouteParams();
     message.marketId = object.marketId ?? "";
-    message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromValue(object.numQuotes)
-        : Long.UZERO;
+    message.poolIds = object.poolIds?.map((e) => Long.fromValue(e)) || [];
+    message.numQuotes = (object.numQuotes !== undefined && object.numQuotes !== null)
+      ? Long.fromValue(object.numQuotes)
+      : Long.UZERO;
     return message;
   },
 };
 
-const baseMsgUpdateParams: object = { authority: "" };
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return { authority: "", params: undefined };
+}
 
 export const MsgUpdateParams = {
-  encode(
-    message: MsgUpdateParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
@@ -3191,95 +3077,90 @@ export const MsgUpdateParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authority = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.params = ParamsToUpdate.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
-    message.authority =
-      object.authority !== undefined && object.authority !== null
-        ? String(object.authority)
-        : "";
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? ParamsToUpdate.fromJSON(object.params)
-        : undefined;
-    return message;
+    return {
+      authority: isSet(object.authority) ? String(object.authority) : "",
+      params: isSet(object.params) ? ParamsToUpdate.fromJSON(object.params) : undefined,
+    };
   },
 
   toJSON(message: MsgUpdateParams): unknown {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
-    message.params !== undefined &&
-      (obj.params = message.params
-        ? ParamsToUpdate.toJSON(message.params)
-        : undefined);
+    message.params !== undefined && (obj.params = message.params ? ParamsToUpdate.toJSON(message.params) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
-    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    const message = createBaseMsgUpdateParams();
     message.authority = object.authority ?? "";
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? ParamsToUpdate.fromPartial(object.params)
-        : undefined;
+    message.params = (object.params !== undefined && object.params !== null)
+      ? ParamsToUpdate.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
 
-const baseMsgUpdateParamsResponse: object = {};
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
 
 export const MsgUpdateParamsResponse = {
-  encode(
-    _: MsgUpdateParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+    const message = createBaseMsgUpdateParamsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(_: any): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateParamsResponse): unknown {
@@ -3287,12 +3168,12 @@ export const MsgUpdateParamsResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateParamsResponse>
-  ): MsgUpdateParamsResponse {
-    const message = {
-      ...baseMsgUpdateParamsResponse,
-    } as MsgUpdateParamsResponse;
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
     return message;
   },
 };
@@ -3301,46 +3182,20 @@ export const MsgUpdateParamsResponse = {
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   HandleCreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse>;
-  HandleCreatePoolWithLiquidity(
-    request: MsgCreatePoolWithLiquidity
-  ): Promise<MsgCreatePoolWithLiquidityResponse>;
-  HandleAddLiquidity(
-    request: MsgAddLiquidity
-  ): Promise<MsgAddLiquidityResponse>;
-  HandleRemoveLiquidity(
-    request: MsgRemoveLiquidity
-  ): Promise<MsgRemoveLiquidityResponse>;
-  HandleSetRewardsWeights(
-    request: MsgSetRewardsWeights
-  ): Promise<MsgSetRewardsWeightsResponse>;
-  HandleStakePoolToken(
-    request: MsgStakePoolToken
-  ): Promise<MsgStakePoolTokenResponse>;
-  HandleUnstakePoolToken(
-    request: MsgUnstakePoolToken
-  ): Promise<MsgUnstakePoolTokenResponse>;
-  HandleClaimPoolRewards(
-    request: MsgClaimPoolRewards
-  ): Promise<MsgClaimPoolRewardsResponse>;
-  HandleSetRewardCurve(
-    request: MsgSetRewardCurve
-  ): Promise<MsgSetRewardCurveResponse>;
-  HandleSetCommitmentCurve(
-    request: MsgSetCommitmentCurve
-  ): Promise<MsgSetCommitmentCurveResponse>;
+  HandleCreatePoolWithLiquidity(request: MsgCreatePoolWithLiquidity): Promise<MsgCreatePoolWithLiquidityResponse>;
+  HandleAddLiquidity(request: MsgAddLiquidity): Promise<MsgAddLiquidityResponse>;
+  HandleRemoveLiquidity(request: MsgRemoveLiquidity): Promise<MsgRemoveLiquidityResponse>;
+  HandleSetRewardsWeights(request: MsgSetRewardsWeights): Promise<MsgSetRewardsWeightsResponse>;
+  HandleStakePoolToken(request: MsgStakePoolToken): Promise<MsgStakePoolTokenResponse>;
+  HandleUnstakePoolToken(request: MsgUnstakePoolToken): Promise<MsgUnstakePoolTokenResponse>;
+  HandleClaimPoolRewards(request: MsgClaimPoolRewards): Promise<MsgClaimPoolRewardsResponse>;
+  HandleSetRewardCurve(request: MsgSetRewardCurve): Promise<MsgSetRewardCurveResponse>;
+  HandleSetCommitmentCurve(request: MsgSetCommitmentCurve): Promise<MsgSetCommitmentCurveResponse>;
   HandleUpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse>;
-  HandleDeprecatePool(
-    request: MsgDeprecatePool
-  ): Promise<MsgDeprecatePoolResponse>;
-  HandleCreatePoolRoute(
-    request: MsgCreatePoolRoute
-  ): Promise<MsgCreatePoolRouteResponse>;
-  HandleRemovePoolRoute(
-    request: MsgRemovePoolRoute
-  ): Promise<MsgRemovePoolRouteResponse>;
-  HandleUpdatePoolRoute(
-    request: MsgUpdatePoolRoute
-  ): Promise<MsgUpdatePoolRouteResponse>;
+  HandleDeprecatePool(request: MsgDeprecatePool): Promise<MsgDeprecatePoolResponse>;
+  HandleCreatePoolRoute(request: MsgCreatePoolRoute): Promise<MsgCreatePoolRouteResponse>;
+  HandleRemovePoolRoute(request: MsgRemovePoolRoute): Promise<MsgRemovePoolRouteResponse>;
+  HandleUpdatePoolRoute(request: MsgUpdatePoolRoute): Promise<MsgUpdatePoolRouteResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -3352,11 +3207,12 @@ export interface Msg {
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.liquiditypool.Msg";
     this.rpc = rpc;
     this.HandleCreatePool = this.HandleCreatePool.bind(this);
-    this.HandleCreatePoolWithLiquidity =
-      this.HandleCreatePoolWithLiquidity.bind(this);
+    this.HandleCreatePoolWithLiquidity = this.HandleCreatePoolWithLiquidity.bind(this);
     this.HandleAddLiquidity = this.HandleAddLiquidity.bind(this);
     this.HandleRemoveLiquidity = this.HandleRemoveLiquidity.bind(this);
     this.HandleSetRewardsWeights = this.HandleSetRewardsWeights.bind(this);
@@ -3374,249 +3230,111 @@ export class MsgClientImpl implements Msg {
   }
   HandleCreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
     const data = MsgCreatePool.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleCreatePool",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreatePoolResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleCreatePool", data);
+    return promise.then((data) => MsgCreatePoolResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleCreatePoolWithLiquidity(
-    request: MsgCreatePoolWithLiquidity
-  ): Promise<MsgCreatePoolWithLiquidityResponse> {
+  HandleCreatePoolWithLiquidity(request: MsgCreatePoolWithLiquidity): Promise<MsgCreatePoolWithLiquidityResponse> {
     const data = MsgCreatePoolWithLiquidity.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleCreatePoolWithLiquidity",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreatePoolWithLiquidityResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleCreatePoolWithLiquidity", data);
+    return promise.then((data) => MsgCreatePoolWithLiquidityResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleAddLiquidity(
-    request: MsgAddLiquidity
-  ): Promise<MsgAddLiquidityResponse> {
+  HandleAddLiquidity(request: MsgAddLiquidity): Promise<MsgAddLiquidityResponse> {
     const data = MsgAddLiquidity.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleAddLiquidity",
-      data
-    );
-    return promise.then((data) =>
-      MsgAddLiquidityResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleAddLiquidity", data);
+    return promise.then((data) => MsgAddLiquidityResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleRemoveLiquidity(
-    request: MsgRemoveLiquidity
-  ): Promise<MsgRemoveLiquidityResponse> {
+  HandleRemoveLiquidity(request: MsgRemoveLiquidity): Promise<MsgRemoveLiquidityResponse> {
     const data = MsgRemoveLiquidity.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleRemoveLiquidity",
-      data
-    );
-    return promise.then((data) =>
-      MsgRemoveLiquidityResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleRemoveLiquidity", data);
+    return promise.then((data) => MsgRemoveLiquidityResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleSetRewardsWeights(
-    request: MsgSetRewardsWeights
-  ): Promise<MsgSetRewardsWeightsResponse> {
+  HandleSetRewardsWeights(request: MsgSetRewardsWeights): Promise<MsgSetRewardsWeightsResponse> {
     const data = MsgSetRewardsWeights.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleSetRewardsWeights",
-      data
-    );
-    return promise.then((data) =>
-      MsgSetRewardsWeightsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleSetRewardsWeights", data);
+    return promise.then((data) => MsgSetRewardsWeightsResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleStakePoolToken(
-    request: MsgStakePoolToken
-  ): Promise<MsgStakePoolTokenResponse> {
+  HandleStakePoolToken(request: MsgStakePoolToken): Promise<MsgStakePoolTokenResponse> {
     const data = MsgStakePoolToken.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleStakePoolToken",
-      data
-    );
-    return promise.then((data) =>
-      MsgStakePoolTokenResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleStakePoolToken", data);
+    return promise.then((data) => MsgStakePoolTokenResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleUnstakePoolToken(
-    request: MsgUnstakePoolToken
-  ): Promise<MsgUnstakePoolTokenResponse> {
+  HandleUnstakePoolToken(request: MsgUnstakePoolToken): Promise<MsgUnstakePoolTokenResponse> {
     const data = MsgUnstakePoolToken.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleUnstakePoolToken",
-      data
-    );
-    return promise.then((data) =>
-      MsgUnstakePoolTokenResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleUnstakePoolToken", data);
+    return promise.then((data) => MsgUnstakePoolTokenResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleClaimPoolRewards(
-    request: MsgClaimPoolRewards
-  ): Promise<MsgClaimPoolRewardsResponse> {
+  HandleClaimPoolRewards(request: MsgClaimPoolRewards): Promise<MsgClaimPoolRewardsResponse> {
     const data = MsgClaimPoolRewards.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleClaimPoolRewards",
-      data
-    );
-    return promise.then((data) =>
-      MsgClaimPoolRewardsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleClaimPoolRewards", data);
+    return promise.then((data) => MsgClaimPoolRewardsResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleSetRewardCurve(
-    request: MsgSetRewardCurve
-  ): Promise<MsgSetRewardCurveResponse> {
+  HandleSetRewardCurve(request: MsgSetRewardCurve): Promise<MsgSetRewardCurveResponse> {
     const data = MsgSetRewardCurve.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleSetRewardCurve",
-      data
-    );
-    return promise.then((data) =>
-      MsgSetRewardCurveResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleSetRewardCurve", data);
+    return promise.then((data) => MsgSetRewardCurveResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleSetCommitmentCurve(
-    request: MsgSetCommitmentCurve
-  ): Promise<MsgSetCommitmentCurveResponse> {
+  HandleSetCommitmentCurve(request: MsgSetCommitmentCurve): Promise<MsgSetCommitmentCurveResponse> {
     const data = MsgSetCommitmentCurve.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleSetCommitmentCurve",
-      data
-    );
-    return promise.then((data) =>
-      MsgSetCommitmentCurveResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleSetCommitmentCurve", data);
+    return promise.then((data) => MsgSetCommitmentCurveResponse.decode(_m0.Reader.create(data)));
   }
 
   HandleUpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse> {
     const data = MsgUpdatePool.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleUpdatePool",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdatePoolResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleUpdatePool", data);
+    return promise.then((data) => MsgUpdatePoolResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleDeprecatePool(
-    request: MsgDeprecatePool
-  ): Promise<MsgDeprecatePoolResponse> {
+  HandleDeprecatePool(request: MsgDeprecatePool): Promise<MsgDeprecatePoolResponse> {
     const data = MsgDeprecatePool.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleDeprecatePool",
-      data
-    );
-    return promise.then((data) =>
-      MsgDeprecatePoolResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleDeprecatePool", data);
+    return promise.then((data) => MsgDeprecatePoolResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleCreatePoolRoute(
-    request: MsgCreatePoolRoute
-  ): Promise<MsgCreatePoolRouteResponse> {
+  HandleCreatePoolRoute(request: MsgCreatePoolRoute): Promise<MsgCreatePoolRouteResponse> {
     const data = MsgCreatePoolRoute.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleCreatePoolRoute",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreatePoolRouteResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleCreatePoolRoute", data);
+    return promise.then((data) => MsgCreatePoolRouteResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleRemovePoolRoute(
-    request: MsgRemovePoolRoute
-  ): Promise<MsgRemovePoolRouteResponse> {
+  HandleRemovePoolRoute(request: MsgRemovePoolRoute): Promise<MsgRemovePoolRouteResponse> {
     const data = MsgRemovePoolRoute.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleRemovePoolRoute",
-      data
-    );
-    return promise.then((data) =>
-      MsgRemovePoolRouteResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleRemovePoolRoute", data);
+    return promise.then((data) => MsgRemovePoolRouteResponse.decode(_m0.Reader.create(data)));
   }
 
-  HandleUpdatePoolRoute(
-    request: MsgUpdatePoolRoute
-  ): Promise<MsgUpdatePoolRouteResponse> {
+  HandleUpdatePoolRoute(request: MsgUpdatePoolRoute): Promise<MsgUpdatePoolRouteResponse> {
     const data = MsgUpdatePoolRoute.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleUpdatePoolRoute",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdatePoolRouteResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "HandleUpdatePoolRoute", data);
+    return promise.then((data) => MsgUpdatePoolRouteResponse.decode(_m0.Reader.create(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "UpdateParams",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "UpdateParams", data);
+    return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
@@ -3626,8 +3344,8 @@ function toTimestamp(date: Date): Timestamp {
 }
 
 function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
+  let millis = (t.seconds.toNumber() || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
   return new Date(millis);
 }
 
@@ -3648,4 +3366,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

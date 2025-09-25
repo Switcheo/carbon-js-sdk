@@ -1,11 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgGasCost, MinGasPrice } from "./fee";
-import {
-  PageRequest,
-  PageResponse,
-} from "../../../cosmos/base/query/v1beta1/pagination";
+import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
+import { MinGasPrice, MsgGasCost } from "./fee";
 
 export const protobufPackage = "Switcheo.carbon.fee";
 
@@ -44,51 +41,43 @@ export interface QueryAllMinGasPriceResponse {
   pagination?: PageResponse;
 }
 
-const baseQueryGetMsgGasCostRequest: object = { msgType: "" };
+function createBaseQueryGetMsgGasCostRequest(): QueryGetMsgGasCostRequest {
+  return { msgType: "" };
+}
 
 export const QueryGetMsgGasCostRequest = {
-  encode(
-    message: QueryGetMsgGasCostRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetMsgGasCostRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.msgType !== "") {
       writer.uint32(10).string(message.msgType);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetMsgGasCostRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetMsgGasCostRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetMsgGasCostRequest,
-    } as QueryGetMsgGasCostRequest;
+    const message = createBaseQueryGetMsgGasCostRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.msgType = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetMsgGasCostRequest {
-    const message = {
-      ...baseQueryGetMsgGasCostRequest,
-    } as QueryGetMsgGasCostRequest;
-    message.msgType =
-      object.msgType !== undefined && object.msgType !== null
-        ? String(object.msgType)
-        : "";
-    return message;
+    return { msgType: isSet(object.msgType) ? String(object.msgType) : "" };
   },
 
   toJSON(message: QueryGetMsgGasCostRequest): unknown {
@@ -97,295 +86,250 @@ export const QueryGetMsgGasCostRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetMsgGasCostRequest>
-  ): QueryGetMsgGasCostRequest {
-    const message = {
-      ...baseQueryGetMsgGasCostRequest,
-    } as QueryGetMsgGasCostRequest;
+  create(base?: DeepPartial<QueryGetMsgGasCostRequest>): QueryGetMsgGasCostRequest {
+    return QueryGetMsgGasCostRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetMsgGasCostRequest>): QueryGetMsgGasCostRequest {
+    const message = createBaseQueryGetMsgGasCostRequest();
     message.msgType = object.msgType ?? "";
     return message;
   },
 };
 
-const baseQueryGetMsgGasCostResponse: object = {};
+function createBaseQueryGetMsgGasCostResponse(): QueryGetMsgGasCostResponse {
+  return { msgGasCost: undefined };
+}
 
 export const QueryGetMsgGasCostResponse = {
-  encode(
-    message: QueryGetMsgGasCostResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetMsgGasCostResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.msgGasCost !== undefined) {
       MsgGasCost.encode(message.msgGasCost, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetMsgGasCostResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetMsgGasCostResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetMsgGasCostResponse,
-    } as QueryGetMsgGasCostResponse;
+    const message = createBaseQueryGetMsgGasCostResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.msgGasCost = MsgGasCost.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetMsgGasCostResponse {
-    const message = {
-      ...baseQueryGetMsgGasCostResponse,
-    } as QueryGetMsgGasCostResponse;
-    message.msgGasCost =
-      object.msgGasCost !== undefined && object.msgGasCost !== null
-        ? MsgGasCost.fromJSON(object.msgGasCost)
-        : undefined;
-    return message;
+    return { msgGasCost: isSet(object.msgGasCost) ? MsgGasCost.fromJSON(object.msgGasCost) : undefined };
   },
 
   toJSON(message: QueryGetMsgGasCostResponse): unknown {
     const obj: any = {};
     message.msgGasCost !== undefined &&
-      (obj.msgGasCost = message.msgGasCost
-        ? MsgGasCost.toJSON(message.msgGasCost)
-        : undefined);
+      (obj.msgGasCost = message.msgGasCost ? MsgGasCost.toJSON(message.msgGasCost) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetMsgGasCostResponse>
-  ): QueryGetMsgGasCostResponse {
-    const message = {
-      ...baseQueryGetMsgGasCostResponse,
-    } as QueryGetMsgGasCostResponse;
-    message.msgGasCost =
-      object.msgGasCost !== undefined && object.msgGasCost !== null
-        ? MsgGasCost.fromPartial(object.msgGasCost)
-        : undefined;
+  create(base?: DeepPartial<QueryGetMsgGasCostResponse>): QueryGetMsgGasCostResponse {
+    return QueryGetMsgGasCostResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetMsgGasCostResponse>): QueryGetMsgGasCostResponse {
+    const message = createBaseQueryGetMsgGasCostResponse();
+    message.msgGasCost = (object.msgGasCost !== undefined && object.msgGasCost !== null)
+      ? MsgGasCost.fromPartial(object.msgGasCost)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllMsgGasCostRequest: object = {};
+function createBaseQueryAllMsgGasCostRequest(): QueryAllMsgGasCostRequest {
+  return { pagination: undefined };
+}
 
 export const QueryAllMsgGasCostRequest = {
-  encode(
-    message: QueryAllMsgGasCostRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllMsgGasCostRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllMsgGasCostRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllMsgGasCostRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllMsgGasCostRequest,
-    } as QueryAllMsgGasCostRequest;
+    const message = createBaseQueryAllMsgGasCostRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllMsgGasCostRequest {
-    const message = {
-      ...baseQueryAllMsgGasCostRequest,
-    } as QueryAllMsgGasCostRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
   },
 
   toJSON(message: QueryAllMsgGasCostRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllMsgGasCostRequest>
-  ): QueryAllMsgGasCostRequest {
-    const message = {
-      ...baseQueryAllMsgGasCostRequest,
-    } as QueryAllMsgGasCostRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryAllMsgGasCostRequest>): QueryAllMsgGasCostRequest {
+    return QueryAllMsgGasCostRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllMsgGasCostRequest>): QueryAllMsgGasCostRequest {
+    const message = createBaseQueryAllMsgGasCostRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllMsgGasCostResponse: object = {};
+function createBaseQueryAllMsgGasCostResponse(): QueryAllMsgGasCostResponse {
+  return { msgGasCosts: [], pagination: undefined };
+}
 
 export const QueryAllMsgGasCostResponse = {
-  encode(
-    message: QueryAllMsgGasCostResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllMsgGasCostResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.msgGasCosts) {
       MsgGasCost.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllMsgGasCostResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllMsgGasCostResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllMsgGasCostResponse,
-    } as QueryAllMsgGasCostResponse;
-    message.msgGasCosts = [];
+    const message = createBaseQueryAllMsgGasCostResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.msgGasCosts.push(MsgGasCost.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllMsgGasCostResponse {
-    const message = {
-      ...baseQueryAllMsgGasCostResponse,
-    } as QueryAllMsgGasCostResponse;
-    message.msgGasCosts = (object.msgGasCosts ?? []).map((e: any) =>
-      MsgGasCost.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      msgGasCosts: Array.isArray(object?.msgGasCosts) ? object.msgGasCosts.map((e: any) => MsgGasCost.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllMsgGasCostResponse): unknown {
     const obj: any = {};
     if (message.msgGasCosts) {
-      obj.msgGasCosts = message.msgGasCosts.map((e) =>
-        e ? MsgGasCost.toJSON(e) : undefined
-      );
+      obj.msgGasCosts = message.msgGasCosts.map((e) => e ? MsgGasCost.toJSON(e) : undefined);
     } else {
       obj.msgGasCosts = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllMsgGasCostResponse>
-  ): QueryAllMsgGasCostResponse {
-    const message = {
-      ...baseQueryAllMsgGasCostResponse,
-    } as QueryAllMsgGasCostResponse;
-    message.msgGasCosts = (object.msgGasCosts ?? []).map((e) =>
-      MsgGasCost.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryAllMsgGasCostResponse>): QueryAllMsgGasCostResponse {
+    return QueryAllMsgGasCostResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllMsgGasCostResponse>): QueryAllMsgGasCostResponse {
+    const message = createBaseQueryAllMsgGasCostResponse();
+    message.msgGasCosts = object.msgGasCosts?.map((e) => MsgGasCost.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryGetMinGasPriceRequest: object = { denom: "" };
+function createBaseQueryGetMinGasPriceRequest(): QueryGetMinGasPriceRequest {
+  return { denom: "" };
+}
 
 export const QueryGetMinGasPriceRequest = {
-  encode(
-    message: QueryGetMinGasPriceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetMinGasPriceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetMinGasPriceRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetMinGasPriceRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetMinGasPriceRequest,
-    } as QueryGetMinGasPriceRequest;
+    const message = createBaseQueryGetMinGasPriceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.denom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetMinGasPriceRequest {
-    const message = {
-      ...baseQueryGetMinGasPriceRequest,
-    } as QueryGetMinGasPriceRequest;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    return message;
+    return { denom: isSet(object.denom) ? String(object.denom) : "" };
   },
 
   toJSON(message: QueryGetMinGasPriceRequest): unknown {
@@ -394,251 +338,211 @@ export const QueryGetMinGasPriceRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetMinGasPriceRequest>
-  ): QueryGetMinGasPriceRequest {
-    const message = {
-      ...baseQueryGetMinGasPriceRequest,
-    } as QueryGetMinGasPriceRequest;
+  create(base?: DeepPartial<QueryGetMinGasPriceRequest>): QueryGetMinGasPriceRequest {
+    return QueryGetMinGasPriceRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetMinGasPriceRequest>): QueryGetMinGasPriceRequest {
+    const message = createBaseQueryGetMinGasPriceRequest();
     message.denom = object.denom ?? "";
     return message;
   },
 };
 
-const baseQueryGetMinGasPriceResponse: object = {};
+function createBaseQueryGetMinGasPriceResponse(): QueryGetMinGasPriceResponse {
+  return { minGasPrice: undefined };
+}
 
 export const QueryGetMinGasPriceResponse = {
-  encode(
-    message: QueryGetMinGasPriceResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryGetMinGasPriceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.minGasPrice !== undefined) {
-      MinGasPrice.encode(
-        message.minGasPrice,
-        writer.uint32(10).fork()
-      ).ldelim();
+      MinGasPrice.encode(message.minGasPrice, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetMinGasPriceResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetMinGasPriceResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetMinGasPriceResponse,
-    } as QueryGetMinGasPriceResponse;
+    const message = createBaseQueryGetMinGasPriceResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.minGasPrice = MinGasPrice.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryGetMinGasPriceResponse {
-    const message = {
-      ...baseQueryGetMinGasPriceResponse,
-    } as QueryGetMinGasPriceResponse;
-    message.minGasPrice =
-      object.minGasPrice !== undefined && object.minGasPrice !== null
-        ? MinGasPrice.fromJSON(object.minGasPrice)
-        : undefined;
-    return message;
+    return { minGasPrice: isSet(object.minGasPrice) ? MinGasPrice.fromJSON(object.minGasPrice) : undefined };
   },
 
   toJSON(message: QueryGetMinGasPriceResponse): unknown {
     const obj: any = {};
     message.minGasPrice !== undefined &&
-      (obj.minGasPrice = message.minGasPrice
-        ? MinGasPrice.toJSON(message.minGasPrice)
-        : undefined);
+      (obj.minGasPrice = message.minGasPrice ? MinGasPrice.toJSON(message.minGasPrice) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetMinGasPriceResponse>
-  ): QueryGetMinGasPriceResponse {
-    const message = {
-      ...baseQueryGetMinGasPriceResponse,
-    } as QueryGetMinGasPriceResponse;
-    message.minGasPrice =
-      object.minGasPrice !== undefined && object.minGasPrice !== null
-        ? MinGasPrice.fromPartial(object.minGasPrice)
-        : undefined;
+  create(base?: DeepPartial<QueryGetMinGasPriceResponse>): QueryGetMinGasPriceResponse {
+    return QueryGetMinGasPriceResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetMinGasPriceResponse>): QueryGetMinGasPriceResponse {
+    const message = createBaseQueryGetMinGasPriceResponse();
+    message.minGasPrice = (object.minGasPrice !== undefined && object.minGasPrice !== null)
+      ? MinGasPrice.fromPartial(object.minGasPrice)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllMinGasPriceRequest: object = {};
+function createBaseQueryAllMinGasPriceRequest(): QueryAllMinGasPriceRequest {
+  return { pagination: undefined };
+}
 
 export const QueryAllMinGasPriceRequest = {
-  encode(
-    message: QueryAllMinGasPriceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllMinGasPriceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllMinGasPriceRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllMinGasPriceRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllMinGasPriceRequest,
-    } as QueryAllMinGasPriceRequest;
+    const message = createBaseQueryAllMinGasPriceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllMinGasPriceRequest {
-    const message = {
-      ...baseQueryAllMinGasPriceRequest,
-    } as QueryAllMinGasPriceRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
   },
 
   toJSON(message: QueryAllMinGasPriceRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllMinGasPriceRequest>
-  ): QueryAllMinGasPriceRequest {
-    const message = {
-      ...baseQueryAllMinGasPriceRequest,
-    } as QueryAllMinGasPriceRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryAllMinGasPriceRequest>): QueryAllMinGasPriceRequest {
+    return QueryAllMinGasPriceRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllMinGasPriceRequest>): QueryAllMinGasPriceRequest {
+    const message = createBaseQueryAllMinGasPriceRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllMinGasPriceResponse: object = {};
+function createBaseQueryAllMinGasPriceResponse(): QueryAllMinGasPriceResponse {
+  return { minGasPrices: [], pagination: undefined };
+}
 
 export const QueryAllMinGasPriceResponse = {
-  encode(
-    message: QueryAllMinGasPriceResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllMinGasPriceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.minGasPrices) {
       MinGasPrice.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllMinGasPriceResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllMinGasPriceResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllMinGasPriceResponse,
-    } as QueryAllMinGasPriceResponse;
-    message.minGasPrices = [];
+    const message = createBaseQueryAllMinGasPriceResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.minGasPrices.push(
-            MinGasPrice.decode(reader, reader.uint32())
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.minGasPrices.push(MinGasPrice.decode(reader, reader.uint32()));
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): QueryAllMinGasPriceResponse {
-    const message = {
-      ...baseQueryAllMinGasPriceResponse,
-    } as QueryAllMinGasPriceResponse;
-    message.minGasPrices = (object.minGasPrices ?? []).map((e: any) =>
-      MinGasPrice.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
+    return {
+      minGasPrices: Array.isArray(object?.minGasPrices)
+        ? object.minGasPrices.map((e: any) => MinGasPrice.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryAllMinGasPriceResponse): unknown {
     const obj: any = {};
     if (message.minGasPrices) {
-      obj.minGasPrices = message.minGasPrices.map((e) =>
-        e ? MinGasPrice.toJSON(e) : undefined
-      );
+      obj.minGasPrices = message.minGasPrices.map((e) => e ? MinGasPrice.toJSON(e) : undefined);
     } else {
       obj.minGasPrices = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllMinGasPriceResponse>
-  ): QueryAllMinGasPriceResponse {
-    const message = {
-      ...baseQueryAllMinGasPriceResponse,
-    } as QueryAllMinGasPriceResponse;
-    message.minGasPrices = (object.minGasPrices ?? []).map((e) =>
-      MinGasPrice.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+  create(base?: DeepPartial<QueryAllMinGasPriceResponse>): QueryAllMinGasPriceResponse {
+    return QueryAllMinGasPriceResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryAllMinGasPriceResponse>): QueryAllMinGasPriceResponse {
+    const message = createBaseQueryAllMinGasPriceResponse();
+    message.minGasPrices = object.minGasPrices?.map((e) => MinGasPrice.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
@@ -646,117 +550,67 @@ export const QueryAllMinGasPriceResponse = {
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get network fee for msg type */
-  MsgGasCost(
-    request: QueryGetMsgGasCostRequest
-  ): Promise<QueryGetMsgGasCostResponse>;
+  MsgGasCost(request: QueryGetMsgGasCostRequest): Promise<QueryGetMsgGasCostResponse>;
   /** Get network fee for all msg types */
-  MsgGasCostAll(
-    request: QueryAllMsgGasCostRequest
-  ): Promise<QueryAllMsgGasCostResponse>;
-  MinGasPrice(
-    request: QueryGetMinGasPriceRequest
-  ): Promise<QueryGetMinGasPriceResponse>;
+  MsgGasCostAll(request: QueryAllMsgGasCostRequest): Promise<QueryAllMsgGasCostResponse>;
+  MinGasPrice(request: QueryGetMinGasPriceRequest): Promise<QueryGetMinGasPriceResponse>;
   /** Get network fee for all msg types */
-  MinGasPriceAll(
-    request: QueryAllMinGasPriceRequest
-  ): Promise<QueryAllMinGasPriceResponse>;
+  MinGasPriceAll(request: QueryAllMinGasPriceRequest): Promise<QueryAllMinGasPriceResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "Switcheo.carbon.fee.Query";
     this.rpc = rpc;
     this.MsgGasCost = this.MsgGasCost.bind(this);
     this.MsgGasCostAll = this.MsgGasCostAll.bind(this);
     this.MinGasPrice = this.MinGasPrice.bind(this);
     this.MinGasPriceAll = this.MinGasPriceAll.bind(this);
   }
-  MsgGasCost(
-    request: QueryGetMsgGasCostRequest
-  ): Promise<QueryGetMsgGasCostResponse> {
+  MsgGasCost(request: QueryGetMsgGasCostRequest): Promise<QueryGetMsgGasCostResponse> {
     const data = QueryGetMsgGasCostRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.fee.Query",
-      "MsgGasCost",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetMsgGasCostResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "MsgGasCost", data);
+    return promise.then((data) => QueryGetMsgGasCostResponse.decode(_m0.Reader.create(data)));
   }
 
-  MsgGasCostAll(
-    request: QueryAllMsgGasCostRequest
-  ): Promise<QueryAllMsgGasCostResponse> {
+  MsgGasCostAll(request: QueryAllMsgGasCostRequest): Promise<QueryAllMsgGasCostResponse> {
     const data = QueryAllMsgGasCostRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.fee.Query",
-      "MsgGasCostAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllMsgGasCostResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "MsgGasCostAll", data);
+    return promise.then((data) => QueryAllMsgGasCostResponse.decode(_m0.Reader.create(data)));
   }
 
-  MinGasPrice(
-    request: QueryGetMinGasPriceRequest
-  ): Promise<QueryGetMinGasPriceResponse> {
+  MinGasPrice(request: QueryGetMinGasPriceRequest): Promise<QueryGetMinGasPriceResponse> {
     const data = QueryGetMinGasPriceRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.fee.Query",
-      "MinGasPrice",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetMinGasPriceResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "MinGasPrice", data);
+    return promise.then((data) => QueryGetMinGasPriceResponse.decode(_m0.Reader.create(data)));
   }
 
-  MinGasPriceAll(
-    request: QueryAllMinGasPriceRequest
-  ): Promise<QueryAllMinGasPriceResponse> {
+  MinGasPriceAll(request: QueryAllMinGasPriceRequest): Promise<QueryAllMinGasPriceResponse> {
     const data = QueryAllMinGasPriceRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.fee.Query",
-      "MinGasPriceAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllMinGasPriceResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request(this.service, "MinGasPriceAll", data);
+    return promise.then((data) => QueryAllMinGasPriceResponse.decode(_m0.Reader.create(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

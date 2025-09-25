@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Connection, ExternalTokenMapping, RelayDetails } from "./bridge";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
+import { Connection, ExternalTokenMapping, RelayDetails } from "./bridge";
 
 export const protobufPackage = "Switcheo.carbon.bridge";
 
@@ -158,13 +158,12 @@ export interface AxelarGeneralMessageReceivedEvent {
   payload: Uint8Array;
 }
 
-const baseNewConnectionEvent: object = {};
+function createBaseNewConnectionEvent(): NewConnectionEvent {
+  return { connection: undefined };
+}
 
 export const NewConnectionEvent = {
-  encode(
-    message: NewConnectionEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: NewConnectionEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.connection !== undefined) {
       Connection.encode(message.connection, writer.uint32(10).fork()).ldelim();
     }
@@ -172,62 +171,58 @@ export const NewConnectionEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NewConnectionEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseNewConnectionEvent } as NewConnectionEvent;
+    const message = createBaseNewConnectionEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.connection = Connection.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewConnectionEvent {
-    const message = { ...baseNewConnectionEvent } as NewConnectionEvent;
-    message.connection =
-      object.connection !== undefined && object.connection !== null
-        ? Connection.fromJSON(object.connection)
-        : undefined;
-    return message;
+    return { connection: isSet(object.connection) ? Connection.fromJSON(object.connection) : undefined };
   },
 
   toJSON(message: NewConnectionEvent): unknown {
     const obj: any = {};
     message.connection !== undefined &&
-      (obj.connection = message.connection
-        ? Connection.toJSON(message.connection)
-        : undefined);
+      (obj.connection = message.connection ? Connection.toJSON(message.connection) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<NewConnectionEvent>): NewConnectionEvent {
+    return NewConnectionEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<NewConnectionEvent>): NewConnectionEvent {
-    const message = { ...baseNewConnectionEvent } as NewConnectionEvent;
-    message.connection =
-      object.connection !== undefined && object.connection !== null
-        ? Connection.fromPartial(object.connection)
-        : undefined;
+    const message = createBaseNewConnectionEvent();
+    message.connection = (object.connection !== undefined && object.connection !== null)
+      ? Connection.fromPartial(object.connection)
+      : undefined;
     return message;
   },
 };
 
-const baseUpdateConnectionEvent: object = {
-  connectionId: "",
-  chainDisplayName: "",
-  isEnabled: false,
-};
+function createBaseUpdateConnectionEvent(): UpdateConnectionEvent {
+  return { connectionId: "", chainDisplayName: "", isEnabled: false };
+}
 
 export const UpdateConnectionEvent = {
-  encode(
-    message: UpdateConnectionEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdateConnectionEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.connectionId !== "") {
       writer.uint32(10).string(message.connectionId);
     }
@@ -240,64 +235,65 @@ export const UpdateConnectionEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdateConnectionEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateConnectionEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdateConnectionEvent } as UpdateConnectionEvent;
+    const message = createBaseUpdateConnectionEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.chainDisplayName = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.isEnabled = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdateConnectionEvent {
-    const message = { ...baseUpdateConnectionEvent } as UpdateConnectionEvent;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.chainDisplayName =
-      object.chainDisplayName !== undefined && object.chainDisplayName !== null
-        ? String(object.chainDisplayName)
-        : "";
-    message.isEnabled =
-      object.isEnabled !== undefined && object.isEnabled !== null
-        ? Boolean(object.isEnabled)
-        : false;
-    return message;
+    return {
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      chainDisplayName: isSet(object.chainDisplayName) ? String(object.chainDisplayName) : "",
+      isEnabled: isSet(object.isEnabled) ? Boolean(object.isEnabled) : false,
+    };
   },
 
   toJSON(message: UpdateConnectionEvent): unknown {
     const obj: any = {};
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
-    message.chainDisplayName !== undefined &&
-      (obj.chainDisplayName = message.chainDisplayName);
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
+    message.chainDisplayName !== undefined && (obj.chainDisplayName = message.chainDisplayName);
     message.isEnabled !== undefined && (obj.isEnabled = message.isEnabled);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdateConnectionEvent>
-  ): UpdateConnectionEvent {
-    const message = { ...baseUpdateConnectionEvent } as UpdateConnectionEvent;
+  create(base?: DeepPartial<UpdateConnectionEvent>): UpdateConnectionEvent {
+    return UpdateConnectionEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UpdateConnectionEvent>): UpdateConnectionEvent {
+    const message = createBaseUpdateConnectionEvent();
     message.connectionId = object.connectionId ?? "";
     message.chainDisplayName = object.chainDisplayName ?? "";
     message.isEnabled = object.isEnabled ?? false;
@@ -305,155 +301,134 @@ export const UpdateConnectionEvent = {
   },
 };
 
-const baseRemoveConnectionEvent: object = { connectionId: "" };
+function createBaseRemoveConnectionEvent(): RemoveConnectionEvent {
+  return { connectionId: "" };
+}
 
 export const RemoveConnectionEvent = {
-  encode(
-    message: RemoveConnectionEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RemoveConnectionEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.connectionId !== "") {
       writer.uint32(10).string(message.connectionId);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RemoveConnectionEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RemoveConnectionEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseRemoveConnectionEvent } as RemoveConnectionEvent;
+    const message = createBaseRemoveConnectionEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RemoveConnectionEvent {
-    const message = { ...baseRemoveConnectionEvent } as RemoveConnectionEvent;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    return message;
+    return { connectionId: isSet(object.connectionId) ? String(object.connectionId) : "" };
   },
 
   toJSON(message: RemoveConnectionEvent): unknown {
     const obj: any = {};
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RemoveConnectionEvent>
-  ): RemoveConnectionEvent {
-    const message = { ...baseRemoveConnectionEvent } as RemoveConnectionEvent;
+  create(base?: DeepPartial<RemoveConnectionEvent>): RemoveConnectionEvent {
+    return RemoveConnectionEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<RemoveConnectionEvent>): RemoveConnectionEvent {
+    const message = createBaseRemoveConnectionEvent();
     message.connectionId = object.connectionId ?? "";
     return message;
   },
 };
 
-const baseNewExternalTokenMappingEvent: object = {};
+function createBaseNewExternalTokenMappingEvent(): NewExternalTokenMappingEvent {
+  return { externalTokenMapping: undefined };
+}
 
 export const NewExternalTokenMappingEvent = {
-  encode(
-    message: NewExternalTokenMappingEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: NewExternalTokenMappingEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.externalTokenMapping !== undefined) {
-      ExternalTokenMapping.encode(
-        message.externalTokenMapping,
-        writer.uint32(10).fork()
-      ).ldelim();
+      ExternalTokenMapping.encode(message.externalTokenMapping, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): NewExternalTokenMappingEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewExternalTokenMappingEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseNewExternalTokenMappingEvent,
-    } as NewExternalTokenMappingEvent;
+    const message = createBaseNewExternalTokenMappingEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.externalTokenMapping = ExternalTokenMapping.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.externalTokenMapping = ExternalTokenMapping.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewExternalTokenMappingEvent {
-    const message = {
-      ...baseNewExternalTokenMappingEvent,
-    } as NewExternalTokenMappingEvent;
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
+    return {
+      externalTokenMapping: isSet(object.externalTokenMapping)
         ? ExternalTokenMapping.fromJSON(object.externalTokenMapping)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: NewExternalTokenMappingEvent): unknown {
     const obj: any = {};
-    message.externalTokenMapping !== undefined &&
-      (obj.externalTokenMapping = message.externalTokenMapping
-        ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
-        : undefined);
+    message.externalTokenMapping !== undefined && (obj.externalTokenMapping = message.externalTokenMapping
+      ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<NewExternalTokenMappingEvent>
-  ): NewExternalTokenMappingEvent {
-    const message = {
-      ...baseNewExternalTokenMappingEvent,
-    } as NewExternalTokenMappingEvent;
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
-        ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
-        : undefined;
+  create(base?: DeepPartial<NewExternalTokenMappingEvent>): NewExternalTokenMappingEvent {
+    return NewExternalTokenMappingEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<NewExternalTokenMappingEvent>): NewExternalTokenMappingEvent {
+    const message = createBaseNewExternalTokenMappingEvent();
+    message.externalTokenMapping = (object.externalTokenMapping !== undefined && object.externalTokenMapping !== null)
+      ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
+      : undefined;
     return message;
   },
 };
 
-const baseRegisterExternalTokenEvent: object = { carbonTokenName: "" };
+function createBaseRegisterExternalTokenEvent(): RegisterExternalTokenEvent {
+  return { externalTokenMapping: undefined, carbonTokenName: "" };
+}
 
 export const RegisterExternalTokenEvent = {
-  encode(
-    message: RegisterExternalTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RegisterExternalTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.externalTokenMapping !== undefined) {
-      ExternalTokenMapping.encode(
-        message.externalTokenMapping,
-        writer.uint32(10).fork()
-      ).ldelim();
+      ExternalTokenMapping.encode(message.externalTokenMapping, writer.uint32(10).fork()).ldelim();
     }
     if (message.carbonTokenName !== "") {
       writer.uint32(26).string(message.carbonTokenName);
@@ -461,237 +436,202 @@ export const RegisterExternalTokenEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RegisterExternalTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterExternalTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseRegisterExternalTokenEvent,
-    } as RegisterExternalTokenEvent;
+    const message = createBaseRegisterExternalTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.externalTokenMapping = ExternalTokenMapping.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.externalTokenMapping = ExternalTokenMapping.decode(reader, reader.uint32());
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.carbonTokenName = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RegisterExternalTokenEvent {
-    const message = {
-      ...baseRegisterExternalTokenEvent,
-    } as RegisterExternalTokenEvent;
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
+    return {
+      externalTokenMapping: isSet(object.externalTokenMapping)
         ? ExternalTokenMapping.fromJSON(object.externalTokenMapping)
-        : undefined;
-    message.carbonTokenName =
-      object.carbonTokenName !== undefined && object.carbonTokenName !== null
-        ? String(object.carbonTokenName)
-        : "";
-    return message;
+        : undefined,
+      carbonTokenName: isSet(object.carbonTokenName) ? String(object.carbonTokenName) : "",
+    };
   },
 
   toJSON(message: RegisterExternalTokenEvent): unknown {
     const obj: any = {};
-    message.externalTokenMapping !== undefined &&
-      (obj.externalTokenMapping = message.externalTokenMapping
-        ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
-        : undefined);
-    message.carbonTokenName !== undefined &&
-      (obj.carbonTokenName = message.carbonTokenName);
+    message.externalTokenMapping !== undefined && (obj.externalTokenMapping = message.externalTokenMapping
+      ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
+      : undefined);
+    message.carbonTokenName !== undefined && (obj.carbonTokenName = message.carbonTokenName);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RegisterExternalTokenEvent>
-  ): RegisterExternalTokenEvent {
-    const message = {
-      ...baseRegisterExternalTokenEvent,
-    } as RegisterExternalTokenEvent;
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
-        ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
-        : undefined;
+  create(base?: DeepPartial<RegisterExternalTokenEvent>): RegisterExternalTokenEvent {
+    return RegisterExternalTokenEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<RegisterExternalTokenEvent>): RegisterExternalTokenEvent {
+    const message = createBaseRegisterExternalTokenEvent();
+    message.externalTokenMapping = (object.externalTokenMapping !== undefined && object.externalTokenMapping !== null)
+      ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
+      : undefined;
     message.carbonTokenName = object.carbonTokenName ?? "";
     return message;
   },
 };
 
-const baseRegisterNativeTokenEvent: object = {};
+function createBaseRegisterNativeTokenEvent(): RegisterNativeTokenEvent {
+  return { externalTokenMapping: undefined };
+}
 
 export const RegisterNativeTokenEvent = {
-  encode(
-    message: RegisterNativeTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: RegisterNativeTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.externalTokenMapping !== undefined) {
-      ExternalTokenMapping.encode(
-        message.externalTokenMapping,
-        writer.uint32(10).fork()
-      ).ldelim();
+      ExternalTokenMapping.encode(message.externalTokenMapping, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RegisterNativeTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterNativeTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseRegisterNativeTokenEvent,
-    } as RegisterNativeTokenEvent;
+    const message = createBaseRegisterNativeTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.externalTokenMapping = ExternalTokenMapping.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.externalTokenMapping = ExternalTokenMapping.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RegisterNativeTokenEvent {
-    const message = {
-      ...baseRegisterNativeTokenEvent,
-    } as RegisterNativeTokenEvent;
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
+    return {
+      externalTokenMapping: isSet(object.externalTokenMapping)
         ? ExternalTokenMapping.fromJSON(object.externalTokenMapping)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: RegisterNativeTokenEvent): unknown {
     const obj: any = {};
-    message.externalTokenMapping !== undefined &&
-      (obj.externalTokenMapping = message.externalTokenMapping
-        ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
-        : undefined);
+    message.externalTokenMapping !== undefined && (obj.externalTokenMapping = message.externalTokenMapping
+      ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
+      : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RegisterNativeTokenEvent>
-  ): RegisterNativeTokenEvent {
-    const message = {
-      ...baseRegisterNativeTokenEvent,
-    } as RegisterNativeTokenEvent;
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
-        ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
-        : undefined;
+  create(base?: DeepPartial<RegisterNativeTokenEvent>): RegisterNativeTokenEvent {
+    return RegisterNativeTokenEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<RegisterNativeTokenEvent>): RegisterNativeTokenEvent {
+    const message = createBaseRegisterNativeTokenEvent();
+    message.externalTokenMapping = (object.externalTokenMapping !== undefined && object.externalTokenMapping !== null)
+      ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
+      : undefined;
     return message;
   },
 };
 
-const baseDeregisterTokenEvent: object = {};
+function createBaseDeregisterTokenEvent(): DeregisterTokenEvent {
+  return { externalTokenMapping: undefined };
+}
 
 export const DeregisterTokenEvent = {
-  encode(
-    message: DeregisterTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DeregisterTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.externalTokenMapping !== undefined) {
-      ExternalTokenMapping.encode(
-        message.externalTokenMapping,
-        writer.uint32(10).fork()
-      ).ldelim();
+      ExternalTokenMapping.encode(message.externalTokenMapping, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): DeregisterTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeregisterTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDeregisterTokenEvent } as DeregisterTokenEvent;
+    const message = createBaseDeregisterTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.externalTokenMapping = ExternalTokenMapping.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 10) {
+            break;
+          }
+
+          message.externalTokenMapping = ExternalTokenMapping.decode(reader, reader.uint32());
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DeregisterTokenEvent {
-    const message = { ...baseDeregisterTokenEvent } as DeregisterTokenEvent;
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
+    return {
+      externalTokenMapping: isSet(object.externalTokenMapping)
         ? ExternalTokenMapping.fromJSON(object.externalTokenMapping)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: DeregisterTokenEvent): unknown {
     const obj: any = {};
-    message.externalTokenMapping !== undefined &&
-      (obj.externalTokenMapping = message.externalTokenMapping
-        ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
-        : undefined);
+    message.externalTokenMapping !== undefined && (obj.externalTokenMapping = message.externalTokenMapping
+      ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
+      : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<DeregisterTokenEvent>): DeregisterTokenEvent {
+    return DeregisterTokenEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DeregisterTokenEvent>): DeregisterTokenEvent {
-    const message = { ...baseDeregisterTokenEvent } as DeregisterTokenEvent;
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
-        ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
-        : undefined;
+    const message = createBaseDeregisterTokenEvent();
+    message.externalTokenMapping = (object.externalTokenMapping !== undefined && object.externalTokenMapping !== null)
+      ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
+      : undefined;
     return message;
   },
 };
 
-const baseExecuteFromCarbonEvent: object = {
-  connectionId: "",
-  sender: "",
-  executableAddress: "",
-};
+function createBaseExecuteFromCarbonEvent(): ExecuteFromCarbonEvent {
+  return { connectionId: "", sender: "", executableAddress: "", executionData: new Uint8Array(), token: undefined };
+}
 
 export const ExecuteFromCarbonEvent = {
-  encode(
-    message: ExecuteFromCarbonEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ExecuteFromCarbonEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.connectionId !== "") {
       writer.uint32(10).string(message.connectionId);
     }
@@ -710,112 +650,101 @@ export const ExecuteFromCarbonEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ExecuteFromCarbonEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ExecuteFromCarbonEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseExecuteFromCarbonEvent } as ExecuteFromCarbonEvent;
-    message.executionData = new Uint8Array();
+    const message = createBaseExecuteFromCarbonEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.executableAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.executionData = reader.bytes();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.token = Coin.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ExecuteFromCarbonEvent {
-    const message = { ...baseExecuteFromCarbonEvent } as ExecuteFromCarbonEvent;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.executableAddress =
-      object.executableAddress !== undefined &&
-      object.executableAddress !== null
-        ? String(object.executableAddress)
-        : "";
-    message.executionData =
-      object.executionData !== undefined && object.executionData !== null
-        ? bytesFromBase64(object.executionData)
-        : new Uint8Array();
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Coin.fromJSON(object.token)
-        : undefined;
-    return message;
+    return {
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      executableAddress: isSet(object.executableAddress) ? String(object.executableAddress) : "",
+      executionData: isSet(object.executionData) ? bytesFromBase64(object.executionData) : new Uint8Array(),
+      token: isSet(object.token) ? Coin.fromJSON(object.token) : undefined,
+    };
   },
 
   toJSON(message: ExecuteFromCarbonEvent): unknown {
     const obj: any = {};
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     message.sender !== undefined && (obj.sender = message.sender);
-    message.executableAddress !== undefined &&
-      (obj.executableAddress = message.executableAddress);
+    message.executableAddress !== undefined && (obj.executableAddress = message.executableAddress);
     message.executionData !== undefined &&
       (obj.executionData = base64FromBytes(
-        message.executionData !== undefined
-          ? message.executionData
-          : new Uint8Array()
+        message.executionData !== undefined ? message.executionData : new Uint8Array(),
       ));
-    message.token !== undefined &&
-      (obj.token = message.token ? Coin.toJSON(message.token) : undefined);
+    message.token !== undefined && (obj.token = message.token ? Coin.toJSON(message.token) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ExecuteFromCarbonEvent>
-  ): ExecuteFromCarbonEvent {
-    const message = { ...baseExecuteFromCarbonEvent } as ExecuteFromCarbonEvent;
+  create(base?: DeepPartial<ExecuteFromCarbonEvent>): ExecuteFromCarbonEvent {
+    return ExecuteFromCarbonEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ExecuteFromCarbonEvent>): ExecuteFromCarbonEvent {
+    const message = createBaseExecuteFromCarbonEvent();
     message.connectionId = object.connectionId ?? "";
     message.sender = object.sender ?? "";
     message.executableAddress = object.executableAddress ?? "";
     message.executionData = object.executionData ?? new Uint8Array();
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Coin.fromPartial(object.token)
-        : undefined;
+    message.token = (object.token !== undefined && object.token !== null) ? Coin.fromPartial(object.token) : undefined;
     return message;
   },
 };
 
-const baseDepositTokenEvent: object = {
-  connectionId: "",
-  sender: "",
-  receiver: "",
-  assetAddress: "",
-};
+function createBaseDepositTokenEvent(): DepositTokenEvent {
+  return { connectionId: "", sender: "", receiver: "", assetAddress: "", token: undefined };
+}
 
 export const DepositTokenEvent = {
-  encode(
-    message: DepositTokenEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DepositTokenEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.connectionId !== "") {
       writer.uint32(10).string(message.connectionId);
     }
@@ -835,94 +764,97 @@ export const DepositTokenEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DepositTokenEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDepositTokenEvent } as DepositTokenEvent;
+    const message = createBaseDepositTokenEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.assetAddress = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.token = Coin.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DepositTokenEvent {
-    const message = { ...baseDepositTokenEvent } as DepositTokenEvent;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.assetAddress =
-      object.assetAddress !== undefined && object.assetAddress !== null
-        ? String(object.assetAddress)
-        : "";
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Coin.fromJSON(object.token)
-        : undefined;
-    return message;
+    return {
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      assetAddress: isSet(object.assetAddress) ? String(object.assetAddress) : "",
+      token: isSet(object.token) ? Coin.fromJSON(object.token) : undefined,
+    };
   },
 
   toJSON(message: DepositTokenEvent): unknown {
     const obj: any = {};
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     message.sender !== undefined && (obj.sender = message.sender);
     message.receiver !== undefined && (obj.receiver = message.receiver);
-    message.assetAddress !== undefined &&
-      (obj.assetAddress = message.assetAddress);
-    message.token !== undefined &&
-      (obj.token = message.token ? Coin.toJSON(message.token) : undefined);
+    message.assetAddress !== undefined && (obj.assetAddress = message.assetAddress);
+    message.token !== undefined && (obj.token = message.token ? Coin.toJSON(message.token) : undefined);
     return obj;
   },
 
+  create(base?: DeepPartial<DepositTokenEvent>): DepositTokenEvent {
+    return DepositTokenEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DepositTokenEvent>): DepositTokenEvent {
-    const message = { ...baseDepositTokenEvent } as DepositTokenEvent;
+    const message = createBaseDepositTokenEvent();
     message.connectionId = object.connectionId ?? "";
     message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
     message.assetAddress = object.assetAddress ?? "";
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Coin.fromPartial(object.token)
-        : undefined;
+    message.token = (object.token !== undefined && object.token !== null) ? Coin.fromPartial(object.token) : undefined;
     return message;
   },
 };
 
-const baseWithdrawDeductedEvent: object = { sender: "", receiver: "" };
+function createBaseWithdrawDeductedEvent(): WithdrawDeductedEvent {
+  return { sender: "", receiver: "", externalTokenMapping: undefined, token: undefined, relayDetails: undefined };
+}
 
 export const WithdrawDeductedEvent = {
-  encode(
-    message: WithdrawDeductedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: WithdrawDeductedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sender !== "") {
       writer.uint32(10).string(message.sender);
     }
@@ -930,138 +862,126 @@ export const WithdrawDeductedEvent = {
       writer.uint32(18).string(message.receiver);
     }
     if (message.externalTokenMapping !== undefined) {
-      ExternalTokenMapping.encode(
-        message.externalTokenMapping,
-        writer.uint32(26).fork()
-      ).ldelim();
+      ExternalTokenMapping.encode(message.externalTokenMapping, writer.uint32(26).fork()).ldelim();
     }
     if (message.token !== undefined) {
       Coin.encode(message.token, writer.uint32(34).fork()).ldelim();
     }
     if (message.relayDetails !== undefined) {
-      RelayDetails.encode(
-        message.relayDetails,
-        writer.uint32(42).fork()
-      ).ldelim();
+      RelayDetails.encode(message.relayDetails, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): WithdrawDeductedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawDeductedEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseWithdrawDeductedEvent } as WithdrawDeductedEvent;
+    const message = createBaseWithdrawDeductedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 3:
-          message.externalTokenMapping = ExternalTokenMapping.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.externalTokenMapping = ExternalTokenMapping.decode(reader, reader.uint32());
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.token = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.relayDetails = RelayDetails.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): WithdrawDeductedEvent {
-    const message = { ...baseWithdrawDeductedEvent } as WithdrawDeductedEvent;
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
+    return {
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      externalTokenMapping: isSet(object.externalTokenMapping)
         ? ExternalTokenMapping.fromJSON(object.externalTokenMapping)
-        : undefined;
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Coin.fromJSON(object.token)
-        : undefined;
-    message.relayDetails =
-      object.relayDetails !== undefined && object.relayDetails !== null
-        ? RelayDetails.fromJSON(object.relayDetails)
-        : undefined;
-    return message;
+        : undefined,
+      token: isSet(object.token) ? Coin.fromJSON(object.token) : undefined,
+      relayDetails: isSet(object.relayDetails) ? RelayDetails.fromJSON(object.relayDetails) : undefined,
+    };
   },
 
   toJSON(message: WithdrawDeductedEvent): unknown {
     const obj: any = {};
     message.sender !== undefined && (obj.sender = message.sender);
     message.receiver !== undefined && (obj.receiver = message.receiver);
-    message.externalTokenMapping !== undefined &&
-      (obj.externalTokenMapping = message.externalTokenMapping
-        ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
-        : undefined);
-    message.token !== undefined &&
-      (obj.token = message.token ? Coin.toJSON(message.token) : undefined);
+    message.externalTokenMapping !== undefined && (obj.externalTokenMapping = message.externalTokenMapping
+      ? ExternalTokenMapping.toJSON(message.externalTokenMapping)
+      : undefined);
+    message.token !== undefined && (obj.token = message.token ? Coin.toJSON(message.token) : undefined);
     message.relayDetails !== undefined &&
-      (obj.relayDetails = message.relayDetails
-        ? RelayDetails.toJSON(message.relayDetails)
-        : undefined);
+      (obj.relayDetails = message.relayDetails ? RelayDetails.toJSON(message.relayDetails) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<WithdrawDeductedEvent>
-  ): WithdrawDeductedEvent {
-    const message = { ...baseWithdrawDeductedEvent } as WithdrawDeductedEvent;
+  create(base?: DeepPartial<WithdrawDeductedEvent>): WithdrawDeductedEvent {
+    return WithdrawDeductedEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<WithdrawDeductedEvent>): WithdrawDeductedEvent {
+    const message = createBaseWithdrawDeductedEvent();
     message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
-    message.externalTokenMapping =
-      object.externalTokenMapping !== undefined &&
-      object.externalTokenMapping !== null
-        ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
-        : undefined;
-    message.token =
-      object.token !== undefined && object.token !== null
-        ? Coin.fromPartial(object.token)
-        : undefined;
-    message.relayDetails =
-      object.relayDetails !== undefined && object.relayDetails !== null
-        ? RelayDetails.fromPartial(object.relayDetails)
-        : undefined;
+    message.externalTokenMapping = (object.externalTokenMapping !== undefined && object.externalTokenMapping !== null)
+      ? ExternalTokenMapping.fromPartial(object.externalTokenMapping)
+      : undefined;
+    message.token = (object.token !== undefined && object.token !== null) ? Coin.fromPartial(object.token) : undefined;
+    message.relayDetails = (object.relayDetails !== undefined && object.relayDetails !== null)
+      ? RelayDetails.fromPartial(object.relayDetails)
+      : undefined;
     return message;
   },
 };
 
-const baseWithdrawTokenConfirmedEvent: object = {
-  connectionId: "",
-  sender: "",
-  receiver: "",
-  feeReceiverAddress: "",
-  nonce: Long.UZERO,
-};
+function createBaseWithdrawTokenConfirmedEvent(): WithdrawTokenConfirmedEvent {
+  return {
+    connectionId: "",
+    sender: "",
+    receiver: "",
+    coin: undefined,
+    feeReceiverAddress: "",
+    relayFee: undefined,
+    nonce: Long.UZERO,
+  };
+}
 
 export const WithdrawTokenConfirmedEvent = {
-  encode(
-    message: WithdrawTokenConfirmedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: WithdrawTokenConfirmedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.connectionId !== "") {
       writer.uint32(10).string(message.connectionId);
     }
@@ -1086,140 +1006,120 @@ export const WithdrawTokenConfirmedEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): WithdrawTokenConfirmedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): WithdrawTokenConfirmedEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseWithdrawTokenConfirmedEvent,
-    } as WithdrawTokenConfirmedEvent;
+    const message = createBaseWithdrawTokenConfirmedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sender = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.receiver = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.coin = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.feeReceiverAddress = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.relayFee = Coin.decode(reader, reader.uint32());
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): WithdrawTokenConfirmedEvent {
-    const message = {
-      ...baseWithdrawTokenConfirmedEvent,
-    } as WithdrawTokenConfirmedEvent;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.sender =
-      object.sender !== undefined && object.sender !== null
-        ? String(object.sender)
-        : "";
-    message.receiver =
-      object.receiver !== undefined && object.receiver !== null
-        ? String(object.receiver)
-        : "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromJSON(object.coin)
-        : undefined;
-    message.feeReceiverAddress =
-      object.feeReceiverAddress !== undefined &&
-      object.feeReceiverAddress !== null
-        ? String(object.feeReceiverAddress)
-        : "";
-    message.relayFee =
-      object.relayFee !== undefined && object.relayFee !== null
-        ? Coin.fromJSON(object.relayFee)
-        : undefined;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    return message;
+    return {
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      coin: isSet(object.coin) ? Coin.fromJSON(object.coin) : undefined,
+      feeReceiverAddress: isSet(object.feeReceiverAddress) ? String(object.feeReceiverAddress) : "",
+      relayFee: isSet(object.relayFee) ? Coin.fromJSON(object.relayFee) : undefined,
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+    };
   },
 
   toJSON(message: WithdrawTokenConfirmedEvent): unknown {
     const obj: any = {};
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     message.sender !== undefined && (obj.sender = message.sender);
     message.receiver !== undefined && (obj.receiver = message.receiver);
-    message.coin !== undefined &&
-      (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
-    message.feeReceiverAddress !== undefined &&
-      (obj.feeReceiverAddress = message.feeReceiverAddress);
-    message.relayFee !== undefined &&
-      (obj.relayFee = message.relayFee
-        ? Coin.toJSON(message.relayFee)
-        : undefined);
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.coin !== undefined && (obj.coin = message.coin ? Coin.toJSON(message.coin) : undefined);
+    message.feeReceiverAddress !== undefined && (obj.feeReceiverAddress = message.feeReceiverAddress);
+    message.relayFee !== undefined && (obj.relayFee = message.relayFee ? Coin.toJSON(message.relayFee) : undefined);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<WithdrawTokenConfirmedEvent>
-  ): WithdrawTokenConfirmedEvent {
-    const message = {
-      ...baseWithdrawTokenConfirmedEvent,
-    } as WithdrawTokenConfirmedEvent;
+  create(base?: DeepPartial<WithdrawTokenConfirmedEvent>): WithdrawTokenConfirmedEvent {
+    return WithdrawTokenConfirmedEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<WithdrawTokenConfirmedEvent>): WithdrawTokenConfirmedEvent {
+    const message = createBaseWithdrawTokenConfirmedEvent();
     message.connectionId = object.connectionId ?? "";
     message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
-    message.coin =
-      object.coin !== undefined && object.coin !== null
-        ? Coin.fromPartial(object.coin)
-        : undefined;
+    message.coin = (object.coin !== undefined && object.coin !== null) ? Coin.fromPartial(object.coin) : undefined;
     message.feeReceiverAddress = object.feeReceiverAddress ?? "";
-    message.relayFee =
-      object.relayFee !== undefined && object.relayFee !== null
-        ? Coin.fromPartial(object.relayFee)
-        : undefined;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
+    message.relayFee = (object.relayFee !== undefined && object.relayFee !== null)
+      ? Coin.fromPartial(object.relayFee)
+      : undefined;
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
     return message;
   },
 };
 
-const baseExecutionOnCarbonErrorEvent: object = {
-  nonce: Long.UZERO,
-  payloadType: "",
-  dataEncoding: "",
-  connectionId: "",
-};
+function createBaseExecutionOnCarbonErrorEvent(): ExecutionOnCarbonErrorEvent {
+  return { nonce: Long.UZERO, payloadType: "", dataEncoding: "", data: new Uint8Array(), connectionId: "" };
+}
 
 export const ExecutionOnCarbonErrorEvent = {
-  encode(
-    message: ExecutionOnCarbonErrorEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ExecutionOnCarbonErrorEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.nonce.isZero()) {
       writer.uint32(8).uint64(message.nonce);
     }
@@ -1238,96 +1138,85 @@ export const ExecutionOnCarbonErrorEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ExecutionOnCarbonErrorEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ExecutionOnCarbonErrorEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseExecutionOnCarbonErrorEvent,
-    } as ExecutionOnCarbonErrorEvent;
-    message.data = new Uint8Array();
+    const message = createBaseExecutionOnCarbonErrorEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.payloadType = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.dataEncoding = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.data = reader.bytes();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ExecutionOnCarbonErrorEvent {
-    const message = {
-      ...baseExecutionOnCarbonErrorEvent,
-    } as ExecutionOnCarbonErrorEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    message.payloadType =
-      object.payloadType !== undefined && object.payloadType !== null
-        ? String(object.payloadType)
-        : "";
-    message.dataEncoding =
-      object.dataEncoding !== undefined && object.dataEncoding !== null
-        ? String(object.dataEncoding)
-        : "";
-    message.data =
-      object.data !== undefined && object.data !== null
-        ? bytesFromBase64(object.data)
-        : new Uint8Array();
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    return message;
+    return {
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+      payloadType: isSet(object.payloadType) ? String(object.payloadType) : "",
+      dataEncoding: isSet(object.dataEncoding) ? String(object.dataEncoding) : "",
+      data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(),
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+    };
   },
 
   toJSON(message: ExecutionOnCarbonErrorEvent): unknown {
     const obj: any = {};
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
-    message.payloadType !== undefined &&
-      (obj.payloadType = message.payloadType);
-    message.dataEncoding !== undefined &&
-      (obj.dataEncoding = message.dataEncoding);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.payloadType !== undefined && (obj.payloadType = message.payloadType);
+    message.dataEncoding !== undefined && (obj.dataEncoding = message.dataEncoding);
     message.data !== undefined &&
-      (obj.data = base64FromBytes(
-        message.data !== undefined ? message.data : new Uint8Array()
-      ));
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+      (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ExecutionOnCarbonErrorEvent>
-  ): ExecutionOnCarbonErrorEvent {
-    const message = {
-      ...baseExecutionOnCarbonErrorEvent,
-    } as ExecutionOnCarbonErrorEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
+  create(base?: DeepPartial<ExecutionOnCarbonErrorEvent>): ExecutionOnCarbonErrorEvent {
+    return ExecutionOnCarbonErrorEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ExecutionOnCarbonErrorEvent>): ExecutionOnCarbonErrorEvent {
+    const message = createBaseExecutionOnCarbonErrorEvent();
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
     message.payloadType = object.payloadType ?? "";
     message.dataEncoding = object.dataEncoding ?? "";
     message.data = object.data ?? new Uint8Array();
@@ -1336,18 +1225,12 @@ export const ExecutionOnCarbonErrorEvent = {
   },
 };
 
-const baseBridgeSentEvent: object = {
-  bridgeId: Long.UZERO,
-  chainId: "",
-  gatewayAddress: "",
-  nonce: Long.UZERO,
-};
+function createBaseBridgeSentEvent(): BridgeSentEvent {
+  return { bridgeId: Long.UZERO, chainId: "", gatewayAddress: "", nonce: Long.UZERO };
+}
 
 export const BridgeSentEvent = {
-  encode(
-    message: BridgeSentEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BridgeSentEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.bridgeId.isZero()) {
       writer.uint32(8).uint64(message.bridgeId);
     }
@@ -1364,93 +1247,89 @@ export const BridgeSentEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BridgeSentEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBridgeSentEvent } as BridgeSentEvent;
+    const message = createBaseBridgeSentEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.bridgeId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.gatewayAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BridgeSentEvent {
-    const message = { ...baseBridgeSentEvent } as BridgeSentEvent;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromString(object.bridgeId)
-        : Long.UZERO;
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? String(object.chainId)
-        : "";
-    message.gatewayAddress =
-      object.gatewayAddress !== undefined && object.gatewayAddress !== null
-        ? String(object.gatewayAddress)
-        : "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    return message;
+    return {
+      bridgeId: isSet(object.bridgeId) ? Long.fromValue(object.bridgeId) : Long.UZERO,
+      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      gatewayAddress: isSet(object.gatewayAddress) ? String(object.gatewayAddress) : "",
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+    };
   },
 
   toJSON(message: BridgeSentEvent): unknown {
     const obj: any = {};
-    message.bridgeId !== undefined &&
-      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.bridgeId !== undefined && (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
     message.chainId !== undefined && (obj.chainId = message.chainId);
-    message.gatewayAddress !== undefined &&
-      (obj.gatewayAddress = message.gatewayAddress);
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.gatewayAddress !== undefined && (obj.gatewayAddress = message.gatewayAddress);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<BridgeSentEvent>): BridgeSentEvent {
+    return BridgeSentEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BridgeSentEvent>): BridgeSentEvent {
-    const message = { ...baseBridgeSentEvent } as BridgeSentEvent;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromValue(object.bridgeId)
-        : Long.UZERO;
+    const message = createBaseBridgeSentEvent();
+    message.bridgeId = (object.bridgeId !== undefined && object.bridgeId !== null)
+      ? Long.fromValue(object.bridgeId)
+      : Long.UZERO;
     message.chainId = object.chainId ?? "";
     message.gatewayAddress = object.gatewayAddress ?? "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
     return message;
   },
 };
 
-const baseBridgeAcknowledgedEvent: object = {
-  bridgeId: Long.UZERO,
-  chainId: "",
-  gatewayAddress: "",
-  nonce: Long.UZERO,
-};
+function createBaseBridgeAcknowledgedEvent(): BridgeAcknowledgedEvent {
+  return { bridgeId: Long.UZERO, chainId: "", gatewayAddress: "", nonce: Long.UZERO };
+}
 
 export const BridgeAcknowledgedEvent = {
-  encode(
-    message: BridgeAcknowledgedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BridgeAcknowledgedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.bridgeId.isZero()) {
       writer.uint32(8).uint64(message.bridgeId);
     }
@@ -1466,105 +1345,90 @@ export const BridgeAcknowledgedEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): BridgeAcknowledgedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): BridgeAcknowledgedEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseBridgeAcknowledgedEvent,
-    } as BridgeAcknowledgedEvent;
+    const message = createBaseBridgeAcknowledgedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.bridgeId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.gatewayAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BridgeAcknowledgedEvent {
-    const message = {
-      ...baseBridgeAcknowledgedEvent,
-    } as BridgeAcknowledgedEvent;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromString(object.bridgeId)
-        : Long.UZERO;
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? String(object.chainId)
-        : "";
-    message.gatewayAddress =
-      object.gatewayAddress !== undefined && object.gatewayAddress !== null
-        ? String(object.gatewayAddress)
-        : "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    return message;
+    return {
+      bridgeId: isSet(object.bridgeId) ? Long.fromValue(object.bridgeId) : Long.UZERO,
+      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      gatewayAddress: isSet(object.gatewayAddress) ? String(object.gatewayAddress) : "",
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+    };
   },
 
   toJSON(message: BridgeAcknowledgedEvent): unknown {
     const obj: any = {};
-    message.bridgeId !== undefined &&
-      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.bridgeId !== undefined && (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
     message.chainId !== undefined && (obj.chainId = message.chainId);
-    message.gatewayAddress !== undefined &&
-      (obj.gatewayAddress = message.gatewayAddress);
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.gatewayAddress !== undefined && (obj.gatewayAddress = message.gatewayAddress);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<BridgeAcknowledgedEvent>
-  ): BridgeAcknowledgedEvent {
-    const message = {
-      ...baseBridgeAcknowledgedEvent,
-    } as BridgeAcknowledgedEvent;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromValue(object.bridgeId)
-        : Long.UZERO;
+  create(base?: DeepPartial<BridgeAcknowledgedEvent>): BridgeAcknowledgedEvent {
+    return BridgeAcknowledgedEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<BridgeAcknowledgedEvent>): BridgeAcknowledgedEvent {
+    const message = createBaseBridgeAcknowledgedEvent();
+    message.bridgeId = (object.bridgeId !== undefined && object.bridgeId !== null)
+      ? Long.fromValue(object.bridgeId)
+      : Long.UZERO;
     message.chainId = object.chainId ?? "";
     message.gatewayAddress = object.gatewayAddress ?? "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
     return message;
   },
 };
 
-const baseBridgeRevertedEvent: object = {
-  bridgeId: Long.UZERO,
-  chainId: "",
-  gatewayAddress: "",
-  nonce: Long.UZERO,
-};
+function createBaseBridgeRevertedEvent(): BridgeRevertedEvent {
+  return { bridgeId: Long.UZERO, chainId: "", gatewayAddress: "", nonce: Long.UZERO };
+}
 
 export const BridgeRevertedEvent = {
-  encode(
-    message: BridgeRevertedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BridgeRevertedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.bridgeId.isZero()) {
       writer.uint32(8).uint64(message.bridgeId);
     }
@@ -1581,93 +1445,89 @@ export const BridgeRevertedEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BridgeRevertedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBridgeRevertedEvent } as BridgeRevertedEvent;
+    const message = createBaseBridgeRevertedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.bridgeId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.gatewayAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BridgeRevertedEvent {
-    const message = { ...baseBridgeRevertedEvent } as BridgeRevertedEvent;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromString(object.bridgeId)
-        : Long.UZERO;
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? String(object.chainId)
-        : "";
-    message.gatewayAddress =
-      object.gatewayAddress !== undefined && object.gatewayAddress !== null
-        ? String(object.gatewayAddress)
-        : "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    return message;
+    return {
+      bridgeId: isSet(object.bridgeId) ? Long.fromValue(object.bridgeId) : Long.UZERO,
+      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      gatewayAddress: isSet(object.gatewayAddress) ? String(object.gatewayAddress) : "",
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+    };
   },
 
   toJSON(message: BridgeRevertedEvent): unknown {
     const obj: any = {};
-    message.bridgeId !== undefined &&
-      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.bridgeId !== undefined && (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
     message.chainId !== undefined && (obj.chainId = message.chainId);
-    message.gatewayAddress !== undefined &&
-      (obj.gatewayAddress = message.gatewayAddress);
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.gatewayAddress !== undefined && (obj.gatewayAddress = message.gatewayAddress);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<BridgeRevertedEvent>): BridgeRevertedEvent {
+    return BridgeRevertedEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BridgeRevertedEvent>): BridgeRevertedEvent {
-    const message = { ...baseBridgeRevertedEvent } as BridgeRevertedEvent;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromValue(object.bridgeId)
-        : Long.UZERO;
+    const message = createBaseBridgeRevertedEvent();
+    message.bridgeId = (object.bridgeId !== undefined && object.bridgeId !== null)
+      ? Long.fromValue(object.bridgeId)
+      : Long.UZERO;
     message.chainId = object.chainId ?? "";
     message.gatewayAddress = object.gatewayAddress ?? "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
     return message;
   },
 };
 
-const baseBridgeReceivedEvent: object = {
-  bridgeId: Long.UZERO,
-  chainId: "",
-  gatewayAddress: "",
-  nonce: Long.UZERO,
-};
+function createBaseBridgeReceivedEvent(): BridgeReceivedEvent {
+  return { bridgeId: Long.UZERO, chainId: "", gatewayAddress: "", nonce: Long.UZERO };
+}
 
 export const BridgeReceivedEvent = {
-  encode(
-    message: BridgeReceivedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: BridgeReceivedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.bridgeId.isZero()) {
       writer.uint32(8).uint64(message.bridgeId);
     }
@@ -1684,92 +1544,89 @@ export const BridgeReceivedEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BridgeReceivedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseBridgeReceivedEvent } as BridgeReceivedEvent;
+    const message = createBaseBridgeReceivedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.bridgeId = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.chainId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.gatewayAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): BridgeReceivedEvent {
-    const message = { ...baseBridgeReceivedEvent } as BridgeReceivedEvent;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromString(object.bridgeId)
-        : Long.UZERO;
-    message.chainId =
-      object.chainId !== undefined && object.chainId !== null
-        ? String(object.chainId)
-        : "";
-    message.gatewayAddress =
-      object.gatewayAddress !== undefined && object.gatewayAddress !== null
-        ? String(object.gatewayAddress)
-        : "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    return message;
+    return {
+      bridgeId: isSet(object.bridgeId) ? Long.fromValue(object.bridgeId) : Long.UZERO,
+      chainId: isSet(object.chainId) ? String(object.chainId) : "",
+      gatewayAddress: isSet(object.gatewayAddress) ? String(object.gatewayAddress) : "",
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+    };
   },
 
   toJSON(message: BridgeReceivedEvent): unknown {
     const obj: any = {};
-    message.bridgeId !== undefined &&
-      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.bridgeId !== undefined && (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
     message.chainId !== undefined && (obj.chainId = message.chainId);
-    message.gatewayAddress !== undefined &&
-      (obj.gatewayAddress = message.gatewayAddress);
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.gatewayAddress !== undefined && (obj.gatewayAddress = message.gatewayAddress);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     return obj;
   },
 
+  create(base?: DeepPartial<BridgeReceivedEvent>): BridgeReceivedEvent {
+    return BridgeReceivedEvent.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<BridgeReceivedEvent>): BridgeReceivedEvent {
-    const message = { ...baseBridgeReceivedEvent } as BridgeReceivedEvent;
-    message.bridgeId =
-      object.bridgeId !== undefined && object.bridgeId !== null
-        ? Long.fromValue(object.bridgeId)
-        : Long.UZERO;
+    const message = createBaseBridgeReceivedEvent();
+    message.bridgeId = (object.bridgeId !== undefined && object.bridgeId !== null)
+      ? Long.fromValue(object.bridgeId)
+      : Long.UZERO;
     message.chainId = object.chainId ?? "";
     message.gatewayAddress = object.gatewayAddress ?? "";
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
     return message;
   },
 };
 
-const baseNewPendingActionEvent: object = {
-  nonce: Long.UZERO,
-  pendingActionType: Long.UZERO,
-  connectionId: "",
-};
+function createBaseNewPendingActionEvent(): NewPendingActionEvent {
+  return { nonce: Long.UZERO, pendingActionType: Long.UZERO, connectionId: "", relayDetails: undefined };
+}
 
 export const NewPendingActionEvent = {
-  encode(
-    message: NewPendingActionEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: NewPendingActionEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.nonce.isZero()) {
       writer.uint32(8).uint64(message.nonce);
     }
@@ -1780,116 +1637,99 @@ export const NewPendingActionEvent = {
       writer.uint32(26).string(message.connectionId);
     }
     if (message.relayDetails !== undefined) {
-      RelayDetails.encode(
-        message.relayDetails,
-        writer.uint32(34).fork()
-      ).ldelim();
+      RelayDetails.encode(message.relayDetails, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): NewPendingActionEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewPendingActionEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseNewPendingActionEvent } as NewPendingActionEvent;
+    const message = createBaseNewPendingActionEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.pendingActionType = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.relayDetails = RelayDetails.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): NewPendingActionEvent {
-    const message = { ...baseNewPendingActionEvent } as NewPendingActionEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    message.pendingActionType =
-      object.pendingActionType !== undefined &&
-      object.pendingActionType !== null
-        ? Long.fromString(object.pendingActionType)
-        : Long.UZERO;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.relayDetails =
-      object.relayDetails !== undefined && object.relayDetails !== null
-        ? RelayDetails.fromJSON(object.relayDetails)
-        : undefined;
-    return message;
+    return {
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+      pendingActionType: isSet(object.pendingActionType) ? Long.fromValue(object.pendingActionType) : Long.UZERO,
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      relayDetails: isSet(object.relayDetails) ? RelayDetails.fromJSON(object.relayDetails) : undefined,
+    };
   },
 
   toJSON(message: NewPendingActionEvent): unknown {
     const obj: any = {};
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     message.pendingActionType !== undefined &&
-      (obj.pendingActionType = (
-        message.pendingActionType || Long.UZERO
-      ).toString());
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+      (obj.pendingActionType = (message.pendingActionType || Long.UZERO).toString());
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     message.relayDetails !== undefined &&
-      (obj.relayDetails = message.relayDetails
-        ? RelayDetails.toJSON(message.relayDetails)
-        : undefined);
+      (obj.relayDetails = message.relayDetails ? RelayDetails.toJSON(message.relayDetails) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<NewPendingActionEvent>
-  ): NewPendingActionEvent {
-    const message = { ...baseNewPendingActionEvent } as NewPendingActionEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
-    message.pendingActionType =
-      object.pendingActionType !== undefined &&
-      object.pendingActionType !== null
-        ? Long.fromValue(object.pendingActionType)
-        : Long.UZERO;
+  create(base?: DeepPartial<NewPendingActionEvent>): NewPendingActionEvent {
+    return NewPendingActionEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<NewPendingActionEvent>): NewPendingActionEvent {
+    const message = createBaseNewPendingActionEvent();
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
+    message.pendingActionType = (object.pendingActionType !== undefined && object.pendingActionType !== null)
+      ? Long.fromValue(object.pendingActionType)
+      : Long.UZERO;
     message.connectionId = object.connectionId ?? "";
-    message.relayDetails =
-      object.relayDetails !== undefined && object.relayDetails !== null
-        ? RelayDetails.fromPartial(object.relayDetails)
-        : undefined;
+    message.relayDetails = (object.relayDetails !== undefined && object.relayDetails !== null)
+      ? RelayDetails.fromPartial(object.relayDetails)
+      : undefined;
     return message;
   },
 };
 
-const baseUpdatePendingActionEvent: object = {
-  nonce: Long.UZERO,
-  pendingActionType: Long.UZERO,
-  connectionId: "",
-};
+function createBaseUpdatePendingActionEvent(): UpdatePendingActionEvent {
+  return { nonce: Long.UZERO, pendingActionType: Long.UZERO, connectionId: "", relayDetails: undefined };
+}
 
 export const UpdatePendingActionEvent = {
-  encode(
-    message: UpdatePendingActionEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: UpdatePendingActionEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.nonce.isZero()) {
       writer.uint32(8).uint64(message.nonce);
     }
@@ -1900,122 +1740,99 @@ export const UpdatePendingActionEvent = {
       writer.uint32(26).string(message.connectionId);
     }
     if (message.relayDetails !== undefined) {
-      RelayDetails.encode(
-        message.relayDetails,
-        writer.uint32(34).fork()
-      ).ldelim();
+      RelayDetails.encode(message.relayDetails, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdatePendingActionEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePendingActionEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdatePendingActionEvent,
-    } as UpdatePendingActionEvent;
+    const message = createBaseUpdatePendingActionEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.pendingActionType = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.relayDetails = RelayDetails.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): UpdatePendingActionEvent {
-    const message = {
-      ...baseUpdatePendingActionEvent,
-    } as UpdatePendingActionEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    message.pendingActionType =
-      object.pendingActionType !== undefined &&
-      object.pendingActionType !== null
-        ? Long.fromString(object.pendingActionType)
-        : Long.UZERO;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.relayDetails =
-      object.relayDetails !== undefined && object.relayDetails !== null
-        ? RelayDetails.fromJSON(object.relayDetails)
-        : undefined;
-    return message;
+    return {
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+      pendingActionType: isSet(object.pendingActionType) ? Long.fromValue(object.pendingActionType) : Long.UZERO,
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      relayDetails: isSet(object.relayDetails) ? RelayDetails.fromJSON(object.relayDetails) : undefined,
+    };
   },
 
   toJSON(message: UpdatePendingActionEvent): unknown {
     const obj: any = {};
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     message.pendingActionType !== undefined &&
-      (obj.pendingActionType = (
-        message.pendingActionType || Long.UZERO
-      ).toString());
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+      (obj.pendingActionType = (message.pendingActionType || Long.UZERO).toString());
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     message.relayDetails !== undefined &&
-      (obj.relayDetails = message.relayDetails
-        ? RelayDetails.toJSON(message.relayDetails)
-        : undefined);
+      (obj.relayDetails = message.relayDetails ? RelayDetails.toJSON(message.relayDetails) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdatePendingActionEvent>
-  ): UpdatePendingActionEvent {
-    const message = {
-      ...baseUpdatePendingActionEvent,
-    } as UpdatePendingActionEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
-    message.pendingActionType =
-      object.pendingActionType !== undefined &&
-      object.pendingActionType !== null
-        ? Long.fromValue(object.pendingActionType)
-        : Long.UZERO;
+  create(base?: DeepPartial<UpdatePendingActionEvent>): UpdatePendingActionEvent {
+    return UpdatePendingActionEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<UpdatePendingActionEvent>): UpdatePendingActionEvent {
+    const message = createBaseUpdatePendingActionEvent();
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
+    message.pendingActionType = (object.pendingActionType !== undefined && object.pendingActionType !== null)
+      ? Long.fromValue(object.pendingActionType)
+      : Long.UZERO;
     message.connectionId = object.connectionId ?? "";
-    message.relayDetails =
-      object.relayDetails !== undefined && object.relayDetails !== null
-        ? RelayDetails.fromPartial(object.relayDetails)
-        : undefined;
+    message.relayDetails = (object.relayDetails !== undefined && object.relayDetails !== null)
+      ? RelayDetails.fromPartial(object.relayDetails)
+      : undefined;
     return message;
   },
 };
 
-const baseExpiredPendingActionEvent: object = {
-  nonce: Long.UZERO,
-  pendingActionType: Long.UZERO,
-  connectionId: "",
-};
+function createBaseExpiredPendingActionEvent(): ExpiredPendingActionEvent {
+  return { nonce: Long.UZERO, pendingActionType: Long.UZERO, connectionId: "", relayDetails: undefined };
+}
 
 export const ExpiredPendingActionEvent = {
-  encode(
-    message: ExpiredPendingActionEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ExpiredPendingActionEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.nonce.isZero()) {
       writer.uint32(8).uint64(message.nonce);
     }
@@ -2026,186 +1843,156 @@ export const ExpiredPendingActionEvent = {
       writer.uint32(26).string(message.connectionId);
     }
     if (message.relayDetails !== undefined) {
-      RelayDetails.encode(
-        message.relayDetails,
-        writer.uint32(34).fork()
-      ).ldelim();
+      RelayDetails.encode(message.relayDetails, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ExpiredPendingActionEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ExpiredPendingActionEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseExpiredPendingActionEvent,
-    } as ExpiredPendingActionEvent;
+    const message = createBaseExpiredPendingActionEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.pendingActionType = reader.uint64() as Long;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.relayDetails = RelayDetails.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ExpiredPendingActionEvent {
-    const message = {
-      ...baseExpiredPendingActionEvent,
-    } as ExpiredPendingActionEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    message.pendingActionType =
-      object.pendingActionType !== undefined &&
-      object.pendingActionType !== null
-        ? Long.fromString(object.pendingActionType)
-        : Long.UZERO;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.relayDetails =
-      object.relayDetails !== undefined && object.relayDetails !== null
-        ? RelayDetails.fromJSON(object.relayDetails)
-        : undefined;
-    return message;
+    return {
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+      pendingActionType: isSet(object.pendingActionType) ? Long.fromValue(object.pendingActionType) : Long.UZERO,
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      relayDetails: isSet(object.relayDetails) ? RelayDetails.fromJSON(object.relayDetails) : undefined,
+    };
   },
 
   toJSON(message: ExpiredPendingActionEvent): unknown {
     const obj: any = {};
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     message.pendingActionType !== undefined &&
-      (obj.pendingActionType = (
-        message.pendingActionType || Long.UZERO
-      ).toString());
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+      (obj.pendingActionType = (message.pendingActionType || Long.UZERO).toString());
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     message.relayDetails !== undefined &&
-      (obj.relayDetails = message.relayDetails
-        ? RelayDetails.toJSON(message.relayDetails)
-        : undefined);
+      (obj.relayDetails = message.relayDetails ? RelayDetails.toJSON(message.relayDetails) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ExpiredPendingActionEvent>
-  ): ExpiredPendingActionEvent {
-    const message = {
-      ...baseExpiredPendingActionEvent,
-    } as ExpiredPendingActionEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
-    message.pendingActionType =
-      object.pendingActionType !== undefined &&
-      object.pendingActionType !== null
-        ? Long.fromValue(object.pendingActionType)
-        : Long.UZERO;
+  create(base?: DeepPartial<ExpiredPendingActionEvent>): ExpiredPendingActionEvent {
+    return ExpiredPendingActionEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ExpiredPendingActionEvent>): ExpiredPendingActionEvent {
+    const message = createBaseExpiredPendingActionEvent();
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
+    message.pendingActionType = (object.pendingActionType !== undefined && object.pendingActionType !== null)
+      ? Long.fromValue(object.pendingActionType)
+      : Long.UZERO;
     message.connectionId = object.connectionId ?? "";
-    message.relayDetails =
-      object.relayDetails !== undefined && object.relayDetails !== null
-        ? RelayDetails.fromPartial(object.relayDetails)
-        : undefined;
+    message.relayDetails = (object.relayDetails !== undefined && object.relayDetails !== null)
+      ? RelayDetails.fromPartial(object.relayDetails)
+      : undefined;
     return message;
   },
 };
 
-const baseAxelarCallContractEvent: object = {};
+function createBaseAxelarCallContractEvent(): AxelarCallContractEvent {
+  return { payload: new Uint8Array() };
+}
 
 export const AxelarCallContractEvent = {
-  encode(
-    message: AxelarCallContractEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AxelarCallContractEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.payload.length !== 0) {
       writer.uint32(10).bytes(message.payload);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): AxelarCallContractEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AxelarCallContractEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseAxelarCallContractEvent,
-    } as AxelarCallContractEvent;
-    message.payload = new Uint8Array();
+    const message = createBaseAxelarCallContractEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AxelarCallContractEvent {
-    const message = {
-      ...baseAxelarCallContractEvent,
-    } as AxelarCallContractEvent;
-    message.payload =
-      object.payload !== undefined && object.payload !== null
-        ? bytesFromBase64(object.payload)
-        : new Uint8Array();
-    return message;
+    return { payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array() };
   },
 
   toJSON(message: AxelarCallContractEvent): unknown {
     const obj: any = {};
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(
-        message.payload !== undefined ? message.payload : new Uint8Array()
-      ));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<AxelarCallContractEvent>
-  ): AxelarCallContractEvent {
-    const message = {
-      ...baseAxelarCallContractEvent,
-    } as AxelarCallContractEvent;
+  create(base?: DeepPartial<AxelarCallContractEvent>): AxelarCallContractEvent {
+    return AxelarCallContractEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<AxelarCallContractEvent>): AxelarCallContractEvent {
+    const message = createBaseAxelarCallContractEvent();
     message.payload = object.payload ?? new Uint8Array();
     return message;
   },
 };
 
-const baseModuleAxelarCallContractEvent: object = { nonce: Long.UZERO };
+function createBaseModuleAxelarCallContractEvent(): ModuleAxelarCallContractEvent {
+  return { nonce: Long.UZERO, payload: new Uint8Array() };
+}
 
 export const ModuleAxelarCallContractEvent = {
-  encode(
-    message: ModuleAxelarCallContractEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ModuleAxelarCallContractEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.nonce.isZero()) {
       writer.uint32(8).uint64(message.nonce);
     }
@@ -2215,81 +2002,69 @@ export const ModuleAxelarCallContractEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ModuleAxelarCallContractEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleAxelarCallContractEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseModuleAxelarCallContractEvent,
-    } as ModuleAxelarCallContractEvent;
-    message.payload = new Uint8Array();
+    const message = createBaseModuleAxelarCallContractEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.nonce = reader.uint64() as Long;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ModuleAxelarCallContractEvent {
-    const message = {
-      ...baseModuleAxelarCallContractEvent,
-    } as ModuleAxelarCallContractEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromString(object.nonce)
-        : Long.UZERO;
-    message.payload =
-      object.payload !== undefined && object.payload !== null
-        ? bytesFromBase64(object.payload)
-        : new Uint8Array();
-    return message;
+    return {
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(),
+    };
   },
 
   toJSON(message: ModuleAxelarCallContractEvent): unknown {
     const obj: any = {};
-    message.nonce !== undefined &&
-      (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(
-        message.payload !== undefined ? message.payload : new Uint8Array()
-      ));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ModuleAxelarCallContractEvent>
-  ): ModuleAxelarCallContractEvent {
-    const message = {
-      ...baseModuleAxelarCallContractEvent,
-    } as ModuleAxelarCallContractEvent;
-    message.nonce =
-      object.nonce !== undefined && object.nonce !== null
-        ? Long.fromValue(object.nonce)
-        : Long.UZERO;
+  create(base?: DeepPartial<ModuleAxelarCallContractEvent>): ModuleAxelarCallContractEvent {
+    return ModuleAxelarCallContractEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ModuleAxelarCallContractEvent>): ModuleAxelarCallContractEvent {
+    const message = createBaseModuleAxelarCallContractEvent();
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
     message.payload = object.payload ?? new Uint8Array();
     return message;
   },
 };
 
-const baseAxelarGeneralMessageReceivedEvent: object = { connectionId: "" };
+function createBaseAxelarGeneralMessageReceivedEvent(): AxelarGeneralMessageReceivedEvent {
+  return { connectionId: "", payload: new Uint8Array() };
+}
 
 export const AxelarGeneralMessageReceivedEvent = {
-  encode(
-    message: AxelarGeneralMessageReceivedEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: AxelarGeneralMessageReceivedEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.connectionId !== "") {
       writer.uint32(10).string(message.connectionId);
     }
@@ -2299,65 +2074,57 @@ export const AxelarGeneralMessageReceivedEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): AxelarGeneralMessageReceivedEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AxelarGeneralMessageReceivedEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseAxelarGeneralMessageReceivedEvent,
-    } as AxelarGeneralMessageReceivedEvent;
-    message.payload = new Uint8Array();
+    const message = createBaseAxelarGeneralMessageReceivedEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.connectionId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AxelarGeneralMessageReceivedEvent {
-    const message = {
-      ...baseAxelarGeneralMessageReceivedEvent,
-    } as AxelarGeneralMessageReceivedEvent;
-    message.connectionId =
-      object.connectionId !== undefined && object.connectionId !== null
-        ? String(object.connectionId)
-        : "";
-    message.payload =
-      object.payload !== undefined && object.payload !== null
-        ? bytesFromBase64(object.payload)
-        : new Uint8Array();
-    return message;
+    return {
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(),
+    };
   },
 
   toJSON(message: AxelarGeneralMessageReceivedEvent): unknown {
     const obj: any = {};
-    message.connectionId !== undefined &&
-      (obj.connectionId = message.connectionId);
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(
-        message.payload !== undefined ? message.payload : new Uint8Array()
-      ));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<AxelarGeneralMessageReceivedEvent>
-  ): AxelarGeneralMessageReceivedEvent {
-    const message = {
-      ...baseAxelarGeneralMessageReceivedEvent,
-    } as AxelarGeneralMessageReceivedEvent;
+  create(base?: DeepPartial<AxelarGeneralMessageReceivedEvent>): AxelarGeneralMessageReceivedEvent {
+    return AxelarGeneralMessageReceivedEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<AxelarGeneralMessageReceivedEvent>): AxelarGeneralMessageReceivedEvent {
+    const message = createBaseAxelarGeneralMessageReceivedEvent();
     message.connectionId = object.connectionId ?? "";
     message.payload = object.payload ?? new Uint8Array();
     return message;
@@ -2367,58 +2134,60 @@ export const AxelarGeneralMessageReceivedEvent = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
   throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
   }
-  return arr;
 }
 
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
-  return btoa(bin.join(""));
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Long
-  ? string | number | Long
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
