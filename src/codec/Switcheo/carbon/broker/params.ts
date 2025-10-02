@@ -1,27 +1,60 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { BoolValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
 /** Params defines the parameters for the broker module. */
 export interface Params {
   futuresInvariantBufferBps: string;
+  shouldSystemLiquidate: boolean;
+  maxLiquidationOrderCounterpartyDeltaBps: string;
+  maxBadDebtThresholdUsd: string;
+  acceptedBadDebtAssets: string[];
+  isTradingPaused: boolean;
 }
 
 /** ParamsToUpdate allows optional fields for Params. */
 export interface ParamsToUpdate {
   futuresInvariantBufferBps: string;
+  shouldSystemLiquidate?: boolean;
+  maxLiquidationOrderCounterpartyDeltaBps: string;
+  maxBadDebtThresholdUsd: string;
+  acceptedBadDebtAssets: string[];
+  isTradingPaused?: boolean;
 }
 
 function createBaseParams(): Params {
-  return { futuresInvariantBufferBps: "" };
+  return {
+    futuresInvariantBufferBps: "",
+    shouldSystemLiquidate: false,
+    maxLiquidationOrderCounterpartyDeltaBps: "",
+    maxBadDebtThresholdUsd: "",
+    acceptedBadDebtAssets: [],
+    isTradingPaused: false,
+  };
 }
 
 export const Params = {
   encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.futuresInvariantBufferBps !== "") {
       writer.uint32(10).string(message.futuresInvariantBufferBps);
+    }
+    if (message.shouldSystemLiquidate === true) {
+      writer.uint32(16).bool(message.shouldSystemLiquidate);
+    }
+    if (message.maxLiquidationOrderCounterpartyDeltaBps !== "") {
+      writer.uint32(26).string(message.maxLiquidationOrderCounterpartyDeltaBps);
+    }
+    if (message.maxBadDebtThresholdUsd !== "") {
+      writer.uint32(34).string(message.maxBadDebtThresholdUsd);
+    }
+    for (const v of message.acceptedBadDebtAssets) {
+      writer.uint32(42).string(v!);
+    }
+    if (message.isTradingPaused === true) {
+      writer.uint32(48).bool(message.isTradingPaused);
     }
     return writer;
   },
@@ -40,6 +73,41 @@ export const Params = {
 
           message.futuresInvariantBufferBps = reader.string();
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.shouldSystemLiquidate = reader.bool();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.maxLiquidationOrderCounterpartyDeltaBps = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.maxBadDebtThresholdUsd = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.acceptedBadDebtAssets.push(reader.string());
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.isTradingPaused = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -54,6 +122,15 @@ export const Params = {
       futuresInvariantBufferBps: isSet(object.futuresInvariantBufferBps)
         ? String(object.futuresInvariantBufferBps)
         : "",
+      shouldSystemLiquidate: isSet(object.shouldSystemLiquidate) ? Boolean(object.shouldSystemLiquidate) : false,
+      maxLiquidationOrderCounterpartyDeltaBps: isSet(object.maxLiquidationOrderCounterpartyDeltaBps)
+        ? String(object.maxLiquidationOrderCounterpartyDeltaBps)
+        : "",
+      maxBadDebtThresholdUsd: isSet(object.maxBadDebtThresholdUsd) ? String(object.maxBadDebtThresholdUsd) : "",
+      acceptedBadDebtAssets: Array.isArray(object?.acceptedBadDebtAssets)
+        ? object.acceptedBadDebtAssets.map((e: any) => String(e))
+        : [],
+      isTradingPaused: isSet(object.isTradingPaused) ? Boolean(object.isTradingPaused) : false,
     };
   },
 
@@ -61,6 +138,16 @@ export const Params = {
     const obj: any = {};
     message.futuresInvariantBufferBps !== undefined &&
       (obj.futuresInvariantBufferBps = message.futuresInvariantBufferBps);
+    message.shouldSystemLiquidate !== undefined && (obj.shouldSystemLiquidate = message.shouldSystemLiquidate);
+    message.maxLiquidationOrderCounterpartyDeltaBps !== undefined &&
+      (obj.maxLiquidationOrderCounterpartyDeltaBps = message.maxLiquidationOrderCounterpartyDeltaBps);
+    message.maxBadDebtThresholdUsd !== undefined && (obj.maxBadDebtThresholdUsd = message.maxBadDebtThresholdUsd);
+    if (message.acceptedBadDebtAssets) {
+      obj.acceptedBadDebtAssets = message.acceptedBadDebtAssets.map((e) => e);
+    } else {
+      obj.acceptedBadDebtAssets = [];
+    }
+    message.isTradingPaused !== undefined && (obj.isTradingPaused = message.isTradingPaused);
     return obj;
   },
 
@@ -71,18 +158,45 @@ export const Params = {
   fromPartial(object: DeepPartial<Params>): Params {
     const message = createBaseParams();
     message.futuresInvariantBufferBps = object.futuresInvariantBufferBps ?? "";
+    message.shouldSystemLiquidate = object.shouldSystemLiquidate ?? false;
+    message.maxLiquidationOrderCounterpartyDeltaBps = object.maxLiquidationOrderCounterpartyDeltaBps ?? "";
+    message.maxBadDebtThresholdUsd = object.maxBadDebtThresholdUsd ?? "";
+    message.acceptedBadDebtAssets = object.acceptedBadDebtAssets?.map((e) => e) || [];
+    message.isTradingPaused = object.isTradingPaused ?? false;
     return message;
   },
 };
 
 function createBaseParamsToUpdate(): ParamsToUpdate {
-  return { futuresInvariantBufferBps: "" };
+  return {
+    futuresInvariantBufferBps: "",
+    shouldSystemLiquidate: undefined,
+    maxLiquidationOrderCounterpartyDeltaBps: "",
+    maxBadDebtThresholdUsd: "",
+    acceptedBadDebtAssets: [],
+    isTradingPaused: undefined,
+  };
 }
 
 export const ParamsToUpdate = {
   encode(message: ParamsToUpdate, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.futuresInvariantBufferBps !== "") {
       writer.uint32(10).string(message.futuresInvariantBufferBps);
+    }
+    if (message.shouldSystemLiquidate !== undefined) {
+      BoolValue.encode({ value: message.shouldSystemLiquidate! }, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.maxLiquidationOrderCounterpartyDeltaBps !== "") {
+      writer.uint32(26).string(message.maxLiquidationOrderCounterpartyDeltaBps);
+    }
+    if (message.maxBadDebtThresholdUsd !== "") {
+      writer.uint32(34).string(message.maxBadDebtThresholdUsd);
+    }
+    for (const v of message.acceptedBadDebtAssets) {
+      writer.uint32(42).string(v!);
+    }
+    if (message.isTradingPaused !== undefined) {
+      BoolValue.encode({ value: message.isTradingPaused! }, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -101,6 +215,41 @@ export const ParamsToUpdate = {
 
           message.futuresInvariantBufferBps = reader.string();
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.shouldSystemLiquidate = BoolValue.decode(reader, reader.uint32()).value;
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.maxLiquidationOrderCounterpartyDeltaBps = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.maxBadDebtThresholdUsd = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.acceptedBadDebtAssets.push(reader.string());
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.isTradingPaused = BoolValue.decode(reader, reader.uint32()).value;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -115,6 +264,15 @@ export const ParamsToUpdate = {
       futuresInvariantBufferBps: isSet(object.futuresInvariantBufferBps)
         ? String(object.futuresInvariantBufferBps)
         : "",
+      shouldSystemLiquidate: isSet(object.shouldSystemLiquidate) ? Boolean(object.shouldSystemLiquidate) : undefined,
+      maxLiquidationOrderCounterpartyDeltaBps: isSet(object.maxLiquidationOrderCounterpartyDeltaBps)
+        ? String(object.maxLiquidationOrderCounterpartyDeltaBps)
+        : "",
+      maxBadDebtThresholdUsd: isSet(object.maxBadDebtThresholdUsd) ? String(object.maxBadDebtThresholdUsd) : "",
+      acceptedBadDebtAssets: Array.isArray(object?.acceptedBadDebtAssets)
+        ? object.acceptedBadDebtAssets.map((e: any) => String(e))
+        : [],
+      isTradingPaused: isSet(object.isTradingPaused) ? Boolean(object.isTradingPaused) : undefined,
     };
   },
 
@@ -122,6 +280,16 @@ export const ParamsToUpdate = {
     const obj: any = {};
     message.futuresInvariantBufferBps !== undefined &&
       (obj.futuresInvariantBufferBps = message.futuresInvariantBufferBps);
+    message.shouldSystemLiquidate !== undefined && (obj.shouldSystemLiquidate = message.shouldSystemLiquidate);
+    message.maxLiquidationOrderCounterpartyDeltaBps !== undefined &&
+      (obj.maxLiquidationOrderCounterpartyDeltaBps = message.maxLiquidationOrderCounterpartyDeltaBps);
+    message.maxBadDebtThresholdUsd !== undefined && (obj.maxBadDebtThresholdUsd = message.maxBadDebtThresholdUsd);
+    if (message.acceptedBadDebtAssets) {
+      obj.acceptedBadDebtAssets = message.acceptedBadDebtAssets.map((e) => e);
+    } else {
+      obj.acceptedBadDebtAssets = [];
+    }
+    message.isTradingPaused !== undefined && (obj.isTradingPaused = message.isTradingPaused);
     return obj;
   },
 
@@ -132,6 +300,11 @@ export const ParamsToUpdate = {
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = createBaseParamsToUpdate();
     message.futuresInvariantBufferBps = object.futuresInvariantBufferBps ?? "";
+    message.shouldSystemLiquidate = object.shouldSystemLiquidate ?? undefined;
+    message.maxLiquidationOrderCounterpartyDeltaBps = object.maxLiquidationOrderCounterpartyDeltaBps ?? "";
+    message.maxBadDebtThresholdUsd = object.maxBadDebtThresholdUsd ?? "";
+    message.acceptedBadDebtAssets = object.acceptedBadDebtAssets?.map((e) => e) || [];
+    message.isTradingPaused = object.isTradingPaused ?? undefined;
     return message;
   },
 };

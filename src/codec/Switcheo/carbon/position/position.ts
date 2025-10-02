@@ -14,6 +14,7 @@ export interface Position {
   realizedPnl: string;
   openedBlockHeight: Long;
   allocatedMarginAmount: string;
+  isCross: boolean;
 }
 
 export interface Positions {
@@ -50,6 +51,7 @@ export interface APIPosition {
   closedAt?: Date;
   updateCount: Long;
   exitCount: Long;
+  isCross: boolean;
 }
 
 export interface PositionAllocatedMargin {
@@ -72,6 +74,7 @@ function createBasePosition(): Position {
     realizedPnl: "",
     openedBlockHeight: Long.UZERO,
     allocatedMarginAmount: "",
+    isCross: false,
   };
 }
 
@@ -97,6 +100,9 @@ export const Position = {
     }
     if (message.allocatedMarginAmount !== "") {
       writer.uint32(66).string(message.allocatedMarginAmount);
+    }
+    if (message.isCross === true) {
+      writer.uint32(72).bool(message.isCross);
     }
     return writer;
   },
@@ -157,6 +163,13 @@ export const Position = {
 
           message.allocatedMarginAmount = reader.string();
           continue;
+        case 9:
+          if (tag !== 72) {
+            break;
+          }
+
+          message.isCross = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -175,6 +188,7 @@ export const Position = {
       realizedPnl: isSet(object.realizedPnl) ? String(object.realizedPnl) : "",
       openedBlockHeight: isSet(object.openedBlockHeight) ? Long.fromValue(object.openedBlockHeight) : Long.UZERO,
       allocatedMarginAmount: isSet(object.allocatedMarginAmount) ? String(object.allocatedMarginAmount) : "",
+      isCross: isSet(object.isCross) ? Boolean(object.isCross) : false,
     };
   },
 
@@ -188,6 +202,7 @@ export const Position = {
     message.openedBlockHeight !== undefined &&
       (obj.openedBlockHeight = (message.openedBlockHeight || Long.UZERO).toString());
     message.allocatedMarginAmount !== undefined && (obj.allocatedMarginAmount = message.allocatedMarginAmount);
+    message.isCross !== undefined && (obj.isCross = message.isCross);
     return obj;
   },
 
@@ -206,6 +221,7 @@ export const Position = {
       ? Long.fromValue(object.openedBlockHeight)
       : Long.UZERO;
     message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
+    message.isCross = object.isCross ?? false;
     return message;
   },
 };
@@ -440,6 +456,7 @@ function createBaseAPIPosition(): APIPosition {
     closedAt: undefined,
     updateCount: Long.UZERO,
     exitCount: Long.UZERO,
+    isCross: false,
   };
 }
 
@@ -501,6 +518,9 @@ export const APIPosition = {
     }
     if (!message.exitCount.isZero()) {
       writer.uint32(152).uint64(message.exitCount);
+    }
+    if (message.isCross === true) {
+      writer.uint32(160).bool(message.isCross);
     }
     return writer;
   },
@@ -645,6 +665,13 @@ export const APIPosition = {
 
           message.exitCount = reader.uint64() as Long;
           continue;
+        case 20:
+          if (tag !== 160) {
+            break;
+          }
+
+          message.isCross = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -675,6 +702,7 @@ export const APIPosition = {
       closedAt: isSet(object.closedAt) ? fromJsonTimestamp(object.closedAt) : undefined,
       updateCount: isSet(object.updateCount) ? Long.fromValue(object.updateCount) : Long.UZERO,
       exitCount: isSet(object.exitCount) ? Long.fromValue(object.exitCount) : Long.UZERO,
+      isCross: isSet(object.isCross) ? Boolean(object.isCross) : false,
     };
   },
 
@@ -702,6 +730,7 @@ export const APIPosition = {
     message.closedAt !== undefined && (obj.closedAt = message.closedAt.toISOString());
     message.updateCount !== undefined && (obj.updateCount = (message.updateCount || Long.UZERO).toString());
     message.exitCount !== undefined && (obj.exitCount = (message.exitCount || Long.UZERO).toString());
+    message.isCross !== undefined && (obj.isCross = message.isCross);
     return obj;
   },
 
@@ -742,6 +771,7 @@ export const APIPosition = {
     message.exitCount = (object.exitCount !== undefined && object.exitCount !== null)
       ? Long.fromValue(object.exitCount)
       : Long.UZERO;
+    message.isCross = object.isCross ?? false;
     return message;
   },
 };

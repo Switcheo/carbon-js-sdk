@@ -58,6 +58,13 @@ export interface QueryParamsResponse {
   params?: Params;
 }
 
+export interface QueryBadDebtRequest {
+}
+
+export interface QueryBadDebtResponse {
+  badDebt: string;
+}
+
 function createBaseQueryCandlesticksRequest(): QueryCandlesticksRequest {
   return { marketId: "", resolution: Long.UZERO, from: Long.UZERO, to: Long.UZERO };
 }
@@ -767,6 +774,106 @@ export const QueryParamsResponse = {
   },
 };
 
+function createBaseQueryBadDebtRequest(): QueryBadDebtRequest {
+  return {};
+}
+
+export const QueryBadDebtRequest = {
+  encode(_: QueryBadDebtRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBadDebtRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBadDebtRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryBadDebtRequest {
+    return {};
+  },
+
+  toJSON(_: QueryBadDebtRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryBadDebtRequest>): QueryBadDebtRequest {
+    return QueryBadDebtRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<QueryBadDebtRequest>): QueryBadDebtRequest {
+    const message = createBaseQueryBadDebtRequest();
+    return message;
+  },
+};
+
+function createBaseQueryBadDebtResponse(): QueryBadDebtResponse {
+  return { badDebt: "" };
+}
+
+export const QueryBadDebtResponse = {
+  encode(message: QueryBadDebtResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.badDebt !== "") {
+      writer.uint32(10).string(message.badDebt);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBadDebtResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBadDebtResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.badDebt = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBadDebtResponse {
+    return { badDebt: isSet(object.badDebt) ? String(object.badDebt) : "" };
+  },
+
+  toJSON(message: QueryBadDebtResponse): unknown {
+    const obj: any = {};
+    message.badDebt !== undefined && (obj.badDebt = message.badDebt);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryBadDebtResponse>): QueryBadDebtResponse {
+    return QueryBadDebtResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryBadDebtResponse>): QueryBadDebtResponse {
+    const message = createBaseQueryBadDebtResponse();
+    message.badDebt = object.badDebt ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get candlesticks for a market */
@@ -776,6 +883,7 @@ export interface Query {
   /** Get trades for a position */
   TradesForPosition(request: QueryTradesForPositionRequest): Promise<QueryTradesForPositionResponse>;
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  BadDebt(request: QueryBadDebtRequest): Promise<QueryBadDebtResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -788,6 +896,7 @@ export class QueryClientImpl implements Query {
     this.Trades = this.Trades.bind(this);
     this.TradesForPosition = this.TradesForPosition.bind(this);
     this.Params = this.Params.bind(this);
+    this.BadDebt = this.BadDebt.bind(this);
   }
   Candlesticks(request: QueryCandlesticksRequest): Promise<QueryCandlesticksResponse> {
     const data = QueryCandlesticksRequest.encode(request).finish();
@@ -811,6 +920,12 @@ export class QueryClientImpl implements Query {
     const data = QueryParamsRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
+  }
+
+  BadDebt(request: QueryBadDebtRequest): Promise<QueryBadDebtResponse> {
+    const data = QueryBadDebtRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "BadDebt", data);
+    return promise.then((data) => QueryBadDebtResponse.decode(_m0.Reader.create(data)));
   }
 }
 

@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.broker";
@@ -27,6 +28,14 @@ export interface MsgUpdateParams {
 }
 
 export interface MsgUpdateParamsResponse {
+}
+
+export interface MsgPayBadDebt {
+  creator: string;
+  payment?: Coin;
+}
+
+export interface MsgPayBadDebtResponse {
 }
 
 function createBaseLiquidatorPosition(): LiquidatorPosition {
@@ -338,11 +347,129 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
+function createBaseMsgPayBadDebt(): MsgPayBadDebt {
+  return { creator: "", payment: undefined };
+}
+
+export const MsgPayBadDebt = {
+  encode(message: MsgPayBadDebt, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.payment !== undefined) {
+      Coin.encode(message.payment, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgPayBadDebt {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgPayBadDebt();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.payment = Coin.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgPayBadDebt {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      payment: isSet(object.payment) ? Coin.fromJSON(object.payment) : undefined,
+    };
+  },
+
+  toJSON(message: MsgPayBadDebt): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.payment !== undefined && (obj.payment = message.payment ? Coin.toJSON(message.payment) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgPayBadDebt>): MsgPayBadDebt {
+    return MsgPayBadDebt.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgPayBadDebt>): MsgPayBadDebt {
+    const message = createBaseMsgPayBadDebt();
+    message.creator = object.creator ?? "";
+    message.payment = (object.payment !== undefined && object.payment !== null)
+      ? Coin.fromPartial(object.payment)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseMsgPayBadDebtResponse(): MsgPayBadDebtResponse {
+  return {};
+}
+
+export const MsgPayBadDebtResponse = {
+  encode(_: MsgPayBadDebtResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgPayBadDebtResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgPayBadDebtResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgPayBadDebtResponse {
+    return {};
+  },
+
+  toJSON(_: MsgPayBadDebtResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgPayBadDebtResponse>): MsgPayBadDebtResponse {
+    return MsgPayBadDebtResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgPayBadDebtResponse>): MsgPayBadDebtResponse {
+    const message = createBaseMsgPayBadDebtResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   InitiateLiquidation(request: MsgInitiateLiquidation): Promise<MsgInitiateLiquidationResponse>;
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
+  PayBadDebt(request: MsgPayBadDebt): Promise<MsgPayBadDebtResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -353,6 +480,7 @@ export class MsgClientImpl implements Msg {
     this.rpc = rpc;
     this.InitiateLiquidation = this.InitiateLiquidation.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
+    this.PayBadDebt = this.PayBadDebt.bind(this);
   }
   InitiateLiquidation(request: MsgInitiateLiquidation): Promise<MsgInitiateLiquidationResponse> {
     const data = MsgInitiateLiquidation.encode(request).finish();
@@ -364,6 +492,12 @@ export class MsgClientImpl implements Msg {
     const data = MsgUpdateParams.encode(request).finish();
     const promise = this.rpc.request(this.service, "UpdateParams", data);
     return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
+  }
+
+  PayBadDebt(request: MsgPayBadDebt): Promise<MsgPayBadDebtResponse> {
+    const data = MsgPayBadDebt.encode(request).finish();
+    const promise = this.rpc.request(this.service, "PayBadDebt", data);
+    return promise.then((data) => MsgPayBadDebtResponse.decode(_m0.Reader.create(data)));
   }
 }
 

@@ -146,6 +146,8 @@ registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidation", Carbon.Broke
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", Carbon.Broker.MsgInitiateLiquidationResponse);
 registry.register("/Switcheo.carbon.broker.MsgUpdateParams", Carbon.Broker.MsgUpdateParams);
 registry.register("/Switcheo.carbon.broker.MsgUpdateParamsResponse", Carbon.Broker.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.broker.MsgPayBadDebt", Carbon.Broker.MsgPayBadDebt);
+registry.register("/Switcheo.carbon.broker.MsgPayBadDebtResponse", Carbon.Broker.MsgPayBadDebtResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetGasCost", Carbon.Fee.MsgSetGasCost);
 registry.register("/Switcheo.carbon.fee.MsgSetGasCostResponse", Carbon.Fee.MsgSetGasCostResponse);
@@ -887,6 +889,8 @@ export const TxTypes = {
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
   "MsgBrokerUpdateParams": "/Switcheo.carbon.broker.MsgUpdateParams",
   "MsgBrokerUpdateParamsResponse": "/Switcheo.carbon.broker.MsgUpdateParamsResponse",
+  "MsgPayBadDebt": "/Switcheo.carbon.broker.MsgPayBadDebt",
+  "MsgPayBadDebtResponse": "/Switcheo.carbon.broker.MsgPayBadDebtResponse",
   "MsgSetGasCost": "/Switcheo.carbon.fee.MsgSetGasCost",
   "MsgSetGasCostResponse": "/Switcheo.carbon.fee.MsgSetGasCostResponse",
   "MsgSetMinGasPrice": "/Switcheo.carbon.fee.MsgSetMinGasPrice",
@@ -4565,12 +4569,52 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "futures_invariant_buffer_bps",
         "type": "string"
+      },
+      {
+        "name": "should_system_liquidate",
+        "type": "bool"
+      },
+      {
+        "name": "max_liquidation_order_counterparty_delta_bps",
+        "type": "string"
+      },
+      {
+        "name": "max_bad_debt_threshold_usd",
+        "type": "string"
+      },
+      {
+        "name": "accepted_bad_debt_assets",
+        "type": "string[]"
+      },
+      {
+        "name": "is_trading_paused",
+        "type": "bool"
       }
     ],
     "ParamsToUpdate": [
       {
         "name": "futures_invariant_buffer_bps",
         "type": "string"
+      },
+      {
+        "name": "should_system_liquidate",
+        "type": "bool"
+      },
+      {
+        "name": "max_liquidation_order_counterparty_delta_bps",
+        "type": "string"
+      },
+      {
+        "name": "max_bad_debt_threshold_usd",
+        "type": "string"
+      },
+      {
+        "name": "accepted_bad_debt_assets",
+        "type": "string[]"
+      },
+      {
+        "name": "is_trading_paused",
+        "type": "bool"
       }
     ],
     "GenesisState": [
@@ -4722,6 +4766,13 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
+    "QueryBadDebtRequest": [],
+    "QueryBadDebtResponse": [
+      {
+        "name": "bad_debt",
+        "type": "string"
+      }
+    ],
     "LiquidatorPosition": [
       {
         "name": "market_id",
@@ -4755,7 +4806,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
-    "MsgUpdateParamsResponse": []
+    "MsgUpdateParamsResponse": [],
+    "MsgPayBadDebt": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "payment",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgPayBadDebtResponse": []
   },
   "/Switcheo.carbon.btcx": {
     "DenomInfo": [
@@ -6374,11 +6437,6 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryAssetLoansRequest": [
       {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
         "name": "denom",
         "type": "string"
       }
@@ -6396,11 +6454,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "loans",
         "type": "AssetLoan[]",
         "packageName": "/Switcheo.carbon.cdp"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "AssetLoan": [
@@ -8332,6 +8385,49 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "msg",
         "type": "CreateTokenParams",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "FuturesBalanceRecord": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "total",
+        "type": "string"
+      },
+      {
+        "name": "available",
+        "type": "string"
+      },
+      {
+        "name": "reserved",
+        "type": "string"
+      },
+      {
+        "name": "margin",
+        "type": "string"
+      },
+      {
+        "name": "unrealised_loss",
+        "type": "string"
+      },
+      {
+        "name": "margin_debt",
+        "type": "string"
+      }
+    ],
+    "QueryGetFuturesBalanceRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryGetFuturesBalanceResponse": [
+      {
+        "name": "balances",
+        "type": "FuturesBalanceRecord[]",
         "packageName": "/Switcheo.carbon.coin"
       }
     ],
@@ -16410,6 +16506,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "allocated_margin_amount",
         "type": "string"
+      },
+      {
+        "name": "is_cross",
+        "type": "bool"
       }
     ],
     "Positions": [
@@ -16515,6 +16615,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "exit_count",
         "type": "uint64"
+      },
+      {
+        "name": "is_cross",
+        "type": "bool"
       }
     ],
     "PositionAllocatedMargin": [
@@ -16617,6 +16721,29 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "open_positions",
         "type": "Position[]",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "TotalMaintenanceMargin": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "QueryTotalMaintenanceMarginRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryTotalMaintenanceMarginResponse": [
+      {
+        "name": "total_maintenance_margin",
+        "type": "TotalMaintenanceMargin[]",
         "packageName": "/Switcheo.carbon.position"
       }
     ],
