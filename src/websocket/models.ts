@@ -106,10 +106,10 @@ export interface Position {
   realized_pnl: string; // string representation of number
   max_lots: string; // string representation of number
   total_fee_amount: string; // string representation of number
-  avg_allocated_margin: string; // string representation of number
+  avg_allocated_margin?: string; // string representation of number
   avg_entry_price: string; // string representation of number
   avg_exit_price: string; // string representation of number
-  allocated_margin: string; // string representation of number
+  allocated_margin?: string; // string representation of number
   lots: string; // string representation of number
   opened_at: string; // string representation of timestamp
   closed_at?: string; // string representation of timestamp
@@ -149,6 +149,7 @@ export interface PriceLevelEvent extends PriceLevel {
 export interface Leverage {
   market_id?: string;
   leverage: string; // string representation of number
+  is_cross?: boolean;
 }
 
 export interface Pool {
@@ -373,4 +374,13 @@ export interface RewardDebt {
 export interface CDPTokenSupply {
   cibt_denom: string;
   amount: string; // string representation of number
+}
+
+export interface TokenBalance {
+  available: string; // string representation of number
+  spot_order: string; // string representation of number
+  position: string; // string representation of number
+  denom: string;
+  futures: string; // string representation of number
+  futures_order: string; // string representation of number
 }

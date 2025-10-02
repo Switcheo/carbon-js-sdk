@@ -5,9 +5,28 @@ import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pa
 import { BoolValue } from "../../../google/protobuf/wrappers";
 import { Bridge } from "./bridge";
 import { TokenGroupDetails } from "./group";
+import { Params } from "./params";
 import { LockedCoins, Token, TokenBalance } from "./token";
 
 export const protobufPackage = "Switcheo.carbon.coin";
+
+export interface FuturesBalanceRecord {
+  denom: string;
+  total: string;
+  available: string;
+  reserved: string;
+  margin: string;
+  unrealisedLoss: string;
+  marginDebt: string;
+}
+
+export interface QueryGetFuturesBalanceRequest {
+  address: string;
+}
+
+export interface QueryGetFuturesBalanceResponse {
+  balances: FuturesBalanceRecord[];
+}
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetTokenRequest {
@@ -116,6 +135,271 @@ export interface QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry {
   key: string;
   value: Long;
 }
+
+/** QueryParamsRequest is request type for the Query/Params RPC method. */
+export interface QueryParamsRequest {
+}
+
+/** QueryParamsResponse is response type for the Query/Params RPC method. */
+export interface QueryParamsResponse {
+  params?: Params;
+}
+
+function createBaseFuturesBalanceRecord(): FuturesBalanceRecord {
+  return { denom: "", total: "", available: "", reserved: "", margin: "", unrealisedLoss: "", marginDebt: "" };
+}
+
+export const FuturesBalanceRecord = {
+  encode(message: FuturesBalanceRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.total !== "") {
+      writer.uint32(18).string(message.total);
+    }
+    if (message.available !== "") {
+      writer.uint32(26).string(message.available);
+    }
+    if (message.reserved !== "") {
+      writer.uint32(34).string(message.reserved);
+    }
+    if (message.margin !== "") {
+      writer.uint32(42).string(message.margin);
+    }
+    if (message.unrealisedLoss !== "") {
+      writer.uint32(50).string(message.unrealisedLoss);
+    }
+    if (message.marginDebt !== "") {
+      writer.uint32(58).string(message.marginDebt);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FuturesBalanceRecord {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFuturesBalanceRecord();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.denom = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.total = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.available = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.reserved = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.margin = reader.string();
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.unrealisedLoss = reader.string();
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.marginDebt = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FuturesBalanceRecord {
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      total: isSet(object.total) ? String(object.total) : "",
+      available: isSet(object.available) ? String(object.available) : "",
+      reserved: isSet(object.reserved) ? String(object.reserved) : "",
+      margin: isSet(object.margin) ? String(object.margin) : "",
+      unrealisedLoss: isSet(object.unrealisedLoss) ? String(object.unrealisedLoss) : "",
+      marginDebt: isSet(object.marginDebt) ? String(object.marginDebt) : "",
+    };
+  },
+
+  toJSON(message: FuturesBalanceRecord): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.total !== undefined && (obj.total = message.total);
+    message.available !== undefined && (obj.available = message.available);
+    message.reserved !== undefined && (obj.reserved = message.reserved);
+    message.margin !== undefined && (obj.margin = message.margin);
+    message.unrealisedLoss !== undefined && (obj.unrealisedLoss = message.unrealisedLoss);
+    message.marginDebt !== undefined && (obj.marginDebt = message.marginDebt);
+    return obj;
+  },
+
+  create(base?: DeepPartial<FuturesBalanceRecord>): FuturesBalanceRecord {
+    return FuturesBalanceRecord.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<FuturesBalanceRecord>): FuturesBalanceRecord {
+    const message = createBaseFuturesBalanceRecord();
+    message.denom = object.denom ?? "";
+    message.total = object.total ?? "";
+    message.available = object.available ?? "";
+    message.reserved = object.reserved ?? "";
+    message.margin = object.margin ?? "";
+    message.unrealisedLoss = object.unrealisedLoss ?? "";
+    message.marginDebt = object.marginDebt ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryGetFuturesBalanceRequest(): QueryGetFuturesBalanceRequest {
+  return { address: "" };
+}
+
+export const QueryGetFuturesBalanceRequest = {
+  encode(message: QueryGetFuturesBalanceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetFuturesBalanceRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetFuturesBalanceRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetFuturesBalanceRequest {
+    return { address: isSet(object.address) ? String(object.address) : "" };
+  },
+
+  toJSON(message: QueryGetFuturesBalanceRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryGetFuturesBalanceRequest>): QueryGetFuturesBalanceRequest {
+    return QueryGetFuturesBalanceRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetFuturesBalanceRequest>): QueryGetFuturesBalanceRequest {
+    const message = createBaseQueryGetFuturesBalanceRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryGetFuturesBalanceResponse(): QueryGetFuturesBalanceResponse {
+  return { balances: [] };
+}
+
+export const QueryGetFuturesBalanceResponse = {
+  encode(message: QueryGetFuturesBalanceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.balances) {
+      FuturesBalanceRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetFuturesBalanceResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetFuturesBalanceResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.balances.push(FuturesBalanceRecord.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetFuturesBalanceResponse {
+    return {
+      balances: Array.isArray(object?.balances)
+        ? object.balances.map((e: any) => FuturesBalanceRecord.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryGetFuturesBalanceResponse): unknown {
+    const obj: any = {};
+    if (message.balances) {
+      obj.balances = message.balances.map((e) => e ? FuturesBalanceRecord.toJSON(e) : undefined);
+    } else {
+      obj.balances = [];
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryGetFuturesBalanceResponse>): QueryGetFuturesBalanceResponse {
+    return QueryGetFuturesBalanceResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetFuturesBalanceResponse>): QueryGetFuturesBalanceResponse {
+    const message = createBaseQueryGetFuturesBalanceResponse();
+    message.balances = object.balances?.map((e) => FuturesBalanceRecord.fromPartial(e)) || [];
+    return message;
+  },
+};
 
 function createBaseQueryGetTokenRequest(): QueryGetTokenRequest {
   return { denom: "" };
@@ -1762,8 +2046,111 @@ export const QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry = {
   },
 };
 
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+  return {};
+}
+
+export const QueryParamsRequest = {
+  encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryParamsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryParamsRequest {
+    return {};
+  },
+
+  toJSON(_: QueryParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    return QueryParamsRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    const message = createBaseQueryParamsRequest();
+    return message;
+  },
+};
+
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+  return { params: undefined };
+}
+
+export const QueryParamsResponse = {
+  encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.params = Params.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryParamsResponse {
+    return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
+  },
+
+  toJSON(message: QueryParamsResponse): unknown {
+    const obj: any = {};
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    return QueryParamsResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    const message = createBaseQueryParamsResponse();
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
+  FuturesBalance(request: QueryGetFuturesBalanceRequest): Promise<QueryGetFuturesBalanceResponse>;
   /** Get token details for a denom */
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse>;
   /** Get all token details */
@@ -1786,6 +2173,7 @@ export interface Query {
   TokenGroupAll(request: QueryAllTokenGroupsRequest): Promise<QueryAllTokenGroupsResponse>;
   /** Get denom => group_id mappings */
   TokenGroupMappings(request: QueryTokenGroupMappingsRequest): Promise<QueryTokenGroupMappingsResponse>;
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1794,6 +2182,7 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc, opts?: { service?: string }) {
     this.service = opts?.service || "Switcheo.carbon.coin.Query";
     this.rpc = rpc;
+    this.FuturesBalance = this.FuturesBalance.bind(this);
     this.Token = this.Token.bind(this);
     this.TokenAll = this.TokenAll.bind(this);
     this.LockedCoins = this.LockedCoins.bind(this);
@@ -1805,7 +2194,14 @@ export class QueryClientImpl implements Query {
     this.TokenGroup = this.TokenGroup.bind(this);
     this.TokenGroupAll = this.TokenGroupAll.bind(this);
     this.TokenGroupMappings = this.TokenGroupMappings.bind(this);
+    this.Params = this.Params.bind(this);
   }
+  FuturesBalance(request: QueryGetFuturesBalanceRequest): Promise<QueryGetFuturesBalanceResponse> {
+    const data = QueryGetFuturesBalanceRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "FuturesBalance", data);
+    return promise.then((data) => QueryGetFuturesBalanceResponse.decode(_m0.Reader.create(data)));
+  }
+
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "Token", data);
@@ -1870,6 +2266,12 @@ export class QueryClientImpl implements Query {
     const data = QueryTokenGroupMappingsRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "TokenGroupMappings", data);
     return promise.then((data) => QueryTokenGroupMappingsResponse.decode(_m0.Reader.create(data)));
+  }
+
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
+    const data = QueryParamsRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "Params", data);
+    return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
   }
 }
 

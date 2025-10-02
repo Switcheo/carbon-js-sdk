@@ -132,7 +132,6 @@ export interface QueryAssetAllResponse {
 }
 
 export interface QueryAssetLoansRequest {
-  pagination?: PageRequest;
   denom: string;
 }
 
@@ -140,7 +139,6 @@ export interface QueryAssetLoansResponse {
   denom: string;
   cibtDenom: string;
   loans: AssetLoan[];
-  pagination?: PageResponse;
 }
 
 export interface AssetLoan {
@@ -1965,16 +1963,13 @@ export const QueryAssetAllResponse = {
 };
 
 function createBaseQueryAssetLoansRequest(): QueryAssetLoansRequest {
-  return { pagination: undefined, denom: "" };
+  return { denom: "" };
 }
 
 export const QueryAssetLoansRequest = {
   encode(message: QueryAssetLoansRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
-    }
     if (message.denom !== "") {
-      writer.uint32(18).string(message.denom);
+      writer.uint32(10).string(message.denom);
     }
     return writer;
   },
@@ -1991,13 +1986,6 @@ export const QueryAssetLoansRequest = {
             break;
           }
 
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.denom = reader.string();
           continue;
       }
@@ -2010,16 +1998,11 @@ export const QueryAssetLoansRequest = {
   },
 
   fromJSON(object: any): QueryAssetLoansRequest {
-    return {
-      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
-      denom: isSet(object.denom) ? String(object.denom) : "",
-    };
+    return { denom: isSet(object.denom) ? String(object.denom) : "" };
   },
 
   toJSON(message: QueryAssetLoansRequest): unknown {
     const obj: any = {};
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     message.denom !== undefined && (obj.denom = message.denom);
     return obj;
   },
@@ -2030,16 +2013,13 @@ export const QueryAssetLoansRequest = {
 
   fromPartial(object: DeepPartial<QueryAssetLoansRequest>): QueryAssetLoansRequest {
     const message = createBaseQueryAssetLoansRequest();
-    message.pagination = (object.pagination !== undefined && object.pagination !== null)
-      ? PageRequest.fromPartial(object.pagination)
-      : undefined;
     message.denom = object.denom ?? "";
     return message;
   },
 };
 
 function createBaseQueryAssetLoansResponse(): QueryAssetLoansResponse {
-  return { denom: "", cibtDenom: "", loans: [], pagination: undefined };
+  return { denom: "", cibtDenom: "", loans: [] };
 }
 
 export const QueryAssetLoansResponse = {
@@ -2052,9 +2032,6 @@ export const QueryAssetLoansResponse = {
     }
     for (const v of message.loans) {
       AssetLoan.encode(v!, writer.uint32(26).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse.encode(message.pagination, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -2087,13 +2064,6 @@ export const QueryAssetLoansResponse = {
 
           message.loans.push(AssetLoan.decode(reader, reader.uint32()));
           continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.pagination = PageResponse.decode(reader, reader.uint32());
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2108,7 +2078,6 @@ export const QueryAssetLoansResponse = {
       denom: isSet(object.denom) ? String(object.denom) : "",
       cibtDenom: isSet(object.cibtDenom) ? String(object.cibtDenom) : "",
       loans: Array.isArray(object?.loans) ? object.loans.map((e: any) => AssetLoan.fromJSON(e)) : [],
-      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -2121,8 +2090,6 @@ export const QueryAssetLoansResponse = {
     } else {
       obj.loans = [];
     }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
@@ -2135,9 +2102,6 @@ export const QueryAssetLoansResponse = {
     message.denom = object.denom ?? "";
     message.cibtDenom = object.cibtDenom ?? "";
     message.loans = object.loans?.map((e) => AssetLoan.fromPartial(e)) || [];
-    message.pagination = (object.pagination !== undefined && object.pagination !== null)
-      ? PageResponse.fromPartial(object.pagination)
-      : undefined;
     return message;
   },
 };

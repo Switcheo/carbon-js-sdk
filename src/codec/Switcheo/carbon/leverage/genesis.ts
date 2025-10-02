@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { MarketLeverageRecord } from "./leverage";
+import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.leverage";
 
@@ -12,16 +13,20 @@ export interface GenesisState {
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
   marketLeverageRecords: MarketLeverageRecord[];
+  params?: Params;
 }
 
 function createBaseGenesisState(): GenesisState {
-  return { marketLeverageRecords: [] };
+  return { marketLeverageRecords: [], params: undefined };
 }
 
 export const GenesisState = {
   encode(message: GenesisState, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.marketLeverageRecords) {
       MarketLeverageRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -40,6 +45,13 @@ export const GenesisState = {
 
           message.marketLeverageRecords.push(MarketLeverageRecord.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.params = Params.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -54,6 +66,7 @@ export const GenesisState = {
       marketLeverageRecords: Array.isArray(object?.marketLeverageRecords)
         ? object.marketLeverageRecords.map((e: any) => MarketLeverageRecord.fromJSON(e))
         : [],
+      params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
     };
   },
 
@@ -66,6 +79,7 @@ export const GenesisState = {
     } else {
       obj.marketLeverageRecords = [];
     }
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -76,6 +90,9 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = createBaseGenesisState();
     message.marketLeverageRecords = object.marketLeverageRecords?.map((e) => MarketLeverageRecord.fromPartial(e)) || [];
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
@@ -91,4 +108,8 @@ export type DeepPartial<T> = T extends Builtin ? T
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
