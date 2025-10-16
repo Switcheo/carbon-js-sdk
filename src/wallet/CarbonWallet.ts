@@ -321,7 +321,7 @@ export class CarbonWallet {
       }
 
       case "qr": {
-        if (!opts.mnemonic || !opts.expiry || !opts.granter) throw new Error("grantee and expiry must be provided to create grantee wallet");
+        if (!opts.mnemonic || !opts.expiry || !opts.granter) throw new Error("grantor, grantee and expiry must be provided to create grantee wallet");
         this.publicKey = Buffer.from([],);
         this.bech32Address = opts.granter;
 
