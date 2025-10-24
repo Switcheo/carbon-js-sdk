@@ -57,6 +57,8 @@ export interface CarbonWalletGenericOpts {
   enableJwtAuth?: boolean;
   authMessage?: string;
   jwt?: AccessTokenResponse
+  bech32Address?: string;
+
   /**
    * Optional callback that will be called before signing is requested/executed.
    */
@@ -101,60 +103,39 @@ export interface RainbowKitWalletOpts extends EvmWalletOpts {
   walletProvider: SupportedEip6963Provider;
 }
 
+type MnemonicOpts = {
+  mode: "mnemonic"
+  mnemonic: string
+}
+
+type PrivateKeyOpts = {
+  mode: "privateKey"
+  privateKey: string | Buffer
+}
+
+type CustomSignerOpts = {
+  mode: "customSigner"
+  signer: CarbonSigner
+  publicKeyBase64: string
+}
+
+type ViewOnlyOpts = {
+  mode: "viewOnly"
+  bech32Address: string
+}
+
+type QROpts = {
+  mode: "qr"
+  mnemonic: string
+  granter: string
+  expiry: Date
+}
+
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
-  (
-    | {
-      // connect with mnemonic
-      mode: "mnemonic";
-      mnemonic: string;
-      privateKey?: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
-    | {
-      // connect with private key
-      mode: "privateKey";
-      mnemonic?: string;
-      privateKey: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
-    | {
-      // connect with custom signer
-      mode: "customSigner";
-      mnemonic?: string;
-      privateKey?: string | Buffer;
-      signer: CarbonSigner;
-      publicKeyBase64: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
-    }
-    | {
-      // connect with address (view only)
-      mode: "viewOnly";
-      mnemonic?: string;
-      privateKey?: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
-    | {
-      // connect with address (view only) and grantee (for transactions)
-      mode: "qr";
-      bech32Address?: string;
-      mnemonic?: string;
-      granter?: string;
-      expiry?: Date;
-    }
-  )
+  (MnemonicOpts | PrivateKeyOpts | CustomSignerOpts | ViewOnlyOpts | QROpts)
 
 export interface AccountInfo extends Account {
-  chainId: string;
+  chainId: string;  
 }
 
 export interface Grantee {
@@ -345,8 +326,8 @@ export class CarbonWallet {
 
     const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
-    this.evmHexAddress = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
-    this.evmBech32Address = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
+    this.evmHexAddress = this.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+    this.evmBech32Address = this.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
 
   }
 
