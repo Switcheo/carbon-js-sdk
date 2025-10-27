@@ -9,10 +9,8 @@ import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Net
 import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { GrantModule } from "@carbon-sdk/modules/grant";
-import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
-import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
-import { ETHAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { ETHAddress, SWTHAddress } from "@carbon-sdk/util/address";
 import { AccessTokenResponse, GrantRequest, GrantType, hasExpired, hasRefreshTokenExpired, isValidIssuer } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
@@ -22,21 +20,18 @@ import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
-import { DecodeObject, EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
+import { DecodeObject, EncodeObject, OfflineDirectSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
 import { sleep } from "@cosmjs/utils";
-import { Key as LeapKey } from "@cosmos-kit/core";
-import { Leap } from "@cosmos-kit/leap-extension";
-import { Key } from "@keplr-wallet/types";
 import axios from "axios";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { utils } from "ethers";
 import { jwtDecode } from "jwt-decode";
-import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
+import { CarbonEIP712Signer, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { toUint8Array } from '@carbon-sdk/util/bytes'
 
@@ -57,6 +52,8 @@ export interface CarbonWalletGenericOpts {
   enableJwtAuth?: boolean;
   authMessage?: string;
   jwt?: AccessTokenResponse
+  bech32Address?: string;
+
   /**
    * Optional callback that will be called before signing is requested/executed.
    */
@@ -101,48 +98,39 @@ export interface RainbowKitWalletOpts extends EvmWalletOpts {
   walletProvider: SupportedEip6963Provider;
 }
 
+type MnemonicOpts = {
+  mode: "mnemonic"
+  mnemonic: string
+}
+
+type PrivateKeyOpts = {
+  mode: "privateKey"
+  privateKey: string | Buffer
+}
+
+type CustomSignerOpts = {
+  mode: "customSigner"
+  signer: CarbonSigner
+  publicKeyBase64: string
+}
+
+type ViewOnlyOpts = {
+  mode: "viewOnly"
+  bech32Address: string
+}
+
+type QROpts = {
+  mode: "qr"
+  mnemonic: string
+  granter: string
+  expiry: Date
+}
+
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
-  (
-    | {
-      // connect with mnemonic
-      mnemonic: string;
-      privateKey?: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
-    | {
-      // connect with private key
-      mnemonic?: string;
-      privateKey: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
-    | {
-      // connect with custom signer
-      mnemonic?: string;
-      privateKey?: string | Buffer;
-      signer: CarbonSigner;
-      publicKeyBase64: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
-    }
-    | {
-      // connect with address (view only)
-      mnemonic?: string;
-      privateKey?: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
-  );
+  (MnemonicOpts | PrivateKeyOpts | CustomSignerOpts | ViewOnlyOpts | QROpts)
 
 export interface AccountInfo extends Account {
-  chainId: string;
+  chainId: string;  
 }
 
 export interface Grantee {
@@ -253,12 +241,12 @@ export class CarbonWallet {
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
 
-    this.mnemonic = opts.mnemonic;
-    if (this.mnemonic) {
-      this.privateKey = AddressUtils.SWTHAddress.mnemonicToPrivateKey(this.mnemonic);
-    } else if (opts.privateKey) {
-      this.privateKey = AddressUtils.stringOrBufferToBuffer(opts.privateKey)!;
-    }
+    // this.mnemonic = opts.mnemonic;
+    // if (this.mnemonic) {
+    //   this.privateKey = AddressUtils.SWTHAddress.mnemonicToPrivateKey(this.mnemonic);
+    // } else if ("privateKey" in opts && opts.privateKey) {
+    //   this.privateKey = AddressUtils.stringOrBufferToBuffer(opts.privateKey)!;
+    // }
     const addressOpts: AddressUtils.SWTHAddressOptions = {
       network,
       ...(this.configOverride.Bech32Prefix && {
@@ -266,114 +254,75 @@ export class CarbonWallet {
       }),
     };
 
-    if (opts.signer) {
-      this.signer = opts.signer;
-      this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64")
-      this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
-    } else if (this.privateKey) {
-      this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
+    switch (opts.mode) {
+      case "mnemonic": {
+        this.mnemonic = opts.mnemonic;
+        this.privateKey = AddressUtils.SWTHAddress.mnemonicToPrivateKey(this.mnemonic);
+        this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
+        this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
 
-      this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+        let prefix = addressOpts.bech32Prefix;
+        if (!addressOpts.bech32Prefix) prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
+        if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
 
-      let prefix = addressOpts.bech32Prefix;
-      if (!addressOpts.bech32Prefix) prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
+        this.signer = new CarbonPrivateKeySigner(toUint8Array(this.privateKey), prefix);
+        break;
+      }
 
-      if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
+      case "privateKey": {
+        this.privateKey = AddressUtils.stringOrBufferToBuffer(opts.privateKey)!;
+        this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
+        this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
 
-      this.signer = new CarbonPrivateKeySigner(toUint8Array(this.privateKey), prefix);
-    } else if (opts.bech32Address) {
-      // read-only wallet, without private/public keys
-      this.signer = new CarbonNonSigner();
-      this.publicKey = Buffer.from([],);
-      this.bech32Address = opts.bech32Address;
-    } else {
-      throw new Error("cannot instantiate wallet signer");
+        let prefix = addressOpts.bech32Prefix;
+        if (!addressOpts.bech32Prefix) prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
+        if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
+
+        this.signer = new CarbonPrivateKeySigner(toUint8Array(this.privateKey), prefix);
+        break;
+      }
+
+      case "customSigner": {
+        this.signer = opts.signer;
+        this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64")
+        this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+        break;
+      }
+
+      case "viewOnly": {
+        this.signer = new CarbonNonSigner();
+        this.publicKey = Buffer.from([],);
+        this.bech32Address = opts.bech32Address;
+        break;
+      }
+
+      case "qr": {
+        if (!opts.mnemonic || !opts.expiry || !opts.granter) throw new Error("grantor, grantee and expiry must be provided to create grantee wallet");
+        this.publicKey = Buffer.from([],);
+        this.bech32Address = opts.granter;
+
+        let prefix = addressOpts.bech32Prefix;
+        if (!addressOpts.bech32Prefix) prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
+        if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
+
+        const pkSigner = new CarbonPrivateKeySigner(toUint8Array(AddressUtils.SWTHAddress.mnemonicToPrivateKey(opts.mnemonic)), prefix);
+
+        this.signer = pkSigner;
+        this.setGrantee(
+          {
+            expiry: opts.expiry,
+            signer: pkSigner,
+          }
+        )
+
+        break;
+      }
     }
 
     const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
-    this.evmHexAddress = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
-    this.evmBech32Address = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
-
-  }
-
-  public static withPrivateKey(privateKey: string | Buffer, opts: Omit<CarbonWalletInitOpts, "privateKey"> = {}) {
-    return new CarbonWallet({
-      ...opts,
-      privateKey,
-    });
-  }
-
-  public static withMnemonic(mnemonic: string, opts: Omit<CarbonWalletInitOpts, "mnemonic"> = {}) {
-    return new CarbonWallet({
-      ...opts,
-      mnemonic,
-    });
-  }
-
-  public static withLedger(cosmosLedger: CosmosLedger, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = new CarbonLedgerSigner(cosmosLedger);
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
-      providerAgent: ProviderAgent.Ledger,
-      ...opts,
-    });
-    return wallet;
-  }
-
-  public static withSigner(signer: CarbonSigner, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    return new CarbonWallet({
-      ...opts,
-      signer,
-      publicKeyBase64,
-    });
-  }
-
-  public static withKeplr(keplr: Keplr, chainInfo: ChainInfo, keplrKey: Key, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = keplrKey.isNanoLedger ? KeplrAccount.createKeplrSignerAmino(keplr, chainInfo, keplrKey) : KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey);
-    const publicKeyBase64 = Buffer.from(keplrKey.pubKey).toString("base64");
-
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
-      providerAgent: ProviderAgent.KeplrExtension,
-      ...opts,
-    });
-    return wallet;
-  }
-
-  public static withLeap(leap: Leap, chainId: string, leapKey: LeapKey, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = leapKey.isNanoLedger ? LeapAccount.createLeapSignerAmino(leap, chainId) : LeapAccount.createLeapSigner(leap, chainId);
-    const publicKeyBase64 = Buffer.from(leapKey.pubKey).toString("base64");
-
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
-      providerAgent: ProviderAgent.LeapExtension,
-      ...opts,
-    });
-    return wallet;
-  }
-
-  public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64, addressOptions);
-    const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
-      providerAgent: ProviderAgent.MetamaskExtension,
-      ...opts,
-    });
-    return wallet;
-  }
-
-  public static withRainbowKit(rainbowKit: RainbowKitAccount, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, walletProvider: SupportedEip6963Provider, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, compressedPubKeyBase64, addressOptions)
-    const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
-      ...opts,
-      providerAgent: walletProvider,
-      isRainbowKit: true,
-    });
-    return wallet;
-  }
-
-  public static withAddress(bech32Address: string, opts: Partial<CarbonWalletInitOpts> = {}) {
-    return new CarbonWallet({
-      ...opts,
-      bech32Address,
-    });
+    this.evmHexAddress = this.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+    this.evmBech32Address = this.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
   }
 
   public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee, fallbackConfig: OverrideConfig | null = null, opts?: CarbonWalletGenericOpts): Promise<CarbonWallet> {
