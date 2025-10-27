@@ -7,6 +7,7 @@ import {
   NetworkConfig,
   NetworkConfigs,
   PAGINATE_10K,
+  ProviderAgent,
   Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
@@ -425,41 +426,56 @@ class CarbonSDK {
   }
 
   public async connectWithPrivateKey(privateKey: string | Buffer, opts?: CarbonWalletGenericOpts) {
-    const wallet = CarbonWallet.withPrivateKey(privateKey, {
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "privateKey",
+      privateKey,
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet, opts);
+
+    return this.connect(wallet, opts)
   }
 
   public async connectWithMnemonic(mnemonic: string, opts?: CarbonWalletGenericOpts) {
-    const wallet = CarbonWallet.withMnemonic(mnemonic, {
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "mnemonic",
+      mnemonic,
       network: this.network,
       config: this.configOverride,
     });
-    return this.connect(wallet, opts);
+
+    return this.connect(wallet, opts)
   }
 
   public async connectWithSigner(signer: CarbonSigner, publicKeyBase64: string, opts?: CarbonWalletGenericOpts) {
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "customSigner",
+      signer,
+      publicKeyBase64,
       network: this.network,
       config: this.configOverride,
     });
+
     return this.connect(wallet, opts);
   }
 
   public async connectWithLedger(ledger: CosmosLedger, opts?: CarbonWalletGenericOpts) {
     const publicKeyBuffer = await ledger.getPubKey();
     const publicKeyBase64 = publicKeyBuffer.toString("base64");
+    const signer = new CarbonLedgerSigner(ledger);
 
-    const wallet = CarbonWallet.withLedger(ledger, publicKeyBase64, {
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "customSigner",
+      signer,
+      publicKeyBase64,
       network: this.network,
       config: this.configOverride,
     });
+
     return this.connect(wallet, opts);
   }
 
@@ -471,11 +487,21 @@ class CarbonSDK {
     const keplrKey = await keplr.getKey(chainId);
     await keplr.enable(chainId);
 
-    const wallet = CarbonWallet.withKeplr(keplr, chainInfo, keplrKey, {
-      ...opts,
-      network: this.network,
-      config: this.configOverride,
-    });
+    const signer = keplrKey.isNanoLedger
+    ? KeplrAccount.createKeplrSignerAmino(keplr, chainInfo, keplrKey)
+    : KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey)
+    const publicKeyBase64 = Buffer.from(keplrKey.pubKey).toString("base64")
+
+    const wallet = new CarbonWallet({
+    ...opts,
+    mode: "customSigner",
+    signer,
+    publicKeyBase64,
+    network: this.network,
+    config: this.configOverride,
+    providerAgent: ProviderAgent.KeplrExtension,
+  });
+
     return this.connect(wallet, opts);
   }
 
@@ -487,11 +513,19 @@ class CarbonSDK {
     const leapKey = await leap.getKey(chainId);
     await leap.enable(chainId);
 
-    const wallet = CarbonWallet.withLeap(leap, chainId, leapKey, {
+    const signer = leapKey.isNanoLedger ? LeapAccount.createLeapSignerAmino(leap, chainId) : LeapAccount.createLeapSigner(leap, chainId);
+    const publicKeyBase64 = Buffer.from(leapKey.pubKey).toString("base64");
+
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "customSigner",
+      signer,
+      publicKeyBase64,
       network: this.network,
       config: this.configOverride,
+      providerAgent: ProviderAgent.LeapExtension,
     });
+
     return this.connect(wallet, opts);
   }
 
@@ -502,27 +536,32 @@ class CarbonSDK {
       bech32Prefix: this.networkConfig.Bech32Prefix,
     };
 
-    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt
+    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt;
 
-    const signMessageRequired = !evmWalletOpts?.publicKeyBase64 || noJwtProvided
+    const signMessageRequired = !evmWalletOpts?.publicKeyBase64 || noJwtProvided;
 
-    let pubKey = evmWalletOpts?.publicKeyBase64
-    let message: string | undefined
-    let signature: string | undefined
+    let pubKey = evmWalletOpts?.publicKeyBase64;
+    let message: string | undefined;
+    let signature: string | undefined;
 
     if (signMessageRequired) {
-      const result = await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth, opts?.authMessage)
-      pubKey = result.publicKey
-      message = result.message
-      signature = result.signature
+      const result = await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth, opts?.authMessage);
+      pubKey = result.publicKey;
+      message = result.message;
+      signature = result.signature;
     }
 
-    const wallet = CarbonWallet.withMetamask(metamask, evmChainId, pubKey!, addressOptions, {
+    const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, pubKey!, addressOptions);
+
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "customSigner",
+      signer,
+      publicKeyBase64: pubKey!,
       network: this.network,
       config: this.configOverride,
-    });
-
+      providerAgent: ProviderAgent.MetamaskExtension,
+    })
 
     if (noJwtProvided) {
       const authRequest: GrantRequest = {
@@ -544,13 +583,13 @@ class CarbonSDK {
       bech32Prefix: this.networkConfig.Bech32Prefix,
     };
 
-    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt
+    const noJwtProvided = opts?.enableJwtAuth && !opts?.jwt;
 
-    const signMessageRequired = !rainbowKitWalletOpts?.publicKeyBase64 || noJwtProvided
+    const signMessageRequired = !rainbowKitWalletOpts?.publicKeyBase64 || noJwtProvided;
 
-    let pubKey = rainbowKitWalletOpts?.publicKeyBase64
-    let message: string | undefined
-    let signature: string | undefined
+    let pubKey = rainbowKitWalletOpts?.publicKeyBase64;
+    let message: string | undefined;
+    let signature: string | undefined;
 
     if (signMessageRequired) {
       const result = await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth, opts?.authMessage)
@@ -559,11 +598,18 @@ class CarbonSDK {
       signature = result.signature
     }
 
-    const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, pubKey!, addressOptions, rainbowKitWalletOpts.walletProvider, {
+    const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, pubKey!, addressOptions);
+
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "customSigner",
+      signer,
+      publicKeyBase64: pubKey!,
       network: this.network,
       config: this.configOverride,
-    })
+      providerAgent: rainbowKitWalletOpts.walletProvider,
+      isRainbowKit: true,
+    });
 
     if (noJwtProvided) {
       const authRequest: GrantRequest = {
@@ -571,28 +617,37 @@ class CarbonSDK {
         message: message!,
         public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
         signature: signature!,
-      }
-      await wallet.reloadJwtToken(authRequest, opts?.authMessage)
+      };
+      await wallet.reloadJwtToken(authRequest, opts?.authMessage);
     }
 
     return this.connect(wallet, opts);
   }
 
   public async connectViewOnly(bech32Address: string, opts?: CarbonWalletGenericOpts) {
-    const wallet = CarbonWallet.withAddress(bech32Address, {
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "viewOnly",
+      bech32Address,
       network: this.network,
       config: this.configOverride,
     });
+
     return this.connect(wallet, opts);
   }
 
   public async connectWithQr(granteeMnemonic: string, granterAddress: string, expiry: Date, opts?: CarbonWalletGenericOpts) {
-    const wallet = CarbonWallet.withQr(granteeMnemonic, granterAddress, expiry, {
+    const wallet = new CarbonWallet({
       ...opts,
+      mode: "qr",
+      mnemonic: granteeMnemonic,
+      granter: granterAddress,
+      bech32Address: granterAddress,
+      expiry,
       network: this.network,
       config: this.configOverride,
-    });
+    })
+
     return this.connect(wallet, opts);
   }
 

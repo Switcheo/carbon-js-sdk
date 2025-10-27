@@ -9,10 +9,8 @@ import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Net
 import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { GrantModule } from "@carbon-sdk/modules/grant";
-import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
-import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
-import { ETHAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { ETHAddress, SWTHAddress } from "@carbon-sdk/util/address";
 import { AccessTokenResponse, GrantRequest, GrantType, hasExpired, hasRefreshTokenExpired, isValidIssuer } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
@@ -22,21 +20,18 @@ import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
-import { DecodeObject, EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
+import { DecodeObject, EncodeObject, OfflineDirectSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
 import { sleep } from "@cosmjs/utils";
-import { Key as LeapKey } from "@cosmos-kit/core";
-import { Leap } from "@cosmos-kit/leap-extension";
-import { Key } from "@keplr-wallet/types";
 import axios from "axios";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { utils } from "ethers";
 import { jwtDecode } from "jwt-decode";
-import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
+import { CarbonEIP712Signer, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { toUint8Array } from '@carbon-sdk/util/bytes'
 
@@ -328,101 +323,6 @@ export class CarbonWallet {
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
     this.evmHexAddress = this.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
     this.evmBech32Address = this.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
-
-  }
-
-  public static withPrivateKey(privateKey: string | Buffer, opts: Omit<CarbonWalletInitOpts, "mode" | "privateKey"> = {}) {
-    return new CarbonWallet({
-      mode: "privateKey",
-      privateKey,
-      ...opts,
-    });
-  }
-
-  public static withMnemonic(mnemonic: string, opts: Omit<CarbonWalletInitOpts, "mode" | "mnemonic"> = {}) {
-    return new CarbonWallet({
-      mode: "mnemonic",
-      mnemonic,
-      ...opts,
-    });
-  }
-
-  public static withLedger(cosmosLedger: CosmosLedger, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
-    const signer = new CarbonLedgerSigner(cosmosLedger);
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
-      providerAgent: ProviderAgent.Ledger,
-      ...opts,
-    });
-    return wallet;
-  }
-
-  public static withSigner(signer: CarbonSigner, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
-    return new CarbonWallet({
-      mode: "customSigner",
-      ...opts,
-      signer,
-      publicKeyBase64,
-    });
-  }
-
-  public static withKeplr(keplr: Keplr, chainInfo: ChainInfo, keplrKey: Key, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
-    const signer = keplrKey.isNanoLedger ? KeplrAccount.createKeplrSignerAmino(keplr, chainInfo, keplrKey) : KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey);
-    const publicKeyBase64 = Buffer.from(keplrKey.pubKey).toString("base64");
-
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
-      providerAgent: ProviderAgent.KeplrExtension,
-      ...opts,
-    });
-    return wallet;
-  }
-
-  public static withLeap(leap: Leap, chainId: string, leapKey: LeapKey, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
-    const signer = leapKey.isNanoLedger ? LeapAccount.createLeapSignerAmino(leap, chainId) : LeapAccount.createLeapSigner(leap, chainId);
-    const publicKeyBase64 = Buffer.from(leapKey.pubKey).toString("base64");
-
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
-      providerAgent: ProviderAgent.LeapExtension,
-      ...opts,
-    });
-    return wallet;
-  }
-
-  public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
-    const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64, addressOptions);
-    const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
-      providerAgent: ProviderAgent.MetamaskExtension,
-      ...opts,
-    });
-    return wallet;
-  }
-
-  public static withRainbowKit(rainbowKit: RainbowKitAccount, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, walletProvider: SupportedEip6963Provider, opts: Omit<CarbonWalletInitOpts, "mode" | "signer"> = {}) {
-    const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, compressedPubKeyBase64, addressOptions)
-    const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
-      ...opts,
-      providerAgent: walletProvider,
-      isRainbowKit: true,
-    });
-    return wallet;
-  }
-
-  public static withAddress(bech32Address: string, opts: Omit<CarbonWalletInitOpts, "mode"> = {}) {
-    return new CarbonWallet({
-      mode: "viewOnly",
-      ...opts,
-      bech32Address,
-    });
-  }
-
-  public static withQr(granteeMnemonic: string, granterAddress: string, expiry: Date, opts: Omit<CarbonWalletInitOpts, "mode" | "mnemonic"> = {}) {
-    return new CarbonWallet({
-      mode: "qr",
-      mnemonic: granteeMnemonic,
-      granter: granterAddress,
-      bech32Address: granterAddress,
-      expiry,
-      ...opts,
-    });
   }
 
   public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee, fallbackConfig: OverrideConfig | null = null, opts?: CarbonWalletGenericOpts): Promise<CarbonWallet> {
