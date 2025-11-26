@@ -8,6 +8,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   Withdraw: "carbon/MsgWithdraw",
   DepositToGroup: "coin/DepositToGroup",
   WithdrawFromGroup: "coin/WithdrawFromGroup",
+  TransferCoinsWithinAccount: "coin/TransferCoinsWithinAccount",
 };
 
 const MsgWithdraw: AminoInit = {
@@ -30,11 +31,17 @@ const MsgWithdrawFromGroup: AminoInit = {
   valueMap: {},
 }
 
+const MsgTransferCoinsWithinAccount: AminoInit = {
+  aminoType: TxTypes.TransferCoinsWithinAccount,
+  valueMap: {},
+}
+
 const CoinAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgWithdraw]: generateAminoType(MsgWithdraw),
   [CarbonTx.Types.MsgMintToken]: generateAminoType(MsgMintToken),
   [CarbonTx.Types.MsgDepositToGroup]: generateAminoType(MsgDepositToGroup),
   [CarbonTx.Types.MsgWithdrawFromGroup]: generateAminoType(MsgWithdrawFromGroup),
+  [CarbonTx.Types.MsgTransferCoinsWithinAccount]: generateAminoType(MsgTransferCoinsWithinAccount),
 };
 
 export default CoinAmino;

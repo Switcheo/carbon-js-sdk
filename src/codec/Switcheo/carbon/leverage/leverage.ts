@@ -7,6 +7,7 @@ export const protobufPackage = "Switcheo.carbon.leverage";
 export interface MarketLeverage {
   marketId: string;
   leverage: string;
+  isCross: boolean;
 }
 
 export interface MarketLeverageRecord {
@@ -15,7 +16,7 @@ export interface MarketLeverageRecord {
 }
 
 function createBaseMarketLeverage(): MarketLeverage {
-  return { marketId: "", leverage: "" };
+  return { marketId: "", leverage: "", isCross: false };
 }
 
 export const MarketLeverage = {
@@ -25,6 +26,9 @@ export const MarketLeverage = {
     }
     if (message.leverage !== "") {
       writer.uint32(18).string(message.leverage);
+    }
+    if (message.isCross === true) {
+      writer.uint32(24).bool(message.isCross);
     }
     return writer;
   },
@@ -50,6 +54,13 @@ export const MarketLeverage = {
 
           message.leverage = reader.string();
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isCross = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -63,6 +74,7 @@ export const MarketLeverage = {
     return {
       marketId: isSet(object.marketId) ? String(object.marketId) : "",
       leverage: isSet(object.leverage) ? String(object.leverage) : "",
+      isCross: isSet(object.isCross) ? Boolean(object.isCross) : false,
     };
   },
 
@@ -70,6 +82,7 @@ export const MarketLeverage = {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.leverage !== undefined && (obj.leverage = message.leverage);
+    message.isCross !== undefined && (obj.isCross = message.isCross);
     return obj;
   },
 
@@ -81,6 +94,7 @@ export const MarketLeverage = {
     const message = createBaseMarketLeverage();
     message.marketId = object.marketId ?? "";
     message.leverage = object.leverage ?? "";
+    message.isCross = object.isCross ?? false;
     return message;
   },
 };

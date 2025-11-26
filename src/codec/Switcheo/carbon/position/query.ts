@@ -2,9 +2,22 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
-import { APIPosition, OpenInterest, Position, PositionAllocatedMargin } from "./position";
+import { APIPosition, CrossMaintenanceMargin, OpenInterest, Position, PositionAllocatedMargin } from "./position";
 
 export const protobufPackage = "Switcheo.carbon.position";
+
+export interface TotalMaintenanceMargin {
+  denom: string;
+  amount: string;
+}
+
+export interface QueryTotalMaintenanceMarginRequest {
+  address: string;
+}
+
+export interface QueryTotalMaintenanceMarginResponse {
+  totalMaintenanceMargin: TotalMaintenanceMargin[];
+}
 
 export interface QueryGetPositionRequest {
   address: string;
@@ -49,6 +62,208 @@ export interface QueryAllOpenInterestsRequest {
 export interface QueryAllOpenInterestsResponse {
   openInterests: OpenInterest[];
 }
+
+export interface QueryCrossMaintenanceMarginRequest {
+  address: string;
+}
+
+export interface QueryCrossMaintenanceMarginResponse {
+  crossMaintenanceMargins: CrossMaintenanceMargin[];
+}
+
+function createBaseTotalMaintenanceMargin(): TotalMaintenanceMargin {
+  return { denom: "", amount: "" };
+}
+
+export const TotalMaintenanceMargin = {
+  encode(message: TotalMaintenanceMargin, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(18).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TotalMaintenanceMargin {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTotalMaintenanceMargin();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.denom = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TotalMaintenanceMargin {
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+    };
+  },
+
+  toJSON(message: TotalMaintenanceMargin): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  create(base?: DeepPartial<TotalMaintenanceMargin>): TotalMaintenanceMargin {
+    return TotalMaintenanceMargin.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<TotalMaintenanceMargin>): TotalMaintenanceMargin {
+    const message = createBaseTotalMaintenanceMargin();
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryTotalMaintenanceMarginRequest(): QueryTotalMaintenanceMarginRequest {
+  return { address: "" };
+}
+
+export const QueryTotalMaintenanceMarginRequest = {
+  encode(message: QueryTotalMaintenanceMarginRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryTotalMaintenanceMarginRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryTotalMaintenanceMarginRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTotalMaintenanceMarginRequest {
+    return { address: isSet(object.address) ? String(object.address) : "" };
+  },
+
+  toJSON(message: QueryTotalMaintenanceMarginRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryTotalMaintenanceMarginRequest>): QueryTotalMaintenanceMarginRequest {
+    return QueryTotalMaintenanceMarginRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryTotalMaintenanceMarginRequest>): QueryTotalMaintenanceMarginRequest {
+    const message = createBaseQueryTotalMaintenanceMarginRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryTotalMaintenanceMarginResponse(): QueryTotalMaintenanceMarginResponse {
+  return { totalMaintenanceMargin: [] };
+}
+
+export const QueryTotalMaintenanceMarginResponse = {
+  encode(message: QueryTotalMaintenanceMarginResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.totalMaintenanceMargin) {
+      TotalMaintenanceMargin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryTotalMaintenanceMarginResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryTotalMaintenanceMarginResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.totalMaintenanceMargin.push(TotalMaintenanceMargin.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTotalMaintenanceMarginResponse {
+    return {
+      totalMaintenanceMargin: Array.isArray(object?.totalMaintenanceMargin)
+        ? object.totalMaintenanceMargin.map((e: any) => TotalMaintenanceMargin.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryTotalMaintenanceMarginResponse): unknown {
+    const obj: any = {};
+    if (message.totalMaintenanceMargin) {
+      obj.totalMaintenanceMargin = message.totalMaintenanceMargin.map((e) =>
+        e ? TotalMaintenanceMargin.toJSON(e) : undefined
+      );
+    } else {
+      obj.totalMaintenanceMargin = [];
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryTotalMaintenanceMarginResponse>): QueryTotalMaintenanceMarginResponse {
+    return QueryTotalMaintenanceMarginResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryTotalMaintenanceMarginResponse>): QueryTotalMaintenanceMarginResponse {
+    const message = createBaseQueryTotalMaintenanceMarginResponse();
+    message.totalMaintenanceMargin = object.totalMaintenanceMargin?.map((e) => TotalMaintenanceMargin.fromPartial(e)) ||
+      [];
+    return message;
+  },
+};
 
 function createBaseQueryGetPositionRequest(): QueryGetPositionRequest {
   return { address: "", marketId: "" };
@@ -700,14 +915,139 @@ export const QueryAllOpenInterestsResponse = {
   },
 };
 
+function createBaseQueryCrossMaintenanceMarginRequest(): QueryCrossMaintenanceMarginRequest {
+  return { address: "" };
+}
+
+export const QueryCrossMaintenanceMarginRequest = {
+  encode(message: QueryCrossMaintenanceMarginRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCrossMaintenanceMarginRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryCrossMaintenanceMarginRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCrossMaintenanceMarginRequest {
+    return { address: isSet(object.address) ? String(object.address) : "" };
+  },
+
+  toJSON(message: QueryCrossMaintenanceMarginRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryCrossMaintenanceMarginRequest>): QueryCrossMaintenanceMarginRequest {
+    return QueryCrossMaintenanceMarginRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryCrossMaintenanceMarginRequest>): QueryCrossMaintenanceMarginRequest {
+    const message = createBaseQueryCrossMaintenanceMarginRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryCrossMaintenanceMarginResponse(): QueryCrossMaintenanceMarginResponse {
+  return { crossMaintenanceMargins: [] };
+}
+
+export const QueryCrossMaintenanceMarginResponse = {
+  encode(message: QueryCrossMaintenanceMarginResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.crossMaintenanceMargins) {
+      CrossMaintenanceMargin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCrossMaintenanceMarginResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryCrossMaintenanceMarginResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.crossMaintenanceMargins.push(CrossMaintenanceMargin.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCrossMaintenanceMarginResponse {
+    return {
+      crossMaintenanceMargins: Array.isArray(object?.crossMaintenanceMargins)
+        ? object.crossMaintenanceMargins.map((e: any) => CrossMaintenanceMargin.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryCrossMaintenanceMarginResponse): unknown {
+    const obj: any = {};
+    if (message.crossMaintenanceMargins) {
+      obj.crossMaintenanceMargins = message.crossMaintenanceMargins.map((e) =>
+        e ? CrossMaintenanceMargin.toJSON(e) : undefined
+      );
+    } else {
+      obj.crossMaintenanceMargins = [];
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryCrossMaintenanceMarginResponse>): QueryCrossMaintenanceMarginResponse {
+    return QueryCrossMaintenanceMarginResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryCrossMaintenanceMarginResponse>): QueryCrossMaintenanceMarginResponse {
+    const message = createBaseQueryCrossMaintenanceMarginResponse();
+    message.crossMaintenanceMargins =
+      object.crossMaintenanceMargins?.map((e) => CrossMaintenanceMargin.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
+  TotalMaintenanceMargin(request: QueryTotalMaintenanceMarginRequest): Promise<QueryTotalMaintenanceMarginResponse>;
   /** this line is used by starport scaffolding # 2 */
   Position(request: QueryGetPositionRequest): Promise<QueryGetPositionResponse>;
   PositionAll(request: QueryAllPositionRequest): Promise<QueryAllPositionResponse>;
   PositionAllocatedMargin(request: QueryPositionAllocatedMarginRequest): Promise<QueryPositionAllocatedMarginResponse>;
   OpenInterest(request: QueryGetOpenInterestRequest): Promise<QueryGetOpenInterestResponse>;
   OpenInterestAll(request: QueryAllOpenInterestsRequest): Promise<QueryAllOpenInterestsResponse>;
+  CrossMaintenanceMargin(request: QueryCrossMaintenanceMarginRequest): Promise<QueryCrossMaintenanceMarginResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -716,12 +1056,20 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc, opts?: { service?: string }) {
     this.service = opts?.service || "Switcheo.carbon.position.Query";
     this.rpc = rpc;
+    this.TotalMaintenanceMargin = this.TotalMaintenanceMargin.bind(this);
     this.Position = this.Position.bind(this);
     this.PositionAll = this.PositionAll.bind(this);
     this.PositionAllocatedMargin = this.PositionAllocatedMargin.bind(this);
     this.OpenInterest = this.OpenInterest.bind(this);
     this.OpenInterestAll = this.OpenInterestAll.bind(this);
+    this.CrossMaintenanceMargin = this.CrossMaintenanceMargin.bind(this);
   }
+  TotalMaintenanceMargin(request: QueryTotalMaintenanceMarginRequest): Promise<QueryTotalMaintenanceMarginResponse> {
+    const data = QueryTotalMaintenanceMarginRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "TotalMaintenanceMargin", data);
+    return promise.then((data) => QueryTotalMaintenanceMarginResponse.decode(_m0.Reader.create(data)));
+  }
+
   Position(request: QueryGetPositionRequest): Promise<QueryGetPositionResponse> {
     const data = QueryGetPositionRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "Position", data);
@@ -750,6 +1098,12 @@ export class QueryClientImpl implements Query {
     const data = QueryAllOpenInterestsRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "OpenInterestAll", data);
     return promise.then((data) => QueryAllOpenInterestsResponse.decode(_m0.Reader.create(data)));
+  }
+
+  CrossMaintenanceMargin(request: QueryCrossMaintenanceMarginRequest): Promise<QueryCrossMaintenanceMarginResponse> {
+    const data = QueryCrossMaintenanceMarginRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "CrossMaintenanceMargin", data);
+    return promise.then((data) => QueryCrossMaintenanceMarginResponse.decode(_m0.Reader.create(data)));
   }
 }
 

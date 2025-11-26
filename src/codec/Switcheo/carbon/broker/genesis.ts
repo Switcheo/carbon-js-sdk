@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PerpsAmm, SpotAmm } from "./amm";
+import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
@@ -13,10 +14,11 @@ export interface GenesisState {
    */
   spotAmms: SpotAmm[];
   perpsAmms: PerpsAmm[];
+  params?: Params;
 }
 
 function createBaseGenesisState(): GenesisState {
-  return { spotAmms: [], perpsAmms: [] };
+  return { spotAmms: [], perpsAmms: [], params: undefined };
 }
 
 export const GenesisState = {
@@ -26,6 +28,9 @@ export const GenesisState = {
     }
     for (const v of message.perpsAmms) {
       PerpsAmm.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -51,6 +56,13 @@ export const GenesisState = {
 
           message.perpsAmms.push(PerpsAmm.decode(reader, reader.uint32()));
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.params = Params.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -64,6 +76,7 @@ export const GenesisState = {
     return {
       spotAmms: Array.isArray(object?.spotAmms) ? object.spotAmms.map((e: any) => SpotAmm.fromJSON(e)) : [],
       perpsAmms: Array.isArray(object?.perpsAmms) ? object.perpsAmms.map((e: any) => PerpsAmm.fromJSON(e)) : [],
+      params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
     };
   },
 
@@ -79,6 +92,7 @@ export const GenesisState = {
     } else {
       obj.perpsAmms = [];
     }
+    message.params !== undefined && (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -90,6 +104,9 @@ export const GenesisState = {
     const message = createBaseGenesisState();
     message.spotAmms = object.spotAmms?.map((e) => SpotAmm.fromPartial(e)) || [];
     message.perpsAmms = object.perpsAmms?.map((e) => PerpsAmm.fromPartial(e)) || [];
+    message.params = (object.params !== undefined && object.params !== null)
+      ? Params.fromPartial(object.params)
+      : undefined;
     return message;
   },
 };
@@ -105,4 +122,8 @@ export type DeepPartial<T> = T extends Builtin ? T
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
