@@ -301,6 +301,20 @@ export interface MsgUpdateParams {
 export interface MsgUpdateParamsResponse {
 }
 
+export interface MsgAdminIbcWithdraw {
+  creator: string;
+  fromAddress: string;
+  toAddress: string;
+  denom: string;
+  amount: string;
+  feeAmount: string;
+  feeAddress: string;
+  feeDenom: string;
+}
+
+export interface MsgAdminIbcWithdrawResponse {
+}
+
 function createBaseMsgCreateToken(): MsgCreateToken {
   return { creator: "", createTokenParams: undefined };
 }
@@ -4418,6 +4432,208 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
+function createBaseMsgAdminIbcWithdraw(): MsgAdminIbcWithdraw {
+  return {
+    creator: "",
+    fromAddress: "",
+    toAddress: "",
+    denom: "",
+    amount: "",
+    feeAmount: "",
+    feeAddress: "",
+    feeDenom: "",
+  };
+}
+
+export const MsgAdminIbcWithdraw = {
+  encode(message: MsgAdminIbcWithdraw, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.fromAddress !== "") {
+      writer.uint32(18).string(message.fromAddress);
+    }
+    if (message.toAddress !== "") {
+      writer.uint32(26).string(message.toAddress);
+    }
+    if (message.denom !== "") {
+      writer.uint32(34).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(42).string(message.amount);
+    }
+    if (message.feeAmount !== "") {
+      writer.uint32(50).string(message.feeAmount);
+    }
+    if (message.feeAddress !== "") {
+      writer.uint32(58).string(message.feeAddress);
+    }
+    if (message.feeDenom !== "") {
+      writer.uint32(66).string(message.feeDenom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAdminIbcWithdraw {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgAdminIbcWithdraw();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fromAddress = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.toAddress = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.denom = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.feeAmount = reader.string();
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.feeAddress = reader.string();
+          continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.feeDenom = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAdminIbcWithdraw {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      fromAddress: isSet(object.fromAddress) ? String(object.fromAddress) : "",
+      toAddress: isSet(object.toAddress) ? String(object.toAddress) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      feeAmount: isSet(object.feeAmount) ? String(object.feeAmount) : "",
+      feeAddress: isSet(object.feeAddress) ? String(object.feeAddress) : "",
+      feeDenom: isSet(object.feeDenom) ? String(object.feeDenom) : "",
+    };
+  },
+
+  toJSON(message: MsgAdminIbcWithdraw): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.fromAddress !== undefined && (obj.fromAddress = message.fromAddress);
+    message.toAddress !== undefined && (obj.toAddress = message.toAddress);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.feeAmount !== undefined && (obj.feeAmount = message.feeAmount);
+    message.feeAddress !== undefined && (obj.feeAddress = message.feeAddress);
+    message.feeDenom !== undefined && (obj.feeDenom = message.feeDenom);
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgAdminIbcWithdraw>): MsgAdminIbcWithdraw {
+    return MsgAdminIbcWithdraw.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgAdminIbcWithdraw>): MsgAdminIbcWithdraw {
+    const message = createBaseMsgAdminIbcWithdraw();
+    message.creator = object.creator ?? "";
+    message.fromAddress = object.fromAddress ?? "";
+    message.toAddress = object.toAddress ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.feeAmount = object.feeAmount ?? "";
+    message.feeAddress = object.feeAddress ?? "";
+    message.feeDenom = object.feeDenom ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgAdminIbcWithdrawResponse(): MsgAdminIbcWithdrawResponse {
+  return {};
+}
+
+export const MsgAdminIbcWithdrawResponse = {
+  encode(_: MsgAdminIbcWithdrawResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAdminIbcWithdrawResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgAdminIbcWithdrawResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAdminIbcWithdrawResponse {
+    return {};
+  },
+
+  toJSON(_: MsgAdminIbcWithdrawResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgAdminIbcWithdrawResponse>): MsgAdminIbcWithdrawResponse {
+    return MsgAdminIbcWithdrawResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgAdminIbcWithdrawResponse>): MsgAdminIbcWithdrawResponse {
+    const message = createBaseMsgAdminIbcWithdrawResponse();
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse>;
@@ -4444,8 +4660,9 @@ export interface Msg {
   WithdrawFromGroup(request: MsgWithdrawFromGroup): Promise<MsgWithdrawFromGroupResponse>;
   UpdateGroupedTokenConfig(request: MsgUpdateGroupedTokenConfig): Promise<MsgUpdateGroupedTokenConfigResponse>;
   TransferCoinsWithinAccount(request: MsgTransferCoinsWithinAccount): Promise<MsgTransferCoinsWithinAccountResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  AdminIbcWithdraw(request: MsgAdminIbcWithdraw): Promise<MsgAdminIbcWithdrawResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -4479,6 +4696,7 @@ export class MsgClientImpl implements Msg {
     this.UpdateGroupedTokenConfig = this.UpdateGroupedTokenConfig.bind(this);
     this.TransferCoinsWithinAccount = this.TransferCoinsWithinAccount.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
+    this.AdminIbcWithdraw = this.AdminIbcWithdraw.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -4628,6 +4846,12 @@ export class MsgClientImpl implements Msg {
     const data = MsgUpdateParams.encode(request).finish();
     const promise = this.rpc.request(this.service, "UpdateParams", data);
     return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
+  }
+
+  AdminIbcWithdraw(request: MsgAdminIbcWithdraw): Promise<MsgAdminIbcWithdrawResponse> {
+    const data = MsgAdminIbcWithdraw.encode(request).finish();
+    const promise = this.rpc.request(this.service, "AdminIbcWithdraw", data);
+    return promise.then((data) => MsgAdminIbcWithdrawResponse.decode(_m0.Reader.create(data)));
   }
 }
 
