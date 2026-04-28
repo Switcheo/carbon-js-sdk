@@ -147,8 +147,6 @@ registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidation", Carbon.Broke
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", Carbon.Broker.MsgInitiateLiquidationResponse);
 registry.register("/Switcheo.carbon.broker.MsgUpdateParams", Carbon.Broker.MsgUpdateParams);
 registry.register("/Switcheo.carbon.broker.MsgUpdateParamsResponse", Carbon.Broker.MsgUpdateParamsResponse);
-registry.register("/Switcheo.carbon.broker.MsgPayBadDebt", Carbon.Broker.MsgPayBadDebt);
-registry.register("/Switcheo.carbon.broker.MsgPayBadDebtResponse", Carbon.Broker.MsgPayBadDebtResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetGasCost", Carbon.Fee.MsgSetGasCost);
 registry.register("/Switcheo.carbon.fee.MsgSetGasCostResponse", Carbon.Fee.MsgSetGasCostResponse);
@@ -895,8 +893,6 @@ export const TxTypes = {
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
   "MsgBrokerUpdateParams": "/Switcheo.carbon.broker.MsgUpdateParams",
   "MsgBrokerUpdateParamsResponse": "/Switcheo.carbon.broker.MsgUpdateParamsResponse",
-  "MsgPayBadDebt": "/Switcheo.carbon.broker.MsgPayBadDebt",
-  "MsgPayBadDebtResponse": "/Switcheo.carbon.broker.MsgPayBadDebtResponse",
   "MsgSetGasCost": "/Switcheo.carbon.fee.MsgSetGasCost",
   "MsgSetGasCostResponse": "/Switcheo.carbon.fee.MsgSetGasCostResponse",
   "MsgSetMinGasPrice": "/Switcheo.carbon.fee.MsgSetMinGasPrice",
@@ -1501,7 +1497,7 @@ export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
 export { Empty } from "./google/protobuf/empty";
-export { Edition, ExtensionRangeOptions_VerificationState, FieldDescriptorProto_Type, FieldDescriptorProto_Label, FileOptions_OptimizeMode, FieldOptions_CType, FieldOptions_JSType, FieldOptions_OptionRetention, FieldOptions_OptionTargetType, MethodOptions_IdempotencyLevel, FeatureSet_FieldPresence, FeatureSet_EnumType, FeatureSet_RepeatedFieldEncoding, FeatureSet_Utf8Validation, FeatureSet_MessageEncoding, FeatureSet_JsonFormat, FeatureSet_EnforceNamingStyle, GeneratedCodeInfo_Annotation_Semantic, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, FieldOptions_FeatureSupport, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation, editionFromJSON, editionToJSON, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, featureSet_EnforceNamingStyleFromJSON, featureSet_EnforceNamingStyleToJSON, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON } from "./google/protobuf/descriptor";
+export { Edition, SymbolVisibility, ExtensionRangeOptions_VerificationState, FieldDescriptorProto_Type, FieldDescriptorProto_Label, FileOptions_OptimizeMode, FieldOptions_CType, FieldOptions_JSType, FieldOptions_OptionRetention, FieldOptions_OptionTargetType, MethodOptions_IdempotencyLevel, FeatureSet_FieldPresence, FeatureSet_EnumType, FeatureSet_RepeatedFieldEncoding, FeatureSet_Utf8Validation, FeatureSet_MessageEncoding, FeatureSet_JsonFormat, FeatureSet_EnforceNamingStyle, FeatureSet_VisibilityFeature_DefaultSymbolVisibility, GeneratedCodeInfo_Annotation_Semantic, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, ExtensionRangeOptions_Declaration, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, FieldOptions_EditionDefault, FieldOptions_FeatureSupport, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, FeatureSet, FeatureSet_VisibilityFeature, FeatureSetDefaults, FeatureSetDefaults_FeatureSetEditionDefault, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation, editionFromJSON, editionToJSON, symbolVisibilityFromJSON, symbolVisibilityToJSON, extensionRangeOptions_VerificationStateFromJSON, extensionRangeOptions_VerificationStateToJSON, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, featureSet_FieldPresenceFromJSON, featureSet_FieldPresenceToJSON, featureSet_EnumTypeFromJSON, featureSet_EnumTypeToJSON, featureSet_RepeatedFieldEncodingFromJSON, featureSet_RepeatedFieldEncodingToJSON, featureSet_Utf8ValidationFromJSON, featureSet_Utf8ValidationToJSON, featureSet_MessageEncodingFromJSON, featureSet_MessageEncodingToJSON, featureSet_JsonFormatFromJSON, featureSet_JsonFormatToJSON, featureSet_EnforceNamingStyleFromJSON, featureSet_EnforceNamingStyleToJSON, featureSet_VisibilityFeature_DefaultSymbolVisibilityFromJSON, featureSet_VisibilityFeature_DefaultSymbolVisibilityToJSON, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON } from "./google/protobuf/descriptor";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/alliance/gov";
 export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse, MsgCreateAlliance, MsgCreateAllianceResponse, MsgUpdateAlliance, MsgUpdateAllianceResponse, MsgDeleteAlliance, MsgDeleteAllianceResponse } from "./alliance/alliance/tx";
@@ -2166,6 +2162,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "enforce_naming_style",
         "type": "",
         "packageName": "/google.protobuf.FeatureSet"
+      },
+      {
+        "name": "default_symbol_visibility",
+        "type": "",
+        "packageName": "/google.protobuf.FeatureSet.VisibilityFeature"
       }
     ],
     "FeatureSetDefaults": [
@@ -4825,26 +4826,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "max_bad_debt_threshold_usd",
         "type": "string"
-      },
-      {
-        "name": "should_system_liquidate",
-        "type": "bool"
-      },
-      {
-        "name": "max_liquidation_order_counterparty_delta_bps",
-        "type": "string"
-      },
-      {
-        "name": "max_bad_debt_threshold_usd",
-        "type": "string"
-      },
-      {
-        "name": "accepted_bad_debt_assets",
-        "type": "string[]"
-      },
-      {
-        "name": "is_trading_paused",
-        "type": "bool"
       }
     ],
     "ParamsToUpdate": [
@@ -4855,26 +4836,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "max_bad_debt_threshold_usd",
         "type": "string"
-      },
-      {
-        "name": "should_system_liquidate",
-        "type": "bool"
-      },
-      {
-        "name": "max_liquidation_order_counterparty_delta_bps",
-        "type": "string"
-      },
-      {
-        "name": "max_bad_debt_threshold_usd",
-        "type": "string"
-      },
-      {
-        "name": "accepted_bad_debt_assets",
-        "type": "string[]"
-      },
-      {
-        "name": "is_trading_paused",
-        "type": "bool"
       }
     ],
     "GenesisState": [
@@ -5026,13 +4987,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
-    "QueryBadDebtRequest": [],
-    "QueryBadDebtResponse": [
-      {
-        "name": "bad_debt",
-        "type": "string"
-      }
-    ],
     "LiquidatorPosition": [
       {
         "name": "market_id",
@@ -5066,19 +5020,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
-    "MsgUpdateParamsResponse": [],
-    "MsgPayBadDebt": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "payment",
-        "type": "Coin",
-        "packageName": "/cosmos.base.v1beta1"
-      }
-    ],
-    "MsgPayBadDebtResponse": []
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.btcx": {
     "DenomInfo": [

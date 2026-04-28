@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Coin } from "../../../cosmos/base/v1beta1/coin";
 import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.broker";
@@ -344,7 +343,6 @@ export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   InitiateLiquidation(request: MsgInitiateLiquidation): Promise<MsgInitiateLiquidationResponse>;
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
-  PayBadDebt(request: MsgPayBadDebt): Promise<MsgPayBadDebtResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -355,7 +353,6 @@ export class MsgClientImpl implements Msg {
     this.rpc = rpc;
     this.InitiateLiquidation = this.InitiateLiquidation.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
-    this.PayBadDebt = this.PayBadDebt.bind(this);
   }
   InitiateLiquidation(request: MsgInitiateLiquidation): Promise<MsgInitiateLiquidationResponse> {
     const data = MsgInitiateLiquidation.encode(request).finish();

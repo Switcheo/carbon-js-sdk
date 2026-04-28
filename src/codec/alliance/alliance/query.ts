@@ -2376,13 +2376,19 @@ export interface Query {
   AllAllianceValidators(request: QueryAllAllianceValidatorsRequest): Promise<QueryAllianceValidatorsResponse>;
   /** Query all paginated alliance delegations for a delegator addr */
   AlliancesDelegation(request: QueryAlliancesDelegationsRequest): Promise<QueryAlliancesDelegationsResponse>;
-  /** Query all paginated alliance delegations for a delegator addr and validator_addr */
+  /**
+   * Query all paginated alliance delegations for a delegator addr and
+   * validator_addr
+   */
   AlliancesDelegationByValidator(
     request: QueryAlliancesDelegationByValidatorRequest,
   ): Promise<QueryAlliancesDelegationsResponse>;
   /** Query a specific delegation by delegator addr, validator addr and denom */
   AllianceDelegation(request: QueryAllianceDelegationRequest): Promise<QueryAllianceDelegationResponse>;
-  /** Query a specific delegation rewards by delegator addr, validator addr and denom */
+  /**
+   * Query a specific delegation rewards by delegator addr, validator addr and
+   * denom
+   */
   AllianceDelegationRewards(
     request: QueryAllianceDelegationRewardsRequest,
   ): Promise<QueryAllianceDelegationRewardsResponse>;

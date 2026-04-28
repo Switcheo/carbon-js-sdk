@@ -29,21 +29,6 @@ export const Params = {
     if (message.maxBadDebtThresholdUsd !== "") {
       writer.uint32(18).string(message.maxBadDebtThresholdUsd);
     }
-    if (message.shouldSystemLiquidate === true) {
-      writer.uint32(16).bool(message.shouldSystemLiquidate);
-    }
-    if (message.maxLiquidationOrderCounterpartyDeltaBps !== "") {
-      writer.uint32(26).string(message.maxLiquidationOrderCounterpartyDeltaBps);
-    }
-    if (message.maxBadDebtThresholdUsd !== "") {
-      writer.uint32(34).string(message.maxBadDebtThresholdUsd);
-    }
-    for (const v of message.acceptedBadDebtAssets) {
-      writer.uint32(42).string(v!);
-    }
-    if (message.isTradingPaused === true) {
-      writer.uint32(48).bool(message.isTradingPaused);
-    }
     return writer;
   },
 
@@ -114,21 +99,6 @@ export const ParamsToUpdate = {
     }
     if (message.maxBadDebtThresholdUsd !== "") {
       writer.uint32(18).string(message.maxBadDebtThresholdUsd);
-    }
-    if (message.shouldSystemLiquidate !== undefined) {
-      BoolValue.encode({ value: message.shouldSystemLiquidate! }, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.maxLiquidationOrderCounterpartyDeltaBps !== "") {
-      writer.uint32(26).string(message.maxLiquidationOrderCounterpartyDeltaBps);
-    }
-    if (message.maxBadDebtThresholdUsd !== "") {
-      writer.uint32(34).string(message.maxBadDebtThresholdUsd);
-    }
-    for (const v of message.acceptedBadDebtAssets) {
-      writer.uint32(42).string(v!);
-    }
-    if (message.isTradingPaused !== undefined) {
-      BoolValue.encode({ value: message.isTradingPaused! }, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },

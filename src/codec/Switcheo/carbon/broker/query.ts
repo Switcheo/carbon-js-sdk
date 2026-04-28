@@ -776,7 +776,6 @@ export interface Query {
   /** Get trades for a position */
   TradesForPosition(request: QueryTradesForPositionRequest): Promise<QueryTradesForPositionResponse>;
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-  BadDebt(request: QueryBadDebtRequest): Promise<QueryBadDebtResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -789,7 +788,6 @@ export class QueryClientImpl implements Query {
     this.Trades = this.Trades.bind(this);
     this.TradesForPosition = this.TradesForPosition.bind(this);
     this.Params = this.Params.bind(this);
-    this.BadDebt = this.BadDebt.bind(this);
   }
   Candlesticks(request: QueryCandlesticksRequest): Promise<QueryCandlesticksResponse> {
     const data = QueryCandlesticksRequest.encode(request).finish();

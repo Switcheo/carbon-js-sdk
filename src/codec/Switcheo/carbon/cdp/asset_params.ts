@@ -38,7 +38,7 @@ export interface UpdateAssetParams {
   liquidationDiscount: string;
   supplyCap: string;
   borrowCap: string;
-  isExitOnly: boolean;
+  isExitOnly?: boolean;
 }
 
 function createBaseAssetParamsAPI(): AssetParamsAPI {
@@ -397,7 +397,7 @@ function createBaseUpdateAssetParams(): UpdateAssetParams {
     liquidationDiscount: "",
     supplyCap: "",
     borrowCap: "",
-    isExitOnly: false,
+    isExitOnly: undefined,
   };
 }
 
@@ -427,8 +427,8 @@ export const UpdateAssetParams = {
     if (message.borrowCap !== "") {
       writer.uint32(66).string(message.borrowCap);
     }
-    if (message.isExitOnly === true) {
-      writer.uint32(72).bool(message.isExitOnly);
+    if (message.isExitOnly !== undefined) {
+      BoolValue.encode({ value: message.isExitOnly! }, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -497,11 +497,11 @@ export const UpdateAssetParams = {
           message.borrowCap = reader.string();
           continue;
         case 9:
-          if (tag !== 72) {
+          if (tag !== 74) {
             break;
           }
 
-          message.isExitOnly = reader.bool();
+          message.isExitOnly = BoolValue.decode(reader, reader.uint32()).value;
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -524,7 +524,7 @@ export const UpdateAssetParams = {
       liquidationDiscount: isSet(object.liquidationDiscount) ? String(object.liquidationDiscount) : "",
       supplyCap: isSet(object.supplyCap) ? String(object.supplyCap) : "",
       borrowCap: isSet(object.borrowCap) ? String(object.borrowCap) : "",
-      isExitOnly: isSet(object.isExitOnly) ? Boolean(object.isExitOnly) : false,
+      isExitOnly: isSet(object.isExitOnly) ? Boolean(object.isExitOnly) : undefined,
     };
   },
 
@@ -557,7 +557,7 @@ export const UpdateAssetParams = {
     message.liquidationDiscount = object.liquidationDiscount ?? "";
     message.supplyCap = object.supplyCap ?? "";
     message.borrowCap = object.borrowCap ?? "";
-    message.isExitOnly = object.isExitOnly ?? false;
+    message.isExitOnly = object.isExitOnly ?? undefined;
     return message;
   },
 };
