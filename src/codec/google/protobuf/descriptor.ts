@@ -146,6 +146,11 @@ export interface FileDescriptorProto {
    * For Google-internal migration only. Do not use.
    */
   weakDependency: number[];
+  /**
+   * Names of files imported by this file purely for the purpose of providing
+   * option extensions. These are excluded from the dependency list above.
+   */
+  optionDependency: string[];
   /** All top-level definitions in this file. */
   messageType: DescriptorProto[];
   enumType: EnumDescriptorProto[];
@@ -194,6 +199,8 @@ export interface DescriptorProto {
    * A given name may only be reserved once.
    */
   reservedName: string[];
+  /** Support for `export` and `local` keywords on enums. */
+  visibility: SymbolVisibility;
 }
 
 export interface DescriptorProto_ExtensionRange {
@@ -585,6 +592,8 @@ export interface EnumDescriptorProto {
    * be reserved once.
    */
   reservedName: string[];
+  /** Support for `export` and `local` keywords on enums. */
+  visibility: SymbolVisibility;
 }
 
 /**
@@ -2080,6 +2089,9 @@ export const FileDescriptorProto = {
       writer.int32(v);
     }
     writer.ldelim();
+    for (const v of message.optionDependency) {
+      writer.uint32(122).string(v!);
+    }
     for (const v of message.messageType) {
       DescriptorProto.encode(v!, writer.uint32(34).fork()).ldelim();
     }
@@ -2169,6 +2181,13 @@ export const FileDescriptorProto = {
           }
 
           break;
+        case 15:
+          if (tag !== 122) {
+            break;
+          }
+
+          message.optionDependency.push(reader.string());
+          continue;
         case 4:
           if (tag !== 34) {
             break;
@@ -2277,6 +2296,11 @@ export const FileDescriptorProto = {
     } else {
       obj.weakDependency = [];
     }
+    if (message.optionDependency) {
+      obj.optionDependency = message.optionDependency.map((e) => e);
+    } else {
+      obj.optionDependency = [];
+    }
     if (message.messageType) {
       obj.messageType = message.messageType.map((e) => e ? DescriptorProto.toJSON(e) : undefined);
     } else {
@@ -2378,6 +2402,9 @@ export const DescriptorProto = {
     }
     for (const v of message.reservedName) {
       writer.uint32(82).string(v!);
+    }
+    if (message.visibility !== 0) {
+      writer.uint32(88).int32(message.visibility);
     }
     return writer;
   },
@@ -2538,6 +2565,7 @@ export const DescriptorProto = {
     } else {
       obj.reservedName = [];
     }
+    message.visibility !== undefined && (obj.visibility = symbolVisibilityToJSON(message.visibility));
     return obj;
   },
 
@@ -3239,6 +3267,9 @@ export const EnumDescriptorProto = {
     for (const v of message.reservedName) {
       writer.uint32(42).string(v!);
     }
+    if (message.visibility !== 0) {
+      writer.uint32(48).int32(message.visibility);
+    }
     return writer;
   },
 
@@ -3326,6 +3357,7 @@ export const EnumDescriptorProto = {
     } else {
       obj.reservedName = [];
     }
+    message.visibility !== undefined && (obj.visibility = symbolVisibilityToJSON(message.visibility));
     return obj;
   },
 

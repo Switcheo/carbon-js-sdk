@@ -17,7 +17,6 @@ export interface FuturesBalanceRecord {
   reserved: string;
   margin: string;
   unrealisedLoss: string;
-  marginDebt: string;
 }
 
 export interface QueryGetFuturesBalanceRequest {
@@ -26,6 +25,17 @@ export interface QueryGetFuturesBalanceRequest {
 
 export interface QueryGetFuturesBalanceResponse {
   balances: FuturesBalanceRecord[];
+}
+
+export interface QueryGetPositionPoolBalancesRequest {
+  denom: string;
+}
+
+export interface QueryGetPositionPoolBalancesResponse {
+  totalPoolBalance: string;
+  futuresSupply: string;
+  marginWithDebtSupply: string;
+  positionMarginSupply: string;
 }
 
 /** this line is used by starport scaffolding # 3 */
@@ -146,7 +156,7 @@ export interface QueryParamsResponse {
 }
 
 function createBaseFuturesBalanceRecord(): FuturesBalanceRecord {
-  return { denom: "", total: "", available: "", reserved: "", margin: "", unrealisedLoss: "", marginDebt: "" };
+  return { denom: "", total: "", available: "", reserved: "", margin: "", unrealisedLoss: "" };
 }
 
 export const FuturesBalanceRecord = {
@@ -168,9 +178,6 @@ export const FuturesBalanceRecord = {
     }
     if (message.unrealisedLoss !== "") {
       writer.uint32(50).string(message.unrealisedLoss);
-    }
-    if (message.marginDebt !== "") {
-      writer.uint32(58).string(message.marginDebt);
     }
     return writer;
   },
@@ -224,13 +231,6 @@ export const FuturesBalanceRecord = {
 
           message.unrealisedLoss = reader.string();
           continue;
-        case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          message.marginDebt = reader.string();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -248,7 +248,6 @@ export const FuturesBalanceRecord = {
       reserved: isSet(object.reserved) ? String(object.reserved) : "",
       margin: isSet(object.margin) ? String(object.margin) : "",
       unrealisedLoss: isSet(object.unrealisedLoss) ? String(object.unrealisedLoss) : "",
-      marginDebt: isSet(object.marginDebt) ? String(object.marginDebt) : "",
     };
   },
 
@@ -260,7 +259,6 @@ export const FuturesBalanceRecord = {
     message.reserved !== undefined && (obj.reserved = message.reserved);
     message.margin !== undefined && (obj.margin = message.margin);
     message.unrealisedLoss !== undefined && (obj.unrealisedLoss = message.unrealisedLoss);
-    message.marginDebt !== undefined && (obj.marginDebt = message.marginDebt);
     return obj;
   },
 
@@ -276,7 +274,6 @@ export const FuturesBalanceRecord = {
     message.reserved = object.reserved ?? "";
     message.margin = object.margin ?? "";
     message.unrealisedLoss = object.unrealisedLoss ?? "";
-    message.marginDebt = object.marginDebt ?? "";
     return message;
   },
 };
@@ -397,6 +394,159 @@ export const QueryGetFuturesBalanceResponse = {
   fromPartial(object: DeepPartial<QueryGetFuturesBalanceResponse>): QueryGetFuturesBalanceResponse {
     const message = createBaseQueryGetFuturesBalanceResponse();
     message.balances = object.balances?.map((e) => FuturesBalanceRecord.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseQueryGetPositionPoolBalancesRequest(): QueryGetPositionPoolBalancesRequest {
+  return { denom: "" };
+}
+
+export const QueryGetPositionPoolBalancesRequest = {
+  encode(message: QueryGetPositionPoolBalancesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetPositionPoolBalancesRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetPositionPoolBalancesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.denom = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetPositionPoolBalancesRequest {
+    return { denom: isSet(object.denom) ? String(object.denom) : "" };
+  },
+
+  toJSON(message: QueryGetPositionPoolBalancesRequest): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryGetPositionPoolBalancesRequest>): QueryGetPositionPoolBalancesRequest {
+    return QueryGetPositionPoolBalancesRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetPositionPoolBalancesRequest>): QueryGetPositionPoolBalancesRequest {
+    const message = createBaseQueryGetPositionPoolBalancesRequest();
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryGetPositionPoolBalancesResponse(): QueryGetPositionPoolBalancesResponse {
+  return { totalPoolBalance: "", futuresSupply: "", marginWithDebtSupply: "", positionMarginSupply: "" };
+}
+
+export const QueryGetPositionPoolBalancesResponse = {
+  encode(message: QueryGetPositionPoolBalancesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.totalPoolBalance !== "") {
+      writer.uint32(10).string(message.totalPoolBalance);
+    }
+    if (message.futuresSupply !== "") {
+      writer.uint32(18).string(message.futuresSupply);
+    }
+    if (message.marginWithDebtSupply !== "") {
+      writer.uint32(26).string(message.marginWithDebtSupply);
+    }
+    if (message.positionMarginSupply !== "") {
+      writer.uint32(34).string(message.positionMarginSupply);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetPositionPoolBalancesResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryGetPositionPoolBalancesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.totalPoolBalance = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.futuresSupply = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.marginWithDebtSupply = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.positionMarginSupply = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetPositionPoolBalancesResponse {
+    return {
+      totalPoolBalance: isSet(object.totalPoolBalance) ? String(object.totalPoolBalance) : "",
+      futuresSupply: isSet(object.futuresSupply) ? String(object.futuresSupply) : "",
+      marginWithDebtSupply: isSet(object.marginWithDebtSupply) ? String(object.marginWithDebtSupply) : "",
+      positionMarginSupply: isSet(object.positionMarginSupply) ? String(object.positionMarginSupply) : "",
+    };
+  },
+
+  toJSON(message: QueryGetPositionPoolBalancesResponse): unknown {
+    const obj: any = {};
+    message.totalPoolBalance !== undefined && (obj.totalPoolBalance = message.totalPoolBalance);
+    message.futuresSupply !== undefined && (obj.futuresSupply = message.futuresSupply);
+    message.marginWithDebtSupply !== undefined && (obj.marginWithDebtSupply = message.marginWithDebtSupply);
+    message.positionMarginSupply !== undefined && (obj.positionMarginSupply = message.positionMarginSupply);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryGetPositionPoolBalancesResponse>): QueryGetPositionPoolBalancesResponse {
+    return QueryGetPositionPoolBalancesResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryGetPositionPoolBalancesResponse>): QueryGetPositionPoolBalancesResponse {
+    const message = createBaseQueryGetPositionPoolBalancesResponse();
+    message.totalPoolBalance = object.totalPoolBalance ?? "";
+    message.futuresSupply = object.futuresSupply ?? "";
+    message.marginWithDebtSupply = object.marginWithDebtSupply ?? "";
+    message.positionMarginSupply = object.positionMarginSupply ?? "";
     return message;
   },
 };
@@ -2151,6 +2301,7 @@ export const QueryParamsResponse = {
 /** Query defines the gRPC querier service. */
 export interface Query {
   FuturesBalance(request: QueryGetFuturesBalanceRequest): Promise<QueryGetFuturesBalanceResponse>;
+  PositionPoolBalances(request: QueryGetPositionPoolBalancesRequest): Promise<QueryGetPositionPoolBalancesResponse>;
   /** Get token details for a denom */
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse>;
   /** Get all token details */
@@ -2183,6 +2334,7 @@ export class QueryClientImpl implements Query {
     this.service = opts?.service || "Switcheo.carbon.coin.Query";
     this.rpc = rpc;
     this.FuturesBalance = this.FuturesBalance.bind(this);
+    this.PositionPoolBalances = this.PositionPoolBalances.bind(this);
     this.Token = this.Token.bind(this);
     this.TokenAll = this.TokenAll.bind(this);
     this.LockedCoins = this.LockedCoins.bind(this);
@@ -2200,6 +2352,12 @@ export class QueryClientImpl implements Query {
     const data = QueryGetFuturesBalanceRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "FuturesBalance", data);
     return promise.then((data) => QueryGetFuturesBalanceResponse.decode(_m0.Reader.create(data)));
+  }
+
+  PositionPoolBalances(request: QueryGetPositionPoolBalancesRequest): Promise<QueryGetPositionPoolBalancesResponse> {
+    const data = QueryGetPositionPoolBalancesRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "PositionPoolBalances", data);
+    return promise.then((data) => QueryGetPositionPoolBalancesResponse.decode(_m0.Reader.create(data)));
   }
 
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
