@@ -156,8 +156,8 @@ export class CoinModule extends BaseModule {
           amount: params.amount.toString(10),
         },
       ],
-      from: params.toFutures ? "available" : "futures",
-      to: params.toFutures ? "futures" : "available",
+      from: params.toFutures ? "available" : "available-futures",
+      to: params.toFutures ? "available-futures" : "available",
     });
     return await wallet.sendTx(
       {
