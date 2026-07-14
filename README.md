@@ -24,6 +24,16 @@ Development tools such as TypeScript and `ts-node` are installed locally; global
 
 The optional `examples/node-ledger.ts` script requires `@ledgerhq/hw-transport-node-hid` plus the platform's HID/USB build libraries. It is intentionally excluded from the default dependency graph because its pinned `node-hid` release does not install cleanly on Node 24 when a compatible prebuild is unavailable.
 
+## Testing and CI
+
+Run the deterministic Node test suite with:
+
+```bash
+yarn test
+```
+
+Pull requests targeting `staging` and pushes to `staging` run Node 24 CI. The workflow performs a frozen Yarn install, dependency integrity check, lint, tests, build, an npm package dry run, and an installed-tarball smoke test in an isolated consumer project.
+
 ## To Run Example script
 ```bash
 # run connect SDK example

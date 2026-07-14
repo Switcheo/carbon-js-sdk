@@ -1,0 +1,68 @@
+name: Node 24
+
+on:
+  pull_request:
+    branches:
+      - staging
+  push:
+    branches:
+      - staging
+
+permissions:
+  contents: read
+
+concurrency:
+  group: node24-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Activate Yarn Classic
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --non-interactive
+
+      - name: Check dependency integrity
+        run: yarn check --integrity
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test
+
+      - name: Build
+        run: yarn build
+
+      - name: Verify package contents
+        run: npm pack --dry-run --json
+
+      - name: Verify installed package
+        shell: bash
+        run: |
+          set -euo pipefail
+          package_dir="$RUNNER_TEMP/carbon-js-sdk-package"
+          consumer_dir="$RUNNER_TEMP/carbon-js-sdk-consumer"
+          mkdir -p "$package_dir" "$consumer_dir"
+          npm pack --pack-destination "$package_dir"
+          cd "$consumer_dir"
+          npm init --yes >/dev/null
+          npm install --ignore-scripts --no-audit --no-fund "$package_dir"/carbon-js-sdk-*.tgz
+          CARBON_SDK_PACKAGE=carbon-js-sdk node --test "$GITHUB_WORKSPACE/tests/package-smoke.test.cjs"
