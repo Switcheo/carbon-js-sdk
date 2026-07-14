@@ -24,6 +24,8 @@ Development tools such as TypeScript and `ts-node` are installed locally; global
 
 The optional `examples/node-ledger.ts` script requires `@ledgerhq/hw-transport-node-hid` plus the platform's HID/USB build libraries. It is intentionally excluded from the default dependency graph because its pinned `node-hid` release does not install cleanly on Node 24 when a compatible prebuild is unavailable.
 
+`@keplr-wallet/types` declares Starknet as a non-optional peer for its full multi-chain type surface. Carbon JS SDK does not declare Starknet directly because its Keplr integration uses Cosmos-facing declarations only. Yarn 1 leaves that peer unresolved and reports a warning, while npm 7 and newer can auto-install a compatible Starknet release in a consumer project. Avoiding that transitive npm install requires a separate API-contract change that replaces the external Keplr types; adding Starknet directly here would only make unrelated application code an explicit SDK dependency.
+
 ## Testing and CI
 
 Run the deterministic Node test suite with:

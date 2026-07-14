@@ -170,8 +170,8 @@ After merge, configure the Node 24 workflow check as a required branch-protectio
 **Files:**
 - Modify: `package.json`
 - Modify: `yarn.lock`
-- Potentially modify: `README.md`
-- Tests: existing `tests/package-smoke.test.cjs` plus focused import tests
+- Modify: `README.md`
+- Tests: `tests/dependency-contracts.test.cjs` and focused installed-package imports in `tests/package-smoke.test.cjs`
 
 ### Task 2.1: Add true direct CosmJS dependencies
 
@@ -194,9 +194,13 @@ Test adding:
 
 Keep it only if required by the current `@cosmos-kit/core@1.8.0` runtime path or needed to produce a clean supported peer graph. Measure installed/runtime graph impact. Do not upgrade `@cosmos-kit/leap` from 0.x to 2.x in this PR.
 
+Implemented decision: keep `@cosmjs/cosmwasm-stargate@0.32.4`. It satisfies `@cosmos-kit/core@1.8.0`'s declared peer and adds only the matching CosmJS package plus `pako@2.2.0`; the latter was separately audited as a canonical, signed, lifecycle-hook-free JavaScript artifact.
+
 ### Task 2.3: Resolve gRPC Web's declared peer
 
 Audit and, if package/source evidence confirms the peer is required, add a compatible `google-protobuf` 3.x release. Add an import/package smoke test that exercises `GrpcQueryClient` module loading without making a network call.
+
+Implemented decision: add `google-protobuf@3.21.4`, the latest compatible 3.x release for `@improbable-eng/grpc-web@0.15.0`, and test the gRPC client module from both the worktree and packed consumer install.
 
 ### Task 2.4: Decide Keplr/Starknet policy without adding dead weight
 
@@ -207,6 +211,8 @@ Do not add Starknet automatically. Produce a short decision note with these opti
 3. upgrade Keplr types and add Starknet only if SDK runtime functionality actually needs it.
 
 Default recommendation: option 1 now, option 2 later if API compatibility analysis shows no consumer break. Treat option 3 as rejected unless runtime evidence changes.
+
+Implemented decision: option 1. The README documents why Starknet is not a direct Carbon dependency and makes the package-manager behavior explicit: Yarn 1 leaves the non-optional Keplr type-package peer unresolved and warns, while npm 7+ can auto-install Starknet in consumer projects. Baseline comparison confirmed npm 11 already did this before PR 2. Eliminating the transitive npm install remains a separate Keplr API-contract change under option 2.
 
 ### Task 2.5: Validate PR 2
 
