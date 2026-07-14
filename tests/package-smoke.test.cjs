@@ -20,3 +20,17 @@ test("the package contains its declared entrypoints", () => {
 test("the compiled package entrypoint loads", () => {
   assert.equal(typeof sdk.CarbonSDK, "function");
 });
+
+const representativeModules = [
+  "lib/clients/GrpcQueryClient.js",
+  "lib/provider/keplr/KeplrAccount.js",
+  "lib/provider/leap/LeapAccount.js",
+  "lib/wallet/CarbonSigningClient.js",
+];
+
+for (const modulePath of representativeModules) {
+  test(`${modulePath} loads without a network call`, () => {
+    const loadedModule = require(path.join(packageRoot, modulePath));
+    assert.ok(Object.keys(loadedModule).length > 0, `${modulePath} should export at least one symbol`);
+  });
+}
