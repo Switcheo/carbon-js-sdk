@@ -239,6 +239,18 @@ Implemented decision: option 1. The README documents why Starknet is not a direc
 | `semver` | `^7.3.7` | `7.5.2` | Audit latest compatible 7.x. |
 | `lodash` | `^4.17.21` | `4.18.0` | New minor with multiple advisory fixes; inspect release/source diff and affected SDK usage carefully. |
 
+Implemented exact targets after registry, source, tarball, lifecycle, and graph review:
+
+- `node-fetch@2.7.0` — maintained 2.x target containing the secure redirect-header fix and no native/install payload.
+- `secp256k1@4.0.4` — security-focused patch that rejects invalid compressed points in the browser/elliptic fallback.
+- `node-gyp-build@4.8.4` — exact companion loader required because the prior locked 4.2.3 cannot recognize secp256k1 4.0.4's bundled prebuild names. Linux x64 is verified to select the bundled native binding; Windows x64 and Apple Silicon ship matching prebuilds, while Intel macOS has no bundled prebuild.
+- `semver@7.8.5` — current compatible 7.x release from the canonical npm project; dependency-free and covered by the upstream whitespace regression input.
+- `lodash@4.18.1` — current compatible release containing all three direct advisory fixes plus the follow-up patch.
+
+All five declarations are exact pins so the reviewed security targets and published consumer graph cannot drift within a range.
+
+This PR fixes the SDK's direct resolved copies only. Older vulnerable transitive copies remain under WalletConnect (`node-fetch@2.6.1`), `eth-sig-util` (`secp256k1@4.0.2`), Neon Core Next (`lodash@4.17.21`), and Ledger packages (`semver@7.3.5`); those stay visible for root-grouped remediation in later stacked PRs.
+
 ### Task 3.1: Add focused tests before crypto/util updates
 
 Add deterministic tests for the actual SDK paths that use:
