@@ -16,5 +16,5 @@ rm -rf \
   src/codec/gogoproto/ \
   src/codec/google/api/ 
 
-yarn sync-reset
+npm run sync-reset
 sh $(dirname "${BASH_SOURCE[0]}")/generate-registry.sh

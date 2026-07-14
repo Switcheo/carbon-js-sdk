@@ -2,26 +2,32 @@
 
 # Get Started
 
-Try out the [examples](./examples/). The project has to be built before you can start running the examples
+Development targets **Node.js 24 LTS**. The pinned version is recorded in `.nvmrc`.
 
 ```bash
 # go to the root of your carbon-js-sdk directory
 cd /path/to/carbon-js-sdk
 
-# install ts-node, typescript
-npm i -g ts-node typescript
+# use the repository's Node and Yarn versions
+nvm use
+corepack enable
+corepack prepare yarn@1.22.22 --activate
 
 # install local dependencies
-yarn
+yarn install --frozen-lockfile
 
 # build the SDK
 yarn build
 ```
 
+Development tools such as TypeScript and `ts-node` are installed locally; global installs are not required.
+
+The optional `examples/node-ledger.ts` script requires `@ledgerhq/hw-transport-node-hid` plus the platform's HID/USB build libraries. It is intentionally excluded from the default dependency graph because its pinned `node-hid` release does not install cleanly on Node 24 when a compatible prebuild is unavailable.
+
 ## To Run Example script
 ```bash
 # run connect SDK example
-ts-node examples/connect_sdk
+npx ts-node examples/connect_sdk
 ```
 
 ## Initializing CarbonSDK
