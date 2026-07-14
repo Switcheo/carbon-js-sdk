@@ -28,7 +28,7 @@ class BatchQueryClient implements RpcClient {
   protected readonly url: string;
   protected readonly headers: Record<string, string> | undefined;
   protected readonly options: BatchQueryClientOptions;
-  private timer?: NodeJS.Timer;
+  private timer?: ReturnType<typeof setInterval>;
 
   private readonly queue: Array<{
     request: JsonRpcRequest;
@@ -48,7 +48,7 @@ class BatchQueryClient implements RpcClient {
       this.url = endpoint.url;
       this.headers = endpoint.headers;
     }
-    this.timer = (setInterval(() => this.tick(), options.dispatchInterval)) as unknown as NodeJS.Timer;
+    this.timer = setInterval(() => this.tick(), options.dispatchInterval);
     this.validate();
   }
 
