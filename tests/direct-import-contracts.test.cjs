@@ -23,7 +23,7 @@ const expectedDirectContracts = {
   "@cosmjs/utils": "0.32.4",
   "@ethersproject/abstract-signer": "5.7.0",
   "@ledgerhq/hw-transport": "6.28.8",
-  axios: "0.27.2",
+  axios: "0.33.0",
   bech32: "1.1.4",
   long: "4.0.0",
   protobufjs: "6.11.4",
