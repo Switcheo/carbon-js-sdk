@@ -36,11 +36,21 @@ jobs:
           corepack enable
           corepack prepare yarn@1.22.22 --activate
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --non-interactive
+      - name: Resolve dependencies without lifecycle scripts
+        run: yarn install --frozen-lockfile --ignore-scripts --non-interactive
+
+      - name: Check script-disabled dependency integrity
+        run: yarn check --integrity --ignore-scripts
+
+      - name: Install dependencies with lifecycle scripts
+        run: |
+          rm -rf node_modules
+          yarn install --frozen-lockfile --non-interactive
 
       - name: Check dependency integrity
-        run: yarn check --integrity
+        run: |
+          yarn check --integrity
+          yarn check --verify-tree
 
       - name: Lint
         run: yarn lint
@@ -64,5 +74,8 @@ jobs:
           npm pack --pack-destination "$package_dir"
           cd "$consumer_dir"
           npm init --yes >/dev/null
-          npm install --ignore-scripts --no-audit --no-fund "$package_dir"/carbon-js-sdk-*.tgz
+          npm install --no-audit --no-fund "$package_dir"/carbon-js-sdk-*.tgz
           CARBON_SDK_PACKAGE=carbon-js-sdk node --test "$GITHUB_WORKSPACE/tests/package-smoke.test.cjs"
+          native_path=$(node -e 'const path=require("node:path"); const root=path.dirname(require.resolve("secp256k1/package.json")); process.stdout.write(require("node-gyp-build").path(root))')
+          test "${native_path#*/prebuilds/}" != "$native_path"
+          node -e 'require("secp256k1/bindings.js")'
