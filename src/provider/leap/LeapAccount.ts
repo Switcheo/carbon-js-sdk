@@ -39,7 +39,7 @@ class LeapAccount {
           bodyBytes,
           authInfoBytes,
           chainId,
-          accountNumber: new Long(Number(accountNumber)),
+          accountNumber: Long.fromString(accountNumber.toString(), true),
         }
         return await leap!.signDirect(chainId, signerAddress, parsedDoc, signOpts);
       })
