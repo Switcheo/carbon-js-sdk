@@ -39,7 +39,6 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "@chain-registry/types": "0.13.0",
     "@cosmjs/amino": "0.32.4",
     "@cosmjs/cosmwasm-stargate": "0.32.4",
     "@cosmjs/crypto": "0.32.4",
@@ -50,8 +49,8 @@
     "@cosmjs/stargate": "0.32.4",
     "@cosmjs/tendermint-rpc": "0.32.4",
     "@cosmjs/utils": "0.32.4",
-    "@cosmos-kit/core": "1.8.0",
-    "@cosmos-kit/leap-extension": "0.18.0",
+    "@cosmos-kit/core": "2.18.1",
+    "@cosmos-kit/leap-extension": "2.17.1",
     "@ethersproject/abstract-signer": "5.7.0",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",

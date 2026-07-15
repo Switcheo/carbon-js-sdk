@@ -10,6 +10,7 @@ const projectRoot = path.resolve(__dirname, "..");
 const manifest = require(path.join(projectRoot, "package.json"));
 
 const removedRuntimeRoots = [
+  "@chain-registry/types",
   "@cityofzion/neon-api",
   "@cityofzion/neon-core",
   "@cityofzion/neon-core-next",
@@ -28,8 +29,8 @@ for (const packageName of removedRuntimeRoots) {
 }
 
 const requiredRuntimeContracts = {
-  "@cosmos-kit/core": "1.8.0",
-  "@cosmos-kit/leap-extension": "0.18.0",
+  "@cosmos-kit/core": "2.18.1",
+  "@cosmos-kit/leap-extension": "2.17.1",
   "crypto-js": "4.2.0",
 };
 
@@ -139,7 +140,7 @@ test("removed ambient package declarations do not survive the pruning", () => {
   }
 });
 
-test("the compiled Leap declarations expose the exact replacement contracts", () => {
+test("compiled Leap declarations use Carbon-owned compatibility contracts", () => {
   const indexDeclarations = fs.readFileSync(
     path.join(projectRoot, "lib/provider/leap/index.d.ts"),
     "utf8",
@@ -148,7 +149,13 @@ test("the compiled Leap declarations expose the exact replacement contracts", ()
     path.join(projectRoot, "lib/provider/leap/LeapAccount.d.ts"),
     "utf8",
   );
-  assert.match(indexDeclarations, /from ["']@cosmos-kit\/core["']/);
-  assert.match(indexDeclarations, /from ["']@cosmos-kit\/leap-extension["']/);
-  assert.match(accountDeclarations, /from ["']@cosmos-kit\/leap-extension["']/);
+  const typeDeclarations = fs.readFileSync(
+    path.join(projectRoot, "lib/provider/leap/types.d.ts"),
+    "utf8",
+  );
+  assert.match(indexDeclarations, /from ["']\.\/types["']/);
+  assert.match(accountDeclarations, /from ["']\.\/types["']/);
+  assert.doesNotMatch(`${indexDeclarations}\n${accountDeclarations}`, /@cosmos-kit\/(?:core|leap-extension)/);
+  assert.match(typeDeclarations, /export interface Key/);
+  assert.match(typeDeclarations, /export interface Leap/);
 });
