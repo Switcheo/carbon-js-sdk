@@ -290,7 +290,7 @@ Record Dependabot alerts before and after. Expected direct-alert result: all six
 
 ### Task 4.1: Generate a machine-readable advisory inventory
 
-Create a local audit artifact under `.hermes/audits/` (do not publish credentials or raw private API responses) containing:
+Create a local audit artifact under `plans/audits/` (do not publish credentials or raw private API responses) containing:
 
 - alert number and severity
 - vulnerable package/range and first patched version
@@ -316,6 +316,17 @@ Prioritize packages currently dominating the alerts:
 Run a static import/require/export scan and package-packing analysis for every direct dependency. Confirm dynamically loaded or type-only uses manually. Candidate observations from the Node 24 audit, such as unused `secp256r1`, must be revalidated before removal.
 
 Remove genuinely unused roots in a dedicated PR. Recompute the alert count afterward; removal is preferable to maintaining vulnerable dead code.
+
+**Implemented result (stacked PR 4):**
+
+- Removed nine unused direct runtime roots: the four `@cityofzion/neon-*` packages, `@cosmos-kit/leap`, `@metamask/detect-provider`, `base58check`, `eventemitter3`, and `secp256r1`.
+- Replaced the unused Leap umbrella with the exact packages the SDK actually imports: `@cosmos-kit/core@1.8.0` and `@cosmos-kit/leap-extension@0.18.0`.
+- Declared the already-resolved `crypto-js@4.2.0` runtime and its previously transitive `@types/crypto-js@4.0.1` development contract after the first post-pruning compile exposed the hidden type dependency.
+- Removed stale ambient declarations for `base58check` and `secp256r1`.
+- Verified with a custom import scan plus independent `depcheck`: no unused runtime dependencies remain. `depcheck` still identifies a separate pre-existing set of undeclared transitive imports; these must be inventoried explicitly rather than folded into the pruning diff.
+- Reduced the raw lock graph from 614 to 538 resolved artifacts (76 removed, zero new), and from 4,571 to 3,962 lines.
+- Removed vulnerable transitive copies including `lodash@4.17.21`, `node-fetch@2.6.1`/`2.6.7`, and `ws@7.4.5`/`7.5.9`; runtime `elliptic@6.5.4` and `6.6.1` remain for later root-cause remediation.
+- Validated 44 Node tests, lint, build, Yarn integrity, package creation, a lifecycle-enabled packed consumer, Leap module imports, and native secp256k1 loading on Node 24.
 
 ### Task 4.3: Apply compatible leaf patches only when parent ranges permit
 
