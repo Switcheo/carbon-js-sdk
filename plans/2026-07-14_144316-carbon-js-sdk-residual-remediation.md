@@ -10,6 +10,19 @@
 
 ---
 
+## Implementation Status — 2026-07-14
+
+This document began as the pre-remediation plan; the baseline section below is retained as historical evidence. Current implementation state:
+
+- PRs #627–#637 and #638 were sequentially squash-merged into `staging`, establishing Node 24 CI, dependency contracts, direct and compatible transitive security patches, unused-root pruning, residual compatible selectors, and dependency policy.
+- Every stacked layer was rebased one delta at a time onto updated `staging`, updated with explicit force-with-lease, validated locally, retargeted, and required to pass fresh GitHub CI before merge.
+- The complete compatible stack passes 103 Node tests, 40 dependency-hygiene tests, lint, build, Yarn integrity/verify-tree, packaging, an isolated lifecycle-enabled consumer, and native secp256k1 loading on Node 24.18.0.
+- Exact-lock projection closes 69 of the 113 original alerts, leaving 44 alerts confined to legacy Axios, Protobuf.js 6.x, Elliptic, and exact Ethers ws paths that require major/root migrations or have no patched release.
+- Full evidence, blockers, actual squash commits, and executed merge procedure are recorded in `plans/audits/2026-07-14-carbon-js-sdk-dependency-remediation.md`.
+- GitHub's Dependabot API still reported 113 immediately after the final implementation merge; reprocessing of the updated default-branch lock graph was pending when the report was finalized.
+
+---
+
 ## Current Evidence and Baseline
 
 - PR #626 was squash-merged to `staging` as `a4cbb0825a8f385e7deb2be438fd0d2d2a24ec61`.
