@@ -26,6 +26,37 @@ The optional `examples/node-ledger.ts` script requires `@ledgerhq/hw-transport-n
 
 `@keplr-wallet/types` declares Starknet as a non-optional peer for its full multi-chain type surface. Carbon JS SDK does not declare Starknet directly because its Keplr integration uses Cosmos-facing declarations only. Yarn 1 leaves that peer unresolved and reports a warning, while npm 7 and newer can auto-install a compatible Starknet release in a consumer project. Avoiding that transitive npm install requires a separate API-contract change that replaces the external Keplr types; adding Starknet directly here would only make unrelated application code an explicit SDK dependency.
 
+## Temporary Protobuf.js application override
+
+Current `@keplr-wallet/cosmos` and `@keplr-wallet/proto-types` releases still request vulnerable `protobufjs@^6.11.2`. Carbon's development lock resolves those owners to audited `protobufjs@7.6.3`, but package-manager root controls are not inherited when an application installs Carbon from npm. Until Keplr publishes Protobuf.js 7-compatible manifests, applications must apply the same temporary override at their own root.
+
+Yarn 1 applications:
+
+```json
+{
+  "resolutions": {
+    "protobufjs": "7.6.3"
+  }
+}
+```
+
+npm applications:
+
+```json
+{
+  "overrides": {
+    "@keplr-wallet/cosmos": {
+      "protobufjs": "7.6.3"
+    },
+    "@keplr-wallet/proto-types": {
+      "protobufjs": "7.6.3"
+    }
+  }
+}
+```
+
+After installation, run `yarn why protobufjs` or `npm ls protobufjs --all` and verify that no Protobuf.js 6 release remains. Remove the override once the Keplr packages declare a compatible Protobuf.js 7 dependency.
+
 ## Testing and CI
 
 Run the deterministic Node test suite with:

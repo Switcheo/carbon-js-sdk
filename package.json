@@ -10,6 +10,9 @@
   "engines": {
     "node": ">=24.0.0 <25"
   },
+  "resolutions": {
+    "protobufjs": "7.6.3"
+  },
   "scripts": {
     "watch": "nodemon --exec \"eslint . && tsc && tsc-alias\"",
     "build": "eslint . && tsc && tsc-alias",
@@ -58,6 +61,7 @@
     "@keplr-wallet/types": "^0.12.207",
     "@ledgerhq/hw-transport": "6.28.8",
     "@ledgerhq/hw-transport-webhid": "^6.20.0",
+    "@types/long": "4.0.1",
     "@ledgerhq/hw-transport-webusb": "^6.20.0",
     "axios": "0.33.0",
     "bech32": "1.1.4",
@@ -76,7 +80,7 @@
     "long": "4.0.0",
     "node-fetch": "2.7.0",
     "node-gyp-build": "4.8.4",
-    "protobufjs": "6.11.4",
+    "protobufjs": "7.6.3",
     "query-string": "^7.0.1",
     "rxjs": "6.6.7",
     "secp256k1": "4.0.4",
