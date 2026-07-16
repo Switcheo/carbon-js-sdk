@@ -6,7 +6,7 @@ import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
 import { capitalize } from "lodash";
 import { CarbonTx } from "@carbon-sdk/util";
-import { AminoMsg } from "@cosmjs/amino/build";
+import { AminoMsg } from "@cosmjs/amino";
 
 
 export interface EIP712Tx {

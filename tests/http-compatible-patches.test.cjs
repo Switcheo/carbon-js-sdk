@@ -19,7 +19,7 @@ function lockedVersions(packageName) {
 }
 
 const expectedVersions = {
-  axios: ["0.33.0", "1.18.1"],
+  axios: ["0.33.0"],
   "follow-redirects": ["1.16.0"],
   "form-data": ["3.0.5", "4.0.6"],
 };

@@ -1,5 +1,5 @@
 import { DEFAULT_CARBON_DOMAIN_FIELDS, LEGACY_DEFAULT_EIP712_TYPES } from "@carbon-sdk/constant/eip712";
-import { StdSignDoc } from "@cosmjs/amino/build";
+import { StdSignDoc } from "@cosmjs/amino";
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
 import { TypeUtils } from ".";
 import { parseChainId } from "@carbon-sdk/util/ethermint";
