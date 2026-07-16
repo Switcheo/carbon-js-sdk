@@ -17,17 +17,20 @@ function lockedVersions(packageName) {
     .sort();
 }
 
-test("compatible elliptic ranges resolve to 6.6.1 while the exact Ethers blocker stays visible", () => {
-  assert.deepEqual(lockedVersions("elliptic"), ["6.5.4", "6.6.1"]);
-  assert.match(lockfile, /^elliptic@6\.5\.4:\n[ ]{2}version "6\.5\.4"$/m);
-  assert.doesNotMatch(lockfile, /^elliptic@6\.5\.4,[^\n]*:/m);
-  assert.match(lockfile, /^elliptic@\^6\.4\.0,[^\n]*:\n[ ]{2}version "6\.6\.1"$/m);
+test("the coherent Ethers v5 family removes its vulnerable exact elliptic blocker", () => {
+  assert.equal(require("ethers/package.json").version, "5.8.0");
+  assert.equal(require("@ethersproject/abstract-signer/package.json").version, "5.8.0");
+  assert.equal(require("@ethersproject/providers/package.json").version, "5.8.0");
+  assert.equal(require("@ethersproject/signing-key/package.json").version, "5.8.0");
+  assert.deepEqual(lockedVersions("elliptic"), ["6.6.1"]);
+  assert.doesNotMatch(lockfile, /^elliptic@6\.5\.4:/m);
 });
 
-test("compatible ws ranges resolve to 7.5.11 while the exact Ethers blocker stays visible", () => {
-  assert.deepEqual(lockedVersions("ws"), ["7.4.6", "7.5.11"]);
-  assert.match(lockfile, /^ws@7\.4\.6:\n[ ]{2}version "7\.4\.6"$/m);
+test("the Ethers provider uses patched ws 8 while Carbon retains its compatible ws 7 contract", () => {
+  assert.deepEqual(lockedVersions("ws"), ["7.5.11", "8.18.0"]);
+  assert.doesNotMatch(lockfile, /^ws@7\.4\.6:/m);
   assert.match(lockfile, /^ws@\^7, ws@\^7\.5\.11:\n[ ]{2}version "7\.5\.11"$/m);
+  assert.match(lockfile, /^ws@8\.18\.0:\n[ ]{2}version "8\.18\.0"$/m);
 });
 
 test("elliptic 6.6.1 preserves deterministic secp256k1 signing", () => {
@@ -77,4 +80,36 @@ test("ws 7.5.11 preserves fragmented wallet transport messages", async () => {
   assert.equal(reply, "ack");
   client.close();
   await new Promise((resolve) => server.close(resolve));
+});
+
+test("Ethers 5.8 WebSocketProvider interoperates with local JSON-RPC through its ws 8 dependency", async () => {
+  const WebSocket = require("ws");
+  const { ethers } = require("ethers");
+  const server = new WebSocket.Server({ port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  server.on("connection", (socket) => {
+    socket.on("message", (data) => {
+      const request = JSON.parse(Buffer.from(data).toString("utf8"));
+      socket.send(JSON.stringify({
+        jsonrpc: "2.0",
+        id: request.id,
+        result: request.method === "eth_chainId" ? "0x1" : "1",
+      }));
+    });
+  });
+  const address = server.address();
+  assert.equal(typeof address, "object");
+  const provider = new ethers.providers.WebSocketProvider(`ws://127.0.0.1:${address.port}`);
+
+  try {
+    assert.equal((await provider.getNetwork()).chainId, 1);
+    const nestedWsPackage = path.join(
+      path.dirname(require.resolve("@ethersproject/providers/package.json")),
+      "node_modules/ws/package.json",
+    );
+    assert.equal(JSON.parse(fs.readFileSync(nestedWsPackage, "utf8")).version, "8.18.0");
+  } finally {
+    await provider.destroy();
+    await new Promise((resolve) => server.close(resolve));
+  }
 });
