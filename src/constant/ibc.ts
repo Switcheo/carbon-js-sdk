@@ -2160,6 +2160,14 @@ export interface ExtendedChainInfo extends ChainInfo {
   minimalDenomMap: MinimalDenomMap;
   bestRpcs: URLProviderObj[];
   activeRpc?: string;
+  /** Cosmos Chain Registry lifecycle status observed while loading this metadata. */
+  registryStatus?: string;
+  /**
+   * Derived transfer eligibility. This is separate from the canonical Carbon
+   * bridge.enabled value and is false when that bridge is disabled or the
+   * external chain registry explicitly reports the chain as killed.
+   */
+  isTransferAvailable: boolean;
 }
 
 export interface URLProviderObj {
