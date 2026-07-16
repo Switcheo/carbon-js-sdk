@@ -2165,9 +2165,10 @@ export interface ExtendedChainInfo extends ChainInfo {
   /**
    * Derived transfer eligibility. This is separate from the canonical Carbon
    * bridge.enabled value and is false when that bridge is disabled or the
-   * external chain registry explicitly reports the chain as killed.
+   * external chain registry explicitly reports the chain as killed. Always
+   * populated by IBCModule.getChainInfoMap; optional for source compatibility.
    */
-  isTransferAvailable: boolean;
+  isTransferAvailable?: boolean;
 }
 
 export interface URLProviderObj {

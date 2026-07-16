@@ -158,6 +158,10 @@ test("a registry-killed chain skips Keplr while preserving the enabled on-chain 
     assert.equal(result["stargaze-1"].registryStatus, "killed");
     assert.equal(result["stargaze-1"].isTransferAvailable, false);
     assert.equal(result["stargaze-1"].chainId, "stargaze-1");
+    assert.equal(result["stargaze-1"].rpc, "");
+    assert.equal(result["stargaze-1"].rest, "");
+    assert.deepEqual(result["stargaze-1"].feeCurrencies, []);
+    assert.deepEqual(result["stargaze-1"].features, []);
   });
 });
 
@@ -179,6 +183,40 @@ test("a killed chain omitted by Cosmos Directory checks Chain Registry status be
     assert.equal(requestedUrls.includes(`${keplrPrefix}omniflixhub.json`), false);
     assert.equal(result["omniflixhub-1"].registryStatus, "killed");
     assert.equal(result["omniflixhub-1"].isTransferAvailable, false);
+  });
+});
+
+test("a killed chain without embedded metadata remains explicitly unavailable", { concurrency: false }, async (t) => {
+  const chainId = "retireddynamic-1";
+  const bridge = ibcBridge(chainId, true);
+  bridge.chainName = "Retired Dynamic";
+  const { provider, tokenClient } = sdkProvider([bridge]);
+  const module = new IBCModule(provider);
+  const responses = {
+    ...baseResponses([]),
+    [`${chainRegistryPrefix}retireddynamic/chain.json`]: jsonResponse({
+      chain_id: chainId,
+      chain_name: "retireddynamic",
+      pretty_name: "Retired Dynamic",
+      status: "killed",
+      slip44: 118,
+      bech32_prefix: "retired",
+      staking: { staking_tokens: [{ denom: "uretired" }] },
+    }),
+  };
+
+  await withFetch(t, responses, async (requestedUrls) => {
+    const result = await module.getChainInfoMap();
+
+    assert.equal(requestedUrls.includes(`${keplrPrefix}retireddynamic.json`), false);
+    assert.equal(tokenClient.bridges.ibc[0], bridge);
+    assert.equal(tokenClient.bridges.ibc[0].enabled, true);
+    assert.ok(result[chainId]);
+    assert.equal(result[chainId].chainId, chainId);
+    assert.equal(result[chainId].chainName, "Retired Dynamic");
+    assert.equal(result[chainId].registryStatus, "killed");
+    assert.equal(result[chainId].isTransferAvailable, false);
+    assert.deepEqual(result[chainId].bestRpcs, []);
   });
 });
 
@@ -241,6 +279,23 @@ test("a live chain missing from Keplr falls back to Cosmos Chain Registry", { co
   });
 });
 
+test("an explicit unknown registry status is not treated as killed", { concurrency: false }, async (t) => {
+  const { provider } = sdkProvider([ibcBridge("unknownstatus-1")]);
+  const module = new IBCModule(provider);
+  const responses = {
+    ...baseResponses([chainSummary("unknownstatus-1", "unknown", "unknownstatus")]),
+    [`${keplrPrefix}unknownstatus.json`]: jsonResponse(chainInfo("unknownstatus-1", "Unknown Status")),
+  };
+
+  await withFetch(t, responses, async (requestedUrls) => {
+    const result = await module.getChainInfoMap();
+
+    assert.equal(requestedUrls.includes(`${keplrPrefix}unknownstatus.json`), true);
+    assert.equal(result["unknownstatus-1"].registryStatus, "unknown");
+    assert.equal(result["unknownstatus-1"].isTransferAvailable, true);
+  });
+});
+
 test("missing registry status is not treated as killed", { concurrency: false }, async (t) => {
   const { provider } = sdkProvider([ibcBridge("unknown-1")]);
   const module = new IBCModule(provider);
@@ -256,5 +311,28 @@ test("missing registry status is not treated as killed", { concurrency: false },
     assert.equal(requestedUrls.includes(`${keplrPrefix}unknown.json`), true);
     assert.equal(result["unknown-1"].registryStatus, undefined);
     assert.equal(result["unknown-1"].isTransferAvailable, true);
+  });
+});
+
+test("the Carbon registry response is checked before parsing", { concurrency: false }, async (t) => {
+  const { provider } = sdkProvider([]);
+  const module = new IBCModule(provider);
+  let parsed = false;
+  const responses = {
+    [directoryUrl]: jsonResponse({ chains: [] }),
+    [`${keplrPrefix}carbon.json`]: {
+      ok: false,
+      status: 503,
+      async json() {
+        parsed = true;
+        return carbonChainInfo;
+      },
+    },
+  };
+
+  await withFetch(t, responses, async () => {
+    const result = await module.getChainInfoMap();
+    assert.equal(parsed, false);
+    assert.equal(result["carbon-1"].chainId, "carbon-1");
   });
 });

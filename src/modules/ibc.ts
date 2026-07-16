@@ -9,6 +9,18 @@ import BigNumber from "bignumber.js";
 import Long from "long";
 import BaseModule from "./base";
 
+interface ChainRegistryChainInfo {
+  status?: string;
+  chain_id?: string;
+  chain_name?: string;
+  pretty_name?: string;
+  bech32_prefix?: string;
+  slip44?: number;
+  staking?: {
+    staking_tokens?: Array<{ denom: string }>;
+  };
+}
+
 export class IBCModule extends BaseModule {
   /** @deprecated please use sendIbcTransferUpdated instead */
   public async sendIBCTransfer(params: IBCModule.SendIBCTransferParams, msgOpts?: CarbonTx.SignTxOpts) {
@@ -98,7 +110,11 @@ export class IBCModule extends BaseModule {
       const chainId = ibcBridge.chain_id_name;
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
       const chainData = chainsData.chains.find((d) => d.chain_id === chainId);
-      const registryStatus = chainData?.status ?? await this.getChainRegistryStatus(chainName);
+      let registryChainInfo: ChainRegistryChainInfo | undefined;
+      if (chainData?.status === undefined) {
+        registryChainInfo = await this.getChainRegistryInfo(chainName);
+      }
+      const registryStatus = chainData?.status ?? registryChainInfo?.status;
       const isRegistryKilled = registryStatus === "killed";
       let chainInfo: ChainInfo | undefined;
 
@@ -106,7 +122,25 @@ export class IBCModule extends BaseModule {
         // Keep enough metadata for callers that still reference the canonical
         // on-chain bridge, but do not probe removed registry files or present
         // embedded metadata as evidence that transfers remain available.
-        chainInfo = IBCUtils.EmbedChainInfos[chainId];
+        const embeddedChainInfo = IBCUtils.EmbedChainInfos[chainId];
+        if (embeddedChainInfo) {
+          chainInfo = {
+            ...embeddedChainInfo,
+            rpc: "",
+            rest: "",
+            currencies: [...embeddedChainInfo.currencies],
+            feeCurrencies: [],
+            features: [],
+          };
+        } else {
+          registryChainInfo ??= await this.getChainRegistryInfo(chainName);
+          chainInfo = this.getRetiredChainInfo(
+            chainId,
+            ibcBridge.chainName,
+            chainData,
+            registryChainInfo,
+          );
+        }
       } else {
         chainInfo = await this.getChainInfo(chainName);
       }
@@ -195,6 +229,10 @@ export class IBCModule extends BaseModule {
   }
 
   async getChainRegistryStatus(chainName: string): Promise<string | undefined> {
+    return (await this.getChainRegistryInfo(chainName))?.status;
+  }
+
+  private async getChainRegistryInfo(chainName: string): Promise<ChainRegistryChainInfo | undefined> {
     if (!chainName) return undefined;
     const url = `https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainName}/chain.json`;
     const chainInfoResponse = await fetch(url);
@@ -204,8 +242,46 @@ export class IBCModule extends BaseModule {
       }
       throw new Error(`Failed to fetch Cosmos Chain Registry status for ${chainName}: HTTP ${chainInfoResponse.status}`);
     }
-    const chainInfoJson = await chainInfoResponse.json() as { status?: string };
-    return chainInfoJson.status;
+    const chainInfoJson = await chainInfoResponse.json() as ChainRegistryChainInfo;
+    return chainInfoJson;
+  }
+
+  private getRetiredChainInfo(
+    chainId: string,
+    bridgeChainName: string,
+    chainData?: ChainRegistryItem,
+    registryChainInfo?: ChainRegistryChainInfo,
+  ): ChainInfo {
+    const coinMinimalDenom = chainData?.denom
+      ?? registryChainInfo?.staking?.staking_tokens?.[0]?.denom
+      ?? "";
+    const currency: Currency = {
+      coinDenom: chainData?.symbol ?? coinMinimalDenom.toUpperCase(),
+      coinMinimalDenom,
+      coinDecimals: chainData?.decimals ?? 0,
+    };
+    const bech32Prefix = chainData?.bech32_prefix ?? registryChainInfo?.bech32_prefix ?? "";
+
+    return {
+      // Deliberately omit stale endpoints and transfer features. The object is
+      // present only so existing map consumers can identify the retired bridge.
+      rpc: "",
+      rest: "",
+      chainId,
+      chainName: chainData?.pretty_name
+        ?? registryChainInfo?.pretty_name
+        ?? bridgeChainName
+        ?? registryChainInfo?.chain_name
+        ?? chainId,
+      bip44: {
+        coinType: registryChainInfo?.slip44 ?? 118,
+      },
+      bech32Config: IBCAddress.defaultBech32Config(bech32Prefix),
+      stakeCurrency: currency,
+      currencies: coinMinimalDenom ? [currency] : [],
+      feeCurrencies: [],
+      features: [],
+    };
   }
 
   async getAssembledChainInfo(chainId: string, chainData?: ChainRegistryItem): Promise<ChainInfo | undefined> {
