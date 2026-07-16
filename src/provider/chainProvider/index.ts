@@ -1,2 +1,2 @@
 export { getSigningCosmosClientOptions } from "./GetSigningCosmosClientOptions";
-export { AssetList, Chain } from "@chain-registry/types";
+export type { AssetList, Chain } from "./types";

@@ -24,7 +24,7 @@ test("@babel/runtime has only the audited compatible lock target", () => {
 });
 
 test("semver has no vulnerable lock targets", () => {
-  assert.deepEqual(lockedVersions("semver"), ["7.6.2", "7.8.5"]);
+  assert.deepEqual(lockedVersions("semver"), ["7.8.5"]);
 });
 
 test("Babel helpers used by Ledger packages preserve object and async behavior", async () => {

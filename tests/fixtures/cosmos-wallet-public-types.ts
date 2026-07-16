@@ -8,7 +8,15 @@ const legacyChain: Chain = {
   chain_id: "carbon-1",
   bech32_prefix: "swth",
   slip44: 118,
+  apis: {
+    custom: [{ address: "https://custom.carbon.network" }],
+  },
 };
+
+let customApiAddresses: string[] = [];
+if (legacyChain.apis) {
+  customApiAddresses = legacyChain.apis.custom.map((endpoint) => endpoint.address);
+}
 
 const legacyAssets: AssetList = {
   chain_name: "carbon",
@@ -57,6 +65,7 @@ const legacyKey: Key = {
   address: new Uint8Array(),
   bech32Address: "swth1contract",
   isNanoLedger: false,
+  isSmartContract: true,
 };
 
 declare const keplr: Keplr;

@@ -14,7 +14,6 @@ const builtins = new Set(
 );
 
 const expectedDirectContracts = {
-  "@chain-registry/types": "0.13.0",
   "@cosmjs/crypto": "0.32.4",
   "@cosmjs/encoding": "0.32.4",
   "@cosmjs/json-rpc": "0.32.4",

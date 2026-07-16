@@ -4,7 +4,7 @@ import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
-import { Leap } from "@cosmos-kit/leap-extension";
+import { Leap } from "./types";
 import { SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
