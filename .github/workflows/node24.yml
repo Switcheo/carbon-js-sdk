@@ -48,9 +48,21 @@ jobs:
           yarn install --frozen-lockfile --non-interactive
 
       - name: Check dependency integrity
+        shell: bash
         run: |
+          set -euo pipefail
           yarn check --integrity
-          yarn check --verify-tree
+          set +e
+          verify_output="$(yarn check --verify-tree 2>&1)"
+          verify_status=$?
+          set -e
+          printf '%s\n' "$verify_output"
+          if [ "$verify_status" -ne 0 ]; then
+            expected_errors=$'error "@cosmos-kit/core#@chain-registry/keplr#@keplr-wallet/cosmos#protobufjs" is wrong version: expected "^6.11.2", got "7.6.3"\nerror Found 1 errors.'
+            actual_errors="$(printf '%s\n' "$verify_output" | grep '^error ' || true)"
+            test "$actual_errors" = "$expected_errors"
+            echo 'Accepted the single audited Keplr Protobuf.js override mismatch.'
+          fi
 
       - name: Lint
         run: yarn lint
@@ -74,7 +86,10 @@ jobs:
           npm pack --pack-destination "$package_dir"
           cd "$consumer_dir"
           npm init --yes >/dev/null
+          node -e 'const fs = require("node:fs"); const path = "package.json"; const manifest = JSON.parse(fs.readFileSync(path, "utf8")); manifest.overrides = { "@keplr-wallet/cosmos": { protobufjs: "7.6.3" }, "@keplr-wallet/proto-types": { protobufjs: "7.6.3" } }; fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);'
           npm install --no-audit --no-fund "$package_dir"/carbon-js-sdk-*.tgz
+          npm ls protobufjs --all --json > "$RUNNER_TEMP/protobufjs-tree.json"
+          node -e 'const assert = require("node:assert/strict"); const tree = require(process.argv[1]); const versions = new Set(); const walk = node => { for (const [name, dependency] of Object.entries(node.dependencies || {})) { if (name === "protobufjs") versions.add(dependency.version); walk(dependency); } }; walk(tree); assert.deepEqual([...versions].sort(), ["7.6.3"]);' "$RUNNER_TEMP/protobufjs-tree.json"
           CARBON_SDK_PACKAGE=carbon-js-sdk node --test "$GITHUB_WORKSPACE/tests/package-smoke.test.cjs"
           native_path=$(node -e 'const path=require("node:path"); const root=path.dirname(require.resolve("secp256k1/package.json")); process.stdout.write(require("node-gyp-build").path(root))')
           test "${native_path#*/prebuilds/}" != "$native_path"
