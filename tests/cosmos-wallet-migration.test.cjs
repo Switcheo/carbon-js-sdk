@@ -38,8 +38,8 @@ test("Cosmos wallet roots use the audited coherent migration targets", () => {
 
 test("legacy SecretJS, Axios, Protobuf, and Keplr roots stay removed", () => {
   assert.deepEqual(lockedVersions("secretjs"), []);
-  assert.deepEqual(lockedVersions("axios"), ["0.33.0", "1.18.1"]);
-  assert.deepEqual(lockedVersions("protobufjs"), ["6.11.2", "6.11.4"]);
+  assert.deepEqual(lockedVersions("axios"), ["0.33.0"]);
+  assert.deepEqual(lockedVersions("protobufjs"), ["6.11.4"]);
   assert.doesNotMatch(lockfile, /^"@chain-registry\/keplr@1\.8\.0":$/m);
   assert.doesNotMatch(lockfile, /^"@keplr-wallet\/cosmos@0\.11\.16":$/m);
 });

@@ -48,6 +48,6 @@ test("protobufjs major-version blockers remain explicit", () => {
     .filter(Boolean)
     .sort();
 
-  assert.deepEqual(versions, ["6.11.2", "6.11.4"]);
+  assert.deepEqual(versions, ["6.11.4"]);
   assert.equal(versions.some((version) => version.startsWith("7.")), false);
 });

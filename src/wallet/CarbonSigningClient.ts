@@ -17,7 +17,7 @@ import {
   Registry,
   TxBodyEncodeObject,
 } from "@cosmjs/proto-signing";
-import { AminoTypes, GasPrice, SigningStargateClientOptions, StargateClient, StdFee } from "@cosmjs/stargate";
+import { AminoTypes, SigningStargateClientOptions, StargateClient, StdFee } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import Long from "long";
 import { AminoTypesMap } from "../provider";
@@ -85,7 +85,7 @@ export class CarbonSigningClient extends StargateClient {
   public readonly aminoTypes: AminoTypes;
   public readonly broadcastTimeoutMs?: number;
   public readonly broadcastPollIntervalMs?: number;
-  public readonly gasPrice?: GasPrice;
+  public readonly gasPrice?: SigningStargateClientOptions["gasPrice"];
 
   constructor(
     tmClient: Tendermint37Client,
@@ -100,6 +100,25 @@ export class CarbonSigningClient extends StargateClient {
     this.broadcastTimeoutMs = options.broadcastTimeoutMs;
     this.broadcastPollIntervalMs = options.broadcastPollIntervalMs;
     this.gasPrice = options.gasPrice;
+  }
+
+  public async simulate(
+    signerAddress: string,
+    messages: readonly EncodeObject[],
+    memo: string = "",
+  ): Promise<number> {
+    const anyMessages = messages.map((message) => this.registry.encodeAsAny(message));
+    const accountFromSigner = (await this.signer.getAccounts()).find((account) => account.address === signerAddress);
+    if (!accountFromSigner) {
+      throw new Error("Failed to retrieve account from signer");
+    }
+    const pubkey = encodeSecp256k1Pubkey(accountFromSigner.pubkey);
+    const { sequence } = await this.getSequence(signerAddress);
+    const { gasInfo } = await this.forceGetQueryClient().tx.simulate(anyMessages, memo, pubkey, sequence);
+    if (!gasInfo) {
+      throw new Error("Simulation response did not include gas info");
+    }
+    return Uint53.fromString(gasInfo.gasUsed.toString()).toNumber();
   }
 
   /**

@@ -14,12 +14,12 @@ const builtins = new Set(
 );
 
 const expectedDirectContracts = {
-  "@cosmjs/crypto": "0.32.4",
-  "@cosmjs/encoding": "0.32.4",
-  "@cosmjs/json-rpc": "0.32.4",
-  "@cosmjs/math": "0.32.4",
-  "@cosmjs/tendermint-rpc": "0.32.4",
-  "@cosmjs/utils": "0.32.4",
+  "@cosmjs/crypto": "0.38.1",
+  "@cosmjs/encoding": "0.38.1",
+  "@cosmjs/json-rpc": "0.38.1",
+  "@cosmjs/math": "0.38.1",
+  "@cosmjs/tendermint-rpc": "0.38.1",
+  "@cosmjs/utils": "0.38.1",
   "@ethersproject/abstract-signer": "5.7.0",
   "@ledgerhq/hw-transport": "6.28.8",
   axios: "0.33.0",
@@ -110,7 +110,7 @@ function collectSourceDependencies() {
 for (const [packageName, expectedVersion] of Object.entries(expectedDirectContracts)) {
   test(`${packageName} is an exact direct runtime contract`, () => {
     assert.equal(manifest.dependencies[packageName], expectedVersion);
-    assert.doesNotThrow(() => require.resolve(path.join(packageName, "package.json")));
+    assert.doesNotThrow(() => require.resolve(packageName));
   });
 }
 
