@@ -28,16 +28,20 @@ The optional `examples/node-ledger.ts` script requires `@ledgerhq/hw-transport-n
 
 ## Temporary application security overrides
 
-`@ethersproject/providers@5.8.0` requests exact `ws@8.18.0`.
+Two upstream owners still request vulnerable dependency ranges:
 
-Carbon's development lock resolves that package to the audited patched target, but package-manager root controls are not inherited when an application installs Carbon from npm. Applications must apply the same temporary override at their own root.
+- `@ethersproject/providers@5.8.0` requests exact `ws@8.18.0`.
+- `@metamask/utils@11.11.0` requests `uuid@^9.0.1`.
+
+Carbon's development lock resolves these packages to audited patched targets, but package-manager root controls are not inherited when an application installs Carbon from npm. Applications must apply the same temporary overrides at their own root.
 
 Yarn 1 applications:
 
 ```json
 {
   "resolutions": {
-    "**/@ethersproject/providers/ws": "8.21.0"
+    "**/@ethersproject/providers/ws": "8.21.0",
+    "uuid": "11.1.1"
   }
 }
 ```
@@ -49,12 +53,13 @@ npm applications:
   "overrides": {
     "@ethersproject/providers": {
       "ws": "8.21.0"
-    }
+    },
+    "uuid": "11.1.1"
   }
 }
 ```
 
-After installation, inspect the complete tree with `yarn why ws` or `npm ls ws --all`. Verify that ws 8 versions below 8.21.0 are absent. Remove the override once its upstream owner declares a compatible patched dependency.
+After installation, inspect the complete trees with `yarn why uuid`, `yarn why ws`, or `npm ls uuid ws --all`. Verify that UUID versions below 11.1.1 and ws 8 versions below 8.21.0 are absent. Remove each override once its upstream owner declares a compatible patched dependency.
 
 ### Residual elliptic advisory
 

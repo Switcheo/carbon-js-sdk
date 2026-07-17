@@ -59,12 +59,13 @@ jobs:
           printf '%s\n' "$verify_output"
           if [ "$verify_status" -ne 0 ]; then
             expected_errors="$(printf '%s\n' \
+              'error "@metamask/eth-sig-util#@metamask/utils#uuid" is wrong version: expected "^9.0.1", got "11.1.1"' \
               'error "ethers#@ethersproject/providers#ws" is wrong version: expected "8.18.0", got "8.21.0"' \
               | sort)"
             actual_errors="$(printf '%s\n' "$verify_output" | grep '^error "' | sort || true)"
             test "$actual_errors" = "$expected_errors"
-            test "$(printf '%s\n' "$verify_output" | grep '^error Found ' || true)" = 'error Found 1 errors.'
-            echo 'Accepted the single audited Ethers ws override mismatch.'
+            test "$(printf '%s\n' "$verify_output" | grep '^error Found ' || true)" = 'error Found 2 errors.'
+            echo 'Accepted the audited MetaMask uuid and Ethers ws override mismatches.'
           fi
 
       - name: Lint
@@ -89,8 +90,8 @@ jobs:
           npm pack --pack-destination "$package_dir"
           cd "$consumer_dir"
           npm init --yes >/dev/null
-          node -e 'const fs = require("node:fs"); const path = "package.json"; const manifest = JSON.parse(fs.readFileSync(path, "utf8")); manifest.overrides = { "@ethersproject/providers": { ws: "8.21.0" } }; fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);'
+          node -e 'const fs = require("node:fs"); const path = "package.json"; const manifest = JSON.parse(fs.readFileSync(path, "utf8")); manifest.overrides = { "@ethersproject/providers": { ws: "8.21.0" }, uuid: "11.1.1" }; fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);'
           npm install --no-audit --no-fund "$package_dir"/carbon-js-sdk-*.tgz
-          npm ls protobufjs ws --all --json > "$RUNNER_TEMP/security-override-tree.json"
-          node -e 'const assert = require("node:assert/strict"); const tree = require(process.argv[1]); const versions = new Map(); const walk = node => { for (const [name, dependency] of Object.entries(node.dependencies || {})) { if (["protobufjs", "ws"].includes(name)) { if (!versions.has(name)) versions.set(name, new Set()); versions.get(name).add(dependency.version); } walk(dependency); } }; const atLeast = (version, minimum) => { const actual = version.split(".").map(Number); const target = minimum.split(".").map(Number); return actual[0] > target[0] || actual[0] === target[0] && (actual[1] > target[1] || actual[1] === target[1] && actual[2] >= target[2]); }; walk(tree); const wsVersions = [...(versions.get("ws") || [])]; assert.deepEqual([...(versions.get("protobufjs") || [])].sort(), ["7.6.3"]); assert.equal(wsVersions.includes("8.21.0"), true); assert.equal(wsVersions.every(version => version.startsWith("7.") ? atLeast(version, "7.5.11") : version.startsWith("8.") && atLeast(version, "8.21.0")), true);' "$RUNNER_TEMP/security-override-tree.json"
+          npm ls protobufjs uuid ws --all --json > "$RUNNER_TEMP/security-override-tree.json"
+          node -e 'const assert = require("node:assert/strict"); const tree = require(process.argv[1]); const versions = new Map(); const walk = node => { for (const [name, dependency] of Object.entries(node.dependencies || {})) { if (["protobufjs", "uuid", "ws"].includes(name)) { if (!versions.has(name)) versions.set(name, new Set()); versions.get(name).add(dependency.version); } walk(dependency); } }; const atLeast = (version, minimum) => { const actual = version.split(".").map(Number); const target = minimum.split(".").map(Number); return actual[0] > target[0] || actual[0] === target[0] && (actual[1] > target[1] || actual[1] === target[1] && actual[2] >= target[2]); }; walk(tree); const wsVersions = [...(versions.get("ws") || [])]; assert.deepEqual([...(versions.get("protobufjs") || [])].sort(), ["7.6.3"]); assert.deepEqual([...(versions.get("uuid") || [])].sort(), ["11.1.1"]); assert.equal(wsVersions.includes("8.21.0"), true); assert.equal(wsVersions.every(version => version.startsWith("7.") ? atLeast(version, "7.5.11") : version.startsWith("8.") && atLeast(version, "8.21.0")), true);' "$RUNNER_TEMP/security-override-tree.json"
           CARBON_SDK_PACKAGE=carbon-js-sdk node --test "$GITHUB_WORKSPACE/tests/package-smoke.test.cjs"
