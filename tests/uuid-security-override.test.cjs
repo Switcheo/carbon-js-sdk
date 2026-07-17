@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-/* global Buffer, __dirname, require */
+/* global Buffer, __dirname, global, queueMicrotask, require */
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -48,15 +48,25 @@ function dependencyOwners(dependencyName, nodeModules) {
 }
 
 test("uuid 11.1.1 is globally resolved only for the audited Cosmos Kit owners", () => {
+  const coreDirectory = path.dirname(require.resolve("@cosmos-kit/core/package.json"));
+  const cosmiframeDirectory = path.dirname(
+    require.resolve("@dao-dao/cosmiframe/package.json", { paths: [coreDirectory] }),
+  );
+
   assert.equal(packageJson.resolutions.uuid, "11.1.1");
   assert.deepEqual(lockedVersions("uuid"), ["11.1.1"]);
   assert.deepEqual(dependencyOwners("uuid", path.join(projectRoot, "node_modules")), [
     "@cosmos-kit/core@2.18.1",
     "@dao-dao/cosmiframe@1.0.0",
   ]);
+  assert.ok(Object.keys(require("@cosmos-kit/core")).length > 0);
+  for (const ownerDirectory of [coreDirectory, cosmiframeDirectory]) {
+    const uuidPackage = require.resolve("uuid/package.json", { paths: [ownerDirectory] });
+    assert.equal(require(uuidPackage).version, "11.1.1");
+  }
 });
 
-test("uuid 11 preserves wallet identifiers and rejects undersized output buffers", () => {
+test("uuid 11 preserves wallet identifiers and rejects every vulnerable partial-write path", () => {
   const uuid = require("uuid");
   const random = uuid.v4();
   const output = Buffer.alloc(16);
@@ -65,8 +75,59 @@ test("uuid 11 preserves wallet identifiers and rejects undersized output buffers
   assert.equal(uuid.validate(random), true);
   assert.equal(uuid.v5("carbon-sdk", uuid.v5.DNS, output, 0), output);
   assert.equal(uuid.validate(uuid.stringify(output)), true);
-  assert.throws(
-    () => uuid.v5("carbon-sdk", uuid.v5.DNS, Buffer.alloc(15), 0),
-    /buffer|bounds|16 byte/i,
-  );
+  const partialWrites = [
+    () => uuid.v3("carbon-sdk", uuid.v3.DNS, Buffer.alloc(8), 4),
+    () => uuid.v5("carbon-sdk", uuid.v5.DNS, Buffer.alloc(8), 4),
+    () => uuid.v6({}, Buffer.alloc(8), 4),
+  ];
+  for (const write of partialWrites) {
+    assert.throws(write, (error) => error instanceof RangeError);
+  }
+});
+
+test("cosmiframe correlates a real request through uuid 11's CommonJS v4 API", async () => {
+  const coreDirectory = path.dirname(require.resolve("@cosmos-kit/core/package.json"));
+  const cosmiframePackage = require.resolve("@dao-dao/cosmiframe", { paths: [coreDirectory] });
+  const cosmiframe = require(cosmiframePackage);
+  const listeners = new Set();
+  let request;
+  const parent = {
+    postMessage(data) {
+      request = data;
+      queueMicrotask(() => {
+        for (const listener of listeners) {
+          listener({
+            origin: "https://wallet.example",
+            source: parent,
+            data: { id: data.id, type: "success", response: "ack" },
+          });
+        }
+      });
+    },
+  };
+  global.window = {
+    parent,
+    addEventListener(type, listener) {
+      if (type === "message") listeners.add(listener);
+    },
+    removeEventListener(type, listener) {
+      if (type === "message") listeners.delete(listener);
+    },
+  };
+
+  try {
+    const result = await cosmiframe.callParentMethod(
+      { method: "getKey", params: ["carbon-1"] },
+      ["https://wallet.example"],
+      100,
+    );
+    assert.match(
+      request.id,
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
+    assert.deepEqual(result, { result: "ack", origin: "https://wallet.example" });
+    assert.equal(listeners.size, 0);
+  } finally {
+    delete global.window;
+  }
 });
