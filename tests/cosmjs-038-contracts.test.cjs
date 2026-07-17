@@ -10,10 +10,8 @@ const packageJson = require(path.join(projectRoot, "package.json"));
 
 const directCosmjsPackages = [
   "@cosmjs/amino",
-  "@cosmjs/cosmwasm-stargate",
   "@cosmjs/crypto",
   "@cosmjs/encoding",
-  "@cosmjs/json-rpc",
   "@cosmjs/math",
   "@cosmjs/proto-signing",
   "@cosmjs/stargate",
