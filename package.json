@@ -11,9 +11,7 @@
     "node": ">=24.0.0 <25"
   },
   "resolutions": {
-    "**/@ethersproject/providers/ws": "8.21.0",
-    "protobufjs": "7.6.3",
-    "uuid": "11.1.1"
+    "**/@ethersproject/providers/ws": "8.21.0"
   },
   "scripts": {
     "watch": "nodemon --exec \"eslint . && tsc && tsc-alias\"",
@@ -23,7 +21,7 @@
     "sync-register": "bash scripts/sync-reset.sh && bash scripts/generate-registry.sh",
     "sync-reset": "bash scripts/sync-reset.sh",
     "test": "tsc && tsc-alias && node --test tests/*.test.cjs",
-    "test:dependency-hygiene": "tsc && tsc-alias && node --test tests/dependency-contracts.test.cjs tests/dependency-pruning.test.cjs tests/direct-import-contracts.test.cjs",
+    "test:dependency-hygiene": "tsc && tsc-alias && node --test tests/cosmos-kit-pruning.test.cjs tests/dependency-contracts.test.cjs tests/dependency-pruning.test.cjs tests/direct-import-contracts.test.cjs",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint .",
     "prepare": "rm -rf ./lib && eslint . && tsc && tsc-alias",
@@ -55,8 +53,6 @@
     "@cosmjs/stargate": "0.38.1",
     "@cosmjs/tendermint-rpc": "0.38.1",
     "@cosmjs/utils": "0.38.1",
-    "@cosmos-kit/core": "2.18.1",
-    "@cosmos-kit/leap-extension": "2.17.1",
     "@ethersproject/abstract-signer": "5.8.0",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",

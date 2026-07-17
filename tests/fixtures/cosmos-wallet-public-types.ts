@@ -58,6 +58,18 @@ type LegacyLeapShape = Pick<
 declare const legacyLeapShape: LegacyLeapShape;
 const legacyLeap: Leap = legacyLeapShape;
 
+enum LegacyBroadcastMode {
+  Block = "block",
+  Sync = "sync",
+  Async = "async",
+}
+
+void legacyLeap.sendTx("carbon-1", new Uint8Array(), LegacyBroadcastMode.Block);
+void legacyLeap.sendTx("carbon-1", new Uint8Array(), "sync");
+void legacyLeap.sendTx("carbon-1", new Uint8Array(), LegacyBroadcastMode.Async);
+// @ts-expect-error Leap supports only the existing block, sync, and async modes.
+void legacyLeap.sendTx("carbon-1", new Uint8Array(), "invalid");
+
 const legacyKey: Key = {
   name: "Carbon account",
   algo: "secp256k1",

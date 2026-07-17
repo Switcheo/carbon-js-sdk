@@ -28,22 +28,16 @@ The optional `examples/node-ledger.ts` script requires `@ledgerhq/hw-transport-n
 
 ## Temporary application security overrides
 
-Current upstream manifests still request vulnerable dependency targets:
+`@ethersproject/providers@5.8.0` requests exact `ws@8.18.0`.
 
-- `@keplr-wallet/cosmos` and `@keplr-wallet/proto-types` request `protobufjs@^6.11.2`.
-- `@ethersproject/providers@5.8.0` requests exact `ws@8.18.0`.
-- `@cosmos-kit/core` and `@dao-dao/cosmiframe` request `uuid@^9.0.1`.
-
-Carbon's development lock resolves those owners to audited patched targets, but package-manager root controls are not inherited when an application installs Carbon from npm. Until upstream packages publish compatible manifests, applications must apply the same temporary overrides at their own root.
+Carbon's development lock resolves that package to the audited patched target, but package-manager root controls are not inherited when an application installs Carbon from npm. Applications must apply the same temporary override at their own root.
 
 Yarn 1 applications:
 
 ```json
 {
   "resolutions": {
-    "**/@ethersproject/providers/ws": "8.21.0",
-    "protobufjs": "7.6.3",
-    "uuid": "11.1.1"
+    "**/@ethersproject/providers/ws": "8.21.0"
   }
 }
 ```
@@ -55,19 +49,12 @@ npm applications:
   "overrides": {
     "@ethersproject/providers": {
       "ws": "8.21.0"
-    },
-    "@keplr-wallet/cosmos": {
-      "protobufjs": "7.6.3"
-    },
-    "@keplr-wallet/proto-types": {
-      "protobufjs": "7.6.3"
-    },
-    "uuid": "11.1.1"
+    }
   }
 }
 ```
 
-After installation, inspect the complete trees with `yarn why protobufjs`, `yarn why uuid`, and `yarn why ws`, or with `npm ls protobufjs uuid ws --all`. Verify that Protobuf.js 6, uuid versions below 11.1.1, and ws 8 versions below 8.21.0 are absent. Remove each override once its upstream owner declares a compatible patched dependency.
+After installation, inspect the complete tree with `yarn why ws` or `npm ls ws --all`. Verify that ws 8 versions below 8.21.0 are absent. Remove the override once its upstream owner declares a compatible patched dependency.
 
 ### Residual elliptic advisory
 
