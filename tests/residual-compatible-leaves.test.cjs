@@ -27,10 +27,10 @@ test("the coherent Ethers v5 family removes its vulnerable exact elliptic blocke
 });
 
 test("the Ethers provider uses patched ws 8 while Carbon retains its compatible ws 7 contract", () => {
-  assert.deepEqual(lockedVersions("ws"), ["7.5.11", "8.18.0"]);
+  assert.deepEqual(lockedVersions("ws"), ["7.5.11", "8.21.0"]);
   assert.doesNotMatch(lockfile, /^ws@7\.4\.6:/m);
   assert.match(lockfile, /^ws@\^7, ws@\^7\.5\.11:\n[ ]{2}version "7\.5\.11"$/m);
-  assert.match(lockfile, /^ws@8\.18\.0:\n[ ]{2}version "8\.18\.0"$/m);
+  assert.match(lockfile, /^ws@8\.18\.0, ws@8\.21\.0:\n[ ]{2}version "8\.21\.0"$/m);
 });
 
 test("elliptic 6.6.1 preserves deterministic secp256k1 signing", () => {
@@ -107,7 +107,7 @@ test("Ethers 5.8 WebSocketProvider interoperates with local JSON-RPC through its
       path.dirname(require.resolve("@ethersproject/providers/package.json")),
       "node_modules/ws/package.json",
     );
-    assert.equal(JSON.parse(fs.readFileSync(nestedWsPackage, "utf8")).version, "8.18.0");
+    assert.equal(JSON.parse(fs.readFileSync(nestedWsPackage, "utf8")).version, "8.21.0");
   } finally {
     await provider.destroy();
     await new Promise((resolve) => server.close(resolve));

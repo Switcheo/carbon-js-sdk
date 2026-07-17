@@ -26,16 +26,24 @@ The optional `examples/node-ledger.ts` script requires `@ledgerhq/hw-transport-n
 
 `@keplr-wallet/types` declares Starknet as a non-optional peer for its full multi-chain type surface. Carbon JS SDK does not declare Starknet directly because its Keplr integration uses Cosmos-facing declarations only. Yarn 1 leaves that peer unresolved and reports a warning, while npm 7 and newer can auto-install a compatible Starknet release in a consumer project. Avoiding that transitive npm install requires a separate API-contract change that replaces the external Keplr types; adding Starknet directly here would only make unrelated application code an explicit SDK dependency.
 
-## Temporary Protobuf.js application override
+## Temporary application security overrides
 
-Current `@keplr-wallet/cosmos` and `@keplr-wallet/proto-types` releases still request vulnerable `protobufjs@^6.11.2`. Carbon's development lock resolves those owners to audited `protobufjs@7.6.3`, but package-manager root controls are not inherited when an application installs Carbon from npm. Until Keplr publishes Protobuf.js 7-compatible manifests, applications must apply the same temporary override at their own root.
+Current upstream manifests still request vulnerable dependency targets:
+
+- `@keplr-wallet/cosmos` and `@keplr-wallet/proto-types` request `protobufjs@^6.11.2`.
+- `@ethersproject/providers@5.8.0` requests exact `ws@8.18.0`.
+- `@cosmos-kit/core` and `@dao-dao/cosmiframe` request `uuid@^9.0.1`.
+
+Carbon's development lock resolves those owners to audited patched targets, but package-manager root controls are not inherited when an application installs Carbon from npm. Until upstream packages publish compatible manifests, applications must apply the same temporary overrides at their own root.
 
 Yarn 1 applications:
 
 ```json
 {
   "resolutions": {
-    "protobufjs": "7.6.3"
+    "**/@ethersproject/providers/ws": "8.21.0",
+    "protobufjs": "7.6.3",
+    "uuid": "11.1.1"
   }
 }
 ```
@@ -45,17 +53,25 @@ npm applications:
 ```json
 {
   "overrides": {
+    "@ethersproject/providers": {
+      "ws": "8.21.0"
+    },
     "@keplr-wallet/cosmos": {
       "protobufjs": "7.6.3"
     },
     "@keplr-wallet/proto-types": {
       "protobufjs": "7.6.3"
-    }
+    },
+    "uuid": "11.1.1"
   }
 }
 ```
 
-After installation, run `yarn why protobufjs` or `npm ls protobufjs --all` and verify that no Protobuf.js 6 release remains. Remove the override once the Keplr packages declare a compatible Protobuf.js 7 dependency.
+After installation, inspect the complete trees with `yarn why protobufjs`, `yarn why uuid`, and `yarn why ws`, or with `npm ls protobufjs uuid ws --all`. Verify that Protobuf.js 6, uuid versions below 11.1.1, and ws 8 versions below 8.21.0 are absent. Remove each override once its upstream owner declares a compatible patched dependency.
+
+### Residual elliptic advisory
+
+The remaining low-severity `elliptic` advisory ([GHSA-848j-6mx2-7j84](https://github.com/advisories/GHSA-848j-6mx2-7j84)) currently affects every available release through 6.6.1 and has no patched version. Carbon retains exact `elliptic@6.6.1` through several wallet and signing owners, with deterministic secp256k1 behavior covered by the test suite. Removing the package requires coordinated migrations of those owners; a lockfile-only override or alert dismissal would not remediate the advisory, so the alert remains open until a genuine upstream or structural fix is available.
 
 ## Testing and CI
 
