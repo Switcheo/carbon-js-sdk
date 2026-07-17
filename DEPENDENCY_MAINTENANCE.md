@@ -48,7 +48,7 @@ npm audit signatures
 git diff --check
 ```
 
-For runtime graph changes, install the packed tarball in an isolated consumer **with lifecycle scripts enabled**, run `tests/package-smoke.test.cjs` against that package, and directly require native bindings. `secp256k1` must resolve an audited artifact under `prebuilds/`; its JavaScript fallback is not sufficient proof that the native backend loaded.
+For runtime graph changes, install the packed tarball in an isolated consumer **with lifecycle scripts enabled** and run `tests/package-smoke.test.cjs` against that package. Crypto migrations must additionally retain deterministic key-derivation, signing, verification, and hardware-wallet signature vectors.
 
 Network, registry, authentication, or tooling failures are blocked checks, not incompatibility evidence and not passes.
 

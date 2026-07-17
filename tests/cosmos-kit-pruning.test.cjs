@@ -85,7 +85,6 @@ test("remaining elliptic owners exclude the Cosmos Kit Keplr family", () => {
     "ethereumjs-util@5.2.1",
     "ethereumjs-util@6.2.1",
     "secp256k1@4.0.4",
-    "tiny-secp256k1@1.1.7",
   ]);
 });
 

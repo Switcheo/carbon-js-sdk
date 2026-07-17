@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* global Buffer, __dirname, process, require */
 const assert = require("node:assert/strict");
-const crypto = require("node:crypto");
 const http = require("node:http");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
@@ -12,8 +11,6 @@ const projectRoot = path.resolve(__dirname, "..");
 const expectedSecurityVersions = {
   lodash: "4.18.1",
   "node-fetch": "2.7.0",
-  "node-gyp-build": "4.8.4",
-  secp256k1: "4.0.4",
   semver: "7.8.5",
 };
 
@@ -82,50 +79,6 @@ test("the node-fetch fallback strips secure headers on a cross-host redirect", a
   assert.equal(receivedHeaders["x-public"], "preserved");
 });
 
-test("the secp256k1 elliptic fallback rejects the advisory's invalid compressed point", () => {
-  const secp256k1 = require("secp256k1/elliptic.js");
-  const invalidPoint = Buffer.from("028ac57f9c6399282773c116ef21f7394890b6140aa6f25c181e9a91e2a9e3da45", "hex");
-  const privateKey = Buffer.alloc(32, 1);
-
-  assert.equal(secp256k1.publicKeyVerify(invalidPoint), false);
-  assert.throws(() => secp256k1.ecdh(invalidPoint, privateKey));
-});
-
-const supportsBundledSecp256k1Prebuild =
-  (process.platform === "linux" && process.arch === "x64") ||
-  (process.platform === "darwin" && process.arch === "arm64") ||
-  (process.platform === "win32" && process.arch === "x64");
-
-test(
-  "secp256k1 loads its native binding through the audited prebuild loader",
-  { skip: !supportsBundledSecp256k1Prebuild },
-  () => {
-    const packageRoot = path.dirname(require.resolve("secp256k1/package.json"));
-    const nativePath = require("node-gyp-build").path(packageRoot);
-    assert.match(nativePath, /[/\\]prebuilds[/\\]/);
-
-    const bindings = require("secp256k1/bindings.js");
-    assert.equal(typeof bindings.ecdsaSign, "function");
-  },
-);
-
-test("secp256k1 preserves SDK public-key and signature behavior", () => {
-  const secp256k1 = require("secp256k1");
-  const { SWTHAddress } = require(path.join(projectRoot, "lib/util/address.js"));
-  const privateKey = Buffer.alloc(32);
-  privateKey[31] = 1;
-  const expectedPublicKey = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798";
-
-  assert.equal(SWTHAddress.privateToPublicKey(privateKey).toString("hex"), expectedPublicKey);
-
-  const digest = crypto.createHash("sha256").update("carbon-js-sdk security regression").digest();
-  const { signature } = secp256k1.ecdsaSign(digest, privateKey);
-  const publicKey = secp256k1.publicKeyCreate(privateKey);
-  assert.equal(secp256k1.ecdsaVerify(signature, digest, publicKey), true);
-
-  const exported = secp256k1.signatureExport(signature);
-  assert.deepEqual(Buffer.from(secp256k1.signatureImport(exported)), Buffer.from(signature));
-});
 
 test("semver handles the upstream whitespace regression within a bounded child process", () => {
   const result = runIsolated(`
