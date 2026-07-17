@@ -86,6 +86,7 @@ test("protobufjs 7.6.3 remains the only audited direct contract", () => {
 
   assert.deepEqual(packageJson.resolutions, {
     "**/@ethersproject/providers/ws": "8.21.0",
+    uuid: "11.1.1",
   });
   assert.deepEqual(versions, ["7.6.3"]);
   assert.deepEqual(protobufOwners(path.join(projectRoot, "node_modules")), []);

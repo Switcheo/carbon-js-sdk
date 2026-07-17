@@ -73,18 +73,17 @@ test("Cosmos Kit roots and their transitive owner family are absent", () => {
   }
 });
 
-test("the removed Cosmos Kit family leaves no uuid owner or override", () => {
-  assert.equal(manifest.resolutions.uuid, undefined);
-  assert.deepEqual(lockedVersions("uuid"), []);
-  assert.deepEqual(dependencyOwners("uuid", path.join(projectRoot, "node_modules")), []);
+test("the removed Cosmos Kit family leaves only the audited MetaMask uuid owner", () => {
+  assert.equal(manifest.resolutions.uuid, "11.1.1");
+  assert.deepEqual(lockedVersions("uuid"), ["11.1.1"]);
+  assert.deepEqual(dependencyOwners("uuid", path.join(projectRoot, "node_modules")), [
+    "@metamask/utils@11.11.0",
+  ]);
 });
 
 test("remaining elliptic owners exclude the Cosmos Kit Keplr family", () => {
   assert.deepEqual(dependencyOwners("elliptic", path.join(projectRoot, "node_modules")), [
     "@ethersproject/signing-key@5.8.0",
-    "ethereumjs-util@5.2.1",
-    "ethereumjs-util@6.2.1",
-    "secp256k1@4.0.4",
   ]);
 });
 
