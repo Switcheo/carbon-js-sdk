@@ -1,1 +1,1 @@
-export { MerkleRoot, MerklePrefix, MerklePath, MerkleProof } from "./commitment";
+export { MerklePath, MerklePrefix, MerkleProof, MerkleRoot } from "./commitment";

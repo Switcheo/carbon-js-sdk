@@ -1,3 +1,3 @@
 export { InterchainAccount } from "./account";
 export { Metadata } from "./metadata";
-export { Type, InterchainAccountPacketData, CosmosTx, typeFromJSON, typeToJSON } from "./packet";
+export { CosmosTx, InterchainAccountPacketData, Type, typeFromJSON, typeToJSON } from "./packet";

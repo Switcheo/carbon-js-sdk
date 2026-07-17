@@ -65,6 +65,27 @@ After installation, inspect the complete trees with `yarn why uuid`, `yarn why w
 
 The remaining low-severity `elliptic` advisory ([GHSA-848j-6mx2-7j84](https://github.com/advisories/GHSA-848j-6mx2-7j84)) affects every available release through 6.6.1 and has no patched version. Carbon's only remaining owner is the explicitly deferred `@ethersproject/signing-key@5.8.0` path, which requests exact `elliptic@6.6.1`. A fail-closed dependency contract rejects any additional owner. Removing the final package requires the separately evaluated Ethers migration; a lockfile-only override or alert dismissal would not remediate the advisory, so the alert remains open until that structural change is approved.
 
+## Package entrypoints and module formats
+
+The package root remains compatible with CommonJS and native Node ESM:
+
+```js
+const Carbon = require("carbon-js-sdk");
+const CarbonEsm = await import("carbon-js-sdk");
+```
+
+Prefer stable subpaths for focused imports so bundlers can exclude the generated registry and unrelated models:
+
+```ts
+import { bnOrZero } from "carbon-js-sdk/util/number";
+import { MsgBlacklistAddress } from "carbon-js-sdk/codec/carbon/bank/tx";
+import { createRegistry } from "carbon-js-sdk/codec/registry";
+```
+
+Stable families include `clients`, `constants`, `hydrogen`, `insights`, `modules`, `provider/*`, `util/*`, `wallet`, `websocket`, `codec/models`, `codec/message-metadata`, `codec/registry`, `codec/create-registry`, `codec/carbon/*`, and `codec/cosmos/*`. Historical `carbon-js-sdk/lib/*` imports remain exported in both extensionless and `.js` forms. They are compatibility paths, not new public API; migration to stable subpaths is recommended before a future major release announces any restriction.
+
+CommonJS and ESM each preserve singleton and class identity within their selected module graph. Loading both formats in one process creates separate module graphs, so consumers must not compare registry or class identity across `require()` and `import()` results.
+
 ## Testing and CI
 
 Run the deterministic Node test suite with:

@@ -1,8 +1,17 @@
 import { ProtobufRpcClient } from "@cosmjs/stargate";
-import { grpc } from "@improbable-eng/grpc-web";
+import * as grpcWebNamespace from "@improbable-eng/grpc-web";
+import type { grpc as GrpcTypes } from "@improbable-eng/grpc-web";
+
+type GrpcWebModule = { grpc: typeof GrpcTypes };
+const grpcWebModule = (
+  "grpc" in grpcWebNamespace
+    ? grpcWebNamespace
+    : (grpcWebNamespace as unknown as { default: GrpcWebModule }).default
+) as GrpcWebModule;
+const { grpc } = grpcWebModule;
 
 export class GrpcWebError extends Error {
-  constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
+  constructor(message: string, public code: GrpcTypes.Code, public metadata: GrpcTypes.Metadata) {
     super(message);
   }
 }
@@ -15,17 +24,17 @@ export class GrpcWebError extends Error {
 export class GrpcQueryClient implements ProtobufRpcClient {
   private host: string;
   private options: {
-    transport?: grpc.TransportFactory;
+    transport?: GrpcTypes.TransportFactory;
 
-    metadata?: grpc.Metadata;
+    metadata?: GrpcTypes.Metadata;
   };
 
   constructor(
     host: string,
     options: {
-      transport?: grpc.TransportFactory;
+      transport?: GrpcTypes.TransportFactory;
 
-      metadata?: grpc.Metadata;
+      metadata?: GrpcTypes.Metadata;
     } = {}
   ) {
     this.host = host;

@@ -1,3 +1,3 @@
-export { CoinSpent, CoinReceived, CoinSent, CoinMint, CoinBurn } from "./event"
-export { InternalTransfer, Coin, QueryInternalTransfersRequest, QueryInternalTransfersResponse, QueryBlacklistRequest, QueryBlacklistResponse, QueryBlacklistAllRequest, QueryBlacklistAllResponse } from "./query"
-export { MsgBlacklistAddress, MsgBlacklistAddressResponse, MsgUnblacklistAddress, MsgUnblacklistAddressResponse } from "./tx"
+export { CoinBurn, CoinMint, CoinReceived, CoinSent, CoinSpent } from "./event";
+export { Coin, InternalTransfer, QueryBlacklistAllRequest, QueryBlacklistAllResponse, QueryBlacklistRequest, QueryBlacklistResponse, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./query";
+export { MsgBlacklistAddress, MsgBlacklistAddressResponse, MsgUnblacklistAddress, MsgUnblacklistAddressResponse } from "./tx";

@@ -4,9 +4,11 @@ on:
   pull_request:
     branches:
       - staging
+      - docs/tree-shaking-plan
   push:
     branches:
       - staging
+      - docs/tree-shaking-plan
 
 permissions:
   contents: read
@@ -70,6 +72,12 @@ jobs:
 
       - name: Lint
         run: yarn lint
+
+      - name: Verify deterministic generated outputs
+        run: yarn check:generated
+
+      - name: Audit package side effects
+        run: yarn audit:side-effects
 
       - name: Test
         run: yarn test
