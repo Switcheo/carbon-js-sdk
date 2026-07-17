@@ -9,13 +9,11 @@ const projectRoot = path.resolve(__dirname, "..");
 const lockfile = fs.readFileSync(path.join(projectRoot, "yarn.lock"), "utf8");
 
 const expectedVersions = {
-  "base-x": ["3.0.11"],
+  "base-x": ["3.0.11", "5.0.1"],
   "bn.js": ["4.12.3", "5.2.3"],
   "cipher-base": ["1.0.5"],
   pbkdf2: ["3.1.3"],
   "sha.js": ["2.4.12"],
-  "tiny-secp256k1": ["1.1.7"],
-  secp256k1: ["4.0.4"],
 };
 
 function lockedVersions(packageName) {
@@ -49,20 +47,4 @@ test("base-x preserves leading-zero encoding and round trips", () => {
   const payload = Buffer.from("000001020304ff", "hex");
   assert.equal(base58.encode(payload), "117bWpXp");
   assert.deepEqual(Buffer.from(base58.decode("117bWpXp")), payload);
-});
-
-test("tiny-secp256k1 preserves deterministic signing and verification", () => {
-  const tinySecp256k1 = require("tiny-secp256k1");
-  const privateKey = Buffer.alloc(32);
-  privateKey[31] = 1;
-  const digest = Buffer.from("4f3c2f8cf697e50e2465a586afb83f3da2f4723a55d67f0f97d0500fc482827c", "hex");
-  const publicKey = tinySecp256k1.pointFromScalar(privateKey, true);
-  const signature = tinySecp256k1.sign(digest, privateKey);
-
-  assert.equal(Buffer.from(publicKey).toString("hex"), "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798");
-  assert.equal(
-    Buffer.from(signature).toString("hex"),
-    "6a5ac630a8403057f635795e5519dfafe00246f77dfaa99c2518a899dc57399a6e430014324f78ae52786b280e40ebbdba8fcff5ad8cb6f9ee3c2cc6b5b0263f",
-  );
-  assert.equal(tinySecp256k1.verify(digest, publicKey, signature), true);
 });

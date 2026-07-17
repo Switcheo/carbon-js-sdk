@@ -1,11 +1,10 @@
 import { Bech32AddrType, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import * as bech32 from "bech32";
-import * as BIP32 from "bip32";
 import * as BIP39 from "bip39";
 import CryptoJS from "crypto-js";
 import { ethers } from "ethers";
-import * as secp256k1 from "secp256k1";
 import * as wif from "wif";
+import { BIP32, nobleBip32Ecc } from "./bip32";
 import { stripHexPrefix } from "./generic";
 
 const BIP44_PURPOSE = 44;
@@ -177,12 +176,13 @@ export const SWTHAddress: SWTHAddressType = {
 
     if (!privateKey) throw new Error("Private key derivation from mnemonic failed");
 
-    return privateKey;
+    return Buffer.from(privateKey);
   },
 
   privateToPublicKey: (privateKey: string | Buffer): Buffer => {
     const privateKeyArr = new Uint8Array(stringOrBufferToBuffer(privateKey)!);
-    const publicKeyArr = secp256k1.publicKeyCreate(privateKeyArr, true);
+    const publicKeyArr = nobleBip32Ecc.pointFromScalar(privateKeyArr, true);
+    if (!publicKeyArr) throw new Error("Public key derivation from private key failed");
     const publicKey = Buffer.from(publicKeyArr);
     return publicKey;
   },
