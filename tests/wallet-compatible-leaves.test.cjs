@@ -20,10 +20,7 @@ function lockedVersions(packageName) {
 const expectedVersions = {
   braces: ["3.0.3"],
   "cross-spawn": ["7.0.6"],
-  defu: ["6.1.5"],
-  h3: ["1.15.9"],
   micromatch: ["4.0.8"],
-  "node-forge": ["1.4.0"],
   picomatch: ["2.3.2", "4.0.5"],
 };
 
@@ -57,30 +54,6 @@ test("cross-spawn preserves argument boundaries", () => {
   assert.equal(result.stderr, "");
 });
 
-test("defu merges defaults without prototype pollution", () => {
-  const { defu } = require("defu");
-  const payload = JSON.parse('{"__proto__":{"polluted":"yes"},"wallet":{"name":"leap"}}');
-  const merged = defu(payload, { wallet: { network: "carbon" } });
-
-  assert.deepEqual(merged.wallet, { name: "leap", network: "carbon" });
-  assert.equal({}.polluted, undefined);
-  assert.equal(Object.hasOwn(merged, "__proto__"), false);
-});
-
-test("h3 exposes the CommonJS server API expected by wallet-connect tooling", () => {
-  const h3 = require("h3");
-  const app = h3.createApp();
-
-  assert.equal(typeof h3.defineEventHandler, "function");
-  assert.equal(typeof app.use, "function");
-});
-
-test("node-forge preserves SHA-256 behavior", () => {
-  const forge = require("node-forge");
-  const digest = forge.md.sha256.create().update("carbon-wallet", "utf8").digest().toHex();
-
-  assert.equal(digest, "f3f17f8c25b56365aa98ee796f391ce969ecaa5b1a0c560ce47b75baff03fdd4");
-});
 
 test("compiled Wallet and Leap entrypoints remain importable", () => {
   for (const relativePath of ["lib/wallet/CarbonWallet.js", "lib/provider/leap/LeapAccount.js"]) {

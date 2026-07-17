@@ -23,17 +23,17 @@ function lockedVersions(packageName) {
     .sort();
 }
 
-test("Cosmos wallet roots use the audited coherent migration targets", () => {
-  assert.equal(manifest.dependencies["@cosmos-kit/core"], "2.18.1");
-  assert.equal(manifest.dependencies["@cosmos-kit/leap-extension"], "2.17.1");
+test("obsolete Cosmos wallet roots and their registry family stay removed", () => {
+  assert.equal(manifest.dependencies["@cosmos-kit/core"], undefined);
+  assert.equal(manifest.dependencies["@cosmos-kit/leap-extension"], undefined);
   assert.equal(manifest.dependencies["@chain-registry/types"], undefined);
 
-  assert.deepEqual(lockedVersions("@cosmos-kit/core"), ["2.18.1"]);
-  assert.deepEqual(lockedVersions("@cosmos-kit/leap-extension"), ["2.17.1"]);
-  assert.deepEqual(lockedVersions("@chain-registry/types"), ["0.46.15", "0.50.392"]);
-  assert.deepEqual(lockedVersions("@chain-registry/client"), ["1.53.392"]);
-  assert.deepEqual(lockedVersions("@chain-registry/keplr"), ["1.74.641"]);
-  assert.deepEqual(lockedVersions("@keplr-wallet/cosmos"), ["0.12.28"]);
+  assert.deepEqual(lockedVersions("@cosmos-kit/core"), []);
+  assert.deepEqual(lockedVersions("@cosmos-kit/leap-extension"), []);
+  assert.deepEqual(lockedVersions("@chain-registry/types"), []);
+  assert.deepEqual(lockedVersions("@chain-registry/client"), []);
+  assert.deepEqual(lockedVersions("@chain-registry/keplr"), []);
+  assert.deepEqual(lockedVersions("@keplr-wallet/cosmos"), []);
 });
 
 test("legacy SecretJS, Axios, Protobuf, and Keplr roots stay removed", () => {

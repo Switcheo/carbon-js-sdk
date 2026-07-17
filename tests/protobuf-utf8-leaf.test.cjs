@@ -49,22 +49,6 @@ test("protobufjs uses the patched UTF-8 helper for message encoding", () => {
   assert.equal(Message.decode(encoded).memo, "Carbon 🚀");
 });
 
-test("Keplr's Protobuf.js 6-generated modules round trip through Protobuf.js 7", () => {
-  const Long = require("long");
-  const { Coin } = require("@keplr-wallet/proto-types/cosmos/base/v1beta1/coin");
-  const { Duration } = require("@keplr-wallet/proto-types/google/protobuf/duration");
-
-  const coin = { denom: "usdc", amount: "123" };
-  const encodedCoin = Coin.encode(coin).finish();
-  assert.deepEqual(Coin.decode(encodedCoin), coin);
-
-  const duration = { seconds: Long.fromString("9007199254740993"), nanos: 7 };
-  const encodedDuration = Duration.encode(duration).finish();
-  const decodedDuration = Duration.decode(encodedDuration);
-  assert.equal(decodedDuration.seconds.toString(), "9007199254740993");
-  assert.equal(decodedDuration.nanos, 7);
-});
-
 function protobufOwners(nodeModules) {
   const owners = [];
   const visitPackage = (packageDirectory) => {
@@ -94,7 +78,7 @@ function protobufOwners(nodeModules) {
   return owners.sort();
 }
 
-test("protobufjs 7.6.3 is globally resolved only for its audited direct and Keplr owners", () => {
+test("protobufjs 7.6.3 remains the only audited direct contract", () => {
   const versions = [...lockfile.matchAll(/^protobufjs@[^\n]+:\n(?:[ ]{2}[^\n]*\n|[ ]{4}[^\n]*\n)*/gm)]
     .map((match) => match[0].match(/^[ ]{2}version "([^"]+)"$/m)?.[1])
     .filter(Boolean)
@@ -102,12 +86,7 @@ test("protobufjs 7.6.3 is globally resolved only for its audited direct and Kepl
 
   assert.deepEqual(packageJson.resolutions, {
     "**/@ethersproject/providers/ws": "8.21.0",
-    protobufjs: "7.6.3",
-    uuid: "11.1.1",
   });
   assert.deepEqual(versions, ["7.6.3"]);
-  assert.deepEqual(protobufOwners(path.join(projectRoot, "node_modules")), [
-    "@keplr-wallet/cosmos@0.12.28",
-    "@keplr-wallet/proto-types@0.12.28",
-  ]);
+  assert.deepEqual(protobufOwners(path.join(projectRoot, "node_modules")), []);
 });

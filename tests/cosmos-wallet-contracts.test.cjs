@@ -150,11 +150,6 @@ test("Leap chain info preserves complete Carbon wallet registration data", async
   assert.deepEqual([...chainInfo.features].sort(), ["ibc-go", "ibc-transfer", "stargate"]);
 });
 
-test("Leap extension metadata remains loadable", () => {
-  const { wallets } = require("@cosmos-kit/leap-extension");
-  assert.equal(wallets.some((wallet) => wallet.walletName === "leap-extension"), true);
-});
-
 test("legacy Carbon wallet types compile through the public package entrypoint", () => {
   const tsc = require.resolve("typescript/bin/tsc");
   const fixture = path.join(projectRoot, "tests/fixtures/cosmos-wallet-public-types.ts");

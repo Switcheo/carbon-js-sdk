@@ -15,7 +15,9 @@ const removedRuntimeRoots = [
   "@cityofzion/neon-core",
   "@cityofzion/neon-core-next",
   "@cityofzion/neon-js",
+  "@cosmos-kit/core",
   "@cosmos-kit/leap",
+  "@cosmos-kit/leap-extension",
   "@metamask/detect-provider",
   "base58check",
   "eventemitter3",
@@ -29,8 +31,6 @@ for (const packageName of removedRuntimeRoots) {
 }
 
 const requiredRuntimeContracts = {
-  "@cosmos-kit/core": "2.18.1",
-  "@cosmos-kit/leap-extension": "2.17.1",
   "crypto-js": "4.2.0",
 };
 
@@ -158,4 +158,6 @@ test("compiled Leap declarations use Carbon-owned compatibility contracts", () =
   assert.doesNotMatch(`${indexDeclarations}\n${accountDeclarations}`, /@cosmos-kit\/(?:core|leap-extension)/);
   assert.match(typeDeclarations, /export interface Key/);
   assert.match(typeDeclarations, /export interface Leap/);
+  assert.match(typeDeclarations, /export type BroadcastMode = "block" \| "sync" \| "async";/);
+  assert.doesNotMatch(typeDeclarations, /@cosmos-kit/);
 });

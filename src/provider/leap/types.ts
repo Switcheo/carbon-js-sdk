@@ -1,8 +1,9 @@
 import type { AminoSignResponse, OfflineAminoSigner, StdSignature, StdSignDoc } from "@cosmjs/amino";
 import type { DirectSignResponse, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import type { BroadcastMode } from "@cosmos-kit/core";
 import type { ChainInfo } from "@keplr-wallet/types";
 import type Long from "long";
+
+export type BroadcastMode = "block" | "sync" | "async";
 
 export interface Key {
   readonly name: string;
