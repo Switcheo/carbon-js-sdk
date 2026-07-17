@@ -63,7 +63,7 @@ After installation, inspect the complete trees with `yarn why uuid`, `yarn why w
 
 ### Residual elliptic advisory
 
-The remaining low-severity `elliptic` advisory ([GHSA-848j-6mx2-7j84](https://github.com/advisories/GHSA-848j-6mx2-7j84)) currently affects every available release through 6.6.1 and has no patched version. Carbon retains exact `elliptic@6.6.1` through several wallet and signing owners, with deterministic secp256k1 behavior covered by the test suite. Removing the package requires coordinated migrations of those owners; a lockfile-only override or alert dismissal would not remediate the advisory, so the alert remains open until a genuine upstream or structural fix is available.
+The remaining low-severity `elliptic` advisory ([GHSA-848j-6mx2-7j84](https://github.com/advisories/GHSA-848j-6mx2-7j84)) affects every available release through 6.6.1 and has no patched version. Carbon's only remaining owner is the explicitly deferred `@ethersproject/signing-key@5.8.0` path, which requests exact `elliptic@6.6.1`. A fail-closed dependency contract rejects any additional owner. Removing the final package requires the separately evaluated Ethers migration; a lockfile-only override or alert dismissal would not remediate the advisory, so the alert remains open until that structural change is approved.
 
 ## Testing and CI
 

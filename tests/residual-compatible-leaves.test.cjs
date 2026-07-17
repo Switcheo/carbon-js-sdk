@@ -17,7 +17,7 @@ function lockedVersions(packageName) {
     .sort();
 }
 
-test("the coherent Ethers v5 family removes its vulnerable exact elliptic blocker", () => {
+test("the coherent Ethers v5 family retains the explicitly deferred elliptic boundary", () => {
   assert.equal(require("ethers/package.json").version, "5.8.0");
   assert.equal(require("@ethersproject/abstract-signer/package.json").version, "5.8.0");
   assert.equal(require("@ethersproject/providers/package.json").version, "5.8.0");
@@ -33,17 +33,15 @@ test("the Ethers provider uses patched ws 8 while Carbon retains its compatible 
   assert.match(lockfile, /^ws@8\.18\.0, ws@8\.21\.0:\n[ ]{2}version "8\.21\.0"$/m);
 });
 
-test("elliptic 6.6.1 preserves deterministic secp256k1 signing", () => {
-  const EC = require("elliptic").ec;
-  const ec = new EC("secp256k1");
-  const key = ec.keyFromPrivate("1".padStart(64, "0"), "hex");
-  const digest = "4f3c2f8cf697e50e2465a586afb83f3da2f4723a55d67f0f97d0500fc482827c";
-  const signature = key.sign(digest, { canonical: true });
+test("Ethers 5 signing preserves the deterministic secp256k1 boundary behavior", () => {
+  const { SigningKey, recoverPublicKey } = require("@ethersproject/signing-key");
+  const key = new SigningKey(`0x${"01".padStart(64, "0")}`);
+  const digest = "0x4f3c2f8cf697e50e2465a586afb83f3da2f4723a55d67f0f97d0500fc482827c";
+  const signature = key.signDigest(digest);
 
-  assert.equal(require("elliptic/package.json").version, "6.6.1");
-  assert.equal(ec.verify(digest, signature, key.getPublic()), true);
-  assert.equal(signature.r.toString(16), "6a5ac630a8403057f635795e5519dfafe00246f77dfaa99c2518a899dc57399a");
-  assert.equal(signature.s.toString(16), "6e430014324f78ae52786b280e40ebbdba8fcff5ad8cb6f9ee3c2cc6b5b0263f");
+  assert.equal(signature.r, "0x6a5ac630a8403057f635795e5519dfafe00246f77dfaa99c2518a899dc57399a");
+  assert.equal(signature.s, "0x6e430014324f78ae52786b280e40ebbdba8fcff5ad8cb6f9ee3c2cc6b5b0263f");
+  assert.equal(recoverPublicKey(digest, signature), key.publicKey);
 });
 
 test("ws 7.5.11 preserves fragmented wallet transport messages", async () => {

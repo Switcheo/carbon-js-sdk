@@ -22,7 +22,7 @@
     "sync-register": "bash scripts/sync-reset.sh && bash scripts/generate-registry.sh",
     "sync-reset": "bash scripts/sync-reset.sh",
     "test": "tsc && tsc-alias && node --test tests/*.test.cjs",
-    "test:dependency-hygiene": "tsc && tsc-alias && node --test tests/cosmos-kit-pruning.test.cjs tests/dependency-contracts.test.cjs tests/dependency-pruning.test.cjs tests/direct-import-contracts.test.cjs",
+    "test:dependency-hygiene": "tsc && tsc-alias && node --test tests/cosmos-kit-pruning.test.cjs tests/dependency-contracts.test.cjs tests/dependency-pruning.test.cjs tests/direct-import-contracts.test.cjs tests/elliptic-owner-boundary.test.cjs",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint .",
     "prepare": "rm -rf ./lib && eslint . && tsc && tsc-alias",
