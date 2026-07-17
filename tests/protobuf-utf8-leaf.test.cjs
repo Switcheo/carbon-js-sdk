@@ -100,7 +100,11 @@ test("protobufjs 7.6.3 is globally resolved only for its audited direct and Kepl
     .filter(Boolean)
     .sort();
 
-  assert.deepEqual(packageJson.resolutions, { protobufjs: "7.6.3" });
+  assert.deepEqual(packageJson.resolutions, {
+    "**/@ethersproject/providers/ws": "8.21.0",
+    protobufjs: "7.6.3",
+    uuid: "11.1.1",
+  });
   assert.deepEqual(versions, ["7.6.3"]);
   assert.deepEqual(protobufOwners(path.join(projectRoot, "node_modules")), [
     "@keplr-wallet/cosmos@0.12.28",
