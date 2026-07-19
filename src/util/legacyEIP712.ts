@@ -6,7 +6,9 @@ import { parseChainId } from "@carbon-sdk/util/ethermint";
 import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
 import { Coin } from "@cosmjs/proto-signing";
-import { capitalize } from "lodash";
+import lodash from "lodash";
+
+const { capitalize } = lodash;
 
 
 export interface LegacyEIP712Tx {

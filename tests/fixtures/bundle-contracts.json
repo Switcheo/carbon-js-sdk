@@ -1,0 +1,257 @@
+{
+  "recordedBaseline": {
+    "source": "Disco staging production Carbon chunk before implementation",
+    "raw": 6151186,
+    "gzip": 1036437
+  },
+  "targets": {
+    "root-number": {
+      "rollup": {
+        "raw": 1024,
+        "gzip": 512,
+        "containsRegistry": false,
+        "owners": [
+          "bignumber.js"
+        ],
+        "ignoredWarnings": [
+          "CIRCULAR_DEPENDENCY"
+        ]
+      },
+      "webpack": {
+        "raw": 3100000,
+        "gzip": 400000,
+        "containsRegistry": true,
+        "owners": [
+          "@cosmjs/amino",
+          "@cosmjs/crypto",
+          "@cosmjs/encoding",
+          "@cosmjs/math",
+          "@cosmjs/proto-signing",
+          "@cosmjs/stargate",
+          "@cosmjs/tendermint-rpc",
+          "@cosmjs/utils",
+          "@improbable-eng/grpc-web",
+          "@improbable-eng/grpc-web-node-http-transport",
+          "@keplr-wallet/types",
+          "@metamask/eth-sig-util",
+          "@noble/curves",
+          "axios",
+          "bech32",
+          "bignumber.js",
+          "bip32",
+          "bip39",
+          "cosmjs-types",
+          "crypto-js",
+          "dayjs",
+          "ethers",
+          "jwt-decode",
+          "ledger-cosmos-js",
+          "lodash",
+          "long",
+          "node-fetch",
+          "protobufjs",
+          "query-string",
+          "semver",
+          "wif",
+          "ws"
+        ],
+        "ignoredWarnings": []
+      }
+    },
+    "stable-number": {
+      "rollup": {
+        "raw": 1024,
+        "gzip": 512,
+        "containsRegistry": false,
+        "owners": [
+          "bignumber.js"
+        ],
+        "ignoredWarnings": []
+      },
+      "webpack": {
+        "raw": 1024,
+        "gzip": 512,
+        "containsRegistry": false,
+        "owners": [
+          "bignumber.js"
+        ],
+        "ignoredWarnings": []
+      }
+    },
+    "stable-model": {
+      "rollup": {
+        "raw": 5000,
+        "gzip": 1500,
+        "containsRegistry": false,
+        "owners": [
+          "long",
+          "protobufjs"
+        ],
+        "ignoredWarnings": []
+      },
+      "webpack": {
+        "raw": 3000,
+        "gzip": 1500,
+        "containsRegistry": false,
+        "owners": [
+          "long",
+          "protobufjs"
+        ],
+        "ignoredWarnings": []
+      }
+    },
+    "provider": {
+      "rollup": {
+        "raw": 1500,
+        "gzip": 700,
+        "containsRegistry": false,
+        "owners": [],
+        "ignoredWarnings": []
+      },
+      "webpack": {
+        "raw": 1500,
+        "gzip": 700,
+        "containsRegistry": false,
+        "owners": [],
+        "ignoredWarnings": []
+      }
+    },
+    "wallet": {
+      "rollup": {
+        "raw": 30000,
+        "gzip": 6000,
+        "containsRegistry": false,
+        "owners": [
+          "@cosmjs/amino",
+          "@cosmjs/proto-signing",
+          "ethers"
+        ],
+        "ignoredWarnings": [
+          "CIRCULAR_DEPENDENCY"
+        ]
+      },
+      "webpack": {
+        "raw": 30000,
+        "gzip": 10000,
+        "containsRegistry": false,
+        "owners": [
+          "@cosmjs/amino",
+          "@cosmjs/crypto",
+          "@cosmjs/proto-signing",
+          "@cosmjs/tendermint-rpc",
+          "bech32",
+          "bignumber.js",
+          "ethers",
+          "long",
+          "protobufjs"
+        ],
+        "ignoredWarnings": []
+      }
+    },
+    "sdk": {
+      "rollup": {
+        "raw": 7000000,
+        "gzip": 550000,
+        "containsRegistry": true,
+        "owners": [
+          "@cosmjs/amino",
+          "@cosmjs/encoding",
+          "@cosmjs/math",
+          "@cosmjs/proto-signing",
+          "@cosmjs/stargate",
+          "@cosmjs/tendermint-rpc",
+          "@cosmjs/utils",
+          "@improbable-eng/grpc-web",
+          "@improbable-eng/grpc-web-node-http-transport",
+          "@keplr-wallet/types",
+          "@metamask/eth-sig-util",
+          "@noble/curves",
+          "axios",
+          "bech32",
+          "bignumber.js",
+          "bip32",
+          "bip39",
+          "cosmjs-types",
+          "crypto-js",
+          "dayjs",
+          "ethers",
+          "jwt-decode",
+          "lodash",
+          "long",
+          "node-fetch",
+          "protobufjs",
+          "query-string"
+        ],
+        "ignoredWarnings": [
+          "CIRCULAR_DEPENDENCY"
+        ]
+      },
+      "webpack": {
+        "raw": 3100000,
+        "gzip": 400000,
+        "containsRegistry": true,
+        "owners": [
+          "@cosmjs/amino",
+          "@cosmjs/crypto",
+          "@cosmjs/encoding",
+          "@cosmjs/math",
+          "@cosmjs/proto-signing",
+          "@cosmjs/stargate",
+          "@cosmjs/tendermint-rpc",
+          "@cosmjs/utils",
+          "@improbable-eng/grpc-web",
+          "@improbable-eng/grpc-web-node-http-transport",
+          "@keplr-wallet/types",
+          "@metamask/eth-sig-util",
+          "@noble/curves",
+          "axios",
+          "bech32",
+          "bignumber.js",
+          "bip32",
+          "bip39",
+          "cosmjs-types",
+          "crypto-js",
+          "dayjs",
+          "ethers",
+          "jwt-decode",
+          "ledger-cosmos-js",
+          "lodash",
+          "long",
+          "node-fetch",
+          "protobufjs",
+          "query-string",
+          "semver",
+          "wif",
+          "ws"
+        ],
+        "ignoredWarnings": []
+      }
+    },
+    "registry": {
+      "rollup": {
+        "raw": 2500000,
+        "gzip": 175000,
+        "containsRegistry": true,
+        "owners": [
+          "@cosmjs/proto-signing",
+          "cosmjs-types",
+          "long",
+          "protobufjs"
+        ],
+        "ignoredWarnings": []
+      },
+      "webpack": {
+        "raw": 1200000,
+        "gzip": 125000,
+        "containsRegistry": true,
+        "owners": [
+          "@cosmjs/proto-signing",
+          "cosmjs-types",
+          "long",
+          "protobufjs"
+        ],
+        "ignoredWarnings": []
+      }
+    }
+  }
+}

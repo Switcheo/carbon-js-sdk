@@ -4,7 +4,9 @@ import { TypeUtils } from ".";
 import { parseChainId } from "@carbon-sdk/util/ethermint";
 import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
-import { capitalize } from "lodash";
+import lodash from "lodash";
+
+const { capitalize } = lodash;
 import { CarbonTx } from "@carbon-sdk/util";
 import { AminoMsg } from "@cosmjs/amino";
 

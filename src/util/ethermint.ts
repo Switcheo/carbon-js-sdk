@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { Any } from "@carbon-sdk/codec";
+import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 import { PubKey as EthSecp256k1PubKey } from "@carbon-sdk/codec/ethermint/crypto/v1/ethsecp256k1/keys";
 import { NetworkConfigs } from "@carbon-sdk/constant";
 import { ethers } from "ethers";

@@ -1,4 +1,5 @@
 import { capitalize } from "lodash";
+import fs from "fs";
 import path from "path";
 import { whitelistCosmosExports, whitelistIbcExports } from "./config";
 import { generateEIP712types } from "./generate-eip712-types";
@@ -44,6 +45,16 @@ for (const moduleFile of codecFiles) {
   });
 
   if (messages.length) {
+    const usesDirectImport = !(
+      moduleFile.includes('src/codec/Switcheo/carbon/btcx/')
+      || moduleFile.includes('src/codec/Switcheo/carbon/ccm/')
+      || moduleFile.includes('src/codec/Switcheo/carbon/headersync/')
+      || moduleFile.includes('src/codec/Switcheo/carbon/lockproxy/')
+      || moduleFile.includes('src/codec/alliance/alliance')
+      || carbonFolders.some(carbonModule => moduleFile.includes("src/codec/Switcheo/carbon/" + carbonModule))
+    );
+    if (usesDirectImport) updateImportsAlias(messages, codecModule.protobufPackage)
+
     if (modules[codecModule.protobufPackage]) {
       modules[codecModule.protobufPackage] = [...modules[codecModule.protobufPackage], ...messages];
     } else {
@@ -52,16 +63,7 @@ for (const moduleFile of codecFiles) {
     const relativePath = path.relative(registryFile, moduleFile)
       .replace(/^\.\.\//, "./")
       .replace(/\.ts$/, "");
-    if (!(
-      moduleFile.includes('src/codec/Switcheo/carbon/btcx/')
-      || moduleFile.includes('src/codec/Switcheo/carbon/ccm/')
-      || moduleFile.includes('src/codec/Switcheo/carbon/headersync/')
-      || moduleFile.includes('src/codec/Switcheo/carbon/lockproxy/')
-      || moduleFile.includes('src/codec/alliance/alliance')
-      || carbonFolders.some(carbonModule => moduleFile.includes("src/codec/Switcheo/carbon/" + carbonModule))
-    )) {
-      updateImportsAlias(messages, codecModule.protobufPackage)
-
+    if (usesDirectImport) {
       console.log(`import { ${messages.join(", ")} } from "${relativePath}";`)
     }
   }
@@ -152,12 +154,22 @@ typeMap.MsgExecuteContract = "/cosmwasm.wasm.v1.MsgExecuteContract";
 typeMap.GenericAuthorization = "/cosmos.authz.v1beta1.GenericAuthorization";
 typeMap.AllowedMsgAllowance = "/cosmos.feegrant.v1beta1.AllowedMsgAllowance";
 typeMap.BasicAllowance = "/cosmos.feegrant.v1beta1.BasicAllowance";
+const legacyTypeMap = JSON.parse(fs.readFileSync(path.join(__dirname, "tx-types.json"), "utf8")) as Record<string, string>;
+const legacyTypeUrls = new Set(Object.values(legacyTypeMap));
+const intentionallyUnaliasedTypeUrls = new Set(
+  JSON.parse(fs.readFileSync(path.join(__dirname, "unaliased-type-urls.json"), "utf8")) as string[],
+);
+for (const typeUrl of Object.values(typeMap)) {
+  if (!legacyTypeUrls.has(typeUrl) && !intentionallyUnaliasedTypeUrls.has(typeUrl)) {
+    throw new Error(`new registry type URL requires an explicit TxTypes compatibility decision: ${typeUrl}`);
+  }
+}
 console.log("");
 console.log(
   `/* 
 Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
 */`);
-console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)};\n`);
+console.log(`export const TxTypes = ${JSON.stringify(legacyTypeMap, null, 2)};\n`);
 
 console.log("");
 console.log('// Exported for convenience');
@@ -214,7 +226,8 @@ console.log(
   `/* 
 EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
 */`);
-console.log(`export const EIP712Types: { [index: string]: any } = ${JSON.stringify(generateEIP712types(), null, 2)};\n`);
+console.log(`export type EIP712FieldDefinition = { name: string; type: string; packageName?: string };`);
+console.log(`export const EIP712Types: Record<string, Record<string, EIP712FieldDefinition[]>> = ${JSON.stringify(generateEIP712types(), null, 2)};\n`);
 
 function updateImportsAlias(messages: string[], protobufPackage: string) {
   const modulePath = getModulePathFromProtobufPackage(protobufPackage)

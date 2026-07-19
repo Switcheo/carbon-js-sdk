@@ -6,6 +6,7 @@ export default tseslint.config(
     ignores: [
       "node_modules/**",
       "lib/**",
+      "esm/**",
       "src/codec/**",
       "scripts/**",
       "examples/**",

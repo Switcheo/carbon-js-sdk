@@ -1,38 +1,40 @@
-
 import path from "path";
 import fs from "fs";
 import { whitelistIbcExports } from "./config";
 
-const files = process.argv;
+const [pwd, modelsFile] = process.argv.slice(-2);
+const MODEL_BLACKLIST = ["MsgClientImpl", "protobufPackage", "GenesisState", "QueryClientImpl"];
 
-const [pwd, modelsFile] = files.splice(files.length - 2, 2);
+function writeGenerated(file: string, lines: string[]): void {
+  const temporary = `${file}.tmp`;
+  fs.writeFileSync(temporary, lines.join(""));
+  fs.renameSync(temporary, file);
+}
 
-const MODEL_BLACKLIST = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
+const modelExports: string[] = [];
+for (const exportName of Object.keys(whitelistIbcExports).sort()) {
+  const directoryPaths: string[] = [...whitelistIbcExports[exportName]].sort();
+  const commonPath = directoryPaths[0].split("/").slice(0, 4).join("/");
+  const commonDirectory = path.join(pwd, "src/codec", commonPath);
+  const exportLines: string[] = [];
 
-for (const exportName in whitelistIbcExports) {
-  const directoryArr: string[] = whitelistIbcExports[exportName];
-  // Get common path (e.g. ibc/applications/transfer for Transfer)
-  const commonPath = directoryArr[0].split('/').slice(0, 4).join('/');
-  const commonDir = path.join(pwd, 'src/codec', commonPath);
-  for (const subExportId in directoryArr) {
-    const directory = path.join(pwd, 'src/codec', directoryArr[subExportId]);
-    // Get file names in directory
-    const files = fs.readdirSync(directory);
-
-    for (const file of files) {
-      const absoluteFilePath = `${directory}/${file}`;
-      const codecModule = require(absoluteFilePath);
-
-      const modelNames = Object.keys(codecModule).filter((key) =>
-        !MODEL_BLACKLIST.includes(key)
-      );
+  for (const directoryPath of directoryPaths) {
+    const directory = path.join(pwd, "src/codec", directoryPath);
+    const sourceFiles = fs.readdirSync(directory)
+      .filter((file) => file.endsWith(".ts") && file !== "export.ts")
+      .sort();
+    for (const file of sourceFiles) {
+      const codecModule = require(path.join(directory, file));
+      const modelNames = Object.keys(codecModule)
+        .filter((key) => !MODEL_BLACKLIST.includes(key))
+        .sort();
       if (!modelNames.length) continue;
-  
-      const relativeFilePath = directoryArr[subExportId].replace(commonPath, '');
-      const exportLine = `export { ${modelNames.join(", ")} } from ".${relativeFilePath}/${file.replace('.ts', '')}";\n`;
-      fs.appendFileSync(path.join(commonDir, 'export.ts'), exportLine);
+      const relativeDirectory = directoryPath.replace(commonPath, "");
+      exportLines.push(`export { ${modelNames.join(", ")} } from ".${relativeDirectory}/${file.replace(/\.ts$/i, "")}";\n`);
     }
   }
-  const majorExportLine = `export * as ${exportName} from "./${commonPath}/export";\n`;
-  fs.appendFileSync(modelsFile, majorExportLine);
+
+  writeGenerated(path.join(commonDirectory, "export.ts"), exportLines);
+  modelExports.push(`export * as ${exportName} from "./${commonPath}/export";\n`);
 }
+writeGenerated(modelsFile, modelExports);

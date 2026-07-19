@@ -1,1 +1,1 @@
-export { ClientState, ConsensusState, Header, Misbehaviour, SignatureAndData, TimestampedSignatureData, SignBytes, HeaderData } from "./solomachine";
+export { ClientState, ConsensusState, Header, HeaderData, Misbehaviour, SignBytes, SignatureAndData, TimestampedSignatureData } from "./solomachine";
