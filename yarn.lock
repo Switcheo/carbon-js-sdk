@@ -655,10 +655,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@keplr-wallet/types@^0.12.207":
-  version "0.12.207"
-  resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.12.207.tgz#50865c51dec7c12c063e73c23f7620b40c304072"
-  integrity sha512-GatUZEXTqOp3K5U7BjG+fqs/+AXZqa3mp/ug1vZstRwdNgGxel/eJBAp9CsBV3J30HwCzFOARO/XPTR5vDXAIA==
+"@keplr-wallet/types@^0.13.40":
+  version "0.13.40"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.13.40.tgz#248af8c0a6f4bbcfef6d0372c9022b321bbdd4d8"
+  integrity sha512-JGeUMjtjcO3PCL8mroWVYbIc+sR4y/yuvxXb2FBlTarkER9AzEbMZJE8NSFhPBKoZD6UHBUXn+xIrc17tPqaSQ==
   dependencies:
     long "^4.0.0"
 
