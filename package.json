@@ -57,7 +57,7 @@
     "@ethersproject/abstract-signer": "5.8.0",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",
-    "@keplr-wallet/types": "^0.12.207",
+    "@keplr-wallet/types": "^0.13.40",
     "@ledgerhq/hw-transport": "6.28.8",
     "@ledgerhq/hw-transport-webhid": "^6.20.0",
     "@metamask/eth-sig-util": "8.2.0",

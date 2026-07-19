@@ -8,7 +8,7 @@ const { spawnSync } = require("node:child_process");
 const Long = require("long");
 
 const projectRoot = path.resolve(__dirname, "..");
-const { LeapAccount } = require(path.join(projectRoot, "lib/index.js"));
+const { KeplrAccount, LeapAccount } = require(path.join(projectRoot, "lib/index.js"));
 
 function signature(value) {
   return {
@@ -30,6 +30,23 @@ function fakeLeap(calls) {
         isNanoLedger: false,
       };
     },
+    async signDirect(chainId, address, doc, options) {
+      calls.push(["signDirect", chainId, address, doc, options]);
+      return { signed: doc, signature: signature("direct") };
+    },
+    async signAmino(chainId, address, doc, options) {
+      calls.push(["signAmino", chainId, address, doc, options]);
+      return { signed: doc, signature: signature("amino") };
+    },
+    async signArbitrary(chainId, address, message) {
+      calls.push(["signArbitrary", chainId, address, message]);
+      return signature("arbitrary");
+    },
+  };
+}
+
+function fakeKeplr(calls) {
+  return {
     async signDirect(chainId, address, doc, options) {
       calls.push(["signDirect", chainId, address, doc, options]);
       return { signed: doc, signature: signature("direct") };
@@ -106,6 +123,59 @@ test("Leap signer preserves account, direct, amino, and arbitrary-signing contra
   await signer.signAmino("swth1contract", aminoDoc);
   const aminoCall = calls.find(([name]) => name === "signAmino");
   assert.deepEqual(aminoCall.slice(1), ["carbon-1", "swth1contract", aminoDoc, { preferNoSetFee: true }]);
+
+  assert.equal(await signer.signMessage("swth1contract", "Carbon compatibility"), Buffer.from("arbitrary").toString("hex"));
+  assert.deepEqual(calls.find(([name]) => name === "signArbitrary").slice(1), [
+    "carbon-1",
+    "swth1contract",
+    "Carbon compatibility",
+  ]);
+});
+
+test("Keplr 0.13 signer preserves account, direct, amino, and arbitrary-signing contracts", async () => {
+  const calls = [];
+  const chainInfo = { chainId: "carbon-1" };
+  const account = {
+    name: "Carbon account",
+    algo: "secp256k1",
+    pubKey: Uint8Array.from([2, 3, 4]),
+    address: Uint8Array.from([5, 6, 7]),
+    bech32Address: "swth1contract",
+    isNanoLedger: false,
+  };
+  const signer = KeplrAccount.createKeplrSigner(fakeKeplr(calls), chainInfo, account);
+
+  assert.deepEqual(await signer.getAccounts(), [
+    {
+      algo: "secp256k1",
+      address: "swth1contract",
+      pubkey: Uint8Array.from([2, 3, 4]),
+    },
+  ]);
+
+  const bodyBytes = Uint8Array.from([1, 2]);
+  const authInfoBytes = Uint8Array.from([3, 4]);
+  const directDoc = { bodyBytes, authInfoBytes, chainId: "carbon-1", accountNumber: 7n };
+  await signer.signDirect("swth1contract", directDoc);
+
+  const directCall = calls.find(([name]) => name === "signDirect");
+  assert.equal(directCall[1], "carbon-1");
+  assert.equal(directCall[2], "swth1contract");
+  assert.equal(Long.isLong(directCall[3].accountNumber), true);
+  assert.equal(directCall[3].accountNumber.toString(), "7");
+  assert.deepEqual(directCall[3].bodyBytes, bodyBytes);
+  assert.deepEqual(directCall[3].authInfoBytes, authInfoBytes);
+  assert.equal(directCall[3].chainId, "carbon-1");
+  assert.deepEqual(directCall[4], { preferNoSetFee: true });
+
+  const aminoDoc = { chain_id: "carbon-1", account_number: "7", sequence: "2", fee: {}, msgs: [], memo: "" };
+  await signer.signAmino("swth1contract", aminoDoc);
+  assert.deepEqual(calls.find(([name]) => name === "signAmino").slice(1), [
+    "carbon-1",
+    "swth1contract",
+    aminoDoc,
+    { preferNoSetFee: true },
+  ]);
 
   assert.equal(await signer.signMessage("swth1contract", "Carbon compatibility"), Buffer.from("arbitrary").toString("hex"));
   assert.deepEqual(calls.find(([name]) => name === "signArbitrary").slice(1), [
