@@ -16,7 +16,6 @@ const builtins = new Set(
 const expectedDirectContracts = {
   "@cosmjs/crypto": "0.38.1",
   "@cosmjs/encoding": "0.38.1",
-  "@cosmjs/json-rpc": "0.38.1",
   "@cosmjs/math": "0.38.1",
   "@cosmjs/tendermint-rpc": "0.38.1",
   "@cosmjs/utils": "0.38.1",
@@ -119,4 +118,17 @@ test("every external source import is a direct runtime dependency", () => {
     (packageName) => !Object.prototype.hasOwnProperty.call(manifest.dependencies, packageName),
   );
   assert.deepEqual(missing, []);
+});
+
+test("every direct runtime dependency is imported or an explicit support contract", () => {
+  const sourceDependencies = new Set(collectSourceDependencies());
+  const nonSourceDependencies = Object.keys(manifest.dependencies)
+    .filter((packageName) => !sourceDependencies.has(packageName))
+    .sort();
+
+  assert.deepEqual(nonSourceDependencies, [
+    "@bufbuild/protobuf",
+    "@types/long",
+    "google-protobuf",
+  ]);
 });

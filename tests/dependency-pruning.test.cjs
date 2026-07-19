@@ -18,6 +18,8 @@ const removedRuntimeRoots = [
   "@cosmos-kit/core",
   "@cosmos-kit/leap",
   "@cosmos-kit/leap-extension",
+  "@cosmjs/cosmwasm-stargate",
+  "@cosmjs/json-rpc",
   "@metamask/detect-provider",
   "base58check",
   "eventemitter3",
@@ -29,6 +31,18 @@ for (const packageName of removedRuntimeRoots) {
     assert.equal(manifest.dependencies[packageName], undefined);
   });
 }
+
+const removedDevelopmentRoots = ["@types/ripemd160", "@types/websocket"];
+
+for (const packageName of removedDevelopmentRoots) {
+  test(`${packageName} is not a direct development dependency`, () => {
+    assert.equal(manifest.devDependencies[packageName], undefined);
+  });
+}
+
+test("the retired empty KeplrStore module stays removed", () => {
+  assert.equal(fs.existsSync(path.join(projectRoot, "src/provider/keplr/KeplrStore.ts")), false);
+});
 
 const requiredRuntimeContracts = {
   "crypto-js": "4.2.0",

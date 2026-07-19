@@ -8,7 +8,6 @@ const manifest = require(path.resolve(__dirname, "../package.json"));
 
 const requiredRuntimeDependencies = {
   "@cosmjs/amino": "0.38.1",
-  "@cosmjs/cosmwasm-stargate": "0.38.1",
   "@cosmjs/proto-signing": "0.38.1",
   "google-protobuf": "3.21.4",
 };
