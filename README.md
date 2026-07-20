@@ -86,6 +86,20 @@ Stable families include `clients`, `constants`, `hydrogen`, `insights`, `modules
 
 CommonJS and ESM each preserve singleton and class identity within their selected module graph. Loading both formats in one process creates separate module graphs, so consumers must not compare registry or class identity across `require()` and `import()` results.
 
+## Installing a prebuilt GitHub Release package
+
+Each `v*` semantic-version tag whose version matches `package.json` produces a GitHub Release containing the built CommonJS and ESM outputs. Pin the exact release asset URL when a consumer needs the tagged SDK without running this repository's `prepare` build during installation:
+
+```json
+{
+  "dependencies": {
+    "carbon-js-sdk": "https://github.com/Switcheo/carbon-js-sdk/releases/download/v0.11.76/carbon-js-sdk-0.11.76.tgz"
+  }
+}
+```
+
+The release also includes `carbon-js-sdk-<version>.tgz.sha256`. Verify that checksum when updating the pinned URL. The asset is built from the exact tagged commit and is not published to npm. Version tags are immutable release identifiers: configure an active GitHub tag ruleset for `v*` (shown as `refs/tags/v*` by the API) that blocks updates and deletions, and never force-move or reuse a pushed version tag. Maintainers should follow the [GitHub Release playbook](./RELEASE.md).
+
 ## Testing and CI
 
 Run the deterministic Node test suite with:
