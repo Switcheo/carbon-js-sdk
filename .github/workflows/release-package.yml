@@ -33,7 +33,7 @@ jobs:
       - name: Stage publisher for the write-scoped job
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: carbon-js-sdk-release-publisher
+          name: carbon-js-sdk-release-publisher-${{ github.run_attempt }}
           path: .github/scripts/publish-release-package.sh
           if-no-files-found: error
           retention-days: 1
@@ -150,7 +150,7 @@ jobs:
       - name: Stage package for publication job
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: carbon-js-sdk-release-${{ steps.release.outputs.version }}
+          name: carbon-js-sdk-release-${{ steps.release.outputs.version }}-${{ github.run_attempt }}
           path: |
             ${{ steps.package.outputs.artifact-path }}
             ${{ steps.package.outputs.checksum-path }}
@@ -189,6 +189,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
           RELEASE_TAG: ${{ github.ref_name }}
           RELEASE_VERSION: ${{ needs.build-package.outputs.version }}
           RELEASE_COMMIT: ${{ needs.build-package.outputs.commit }}
@@ -214,8 +215,8 @@ jobs:
             printf '%s\n' "${ids[0]}"
           }
 
-          publisher_artifact_id="$(resolve_artifact_id carbon-js-sdk-release-publisher)"
-          package_artifact_id="$(resolve_artifact_id "carbon-js-sdk-release-${RELEASE_VERSION}")"
+          publisher_artifact_id="$(resolve_artifact_id "carbon-js-sdk-release-publisher-${RUN_ATTEMPT}")"
+          package_artifact_id="$(resolve_artifact_id "carbon-js-sdk-release-${RELEASE_VERSION}-${RUN_ATTEMPT}")"
           gh api "repos/${GH_REPO}/actions/artifacts/${publisher_artifact_id}/zip" > "$workdir/publisher.zip"
           gh api "repos/${GH_REPO}/actions/artifacts/${package_artifact_id}/zip" > "$workdir/package.zip"
 

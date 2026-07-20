@@ -39,6 +39,7 @@ function setupFixture({
   remoteCommit = commit,
   checksumOverride,
   releaseReadFailure = false,
+  annotatedRemoteTag = false,
 } = {}) {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "carbon-release-package-"));
   const bin = path.join(workspace, "bin");
@@ -81,7 +82,22 @@ const record = () => fs.appendFileSync(log, JSON.stringify(args) + "\\n");
 if (args[0] === "api") {
   const endpoint = args.find(arg => arg.startsWith("repos/"));
   if (endpoint?.includes("/git/ref/tags/")) {
-    console.log("commit " + process.env.FAKE_REMOTE_COMMIT);
+    if (process.env.FAKE_ANNOTATED_REMOTE_TAG === "true") {
+      console.log("tag " + "a".repeat(40));
+    } else {
+      console.log("commit " + process.env.FAKE_REMOTE_COMMIT);
+    }
+    process.exit(0);
+  }
+  if (endpoint?.includes("/git/tags/")) {
+    const objectSha = endpoint.split("/").at(-1);
+    if (objectSha === "a".repeat(40)) {
+      console.log("tag " + "b".repeat(40));
+    } else if (objectSha === "b".repeat(40)) {
+      console.log("commit " + process.env.FAKE_REMOTE_COMMIT);
+    } else {
+      process.exit(88);
+    }
     process.exit(0);
   }
   if (endpoint?.includes("/releases/tags/")) {
@@ -147,6 +163,7 @@ process.exit(92);
       FAKE_REMOTE_PRERELEASE: String(prerelease),
       FAKE_REMOTE_COMMIT: remoteCommit,
       FAKE_RELEASE_READ_FAILURE: String(releaseReadFailure),
+      FAKE_ANNOTATED_REMOTE_TAG: String(annotatedRemoteTag),
       GH_TOKEN: "test-token",
       GH_REPO: "Switcheo/carbon-js-sdk",
       RELEASE_TAG: tag,
@@ -185,6 +202,17 @@ test("rerun fails instead of replacing an asset with different bytes", () => {
   try {
     assert.notEqual(fixture.result.status, 0);
     assert.match(fixture.result.stderr, /Refusing to replace existing release asset/);
+    assert.deepEqual(fixture.calls, []);
+  } finally {
+    cleanup(fixture);
+  }
+});
+
+test("publisher resolves a nested annotated tag chain to the release commit", () => {
+  const fixture = setupFixture({ annotatedRemoteTag: true });
+  try {
+    assert.equal(fixture.result.status, 0, fixture.result.stderr);
+    assert.match(fixture.result.stdout, /identical bytes; leaving it unchanged/);
     assert.deepEqual(fixture.calls, []);
   } finally {
     cleanup(fixture);
