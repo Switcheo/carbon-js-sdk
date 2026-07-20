@@ -98,7 +98,7 @@ Each `v*` semantic-version tag whose version matches `package.json` produces a G
 }
 ```
 
-The release also includes `carbon-js-sdk-<version>.tgz.sha256`. Verify that checksum when updating the pinned URL. The asset is built from the exact tagged commit and is not published to npm. Version tags are immutable release identifiers: configure an active GitHub tag ruleset for `refs/tags/v*` that blocks updates and deletions, and never force-move or reuse a pushed version tag.
+The release also includes `carbon-js-sdk-<version>.tgz.sha256`. Verify that checksum when updating the pinned URL. The asset is built from the exact tagged commit and is not published to npm. Version tags are immutable release identifiers: configure an active GitHub tag ruleset for `v*` (shown as `refs/tags/v*` by the API) that blocks updates and deletions, and never force-move or reuse a pushed version tag. Maintainers should follow the [GitHub Release playbook](./RELEASE.md).
 
 ## Testing and CI
 
