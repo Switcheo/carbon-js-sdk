@@ -10,6 +10,7 @@ const test = require("node:test");
 
 const root = path.resolve(__dirname, "..");
 const publisher = path.join(root, ".github/scripts/publish-release-package.sh");
+const workflow = path.join(root, ".github/workflows/release-package.yml");
 const tag = "v1.2.3";
 const version = "1.2.3";
 const commit = "0123456789abcdef0123456789abcdef01234567";
@@ -185,6 +186,20 @@ process.exit(92);
 function cleanup(fixture) {
   fs.rmSync(fixture.workspace, { recursive: true, force: true });
 }
+
+test("workflow uses bracket notation for hyphenated expression keys", () => {
+  const contents = fs.readFileSync(workflow, "utf8");
+  const expressions = [...contents.matchAll(/\$\{\{([\s\S]*?)\}\}/g)].map((match) => match[1]);
+  for (const expression of expressions) {
+    assert.doesNotMatch(
+      expression,
+      /(?:^|\.)[A-Za-z_][A-Za-z0-9_]*-[A-Za-z0-9_-]*(?=\.|\s|$)/,
+      `GitHub rejects dot notation for hyphenated expression keys: ${expression}`,
+    );
+  }
+  assert.match(contents, /needs\['build-package'\]/);
+  assert.match(contents, /outputs\['artifact-name'\]/);
+});
 
 test("rerun leaves byte-identical release assets unchanged", () => {
   const fixture = setupFixture();

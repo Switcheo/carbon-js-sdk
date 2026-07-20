@@ -47,9 +47,9 @@ jobs:
       version: ${{ steps.release.outputs.version }}
       prerelease: ${{ steps.release.outputs.prerelease }}
       commit: ${{ steps.release.outputs.commit }}
-      artifact-name: ${{ steps.package.outputs.artifact-name }}
-      artifact-path: ${{ steps.package.outputs.artifact-path }}
-      checksum-path: ${{ steps.package.outputs.checksum-path }}
+      artifact-name: ${{ steps.package.outputs['artifact-name'] }}
+      artifact-path: ${{ steps.package.outputs['artifact-path'] }}
+      checksum-path: ${{ steps.package.outputs['checksum-path'] }}
       digest: ${{ steps.package.outputs.digest }}
 
     steps:
@@ -152,8 +152,8 @@ jobs:
         with:
           name: carbon-js-sdk-release-${{ steps.release.outputs.version }}-${{ github.run_attempt }}
           path: |
-            ${{ steps.package.outputs.artifact-path }}
-            ${{ steps.package.outputs.checksum-path }}
+            ${{ steps.package.outputs['artifact-path'] }}
+            ${{ steps.package.outputs['checksum-path'] }}
           if-no-files-found: error
           retention-days: 1
 
@@ -162,7 +162,7 @@ jobs:
           VERSION: ${{ steps.release.outputs.version }}
           COMMIT: ${{ steps.release.outputs.commit }}
           DIGEST: ${{ steps.package.outputs.digest }}
-          ARTIFACT_NAME: ${{ steps.package.outputs.artifact-name }}
+          ARTIFACT_NAME: ${{ steps.package.outputs['artifact-name'] }}
         run: |
           {
             echo "## Prebuilt release package"
@@ -191,12 +191,12 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
           RELEASE_TAG: ${{ github.ref_name }}
-          RELEASE_VERSION: ${{ needs.build-package.outputs.version }}
-          RELEASE_COMMIT: ${{ needs.build-package.outputs.commit }}
-          RELEASE_PRERELEASE: ${{ needs.build-package.outputs.prerelease }}
-          RELEASE_DIGEST: ${{ needs.build-package.outputs.digest }}
-          ARTIFACT_NAME: ${{ needs.build-package.outputs.artifact-name }}
-          EXPECTED_PUBLISHER_DIGEST: ${{ needs.prepare-publisher.outputs.publisher-digest }}
+          RELEASE_VERSION: ${{ needs['build-package'].outputs.version }}
+          RELEASE_COMMIT: ${{ needs['build-package'].outputs.commit }}
+          RELEASE_PRERELEASE: ${{ needs['build-package'].outputs.prerelease }}
+          RELEASE_DIGEST: ${{ needs['build-package'].outputs.digest }}
+          ARTIFACT_NAME: ${{ needs['build-package'].outputs['artifact-name'] }}
+          EXPECTED_PUBLISHER_DIGEST: ${{ needs['prepare-publisher'].outputs['publisher-digest'] }}
         run: |
           set -euo pipefail
           workdir="$(mktemp -d)"
