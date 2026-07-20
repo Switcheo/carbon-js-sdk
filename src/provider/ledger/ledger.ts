@@ -4,13 +4,13 @@
 // this file was inserted to fix Chrome 91 killing web u2f
 // original implementation: https://github.com/luniehq/cosmos-ledger
 
+import semver from "semver";
 import { default as CosmosLedgerApp } from "ledger-cosmos-js";
 
 import * as bech32 from "bech32";
 import { ethers } from "ethers";
-import { signatureImport } from "secp256k1";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
-const semver = require("semver");
+import { derSignatureToCompact } from "@carbon-sdk/util/secp256k1";
 
 const INTERACTION_TIMEOUT = 120; // seconds to wait for user action on Ledger, currently is always limited to 60
 const REQUIRED_COSMOS_APP_VERSION = "1.5.3";
@@ -248,7 +248,7 @@ class CosmosLedger {
     })
     await this.checkLedgerErrors(response);
     // we have to parse the signature from Ledger as it's in DER format
-    const parsedSignature = signatureImport(response.signature);
+    const parsedSignature = derSignatureToCompact(response.signature);
     return parsedSignature;
   }
 

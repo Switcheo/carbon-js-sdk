@@ -17,14 +17,15 @@ export interface AllianceAsset {
   /** Denom of the asset. It could either be a native token or an IBC token */
   denom: string;
   /**
-   * The reward weight specifies the ratio of rewards that will be given to each alliance asset
-   * It does not need to sum to 1. rate = weight / total_weight
+   * The reward weight specifies the ratio of rewards that will be given to each
+   * alliance asset It does not need to sum to 1. rate = weight / total_weight
    * Native asset is always assumed to have a weight of 1.s
    */
   rewardWeight: string;
   /**
-   * A positive take rate is used for liquid staking derivatives. It defines an rate that is applied per take_rate_interval
-   * that will be redirected to the distribution rewards pool
+   * A positive take rate is used for liquid staking derivatives. It defines an
+   * rate that is applied per take_rate_interval that will be redirected to the
+   * distribution rewards pool
    */
   takeRate: string;
   totalTokens: string;
@@ -35,7 +36,10 @@ export interface AllianceAsset {
   lastRewardChangeTime?: Date;
   /** set a bound of weight range to limit how much reward weights can scale. */
   rewardWeightRange?: RewardWeightRange;
-  /** flag to check if an asset has completed the initialization process after the reward delay */
+  /**
+   * flag to check if an asset has completed the initialization process after
+   * the reward delay
+   */
   isInitialized: boolean;
 }
 

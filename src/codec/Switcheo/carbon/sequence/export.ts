@@ -1,3 +1,3 @@
-export { Sequence } from "./genesis"
-export { QuerySequenceRequest, QuerySequenceResponse, QuerySequenceAllRequest, QuerySequenceAllResponse } from "./query"
-export { MsgSetSequence, MsgSetSequenceResponse } from "./tx"
+export { Sequence } from "./genesis";
+export { QuerySequenceAllRequest, QuerySequenceAllResponse, QuerySequenceRequest, QuerySequenceResponse } from "./query";
+export { MsgSetSequence, MsgSetSequenceResponse } from "./tx";

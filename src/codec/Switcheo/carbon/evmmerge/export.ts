@@ -1,6 +1,6 @@
-export { EthCosmosAddressWrapper } from "./address"
-export { MergeAccountEvent } from "./event"
-export { GenesisState_EthToCosmosAddressMapEntry, GenesisState_CosmosToEthAddressMapEntry } from "./genesis"
-export { MsgSignData } from "./offchain"
-export { QueryMappedAddressRequest, QueryMappedAddressResponse, QueryAllMappedAddressRequest, QueryAllMappedAddressResponse } from "./query"
-export { MsgMergeAccount, MsgMergeAccountResponse } from "./tx"
+export { EthCosmosAddressWrapper } from "./address";
+export { MergeAccountEvent } from "./event";
+export { GenesisState_CosmosToEthAddressMapEntry, GenesisState_EthToCosmosAddressMapEntry } from "./genesis";
+export { MsgSignData } from "./offchain";
+export { QueryAllMappedAddressRequest, QueryAllMappedAddressResponse, QueryMappedAddressRequest, QueryMappedAddressResponse } from "./query";
+export { MsgMergeAccount, MsgMergeAccountResponse } from "./tx";

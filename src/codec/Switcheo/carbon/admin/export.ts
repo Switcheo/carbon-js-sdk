@@ -1,3 +1,3 @@
-export { Params, ParamsToUpdate } from "./params"
-export { QueryAdminRequest, QueryAdminResponse, QueryAdminRecipientRequest, QueryAdminRecipientResponse, QueryParamsRequest, QueryParamsResponse } from "./query"
-export { MsgInitiateAdminTransfer, MsgInitiateAdminTransferResponse, MsgAcceptAdminTransfer, MsgAcceptAdminTransferResponse, MsgUpdateParams, MsgUpdateParamsResponse, MsgHaltCurrentVersion, MsgHaltCurrentVersionResponse } from "./tx"
+export { Params, ParamsToUpdate } from "./params";
+export { QueryAdminRecipientRequest, QueryAdminRecipientResponse, QueryAdminRequest, QueryAdminResponse, QueryParamsRequest, QueryParamsResponse } from "./query";
+export { MsgAcceptAdminTransfer, MsgAcceptAdminTransferResponse, MsgHaltCurrentVersion, MsgHaltCurrentVersionResponse, MsgInitiateAdminTransfer, MsgInitiateAdminTransferResponse, MsgUpdateParams, MsgUpdateParamsResponse } from "./tx";

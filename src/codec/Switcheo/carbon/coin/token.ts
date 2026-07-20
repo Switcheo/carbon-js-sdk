@@ -38,8 +38,9 @@ export interface Metadata {
 
 export interface LockedCoins {
   denom: string;
-  orderMargin: string;
+  spotOrderMargin: string;
   positionMargin: string;
+  futuresOrderMargin: string;
 }
 
 export interface LockedCoinsRecord {
@@ -55,9 +56,11 @@ export interface PositionPool {
 
 export interface TokenBalance {
   available: string;
-  order: string;
+  spotOrder: string;
   position: string;
   denom: string;
+  futures: string;
+  futuresOrder: string;
 }
 
 function createBaseToken(): Token {
@@ -494,7 +497,7 @@ export const Metadata = {
 };
 
 function createBaseLockedCoins(): LockedCoins {
-  return { denom: "", orderMargin: "", positionMargin: "" };
+  return { denom: "", spotOrderMargin: "", positionMargin: "", futuresOrderMargin: "" };
 }
 
 export const LockedCoins = {
@@ -502,11 +505,14 @@ export const LockedCoins = {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.orderMargin !== "") {
-      writer.uint32(18).string(message.orderMargin);
+    if (message.spotOrderMargin !== "") {
+      writer.uint32(18).string(message.spotOrderMargin);
     }
     if (message.positionMargin !== "") {
       writer.uint32(26).string(message.positionMargin);
+    }
+    if (message.futuresOrderMargin !== "") {
+      writer.uint32(42).string(message.futuresOrderMargin);
     }
     return writer;
   },
@@ -530,7 +536,7 @@ export const LockedCoins = {
             break;
           }
 
-          message.orderMargin = reader.string();
+          message.spotOrderMargin = reader.string();
           continue;
         case 3:
           if (tag !== 26) {
@@ -538,6 +544,13 @@ export const LockedCoins = {
           }
 
           message.positionMargin = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.futuresOrderMargin = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -551,16 +564,18 @@ export const LockedCoins = {
   fromJSON(object: any): LockedCoins {
     return {
       denom: isSet(object.denom) ? String(object.denom) : "",
-      orderMargin: isSet(object.orderMargin) ? String(object.orderMargin) : "",
+      spotOrderMargin: isSet(object.spotOrderMargin) ? String(object.spotOrderMargin) : "",
       positionMargin: isSet(object.positionMargin) ? String(object.positionMargin) : "",
+      futuresOrderMargin: isSet(object.futuresOrderMargin) ? String(object.futuresOrderMargin) : "",
     };
   },
 
   toJSON(message: LockedCoins): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.orderMargin !== undefined && (obj.orderMargin = message.orderMargin);
+    message.spotOrderMargin !== undefined && (obj.spotOrderMargin = message.spotOrderMargin);
     message.positionMargin !== undefined && (obj.positionMargin = message.positionMargin);
+    message.futuresOrderMargin !== undefined && (obj.futuresOrderMargin = message.futuresOrderMargin);
     return obj;
   },
 
@@ -571,8 +586,9 @@ export const LockedCoins = {
   fromPartial(object: DeepPartial<LockedCoins>): LockedCoins {
     const message = createBaseLockedCoins();
     message.denom = object.denom ?? "";
-    message.orderMargin = object.orderMargin ?? "";
+    message.spotOrderMargin = object.spotOrderMargin ?? "";
     message.positionMargin = object.positionMargin ?? "";
+    message.futuresOrderMargin = object.futuresOrderMargin ?? "";
     return message;
   },
 };
@@ -740,7 +756,7 @@ export const PositionPool = {
 };
 
 function createBaseTokenBalance(): TokenBalance {
-  return { available: "", order: "", position: "", denom: "" };
+  return { available: "", spotOrder: "", position: "", denom: "", futures: "", futuresOrder: "" };
 }
 
 export const TokenBalance = {
@@ -748,14 +764,20 @@ export const TokenBalance = {
     if (message.available !== "") {
       writer.uint32(10).string(message.available);
     }
-    if (message.order !== "") {
-      writer.uint32(18).string(message.order);
+    if (message.spotOrder !== "") {
+      writer.uint32(18).string(message.spotOrder);
     }
     if (message.position !== "") {
       writer.uint32(26).string(message.position);
     }
     if (message.denom !== "") {
       writer.uint32(34).string(message.denom);
+    }
+    if (message.futures !== "") {
+      writer.uint32(42).string(message.futures);
+    }
+    if (message.futuresOrder !== "") {
+      writer.uint32(50).string(message.futuresOrder);
     }
     return writer;
   },
@@ -779,7 +801,7 @@ export const TokenBalance = {
             break;
           }
 
-          message.order = reader.string();
+          message.spotOrder = reader.string();
           continue;
         case 3:
           if (tag !== 26) {
@@ -795,6 +817,20 @@ export const TokenBalance = {
 
           message.denom = reader.string();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.futures = reader.string();
+          continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.futuresOrder = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -807,18 +843,22 @@ export const TokenBalance = {
   fromJSON(object: any): TokenBalance {
     return {
       available: isSet(object.available) ? String(object.available) : "",
-      order: isSet(object.order) ? String(object.order) : "",
+      spotOrder: isSet(object.spotOrder) ? String(object.spotOrder) : "",
       position: isSet(object.position) ? String(object.position) : "",
       denom: isSet(object.denom) ? String(object.denom) : "",
+      futures: isSet(object.futures) ? String(object.futures) : "",
+      futuresOrder: isSet(object.futuresOrder) ? String(object.futuresOrder) : "",
     };
   },
 
   toJSON(message: TokenBalance): unknown {
     const obj: any = {};
     message.available !== undefined && (obj.available = message.available);
-    message.order !== undefined && (obj.order = message.order);
+    message.spotOrder !== undefined && (obj.spotOrder = message.spotOrder);
     message.position !== undefined && (obj.position = message.position);
     message.denom !== undefined && (obj.denom = message.denom);
+    message.futures !== undefined && (obj.futures = message.futures);
+    message.futuresOrder !== undefined && (obj.futuresOrder = message.futuresOrder);
     return obj;
   },
 
@@ -829,9 +869,11 @@ export const TokenBalance = {
   fromPartial(object: DeepPartial<TokenBalance>): TokenBalance {
     const message = createBaseTokenBalance();
     message.available = object.available ?? "";
-    message.order = object.order ?? "";
+    message.spotOrder = object.spotOrder ?? "";
     message.position = object.position ?? "";
     message.denom = object.denom ?? "";
+    message.futures = object.futures ?? "";
+    message.futuresOrder = object.futuresOrder ?? "";
     return message;
   },
 };

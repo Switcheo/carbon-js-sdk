@@ -22,20 +22,20 @@ import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from 
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
 import { DecodeObject, EncodeObject, OfflineDirectSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
-import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
-import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
+import { tendermint37, Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { sleep } from "@cosmjs/utils";
 import axios from "axios";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import { utils } from "ethers";
 import { jwtDecode } from "jwt-decode";
 import { CarbonEIP712Signer, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { toUint8Array } from '@carbon-sdk/util/bytes'
 
-dayjs.extend(utc)
+type BroadcastTxAsyncResponse = tendermint37.BroadcastTxAsyncResponse;
+type BroadcastTxSyncResponse = tendermint37.BroadcastTxSyncResponse;
+type TxResponse = tendermint37.TxResponse;
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint37Client;
@@ -416,7 +416,7 @@ export class CarbonWallet {
   public isGranteeValid(): boolean {
     if (!this.grantee) return false
     const { expiry } = this.grantee;
-    const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(BUFFER_PERIOD, 'seconds'));
+    const hasNotExpired = dayjs(expiry).isAfter(dayjs().add(BUFFER_PERIOD, 'seconds'));
     return hasNotExpired && !!this.grantee.signer;
   }
 
@@ -505,7 +505,7 @@ export class CarbonWallet {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
     const tmClient = await this.getTmClient();
     const response = await tmClient.broadcastTxSync({ tx });
-    if (!broadcastTxSyncSuccess(response)) {
+    if (!tendermint37.broadcastTxSyncSuccess(response)) {
       // tx failed
       throw new CarbonCustomError(`[${response.code}] ${response.log}`, ErrorType.BROADCAST_FAIL, response);
     }
@@ -522,6 +522,26 @@ export class CarbonWallet {
     return tmClient.broadcastTxAsync({ tx });
   }
 
+  async signAndBroadcast(
+    messages: EncodeObject[],
+    signOpts: CarbonTx.SignTxOpts | undefined,
+    broadcastOpts: CarbonTx.BroadcastTxOpts & { mode: BroadcastTxMode.BroadcastTxBlock },
+  ): Promise<DeliverTxResponse>;
+  async signAndBroadcast(
+    messages: EncodeObject[],
+    signOpts: CarbonTx.SignTxOpts | undefined,
+    broadcastOpts: CarbonTx.BroadcastTxOpts & { mode: BroadcastTxMode.BroadcastTxSync },
+  ): Promise<BroadcastTxSyncResponse>;
+  async signAndBroadcast(
+    messages: EncodeObject[],
+    signOpts: CarbonTx.SignTxOpts | undefined,
+    broadcastOpts: CarbonTx.BroadcastTxOpts & { mode: BroadcastTxMode.BroadcastTxAsync },
+  ): Promise<BroadcastTxAsyncResponse>;
+  async signAndBroadcast(
+    messages: EncodeObject[],
+    signOpts?: CarbonTx.SignTxOpts,
+    broadcastOpts?: CarbonTx.BroadcastTxOpts,
+  ): Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse>;
   async signAndBroadcast(
     messages: EncodeObject[],
     signOpts?: CarbonTx.SignTxOpts,
@@ -715,7 +735,7 @@ export class CarbonWallet {
         this.updateMergeAccountStatus()
       }
       await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.(msgs));
-      return result as DeliverTxResponse;
+      return result;
     }
     catch (error) {
       await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.(msgs));
@@ -761,8 +781,11 @@ export class CarbonWallet {
     if (this.triggerMerge || opts?.triggerMerge) {
       await this.sendInitialMergeAccountTx(msgs, opts)
     }
-    const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
-    return result as BroadcastTxSyncResponse;
+    const broadcastOpts: CarbonTx.BroadcastTxOpts & { mode: BroadcastTxMode.BroadcastTxSync } = {
+      mode: BroadcastTxMode.BroadcastTxSync,
+    };
+    const result = await this.signAndBroadcast(msgs, opts, broadcastOpts);
+    return result;
   }
 
   async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {

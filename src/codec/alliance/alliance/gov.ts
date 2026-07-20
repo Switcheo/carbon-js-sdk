@@ -14,14 +14,15 @@ export interface MsgCreateAllianceProposal {
   /** Denom of the asset. It could either be a native token or an IBC token */
   denom: string;
   /**
-   * The reward weight specifies the ratio of rewards that will be given to each alliance asset
-   * It does not need to sum to 1. rate = weight / total_weight
+   * The reward weight specifies the ratio of rewards that will be given to each
+   * alliance asset It does not need to sum to 1. rate = weight / total_weight
    * Native asset is always assumed to have a weight of 1.
    */
   rewardWeight: string;
   /**
-   * A positive take rate is used for liquid staking derivatives. It defines an annualized reward rate that
-   * will be redirected to the distribution rewards pool
+   * A positive take rate is used for liquid staking derivatives. It defines an
+   * annualized reward rate that will be redirected to the distribution rewards
+   * pool
    */
   takeRate: string;
   rewardChangeRate: string;
@@ -38,8 +39,8 @@ export interface MsgUpdateAllianceProposal {
   /** Denom of the asset. It could either be a native token or an IBC token */
   denom: string;
   /**
-   * The reward weight specifies the ratio of rewards that will be given to each alliance asset
-   * It does not need to sum to 1. rate = weight / total_weight
+   * The reward weight specifies the ratio of rewards that will be given to each
+   * alliance asset It does not need to sum to 1. rate = weight / total_weight
    * Native asset is always assumed to have a weight of 1.
    */
   rewardWeight: string;

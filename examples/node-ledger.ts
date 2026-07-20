@@ -1,8 +1,8 @@
 import TransportNodeHid from "@ledgerhq/hw-transport-node-hid";
 import * as bech32 from "bech32";
 import { ethers } from "ethers";
-import { signatureImport } from "secp256k1";
 import semver from "semver";
+import { derSignatureToCompact } from "../src/util/secp256k1";
 
 // @ts-ignore
 import { default as CosmosLedgerApp } from "ledger-cosmos-js";
@@ -185,7 +185,7 @@ class NodeLedger {
     const response = await this.cosmosApp.sign(this.hdPath, signMessage);
     await this.checkLedgerErrors(response);
     // we have to parse the signature from Ledger as it's in DER format
-    const parsedSignature = signatureImport(response.signature);
+    const parsedSignature = derSignatureToCompact(response.signature);
     return parsedSignature;
   }
 

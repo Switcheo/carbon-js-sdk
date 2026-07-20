@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
+set -euo pipefail
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd -- "$script_dir/.." && pwd)"
+cd "$repo_root"
 
 rm -rf ./src/codec
 mkdir ./src/codec
@@ -16,5 +20,5 @@ rm -rf \
   src/codec/gogoproto/ \
   src/codec/google/api/ 
 
-yarn sync-reset
-sh $(dirname "${BASH_SOURCE[0]}")/generate-registry.sh
+bash "$script_dir/sync-reset.sh"
+bash "$script_dir/generate-registry.sh"

@@ -1,37 +1,40 @@
-
 import path from "path";
 import fs from "fs";
 
-const files = process.argv;
+const [pwd, modelsFile] = process.argv.slice(-2);
+const MODEL_BLACKLIST = ["MsgClientImpl", "protobufPackage", "GenesisState", "QueryClientImpl"];
+const whitelistExports: Record<string, string> = {
+  Btcx: "btcx",
+  Ccm: "ccm",
+  Headersync: "headersync",
+  Lockproxy: "lockproxy",
+};
 
-const [pwd, modelsFile] = files.splice(files.length - 2, 2);
-
-const MODEL_BLACKLIST = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
-
-const whitelistExports: { [name: string]: string } = {
-  'Btcx': 'btcx',
-  'Ccm': 'ccm',
-  'Headersync': 'headersync',
-  'Lockproxy': 'lockproxy',
+function writeGenerated(file: string, lines: string[]): void {
+  const temporary = `${file}.tmp`;
+  fs.writeFileSync(temporary, lines.join(""));
+  fs.renameSync(temporary, file);
 }
 
-for (const exportName in whitelistExports) {
+const modelExports: string[] = [];
+for (const exportName of Object.keys(whitelistExports).sort()) {
   const directoryPath = `Switcheo/carbon/${whitelistExports[exportName]}`;
-  const directory = path.join(pwd, 'src/codec', directoryPath);
-  const files = fs.readdirSync(directory);
+  const directory = path.join(pwd, "src/codec", directoryPath);
+  const exportLines: string[] = [];
+  const sourceFiles = fs.readdirSync(directory)
+    .filter((file) => file.endsWith(".ts") && file !== "export.ts")
+    .sort();
 
-  for (const file of files) {
-    const codecModule = require(`${directory}/${file}`);
-
-    const modelNames = Object.keys(codecModule).filter((key) =>
-      !MODEL_BLACKLIST.includes(key)
-    );
+  for (const file of sourceFiles) {
+    const codecModule = require(path.join(directory, file));
+    const modelNames = Object.keys(codecModule)
+      .filter((key) => !MODEL_BLACKLIST.includes(key))
+      .sort();
     if (!modelNames.length) continue;
-
-    const exportLine = `export { ${modelNames.join(", ")} } from "./${file.replace(/\.ts$/i, '')}"\n`;
-    fs.appendFileSync(path.join(directory, 'export.ts'), exportLine);
+    exportLines.push(`export { ${modelNames.join(", ")} } from "./${file.replace(/\.ts$/i, "")}";\n`);
   }
 
-  const exportLine = `export * as ${exportName} from "./${directoryPath}/export"\n`;
-  fs.appendFileSync(modelsFile, exportLine);
+  writeGenerated(path.join(directory, "export.ts"), exportLines);
+  modelExports.push(`export * as ${exportName} from "./${directoryPath}/export";\n`);
 }
+writeGenerated(modelsFile, modelExports);

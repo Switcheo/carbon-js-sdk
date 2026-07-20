@@ -30,7 +30,6 @@ interface RainbowkitAPI {
 
 class RainbowKitAccount extends Eip6963Provider {
   private provider: unknown
-  private blockchain: EVMChain = 'Ethereum';
 
   static createRainbowKitSigner(rainbowKit: RainbowKitAccount, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const evmHexAddress = AddressUtils.ETHAddress.publicKeyToAddress(Buffer.from(pubKeyBase64, "base64"), addressOptions)
@@ -202,7 +201,6 @@ class RainbowKitAccount extends Eip6963Provider {
     const chainIdHex = (await rainbowKitApi?.request({ method: "eth_chainId" })) as string;
     const chainId = chainIdHex ? parseInt(chainIdHex, 16) : undefined;
     const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
-    this.blockchain = blockchain!;
 
     return { chainId, blockchain };
   }

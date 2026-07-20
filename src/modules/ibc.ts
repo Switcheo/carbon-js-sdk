@@ -9,6 +9,18 @@ import BigNumber from "bignumber.js";
 import Long from "long";
 import BaseModule from "./base";
 
+interface ChainRegistryChainInfo {
+  status?: string;
+  chain_id?: string;
+  chain_name?: string;
+  pretty_name?: string;
+  bech32_prefix?: string;
+  slip44?: number;
+  staking?: {
+    staking_tokens?: Array<{ denom: string }>;
+  };
+}
+
 export class IBCModule extends BaseModule {
   /** @deprecated please use sendIbcTransferUpdated instead */
   public async sendIBCTransfer(params: IBCModule.SendIBCTransferParams, msgOpts?: CarbonTx.SignTxOpts) {
@@ -86,6 +98,9 @@ export class IBCModule extends BaseModule {
 
     const ibcBridges = tokenClient.bridges.ibc;
     const chainsResponse = await fetch(`https://chains.cosmos.directory/`);
+    if (!chainsResponse.ok) {
+      throw new Error(`Failed to fetch Cosmos Directory chains: HTTP ${chainsResponse.status}`);
+    }
     const chainsData = (await chainsResponse.json() as CosmosChainsObj);
     const chainInfoMap: TypeUtils.SimpleMap<ExtendedChainInfo> = {};
 
@@ -95,9 +110,42 @@ export class IBCModule extends BaseModule {
       const chainId = ibcBridge.chain_id_name;
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
       const chainData = chainsData.chains.find((d) => d.chain_id === chainId);
-      let chainInfo: ChainInfo | undefined = await this.getChainInfo(chainName);
+      let registryChainInfo: ChainRegistryChainInfo | undefined;
+      if (chainData?.status === undefined) {
+        registryChainInfo = await this.getChainRegistryInfo(chainName);
+      }
+      const registryStatus = chainData?.status ?? registryChainInfo?.status;
+      const isRegistryKilled = registryStatus === "killed";
+      let chainInfo: ChainInfo | undefined;
+
+      if (isRegistryKilled) {
+        // Keep enough metadata for callers that still reference the canonical
+        // on-chain bridge, but do not probe removed registry files or present
+        // embedded metadata as evidence that transfers remain available.
+        const embeddedChainInfo = IBCUtils.EmbedChainInfos[chainId];
+        if (embeddedChainInfo) {
+          chainInfo = {
+            ...embeddedChainInfo,
+            rpc: "",
+            rest: "",
+            currencies: [...embeddedChainInfo.currencies],
+            feeCurrencies: [],
+            features: [],
+          };
+        } else {
+          registryChainInfo ??= await this.getChainRegistryInfo(chainName);
+          chainInfo = this.getRetiredChainInfo(
+            chainId,
+            ibcBridge.chainName,
+            chainData,
+            registryChainInfo,
+          );
+        }
+      } else {
+        chainInfo = await this.getChainInfo(chainName);
+      }
       
-      if (chainInfo === undefined) {
+      if (chainInfo === undefined && !isRegistryKilled) {
         const fallbackChainInfo = await this.getAssembledChainInfo(chainId, chainData);
         chainInfo = fallbackChainInfo;
       }
@@ -106,17 +154,22 @@ export class IBCModule extends BaseModule {
         chainInfoMap[ibcBridge.chain_id_name] = {
           ...chainInfo,
           minimalDenomMap: {},
-          bestRpcs: chainData?.best_apis.rpc ?? [],
+          bestRpcs: isRegistryKilled ? [] : chainData?.best_apis?.rpc ?? [],
+          registryStatus,
+          isTransferAvailable: ibcBridge.enabled && !isRegistryKilled,
         };
       }
     }
 
     const carbonChainInfo = await KeplrAccount.getChainInfo(this.sdkProvider);
     if (carbonChainInfo) {
+      const registryStatus = chainsData.chains.find((d) => d.chain_id === carbonChainInfo.chainId)?.status;
       chainInfoMap[carbonChainInfo.chainId] = {
         ...carbonChainInfo,
         minimalDenomMap: {},
         bestRpcs: [],
+        registryStatus,
+        isTransferAvailable: registryStatus !== "killed",
       };
     }
 
@@ -164,23 +217,88 @@ export class IBCModule extends BaseModule {
 
   async getChainInfo(chainName: string): Promise<ChainInfo | undefined> {
     if (!chainName || chainName === "mainnet") return undefined
-    const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`)
+    const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/cosmos/${chainName}.json`)
     if (!chainInfoResponse.ok) {
       if (chainInfoResponse.status === 404) {
         return undefined;
       }
+      throw new Error(`Failed to fetch Keplr chain info for ${chainName}: HTTP ${chainInfoResponse.status}`);
     }
     const chainInfoJson = await chainInfoResponse.json();
     return chainInfoJson as ChainInfo;
+  }
+
+  async getChainRegistryStatus(chainName: string): Promise<string | undefined> {
+    return (await this.getChainRegistryInfo(chainName))?.status;
+  }
+
+  private async getChainRegistryInfo(chainName: string): Promise<ChainRegistryChainInfo | undefined> {
+    if (!chainName) return undefined;
+    const url = `https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainName}/chain.json`;
+    const chainInfoResponse = await fetch(url);
+    if (!chainInfoResponse.ok) {
+      if (chainInfoResponse.status === 404) {
+        return undefined;
+      }
+      throw new Error(`Failed to fetch Cosmos Chain Registry status for ${chainName}: HTTP ${chainInfoResponse.status}`);
+    }
+    const chainInfoJson = await chainInfoResponse.json() as ChainRegistryChainInfo;
+    return chainInfoJson;
+  }
+
+  private getRetiredChainInfo(
+    chainId: string,
+    bridgeChainName: string,
+    chainData?: ChainRegistryItem,
+    registryChainInfo?: ChainRegistryChainInfo,
+  ): ChainInfo {
+    const coinMinimalDenom = chainData?.denom
+      ?? registryChainInfo?.staking?.staking_tokens?.[0]?.denom
+      ?? "";
+    const currency: Currency = {
+      coinDenom: chainData?.symbol ?? coinMinimalDenom.toUpperCase(),
+      coinMinimalDenom,
+      coinDecimals: chainData?.decimals ?? 0,
+    };
+    const bech32Prefix = chainData?.bech32_prefix ?? registryChainInfo?.bech32_prefix ?? "";
+
+    return {
+      // Deliberately omit stale endpoints and transfer features. The object is
+      // present only so existing map consumers can identify the retired bridge.
+      rpc: "",
+      rest: "",
+      chainId,
+      chainName: chainData?.pretty_name
+        ?? registryChainInfo?.pretty_name
+        ?? bridgeChainName
+        ?? registryChainInfo?.chain_name
+        ?? chainId,
+      bip44: {
+        coinType: registryChainInfo?.slip44 ?? 118,
+      },
+      bech32Config: IBCAddress.defaultBech32Config(bech32Prefix),
+      stakeCurrency: currency,
+      currencies: coinMinimalDenom ? [currency] : [],
+      feeCurrencies: [],
+      features: [],
+    };
   }
 
   async getAssembledChainInfo(chainId: string, chainData?: ChainRegistryItem): Promise<ChainInfo | undefined> {
     const defaultChainInfo = IBCUtils.EmbedChainInfos[chainId];
     if (chainData) {
       try {
-        const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/chain.json`);
+        const chainInfoUrl = `https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/chain.json`;
+        const chainInfoResponse = await fetch(chainInfoUrl);
+        if (!chainInfoResponse.ok) {
+          throw new Error(`Failed to fetch Cosmos Chain Registry chain info for ${chainId}: HTTP ${chainInfoResponse.status}`);
+        }
         const chainInfoJson = await chainInfoResponse.json();
-        const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/assetlist.json`);
+        const chainAssetListUrl = `https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/assetlist.json`;
+        const chainAssetListResponse = await fetch(chainAssetListUrl);
+        if (!chainAssetListResponse.ok) {
+          throw new Error(`Failed to fetch Cosmos Chain Registry assets for ${chainId}: HTTP ${chainAssetListResponse.status}`);
+        }
         const assetListJson = await chainAssetListResponse.json();
         const features: string[] = [];
         if (chainData.cosmwasm_enabled) {
@@ -248,8 +366,8 @@ export class IBCModule extends BaseModule {
         });
 
         return {
-          rpc: defaultChainInfo.rpc ?? chainInfoJson.apis.rpc[0].address,
-          rest: defaultChainInfo.rest ?? chainInfoJson.apis.rest[0].address,
+          rpc: defaultChainInfo?.rpc ?? chainInfoJson.apis.rpc[0].address,
+          rest: defaultChainInfo?.rest ?? chainInfoJson.apis.rest[0].address,
           chainId: chainInfoJson.chain_id,
           chainName: chainInfoJson.chain_name,
           bip44:

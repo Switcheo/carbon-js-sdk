@@ -15,12 +15,11 @@ import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
-import { AminoMsg } from "@cosmjs/amino";
-import { makeSignDoc } from "@cosmjs/amino/build";
+import { AminoMsg, makeSignDoc } from "@cosmjs/amino";
 import { Algo, EncodeObject, makeSignDoc as makeProtoSignDoc, TxBodyEncodeObject } from "@cosmjs/proto-signing";
 import { StdFee } from "@cosmjs/stargate";
+import { encrypt } from "@metamask/eth-sig-util";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import * as ethSignUtils from "eth-sig-util";
 import { ethers } from "ethers";
 import { CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, ETH_MAINNET, ETH_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
@@ -540,13 +539,11 @@ export class MetaMask extends Eip6963Provider {
 
     const messageToEncrypt = getEncryptMessage(mnemonic);
 
-    const cipher = ethSignUtils.encrypt(
+    const cipher = encrypt({
       publicKey,
-      {
-        data: messageToEncrypt,
-      },
-      ENCRYPTION_VERSION
-    );
+      data: messageToEncrypt,
+      version: ENCRYPTION_VERSION,
+    });
 
     const { version, nonce, ephemPublicKey, ciphertext } = cipher;
     const encryptedMnemonic = ethers.utils.toUtf8Bytes([version, nonce, ephemPublicKey, ciphertext].join("."));

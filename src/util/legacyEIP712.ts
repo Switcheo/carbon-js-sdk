@@ -1,12 +1,14 @@
 import { DEFAULT_CARBON_DOMAIN_FIELDS, LEGACY_DEFAULT_EIP712_TYPES } from "@carbon-sdk/constant/eip712";
-import { StdSignDoc } from "@cosmjs/amino/build";
+import { StdSignDoc } from "@cosmjs/amino";
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
 import { TypeUtils } from ".";
 import { parseChainId } from "@carbon-sdk/util/ethermint";
 import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
 import { Coin } from "@cosmjs/proto-signing";
-import { capitalize } from "lodash";
+import lodash from "lodash";
+
+const { capitalize } = lodash;
 
 
 export interface LegacyEIP712Tx {

@@ -199,10 +199,14 @@ class KeplrAccount {
     const isMainnet = config.network === Network.MainNet;
 
     const chainId = config.chainId;
-    const url = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json"
+    const url = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/cosmos/carbon.json"
     let keplrChainInfo
     try {
-      keplrChainInfo = await (await FetchUtils.fetch(url)).json();
+      const response = await FetchUtils.fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch Carbon chain info: HTTP ${response.status}`);
+      }
+      keplrChainInfo = await response.json();
     } catch (error) {
       console.warn(error)
     }

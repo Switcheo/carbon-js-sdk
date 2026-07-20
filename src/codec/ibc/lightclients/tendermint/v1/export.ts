@@ -1,1 +1,1 @@
-export { ClientState, ConsensusState, Misbehaviour, Header, Fraction } from "./tendermint";
+export { ClientState, ConsensusState, Fraction, Header, Misbehaviour } from "./tendermint";

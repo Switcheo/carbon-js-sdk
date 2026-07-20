@@ -1,1 +1,1 @@
-export { PubKey, PrivKey } from "./keys"
+export { PrivKey, PubKey } from "./keys";

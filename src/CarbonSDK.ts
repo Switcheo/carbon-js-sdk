@@ -219,7 +219,7 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const tmClient: Tendermint37Client = opts.tmClient ?? new (Tendermint37Client as any)(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
+    const tmClient = opts.tmClient ?? Tendermint37Client.create(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
     let chainId = networkConfig.chainId; // fallback chain ID
     let normalInit = true;
     try {
