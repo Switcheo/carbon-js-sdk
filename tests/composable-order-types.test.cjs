@@ -20,8 +20,14 @@ import { composeModules, composeQueries, createFeatureRegistry } from "carbon-js
 import { orderFeature } from "carbon-js-sdk/features/order";
 import type { OrderModule } from "carbon-js-sdk/lib/modules/order";
 
-declare const rpc: Parameters<typeof composeQueries>[0];
-declare const provider: Parameters<typeof composeModules>[0];
+const rpc = {
+  request: async (_service: string, _method: string, _data: Uint8Array) => new Uint8Array(),
+};
+const wallet = null as unknown as ReturnType<Parameters<typeof composeModules>[0]["getConnectedWallet"]>;
+const provider = {
+  getConnectedWallet: () => wallet,
+  log: (..._args: unknown[]) => undefined,
+};
 declare const legacyOrder: OrderModule;
 
 legacyOrder.sdkProvider.query;

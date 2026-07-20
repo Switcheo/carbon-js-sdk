@@ -21,6 +21,19 @@ test("the compiled package entrypoint loads", () => {
   assert.equal(typeof sdk.CarbonSDK, "function");
 });
 
+test("the public composition subpaths load through package exports", async () => {
+  const compose = require("carbon-js-sdk/compose");
+  const order = require("carbon-js-sdk/features/order");
+  const esmCompose = await import("carbon-js-sdk/compose");
+  const esmOrder = await import("carbon-js-sdk/features/order");
+
+  assert.equal(typeof compose.composeModules, "function");
+  assert.equal(typeof compose.createFeatureRegistry, "function");
+  assert.equal(typeof order.orderFeature.createModules, "function");
+  assert.equal(typeof esmCompose.composeModules, "function");
+  assert.equal(typeof esmOrder.orderFeature.createModules, "function");
+});
+
 const representativeModules = [
   "lib/clients/GrpcQueryClient.js",
   "lib/provider/keplr/KeplrAccount.js",

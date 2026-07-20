@@ -75,6 +75,40 @@ test("the order feature registry contains only its signing message types", () =>
   assert.equal(registry.lookupType(ORDER_TYPE_URLS.cancel), orderTx.MsgCancelOrder);
   assert.equal(registry.lookupType(ORDER_TYPE_URLS.cancelAll), orderTx.MsgCancelAll);
   assert.equal(registry.lookupType(ORDER_TYPE_URLS.setLeverage), leverageTx.MsgSetLeverage);
+  assert.equal(registry.lookupType("/cosmos.bank.v1beta1.MsgSend"), undefined);
   assert.equal(registry.lookupType("/cosmos.authz.v1beta1.GenericAuthorization"), undefined);
   assert.equal(registry.lookupType("/cosmwasm.wasm.v1.MsgExecuteContract"), undefined);
+});
+
+test("feature composition rejects duplicate query and module keys", () => {
+  const { composeModules, composeQueries } = require(path.join(root, "lib/compose"));
+  const feature = (label) => ({
+    createQueries: () => ({ duplicate: { label } }),
+    createModules: () => ({ duplicate: { label } }),
+    registryEntries: [],
+  });
+
+  assert.throws(
+    () => composeQueries({}, [feature("first"), feature("second")]),
+    /Duplicate query key: duplicate/,
+  );
+  assert.throws(
+    () => composeModules({}, [feature("first"), feature("second")]),
+    /Duplicate module key: duplicate/,
+  );
+});
+
+test("feature composition rejects duplicate registry type URLs", () => {
+  const { createFeatureRegistry } = require(path.join(root, "lib/compose"));
+  const generatedType = { encode: () => undefined, decode: () => undefined, fromPartial: () => undefined };
+  const feature = {
+    createQueries: () => ({}),
+    createModules: () => ({}),
+    registryEntries: [["/example.MsgDuplicate", generatedType]],
+  };
+
+  assert.throws(
+    () => createFeatureRegistry([feature, feature]),
+    /Duplicate registry type URL: \/example\.MsgDuplicate/,
+  );
 });
