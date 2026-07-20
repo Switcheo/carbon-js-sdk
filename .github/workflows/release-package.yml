@@ -1,0 +1,281 @@
+name: Publish prebuilt release package
+
+on:
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: release-package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prepare-publisher:
+    name: Prepare trusted release tooling
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      publisher-digest: ${{ steps.publisher.outputs.digest }}
+
+    steps:
+      - name: Checkout exact publisher
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Record publisher digest
+        id: publisher
+        run: echo "digest=$(sha256sum .github/scripts/publish-release-package.sh | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Stage publisher for the write-scoped job
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: carbon-js-sdk-release-publisher
+          path: .github/scripts/publish-release-package.sh
+          if-no-files-found: error
+          retention-days: 1
+
+  build-package:
+    name: Build and validate package
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
+      commit: ${{ steps.release.outputs.commit }}
+      artifact-name: ${{ steps.package.outputs.artifact-name }}
+      artifact-path: ${{ steps.package.outputs.artifact-path }}
+      checksum-path: ${{ steps.package.outputs.checksum-path }}
+      digest: ${{ steps.package.outputs.digest }}
+
+    steps:
+      - name: Checkout exact tagged commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Enable Yarn Classic
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+          yarn --version
+
+      - name: Validate tag, version, and commit
+        id: release
+        env:
+          TAG: ${{ github.ref_name }}
+          EVENT_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          tag_commit="$(git rev-parse "refs/tags/${TAG}^{commit}")"
+          head_commit="$(git rev-parse HEAD)"
+          event_commit="$(git rev-parse "${EVENT_COMMIT}^{commit}")"
+          if [[ "$tag_commit" != "$head_commit" ]]; then
+            echo "Tag and checkout commits differ: tag=$tag_commit checkout=$head_commit" >&2
+            exit 1
+          fi
+          if [[ "$tag_commit" != "$event_commit" ]]; then
+            echo "Tag and event commits differ: tag=$tag_commit event=$event_commit" >&2
+            exit 1
+          fi
+
+          TAG="$TAG" node <<'NODE'
+          const fs = require("node:fs");
+          const manifest = require("./package.json");
+          const tag = process.env.TAG;
+          const semver = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
+          if (!tag.startsWith("v")) throw new Error(`Version tag must start with v: ${tag}`);
+          const version = tag.slice(1);
+          if (!semver.test(version)) throw new Error(`Tag is not a strict semantic version: ${tag}`);
+          if (manifest.version !== version) {
+            throw new Error(`package.json version ${manifest.version} does not match tag ${tag}`);
+          }
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\n`);
+          NODE
+
+          version="${TAG#v}"
+          version_without_build="${version%%+*}"
+          prerelease=false
+          if [[ "$version_without_build" == *-* ]]; then
+            prerelease=true
+          fi
+          {
+            echo "prerelease=$prerelease"
+            echo "commit=$tag_commit"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Install frozen dependencies
+        run: yarn install --frozen-lockfile --non-interactive
+
+      - name: Build SDK
+        run: yarn build
+
+      - name: Pack and validate SDK
+        id: package
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          npm pack --ignore-scripts --pack-destination dist
+          artifact_name="carbon-js-sdk-${VERSION}.tgz"
+          artifact_path="dist/${artifact_name}"
+          checksum_path="${artifact_path}.sha256"
+          if [[ ! -f "$artifact_path" ]]; then
+            echo "npm pack did not create the expected artifact: $artifact_path" >&2
+            exit 1
+          fi
+          node scripts/validate-release-package.cjs "$artifact_path" "$VERSION"
+          digest="$(sha256sum "$artifact_path" | cut -d' ' -f1)"
+          printf '%s  %s\n' "$digest" "$artifact_name" > "$checksum_path"
+          {
+            echo "artifact-name=$artifact_name"
+            echo "artifact-path=$artifact_path"
+            echo "checksum-path=$checksum_path"
+            echo "digest=$digest"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Stage package for publication job
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: carbon-js-sdk-release-${{ steps.release.outputs.version }}
+          path: |
+            ${{ steps.package.outputs.artifact-path }}
+            ${{ steps.package.outputs.checksum-path }}
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Record build provenance
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          COMMIT: ${{ steps.release.outputs.commit }}
+          DIGEST: ${{ steps.package.outputs.digest }}
+          ARTIFACT_NAME: ${{ steps.package.outputs.artifact-name }}
+        run: |
+          {
+            echo "## Prebuilt release package"
+            echo
+            echo "- Version: \`$VERSION\`"
+            echo "- Tagged commit: \`$COMMIT\`"
+            echo "- Artifact: \`$ARTIFACT_NAME\`"
+            echo "- SHA-256: \`$DIGEST\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish-release:
+    name: Publish GitHub Release assets
+    needs:
+      - build-package
+      - prepare-publisher
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+
+    steps:
+      - name: Download, verify, and publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_VERSION: ${{ needs.build-package.outputs.version }}
+          RELEASE_COMMIT: ${{ needs.build-package.outputs.commit }}
+          RELEASE_PRERELEASE: ${{ needs.build-package.outputs.prerelease }}
+          RELEASE_DIGEST: ${{ needs.build-package.outputs.digest }}
+          ARTIFACT_NAME: ${{ needs.build-package.outputs.artifact-name }}
+          EXPECTED_PUBLISHER_DIGEST: ${{ needs.prepare-publisher.outputs.publisher-digest }}
+        run: |
+          set -euo pipefail
+          workdir="$(mktemp -d)"
+          trap 'rm -rf "$workdir"' EXIT
+          mkdir -p "$workdir/publisher" "$workdir/package"
+
+          artifacts_json="$(gh api "repos/${GH_REPO}/actions/runs/${RUN_ID}/artifacts?per_page=100")"
+          resolve_artifact_id() {
+            local name="$1"
+            local -a ids
+            mapfile -t ids < <(jq -r --arg name "$name" '.artifacts[] | select(.name == $name and .expired == false) | .id' <<< "$artifacts_json")
+            if (( ${#ids[@]} != 1 )) || [[ ! "${ids[0]}" =~ ^[0-9]+$ ]]; then
+              echo "Expected exactly one unexpired workflow artifact named $name" >&2
+              exit 1
+            fi
+            printf '%s\n' "${ids[0]}"
+          }
+
+          publisher_artifact_id="$(resolve_artifact_id carbon-js-sdk-release-publisher)"
+          package_artifact_id="$(resolve_artifact_id "carbon-js-sdk-release-${RELEASE_VERSION}")"
+          gh api "repos/${GH_REPO}/actions/artifacts/${publisher_artifact_id}/zip" > "$workdir/publisher.zip"
+          gh api "repos/${GH_REPO}/actions/artifacts/${package_artifact_id}/zip" > "$workdir/package.zip"
+
+          mapfile -t publisher_entries < <(unzip -Z1 "$workdir/publisher.zip")
+          if (( ${#publisher_entries[@]} != 1 )) || [[ "${publisher_entries[0]}" != "publish-release-package.sh" ]]; then
+            echo "Publisher workflow artifact has unexpected contents" >&2
+            exit 1
+          fi
+          mapfile -t package_entries < <(unzip -Z1 "$workdir/package.zip")
+          if (( ${#package_entries[@]} != 2 )); then
+            echo "Package workflow artifact must contain exactly two files" >&2
+            exit 1
+          fi
+          artifact_entry_found=false
+          checksum_entry_found=false
+          for entry in "${package_entries[@]}"; do
+            if [[ "$entry" == "$ARTIFACT_NAME" ]]; then
+              artifact_entry_found=true
+            elif [[ "$entry" == "$ARTIFACT_NAME.sha256" ]]; then
+              checksum_entry_found=true
+            else
+              echo "Package workflow artifact contains unexpected path: $entry" >&2
+              exit 1
+            fi
+          done
+          if [[ "$artifact_entry_found" != true || "$checksum_entry_found" != true ]]; then
+            echo "Package workflow artifact is missing the tarball or checksum" >&2
+            exit 1
+          fi
+
+          unzip -q "$workdir/publisher.zip" -d "$workdir/publisher"
+          unzip -q "$workdir/package.zip" -d "$workdir/package"
+          publisher_path="$workdir/publisher/publish-release-package.sh"
+          export RELEASE_ARTIFACT="$workdir/package/$ARTIFACT_NAME"
+          export RELEASE_CHECKSUM="$RELEASE_ARTIFACT.sha256"
+
+          publisher_digest="$(sha256sum "$publisher_path" | cut -d' ' -f1)"
+          if [[ "$publisher_digest" != "$EXPECTED_PUBLISHER_DIGEST" ]]; then
+            echo "Transferred publisher digest differs: expected $EXPECTED_PUBLISHER_DIGEST, got $publisher_digest" >&2
+            exit 1
+          fi
+          tar -tzf "$RELEASE_ARTIFACT" >/dev/null
+          actual_digest="$(sha256sum "$RELEASE_ARTIFACT" | cut -d' ' -f1)"
+          if [[ "$actual_digest" != "$RELEASE_DIGEST" ]]; then
+            echo "Transferred artifact digest differs: expected $RELEASE_DIGEST, got $actual_digest" >&2
+            exit 1
+          fi
+          if ! cmp -s "$RELEASE_CHECKSUM" <(printf '%s  %s\n' "$RELEASE_DIGEST" "$ARTIFACT_NAME"); then
+            echo "Transferred checksum file is invalid" >&2
+            exit 1
+          fi
+
+          chmod +x "$publisher_path"
+          "$publisher_path"
+
+          {
+            echo "## Published GitHub Release package"
+            echo
+            echo "- Tag: \`$RELEASE_TAG\`"
+            echo "- Tagged commit: \`$RELEASE_COMMIT\`"
+            echo "- Artifact: \`$ARTIFACT_NAME\`"
+            echo "- SHA-256: \`$RELEASE_DIGEST\`"
+          } >> "$GITHUB_STEP_SUMMARY"
