@@ -148,6 +148,34 @@
         "ignoredWarnings": []
       }
     },
+    "order-feature": {
+      "rollup": {
+        "raw": 110000,
+        "gzip": 11000,
+        "containsRegistry": false,
+        "owners": [
+          "@cosmjs/proto-signing",
+          "bignumber.js",
+          "long",
+          "protobufjs"
+        ],
+        "ignoredWarnings": [
+          "CIRCULAR_DEPENDENCY"
+        ]
+      },
+      "webpack": {
+        "raw": 50000,
+        "gzip": 8000,
+        "containsRegistry": false,
+        "owners": [
+          "@cosmjs/proto-signing",
+          "bignumber.js",
+          "long",
+          "protobufjs"
+        ],
+        "ignoredWarnings": []
+      }
+    },
     "sdk": {
       "rollup": {
         "raw": 7000000,

@@ -20,6 +20,7 @@ const cases = {
   wallet: 'import { CarbonPrivateKeySigner } from "carbon-js-sdk/wallet/signer"; console.log(typeof CarbonPrivateKeySigner);\n',
   sdk: 'import { CarbonSDK } from "carbon-js-sdk"; console.log(typeof CarbonSDK);\n',
   registry: 'import { registry } from "carbon-js-sdk/codec/registry"; console.log(Boolean(registry.lookupType("/cosmos.authz.v1beta1.GenericAuthorization")));\n',
+  "order-feature": 'import { composeQueries, createFeatureRegistry } from "carbon-js-sdk/compose"; import { orderFeature, OrderMessageTypeUrl } from "carbon-js-sdk/features/order"; const rpc = { request: async () => new Uint8Array() }; const query = composeQueries(rpc, [orderFeature]); const registry = createFeatureRegistry([orderFeature]); console.log(typeof query.order.Order, Boolean(registry.lookupType(OrderMessageTypeUrl.create)));\n',
 };
 
 function isThirdParty(request) {

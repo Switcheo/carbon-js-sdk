@@ -4955,11 +4955,23 @@
       "require": "./lib/codec/registry.js",
       "default": "./lib/codec/registry.js"
     },
+    "./compose": {
+      "types": "./lib/compose/index.d.ts",
+      "import": "./esm/compose/index.js",
+      "require": "./lib/compose/index.js",
+      "default": "./lib/compose/index.js"
+    },
     "./constants": {
       "types": "./lib/constant/index.d.ts",
       "import": "./esm/constant/index.js",
       "require": "./lib/constant/index.js",
       "default": "./lib/constant/index.js"
+    },
+    "./features/order": {
+      "types": "./lib/features/order.d.ts",
+      "import": "./esm/features/order.js",
+      "require": "./lib/features/order.js",
+      "default": "./lib/features/order.js"
     },
     "./hydrogen": {
       "types": "./lib/hydrogen/index.d.ts",
@@ -16193,8 +16205,14 @@
       "codec/registry": [
         "lib/codec/registry.d.ts"
       ],
+      "compose": [
+        "lib/compose/index.d.ts"
+      ],
       "constants": [
         "lib/constant/index.d.ts"
+      ],
+      "features/order": [
+        "lib/features/order.d.ts"
       ],
       "hydrogen": [
         "lib/hydrogen/index.d.ts"

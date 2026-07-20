@@ -1,10 +1,15 @@
-import { SDKProvider } from "@carbon-sdk/provider";
-import { CarbonTx } from "@carbon-sdk/util";
-import { CarbonWallet } from "@carbon-sdk/wallet";
-import { EncodeObject } from "@cosmjs/proto-signing";
+import type SDKProvider from "@carbon-sdk/provider/sdk/SDKProvider";
+import type { SignTxOpts } from "@carbon-sdk/util/tx";
+import type { CarbonWallet } from "@carbon-sdk/wallet/CarbonWallet";
+import type { EncodeObject } from "@cosmjs/proto-signing";
 
-class BaseModule {
-  constructor(public readonly sdkProvider: SDKProvider) {}
+export interface ModuleProvider {
+  getConnectedWallet: () => CarbonWallet;
+  log: (...args: any[]) => void;
+}
+
+class BaseModule<TProvider extends ModuleProvider = SDKProvider> {
+  constructor(public readonly sdkProvider: TProvider) {}
 
   protected getWallet(): CarbonWallet {
     return this.sdkProvider.getConnectedWallet();
@@ -14,7 +19,7 @@ class BaseModule {
     this.sdkProvider.log(`[${this.constructor.name}]`, ...args);
   }
 
-  protected async sendTx(msg: EncodeObject, opts: CarbonTx.SignTxOpts): Promise<unknown> {
+  protected async sendTx(msg: EncodeObject, opts: SignTxOpts): Promise<unknown> {
     const wallet = this.getWallet();
     return await wallet.sendTx(msg, opts);
   }

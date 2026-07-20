@@ -17,7 +17,7 @@ test("Rollup and webpack bundle budgets exclude registry code from stable import
   });
   assert.equal(result.status, 0, result.stderr || result.stdout);
   const measurements = JSON.parse(result.stdout);
-  for (const caseName of ["stable-number", "stable-model", "provider", "wallet", "sdk", "registry", "root-number"]) {
+  for (const caseName of ["stable-number", "stable-model", "provider", "wallet", "sdk", "registry", "root-number", "order-feature"]) {
     assert.ok(measurements[caseName], `missing required bundle fixture: ${caseName}`);
     for (const bundler of ["rollup", "webpack"]) {
       assert.equal(measurements[caseName][bundler].runtimeSmoke, true, `${caseName}/${bundler} runtime smoke`);
@@ -42,4 +42,11 @@ test("Rollup and webpack bundle budgets exclude registry code from stable import
   assert.ok(measurements["root-number"].webpack.raw < contract.recordedBaseline.raw);
   assert.equal(measurements.provider.rollup.containsRegistry, false);
   assert.equal(measurements.provider.webpack.containsRegistry, false);
+  for (const bundler of ["rollup", "webpack"]) {
+    assert.equal(measurements["order-feature"][bundler].containsRegistry, false);
+    assert.ok(
+      measurements["order-feature"][bundler].raw * 4 < measurements.sdk[bundler].raw,
+      `focused order feature must be at least 4x smaller than full SDK under ${bundler}`,
+    );
+  }
 });

@@ -1,20 +1,22 @@
 import { MsgSetLeverage } from "@carbon-sdk/codec/Switcheo/carbon/leverage/tx";
 import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/Switcheo/carbon/order/tx";
-import { CarbonTx } from "@carbon-sdk/util";
+import { OrderMessageTypeUrl } from "@carbon-sdk/features/order-type-urls";
+import type SDKProvider from "@carbon-sdk/provider/sdk/SDKProvider";
+import type { SignTxOpts } from "@carbon-sdk/util/tx";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import { getDefaultTimeInForce, isMarket } from "@carbon-sdk/util/order";
-import { EncodeObject } from "@cosmjs/proto-signing";
+import type { EncodeObject } from "@cosmjs/proto-signing";
 import { BigNumber } from "bignumber.js";
-import BaseModule from "./base";
+import BaseModule, { type ModuleProvider } from "./base";
 
 
-export class OrderModule extends BaseModule {
+export class OrderModule<TProvider extends ModuleProvider = SDKProvider> extends BaseModule<TProvider> {
 
-  public async create(param: OrderModule.CreateOrderParams, opts?: CarbonTx.SignTxOpts) {
+  public async create(param: OrderModule.CreateOrderParams, opts?: SignTxOpts) {
     return this.createOrders([param], opts);
   }
 
-  public async createOrders(params: (OrderModule.CreateOrderParams | OrderModule.SetLeverageParams)[], opts?: CarbonTx.SignTxOpts) {
+  public async createOrders(params: (OrderModule.CreateOrderParams | OrderModule.SetLeverageParams)[], opts?: SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs: EncodeObject[] = params.map((param) => {
@@ -22,7 +24,7 @@ export class OrderModule extends BaseModule {
 
       if ("leverage" in param) {
         return {
-          typeUrl: CarbonTx.Types.MsgSetLeverage,
+          typeUrl: OrderMessageTypeUrl.setLeverage,
           value: MsgSetLeverage.fromPartial({
             creator,
             marketId: param.marketId,
@@ -32,7 +34,7 @@ export class OrderModule extends BaseModule {
       }
 
       return {
-        typeUrl: CarbonTx.Types.MsgCreateOrder,
+        typeUrl: OrderMessageTypeUrl.create,
         value: MsgCreateOrder.fromPartial({
           creator,
           isPostOnly: param.isPostOnly,
@@ -55,7 +57,7 @@ export class OrderModule extends BaseModule {
     return await wallet.sendTxs(msgs, opts);
   }
 
-  public async cancel(params: OrderModule.CancelOrderParams, opts?: CarbonTx.SignTxOpts) {
+  public async cancel(params: OrderModule.CancelOrderParams, opts?: SignTxOpts) {
     const wallet = this.getWallet();
     const creator = params.creator ?? wallet.bech32Address
     const id = params.id
@@ -66,14 +68,14 @@ export class OrderModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgCancelOrder,
+        typeUrl: OrderMessageTypeUrl.cancel,
         value,
       },
       opts
     );
   }
 
-  public async cancelOrders(params: OrderModule.CancelOrderParams[], opts?: CarbonTx.SignTxOpts) {
+  public async cancelOrders(params: OrderModule.CancelOrderParams[], opts?: SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map((p) => {
@@ -84,7 +86,7 @@ export class OrderModule extends BaseModule {
       };
 
       return {
-        typeUrl: CarbonTx.Types.MsgCancelOrder,
+        typeUrl: OrderMessageTypeUrl.cancel,
         value,
       };
     });
@@ -92,7 +94,7 @@ export class OrderModule extends BaseModule {
     return await wallet.sendTxs(msgs, opts);
   }
 
-  public async edit(params: OrderModule.EditOrderParams, opts?: CarbonTx.SignTxOpts) {
+  public async edit(params: OrderModule.EditOrderParams, opts?: SignTxOpts) {
     const wallet = this.getWallet();
     const creator = params.creator ?? wallet.bech32Address
 
@@ -106,14 +108,14 @@ export class OrderModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgEditOrder,
+        typeUrl: OrderMessageTypeUrl.edit,
         value,
       },
       opts
     );
   }
 
-  public async editOrders(params: OrderModule.EditOrderParams[], opts?: CarbonTx.SignTxOpts) {
+  public async editOrders(params: OrderModule.EditOrderParams[], opts?: SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map((param) => {
@@ -127,7 +129,7 @@ export class OrderModule extends BaseModule {
       });
 
       return {
-        typeUrl: CarbonTx.Types.MsgEditOrder,
+        typeUrl: OrderMessageTypeUrl.edit,
         value,
       };
     });
@@ -135,7 +137,7 @@ export class OrderModule extends BaseModule {
     return await wallet.sendTxs(msgs, opts);
   }
 
-  public async cancelAll(params: OrderModule.CancelAllParams, opts?: CarbonTx.SignTxOpts) {
+  public async cancelAll(params: OrderModule.CancelAllParams, opts?: SignTxOpts) {
     const wallet = this.getWallet();
     const creator = params.creator ?? wallet.bech32Address
 
@@ -146,7 +148,7 @@ export class OrderModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgCancelAll,
+        typeUrl: OrderMessageTypeUrl.cancelAll,
         value,
       },
       opts

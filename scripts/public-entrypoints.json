@@ -1,9 +1,11 @@
 {
   "clients": "clients/index",
+  "compose": "compose/index",
   "constants": "constant/index",
   "hydrogen": "hydrogen/index",
   "insights": "insights/index",
   "modules": "modules/index",
+  "features/order": "features/order",
   "provider": "provider/index",
   "provider/chain": "provider/chainProvider/index",
   "provider/eip6963": "provider/eip6963Provider/index",
