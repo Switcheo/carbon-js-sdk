@@ -91,7 +91,7 @@
     "lodash": "4.18.1",
     "long": "4.0.0",
     "node-fetch": "2.7.0",
-    "protobufjs": "7.6.3",
+    "protobufjs": "7.6.5",
     "query-string": "^7.0.1",
     "rxjs": "6.6.7",
     "semver": "7.8.5",
