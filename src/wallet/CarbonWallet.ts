@@ -11,7 +11,7 @@ import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { GrantModule } from "@carbon-sdk/modules/grant";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { ETHAddress, SWTHAddress } from "@carbon-sdk/util/address";
-import { AccessTokenResponse, GrantRequest, GrantType, hasExpired, hasRefreshTokenExpired, isValidIssuer } from "@carbon-sdk/util/auth";
+import { AccessTokenResponse, GrantRequest, GrantType, JWT_ACCESS_TOKEN_USE, JWT_REFRESH_TOKEN_USE, isSessionTokenUsable } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
@@ -28,7 +28,6 @@ import axios from "axios";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import { utils } from "ethers";
-import { jwtDecode } from "jwt-decode";
 import { CarbonEIP712Signer, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { toUint8Array } from '@carbon-sdk/util/bytes'
@@ -352,14 +351,18 @@ export class CarbonWallet {
   public async reloadJwtToken(request?: GrantRequest, authMessage: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
     const network = this.network;
     if (this.jwt) {
-      const { iss, exp } = jwtDecode(this.jwt.access_token)
-      if (!isValidIssuer(iss, network)) return this.getNewJwtToken(authMessage, request)
-      const accessTokenExpired = hasExpired(exp)
-      if (accessTokenExpired) {
-        if (!hasRefreshTokenExpired(this.jwt.refresh_token)) return this.refreshJwtToken(this.jwt.refresh_token)
-        return this.getNewJwtToken(authMessage, request)
+      if (isSessionTokenUsable(this.jwt.access_token, network, JWT_ACCESS_TOKEN_USE, this.bech32Address)) return
+
+      if (isSessionTokenUsable(this.jwt.refresh_token, network, JWT_REFRESH_TOKEN_USE, this.bech32Address)) {
+        try {
+          return await this.refreshJwtToken(this.jwt.refresh_token)
+        } catch (error) {
+          const status = axios.isAxiosError(error) ? error.response?.status : undefined
+          if (status !== 400 && status !== 401) throw error
+        }
       }
-      return
+
+      this.jwt = undefined
     }
     return this.getNewJwtToken(authMessage, request)
   }
