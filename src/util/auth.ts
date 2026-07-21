@@ -1,5 +1,6 @@
 import { Network } from '@carbon-sdk/constant'
 import dayjs from 'dayjs'
+import { jwtDecode } from 'jwt-decode'
 
 export const expirybufferSeconds = 30
 
@@ -15,6 +16,28 @@ export enum GrantType {
   SignatureCosmos = 'signature_cosmos',
   SignatureEth = 'signature_eth',
   RefreshToken = 'refresh_token',
+}
+
+export const JWT_ACCESS_TOKEN_USE = 'accessToken'
+export const JWT_REFRESH_TOKEN_USE = 'refreshToken'
+export type JwtTokenUse = typeof JWT_ACCESS_TOKEN_USE | typeof JWT_REFRESH_TOKEN_USE
+
+type SessionTokenHeader = {
+  alg?: unknown
+  typ?: unknown
+}
+
+type SessionTokenClaims = {
+  iss?: unknown
+  aud?: unknown
+  sub?: unknown
+  iat?: unknown
+  exp?: unknown
+  token_use?: unknown
+}
+
+function getTokenHeaderType(tokenUse: JwtTokenUse): string {
+  return tokenUse === JWT_ACCESS_TOKEN_USE ? 'at+jwt' : 'rt+jwt'
 }
 
 export type GrantRequest = {
@@ -42,22 +65,62 @@ export const hasExpired = (exp: number = 0): boolean => {
 }
 
 export const hasRefreshTokenExpired = (refreshToken: string) => {
-  const payloadStr: string | undefined = refreshToken.split('.')[1]
-  if (!payloadStr) return true
-  const payload = JSON.parse(Buffer.from(payloadStr, 'base64').toString())
-  return hasExpired(payload.exp)
+  try {
+    const { exp } = jwtDecode<SessionTokenClaims>(refreshToken)
+    return !Number.isSafeInteger(exp) || hasExpired(exp as number)
+  } catch {
+    return true
+  }
 }
 
-export const isValidIssuer = (iss: string = '', network: Network) => {
+export const getExpectedTokenIssuer = (network: Network): string => {
   switch (network) {
     case Network.MainNet:
-      return iss === 'demex-auth'
+      return 'demex-auth'
     case Network.DevNet:
-      return iss === 'demex-auth-dev'
+      return 'demex-auth-dev'
     case Network.TestNet:
-      return iss === 'demex-auth-test'
+      return 'demex-auth-test'
     default:
-      return iss === 'demex-auth-local'
+      return 'demex-auth-local'
+  }
+}
 
+export const isValidIssuer = (iss: string = '', network: Network) =>
+  iss === getExpectedTokenIssuer(network)
+
+/**
+ * Checks whether an unverified JWT envelope is suitable for local session reuse.
+ * Resource servers remain responsible for signature verification and authorization.
+ */
+export const isSessionTokenUsable = (
+  token: string,
+  network: Network,
+  expectedTokenUse: JwtTokenUse,
+  expectedSubject: string,
+): boolean => {
+  if (typeof token !== 'string' || token.length === 0
+    || typeof expectedSubject !== 'string' || expectedSubject.length === 0) return false
+
+  try {
+    const header = jwtDecode<SessionTokenHeader>(token, { header: true })
+    const claims = jwtDecode<SessionTokenClaims>(token)
+    const expectedIssuer = getExpectedTokenIssuer(network)
+    const now = dayjs().unix()
+
+    return header.alg === 'ES256'
+      && header.typ === getTokenHeaderType(expectedTokenUse)
+      && claims.iss === expectedIssuer
+      && claims.aud === expectedIssuer
+      && claims.sub === expectedSubject
+      && claims.token_use === expectedTokenUse
+      && Number.isSafeInteger(claims.iat)
+      && Number.isSafeInteger(claims.exp)
+      && (claims.iat as number) > 0
+      && (claims.iat as number) <= now + expirybufferSeconds
+      && (claims.exp as number) > (claims.iat as number)
+      && !hasExpired(claims.exp as number)
+  } catch {
+    return false
   }
 }
