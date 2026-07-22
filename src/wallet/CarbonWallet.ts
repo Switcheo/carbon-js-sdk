@@ -11,7 +11,7 @@ import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { GrantModule } from "@carbon-sdk/modules/grant";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { ETHAddress, SWTHAddress } from "@carbon-sdk/util/address";
-import { AccessTokenResponse, GrantRequest, GrantType, JWT_ACCESS_TOKEN_USE, JWT_REFRESH_TOKEN_USE, isSessionTokenUsable } from "@carbon-sdk/util/auth";
+import { AccessTokenResponse, GrantRequest, GrantType, JWT_ACCESS_TOKEN_USE, isRefreshSessionUsable, isSessionTokenUsable } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
@@ -353,7 +353,12 @@ export class CarbonWallet {
     if (this.jwt) {
       if (isSessionTokenUsable(this.jwt.access_token, network, JWT_ACCESS_TOKEN_USE, this.bech32Address)) return
 
-      if (isSessionTokenUsable(this.jwt.refresh_token, network, JWT_REFRESH_TOKEN_USE, this.bech32Address)) {
+      if (isRefreshSessionUsable(
+        this.jwt.refresh_token,
+        this.jwt.access_token,
+        network,
+        this.bech32Address,
+      )) {
         try {
           return await this.refreshJwtToken(this.jwt.refresh_token)
         } catch (error) {

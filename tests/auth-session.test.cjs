@@ -8,11 +8,14 @@ const {
   JWT_ACCESS_TOKEN_USE,
   JWT_REFRESH_TOKEN_USE,
   hasRefreshTokenExpired,
+  isOpaqueRefreshToken,
+  isRefreshSessionUsable,
   isSessionTokenUsable,
 } = require("../lib/util/auth");
 const { CarbonWallet } = require("../lib/wallet/CarbonWallet");
 
 const now = Math.floor(Date.now() / 1000);
+const opaqueRefreshToken = Buffer.alloc(32, 7).toString("base64url");
 
 function token({
   alg = "ES256",
@@ -110,6 +113,20 @@ test("validates refresh-token type and fails closed on malformed payloads", () =
   assert.equal(isSessionTokenUsable(refresh, Network.MainNet, JWT_REFRESH_TOKEN_USE, subject), true);
   assert.equal(hasRefreshTokenExpired(refresh), false);
   assert.equal(hasRefreshTokenExpired("broken.payload"), true);
+  assert.equal(hasRefreshTokenExpired(opaqueRefreshToken), false);
+  assert.equal(isOpaqueRefreshToken(opaqueRefreshToken), true);
+  for (const malformed of [
+    "A".repeat(42),
+    "A".repeat(42) + "B",
+    `${opaqueRefreshToken}=`,
+    "A".repeat(44),
+  ]) assert.equal(isOpaqueRefreshToken(malformed), false);
+  assert.equal(isRefreshSessionUsable(
+    opaqueRefreshToken,
+    token({ iss: "demex-auth-test", aud: "demex-auth-test", sub: subject, exp: now - 1 }),
+    Network.MainNet,
+    subject,
+  ), false);
 });
 
 test("reuses a suitable access token without refreshing or signing", async () => {
@@ -141,6 +158,42 @@ test("uses a suitable refresh token when the access token is unusable", async ()
 
   assert.equal(refreshedWith, wallet.jwt.refresh_token);
   assert.equal(signed, false);
+});
+
+test("uses an opaque refresh token only when the cached access token binds it to this wallet and network", async () => {
+  const wallet = walletWithSession(session());
+  wallet.jwt = session({
+    subject: wallet.bech32Address,
+    accessToken: token({ sub: wallet.bech32Address, exp: now - 1 }),
+    refreshToken: opaqueRefreshToken,
+  });
+  let refreshedWith;
+  let signed = false;
+  wallet.refreshJwtToken = async (refreshToken) => { refreshedWith = refreshToken; };
+  wallet.getNewJwtToken = async () => { signed = true; };
+
+  await wallet.reloadJwtToken();
+
+  assert.equal(refreshedWith, opaqueRefreshToken);
+  assert.equal(signed, false);
+});
+
+test("never submits an opaque refresh token whose cached access token belongs to another wallet", async () => {
+  const wallet = walletWithSession(session());
+  wallet.jwt = session({
+    subject: wallet.bech32Address,
+    accessToken: token({ sub: "another-wallet", exp: now - 1 }),
+    refreshToken: opaqueRefreshToken,
+  });
+  let refreshAttempted = false;
+  let signed = false;
+  wallet.refreshJwtToken = async () => { refreshAttempted = true; };
+  wallet.getNewJwtToken = async () => { signed = true; };
+
+  await wallet.reloadJwtToken();
+
+  assert.equal(refreshAttempted, false);
+  assert.equal(signed, true);
 });
 
 for (const status of [400, 401]) {
