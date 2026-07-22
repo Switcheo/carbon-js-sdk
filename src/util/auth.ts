@@ -64,7 +64,12 @@ export const hasExpired = (exp: number = 0): boolean => {
   return (currentUnix + expirybufferSeconds) >= exp
 }
 
+export const isOpaqueRefreshToken = (refreshToken: string): boolean =>
+  typeof refreshToken === 'string'
+  && /^[A-Za-z0-9_-]{42}[AEIMQUYcgkosw048]$/.test(refreshToken)
+
 export const hasRefreshTokenExpired = (refreshToken: string) => {
+  if (isOpaqueRefreshToken(refreshToken)) return false
   try {
     const { exp } = jwtDecode<SessionTokenClaims>(refreshToken)
     return !Number.isSafeInteger(exp) || hasExpired(exp as number)
@@ -93,11 +98,12 @@ export const isValidIssuer = (iss: string = '', network: Network) =>
  * Checks whether an unverified JWT envelope is suitable for local session reuse.
  * Resource servers remain responsible for signature verification and authorization.
  */
-export const isSessionTokenUsable = (
+const isJwtSessionTokenUsable = (
   token: string,
   network: Network,
   expectedTokenUse: JwtTokenUse,
   expectedSubject: string,
+  requireUnexpired: boolean,
 ): boolean => {
   if (typeof token !== 'string' || token.length === 0
     || typeof expectedSubject !== 'string' || expectedSubject.length === 0) return false
@@ -119,8 +125,29 @@ export const isSessionTokenUsable = (
       && (claims.iat as number) > 0
       && (claims.iat as number) <= now + expirybufferSeconds
       && (claims.exp as number) > (claims.iat as number)
-      && !hasExpired(claims.exp as number)
+      && (!requireUnexpired || !hasExpired(claims.exp as number))
   } catch {
     return false
   }
 }
+
+export const isSessionTokenUsable = (
+  token: string,
+  network: Network,
+  expectedTokenUse: JwtTokenUse,
+  expectedSubject: string,
+): boolean => isJwtSessionTokenUsable(token, network, expectedTokenUse, expectedSubject, true)
+
+/**
+ * Opaque refresh credentials carry no client-readable wallet or environment
+ * claims. Bind them to the strict access-token envelope returned alongside the
+ * credential, while allowing that access token itself to have expired.
+ */
+export const isRefreshSessionUsable = (
+  refreshToken: string,
+  accessToken: string,
+  network: Network,
+  expectedSubject: string,
+): boolean => isOpaqueRefreshToken(refreshToken)
+  ? isJwtSessionTokenUsable(accessToken, network, JWT_ACCESS_TOKEN_USE, expectedSubject, false)
+  : isSessionTokenUsable(refreshToken, network, JWT_REFRESH_TOKEN_USE, expectedSubject)
