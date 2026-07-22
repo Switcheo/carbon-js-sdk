@@ -285,8 +285,12 @@ class RainbowKitAccount extends Eip6963Provider {
   }
 
   static async signAndRecoverPubKey(provider: RainbowKitAccount, enableJwtAuth?: boolean, customMsg: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
-    const address = await provider.defaultAccount()
     const signMessage = enableJwtAuth ? AuthUtils.getAuthMessage(customMsg) : customMsg;
+    return this.signAndRecoverPubKeyForMessage(provider, signMessage)
+  }
+
+  static async signAndRecoverPubKeyForMessage(provider: Pick<RainbowKitAccount, 'defaultAccount' | 'personalSign'>, signMessage: string) {
+    const address = await provider.defaultAccount()
     const signature = await provider.personalSign(address, signMessage)
     const publicKeyHex = EvmUtils.recoverPublicKey(signMessage, signature)
 

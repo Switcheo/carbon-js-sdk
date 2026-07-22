@@ -10,10 +10,11 @@ import {
   ProviderAgent,
   Network as _Network,
 } from "@carbon-sdk/constant";
-import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
+import { AuthUtils, GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import BigNumber from "bignumber.js";
+import axios from "axios";
 import * as clients from "./clients";
 import { CarbonQueryClient, HydrogenClient, InsightsQueryClient, TokenClient } from "./clients";
 import GasFee from "./clients/GasFee";
@@ -53,7 +54,7 @@ import { SWTHAddressOptions } from "./util/address";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
 import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, EvmWalletOpts, RainbowKitWalletOpts } from "./wallet";
-import { GrantRequest, GrantType } from "./util/auth";
+import { GrantRequest, GrantType, JwtAuthMode } from "./util/auth";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export * as Carbon from "./codec/carbon-models";
@@ -408,7 +409,7 @@ class CarbonSDK {
         // In the case where account does not exist on chain, still allow wallet connection.
         // Else, throw an error as per normal
         if (!errorTyped.message.includes("Account does not exist on chain. Send some tokens there before trying to query sequence.")) {
-          throw new Error(errorTyped.message);
+          throw err;
         }
       }
     }
@@ -529,6 +530,35 @@ class CarbonSDK {
     return this.connect(wallet, opts);
   }
 
+  private async createEvmChallengeCredential(
+    provider: { defaultAccount(): Promise<string>, personalSign(address: string, message: string): Promise<string> },
+    opts: CarbonWalletGenericOpts | undefined,
+    signAndRecover: (message: string) => Promise<{ publicKey: string, signature: string, message: string }>,
+  ) {
+    try {
+      await GenericUtils.callIgnoreError(() => opts?.onRequestAuth?.())
+      const walletAddress = await provider.defaultAccount()
+      const authChallengeUrl = this.configOverride.authChallengeUrl
+        ?? (this.configOverride.authUrl ? AuthUtils.challengeUrlFromAccessTokenUrl(this.configOverride.authUrl) : this.networkConfig.authChallengeUrl)
+      let response
+      try {
+        response = await axios.post(authChallengeUrl, {
+          grant_type: GrantType.SignatureEth,
+          wallet_address: walletAddress,
+        })
+      } catch (error) {
+        throw AuthUtils.sanitizeChallengeError(error)
+      }
+      const challenge = AuthUtils.validateChallengeResponse(response.data.result, GrantType.SignatureEth, walletAddress)
+      return {
+        ...(await signAndRecover(challenge.message)),
+        challengeId: challenge.challenge_id,
+      }
+    } finally {
+      await GenericUtils.callIgnoreError(() => opts?.onAuthComplete?.())
+    }
+  }
+
   public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, evmWalletOpts?: EvmWalletOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
@@ -543,12 +573,16 @@ class CarbonSDK {
     let pubKey = evmWalletOpts?.publicKeyBase64;
     let message: string | undefined;
     let signature: string | undefined;
+    let challengeId: string | undefined;
 
     if (signMessageRequired) {
-      const result = await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth, opts?.authMessage);
+      const result = noJwtProvided && (opts?.jwtAuthMode ?? JwtAuthMode.Challenge) === JwtAuthMode.Challenge
+        ? await this.createEvmChallengeCredential(metamask, opts, (exactMessage) => MetaMask.signAndRecoverPubKeyForMessage(metamask, exactMessage))
+        : await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth, opts?.authMessage);
       pubKey = result.publicKey;
       message = result.message;
       signature = result.signature;
+      challengeId = 'challengeId' in result && typeof result.challengeId === 'string' ? result.challengeId : undefined;
     }
 
     const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, pubKey!, addressOptions);
@@ -564,7 +598,12 @@ class CarbonSDK {
     })
 
     if (noJwtProvided) {
-      const authRequest: GrantRequest = {
+      const authRequest: GrantRequest = challengeId ? {
+        grant_type: GrantType.SignatureEth,
+        challenge_id: challengeId,
+        public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
+        signature: signature!,
+      } : {
         grant_type: GrantType.SignatureEth,
         message: message!,
         public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
@@ -590,12 +629,16 @@ class CarbonSDK {
     let pubKey = rainbowKitWalletOpts?.publicKeyBase64;
     let message: string | undefined;
     let signature: string | undefined;
+    let challengeId: string | undefined;
 
     if (signMessageRequired) {
-      const result = await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth, opts?.authMessage)
+      const result = noJwtProvided && (opts?.jwtAuthMode ?? JwtAuthMode.Challenge) === JwtAuthMode.Challenge
+        ? await this.createEvmChallengeCredential(rainbowKit, opts, (exactMessage) => RainbowKitAccount.signAndRecoverPubKeyForMessage(rainbowKit, exactMessage))
+        : await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth, opts?.authMessage)
       pubKey = result.publicKey
       message = result.message
       signature = result.signature
+      challengeId = 'challengeId' in result && typeof result.challengeId === 'string' ? result.challengeId : undefined
     }
 
     const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, pubKey!, addressOptions);
@@ -612,7 +655,12 @@ class CarbonSDK {
     });
 
     if (noJwtProvided) {
-      const authRequest: GrantRequest = {
+      const authRequest: GrantRequest = challengeId ? {
+        grant_type: GrantType.SignatureEth,
+        challenge_id: challengeId,
+        public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
+        signature: signature!,
+      } : {
         grant_type: GrantType.SignatureEth,
         message: message!,
         public_key: Buffer.from(pubKey!, 'base64').toString('hex'),
