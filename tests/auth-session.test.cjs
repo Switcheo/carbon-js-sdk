@@ -28,7 +28,8 @@ function token({
   tokenUse = "accessToken",
 } = {}) {
   const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
-  return `${encode({ alg, typ })}.${encode({ iss, aud, sub, iat, exp, token_use: tokenUse })}.signature`;
+  const signature = Buffer.alloc(64, 7).toString("base64url");
+  return `${encode({ alg, typ })}.${encode({ iss, aud, sub, iat, exp, token_use: tokenUse })}.${signature}`;
 }
 
 function session(overrides = {}) {
@@ -76,6 +77,11 @@ test("accepts only a strict access-token envelope for the expected wallet", () =
     token({ iat: now + 120, sub: subject }),
     token({ iat: now + 1000, exp: now + 100, sub: subject }),
     token({ exp: now - 1, sub: subject }),
+    token({ sub: subject }).split('.').slice(0, 2).join('.'),
+    `${token({ sub: subject }).split('.').slice(0, 2).join('.')}.`,
+    `${token({ sub: subject })}.extra`,
+    `${token({ sub: subject }).split('.').slice(0, 2).join('.')}.signature`,
+    `${token({ sub: subject }).split('.').slice(0, 2).join('.')}.A`,
     "malformed",
   ];
 
