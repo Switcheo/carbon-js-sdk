@@ -9,16 +9,45 @@ const {
   JwtAuthMode,
   WalletAuthenticationError,
 } = require("../lib/util/auth");
+const { SWTHAddress } = require("../lib/util/address");
 const { CarbonWallet } = require("../lib/wallet/CarbonWallet");
 const { MetaMask } = require("../lib/provider/metamask/MetaMask");
 const CarbonSDK = require("../lib/CarbonSDK").default;
 
-const session = {
+const now = Math.floor(Date.now() / 1000);
+const opaqueRefreshToken = Buffer.alloc(32, 7).toString("base64url");
+
+function jwt({ subject, refresh = false }) {
+  const issuer = "demex-auth";
+  const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
+  const signature = Buffer.alloc(64, 7).toString("base64url");
+  return `${encode({ alg: "ES256", typ: refresh ? "rt+jwt" : "at+jwt" })}.${encode({
+    iss: issuer,
+    aud: issuer,
+    sub: subject,
+    iat: now - 10,
+    exp: now + (refresh ? 3600 : 600),
+    token_use: refresh ? "refreshToken" : "accessToken",
+  })}.${signature}`;
+}
+
+function sessionForSubject(subject, overrides = {}) {
+  return {
+    access_token: jwt({ subject }),
+    refresh_token: opaqueRefreshToken,
+    token_type: "Bearer",
+    expires_in: 600,
+    expires_at: now + 600,
+    ...overrides,
+  };
+}
+
+const nonJwtSession = {
   access_token: "access-token",
   refresh_token: "refresh-token",
   token_type: "Bearer",
   expires_in: 600,
-  expires_at: Math.floor(Date.now() / 1000) + 600,
+  expires_at: now + 600,
 };
 
 function privateKeyWallet(mode = JwtAuthMode.Challenge) {
@@ -31,6 +60,8 @@ function privateKeyWallet(mode = JwtAuthMode.Challenge) {
   wallet.jwt = undefined;
   return wallet;
 }
+
+const session = sessionForSubject(privateKeyWallet().bech32Address);
 
 function challenge(id, message = "server-controlled exact message", walletAddress = "wallet") {
   return {
@@ -257,6 +288,7 @@ test("legacy callback errors are credential-free while the thrown Axios error re
 
 test("malformed successful redemption responses fail before completion", async () => {
   for (const malformed of [
+    nonJwtSession,
     undefined,
     { ...session, access_token: "" },
     { ...session, refresh_token: " " },
@@ -311,6 +343,7 @@ test("CarbonSDK MetaMask login requests SIWE before one signing prompt and redee
   let challengeRequests = 0;
   let redemptions = 0;
   let redeemed = false;
+  let issuedSession;
   const lifecycle = [];
   const provider = {
     legacyEip712SignMode: false,
@@ -336,7 +369,9 @@ test("CarbonSDK MetaMask login requests SIWE before one signing prompt and redee
     assert.equal(body.challenge_id, "E".repeat(43));
     assert.equal(body.message, undefined);
     redeemed = true;
-    return { data: { result: session } };
+    const subject = SWTHAddress.publicKeyToAddress(Buffer.from(body.public_key, "hex"), { network: Network.MainNet });
+    issuedSession = sessionForSubject(subject);
+    return { data: { result: issuedSession } };
   }, () => sdk.connectWithMetamask(provider, {
     enableJwtAuth: true,
     onRequestAuth: async () => { lifecycle.push("request"); },
@@ -349,7 +384,7 @@ test("CarbonSDK MetaMask login requests SIWE before one signing prompt and redee
 
   assert.deepEqual({ prompts, challengeRequests, redemptions }, { prompts: 1, challengeRequests: 1, redemptions: 1 });
   assert.deepEqual(lifecycle, ["request", "complete"]);
-  assert.equal(connected.jwt, session);
+  assert.equal(connected.jwt, issuedSession);
 });
 
 test("MetaMask legacy lifecycle is exactly once and excludes post-redemption initialization", async () => {
@@ -364,7 +399,10 @@ test("MetaMask legacy lifecycle is exactly once and excludes post-redemption ini
   const postRedemptionError = new Error("RPC initialization failed");
   sdk.connect = async () => { throw postRedemptionError; };
 
-  await assert.rejects(withAxiosPost(async () => ({ data: { result: session } }), () => sdk.connectWithMetamask(provider, {
+  await assert.rejects(withAxiosPost(async (_url, body) => {
+    const subject = SWTHAddress.publicKeyToAddress(Buffer.from(body.public_key, "hex"), { network: Network.MainNet });
+    return { data: { result: sessionForSubject(subject) } };
+  }, () => sdk.connectWithMetamask(provider, {
     enableJwtAuth: true,
     jwtAuthMode: JwtAuthMode.Legacy,
     onRequestAuth: async () => { lifecycle.push("request"); },
@@ -381,6 +419,19 @@ test("default challenge mode rejects a caller-supplied legacy signature grant", 
     public_key: "02".padEnd(66, "0"),
     signature: "00".repeat(64),
   }), (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected");
+});
+
+test("caller-supplied opaque refresh grants are rejected before posting", async () => {
+  const wallet = privateKeyWallet();
+  let posted = false;
+  await assert.rejects(withAxiosPost(async () => {
+    posted = true;
+    return { data: { result: session } };
+  }, () => wallet.reloadJwtToken({
+    grant_type: "refresh_token",
+    refresh_token: Buffer.alloc(32, 7).toString("base64url"),
+  })), (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected");
+  assert.equal(posted, false);
 });
 
 test("CarbonSDK connect preserves typed authentication failures", async () => {

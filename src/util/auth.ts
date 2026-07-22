@@ -195,6 +195,18 @@ export const getExpectedTokenIssuer = (network: Network): string => {
 export const isValidIssuer = (iss: string = '', network: Network) =>
   iss === getExpectedTokenIssuer(network)
 
+const isCanonicalBase64UrlSegment = (segment: string): boolean => {
+  if (!/^[A-Za-z0-9_-]+$/.test(segment) || segment.length % 4 === 1) return false
+
+  const remainder = segment.length % 4
+  if (remainder === 0) return true
+
+  const finalSextet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'.indexOf(segment[segment.length - 1])
+  // Unpadded Base64URL must have zero-valued discarded padding bits. This is
+  // equivalent to decode/re-encode equality without a Node Buffer dependency.
+  return remainder === 2 ? finalSextet % 16 === 0 : finalSextet % 4 === 0
+}
+
 /**
  * Checks whether an unverified JWT envelope is suitable for local session reuse.
  * Resource servers remain responsible for signature verification and authorization.
@@ -208,6 +220,8 @@ const isJwtSessionTokenUsable = (
 ): boolean => {
   if (typeof token !== 'string' || token.length === 0
     || typeof expectedSubject !== 'string' || expectedSubject.length === 0) return false
+  const segments = token.split('.')
+  if (segments.length !== 3 || segments.some((segment) => !isCanonicalBase64UrlSegment(segment))) return false
 
   try {
     const header = jwtDecode<SessionTokenHeader>(token, { header: true })
