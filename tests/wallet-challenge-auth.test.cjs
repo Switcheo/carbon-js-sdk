@@ -17,10 +17,10 @@ const CarbonSDK = require("../lib/CarbonSDK").default;
 const now = Math.floor(Date.now() / 1000);
 const opaqueRefreshToken = Buffer.alloc(32, 7).toString("base64url");
 
-function jwt({ subject, refresh = false }) {
+function jwt({ subject, refresh = false, signatureBytes = 64 }) {
   const issuer = "demex-auth";
   const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
-  const signature = Buffer.alloc(64, 7).toString("base64url");
+  const signature = Buffer.alloc(signatureBytes, 7).toString("base64url");
   return `${encode({ alg: "ES256", typ: refresh ? "rt+jwt" : "at+jwt" })}.${encode({
     iss: issuer,
     aud: issuer,
@@ -290,6 +290,9 @@ test("malformed successful redemption responses fail before completion", async (
   for (const malformed of [
     nonJwtSession,
     undefined,
+    sessionForSubject(privateKeyWallet().bech32Address, {
+      access_token: jwt({ subject: privateKeyWallet().bech32Address, signatureBytes: 1 }),
+    }),
     { ...session, access_token: "" },
     { ...session, refresh_token: " " },
     { ...session, expires_in: 0 },
