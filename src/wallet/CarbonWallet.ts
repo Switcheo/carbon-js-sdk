@@ -407,7 +407,30 @@ export class CarbonWallet {
       refresh_token: refreshToken,
     }
     const response = await axios.post(this.networkConfig.authUrl, request)
-    this.jwt = response.data.result
+    this.jwt = this.validateTokenResponse(response.data?.result, false)
+  }
+
+  private validateTokenResponse(result: unknown, challengeGrant: boolean): AccessTokenResponse {
+    const token = result as Partial<AccessTokenResponse> | undefined
+    const invalid = !token
+      || typeof token !== 'object'
+      || typeof token.access_token !== 'string'
+      || token.access_token.trim().length === 0
+      || typeof token.token_type !== 'string'
+      || token.token_type.trim().length === 0
+      || typeof token.expires_in !== 'number'
+      || !Number.isFinite(token.expires_in)
+      || token.expires_in <= 0
+      || typeof token.expires_at !== 'number'
+      || !Number.isFinite(token.expires_at)
+      || token.expires_at <= 0
+      || typeof token.refresh_token !== 'string'
+      || token.refresh_token.trim().length === 0
+    if (invalid) {
+      if (challengeGrant) throw new AuthUtils.WalletAuthenticationError('challenge_rejected')
+      throw new Error('Wallet authentication returned an invalid token response.')
+    }
+    return token as AccessTokenResponse
   }
 
   private async getNewJwtToken(authMessage: string, request?: GrantRequest) {
@@ -446,23 +469,10 @@ export class CarbonWallet {
   private async redeemGrantRequest(request: GrantRequest, authMessage: string, expiredRetries: number): Promise<void> {
     try {
       const response = await axios.post(this.networkConfig.authUrl, request)
-      const result = response.data?.result
-      if (
-        !result
-        || typeof result !== 'object'
-        || typeof result.access_token !== 'string'
-        || typeof result.token_type !== 'string'
-        || typeof result.expires_in !== 'number'
-        || typeof result.expires_at !== 'number'
-        || typeof result.refresh_token !== 'string'
-      ) {
-        if ('challenge_id' in request) throw new AuthUtils.WalletAuthenticationError('challenge_rejected')
-        throw new Error('Wallet authentication returned an invalid token response.')
-      }
-      this.jwt = result
+      this.jwt = this.validateTokenResponse(response.data?.result, 'challenge_id' in request)
     } catch (error) {
       if ('challenge_id' in request && isExpiredChallengeError(error) && expiredRetries < 1) {
-        const retry = await this.constructGrantRequest(authMessage, true)
+        const retry = await this.constructGrantRequest(authMessage, true, false)
         return this.redeemGrantRequest(retry, authMessage, expiredRetries + 1)
       }
       if ('challenge_id' in request) throw sanitizeChallengeError(error)
@@ -477,8 +487,8 @@ export class CarbonWallet {
   }
 
 
-  private async constructGrantRequest(authMessage: string, forceChallenge = false): Promise<ChallengeGrantRequest | LegacySignatureGrantRequest> {
-    await this.notifyAuthRequest()
+  private async constructGrantRequest(authMessage: string, forceChallenge = false, notifyRequest = true): Promise<ChallengeGrantRequest | LegacySignatureGrantRequest> {
+    if (notifyRequest) await this.notifyAuthRequest()
     const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
     const grantType = this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos
     if (this.jwtAuthMode === JwtAuthMode.Legacy && !forceChallenge) {

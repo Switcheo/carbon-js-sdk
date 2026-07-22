@@ -92,6 +92,9 @@ test("Cosmos challenge login signs only the exact server message and redeems wit
 
 test("expired challenge obtains one new challenge and signs each exact message once", async () => {
   const wallet = privateKeyWallet();
+  const lifecycle = [];
+  wallet.onRequestAuth = async () => { lifecycle.push("request"); };
+  wallet.onAuthComplete = async () => { lifecycle.push("complete"); };
   const signedMessages = [];
   wallet.signer.signMessage = async (_address, message) => {
     signedMessages.push(message);
@@ -113,6 +116,7 @@ test("expired challenge obtains one new challenge and signs each exact message o
   assert.equal(issueCount, 2);
   assert.equal(redeemCount, 2);
   assert.deepEqual(signedMessages, ["message-1", "message-2"]);
+  assert.deepEqual(lifecycle, ["request", "complete"]);
 });
 
 test("rejected signatures and unavailable challenge service do not retry or fall back to legacy", async () => {
@@ -252,17 +256,36 @@ test("legacy callback errors are credential-free while the thrown Axios error re
 });
 
 test("malformed successful redemption responses fail before completion", async () => {
-  const wallet = privateKeyWallet();
-  const lifecycle = [];
-  wallet.onRequestAuth = async () => { lifecycle.push("request"); };
-  wallet.onAuthComplete = async (error) => { lifecycle.push(error?.code ?? "complete"); };
+  for (const malformed of [
+    undefined,
+    { ...session, access_token: "" },
+    { ...session, refresh_token: " " },
+    { ...session, expires_in: 0 },
+    { ...session, expires_at: Number.POSITIVE_INFINITY },
+  ]) {
+    const wallet = privateKeyWallet();
+    const lifecycle = [];
+    wallet.onRequestAuth = async () => { lifecycle.push("request"); };
+    wallet.onAuthComplete = async (error) => { lifecycle.push(error?.code ?? "complete"); };
 
-  await assert.rejects(withAxiosPost(async (url) => url === wallet.networkConfig.authChallengeUrl
-    ? { data: { result: challenge("K".repeat(43), "server message", wallet.bech32Address) } }
-    : { data: {} }, () => wallet.reloadJwtToken()),
-  (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected");
-  assert.deepEqual(lifecycle, ["request", "challenge_rejected"]);
-  assert.equal(wallet.jwt, undefined);
+    await assert.rejects(withAxiosPost(async (url) => url === wallet.networkConfig.authChallengeUrl
+      ? { data: { result: challenge("K".repeat(43), "server message", wallet.bech32Address) } }
+      : { data: { result: malformed } }, () => wallet.reloadJwtToken()),
+    (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected");
+    assert.deepEqual(lifecycle, ["request", "challenge_rejected"]);
+    assert.equal(wallet.jwt, undefined);
+  }
+});
+
+test("malformed successful refresh responses are rejected without assigning session state", async () => {
+  for (const malformed of [undefined, {}, { ...session, access_token: "" }, { ...session, expires_in: -1 }]) {
+    const wallet = privateKeyWallet();
+    await assert.rejects(
+      withAxiosPost(async () => ({ data: { result: malformed } }), () => wallet.refreshJwtToken("refresh-token")),
+      /invalid token response/,
+    );
+    assert.equal(wallet.jwt, undefined);
+  }
 });
 
 test("MetaMask public-key recovery uses one signature over a supplied server message", async () => {
