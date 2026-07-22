@@ -147,6 +147,7 @@ export const isExpiredChallengeError = (error: unknown) =>
   asChallengeHttpError(error)?.response?.status === 401 && challengeErrorReason(error) === 'expired'
 
 export const sanitizeChallengeError = (error: unknown): WalletAuthenticationError => {
+  if (error instanceof WalletAuthenticationError) return error
   const status = asChallengeHttpError(error)?.response?.status
   const reason = challengeErrorReason(error)
   if (status === 401 && reason === 'expired') return new WalletAuthenticationError('challenge_expired', status)

@@ -191,6 +191,9 @@ test("authentication callbacks bracket each real prompt and no credential is log
 
 test("legacy timestamp login remains available only when explicitly configured", async () => {
   const wallet = privateKeyWallet(JwtAuthMode.Legacy);
+  const lifecycle = [];
+  wallet.onRequestAuth = async () => { lifecycle.push("request"); };
+  wallet.onAuthComplete = async (error) => { lifecycle.push(error ? "error" : "complete"); };
   let signedMessage;
   wallet.signer.signMessage = async (_address, message) => { signedMessage = message; return "legacy-signature"; };
 
@@ -202,6 +205,64 @@ test("legacy timestamp login remains available only when explicitly configured",
   }, () => wallet.reloadJwtToken(undefined, "Legacy statement"));
 
   assert.match(signedMessage, /^Legacy statement\n\[/);
+  assert.deepEqual(lifecycle, ["request", "complete"]);
+});
+
+test("callback failures never duplicate completion or replace authentication results", async () => {
+  const successful = privateKeyWallet();
+  let successCallbacks = 0;
+  successful.onAuthComplete = async () => {
+    successCallbacks += 1;
+    throw new Error("UI callback failed");
+  };
+  await withAxiosPost(async (url) => url === successful.networkConfig.authChallengeUrl
+    ? { data: { result: challenge("J".repeat(43), "server message", successful.bech32Address) } }
+    : { data: { result: session } }, () => successful.reloadJwtToken());
+  assert.equal(successCallbacks, 1);
+  assert.equal(successful.jwt, session);
+
+  const rejected = privateKeyWallet();
+  let failureCallbacks = 0;
+  rejected.onAuthComplete = async () => {
+    failureCallbacks += 1;
+    throw new Error("UI callback failed");
+  };
+  await assert.rejects(
+    withAxiosPost(async () => ({ data: null }), () => rejected.reloadJwtToken()),
+    (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected",
+  );
+  assert.equal(failureCallbacks, 1);
+});
+
+test("legacy callback errors are credential-free while the thrown Axios error remains compatible", async () => {
+  const wallet = privateKeyWallet(JwtAuthMode.Legacy);
+  const axiosError = Object.assign(new Error("legacy redemption failed"), {
+    config: { data: JSON.stringify({ message: "signed-message", signature: "signed-credential" }) },
+  });
+  let callbackError;
+  wallet.onAuthComplete = async (error) => { callbackError = error; };
+
+  await assert.rejects(
+    withAxiosPost(async () => { throw axiosError; }, () => wallet.reloadJwtToken()),
+    (error) => error === axiosError,
+  );
+  assert.equal(callbackError?.message, "Wallet authentication failed.");
+  assert.equal("config" in callbackError, false);
+  assert.equal(JSON.stringify(callbackError).includes("signed-credential"), false);
+});
+
+test("malformed successful redemption responses fail before completion", async () => {
+  const wallet = privateKeyWallet();
+  const lifecycle = [];
+  wallet.onRequestAuth = async () => { lifecycle.push("request"); };
+  wallet.onAuthComplete = async (error) => { lifecycle.push(error?.code ?? "complete"); };
+
+  await assert.rejects(withAxiosPost(async (url) => url === wallet.networkConfig.authChallengeUrl
+    ? { data: { result: challenge("K".repeat(43), "server message", wallet.bech32Address) } }
+    : { data: {} }, () => wallet.reloadJwtToken()),
+  (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected");
+  assert.deepEqual(lifecycle, ["request", "challenge_rejected"]);
+  assert.equal(wallet.jwt, undefined);
 });
 
 test("MetaMask public-key recovery uses one signature over a supplied server message", async () => {
@@ -226,6 +287,8 @@ test("CarbonSDK MetaMask login requests SIWE before one signing prompt and redee
   let prompts = 0;
   let challengeRequests = 0;
   let redemptions = 0;
+  let redeemed = false;
+  const lifecycle = [];
   const provider = {
     legacyEip712SignMode: false,
     defaultAccount: async () => signingWallet.address,
@@ -249,11 +312,42 @@ test("CarbonSDK MetaMask login requests SIWE before one signing prompt and redee
     redemptions += 1;
     assert.equal(body.challenge_id, "E".repeat(43));
     assert.equal(body.message, undefined);
+    redeemed = true;
     return { data: { result: session } };
-  }, () => sdk.connectWithMetamask(provider, { enableJwtAuth: true }));
+  }, () => sdk.connectWithMetamask(provider, {
+    enableJwtAuth: true,
+    onRequestAuth: async () => { lifecycle.push("request"); },
+    onAuthComplete: async (error) => {
+      assert.equal(error, undefined);
+      assert.equal(redeemed, true);
+      lifecycle.push("complete");
+    },
+  }));
 
   assert.deepEqual({ prompts, challengeRequests, redemptions }, { prompts: 1, challengeRequests: 1, redemptions: 1 });
+  assert.deepEqual(lifecycle, ["request", "complete"]);
   assert.equal(connected.jwt, session);
+});
+
+test("MetaMask legacy lifecycle is exactly once and excludes post-redemption initialization", async () => {
+  const signingWallet = ethers.Wallet.createRandom();
+  const provider = {
+    legacyEip712SignMode: false,
+    defaultAccount: async () => signingWallet.address,
+    personalSign: async (_address, message) => signingWallet.signMessage(message),
+  };
+  const sdk = new CarbonSDK({ network: Network.MainNet });
+  const lifecycle = [];
+  const postRedemptionError = new Error("RPC initialization failed");
+  sdk.connect = async () => { throw postRedemptionError; };
+
+  await assert.rejects(withAxiosPost(async () => ({ data: { result: session } }), () => sdk.connectWithMetamask(provider, {
+    enableJwtAuth: true,
+    jwtAuthMode: JwtAuthMode.Legacy,
+    onRequestAuth: async () => { lifecycle.push("request"); },
+    onAuthComplete: async (error) => { lifecycle.push(error ? "error" : "complete"); },
+  })), (error) => error === postRedemptionError);
+  assert.deepEqual(lifecycle, ["request", "complete"]);
 });
 
 test("default challenge mode rejects a caller-supplied legacy signature grant", async () => {
@@ -286,4 +380,30 @@ test("malformed successful challenge responses fail with a stable sanitized erro
   await assert.rejects(withAxiosPost(async () => ({ data: { result: malformed } }), () => wallet.reloadJwtToken()),
     (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected");
   assert.equal(signs, 0);
+});
+
+test("null successful challenge bodies are typed rejections for Cosmos and MetaMask", async () => {
+  const wallet = privateKeyWallet();
+  const lifecycle = [];
+  wallet.onAuthComplete = async (error) => { lifecycle.push(error?.code); };
+  await assert.rejects(
+    withAxiosPost(async () => ({ data: null }), () => wallet.reloadJwtToken()),
+    (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected",
+  );
+  assert.deepEqual(lifecycle, ["challenge_rejected"]);
+
+  const sdk = new CarbonSDK({ network: Network.MainNet });
+  const provider = {
+    defaultAccount: async () => ethers.Wallet.createRandom().address,
+    personalSign: async () => { throw new Error("must not sign"); },
+  };
+  const evmLifecycle = [];
+  await assert.rejects(
+    withAxiosPost(async () => ({ data: null }), () => sdk.connectWithMetamask(provider, {
+      enableJwtAuth: true,
+      onAuthComplete: async (error) => { evmLifecycle.push(error?.code); },
+    })),
+    (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected",
+  );
+  assert.deepEqual(evmLifecycle, ["challenge_rejected"]);
 });

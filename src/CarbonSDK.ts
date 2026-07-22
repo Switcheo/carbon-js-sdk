@@ -530,36 +530,63 @@ class CarbonSDK {
     return this.connect(wallet, opts);
   }
 
+  private async notifyAuthRequest(opts?: CarbonWalletGenericOpts) {
+    try {
+      await opts?.onRequestAuth?.()
+    } catch (_callbackError) {
+      // Authentication must not be changed by UI lifecycle callbacks.
+    }
+  }
+
+  private async notifyAuthComplete(opts?: CarbonWalletGenericOpts, error?: unknown) {
+    try {
+      const lifecycleError = error instanceof AuthUtils.WalletAuthenticationError
+        ? error
+        : error === undefined ? undefined : new Error('Wallet authentication failed.')
+      await opts?.onAuthComplete?.(lifecycleError)
+    } catch (_callbackError) {
+      // Authentication results must not be changed by UI lifecycle callbacks.
+    }
+  }
+
   private async createEvmChallengeCredential(
     provider: { defaultAccount(): Promise<string>, personalSign(address: string, message: string): Promise<string> },
-    opts: CarbonWalletGenericOpts | undefined,
     signAndRecover: (message: string) => Promise<{ publicKey: string, signature: string, message: string }>,
   ) {
+    const walletAddress = await provider.defaultAccount()
+    const authChallengeUrl = this.configOverride.authChallengeUrl
+      ?? (this.configOverride.authUrl ? AuthUtils.challengeUrlFromAccessTokenUrl(this.configOverride.authUrl) : this.networkConfig.authChallengeUrl)
+    let response
     try {
-      await GenericUtils.callIgnoreError(() => opts?.onRequestAuth?.())
-      const walletAddress = await provider.defaultAccount()
-      const authChallengeUrl = this.configOverride.authChallengeUrl
-        ?? (this.configOverride.authUrl ? AuthUtils.challengeUrlFromAccessTokenUrl(this.configOverride.authUrl) : this.networkConfig.authChallengeUrl)
-      let response
-      try {
-        response = await axios.post(authChallengeUrl, {
-          grant_type: GrantType.SignatureEth,
-          wallet_address: walletAddress,
-        })
-      } catch (error) {
-        throw AuthUtils.sanitizeChallengeError(error)
-      }
-      const challenge = AuthUtils.validateChallengeResponse(response.data.result, GrantType.SignatureEth, walletAddress)
-      return {
-        ...(await signAndRecover(challenge.message)),
-        challengeId: challenge.challenge_id,
-      }
-    } finally {
-      await GenericUtils.callIgnoreError(() => opts?.onAuthComplete?.())
+      response = await axios.post(authChallengeUrl, {
+        grant_type: GrantType.SignatureEth,
+        wallet_address: walletAddress,
+      })
+    } catch (error) {
+      throw AuthUtils.sanitizeChallengeError(error)
+    }
+    const challenge = AuthUtils.validateChallengeResponse(response.data?.result, GrantType.SignatureEth, walletAddress)
+    return {
+      ...(await signAndRecover(challenge.message)),
+      challengeId: challenge.challenge_id,
     }
   }
 
   public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, evmWalletOpts?: EvmWalletOpts) {
+    const managesAuthLifecycle = Boolean(opts?.enableJwtAuth && !opts.jwt)
+    if (managesAuthLifecycle) await this.notifyAuthRequest(opts)
+    let wallet: CarbonWallet
+    try {
+      wallet = await this.connectWithMetamaskInternal(metamask, opts, evmWalletOpts)
+      if (managesAuthLifecycle) await this.notifyAuthComplete(opts)
+    } catch (error) {
+      if (managesAuthLifecycle) await this.notifyAuthComplete(opts, error)
+      throw error
+    }
+    return this.connect(wallet, opts)
+  }
+
+  private async connectWithMetamaskInternal(metamask: MetaMask, opts?: CarbonWalletGenericOpts, evmWalletOpts?: EvmWalletOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
@@ -577,7 +604,7 @@ class CarbonSDK {
 
     if (signMessageRequired) {
       const result = noJwtProvided && (opts?.jwtAuthMode ?? JwtAuthMode.Challenge) === JwtAuthMode.Challenge
-        ? await this.createEvmChallengeCredential(metamask, opts, (exactMessage) => MetaMask.signAndRecoverPubKeyForMessage(metamask, exactMessage))
+        ? await this.createEvmChallengeCredential(metamask, (exactMessage) => MetaMask.signAndRecoverPubKeyForMessage(metamask, exactMessage))
         : await MetaMask.signAndRecoverPubKey(metamask, opts?.enableJwtAuth, opts?.authMessage);
       pubKey = result.publicKey;
       message = result.message;
@@ -612,10 +639,24 @@ class CarbonSDK {
       await wallet.reloadJwtToken(authRequest, opts?.authMessage)
     }
 
-    return this.connect(wallet, opts);
+    return wallet
   }
 
   public async connectWithRainbowKit(rainbowKit: RainbowKitAccount, rainbowKitWalletOpts: RainbowKitWalletOpts, opts?: CarbonWalletGenericOpts) {
+    const managesAuthLifecycle = Boolean(opts?.enableJwtAuth && !opts.jwt)
+    if (managesAuthLifecycle) await this.notifyAuthRequest(opts)
+    let wallet: CarbonWallet
+    try {
+      wallet = await this.connectWithRainbowKitInternal(rainbowKit, rainbowKitWalletOpts, opts)
+      if (managesAuthLifecycle) await this.notifyAuthComplete(opts)
+    } catch (error) {
+      if (managesAuthLifecycle) await this.notifyAuthComplete(opts, error)
+      throw error
+    }
+    return this.connect(wallet, opts)
+  }
+
+  private async connectWithRainbowKitInternal(rainbowKit: RainbowKitAccount, rainbowKitWalletOpts: RainbowKitWalletOpts, opts?: CarbonWalletGenericOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
@@ -633,7 +674,7 @@ class CarbonSDK {
 
     if (signMessageRequired) {
       const result = noJwtProvided && (opts?.jwtAuthMode ?? JwtAuthMode.Challenge) === JwtAuthMode.Challenge
-        ? await this.createEvmChallengeCredential(rainbowKit, opts, (exactMessage) => RainbowKitAccount.signAndRecoverPubKeyForMessage(rainbowKit, exactMessage))
+        ? await this.createEvmChallengeCredential(rainbowKit, (exactMessage) => RainbowKitAccount.signAndRecoverPubKeyForMessage(rainbowKit, exactMessage))
         : await RainbowKitAccount.signAndRecoverPubKey(rainbowKit, opts?.enableJwtAuth, opts?.authMessage)
       pubKey = result.publicKey
       message = result.message
@@ -669,7 +710,7 @@ class CarbonSDK {
       await wallet.reloadJwtToken(authRequest, opts?.authMessage);
     }
 
-    return this.connect(wallet, opts);
+    return wallet
   }
 
   public async connectViewOnly(bech32Address: string, opts?: CarbonWalletGenericOpts) {
