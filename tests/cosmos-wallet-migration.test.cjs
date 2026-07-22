@@ -39,7 +39,7 @@ test("obsolete Cosmos wallet roots and their registry family stay removed", () =
 test("legacy SecretJS, Axios, Protobuf, and Keplr roots stay removed", () => {
   assert.deepEqual(lockedVersions("secretjs"), []);
   assert.deepEqual(lockedVersions("axios"), ["0.33.0"]);
-  assert.deepEqual(lockedVersions("protobufjs"), ["7.6.3"]);
+  assert.deepEqual(lockedVersions("protobufjs"), ["7.6.5"]);
   assert.doesNotMatch(lockfile, /^"@chain-registry\/keplr@1\.8\.0":$/m);
   assert.doesNotMatch(lockfile, /^"@keplr-wallet\/cosmos@0\.11\.16":$/m);
 });

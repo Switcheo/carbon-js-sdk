@@ -78,7 +78,7 @@ function protobufOwners(nodeModules) {
   return owners.sort();
 }
 
-test("protobufjs 7.6.3 remains the only audited direct contract", () => {
+test("protobufjs 7.6.5 remains the only audited direct contract", () => {
   const versions = [...lockfile.matchAll(/^protobufjs@[^\n]+:\n(?:[ ]{2}[^\n]*\n|[ ]{4}[^\n]*\n)*/gm)]
     .map((match) => match[0].match(/^[ ]{2}version "([^"]+)"$/m)?.[1])
     .filter(Boolean)
@@ -88,6 +88,6 @@ test("protobufjs 7.6.3 remains the only audited direct contract", () => {
     "**/@ethersproject/providers/ws": "8.21.0",
     uuid: "11.1.1",
   });
-  assert.deepEqual(versions, ["7.6.3"]);
+  assert.deepEqual(versions, ["7.6.5"]);
   assert.deepEqual(protobufOwners(path.join(projectRoot, "node_modules")), []);
 });
