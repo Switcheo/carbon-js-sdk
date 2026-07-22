@@ -24,7 +24,7 @@ const expectedDirectContracts = {
   axios: "0.33.0",
   bech32: "1.1.4",
   long: "4.0.0",
-  protobufjs: "7.6.3",
+  protobufjs: "7.6.5",
   rxjs: "6.6.7",
 };
 

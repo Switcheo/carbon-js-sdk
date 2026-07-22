@@ -18,6 +18,7 @@ function lockedVersions(packageName) {
 }
 
 const expectedVersions = {
+  "brace-expansion": ["1.1.16", "5.0.7"],
   braces: ["3.0.3"],
   "cross-spawn": ["7.0.6"],
   micromatch: ["4.0.8"],
