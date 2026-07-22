@@ -26,9 +26,10 @@ function token({
   iat = now - 10,
   exp = now + 600,
   tokenUse = "accessToken",
+  signatureBytes = 64,
 } = {}) {
   const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
-  const signature = Buffer.alloc(64, 7).toString("base64url");
+  const signature = Buffer.alloc(signatureBytes, 7).toString("base64url");
   return `${encode({ alg, typ })}.${encode({ iss, aud, sub, iat, exp, token_use: tokenUse })}.${signature}`;
 }
 
@@ -90,6 +91,18 @@ test("accepts only a strict access-token envelope for the expected wallet", () =
       isSessionTokenUsable(candidate, Network.MainNet, JWT_ACCESS_TOKEN_USE, subject),
       false,
       `expected token to be unsuitable: ${candidate}`,
+    );
+  }
+});
+
+test("requires the ES256 signature segment to contain exactly 64 raw bytes", () => {
+  const subject = "carbon-subject";
+  assert.equal(isSessionTokenUsable(token({ sub: subject, signatureBytes: 64 }), Network.MainNet, JWT_ACCESS_TOKEN_USE, subject), true);
+  for (const signatureBytes of [1, 63, 65]) {
+    assert.equal(
+      isSessionTokenUsable(token({ sub: subject, signatureBytes }), Network.MainNet, JWT_ACCESS_TOKEN_USE, subject),
+      false,
+      `expected ${signatureBytes}-byte ES256 signature to be rejected`,
     );
   }
 });

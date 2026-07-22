@@ -207,6 +207,10 @@ const isCanonicalBase64UrlSegment = (segment: string): boolean => {
   return remainder === 2 ? finalSextet % 16 === 0 : finalSextet % 4 === 0
 }
 
+function decodedBase64UrlByteLength(segment: string): number {
+  return Math.floor(segment.length * 6 / 8)
+}
+
 /**
  * Checks whether an unverified JWT envelope is suitable for local session reuse.
  * Resource servers remain responsible for signature verification and authorization.
@@ -221,7 +225,9 @@ const isJwtSessionTokenUsable = (
   if (typeof token !== 'string' || token.length === 0
     || typeof expectedSubject !== 'string' || expectedSubject.length === 0) return false
   const segments = token.split('.')
-  if (segments.length !== 3 || segments.some((segment) => !isCanonicalBase64UrlSegment(segment))) return false
+  if (segments.length !== 3
+    || segments.some((segment) => !isCanonicalBase64UrlSegment(segment))
+    || decodedBase64UrlByteLength(segments[2]) !== 64) return false
 
   try {
     const header = jwtDecode<SessionTokenHeader>(token, { header: true })
