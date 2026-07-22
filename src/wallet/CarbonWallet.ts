@@ -11,7 +11,7 @@ import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { GrantModule } from "@carbon-sdk/modules/grant";
 import { AddressUtils, AuthUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { ETHAddress, SWTHAddress } from "@carbon-sdk/util/address";
-import { AccessTokenResponse, GrantRequest, GrantType, JWT_ACCESS_TOKEN_USE, JWT_REFRESH_TOKEN_USE, isSessionTokenUsable } from "@carbon-sdk/util/auth";
+import { AccessTokenResponse, ChallengeGrantRequest, ChallengeResponse, GrantRequest, GrantType, JwtAuthMode, LegacySignatureGrantRequest, JWT_ACCESS_TOKEN_USE, isExpiredChallengeError, isRefreshSessionUsable, isSessionTokenUsable, sanitizeChallengeError } from "@carbon-sdk/util/auth";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { DEFAULT_PUBLIC_KEY_MESSAGE } from "@carbon-sdk/util/evm";
@@ -49,6 +49,9 @@ export interface CarbonWalletGenericOpts {
   gasFee?: GasFee;
   isRainbowKit?: boolean;
   enableJwtAuth?: boolean;
+  /** Challenge is the secure default. Legacy exists only for the bounded migration window. */
+  jwtAuthMode?: JwtAuthMode;
+  /** @deprecated Challenge messages are server controlled; used only in explicit legacy mode. */
   authMessage?: string;
   jwt?: AccessTokenResponse
   bech32Address?: string;
@@ -79,7 +82,8 @@ export interface CarbonWalletGenericOpts {
   onRequestAuth?: CarbonWallet.OnRequestAuthCallback
 
   /**
-  * Optional callback that will be called after authentication is complete
+  * Optional callback that will be called after authentication is complete.
+  * Receives the authentication failure, if any.
   */
   onAuthComplete?: CarbonWallet.OnAuthComplete
 }
@@ -194,6 +198,7 @@ export class CarbonWallet {
   isRainbowKit: boolean = false
 
   jwt?: AccessTokenResponse
+  jwtAuthMode: JwtAuthMode
 
   // for analytics
   providerAgent?: ProviderAgent | string;
@@ -207,6 +212,7 @@ export class CarbonWallet {
   private evmChainId?: string;
 
   private gasFee?: GasFee;
+  private jwtReloadPromise?: Promise<void>;
 
   private sequenceInvalidated: boolean = false;
   private txSignManager: QueueManager<SignTxRequest>;
@@ -224,6 +230,7 @@ export class CarbonWallet {
     this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
     this.triggerMerge = opts.triggerMerge ?? false
     this.jwt = opts?.jwt
+    this.jwtAuthMode = opts.jwtAuthMode ?? JwtAuthMode.Challenge
 
     this.gasFee = opts.gasFee;
 
@@ -320,8 +327,8 @@ export class CarbonWallet {
 
     const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
-    this.evmHexAddress = this.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
-    this.evmBech32Address = this.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
+    this.evmHexAddress = this.isEvmWallet() ? AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts) : '';
+    this.evmBech32Address = this.isEvmWallet() ? AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts) : ''
   }
 
   public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee, fallbackConfig: OverrideConfig | null = null, opts?: CarbonWalletGenericOpts): Promise<CarbonWallet> {
@@ -349,11 +356,25 @@ export class CarbonWallet {
   }
 
   public async reloadJwtToken(request?: GrantRequest, authMessage: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
+    if (this.jwtReloadPromise) return this.jwtReloadPromise
+    const wrapped = this.reloadJwtTokenInternal(request, authMessage).finally(() => {
+      if (this.jwtReloadPromise === wrapped) this.jwtReloadPromise = undefined
+    })
+    this.jwtReloadPromise = wrapped
+    return wrapped
+  }
+
+  private async reloadJwtTokenInternal(request?: GrantRequest, authMessage: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
     const network = this.network;
     if (this.jwt) {
       if (isSessionTokenUsable(this.jwt.access_token, network, JWT_ACCESS_TOKEN_USE, this.bech32Address)) return
 
-      if (isSessionTokenUsable(this.jwt.refresh_token, network, JWT_REFRESH_TOKEN_USE, this.bech32Address)) {
+      if (isRefreshSessionUsable(
+        this.jwt.refresh_token,
+        this.jwt.access_token,
+        network,
+        this.bech32Address,
+      )) {
         try {
           return await this.refreshJwtToken(this.jwt.refresh_token)
         } catch (error) {
@@ -386,29 +407,122 @@ export class CarbonWallet {
       refresh_token: refreshToken,
     }
     const response = await axios.post(this.networkConfig.authUrl, request)
-    this.jwt = response.data.result
+    this.jwt = this.validateTokenResponse(response.data?.result, false)
+  }
+
+  private validateTokenResponse(result: unknown, challengeGrant: boolean): AccessTokenResponse {
+    const token = result as Partial<AccessTokenResponse> | undefined
+    const invalid = !token
+      || typeof token !== 'object'
+      || typeof token.access_token !== 'string'
+      || !isSessionTokenUsable(token.access_token, this.network, JWT_ACCESS_TOKEN_USE, this.bech32Address)
+      || token.token_type !== 'Bearer'
+      || !Number.isSafeInteger(token.expires_in)
+      || (token.expires_in as number) <= 0
+      || !Number.isSafeInteger(token.expires_at)
+      || AuthUtils.hasExpired(token.expires_at as number)
+      || typeof token.refresh_token !== 'string'
+      || !isRefreshSessionUsable(
+        token.refresh_token,
+        token.access_token,
+        this.network,
+        this.bech32Address,
+      )
+    if (invalid) {
+      if (challengeGrant) throw new AuthUtils.WalletAuthenticationError('challenge_rejected')
+      throw new Error('Wallet authentication returned an invalid token response.')
+    }
+    return token as AccessTokenResponse
   }
 
   private async getNewJwtToken(authMessage: string, request?: GrantRequest) {
-    const req = request ?? await this.constructGrantRequest(authMessage)
-    const response = await axios.post(this.networkConfig.authUrl, req)
-    this.jwt = response.data.result
+    const managesAuthLifecycle = request === undefined
+    try {
+      if (request?.grant_type === GrantType.RefreshToken)
+        throw new AuthUtils.WalletAuthenticationError('challenge_rejected')
+      if (request && 'message' in request && this.jwtAuthMode !== JwtAuthMode.Legacy)
+        throw new AuthUtils.WalletAuthenticationError('challenge_rejected')
+      const req = request ?? await this.constructGrantRequest(authMessage)
+      await this.redeemGrantRequest(req, authMessage, 0)
+      if (managesAuthLifecycle) await this.notifyAuthComplete()
+    } catch (error) {
+      if (managesAuthLifecycle) await this.notifyAuthComplete(error)
+      throw error
+    }
   }
 
-  private async constructGrantRequest(authMessage: string) {
+  private async notifyAuthRequest() {
     try {
-      await GenericUtils.callIgnoreError(() => this.onRequestAuth?.())
-      const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
+      await this.onRequestAuth?.()
+    } catch (_callbackError) {
+      // Authentication must not be changed by UI lifecycle callbacks.
+    }
+  }
+
+  private async notifyAuthComplete(error?: unknown) {
+    try {
+      const lifecycleError = error instanceof AuthUtils.WalletAuthenticationError
+        ? error
+        : error === undefined ? undefined : new Error('Wallet authentication failed.')
+      await this.onAuthComplete?.(lifecycleError)
+    } catch (_callbackError) {
+      // Authentication results must not be changed by UI lifecycle callbacks.
+    }
+  }
+
+  private async redeemGrantRequest(request: GrantRequest, authMessage: string, expiredRetries: number): Promise<void> {
+    try {
+      const response = await axios.post(this.networkConfig.authUrl, request)
+      this.jwt = this.validateTokenResponse(response.data?.result, 'challenge_id' in request)
+    } catch (error) {
+      if ('challenge_id' in request && isExpiredChallengeError(error) && expiredRetries < 1) {
+        const retry = await this.constructGrantRequest(authMessage, true, false)
+        return this.redeemGrantRequest(retry, authMessage, expiredRetries + 1)
+      }
+      if ('challenge_id' in request) throw sanitizeChallengeError(error)
+      throw error
+    }
+  }
+
+  private getChallengeUrl() {
+    if (this.configOverride.authChallengeUrl) return this.configOverride.authChallengeUrl
+    if (this.configOverride.authUrl) return AuthUtils.challengeUrlFromAccessTokenUrl(this.configOverride.authUrl)
+    return this.networkConfig.authChallengeUrl
+  }
+
+
+  private async constructGrantRequest(authMessage: string, forceChallenge = false, notifyRequest = true): Promise<ChallengeGrantRequest | LegacySignatureGrantRequest> {
+    if (notifyRequest) await this.notifyAuthRequest()
+    const address = this.isEvmWallet() ? this.evmHexAddress : this.bech32Address
+    const grantType = this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos
+    if (this.jwtAuthMode === JwtAuthMode.Legacy && !forceChallenge) {
       const message = AuthUtils.getAuthMessage(authMessage)
       const signature = await this.signer.signMessage(address, message)
       return {
-        grant_type: this.isEvmWallet() ? GrantType.SignatureEth : GrantType.SignatureCosmos,
+        grant_type: grantType,
         message,
         public_key: this.publicKey.toString('hex'),
         signature,
       }
-    } finally {
-      await GenericUtils.callIgnoreError(() => this.onAuthComplete?.())
+    }
+
+    let challenge: ChallengeResponse
+    try {
+      const response = await axios.post(this.getChallengeUrl(), {
+        grant_type: grantType,
+        wallet_address: address,
+      })
+      challenge = response.data?.result
+    } catch (error) {
+      throw sanitizeChallengeError(error)
+    }
+    challenge = AuthUtils.validateChallengeResponse(challenge, grantType, address)
+    const signature = await this.signer.signMessage(address, challenge.message)
+    return {
+      grant_type: grantType,
+      challenge_id: challenge.challenge_id,
+      public_key: this.publicKey.toString('hex'),
+      signature,
     }
   }
 
@@ -1092,7 +1206,7 @@ export namespace CarbonWallet {
   export type SendTxToMempoolWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type SendTxWithoutConfirmResponse = BroadcastTxAsyncResponse;
   export type OnRequestAuthCallback = () => void | Promise<void>;
-  export type OnAuthComplete = () => void | Promise<void>;
+  export type OnAuthComplete = (error?: unknown) => void | Promise<void>;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
   export type OnBroadcastTxFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;

@@ -108,11 +108,11 @@ test("follow-redirects strips credentials on a cross-host redirect", async (cont
     receivedHeaders = request.headers;
     response.end("ok");
   });
-  const targetPort = await listen(target, "localhost");
+  const targetPort = await listen(target, "127.0.0.2");
   context.after(() => close(target));
 
   const redirect = http.createServer((_request, response) => {
-    response.writeHead(302, { location: `http://localhost:${targetPort}/target` });
+    response.writeHead(302, { location: `http://127.0.0.2:${targetPort}/target` });
     response.end();
   });
   const redirectPort = await listen(redirect);

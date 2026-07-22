@@ -61,6 +61,7 @@ export interface NetworkConfig {
   wsUrl: string;
   faucetUrl: string;
   authUrl: string;
+  authChallengeUrl: string;
   Bech32Prefix: string;
 
   network: Network;
@@ -114,6 +115,7 @@ export const NetworkConfigs: {
     hydrogenUrl: "https://hydrogen-api.carbon.network",
     wsUrl: "wss://ws-api.carbon.network/ws",
     authUrl: "https://auth.dem.exchange/oauth/access_token",
+    authChallengeUrl: "https://auth.dem.exchange/oauth/challenge",
     faucetUrl: "",
 
     Bech32Prefix: "swth",
@@ -227,6 +229,7 @@ export const NetworkConfigs: {
     hydrogenUrl: "https://test-hydrogen-api.carbon.network",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
     authUrl: "https://test-auth.dem.exchange/oauth/access_token",
+    authChallengeUrl: "https://test-auth.dem.exchange/oauth/challenge",
     faucetUrl: "https://test-faucet.carbon.network",
 
     Bech32Prefix: "tswth",
@@ -339,6 +342,7 @@ export const NetworkConfigs: {
     hydrogenUrl: "https://dev-hydrogen-api.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
     authUrl: "https://dev-auth.dem.exchange/oauth/access_token",
+    authChallengeUrl: "https://dev-auth.dem.exchange/oauth/challenge",
     faucetUrl: "https://dev-faucet.carbon.network",
 
     //* OnPrem network params for running locally
@@ -465,6 +469,7 @@ export const NetworkConfigs: {
     hydrogenUrl: "",
     wsUrl: "ws://localhost:5001/ws",
     authUrl: "http://localhost:9794/oauth/access_token",
+    authChallengeUrl: "http://localhost:9794/oauth/challenge",
     faucetUrl: "http://localhost:4500",
 
     Bech32Prefix: "tswth",
