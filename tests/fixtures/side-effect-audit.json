@@ -2,6 +2,6 @@
   "generatedLongInitializerEntries": 416,
   "generatedLongInitializerDigest": "d9aa75514406abb563ea4c8553e88b5bbe342df30d206f6ff7523cbbae2cc0f1",
   "eagerInitializerEntries": 245,
-  "eagerInitializerDigest": "26d40ca225edd01a27d8e5270bc19d130ab38aaede3c03bc5f56b8145b45ca49",
+  "eagerInitializerDigest": "475d46167163bad7130e6038f85a0b1fd49562259a1c356baccfc5a3f0c34132",
   "rationale": "Generated protobuf modules configure protobufjs Long once at module evaluation; all 416 setup occurrences are fingerprinted exactly without file deduplication. The eager-declaration fingerprint additionally covers all reviewed variable/static/export initializers, 75 top-level enums, and 30 top-level namespaces. Both fingerprints retain source positions, duplicate occurrences, and exact runtime-significant text. Any generated initializer, eager declaration, parser diagnostic, runtime import-equals, dependency-only import/re-export, decorator, non-empty static block, or other executable top-level statement requires explicit review before the package sideEffects allowlist remains empty."
 }
