@@ -416,7 +416,8 @@ export class CarbonWallet {
       || typeof token !== 'object'
       || typeof token.access_token !== 'string'
       || !isSessionTokenUsable(token.access_token, this.network, JWT_ACCESS_TOKEN_USE, this.bech32Address)
-      || token.token_type !== 'Bearer'
+      || typeof token.token_type !== 'string'
+      || token.token_type.toLowerCase() !== 'bearer'
       || !Number.isSafeInteger(token.expires_in)
       || (token.expires_in as number) <= 0
       || !Number.isSafeInteger(token.expires_at)
@@ -432,7 +433,11 @@ export class CarbonWallet {
       if (challengeGrant) throw new AuthUtils.WalletAuthenticationError('challenge_rejected')
       throw new Error('Wallet authentication returned an invalid token response.')
     }
-    return token as AccessTokenResponse
+    if (token.token_type === 'Bearer') return token as AccessTokenResponse
+    return {
+      ...(token as AccessTokenResponse),
+      token_type: 'Bearer',
+    }
   }
 
   private async getNewJwtToken(authMessage: string, request?: GrantRequest) {

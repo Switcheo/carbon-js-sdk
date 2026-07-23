@@ -323,6 +323,67 @@ test("malformed successful refresh responses are rejected without assigning sess
   }
 });
 
+for (const tokenType of ["bearer", "Bearer", "bEaReR"]) {
+  test(`challenge grant accepts ${tokenType} token type and stores canonical Bearer`, async () => {
+    const wallet = privateKeyWallet();
+    const issuedSession = sessionForSubject(wallet.bech32Address, { token_type: tokenType });
+
+    await withAxiosPost(async (url) => url === wallet.networkConfig.authChallengeUrl
+      ? { data: { result: challenge("T".repeat(43), "server message", wallet.bech32Address) } }
+      : { data: { result: issuedSession } }, () => wallet.reloadJwtToken());
+
+    assert.equal(wallet.jwt.token_type, "Bearer");
+  });
+
+  test(`refresh grant accepts ${tokenType} token type and stores canonical Bearer`, async () => {
+    const wallet = privateKeyWallet();
+    const issuedSession = sessionForSubject(wallet.bech32Address, { token_type: tokenType });
+
+    await withAxiosPost(async () => ({ data: { result: issuedSession } }),
+      () => wallet.refreshJwtToken("refresh-token"));
+
+    assert.equal(wallet.jwt.token_type, "Bearer");
+  });
+}
+
+const invalidTokenTypes = [
+  ["missing", Symbol("missing")],
+  ["non-string", 42],
+  ["unsupported", "MAC"],
+];
+
+function sessionWithTokenType(subject, tokenType) {
+  const issuedSession = sessionForSubject(subject);
+  if (typeof tokenType === "symbol") delete issuedSession.token_type;
+  else issuedSession.token_type = tokenType;
+  return issuedSession;
+}
+
+for (const [description, tokenType] of invalidTokenTypes) {
+  test(`challenge grant rejects ${description} token type`, async () => {
+    const wallet = privateKeyWallet();
+    const issuedSession = sessionWithTokenType(wallet.bech32Address, tokenType);
+
+    await assert.rejects(withAxiosPost(async (url) => url === wallet.networkConfig.authChallengeUrl
+      ? { data: { result: challenge("U".repeat(43), "server message", wallet.bech32Address) } }
+      : { data: { result: issuedSession } }, () => wallet.reloadJwtToken()),
+    (error) => error instanceof WalletAuthenticationError && error.code === "challenge_rejected");
+    assert.equal(wallet.jwt, undefined);
+  });
+
+  test(`refresh grant rejects ${description} token type`, async () => {
+    const wallet = privateKeyWallet();
+    const issuedSession = sessionWithTokenType(wallet.bech32Address, tokenType);
+
+    await assert.rejects(
+      withAxiosPost(async () => ({ data: { result: issuedSession } }),
+        () => wallet.refreshJwtToken("refresh-token")),
+      /invalid token response/,
+    );
+    assert.equal(wallet.jwt, undefined);
+  });
+}
+
 test("MetaMask public-key recovery uses one signature over a supplied server message", async () => {
   const signingWallet = ethers.Wallet.createRandom();
   let prompts = 0;
