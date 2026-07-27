@@ -94,7 +94,7 @@ test("the generated split preserves the exact legacy Models namespace shape", ()
   assert.equal(digest(Object.keys(models.IBC).sort()), "50b080cce65e726b37d1285e60f57b11b8feffc4263f01d89352feca714d32ed");
   assert.equal(digest(Object.keys(models.PolyNetwork).sort()), "c221c32a6b79de15069f33266f4da195d2ae810e5ac59c485f1d2ed7aea749b9");
   assert.equal(models.registry.constructor.name, "Registry");
-  assert.equal(digest(canonical(models.TxTypes)), "01f9dec7bd4444be71fd7f3adb94422aa56437dbbbe3f1b038230f869f53366e");
-  assert.equal(digest(canonical(models.EIP712Types)), "5e2600f9eced9544a406b76312f52b7baf01f15bf24285ac94256a132b1f906b");
-  assert.equal(digest(canonical(namespaceShape(models))), "3724b99af1845b74391905f66e4f52f36cf80d93c9bea64ae8f8cfb7500b4a0b");
+  assert.equal(digest(canonical(models.TxTypes)), "ccba06694cdb79f2285b312a56501f3958593b5fd31a6e29f0021cb65f9ab5cc");
+  assert.equal(digest(canonical(models.EIP712Types)), "37e52778ce1efcc22d0df08f8de42414f2ea386a8d2ddb4c45d655eec03b5a6c");
+  assert.equal(digest(canonical(namespaceShape(models))), "d7dd67278293e7a6a5abead1936d69737296133e88dd15e78e06234a685c6ad4");
 });

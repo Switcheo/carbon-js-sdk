@@ -93,6 +93,10 @@ export function createRegistry() {
   registry.register("/Switcheo.carbon.bridge.MsgUpdateExternalTokenResponse", Carbon.Bridge.MsgUpdateExternalTokenResponse);
   registry.register("/Switcheo.carbon.bridge.MsgDeleteExternalToken", Carbon.Bridge.MsgDeleteExternalToken);
   registry.register("/Switcheo.carbon.bridge.MsgDeleteExternalTokenResponse", Carbon.Bridge.MsgDeleteExternalTokenResponse);
+  registry.register("/Switcheo.carbon.bridge.MsgSkipInboundMessage", Carbon.Bridge.MsgSkipInboundMessage);
+  registry.register("/Switcheo.carbon.bridge.MsgSkipInboundMessageResponse", Carbon.Bridge.MsgSkipInboundMessageResponse);
+  registry.register("/Switcheo.carbon.bridge.MsgUnskipInboundMessage", Carbon.Bridge.MsgUnskipInboundMessage);
+  registry.register("/Switcheo.carbon.bridge.MsgUnskipInboundMessageResponse", Carbon.Bridge.MsgUnskipInboundMessageResponse);
   registry.register("/Switcheo.carbon.bridge.MsgExecuteFromCarbon", Carbon.Bridge.MsgExecuteFromCarbon);
   registry.register("/Switcheo.carbon.bridge.MsgExecuteFromCarbonResponse", Carbon.Bridge.MsgExecuteFromCarbonResponse);
   registry.register("/Switcheo.carbon.bridge.MsgStartRelay", Carbon.Bridge.MsgStartRelay);
