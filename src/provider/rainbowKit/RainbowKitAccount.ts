@@ -66,7 +66,7 @@ class RainbowKitAccount extends Eip6963Provider {
         value: signedTxBody,
       };
       const signedTxBodyBytes = registry.encode(signedTxBodyEncodeObject);
-      const signDoc = makeProtoSignDoc(signedTxBodyBytes, doc.authInfoBytes, signedDoc.chain_id, parseInt(signedDoc.account_number));
+      const signDoc = makeProtoSignDoc(signedTxBodyBytes, doc.authInfoBytes, signedDoc.chain_id, BigInt(signedDoc.account_number));
       const sigBz = Uint8Array.from(Buffer.from(sig, 'hex'))
 
       return {

@@ -11,6 +11,7 @@ const { Tendermint37Client } = require("@cosmjs/tendermint-rpc");
 const { AuthInfo, TxBody, TxRaw } = require("cosmjs-types/cosmos/tx/v1beta1/tx");
 const { MsgSend } = require(path.join(projectRoot, "lib/codec/cosmos/bank/v1beta1/tx.js"));
 const { MetaMask } = require(path.join(projectRoot, "lib/provider/metamask/MetaMask.js"));
+const RainbowKitAccount = require(path.join(projectRoot, "lib/provider/rainbowKit/RainbowKitAccount.js")).default;
 const { CarbonSigningClient, makeSignDocAmino } = require(path.join(projectRoot, "lib/wallet/CarbonSigningClient.js"));
 
 function unusedTmClient() {
@@ -135,6 +136,88 @@ test("Amino signing validates and canonicalizes uint64 account numbers", () => {
     /Input exceeds uint64 range/,
   );
   assert.throws(() => makeSignDocAmino([], fee, "carbon-1", "", "not-a-number", 0), /Invalid string format/);
+});
+
+test("MetaMask direct signing preserves a uint64 account number above Number.MAX_SAFE_INTEGER", async () => {
+  const wallet = await DirectSecp256k1Wallet.fromKey(Uint8Array.from({ length: 32 }, (_, index) => 32 - index), "swth");
+  const [account] = await wallet.getAccounts();
+  const accountNumber = (1n << 63n) + 123n;
+  const metamask = {
+    async signEip712(_evmAddress, forwardedAccountNumber, chainId, msgs, fee, memo, sequence) {
+      return {
+        sig: "ab".repeat(65),
+        signedDoc: {
+          account_number: forwardedAccountNumber,
+          chain_id: chainId,
+          fee,
+          memo,
+          msgs,
+          sequence,
+        },
+      };
+    },
+  };
+  const signer = MetaMask.createMetamaskSigner(
+    metamask,
+    "carbon_9790-1",
+    Buffer.from(account.pubkey).toString("base64"),
+    { network: "mainnet", bech32Prefix: "swth" },
+  );
+  const bodyBytes = TxBody.encode(TxBody.fromPartial({ messages: [], memo: "metamask-direct-039" })).finish();
+  const authInfoBytes = AuthInfo.encode(AuthInfo.fromPartial({
+    signerInfos: [{ sequence: 23n }],
+    fee: { amount: [], gasLimit: 90_000n },
+  })).finish();
+
+  const response = await signer.signDirect(account.address, {
+    bodyBytes,
+    authInfoBytes,
+    chainId: "carbon-1",
+    accountNumber,
+  });
+
+  assert.equal(response.signed.accountNumber, accountNumber);
+});
+
+test("RainbowKit direct signing preserves a uint64 account number above Number.MAX_SAFE_INTEGER", async () => {
+  const wallet = await DirectSecp256k1Wallet.fromKey(Uint8Array.from({ length: 32 }, (_, index) => index + 1), "swth");
+  const [account] = await wallet.getAccounts();
+  const accountNumber = (1n << 63n) + 123n;
+  const rainbowKit = {
+    async signEip712(_evmAddress, forwardedAccountNumber, chainId, msgs, fee, memo, sequence) {
+      return {
+        sig: "ab".repeat(65),
+        signedDoc: {
+          account_number: forwardedAccountNumber,
+          chain_id: chainId,
+          fee,
+          memo,
+          msgs,
+          sequence,
+        },
+      };
+    },
+  };
+  const signer = RainbowKitAccount.createRainbowKitSigner(
+    rainbowKit,
+    "carbon_9790-1",
+    Buffer.from(account.pubkey).toString("base64"),
+    { network: "mainnet", bech32Prefix: "swth" },
+  );
+  const bodyBytes = TxBody.encode(TxBody.fromPartial({ messages: [], memo: "rainbow-direct-039" })).finish();
+  const authInfoBytes = AuthInfo.encode(AuthInfo.fromPartial({
+    signerInfos: [{ sequence: 23n }],
+    fee: { amount: [], gasLimit: 90_000n },
+  })).finish();
+
+  const response = await signer.signDirect(account.address, {
+    bodyBytes,
+    authInfoBytes,
+    chainId: "carbon-1",
+    accountNumber,
+  });
+
+  assert.equal(response.signed.accountNumber, accountNumber);
 });
 
 test("MetaMask Amino signing keeps the EIP-712 counterpath unchanged", async () => {
