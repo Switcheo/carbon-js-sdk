@@ -220,7 +220,7 @@ test("Leap chain info preserves complete Carbon wallet registration data", async
   assert.deepEqual([...chainInfo.features].sort(), ["ibc-go", "ibc-transfer", "stargate"]);
 });
 
-test("legacy Carbon wallet types compile through the public package entrypoint", () => {
+test("legacy wallet and CosmJS 0.39 signer types compile through the public package entrypoint", () => {
   const tsc = require.resolve("typescript/bin/tsc");
   const fixture = path.join(projectRoot, "tests/fixtures/cosmos-wallet-public-types.ts");
   const result = spawnSync(

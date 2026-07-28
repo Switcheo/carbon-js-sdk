@@ -32,10 +32,10 @@ function collectTypeScriptFiles(directory) {
   });
 }
 
-test("Carbon declares and installs one coherent direct CosmJS 0.38.1 family", () => {
+test("Carbon declares and installs one coherent direct CosmJS 0.39.0 family", () => {
   for (const packageName of directCosmjsPackages) {
-    assert.equal(packageJson.dependencies[packageName], "0.38.1", `${packageName} manifest version`);
-    assert.equal(installedVersion(packageName), "0.38.1", `${packageName} installed version`);
+    assert.equal(packageJson.dependencies[packageName], "0.39.0", `${packageName} manifest version`);
+    assert.equal(installedVersion(packageName), "0.39.0", `${packageName} installed version`);
   }
   assert.equal(packageJson.dependencies["cosmjs-types"], "0.11.0");
   assert.equal(installedVersion("cosmjs-types"), "0.11.0");
@@ -46,7 +46,7 @@ test("Carbon declares and installs one coherent direct CosmJS 0.38.1 family", ()
   assert.equal(installedVersion("bignumber.js"), "9.1.2");
 });
 
-test("Carbon consumes only CosmJS 0.38 public APIs", () => {
+test("Carbon consumes only CosmJS 0.39 public APIs", () => {
   const sourceRoot = path.join(projectRoot, "src");
   const source = collectTypeScriptFiles(sourceRoot)
     .map((sourcePath) => fs.readFileSync(sourcePath, "utf8"))

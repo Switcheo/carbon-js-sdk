@@ -11,7 +11,7 @@ const { Tendermint37Client } = require("@cosmjs/tendermint-rpc");
 const { AuthInfo, TxBody, TxRaw } = require("cosmjs-types/cosmos/tx/v1beta1/tx");
 const { MsgSend } = require(path.join(projectRoot, "lib/codec/cosmos/bank/v1beta1/tx.js"));
 const { MetaMask } = require(path.join(projectRoot, "lib/provider/metamask/MetaMask.js"));
-const { CarbonSigningClient } = require(path.join(projectRoot, "lib/wallet/CarbonSigningClient.js"));
+const { CarbonSigningClient, makeSignDocAmino } = require(path.join(projectRoot, "lib/wallet/CarbonSigningClient.js"));
 
 function unusedTmClient() {
   return Tendermint37Client.create({
@@ -59,7 +59,7 @@ test("direct signing preserves a large uint64 account number and produces a deco
     account.address,
     [message],
     { amount: [{ denom: "swth", amount: "250" }], gas: "100000" },
-    "cosmjs-038",
+    "cosmjs-039",
     { accountNumber, sequence, chainId: "carbon-1", timeoutHeight },
   );
 
@@ -72,12 +72,69 @@ test("direct signing preserves a large uint64 account number and produces a deco
   const decoded = TxRaw.decode(encoded);
   const body = TxBody.decode(decoded.bodyBytes);
   const authInfo = AuthInfo.decode(decoded.authInfoBytes);
-  assert.equal(body.memo, "cosmjs-038");
+  assert.equal(body.memo, "cosmjs-039");
   assert.equal(body.messages[0].typeUrl, message.typeUrl);
   assert.equal(body.timeoutHeight.toString(), String(timeoutHeight));
   assert.equal(authInfo.signerInfos[0].sequence.toString(), String(sequence));
   assert.equal(authInfo.fee.gasLimit.toString(), "100000");
   assert.deepEqual(Buffer.from(decoded.signatures[0]), Buffer.alloc(64, 7));
+});
+
+test("Amino signing preserves a uint64 account number above Number.MAX_SAFE_INTEGER", async () => {
+  const wallet = await DirectSecp256k1Wallet.fromKey(Uint8Array.from({ length: 32 }, (_, index) => index + 1), "swth");
+  const [account] = await wallet.getAccounts();
+  let capturedSignDoc;
+  const signer = {
+    async getAccounts() {
+      return [account];
+    },
+    async signAmino(address, signDoc) {
+      assert.equal(address, account.address);
+      capturedSignDoc = signDoc;
+      return {
+        signed: signDoc,
+        signature: {
+          pub_key: { type: "tendermint/PubKeySecp256k1", value: Buffer.from(account.pubkey).toString("base64") },
+          signature: Buffer.alloc(64, 8).toString("base64"),
+        },
+      };
+    },
+  };
+  const client = new CarbonSigningClient(unusedTmClient(), signer);
+  const accountNumber = (1n << 63n) + 123n;
+  const sequence = 19;
+  const message = {
+    typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+    value: MsgSend.fromPartial({
+      fromAddress: account.address,
+      toAddress: account.address,
+      amount: [{ denom: "swth", amount: "1" }],
+    }),
+  };
+
+  const signedTx = await client.sign(
+    account.address,
+    [message],
+    { amount: [{ denom: "swth", amount: "250" }], gas: "100000" },
+    "cosmjs-039-amino",
+    { accountNumber, sequence, chainId: "carbon-1" },
+  );
+
+  assert.equal(capturedSignDoc.account_number, accountNumber.toString());
+  assert.equal(capturedSignDoc.sequence, String(sequence));
+  assert.deepEqual(Buffer.from(signedTx.signatures[0]), Buffer.alloc(64, 8));
+});
+
+test("Amino signing validates and canonicalizes uint64 account numbers", () => {
+  const fee = { amount: [], gas: "1" };
+
+  assert.equal(makeSignDocAmino([], fee, "carbon-1", "", "0007", 0).account_number, "7");
+  assert.throws(() => makeSignDocAmino([], fee, "carbon-1", "", -1n, 0), /Invalid string format/);
+  assert.throws(
+    () => makeSignDocAmino([], fee, "carbon-1", "", 1n << 64n, 0),
+    /Input exceeds uint64 range/,
+  );
+  assert.throws(() => makeSignDocAmino([], fee, "carbon-1", "", "not-a-number", 0), /Invalid string format/);
 });
 
 test("MetaMask Amino signing keeps the EIP-712 counterpath unchanged", async () => {
@@ -114,7 +171,7 @@ test("MetaMask Amino signing keeps the EIP-712 counterpath unchanged", async () 
     account_number: String(2 ** 40 + 321),
     chain_id: "carbon-1",
     fee: { amount: [{ denom: "swth", amount: "50" }], gas: "90000" },
-    memo: "metamask-038",
+    memo: "metamask-039",
     msgs: [{ type: "cosmos-sdk/MsgSend", value: { from_address: account.address, to_address: account.address, amount: [] } }],
     sequence: "23",
   };
@@ -130,7 +187,7 @@ test("MetaMask Amino signing keeps the EIP-712 counterpath unchanged", async () 
   assert.deepEqual(Buffer.from(response.signature.signature, "base64"), Buffer.alloc(64, 0xab));
 });
 
-test("Carbon signing simulation encodes messages and returns the 0.38 gas estimate", async () => {
+test("Carbon signing simulation encodes messages and returns the 0.39 gas estimate", async () => {
   const wallet = await DirectSecp256k1Wallet.fromKey(Uint8Array.from({ length: 32 }, () => 3), "swth");
   const [account] = await wallet.getAccounts();
   const signer = { async getAccounts() { return [account]; } };
@@ -153,11 +210,11 @@ test("Carbon signing simulation encodes messages and returns the 0.38 gas estima
     value: MsgSend.fromPartial({ fromAddress: account.address, toAddress: account.address, amount: [] }),
   };
 
-  const gas = await client.simulate(account.address, [message], "simulate-038");
+  const gas = await client.simulate(account.address, [message], "simulate-039");
 
   assert.equal(gas, 456789);
   assert.equal(calls.length, 1);
-  assert.equal(calls[0].memo, "simulate-038");
+  assert.equal(calls[0].memo, "simulate-039");
   assert.equal(calls[0].sequence, 29);
   assert.equal(calls[0].messages[0].typeUrl, message.typeUrl);
   assert.equal(calls[0].messages[0].value instanceof Uint8Array, true);

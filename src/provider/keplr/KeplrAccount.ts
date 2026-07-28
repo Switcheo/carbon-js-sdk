@@ -40,7 +40,7 @@ class KeplrAccount {
             bodyBytes,
             authInfoBytes,
             chainId,
-            accountNumber: new Long(Number(accountNumber)),
+            accountNumber: Long.fromString(accountNumber.toString(), true),
           }
           return await keplr!.signDirect(chainInfo.chainId, signerAddress, parsedDoc, signOpts);
         })

@@ -99,7 +99,8 @@ export enum BroadcastTxMode {
   BroadcastTxBlock = "block",
 }
 
-export interface CarbonSignerData extends SignerData {
+export interface CarbonSignerData extends Omit<SignerData, "accountNumber"> {
+  accountNumber: number | bigint;
   timeoutHeight?: number;
   evmChainId?: string;
 }
@@ -111,7 +112,7 @@ export interface SignTxOpts {
   feeDenom?: string;
   memo?: string;
   sequence?: number;
-  accountNumber?: number;
+  accountNumber?: number | bigint;
   explicitSignerData?: Partial<CarbonSignerData>;
   processMsgs?: ProcessMsgsCallback;
   triggerMerge?: boolean; // stack merge account tx if user account is unmerged
