@@ -178,6 +178,33 @@ export interface MsgDeleteExternalToken {
 export interface MsgDeleteExternalTokenResponse {
 }
 
+/**
+ * MsgSkipInboundMessage marks a specific inbound Axelar message (connection_id,
+ * nonce) to be treated as a no-op that acknowledges success, so a permanently
+ * failing message stops being retried. Admin/authority only.
+ */
+export interface MsgSkipInboundMessage {
+  creator: string;
+  connectionId: string;
+  nonce: Long;
+}
+
+export interface MsgSkipInboundMessageResponse {
+}
+
+/**
+ * MsgUnskipInboundMessage removes a previously set skip entry. Admin/authority
+ * only.
+ */
+export interface MsgUnskipInboundMessage {
+  creator: string;
+  connectionId: string;
+  nonce: Long;
+}
+
+export interface MsgUnskipInboundMessageResponse {
+}
+
 export interface MsgExecuteFromCarbon {
   creator: string;
   connectionId: string;
@@ -2688,6 +2715,262 @@ export const MsgDeleteExternalTokenResponse = {
   },
 };
 
+function createBaseMsgSkipInboundMessage(): MsgSkipInboundMessage {
+  return { creator: "", connectionId: "", nonce: Long.UZERO };
+}
+
+export const MsgSkipInboundMessage = {
+  encode(message: MsgSkipInboundMessage, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.connectionId !== "") {
+      writer.uint32(18).string(message.connectionId);
+    }
+    if (!message.nonce.isZero()) {
+      writer.uint32(24).uint64(message.nonce);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSkipInboundMessage {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSkipInboundMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.connectionId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.nonce = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSkipInboundMessage {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+    };
+  },
+
+  toJSON(message: MsgSkipInboundMessage): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSkipInboundMessage>): MsgSkipInboundMessage {
+    return MsgSkipInboundMessage.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgSkipInboundMessage>): MsgSkipInboundMessage {
+    const message = createBaseMsgSkipInboundMessage();
+    message.creator = object.creator ?? "";
+    message.connectionId = object.connectionId ?? "";
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
+    return message;
+  },
+};
+
+function createBaseMsgSkipInboundMessageResponse(): MsgSkipInboundMessageResponse {
+  return {};
+}
+
+export const MsgSkipInboundMessageResponse = {
+  encode(_: MsgSkipInboundMessageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSkipInboundMessageResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSkipInboundMessageResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSkipInboundMessageResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSkipInboundMessageResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSkipInboundMessageResponse>): MsgSkipInboundMessageResponse {
+    return MsgSkipInboundMessageResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgSkipInboundMessageResponse>): MsgSkipInboundMessageResponse {
+    const message = createBaseMsgSkipInboundMessageResponse();
+    return message;
+  },
+};
+
+function createBaseMsgUnskipInboundMessage(): MsgUnskipInboundMessage {
+  return { creator: "", connectionId: "", nonce: Long.UZERO };
+}
+
+export const MsgUnskipInboundMessage = {
+  encode(message: MsgUnskipInboundMessage, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.connectionId !== "") {
+      writer.uint32(18).string(message.connectionId);
+    }
+    if (!message.nonce.isZero()) {
+      writer.uint32(24).uint64(message.nonce);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnskipInboundMessage {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUnskipInboundMessage();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.connectionId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.nonce = reader.uint64() as Long;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUnskipInboundMessage {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+    };
+  },
+
+  toJSON(message: MsgUnskipInboundMessage): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUnskipInboundMessage>): MsgUnskipInboundMessage {
+    return MsgUnskipInboundMessage.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<MsgUnskipInboundMessage>): MsgUnskipInboundMessage {
+    const message = createBaseMsgUnskipInboundMessage();
+    message.creator = object.creator ?? "";
+    message.connectionId = object.connectionId ?? "";
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
+    return message;
+  },
+};
+
+function createBaseMsgUnskipInboundMessageResponse(): MsgUnskipInboundMessageResponse {
+  return {};
+}
+
+export const MsgUnskipInboundMessageResponse = {
+  encode(_: MsgUnskipInboundMessageResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnskipInboundMessageResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUnskipInboundMessageResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUnskipInboundMessageResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUnskipInboundMessageResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUnskipInboundMessageResponse>): MsgUnskipInboundMessageResponse {
+    return MsgUnskipInboundMessageResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<MsgUnskipInboundMessageResponse>): MsgUnskipInboundMessageResponse {
+    const message = createBaseMsgUnskipInboundMessageResponse();
+    return message;
+  },
+};
+
 function createBaseMsgExecuteFromCarbon(): MsgExecuteFromCarbon {
   return {
     creator: "",
@@ -3685,6 +3968,8 @@ export interface Msg {
   WithdrawToken(request: MsgWithdrawToken): Promise<MsgWithdrawTokenResponse>;
   UpdateExternalToken(request: MsgUpdateExternalToken): Promise<MsgUpdateExternalTokenResponse>;
   DeleteExternalToken(request: MsgDeleteExternalToken): Promise<MsgDeleteExternalTokenResponse>;
+  SkipInboundMessage(request: MsgSkipInboundMessage): Promise<MsgSkipInboundMessageResponse>;
+  UnskipInboundMessage(request: MsgUnskipInboundMessage): Promise<MsgUnskipInboundMessageResponse>;
   ExecuteFromCarbon(request: MsgExecuteFromCarbon): Promise<MsgExecuteFromCarbonResponse>;
   StartRelay(request: MsgStartRelay): Promise<MsgStartRelayResponse>;
   PruneExpiredPendingActions(request: MsgPruneExpiredPendingActions): Promise<MsgPruneExpiredPendingActionsResponse>;
@@ -3716,6 +4001,8 @@ export class MsgClientImpl implements Msg {
     this.WithdrawToken = this.WithdrawToken.bind(this);
     this.UpdateExternalToken = this.UpdateExternalToken.bind(this);
     this.DeleteExternalToken = this.DeleteExternalToken.bind(this);
+    this.SkipInboundMessage = this.SkipInboundMessage.bind(this);
+    this.UnskipInboundMessage = this.UnskipInboundMessage.bind(this);
     this.ExecuteFromCarbon = this.ExecuteFromCarbon.bind(this);
     this.StartRelay = this.StartRelay.bind(this);
     this.PruneExpiredPendingActions = this.PruneExpiredPendingActions.bind(this);
@@ -3826,6 +4113,18 @@ export class MsgClientImpl implements Msg {
     const data = MsgDeleteExternalToken.encode(request).finish();
     const promise = this.rpc.request(this.service, "DeleteExternalToken", data);
     return promise.then((data) => MsgDeleteExternalTokenResponse.decode(_m0.Reader.create(data)));
+  }
+
+  SkipInboundMessage(request: MsgSkipInboundMessage): Promise<MsgSkipInboundMessageResponse> {
+    const data = MsgSkipInboundMessage.encode(request).finish();
+    const promise = this.rpc.request(this.service, "SkipInboundMessage", data);
+    return promise.then((data) => MsgSkipInboundMessageResponse.decode(_m0.Reader.create(data)));
+  }
+
+  UnskipInboundMessage(request: MsgUnskipInboundMessage): Promise<MsgUnskipInboundMessageResponse> {
+    const data = MsgUnskipInboundMessage.encode(request).finish();
+    const promise = this.rpc.request(this.service, "UnskipInboundMessage", data);
+    return promise.then((data) => MsgUnskipInboundMessageResponse.decode(_m0.Reader.create(data)));
   }
 
   ExecuteFromCarbon(request: MsgExecuteFromCarbon): Promise<MsgExecuteFromCarbonResponse> {

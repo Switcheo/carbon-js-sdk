@@ -161,6 +161,10 @@ export const TxTypes = {
   "MsgUpdateExternalTokenResponse": "/Switcheo.carbon.bridge.MsgUpdateExternalTokenResponse",
   "MsgDeleteExternalToken": "/Switcheo.carbon.bridge.MsgDeleteExternalToken",
   "MsgDeleteExternalTokenResponse": "/Switcheo.carbon.bridge.MsgDeleteExternalTokenResponse",
+  "MsgSkipInboundMessage": "/Switcheo.carbon.bridge.MsgSkipInboundMessage",
+  "MsgSkipInboundMessageResponse": "/Switcheo.carbon.bridge.MsgSkipInboundMessageResponse",
+  "MsgUnskipInboundMessage": "/Switcheo.carbon.bridge.MsgUnskipInboundMessage",
+  "MsgUnskipInboundMessageResponse": "/Switcheo.carbon.bridge.MsgUnskipInboundMessageResponse",
   "MsgExecuteFromCarbon": "/Switcheo.carbon.bridge.MsgExecuteFromCarbon",
   "MsgExecuteFromCarbonResponse": "/Switcheo.carbon.bridge.MsgExecuteFromCarbonResponse",
   "MsgStartRelay": "/Switcheo.carbon.bridge.MsgStartRelay",
@@ -2722,6 +2726,20 @@ export const EIP712Types: Record<string, Record<string, EIP712FieldDefinition[]>
         "type": "string"
       }
     ],
+    "SkippedInboundMessageEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      },
+      {
+        "name": "payload_type",
+        "type": "string"
+      }
+    ],
     "BridgeSentEvent": [
       {
         "name": "bridge_id",
@@ -3685,6 +3703,36 @@ export const EIP712Types: Record<string, Record<string, EIP712FieldDefinition[]>
       }
     ],
     "MsgDeleteExternalTokenResponse": [],
+    "MsgSkipInboundMessage": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      }
+    ],
+    "MsgSkipInboundMessageResponse": [],
+    "MsgUnskipInboundMessage": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      }
+    ],
+    "MsgUnskipInboundMessageResponse": [],
     "MsgExecuteFromCarbon": [
       {
         "name": "creator",

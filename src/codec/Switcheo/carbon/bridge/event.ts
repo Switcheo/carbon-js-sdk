@@ -79,6 +79,16 @@ export interface ExecutionOnCarbonErrorEvent {
   connectionId: string;
 }
 
+/**
+ * SkippedInboundMessageEvent is emitted when an inbound message marked as
+ * skipped is no-op'd (acknowledged as success without processing).
+ */
+export interface SkippedInboundMessageEvent {
+  connectionId: string;
+  nonce: Long;
+  payloadType: string;
+}
+
 /** Event signifying that bridge has sent an outbound message */
 export interface BridgeSentEvent {
   bridgeId: Long;
@@ -1221,6 +1231,90 @@ export const ExecutionOnCarbonErrorEvent = {
     message.dataEncoding = object.dataEncoding ?? "";
     message.data = object.data ?? new Uint8Array();
     message.connectionId = object.connectionId ?? "";
+    return message;
+  },
+};
+
+function createBaseSkippedInboundMessageEvent(): SkippedInboundMessageEvent {
+  return { connectionId: "", nonce: Long.UZERO, payloadType: "" };
+}
+
+export const SkippedInboundMessageEvent = {
+  encode(message: SkippedInboundMessageEvent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.connectionId !== "") {
+      writer.uint32(10).string(message.connectionId);
+    }
+    if (!message.nonce.isZero()) {
+      writer.uint32(16).uint64(message.nonce);
+    }
+    if (message.payloadType !== "") {
+      writer.uint32(26).string(message.payloadType);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SkippedInboundMessageEvent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSkippedInboundMessageEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.connectionId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.nonce = reader.uint64() as Long;
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.payloadType = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SkippedInboundMessageEvent {
+    return {
+      connectionId: isSet(object.connectionId) ? String(object.connectionId) : "",
+      nonce: isSet(object.nonce) ? Long.fromValue(object.nonce) : Long.UZERO,
+      payloadType: isSet(object.payloadType) ? String(object.payloadType) : "",
+    };
+  },
+
+  toJSON(message: SkippedInboundMessageEvent): unknown {
+    const obj: any = {};
+    message.connectionId !== undefined && (obj.connectionId = message.connectionId);
+    message.nonce !== undefined && (obj.nonce = (message.nonce || Long.UZERO).toString());
+    message.payloadType !== undefined && (obj.payloadType = message.payloadType);
+    return obj;
+  },
+
+  create(base?: DeepPartial<SkippedInboundMessageEvent>): SkippedInboundMessageEvent {
+    return SkippedInboundMessageEvent.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<SkippedInboundMessageEvent>): SkippedInboundMessageEvent {
+    const message = createBaseSkippedInboundMessageEvent();
+    message.connectionId = object.connectionId ?? "";
+    message.nonce = (object.nonce !== undefined && object.nonce !== null) ? Long.fromValue(object.nonce) : Long.UZERO;
+    message.payloadType = object.payloadType ?? "";
     return message;
   },
 };

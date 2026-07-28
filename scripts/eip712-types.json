@@ -2027,6 +2027,20 @@
         "type": "string"
       }
     ],
+    "SkippedInboundMessageEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      },
+      {
+        "name": "payload_type",
+        "type": "string"
+      }
+    ],
     "BridgeSentEvent": [
       {
         "name": "bridge_id",
@@ -2990,6 +3004,36 @@
       }
     ],
     "MsgDeleteExternalTokenResponse": [],
+    "MsgSkipInboundMessage": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      }
+    ],
+    "MsgSkipInboundMessageResponse": [],
+    "MsgUnskipInboundMessage": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      }
+    ],
+    "MsgUnskipInboundMessageResponse": [],
     "MsgExecuteFromCarbon": [
       {
         "name": "creator",
