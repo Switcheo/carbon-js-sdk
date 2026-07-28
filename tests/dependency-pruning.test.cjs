@@ -56,7 +56,7 @@ for (const [packageName, expectedVersion] of Object.entries(requiredRuntimeContr
 }
 
 test("@types/crypto-js is the exact direct development type contract", () => {
-  assert.equal(manifest.devDependencies["@types/crypto-js"], "4.0.1");
+  assert.equal(manifest.devDependencies["@types/crypto-js"], "4.2.2");
   assert.doesNotThrow(() => require.resolve("@types/crypto-js/package.json"));
 });
 
