@@ -7,7 +7,7 @@ const Long = require("long");
 
 const projectRoot = path.resolve(__dirname, "..");
 
-test("Keplr direct signing preserves uint64 account numbers above 32 bits", async () => {
+test("Keplr direct signing preserves a uint64 account number above Number.MAX_SAFE_INTEGER", async () => {
   const { KeplrAccount } = require(path.join(projectRoot, "lib/index.js"));
   let forwarded;
   const keplr = {
@@ -27,7 +27,7 @@ test("Keplr direct signing preserves uint64 account numbers above 32 bits", asyn
     { chainId: "carbon-1" },
     { bech32Address: "swth1contract", pubKey: new Uint8Array() },
   );
-  const accountNumber = (1n << 40n) + 123n;
+  const accountNumber = 9223372036854775931n;
 
   await signer.signDirect("swth1contract", {
     bodyBytes: new Uint8Array(),
