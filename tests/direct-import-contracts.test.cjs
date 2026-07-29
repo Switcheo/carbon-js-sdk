@@ -20,7 +20,7 @@ const expectedDirectContracts = {
   "@cosmjs/tendermint-rpc": "0.39.0",
   "@cosmjs/utils": "0.39.0",
   "@ethersproject/abstract-signer": "5.8.0",
-  "@ledgerhq/hw-transport": "6.28.8",
+  "@ledgerhq/hw-transport": "6.35.6",
   axios: "0.33.0",
   bech32: "1.1.4",
   long: "4.0.0",
