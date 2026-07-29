@@ -41,7 +41,14 @@ class LeapAccount {
           chainId,
           accountNumber: Long.fromString(accountNumber.toString(), true),
         }
-        return await leap!.signDirect(chainId, signerAddress, parsedDoc, signOpts);
+        const response = await leap!.signDirect(chainId, signerAddress, parsedDoc, signOpts);
+        return {
+          ...response,
+          signed: {
+            ...response.signed,
+            accountNumber: BigInt(response.signed.accountNumber.toString()),
+          },
+        };
       })
     };
 

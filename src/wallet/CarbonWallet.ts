@@ -1069,7 +1069,7 @@ export class CarbonWallet {
         return {
           address,
           pubkey: null,
-          accountNumber: accountNumber.toNumber(),
+          accountNumber: BigInt(accountNumber.toString()),
           sequence: sequence.toNumber(),
         }
       }

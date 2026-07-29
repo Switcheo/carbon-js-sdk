@@ -7,10 +7,10 @@ const Long = require("long");
 
 const projectRoot = path.resolve(__dirname, "..");
 
-test("Leap direct signing preserves uint64 account numbers above 32 bits", async () => {
-  const { LeapAccount } = require(path.join(projectRoot, "lib/index.js"));
+test("Keplr direct signing preserves a uint64 account number above Number.MAX_SAFE_INTEGER", async () => {
+  const { KeplrAccount } = require(path.join(projectRoot, "lib/index.js"));
   let forwarded;
-  const leap = {
+  const keplr = {
     async signDirect(_chainId, _address, doc) {
       forwarded = doc.accountNumber;
       return {
@@ -22,8 +22,12 @@ test("Leap direct signing preserves uint64 account numbers above 32 bits", async
       };
     },
   };
-  const signer = LeapAccount.createLeapSigner(leap, "carbon-1");
-  const accountNumber = (1n << 40n) + 123n;
+  const signer = KeplrAccount.createKeplrSigner(
+    keplr,
+    { chainId: "carbon-1" },
+    { bech32Address: "swth1contract", pubKey: new Uint8Array() },
+  );
+  const accountNumber = 9223372036854775931n;
 
   const response = await signer.signDirect("swth1contract", {
     bodyBytes: new Uint8Array(),

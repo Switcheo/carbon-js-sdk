@@ -4,11 +4,13 @@ const assert = require("node:assert/strict");
 const path = require("node:path");
 const test = require("node:test");
 const BigNumber = require("bignumber.js");
+const Long = require("long");
 const { TimeoutError } = require("@cosmjs/stargate");
 
 const projectRoot = path.resolve(__dirname, "..");
 const { CarbonWallet } = require(path.join(projectRoot, "lib/index.js"));
 const GasFee = require(path.join(projectRoot, "lib/clients/GasFee.js")).default;
+const { BaseAccount } = require(path.join(projectRoot, "lib/codec/cosmos/auth/v1beta1/auth.js"));
 
 function createWallet() {
   return new CarbonWallet({
@@ -40,6 +42,35 @@ function successfulDeliverResponse() {
   };
 }
 
+test("account queries preserve uint64 account numbers as bigint", async () => {
+  const wallet = createWallet();
+  const accountNumber = (1n << 63n) + 123n;
+  const encodedAccount = BaseAccount.encode(BaseAccount.fromPartial({
+    address: wallet.bech32Address,
+    accountNumber: Long.fromString(accountNumber.toString(), true),
+    sequence: Long.fromNumber(17, true),
+  })).finish();
+  wallet.query = {
+    auth: {
+      async Account({ address }) {
+        assert.equal(address, wallet.bech32Address);
+        return {
+          account: {
+            typeUrl: "/cosmos.auth.v1beta1.BaseAccount",
+            value: encodedAccount,
+          },
+        };
+      },
+    },
+  };
+
+  const account = await wallet.getAccount(wallet.bech32Address);
+
+  assert.equal(account.accountNumber, accountNumber);
+  assert.equal(typeof account.accountNumber, "bigint");
+  assert.equal(account.sequence, 17);
+});
+
 test("fee calculation preserves Carbon gas costs and bignumber.js 9.1 identity", () => {
   const wallet = createWallet();
   const message = { typeUrl: "/cosmos.bank.v1beta1.MsgSend", value: {} };
@@ -57,7 +88,7 @@ test("fee calculation preserves Carbon gas costs and bignumber.js 9.1 identity",
   assert.equal(require("bignumber.js/package.json").version, "9.1.2");
 });
 
-test("block, sync, and async broadcast modes preserve 0.38 response contracts", async () => {
+test("block, sync, and async broadcast modes preserve 0.39 response contracts", async () => {
   const wallet = createWallet();
   const tx = emptyTx();
   const blockResponse = successfulDeliverResponse();

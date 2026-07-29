@@ -1,4 +1,4 @@
-import type { AssetList, Chain, ChainInfo, Keplr, Key, Leap } from "../../lib";
+import type { AssetList, CarbonTx, Chain, ChainInfo, Keplr, Key, Leap } from "../../lib";
 
 const legacyChain: Chain = {
   chain_name: "carbon",
@@ -83,4 +83,22 @@ const legacyKey: Key = {
 declare const keplr: Keplr;
 declare const chainInfo: ChainInfo;
 
-void [legacyChain, legacyAssets, legacyLeap, legacyKey, keplr, chainInfo];
+const legacyNumericSignOpts: CarbonTx.SignTxOpts = { accountNumber: 42 };
+const losslessBigintSignOpts: CarbonTx.SignTxOpts = { accountNumber: (1n << 63n) + 123n };
+const losslessSignerData: CarbonTx.CarbonSignerData = {
+  accountNumber: (1n << 63n) + 123n,
+  chainId: "carbon-1",
+  sequence: 17,
+};
+
+void [
+  legacyChain,
+  legacyAssets,
+  legacyLeap,
+  legacyKey,
+  keplr,
+  chainInfo,
+  legacyNumericSignOpts,
+  losslessBigintSignOpts,
+  losslessSignerData,
+];

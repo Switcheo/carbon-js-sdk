@@ -5,7 +5,7 @@ import { encodeAnyEthSecp256k1PubKey, parseChainId } from "@carbon-sdk/util/ethe
 import { CarbonSignerData, useSignDirectForMetamask } from "@carbon-sdk/util/tx";
 import { AminoMsg, encodeSecp256k1Pubkey, OfflineAminoSigner } from "@cosmjs/amino";
 import { fromBase64 } from "@cosmjs/encoding";
-import { Int53, Uint53 } from "@cosmjs/math";
+import { Int53, Uint53, Uint64 } from "@cosmjs/math";
 import {
   EncodeObject,
   encodePubkey,
@@ -64,14 +64,14 @@ export function makeSignDocAmino(
   fee: StdFee,
   chainId: string,
   memo: string | undefined,
-  accountNumber: number | string,
+  accountNumber: number | string | bigint,
   sequence: number | string,
   timeoutHeight: number | string = 0
 ): StdSignDoc {
   const timeoutHeightStr = typeof timeoutHeight === "number" ? timeoutHeight.toString(10) : timeoutHeight;
   return {
     chain_id: chainId,
-    account_number: Uint53.fromString(accountNumber.toString()).toString(),
+    account_number: Uint64.fromString(accountNumber.toString()).toString(),
     sequence: Uint53.fromString(sequence.toString()).toString(),
     fee: fee,
     msgs: msgs,

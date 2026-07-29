@@ -14,11 +14,11 @@ const builtins = new Set(
 );
 
 const expectedDirectContracts = {
-  "@cosmjs/crypto": "0.38.1",
-  "@cosmjs/encoding": "0.38.1",
-  "@cosmjs/math": "0.38.1",
-  "@cosmjs/tendermint-rpc": "0.38.1",
-  "@cosmjs/utils": "0.38.1",
+  "@cosmjs/crypto": "0.39.0",
+  "@cosmjs/encoding": "0.39.0",
+  "@cosmjs/math": "0.39.0",
+  "@cosmjs/tendermint-rpc": "0.39.0",
+  "@cosmjs/utils": "0.39.0",
   "@ethersproject/abstract-signer": "5.8.0",
   "@ledgerhq/hw-transport": "6.28.8",
   axios: "0.33.0",
