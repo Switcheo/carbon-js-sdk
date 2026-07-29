@@ -25,7 +25,7 @@ test("Leap direct signing preserves uint64 account numbers above 32 bits", async
   const signer = LeapAccount.createLeapSigner(leap, "carbon-1");
   const accountNumber = (1n << 40n) + 123n;
 
-  await signer.signDirect("swth1contract", {
+  const response = await signer.signDirect("swth1contract", {
     bodyBytes: new Uint8Array(),
     authInfoBytes: new Uint8Array(),
     chainId: "carbon-1",
@@ -35,4 +35,6 @@ test("Leap direct signing preserves uint64 account numbers above 32 bits", async
   assert.equal(Long.isLong(forwarded), true);
   assert.equal(forwarded.unsigned, true);
   assert.equal(forwarded.toString(), accountNumber.toString());
+  assert.equal(response.signed.accountNumber, accountNumber);
+  assert.equal(typeof response.signed.accountNumber, "bigint");
 });

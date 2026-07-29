@@ -42,7 +42,14 @@ class KeplrAccount {
             chainId,
             accountNumber: Long.fromString(accountNumber.toString(), true),
           }
-          return await keplr!.signDirect(chainInfo.chainId, signerAddress, parsedDoc, signOpts);
+          const response = await keplr!.signDirect(chainInfo.chainId, signerAddress, parsedDoc, signOpts);
+          return {
+            ...response,
+            signed: {
+              ...response.signed,
+              accountNumber: BigInt(response.signed.accountNumber.toString()),
+            },
+          };
         })
     };
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
