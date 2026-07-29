@@ -12,7 +12,7 @@ const expectedVersions = {
   "base-x": ["3.0.11", "5.0.1"],
   "bn.js": ["4.12.3", "5.2.3"],
   "cipher-base": ["1.0.5"],
-  pbkdf2: ["3.1.3"],
+  pbkdf2: [],
   "sha.js": ["2.4.12"],
 };
 
@@ -30,11 +30,6 @@ for (const [packageName, versions] of Object.entries(expectedVersions)) {
     assert.deepEqual(lockedVersions(packageName), versions);
   });
 }
-
-test("PBKDF2 preserves the RFC 6070 SHA-1 vector", () => {
-  const pbkdf2 = require("pbkdf2");
-  assert.equal(pbkdf2.pbkdf2Sync("password", "salt", 1, 20, "sha1").toString("hex"), "0c60c80f961f0e71f3a9b524af6012062fe037a6");
-});
 
 test("sha.js preserves the SHA-256 known-answer vector", () => {
   const digest = require("sha.js")("sha256").update("abc").digest("hex");

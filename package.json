@@ -57,7 +57,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@bufbuild/protobuf": "2.10.2",
+    "@bufbuild/protobuf": "2.13.0",
     "@cosmjs/amino": "0.39.0",
     "@cosmjs/crypto": "0.39.0",
     "@cosmjs/encoding": "0.39.0",
@@ -70,7 +70,7 @@
     "@improbable-eng/grpc-web": "^0.15.0",
     "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",
     "@keplr-wallet/types": "^0.13.40",
-    "@ledgerhq/hw-transport": "6.28.8",
+    "@ledgerhq/hw-transport": "6.35.6",
     "@ledgerhq/hw-transport-webhid": "^6.20.0",
     "@ledgerhq/hw-transport-webusb": "^6.20.0",
     "@metamask/eth-sig-util": "8.2.0",

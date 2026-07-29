@@ -39,8 +39,8 @@ test("Carbon declares and installs one coherent direct CosmJS 0.39.0 family", ()
   }
   assert.equal(packageJson.dependencies["cosmjs-types"], "0.11.0");
   assert.equal(installedVersion("cosmjs-types"), "0.11.0");
-  assert.equal(packageJson.dependencies["@bufbuild/protobuf"], "2.10.2");
-  assert.equal(installedVersion("@bufbuild/protobuf"), "2.10.2");
+  assert.equal(packageJson.dependencies["@bufbuild/protobuf"], "2.13.0");
+  assert.equal(installedVersion("@bufbuild/protobuf"), "2.13.0");
 
   assert.equal(packageJson.dependencies["bignumber.js"], "9.1.2");
   assert.equal(installedVersion("bignumber.js"), "9.1.2");

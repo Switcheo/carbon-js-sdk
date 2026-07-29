@@ -22,9 +22,9 @@ function lockedVersions(packageName) {
 
 test("Carbon aligns its public Keplr types with the Starknet 8 wallet family", () => {
   assert.equal(manifest.dependencies["@keplr-wallet/types"], "^0.13.40");
-  assert.equal(installedManifest.version, "0.13.40");
+  assert.equal(installedManifest.version, "0.13.41");
   assert.deepEqual(installedManifest.peerDependencies, { starknet: "^8" });
-  assert.deepEqual(lockedVersions("@keplr-wallet/types"), ["0.13.40"]);
+  assert.deepEqual(lockedVersions("@keplr-wallet/types"), ["0.13.41"]);
   assert.doesNotMatch(lockfile, /@keplr-wallet\/types@\^0\.12/);
 });
 
