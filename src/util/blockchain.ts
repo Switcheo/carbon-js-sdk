@@ -32,6 +32,7 @@ export enum Blockchain {
   Juno = "juno",
   Evmos = "evmos",
   Axelar = "axelar",
+  Noble = "noble",
   Stride = "stride",
   Kujira = "kujira",
   Terra2 = "terra2",

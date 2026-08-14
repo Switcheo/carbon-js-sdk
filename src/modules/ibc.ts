@@ -1,7 +1,7 @@
 import { Token } from "@carbon-sdk/codec/Switcheo/carbon/coin/token";
 import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
-import { Asset, ChainRegistryItem, CosmosChainsObj, DenomUnit, ExtendedChainInfo, FeeToken, IBCAddress, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";
+import { Asset, CarbonIbcLifecycleStatus, CarbonSupportedIbcChains, ChainRegistryItem, CosmosChainsObj, DenomUnit, ExtendedChainInfo, FeeToken, IBCAddress, cw20TokenRegex, getCarbonIbcLifecycleStatus, ibcTransferChannelRegex } from "@carbon-sdk/constant";
 import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency, Currency } from "@keplr-wallet/types";
@@ -108,20 +108,28 @@ export class IBCModule extends BaseModule {
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
       const ibcBridge = ibcBridges[ibc];
       const chainId = ibcBridge.chain_id_name;
-      const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
+      const carbonLifecycleStatus = getCarbonIbcLifecycleStatus(chainId);
+      const isCarbonDeprecated = carbonLifecycleStatus === CarbonIbcLifecycleStatus.Deprecated;
+      // Cosmos Directory is indexed by canonical chain identity. Match the
+      // counterparty's exact chain_id instead of deriving a directory name from
+      // revision syntax (for example evmos_9001-2 is in directory "evmos").
       const chainData = chainsData.chains.find((d) => d.chain_id === chainId);
+      const registryChainName = chainData?.chain_name
+        ?? CarbonSupportedIbcChains[chainId]?.registryChainName;
       let registryChainInfo: ChainRegistryChainInfo | undefined;
-      if (chainData?.status === undefined) {
-        registryChainInfo = await this.getChainRegistryInfo(chainName);
+      if (!isCarbonDeprecated && chainData?.status === undefined) {
+        registryChainInfo = await this.getChainRegistryInfo(registryChainName);
       }
       const registryStatus = chainData?.status ?? registryChainInfo?.status;
       const isRegistryKilled = registryStatus === "killed";
+      const isLifecycleUnavailable = isCarbonDeprecated || isRegistryKilled;
       let chainInfo: ChainInfo | undefined;
 
-      if (isRegistryKilled) {
-        // Keep enough metadata for callers that still reference the canonical
-        // on-chain bridge, but do not probe removed registry files or present
-        // embedded metadata as evidence that transfers remain available.
+      if (isLifecycleUnavailable) {
+        // Keep identity/display data for historical bridge consumers, but never
+        // retain endpoints or capabilities that can make a sunset route appear
+        // usable. Carbon-deprecated chains do not trigger per-chain registry or
+        // Keplr probes, so remote failure cannot reactivate them.
         const embeddedChainInfo = IBCUtils.EmbedChainInfos[chainId];
         if (embeddedChainInfo) {
           chainInfo = {
@@ -133,7 +141,6 @@ export class IBCModule extends BaseModule {
             features: [],
           };
         } else {
-          registryChainInfo ??= await this.getChainRegistryInfo(chainName);
           chainInfo = this.getRetiredChainInfo(
             chainId,
             ibcBridge.chainName,
@@ -142,21 +149,21 @@ export class IBCModule extends BaseModule {
           );
         }
       } else {
-        chainInfo = await this.getChainInfo(chainName);
+        chainInfo = await this.getChainInfo(registryChainName);
       }
-      
-      if (chainInfo === undefined && !isRegistryKilled) {
-        const fallbackChainInfo = await this.getAssembledChainInfo(chainId, chainData);
-        chainInfo = fallbackChainInfo;
+
+      if (chainInfo === undefined && !isLifecycleUnavailable) {
+        chainInfo = await this.getAssembledChainInfo(chainId, chainData);
       }
 
       if (chainInfo) {
-        chainInfoMap[ibcBridge.chain_id_name] = {
+        chainInfoMap[chainId] = {
           ...chainInfo,
           minimalDenomMap: {},
-          bestRpcs: isRegistryKilled ? [] : chainData?.best_apis?.rpc ?? [],
+          bestRpcs: isLifecycleUnavailable ? [] : chainData?.best_apis?.rpc ?? [],
+          carbonLifecycleStatus,
           registryStatus,
-          isTransferAvailable: ibcBridge.enabled && !isRegistryKilled,
+          isTransferAvailable: ibcBridge.enabled && !isLifecycleUnavailable,
         };
       }
     }
@@ -215,7 +222,7 @@ export class IBCModule extends BaseModule {
   }
 
 
-  async getChainInfo(chainName: string): Promise<ChainInfo | undefined> {
+  async getChainInfo(chainName?: string): Promise<ChainInfo | undefined> {
     if (!chainName || chainName === "mainnet") return undefined
     const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/cosmos/${chainName}.json`)
     if (!chainInfoResponse.ok) {
@@ -232,7 +239,7 @@ export class IBCModule extends BaseModule {
     return (await this.getChainRegistryInfo(chainName))?.status;
   }
 
-  private async getChainRegistryInfo(chainName: string): Promise<ChainRegistryChainInfo | undefined> {
+  private async getChainRegistryInfo(chainName?: string): Promise<ChainRegistryChainInfo | undefined> {
     if (!chainName) return undefined;
     const url = `https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainName}/chain.json`;
     const chainInfoResponse = await fetch(url);

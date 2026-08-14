@@ -805,7 +805,7 @@ class TokenClient {
   public setCommonAssetConfig() {
     // whitelisted ibc tokens
     ibcWhitelist.forEach((chainId: string) => {
-      const currencies = IBCUtils.EmbedChainInfos[chainId].currencies;
+      const currencies = IBCUtils.EmbedChainInfos[chainId]?.currencies ?? [];
       const channelObj = swthChannels[chainId]?.ibc;
       currencies.forEach((asset: AppCurrency) => {
         const channel =
