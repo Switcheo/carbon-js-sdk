@@ -6,6 +6,15 @@ const test = require("node:test");
 
 const projectRoot = path.resolve(__dirname, "..");
 const { IBCModule } = require(path.join(projectRoot, "lib/index.js"));
+const {
+  CarbonIbcLifecycleStatus,
+  CarbonSupportedIbcChainIds,
+  ChainIds,
+  EmbedChainInfosInit,
+  getCarbonIbcLifecycleStatus,
+  ibcWhitelist,
+  swthChannels,
+} = require(path.join(projectRoot, "lib/constant/index.js"));
 
 const directoryUrl = "https://chains.cosmos.directory/";
 const keplrPrefix = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/cosmos/";
@@ -143,6 +152,94 @@ function baseResponses(chains) {
   };
 }
 
+test("the Carbon support policy is the single source for transfer whitelisting", () => {
+  assert.deepEqual(CarbonSupportedIbcChainIds, [
+    ChainIds.Axelar,
+    ChainIds.Osmosis,
+    ChainIds.Noble,
+  ]);
+  assert.deepEqual(ibcWhitelist, CarbonSupportedIbcChainIds);
+  assert.deepEqual(Object.keys(swthChannels), CarbonSupportedIbcChainIds);
+  assert.equal(Object.keys(EmbedChainInfosInit).every((chainId) => ibcWhitelist.includes(chainId)), true);
+  assert.equal(ibcWhitelist.includes(ChainIds.Evmos), false);
+  assert.equal(EmbedChainInfosInit[ChainIds.Evmos], undefined);
+  assert.equal(swthChannels[ChainIds.Evmos], undefined);
+  for (const inheritedKey of ["toString", "constructor", "__proto__"]) {
+    assert.equal(
+      getCarbonIbcLifecycleStatus(inheritedKey),
+      CarbonIbcLifecycleStatus.Deprecated,
+      `${inheritedKey} must not bypass exact-chain-ID matching`,
+    );
+  }
+});
+
+test("Carbon-deprecated Evmos stays unavailable when registry metadata is missing", { concurrency: false }, async (t) => {
+  const { provider, tokenClient } = sdkProvider([ibcBridge("evmos_9001-2", true)]);
+  const module = new IBCModule(provider);
+
+  await withFetch(t, baseResponses([]), async (requestedUrls) => {
+    const result = await module.getChainInfoMap();
+    const evmos = result["evmos_9001-2"];
+
+    assert.equal(tokenClient.bridges.ibc[0].enabled, true);
+    assert.equal(evmos.carbonLifecycleStatus, CarbonIbcLifecycleStatus.Deprecated);
+    assert.equal(evmos.isTransferAvailable, false);
+    assert.equal(evmos.chainId, "evmos_9001-2");
+    assert.equal(requestedUrls.some((url) => url.includes("/evmos_9001/")), false);
+    assert.equal(requestedUrls.some((url) => url.includes("/evmos/chain.json")), false);
+    assert.equal(requestedUrls.some((url) => url.includes("/cosmos/evmos")), false);
+  });
+});
+
+test("canonical killed status and Carbon deprecation both keep Evmos unavailable", { concurrency: false }, async (t) => {
+  const { provider } = sdkProvider([ibcBridge("evmos_9001-2", true)]);
+  const module = new IBCModule(provider);
+
+  await withFetch(t, baseResponses([chainSummary("evmos_9001-2", "killed", "evmos")]), async () => {
+    const evmos = (await module.getChainInfoMap())["evmos_9001-2"];
+
+    assert.equal(evmos.registryStatus, "killed");
+    assert.equal(evmos.carbonLifecycleStatus, CarbonIbcLifecycleStatus.Deprecated);
+    assert.equal(evmos.isTransferAvailable, false);
+  });
+});
+
+test("Carbon deprecation wins even if a remote registry reports a live chain", { concurrency: false }, async (t) => {
+  const { provider } = sdkProvider([ibcBridge("evmos_9001-2", true)]);
+  const module = new IBCModule(provider);
+
+  await withFetch(t, baseResponses([chainSummary("evmos_9001-2", "live", "evmos")]), async () => {
+    const evmos = (await module.getChainInfoMap())["evmos_9001-2"];
+
+    assert.equal(evmos.registryStatus, "live");
+    assert.equal(evmos.carbonLifecycleStatus, CarbonIbcLifecycleStatus.Deprecated);
+    assert.equal(evmos.isTransferAvailable, false);
+  });
+});
+
+test("an active supported revisioned chain uses maintained canonical registry identity", { concurrency: false }, async (t) => {
+  const { provider } = sdkProvider([ibcBridge("axelar-dojo-1", true)]);
+  const module = new IBCModule(provider);
+  const responses = {
+    ...baseResponses([]),
+    [`${chainRegistryPrefix}axelar/chain.json`]: jsonResponse({
+      chain_id: "axelar-dojo-1",
+      chain_name: "axelar",
+      status: "live",
+    }),
+    [`${keplrPrefix}axelar.json`]: jsonResponse(chainInfo("axelar-dojo-1", "Axelar")),
+  };
+
+  await withFetch(t, responses, async (requestedUrls) => {
+    const axelar = (await module.getChainInfoMap())["axelar-dojo-1"];
+
+    assert.equal(axelar.carbonLifecycleStatus, CarbonIbcLifecycleStatus.Supported);
+    assert.equal(axelar.isTransferAvailable, true);
+    assert.equal(requestedUrls.includes(`${chainRegistryPrefix}axelar/chain.json`), true);
+    assert.equal(requestedUrls.some((url) => url.includes("/axelar-dojo/")), false);
+  });
+});
+
 test("a registry-killed chain skips Keplr while preserving the enabled on-chain bridge", { concurrency: false }, async (t) => {
   const bridge = ibcBridge("stargaze-1", true);
   const { provider, tokenClient } = sdkProvider([bridge]);
@@ -165,14 +262,14 @@ test("a registry-killed chain skips Keplr while preserving the enabled on-chain 
   });
 });
 
-test("a killed chain omitted by Cosmos Directory checks Chain Registry status before Keplr", { concurrency: false }, async (t) => {
-  const { provider } = sdkProvider([ibcBridge("omniflixhub-1")]);
+test("a supported chain omitted by Cosmos Directory checks Chain Registry status before Keplr", { concurrency: false }, async (t) => {
+  const { provider } = sdkProvider([ibcBridge("osmosis-1")]);
   const module = new IBCModule(provider);
   const responses = {
     ...baseResponses([]),
-    [`${chainRegistryPrefix}omniflixhub/chain.json`]: jsonResponse({
-      chain_id: "omniflixhub-1",
-      chain_name: "omniflixhub",
+    [`${chainRegistryPrefix}osmosis/chain.json`]: jsonResponse({
+      chain_id: "osmosis-1",
+      chain_name: "osmosis",
       status: "killed",
     }),
   };
@@ -180,40 +277,40 @@ test("a killed chain omitted by Cosmos Directory checks Chain Registry status be
   await withFetch(t, responses, async (requestedUrls) => {
     const result = await module.getChainInfoMap();
 
-    assert.equal(requestedUrls.includes(`${keplrPrefix}omniflixhub.json`), false);
-    assert.equal(result["omniflixhub-1"].registryStatus, "killed");
-    assert.equal(result["omniflixhub-1"].isTransferAvailable, false);
+    assert.equal(requestedUrls.includes(`${keplrPrefix}osmosis.json`), false);
+    assert.equal(result["osmosis-1"].registryStatus, "killed");
+    assert.equal(result["osmosis-1"].isTransferAvailable, false);
   });
 });
 
 test("a killed chain without embedded metadata remains explicitly unavailable", { concurrency: false }, async (t) => {
-  const chainId = "retireddynamic-1";
+  const chainId = "noble-1";
   const bridge = ibcBridge(chainId, true);
-  bridge.chainName = "Retired Dynamic";
+  bridge.chainName = "Noble";
   const { provider, tokenClient } = sdkProvider([bridge]);
   const module = new IBCModule(provider);
   const responses = {
     ...baseResponses([]),
-    [`${chainRegistryPrefix}retireddynamic/chain.json`]: jsonResponse({
+    [`${chainRegistryPrefix}noble/chain.json`]: jsonResponse({
       chain_id: chainId,
-      chain_name: "retireddynamic",
-      pretty_name: "Retired Dynamic",
+      chain_name: "noble",
+      pretty_name: "Noble",
       status: "killed",
       slip44: 118,
-      bech32_prefix: "retired",
-      staking: { staking_tokens: [{ denom: "uretired" }] },
+      bech32_prefix: "noble",
+      staking: { staking_tokens: [{ denom: "uusdc" }] },
     }),
   };
 
   await withFetch(t, responses, async (requestedUrls) => {
     const result = await module.getChainInfoMap();
 
-    assert.equal(requestedUrls.includes(`${keplrPrefix}retireddynamic.json`), false);
+    assert.equal(requestedUrls.includes(`${keplrPrefix}noble.json`), false);
     assert.equal(tokenClient.bridges.ibc[0], bridge);
     assert.equal(tokenClient.bridges.ibc[0].enabled, true);
     assert.ok(result[chainId]);
     assert.equal(result[chainId].chainId, chainId);
-    assert.equal(result[chainId].chainName, "Retired Dynamic");
+    assert.equal(result[chainId].chainName, "Noble");
     assert.equal(result[chainId].registryStatus, "killed");
     assert.equal(result[chainId].isTransferAvailable, false);
     assert.deepEqual(result[chainId].bestRpcs, []);
@@ -239,78 +336,78 @@ test("a live chain with Keplr metadata remains transferable", { concurrency: fal
 });
 
 test("a live chain missing from Keplr falls back to Cosmos Chain Registry", { concurrency: false }, async (t) => {
-  const { provider } = sdkProvider([ibcBridge("fallback-1")]);
+  const { provider } = sdkProvider([ibcBridge("noble-1")]);
   const module = new IBCModule(provider);
   const registryChain = {
-    chain_id: "fallback-1",
-    chain_name: "fallback",
+    chain_id: "noble-1",
+    chain_name: "noble",
     status: "live",
-    pretty_name: "Fallback Chain",
+    pretty_name: "Noble",
     slip44: 118,
-    bech32_prefix: "fallback",
-    staking: { staking_tokens: [{ denom: "ufallback" }] },
-    fees: { fee_tokens: [{ denom: "ufallback", low_gas_price: 0.01, average_gas_price: 0.025, high_gas_price: 0.04 }] },
+    bech32_prefix: "noble",
+    staking: { staking_tokens: [{ denom: "uusdc" }] },
+    fees: { fee_tokens: [{ denom: "uusdc", low_gas_price: 0.01, average_gas_price: 0.025, high_gas_price: 0.04 }] },
     apis: {
-      rpc: [{ address: "https://rpc.fallback" }],
-      rest: [{ address: "https://rest.fallback" }],
+      rpc: [{ address: "https://rpc.noble" }],
+      rest: [{ address: "https://rest.noble" }],
     },
   };
   const registryAssets = {
     assets: [{
-      base: "ufallback",
-      denom_units: [{ denom: "ufallback", exponent: 0 }, { denom: "fallback", exponent: 6 }],
-      coingecko_id: "fallback",
+      base: "uusdc",
+      denom_units: [{ denom: "uusdc", exponent: 0 }, { denom: "usdc", exponent: 6 }],
+      coingecko_id: "usd-coin",
     }],
   };
   const responses = {
-    ...baseResponses([chainSummary("fallback-1", "live", "fallback")]),
-    [`${keplrPrefix}fallback.json`]: unparseableErrorResponse(404),
-    [`${chainRegistryPrefix}fallback/chain.json`]: jsonResponse(registryChain),
-    [`${chainRegistryPrefix}fallback/assetlist.json`]: jsonResponse(registryAssets),
+    ...baseResponses([chainSummary("noble-1", "live", "noble")]),
+    [`${keplrPrefix}noble.json`]: unparseableErrorResponse(404),
+    [`${chainRegistryPrefix}noble/chain.json`]: jsonResponse(registryChain),
+    [`${chainRegistryPrefix}noble/assetlist.json`]: jsonResponse(registryAssets),
   };
 
   await withFetch(t, responses, async () => {
     const result = await module.getChainInfoMap();
 
-    assert.equal(result["fallback-1"].chainId, "fallback-1");
-    assert.equal(result["fallback-1"].stakeCurrency.coinMinimalDenom, "ufallback");
-    assert.equal(result["fallback-1"].registryStatus, "live");
-    assert.equal(result["fallback-1"].isTransferAvailable, true);
+    assert.equal(result["noble-1"].chainId, "noble-1");
+    assert.equal(result["noble-1"].stakeCurrency.coinMinimalDenom, "uusdc");
+    assert.equal(result["noble-1"].registryStatus, "live");
+    assert.equal(result["noble-1"].isTransferAvailable, true);
   });
 });
 
 test("an explicit unknown registry status is not treated as killed", { concurrency: false }, async (t) => {
-  const { provider } = sdkProvider([ibcBridge("unknownstatus-1")]);
+  const { provider } = sdkProvider([ibcBridge("osmosis-1")]);
   const module = new IBCModule(provider);
   const responses = {
-    ...baseResponses([chainSummary("unknownstatus-1", "unknown", "unknownstatus")]),
-    [`${keplrPrefix}unknownstatus.json`]: jsonResponse(chainInfo("unknownstatus-1", "Unknown Status")),
+    ...baseResponses([chainSummary("osmosis-1", "unknown", "osmosis")]),
+    [`${keplrPrefix}osmosis.json`]: jsonResponse(chainInfo("osmosis-1", "Osmosis")),
   };
 
   await withFetch(t, responses, async (requestedUrls) => {
     const result = await module.getChainInfoMap();
 
-    assert.equal(requestedUrls.includes(`${keplrPrefix}unknownstatus.json`), true);
-    assert.equal(result["unknownstatus-1"].registryStatus, "unknown");
-    assert.equal(result["unknownstatus-1"].isTransferAvailable, true);
+    assert.equal(requestedUrls.includes(`${keplrPrefix}osmosis.json`), true);
+    assert.equal(result["osmosis-1"].registryStatus, "unknown");
+    assert.equal(result["osmosis-1"].isTransferAvailable, true);
   });
 });
 
 test("missing registry status is not treated as killed", { concurrency: false }, async (t) => {
-  const { provider } = sdkProvider([ibcBridge("unknown-1")]);
+  const { provider } = sdkProvider([ibcBridge("axelar-dojo-1")]);
   const module = new IBCModule(provider);
   const responses = {
     ...baseResponses([]),
-    [`${chainRegistryPrefix}unknown/chain.json`]: unparseableErrorResponse(404),
-    [`${keplrPrefix}unknown.json`]: jsonResponse(chainInfo("unknown-1", "Unknown but available")),
+    [`${chainRegistryPrefix}axelar/chain.json`]: unparseableErrorResponse(404),
+    [`${keplrPrefix}axelar.json`]: jsonResponse(chainInfo("axelar-dojo-1", "Axelar")),
   };
 
   await withFetch(t, responses, async (requestedUrls) => {
     const result = await module.getChainInfoMap();
 
-    assert.equal(requestedUrls.includes(`${keplrPrefix}unknown.json`), true);
-    assert.equal(result["unknown-1"].registryStatus, undefined);
-    assert.equal(result["unknown-1"].isTransferAvailable, true);
+    assert.equal(requestedUrls.includes(`${keplrPrefix}axelar.json`), true);
+    assert.equal(result["axelar-dojo-1"].registryStatus, undefined);
+    assert.equal(result["axelar-dojo-1"].isTransferAvailable, true);
   });
 });
 
