@@ -686,5 +686,19 @@
   "MsgExecuteContract": "/cosmwasm.wasm.v1.MsgExecuteContract",
   "GenericAuthorization": "/cosmos.authz.v1beta1.GenericAuthorization",
   "AllowedMsgAllowance": "/cosmos.feegrant.v1beta1.AllowedMsgAllowance",
-  "BasicAllowance": "/cosmos.feegrant.v1beta1.BasicAllowance"
+  "BasicAllowance": "/cosmos.feegrant.v1beta1.BasicAllowance",
+  "MsgWithdrawalWithdraw": "/Switcheo.carbon.withdrawal.MsgWithdraw",
+  "MsgWithdrawalWithdrawResponse": "/Switcheo.carbon.withdrawal.MsgWithdrawResponse",
+  "MsgUpdateTeamList": "/Switcheo.carbon.withdrawal.MsgUpdateTeamList",
+  "MsgUpdateTeamListResponse": "/Switcheo.carbon.withdrawal.MsgUpdateTeamListResponse",
+  "MsgUpdateControls": "/Switcheo.carbon.withdrawal.MsgUpdateControls",
+  "MsgUpdateControlsResponse": "/Switcheo.carbon.withdrawal.MsgUpdateControlsResponse",
+  "MsgRebalanceWithdrawal": "/Switcheo.carbon.withdrawal.MsgRebalanceWithdrawal",
+  "MsgRebalanceWithdrawalResponse": "/Switcheo.carbon.withdrawal.MsgRebalanceWithdrawalResponse",
+  "MsgResolveUnclaimedDeposit": "/Switcheo.carbon.withdrawal.MsgResolveUnclaimedDeposit",
+  "MsgResolveUnclaimedDepositResponse": "/Switcheo.carbon.withdrawal.MsgResolveUnclaimedDepositResponse",
+  "MsgReconcileBroker": "/Switcheo.carbon.withdrawal.MsgReconcileBroker",
+  "MsgReconcileBrokerResponse": "/Switcheo.carbon.withdrawal.MsgReconcileBrokerResponse",
+  "MsgRetryTicket": "/Switcheo.carbon.withdrawal.MsgRetryTicket",
+  "MsgRetryTicketResponse": "/Switcheo.carbon.withdrawal.MsgRetryTicketResponse"
 }

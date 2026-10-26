@@ -29,8 +29,9 @@ export interface GenesisState {
   rewardDebtRecords: { [key: string]: Uint8Array };
   stablecoinInterestInfo?: StablecoinInterestInfo;
   eModeCategories: EModeCategory[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   accountEModeCategoryRecords: { [key: string]: string };
+  /** the sunset step's archive records (SunsetArchivePrefix), raw store key to raw value */
+  sunsetArchiveRecords: { [key: string]: Uint8Array };
 }
 
 export interface GenesisState_CollateralizedCibtRecordsEntry {
@@ -68,6 +69,11 @@ export interface GenesisState_AccountEModeCategoryRecordsEntry {
   value: string;
 }
 
+export interface GenesisState_SunsetArchiveRecordsEntry {
+  key: string;
+  value: Uint8Array;
+}
+
 function createBaseGenesisState(): GenesisState {
   return {
     params: undefined,
@@ -86,6 +92,7 @@ function createBaseGenesisState(): GenesisState {
     stablecoinInterestInfo: undefined,
     eModeCategories: [],
     accountEModeCategoryRecords: {},
+    sunsetArchiveRecords: {},
   };
 }
 
@@ -146,6 +153,9 @@ export const GenesisState = {
     Object.entries(message.accountEModeCategoryRecords).forEach(([key, value]) => {
       GenesisState_AccountEModeCategoryRecordsEntry.encode({ key: key as any, value }, writer.uint32(130).fork())
         .ldelim();
+    });
+    Object.entries(message.sunsetArchiveRecords).forEach(([key, value]) => {
+      GenesisState_SunsetArchiveRecordsEntry.encode({ key: key as any, value }, writer.uint32(138).fork()).ldelim();
     });
     return writer;
   },
@@ -293,6 +303,16 @@ export const GenesisState = {
             message.accountEModeCategoryRecords[entry16.key] = entry16.value;
           }
           continue;
+        case 17:
+          if (tag !== 138) {
+            break;
+          }
+
+          const entry17 = GenesisState_SunsetArchiveRecordsEntry.decode(reader, reader.uint32());
+          if (entry17.value !== undefined) {
+            message.sunsetArchiveRecords[entry17.key] = entry17.value;
+          }
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -377,6 +397,12 @@ export const GenesisState = {
           return acc;
         }, {})
         : {},
+      sunsetArchiveRecords: isObject(object.sunsetArchiveRecords)
+        ? Object.entries(object.sunsetArchiveRecords).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+          acc[key] = bytesFromBase64(value as string);
+          return acc;
+        }, {})
+        : {},
     };
   },
 
@@ -455,6 +481,12 @@ export const GenesisState = {
     if (message.accountEModeCategoryRecords) {
       Object.entries(message.accountEModeCategoryRecords).forEach(([k, v]) => {
         obj.accountEModeCategoryRecords[k] = v;
+      });
+    }
+    obj.sunsetArchiveRecords = {};
+    if (message.sunsetArchiveRecords) {
+      Object.entries(message.sunsetArchiveRecords).forEach(([k, v]) => {
+        obj.sunsetArchiveRecords[k] = base64FromBytes(v);
       });
     }
     return obj;
@@ -539,6 +571,14 @@ export const GenesisState = {
     >((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = String(value);
+      }
+      return acc;
+    }, {});
+    message.sunsetArchiveRecords = Object.entries(object.sunsetArchiveRecords ?? {}).reduce<
+      { [key: string]: Uint8Array }
+    >((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
       }
       return acc;
     }, {});
@@ -1075,6 +1115,78 @@ export const GenesisState_AccountEModeCategoryRecordsEntry = {
     const message = createBaseGenesisState_AccountEModeCategoryRecordsEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseGenesisState_SunsetArchiveRecordsEntry(): GenesisState_SunsetArchiveRecordsEntry {
+  return { key: "", value: new Uint8Array() };
+}
+
+export const GenesisState_SunsetArchiveRecordsEntry = {
+  encode(message: GenesisState_SunsetArchiveRecordsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value.length !== 0) {
+      writer.uint32(18).bytes(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState_SunsetArchiveRecordsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGenesisState_SunsetArchiveRecordsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GenesisState_SunsetArchiveRecordsEntry {
+    return {
+      key: isSet(object.key) ? String(object.key) : "",
+      value: isSet(object.value) ? bytesFromBase64(object.value) : new Uint8Array(),
+    };
+  },
+
+  toJSON(message: GenesisState_SunsetArchiveRecordsEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined &&
+      (obj.value = base64FromBytes(message.value !== undefined ? message.value : new Uint8Array()));
+    return obj;
+  },
+
+  create(base?: DeepPartial<GenesisState_SunsetArchiveRecordsEntry>): GenesisState_SunsetArchiveRecordsEntry {
+    return GenesisState_SunsetArchiveRecordsEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<GenesisState_SunsetArchiveRecordsEntry>): GenesisState_SunsetArchiveRecordsEntry {
+    const message = createBaseGenesisState_SunsetArchiveRecordsEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? new Uint8Array();
     return message;
   },
 };

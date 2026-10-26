@@ -26,6 +26,7 @@ import {
   BridgeModule,
   BrokerModule,
   CDPModule,
+  WithdrawalModule,
   CoinModule,
   ERC20Module,
   EvmMergeModule,
@@ -134,6 +135,7 @@ class CarbonSDK {
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
+  withdrawal: WithdrawalModule;
   leverage: LeverageModule;
   market: MarketModule;
   broker: BrokerModule;
@@ -197,6 +199,7 @@ class CarbonSDK {
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);
+    this.withdrawal = new WithdrawalModule(this);
     this.leverage = new LeverageModule(this);
     this.market = new MarketModule(this);
     this.broker = new BrokerModule(this);

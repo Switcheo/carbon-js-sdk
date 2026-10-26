@@ -28,3 +28,4 @@ export * as Pricing from "./Switcheo/carbon/pricing/export";
 export * as Profile from "./Switcheo/carbon/profile/export";
 export * as Sequence from "./Switcheo/carbon/sequence/export";
 export * as Subaccount from "./Switcheo/carbon/subaccount/export";
+export * as Withdrawal from "./Switcheo/carbon/withdrawal/export";

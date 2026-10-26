@@ -34,6 +34,7 @@ const whitelistCarbonExports: Record<string, string> = {
   Profile: "Switcheo/carbon/profile",
   Sequence: "Switcheo/carbon/sequence",
   Subaccount: "Switcheo/carbon/subaccount",
+  Withdrawal: "Switcheo/carbon/withdrawal",
 };
 
 function writeGenerated(file: string, lines: string[]): void {

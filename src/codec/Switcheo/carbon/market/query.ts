@@ -100,23 +100,6 @@ export interface QueryControlledParamsResponse {
   controlledParams?: ControlledParams;
 }
 
-export interface QueryEVMMarketRequest {
-  contractAddress: string;
-  name: string;
-}
-
-export interface QueryEVMMarketResponse {
-  name: string;
-  displayName: string;
-  marketType: string;
-  base: string;
-  quote: string;
-  basePrecision: Long;
-  quotePrecision: Long;
-  minQuantity: string;
-  isActive: boolean;
-}
-
 function createBaseQueryGetMarketRequest(): QueryGetMarketRequest {
   return { id: "" };
 }
@@ -1274,253 +1257,6 @@ export const QueryControlledParamsResponse = {
   },
 };
 
-function createBaseQueryEVMMarketRequest(): QueryEVMMarketRequest {
-  return { contractAddress: "", name: "" };
-}
-
-export const QueryEVMMarketRequest = {
-  encode(message: QueryEVMMarketRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.contractAddress !== "") {
-      writer.uint32(10).string(message.contractAddress);
-    }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryEVMMarketRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryEVMMarketRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.contractAddress = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.name = reader.string();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryEVMMarketRequest {
-    return {
-      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
-      name: isSet(object.name) ? String(object.name) : "",
-    };
-  },
-
-  toJSON(message: QueryEVMMarketRequest): unknown {
-    const obj: any = {};
-    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
-    message.name !== undefined && (obj.name = message.name);
-    return obj;
-  },
-
-  create(base?: DeepPartial<QueryEVMMarketRequest>): QueryEVMMarketRequest {
-    return QueryEVMMarketRequest.fromPartial(base ?? {});
-  },
-
-  fromPartial(object: DeepPartial<QueryEVMMarketRequest>): QueryEVMMarketRequest {
-    const message = createBaseQueryEVMMarketRequest();
-    message.contractAddress = object.contractAddress ?? "";
-    message.name = object.name ?? "";
-    return message;
-  },
-};
-
-function createBaseQueryEVMMarketResponse(): QueryEVMMarketResponse {
-  return {
-    name: "",
-    displayName: "",
-    marketType: "",
-    base: "",
-    quote: "",
-    basePrecision: Long.ZERO,
-    quotePrecision: Long.ZERO,
-    minQuantity: "",
-    isActive: false,
-  };
-}
-
-export const QueryEVMMarketResponse = {
-  encode(message: QueryEVMMarketResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
-    }
-    if (message.displayName !== "") {
-      writer.uint32(18).string(message.displayName);
-    }
-    if (message.marketType !== "") {
-      writer.uint32(26).string(message.marketType);
-    }
-    if (message.base !== "") {
-      writer.uint32(34).string(message.base);
-    }
-    if (message.quote !== "") {
-      writer.uint32(42).string(message.quote);
-    }
-    if (!message.basePrecision.isZero()) {
-      writer.uint32(48).int64(message.basePrecision);
-    }
-    if (!message.quotePrecision.isZero()) {
-      writer.uint32(56).int64(message.quotePrecision);
-    }
-    if (message.minQuantity !== "") {
-      writer.uint32(66).string(message.minQuantity);
-    }
-    if (message.isActive === true) {
-      writer.uint32(72).bool(message.isActive);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryEVMMarketResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryEVMMarketResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.name = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.displayName = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.marketType = reader.string();
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.base = reader.string();
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.quote = reader.string();
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.basePrecision = reader.int64() as Long;
-          continue;
-        case 7:
-          if (tag !== 56) {
-            break;
-          }
-
-          message.quotePrecision = reader.int64() as Long;
-          continue;
-        case 8:
-          if (tag !== 66) {
-            break;
-          }
-
-          message.minQuantity = reader.string();
-          continue;
-        case 9:
-          if (tag !== 72) {
-            break;
-          }
-
-          message.isActive = reader.bool();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryEVMMarketResponse {
-    return {
-      name: isSet(object.name) ? String(object.name) : "",
-      displayName: isSet(object.displayName) ? String(object.displayName) : "",
-      marketType: isSet(object.marketType) ? String(object.marketType) : "",
-      base: isSet(object.base) ? String(object.base) : "",
-      quote: isSet(object.quote) ? String(object.quote) : "",
-      basePrecision: isSet(object.basePrecision) ? Long.fromValue(object.basePrecision) : Long.ZERO,
-      quotePrecision: isSet(object.quotePrecision) ? Long.fromValue(object.quotePrecision) : Long.ZERO,
-      minQuantity: isSet(object.minQuantity) ? String(object.minQuantity) : "",
-      isActive: isSet(object.isActive) ? Boolean(object.isActive) : false,
-    };
-  },
-
-  toJSON(message: QueryEVMMarketResponse): unknown {
-    const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.displayName !== undefined && (obj.displayName = message.displayName);
-    message.marketType !== undefined && (obj.marketType = message.marketType);
-    message.base !== undefined && (obj.base = message.base);
-    message.quote !== undefined && (obj.quote = message.quote);
-    message.basePrecision !== undefined && (obj.basePrecision = (message.basePrecision || Long.ZERO).toString());
-    message.quotePrecision !== undefined && (obj.quotePrecision = (message.quotePrecision || Long.ZERO).toString());
-    message.minQuantity !== undefined && (obj.minQuantity = message.minQuantity);
-    message.isActive !== undefined && (obj.isActive = message.isActive);
-    return obj;
-  },
-
-  create(base?: DeepPartial<QueryEVMMarketResponse>): QueryEVMMarketResponse {
-    return QueryEVMMarketResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial(object: DeepPartial<QueryEVMMarketResponse>): QueryEVMMarketResponse {
-    const message = createBaseQueryEVMMarketResponse();
-    message.name = object.name ?? "";
-    message.displayName = object.displayName ?? "";
-    message.marketType = object.marketType ?? "";
-    message.base = object.base ?? "";
-    message.quote = object.quote ?? "";
-    message.basePrecision = (object.basePrecision !== undefined && object.basePrecision !== null)
-      ? Long.fromValue(object.basePrecision)
-      : Long.ZERO;
-    message.quotePrecision = (object.quotePrecision !== undefined && object.quotePrecision !== null)
-      ? Long.fromValue(object.quotePrecision)
-      : Long.ZERO;
-    message.minQuantity = object.minQuantity ?? "";
-    message.isActive = object.isActive ?? false;
-    return message;
-  },
-};
-
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get details for a market */
@@ -1539,7 +1275,6 @@ export interface Query {
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Get the controlled parameters for all markets */
   ControlledParams(request: QueryControlledParamsRequest): Promise<QueryControlledParamsResponse>;
-  EVMMarket(request: QueryEVMMarketRequest): Promise<QueryEVMMarketResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1557,7 +1292,6 @@ export class QueryClientImpl implements Query {
     this.UserFeeStructures = this.UserFeeStructures.bind(this);
     this.Params = this.Params.bind(this);
     this.ControlledParams = this.ControlledParams.bind(this);
-    this.EVMMarket = this.EVMMarket.bind(this);
   }
   Market(request: QueryGetMarketRequest): Promise<QueryGetMarketResponse> {
     const data = QueryGetMarketRequest.encode(request).finish();
@@ -1611,12 +1345,6 @@ export class QueryClientImpl implements Query {
     const data = QueryControlledParamsRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "ControlledParams", data);
     return promise.then((data) => QueryControlledParamsResponse.decode(_m0.Reader.create(data)));
-  }
-
-  EVMMarket(request: QueryEVMMarketRequest): Promise<QueryEVMMarketResponse> {
-    const data = QueryEVMMarketRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "EVMMarket", data);
-    return promise.then((data) => QueryEVMMarketResponse.decode(_m0.Reader.create(data)));
   }
 }
 
