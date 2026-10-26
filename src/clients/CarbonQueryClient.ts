@@ -2,6 +2,7 @@ import { QueryClientImpl as ADLQueryClient } from "@carbon-sdk/codec/Switcheo/ca
 import { QueryClientImpl as BookQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/book/query";
 import { QueryClientImpl as BrokerQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/broker/query";
 import { QueryClientImpl as CDPQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/cdp/query";
+import { QueryClientImpl as WithdrawalQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/withdrawal/query";
 import { QueryClientImpl as CoinQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/coin/query";
 import { QueryClientImpl as AuthQueryClient } from "@carbon-sdk/codec/cosmos/auth/v1beta1/query";
 import { QueryClientImpl as BankQueryClient } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
@@ -81,6 +82,7 @@ class CarbonQueryClient {
   broker: BrokerQueryClient;
   coin: CoinQueryClient;
   cdp: CDPQueryClient;
+  withdrawal: WithdrawalQueryClient;
   fee: FeeQueryClient;
   inflation: InflationQueryClient;
   insurance: InsuranceQueryClient;
@@ -137,6 +139,7 @@ class CarbonQueryClient {
     this.broker = new BrokerQueryClient(rpcClient);
     this.coin = new CoinQueryClient(rpcClient);
     this.cdp = new CDPQueryClient(rpcClient);
+    this.withdrawal = new WithdrawalQueryClient(rpcClient);
     this.fee = new FeeQueryClient(rpcClient);
     this.inflation = new InflationQueryClient(rpcClient);
     this.insurance = new InsuranceQueryClient(rpcClient);
