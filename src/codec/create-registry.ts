@@ -407,10 +407,6 @@ export function createRegistry() {
   registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse", Carbon.Oracle.MsgSetOracleSlashEnabledResponse);
   registry.register("/Switcheo.carbon.oracle.MsgUpdateParams", Carbon.Oracle.MsgUpdateParams);
   registry.register("/Switcheo.carbon.oracle.MsgUpdateParamsResponse", Carbon.Oracle.MsgUpdateParamsResponse);
-  registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleContract", Carbon.Oracle.MsgUpdateOracleContract);
-  registry.register("/Switcheo.carbon.oracle.MsgUpdateOracleContractResponse", Carbon.Oracle.MsgUpdateOracleContractResponse);
-  registry.register("/Switcheo.carbon.oracle.MsgDeployOracleContract", Carbon.Oracle.MsgDeployOracleContract);
-  registry.register("/Switcheo.carbon.oracle.MsgDeployOracleContractResponse", Carbon.Oracle.MsgDeployOracleContractResponse);
   registry.register("/Switcheo.carbon.oracle.MsgCreateResult", Carbon.Oracle.MsgCreateResult);
   registry.register("/Switcheo.carbon.oracle.MsgCreateResultResponse", Carbon.Oracle.MsgCreateResultResponse);
   registry.register("/Switcheo.carbon.oracle.MsgCreateHistoricalBucketInfo", Carbon.Oracle.MsgCreateHistoricalBucketInfo);
@@ -507,6 +503,21 @@ export function createRegistry() {
   registry.register("/Switcheo.carbon.subaccount.MsgRemoveSubAccountResponse", Carbon.Subaccount.MsgRemoveSubAccountResponse);
   registry.register("/Switcheo.carbon.subaccount.MsgUpdateParams", Carbon.Subaccount.MsgUpdateParams);
   registry.register("/Switcheo.carbon.subaccount.MsgUpdateParamsResponse", Carbon.Subaccount.MsgUpdateParamsResponse);
+
+  registry.register("/Switcheo.carbon.withdrawal.MsgWithdraw", Carbon.Withdrawal.MsgWithdraw);
+  registry.register("/Switcheo.carbon.withdrawal.MsgWithdrawResponse", Carbon.Withdrawal.MsgWithdrawResponse);
+  registry.register("/Switcheo.carbon.withdrawal.MsgRetryTicket", Carbon.Withdrawal.MsgRetryTicket);
+  registry.register("/Switcheo.carbon.withdrawal.MsgRetryTicketResponse", Carbon.Withdrawal.MsgRetryTicketResponse);
+  registry.register("/Switcheo.carbon.withdrawal.MsgUpdateTeamList", Carbon.Withdrawal.MsgUpdateTeamList);
+  registry.register("/Switcheo.carbon.withdrawal.MsgUpdateTeamListResponse", Carbon.Withdrawal.MsgUpdateTeamListResponse);
+  registry.register("/Switcheo.carbon.withdrawal.MsgUpdateControls", Carbon.Withdrawal.MsgUpdateControls);
+  registry.register("/Switcheo.carbon.withdrawal.MsgUpdateControlsResponse", Carbon.Withdrawal.MsgUpdateControlsResponse);
+  registry.register("/Switcheo.carbon.withdrawal.MsgRebalanceWithdrawal", Carbon.Withdrawal.MsgRebalanceWithdrawal);
+  registry.register("/Switcheo.carbon.withdrawal.MsgRebalanceWithdrawalResponse", Carbon.Withdrawal.MsgRebalanceWithdrawalResponse);
+  registry.register("/Switcheo.carbon.withdrawal.MsgResolveUnclaimedDeposit", Carbon.Withdrawal.MsgResolveUnclaimedDeposit);
+  registry.register("/Switcheo.carbon.withdrawal.MsgResolveUnclaimedDepositResponse", Carbon.Withdrawal.MsgResolveUnclaimedDepositResponse);
+  registry.register("/Switcheo.carbon.withdrawal.MsgReconcileBroker", Carbon.Withdrawal.MsgReconcileBroker);
+  registry.register("/Switcheo.carbon.withdrawal.MsgReconcileBrokerResponse", Carbon.Withdrawal.MsgReconcileBrokerResponse);
 
   registry.register("/alliance.alliance.MsgDelegate", Carbon.Alliance.MsgDelegate);
   registry.register("/alliance.alliance.MsgDelegateResponse", Carbon.Alliance.MsgDelegateResponse);

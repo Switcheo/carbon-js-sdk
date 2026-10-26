@@ -16,7 +16,7 @@ const polynetworkFolders = ['btcx', 'ccm', 'headersync', 'lockproxy'];
 const carbonFolders = ['admin', 'bank', 'book', 'bridge', 'broker', 'cdp', 'coin',
   'erc20', 'evmbank', 'evmcontract', 'evmmerge', 'fee', 'inflation', 'insurance', 'leverage', 'liquidation',
   'liquiditypool', 'market', 'marketstats', 'misc', 'oracle', 'order', 'otc', 'perpspool',
-  'position', 'pricing', 'profile', 'sequence', 'subaccount'];
+  'position', 'pricing', 'profile', 'sequence', 'subaccount', 'withdrawal'];
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs

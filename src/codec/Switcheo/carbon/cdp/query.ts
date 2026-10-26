@@ -13,6 +13,13 @@ import { RateStrategyParams } from "./rate_strategy_params";
 import { RewardDebt, RewardScheme } from "./reward_scheme";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { StablecoinInterestInfo } from "./stablecoin_interest_info";
+import {
+  NlendRedemptionRecord,
+  NlendRedemptionSummary,
+  SunsetArchiveRecord,
+  SunsetAssetRecord,
+  SunsetSummaryRecord,
+} from "./sunset";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -315,6 +322,61 @@ export interface QueryLiquidationProtectionAllRequest {
 export interface QueryLiquidationProtectionAllResponse {
   addresses: string[];
   pagination?: PageResponse;
+}
+
+export interface QuerySunsetArchiveRequest {
+  address: string;
+}
+
+export interface QuerySunsetArchiveResponse {
+  record?: SunsetArchiveRecord;
+}
+
+export interface QuerySunsetArchiveAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QuerySunsetArchiveAllResponse {
+  records: SunsetArchiveRecord[];
+  pagination?: PageResponse;
+}
+
+export interface QuerySunsetAssetArchiveRequest {
+}
+
+export interface QuerySunsetAssetArchiveResponse {
+  assets: SunsetAssetRecord[];
+}
+
+export interface QuerySunsetSummaryRequest {
+}
+
+export interface QuerySunsetSummaryResponse {
+  summary?: SunsetSummaryRecord;
+}
+
+export interface QueryNlendRedemptionRequest {
+  address: string;
+}
+
+export interface QueryNlendRedemptionResponse {
+  record?: NlendRedemptionRecord;
+}
+
+export interface QueryNlendRedemptionAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryNlendRedemptionAllResponse {
+  records: NlendRedemptionRecord[];
+  pagination?: PageResponse;
+}
+
+export interface QueryNlendRedemptionSummaryRequest {
+}
+
+export interface QueryNlendRedemptionSummaryResponse {
+  summary?: NlendRedemptionSummary;
 }
 
 function createBaseQueryParamsRequest(): QueryParamsRequest {
@@ -4735,6 +4797,822 @@ export const QueryLiquidationProtectionAllResponse = {
   },
 };
 
+function createBaseQuerySunsetArchiveRequest(): QuerySunsetArchiveRequest {
+  return { address: "" };
+}
+
+export const QuerySunsetArchiveRequest = {
+  encode(message: QuerySunsetArchiveRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySunsetArchiveRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySunsetArchiveRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySunsetArchiveRequest {
+    return { address: isSet(object.address) ? String(object.address) : "" };
+  },
+
+  toJSON(message: QuerySunsetArchiveRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySunsetArchiveRequest>): QuerySunsetArchiveRequest {
+    return QuerySunsetArchiveRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QuerySunsetArchiveRequest>): QuerySunsetArchiveRequest {
+    const message = createBaseQuerySunsetArchiveRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQuerySunsetArchiveResponse(): QuerySunsetArchiveResponse {
+  return { record: undefined };
+}
+
+export const QuerySunsetArchiveResponse = {
+  encode(message: QuerySunsetArchiveResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.record !== undefined) {
+      SunsetArchiveRecord.encode(message.record, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySunsetArchiveResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySunsetArchiveResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.record = SunsetArchiveRecord.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySunsetArchiveResponse {
+    return { record: isSet(object.record) ? SunsetArchiveRecord.fromJSON(object.record) : undefined };
+  },
+
+  toJSON(message: QuerySunsetArchiveResponse): unknown {
+    const obj: any = {};
+    message.record !== undefined &&
+      (obj.record = message.record ? SunsetArchiveRecord.toJSON(message.record) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySunsetArchiveResponse>): QuerySunsetArchiveResponse {
+    return QuerySunsetArchiveResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QuerySunsetArchiveResponse>): QuerySunsetArchiveResponse {
+    const message = createBaseQuerySunsetArchiveResponse();
+    message.record = (object.record !== undefined && object.record !== null)
+      ? SunsetArchiveRecord.fromPartial(object.record)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQuerySunsetArchiveAllRequest(): QuerySunsetArchiveAllRequest {
+  return { pagination: undefined };
+}
+
+export const QuerySunsetArchiveAllRequest = {
+  encode(message: QuerySunsetArchiveAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySunsetArchiveAllRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySunsetArchiveAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySunsetArchiveAllRequest {
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
+  },
+
+  toJSON(message: QuerySunsetArchiveAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySunsetArchiveAllRequest>): QuerySunsetArchiveAllRequest {
+    return QuerySunsetArchiveAllRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QuerySunsetArchiveAllRequest>): QuerySunsetArchiveAllRequest {
+    const message = createBaseQuerySunsetArchiveAllRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQuerySunsetArchiveAllResponse(): QuerySunsetArchiveAllResponse {
+  return { records: [], pagination: undefined };
+}
+
+export const QuerySunsetArchiveAllResponse = {
+  encode(message: QuerySunsetArchiveAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.records) {
+      SunsetArchiveRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySunsetArchiveAllResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySunsetArchiveAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.records.push(SunsetArchiveRecord.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySunsetArchiveAllResponse {
+    return {
+      records: Array.isArray(object?.records) ? object.records.map((e: any) => SunsetArchiveRecord.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QuerySunsetArchiveAllResponse): unknown {
+    const obj: any = {};
+    if (message.records) {
+      obj.records = message.records.map((e) => e ? SunsetArchiveRecord.toJSON(e) : undefined);
+    } else {
+      obj.records = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySunsetArchiveAllResponse>): QuerySunsetArchiveAllResponse {
+    return QuerySunsetArchiveAllResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QuerySunsetArchiveAllResponse>): QuerySunsetArchiveAllResponse {
+    const message = createBaseQuerySunsetArchiveAllResponse();
+    message.records = object.records?.map((e) => SunsetArchiveRecord.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQuerySunsetAssetArchiveRequest(): QuerySunsetAssetArchiveRequest {
+  return {};
+}
+
+export const QuerySunsetAssetArchiveRequest = {
+  encode(_: QuerySunsetAssetArchiveRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySunsetAssetArchiveRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySunsetAssetArchiveRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QuerySunsetAssetArchiveRequest {
+    return {};
+  },
+
+  toJSON(_: QuerySunsetAssetArchiveRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySunsetAssetArchiveRequest>): QuerySunsetAssetArchiveRequest {
+    return QuerySunsetAssetArchiveRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<QuerySunsetAssetArchiveRequest>): QuerySunsetAssetArchiveRequest {
+    const message = createBaseQuerySunsetAssetArchiveRequest();
+    return message;
+  },
+};
+
+function createBaseQuerySunsetAssetArchiveResponse(): QuerySunsetAssetArchiveResponse {
+  return { assets: [] };
+}
+
+export const QuerySunsetAssetArchiveResponse = {
+  encode(message: QuerySunsetAssetArchiveResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.assets) {
+      SunsetAssetRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySunsetAssetArchiveResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySunsetAssetArchiveResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.assets.push(SunsetAssetRecord.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySunsetAssetArchiveResponse {
+    return {
+      assets: Array.isArray(object?.assets) ? object.assets.map((e: any) => SunsetAssetRecord.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: QuerySunsetAssetArchiveResponse): unknown {
+    const obj: any = {};
+    if (message.assets) {
+      obj.assets = message.assets.map((e) => e ? SunsetAssetRecord.toJSON(e) : undefined);
+    } else {
+      obj.assets = [];
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySunsetAssetArchiveResponse>): QuerySunsetAssetArchiveResponse {
+    return QuerySunsetAssetArchiveResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QuerySunsetAssetArchiveResponse>): QuerySunsetAssetArchiveResponse {
+    const message = createBaseQuerySunsetAssetArchiveResponse();
+    message.assets = object.assets?.map((e) => SunsetAssetRecord.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseQuerySunsetSummaryRequest(): QuerySunsetSummaryRequest {
+  return {};
+}
+
+export const QuerySunsetSummaryRequest = {
+  encode(_: QuerySunsetSummaryRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySunsetSummaryRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySunsetSummaryRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QuerySunsetSummaryRequest {
+    return {};
+  },
+
+  toJSON(_: QuerySunsetSummaryRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySunsetSummaryRequest>): QuerySunsetSummaryRequest {
+    return QuerySunsetSummaryRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<QuerySunsetSummaryRequest>): QuerySunsetSummaryRequest {
+    const message = createBaseQuerySunsetSummaryRequest();
+    return message;
+  },
+};
+
+function createBaseQuerySunsetSummaryResponse(): QuerySunsetSummaryResponse {
+  return { summary: undefined };
+}
+
+export const QuerySunsetSummaryResponse = {
+  encode(message: QuerySunsetSummaryResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.summary !== undefined) {
+      SunsetSummaryRecord.encode(message.summary, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuerySunsetSummaryResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySunsetSummaryResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.summary = SunsetSummaryRecord.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySunsetSummaryResponse {
+    return { summary: isSet(object.summary) ? SunsetSummaryRecord.fromJSON(object.summary) : undefined };
+  },
+
+  toJSON(message: QuerySunsetSummaryResponse): unknown {
+    const obj: any = {};
+    message.summary !== undefined &&
+      (obj.summary = message.summary ? SunsetSummaryRecord.toJSON(message.summary) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySunsetSummaryResponse>): QuerySunsetSummaryResponse {
+    return QuerySunsetSummaryResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QuerySunsetSummaryResponse>): QuerySunsetSummaryResponse {
+    const message = createBaseQuerySunsetSummaryResponse();
+    message.summary = (object.summary !== undefined && object.summary !== null)
+      ? SunsetSummaryRecord.fromPartial(object.summary)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryNlendRedemptionRequest(): QueryNlendRedemptionRequest {
+  return { address: "" };
+}
+
+export const QueryNlendRedemptionRequest = {
+  encode(message: QueryNlendRedemptionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryNlendRedemptionRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryNlendRedemptionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNlendRedemptionRequest {
+    return { address: isSet(object.address) ? String(object.address) : "" };
+  },
+
+  toJSON(message: QueryNlendRedemptionRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryNlendRedemptionRequest>): QueryNlendRedemptionRequest {
+    return QueryNlendRedemptionRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryNlendRedemptionRequest>): QueryNlendRedemptionRequest {
+    const message = createBaseQueryNlendRedemptionRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryNlendRedemptionResponse(): QueryNlendRedemptionResponse {
+  return { record: undefined };
+}
+
+export const QueryNlendRedemptionResponse = {
+  encode(message: QueryNlendRedemptionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.record !== undefined) {
+      NlendRedemptionRecord.encode(message.record, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryNlendRedemptionResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryNlendRedemptionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.record = NlendRedemptionRecord.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNlendRedemptionResponse {
+    return { record: isSet(object.record) ? NlendRedemptionRecord.fromJSON(object.record) : undefined };
+  },
+
+  toJSON(message: QueryNlendRedemptionResponse): unknown {
+    const obj: any = {};
+    message.record !== undefined &&
+      (obj.record = message.record ? NlendRedemptionRecord.toJSON(message.record) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryNlendRedemptionResponse>): QueryNlendRedemptionResponse {
+    return QueryNlendRedemptionResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryNlendRedemptionResponse>): QueryNlendRedemptionResponse {
+    const message = createBaseQueryNlendRedemptionResponse();
+    message.record = (object.record !== undefined && object.record !== null)
+      ? NlendRedemptionRecord.fromPartial(object.record)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryNlendRedemptionAllRequest(): QueryNlendRedemptionAllRequest {
+  return { pagination: undefined };
+}
+
+export const QueryNlendRedemptionAllRequest = {
+  encode(message: QueryNlendRedemptionAllRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryNlendRedemptionAllRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryNlendRedemptionAllRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNlendRedemptionAllRequest {
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
+  },
+
+  toJSON(message: QueryNlendRedemptionAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryNlendRedemptionAllRequest>): QueryNlendRedemptionAllRequest {
+    return QueryNlendRedemptionAllRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryNlendRedemptionAllRequest>): QueryNlendRedemptionAllRequest {
+    const message = createBaseQueryNlendRedemptionAllRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryNlendRedemptionAllResponse(): QueryNlendRedemptionAllResponse {
+  return { records: [], pagination: undefined };
+}
+
+export const QueryNlendRedemptionAllResponse = {
+  encode(message: QueryNlendRedemptionAllResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.records) {
+      NlendRedemptionRecord.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryNlendRedemptionAllResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryNlendRedemptionAllResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.records.push(NlendRedemptionRecord.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNlendRedemptionAllResponse {
+    return {
+      records: Array.isArray(object?.records) ? object.records.map((e: any) => NlendRedemptionRecord.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QueryNlendRedemptionAllResponse): unknown {
+    const obj: any = {};
+    if (message.records) {
+      obj.records = message.records.map((e) => e ? NlendRedemptionRecord.toJSON(e) : undefined);
+    } else {
+      obj.records = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryNlendRedemptionAllResponse>): QueryNlendRedemptionAllResponse {
+    return QueryNlendRedemptionAllResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryNlendRedemptionAllResponse>): QueryNlendRedemptionAllResponse {
+    const message = createBaseQueryNlendRedemptionAllResponse();
+    message.records = object.records?.map((e) => NlendRedemptionRecord.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryNlendRedemptionSummaryRequest(): QueryNlendRedemptionSummaryRequest {
+  return {};
+}
+
+export const QueryNlendRedemptionSummaryRequest = {
+  encode(_: QueryNlendRedemptionSummaryRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryNlendRedemptionSummaryRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryNlendRedemptionSummaryRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryNlendRedemptionSummaryRequest {
+    return {};
+  },
+
+  toJSON(_: QueryNlendRedemptionSummaryRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryNlendRedemptionSummaryRequest>): QueryNlendRedemptionSummaryRequest {
+    return QueryNlendRedemptionSummaryRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial(_: DeepPartial<QueryNlendRedemptionSummaryRequest>): QueryNlendRedemptionSummaryRequest {
+    const message = createBaseQueryNlendRedemptionSummaryRequest();
+    return message;
+  },
+};
+
+function createBaseQueryNlendRedemptionSummaryResponse(): QueryNlendRedemptionSummaryResponse {
+  return { summary: undefined };
+}
+
+export const QueryNlendRedemptionSummaryResponse = {
+  encode(message: QueryNlendRedemptionSummaryResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.summary !== undefined) {
+      NlendRedemptionSummary.encode(message.summary, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryNlendRedemptionSummaryResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryNlendRedemptionSummaryResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.summary = NlendRedemptionSummary.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNlendRedemptionSummaryResponse {
+    return { summary: isSet(object.summary) ? NlendRedemptionSummary.fromJSON(object.summary) : undefined };
+  },
+
+  toJSON(message: QueryNlendRedemptionSummaryResponse): unknown {
+    const obj: any = {};
+    message.summary !== undefined &&
+      (obj.summary = message.summary ? NlendRedemptionSummary.toJSON(message.summary) : undefined);
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryNlendRedemptionSummaryResponse>): QueryNlendRedemptionSummaryResponse {
+    return QueryNlendRedemptionSummaryResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<QueryNlendRedemptionSummaryResponse>): QueryNlendRedemptionSummaryResponse {
+    const message = createBaseQueryNlendRedemptionSummaryResponse();
+    message.summary = (object.summary !== undefined && object.summary !== null)
+      ? NlendRedemptionSummary.fromPartial(object.summary)
+      : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -4800,6 +5678,20 @@ export interface Query {
   AllLiquidationProtectedAccounts(
     request: QueryLiquidationProtectionAllRequest,
   ): Promise<QueryLiquidationProtectionAllResponse>;
+  /** SunsetArchive returns an account's Nitron position at the halt and its sunset payout. */
+  SunsetArchive(request: QuerySunsetArchiveRequest): Promise<QuerySunsetArchiveResponse>;
+  /** SunsetArchiveAll returns every sunset archive record. */
+  SunsetArchiveAll(request: QuerySunsetArchiveAllRequest): Promise<QuerySunsetArchiveAllResponse>;
+  /** SunsetAssetArchive returns every Nitron asset as the sunset step found it and how its claims were converted. */
+  SunsetAssetArchive(request: QuerySunsetAssetArchiveRequest): Promise<QuerySunsetAssetArchiveResponse>;
+  /** SunsetSummary returns the sunset step's totals, funding draws and sweep. */
+  SunsetSummary(request: QuerySunsetSummaryRequest): Promise<QuerySunsetSummaryResponse>;
+  /** NlendRedemption returns an address's nlend redemption record from the sunset. */
+  NlendRedemption(request: QueryNlendRedemptionRequest): Promise<QueryNlendRedemptionResponse>;
+  /** NlendRedemptionAll returns every nlend redemption record. */
+  NlendRedemptionAll(request: QueryNlendRedemptionAllRequest): Promise<QueryNlendRedemptionAllResponse>;
+  /** NlendRedemptionSummary returns the nlend redemption step's totals. */
+  NlendRedemptionSummary(request: QueryNlendRedemptionSummaryRequest): Promise<QueryNlendRedemptionSummaryResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -4838,6 +5730,13 @@ export class QueryClientImpl implements Query {
     this.NLendConversionsAll = this.NLendConversionsAll.bind(this);
     this.NLendConversion = this.NLendConversion.bind(this);
     this.AllLiquidationProtectedAccounts = this.AllLiquidationProtectedAccounts.bind(this);
+    this.SunsetArchive = this.SunsetArchive.bind(this);
+    this.SunsetArchiveAll = this.SunsetArchiveAll.bind(this);
+    this.SunsetAssetArchive = this.SunsetAssetArchive.bind(this);
+    this.SunsetSummary = this.SunsetSummary.bind(this);
+    this.NlendRedemption = this.NlendRedemption.bind(this);
+    this.NlendRedemptionAll = this.NlendRedemptionAll.bind(this);
+    this.NlendRedemptionSummary = this.NlendRedemptionSummary.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -5019,6 +5918,48 @@ export class QueryClientImpl implements Query {
     const data = QueryLiquidationProtectionAllRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "AllLiquidationProtectedAccounts", data);
     return promise.then((data) => QueryLiquidationProtectionAllResponse.decode(_m0.Reader.create(data)));
+  }
+
+  SunsetArchive(request: QuerySunsetArchiveRequest): Promise<QuerySunsetArchiveResponse> {
+    const data = QuerySunsetArchiveRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "SunsetArchive", data);
+    return promise.then((data) => QuerySunsetArchiveResponse.decode(_m0.Reader.create(data)));
+  }
+
+  SunsetArchiveAll(request: QuerySunsetArchiveAllRequest): Promise<QuerySunsetArchiveAllResponse> {
+    const data = QuerySunsetArchiveAllRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "SunsetArchiveAll", data);
+    return promise.then((data) => QuerySunsetArchiveAllResponse.decode(_m0.Reader.create(data)));
+  }
+
+  SunsetAssetArchive(request: QuerySunsetAssetArchiveRequest): Promise<QuerySunsetAssetArchiveResponse> {
+    const data = QuerySunsetAssetArchiveRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "SunsetAssetArchive", data);
+    return promise.then((data) => QuerySunsetAssetArchiveResponse.decode(_m0.Reader.create(data)));
+  }
+
+  SunsetSummary(request: QuerySunsetSummaryRequest): Promise<QuerySunsetSummaryResponse> {
+    const data = QuerySunsetSummaryRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "SunsetSummary", data);
+    return promise.then((data) => QuerySunsetSummaryResponse.decode(_m0.Reader.create(data)));
+  }
+
+  NlendRedemption(request: QueryNlendRedemptionRequest): Promise<QueryNlendRedemptionResponse> {
+    const data = QueryNlendRedemptionRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "NlendRedemption", data);
+    return promise.then((data) => QueryNlendRedemptionResponse.decode(_m0.Reader.create(data)));
+  }
+
+  NlendRedemptionAll(request: QueryNlendRedemptionAllRequest): Promise<QueryNlendRedemptionAllResponse> {
+    const data = QueryNlendRedemptionAllRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "NlendRedemptionAll", data);
+    return promise.then((data) => QueryNlendRedemptionAllResponse.decode(_m0.Reader.create(data)));
+  }
+
+  NlendRedemptionSummary(request: QueryNlendRedemptionSummaryRequest): Promise<QueryNlendRedemptionSummaryResponse> {
+    const data = QueryNlendRedemptionSummaryRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "NlendRedemptionSummary", data);
+    return promise.then((data) => QueryNlendRedemptionSummaryResponse.decode(_m0.Reader.create(data)));
   }
 }
 

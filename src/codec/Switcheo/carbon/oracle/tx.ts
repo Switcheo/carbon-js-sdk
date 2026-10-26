@@ -88,23 +88,6 @@ export interface MsgUpdateParams {
 export interface MsgUpdateParamsResponse {
 }
 
-export interface MsgUpdateOracleContract {
-  creator: string;
-  oracleId: string;
-  contractAddress: string;
-}
-
-export interface MsgUpdateOracleContractResponse {
-}
-
-export interface MsgDeployOracleContract {
-  creator: string;
-  oracleId: string;
-}
-
-export interface MsgDeployOracleContractResponse {
-}
-
 export interface ValidatorSignature {
   /** used to be named "validator", changed to "pub_key" */
   pubKey: Uint8Array;
@@ -1149,249 +1132,6 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
-function createBaseMsgUpdateOracleContract(): MsgUpdateOracleContract {
-  return { creator: "", oracleId: "", contractAddress: "" };
-}
-
-export const MsgUpdateOracleContract = {
-  encode(message: MsgUpdateOracleContract, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.oracleId !== "") {
-      writer.uint32(18).string(message.oracleId);
-    }
-    if (message.contractAddress !== "") {
-      writer.uint32(26).string(message.contractAddress);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateOracleContract {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgUpdateOracleContract();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.creator = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.oracleId = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.contractAddress = reader.string();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgUpdateOracleContract {
-    return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
-      oracleId: isSet(object.oracleId) ? String(object.oracleId) : "",
-      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
-    };
-  },
-
-  toJSON(message: MsgUpdateOracleContract): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
-    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
-    return obj;
-  },
-
-  create(base?: DeepPartial<MsgUpdateOracleContract>): MsgUpdateOracleContract {
-    return MsgUpdateOracleContract.fromPartial(base ?? {});
-  },
-
-  fromPartial(object: DeepPartial<MsgUpdateOracleContract>): MsgUpdateOracleContract {
-    const message = createBaseMsgUpdateOracleContract();
-    message.creator = object.creator ?? "";
-    message.oracleId = object.oracleId ?? "";
-    message.contractAddress = object.contractAddress ?? "";
-    return message;
-  },
-};
-
-function createBaseMsgUpdateOracleContractResponse(): MsgUpdateOracleContractResponse {
-  return {};
-}
-
-export const MsgUpdateOracleContractResponse = {
-  encode(_: MsgUpdateOracleContractResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateOracleContractResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgUpdateOracleContractResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgUpdateOracleContractResponse {
-    return {};
-  },
-
-  toJSON(_: MsgUpdateOracleContractResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  create(base?: DeepPartial<MsgUpdateOracleContractResponse>): MsgUpdateOracleContractResponse {
-    return MsgUpdateOracleContractResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial(_: DeepPartial<MsgUpdateOracleContractResponse>): MsgUpdateOracleContractResponse {
-    const message = createBaseMsgUpdateOracleContractResponse();
-    return message;
-  },
-};
-
-function createBaseMsgDeployOracleContract(): MsgDeployOracleContract {
-  return { creator: "", oracleId: "" };
-}
-
-export const MsgDeployOracleContract = {
-  encode(message: MsgDeployOracleContract, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.oracleId !== "") {
-      writer.uint32(18).string(message.oracleId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeployOracleContract {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgDeployOracleContract();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.creator = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.oracleId = reader.string();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgDeployOracleContract {
-    return {
-      creator: isSet(object.creator) ? String(object.creator) : "",
-      oracleId: isSet(object.oracleId) ? String(object.oracleId) : "",
-    };
-  },
-
-  toJSON(message: MsgDeployOracleContract): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
-    return obj;
-  },
-
-  create(base?: DeepPartial<MsgDeployOracleContract>): MsgDeployOracleContract {
-    return MsgDeployOracleContract.fromPartial(base ?? {});
-  },
-
-  fromPartial(object: DeepPartial<MsgDeployOracleContract>): MsgDeployOracleContract {
-    const message = createBaseMsgDeployOracleContract();
-    message.creator = object.creator ?? "";
-    message.oracleId = object.oracleId ?? "";
-    return message;
-  },
-};
-
-function createBaseMsgDeployOracleContractResponse(): MsgDeployOracleContractResponse {
-  return {};
-}
-
-export const MsgDeployOracleContractResponse = {
-  encode(_: MsgDeployOracleContractResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeployOracleContractResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgDeployOracleContractResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgDeployOracleContractResponse {
-    return {};
-  },
-
-  toJSON(_: MsgDeployOracleContractResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  create(base?: DeepPartial<MsgDeployOracleContractResponse>): MsgDeployOracleContractResponse {
-    return MsgDeployOracleContractResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial(_: DeepPartial<MsgDeployOracleContractResponse>): MsgDeployOracleContractResponse {
-    const message = createBaseMsgDeployOracleContractResponse();
-    return message;
-  },
-};
-
 function createBaseValidatorSignature(): ValidatorSignature {
   return { pubKey: new Uint8Array(), validatorIndex: 0, signature: new Uint8Array(), signedTimestamp: Long.ZERO };
 }
@@ -2119,8 +1859,6 @@ export interface Msg {
   UpdateOracle(request: MsgUpdateOracle): Promise<MsgUpdateOracleResponse>;
   RemoveOracle(request: MsgRemoveOracle): Promise<MsgRemoveOracleResponse>;
   SetOracleSlashEnabled(request: MsgSetOracleSlashEnabled): Promise<MsgSetOracleSlashEnabledResponse>;
-  UpdateOracleContract(request: MsgUpdateOracleContract): Promise<MsgUpdateOracleContractResponse>;
-  DeployOracleContract(request: MsgDeployOracleContract): Promise<MsgDeployOracleContractResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -2143,8 +1881,6 @@ export class MsgClientImpl implements Msg {
     this.UpdateOracle = this.UpdateOracle.bind(this);
     this.RemoveOracle = this.RemoveOracle.bind(this);
     this.SetOracleSlashEnabled = this.SetOracleSlashEnabled.bind(this);
-    this.UpdateOracleContract = this.UpdateOracleContract.bind(this);
-    this.DeployOracleContract = this.DeployOracleContract.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.CreateResult = this.CreateResult.bind(this);
     this.CreateHistoricalBucketInfo = this.CreateHistoricalBucketInfo.bind(this);
@@ -2172,18 +1908,6 @@ export class MsgClientImpl implements Msg {
     const data = MsgSetOracleSlashEnabled.encode(request).finish();
     const promise = this.rpc.request(this.service, "SetOracleSlashEnabled", data);
     return promise.then((data) => MsgSetOracleSlashEnabledResponse.decode(_m0.Reader.create(data)));
-  }
-
-  UpdateOracleContract(request: MsgUpdateOracleContract): Promise<MsgUpdateOracleContractResponse> {
-    const data = MsgUpdateOracleContract.encode(request).finish();
-    const promise = this.rpc.request(this.service, "UpdateOracleContract", data);
-    return promise.then((data) => MsgUpdateOracleContractResponse.decode(_m0.Reader.create(data)));
-  }
-
-  DeployOracleContract(request: MsgDeployOracleContract): Promise<MsgDeployOracleContractResponse> {
-    const data = MsgDeployOracleContract.encode(request).finish();
-    const promise = this.rpc.request(this.service, "DeployOracleContract", data);
-    return promise.then((data) => MsgDeployOracleContractResponse.decode(_m0.Reader.create(data)));
   }
 
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse> {
