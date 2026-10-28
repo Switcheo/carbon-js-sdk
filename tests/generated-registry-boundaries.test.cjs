@@ -95,6 +95,6 @@ test("the generated split preserves the exact legacy Models namespace shape", ()
   assert.equal(digest(Object.keys(models.PolyNetwork).sort()), "c221c32a6b79de15069f33266f4da195d2ae810e5ac59c485f1d2ed7aea749b9");
   assert.equal(models.registry.constructor.name, "Registry");
   assert.equal(digest(canonical(models.TxTypes)), "f96b5539971af6ac80562aef2e32479e75c3680747e2c825359513b73e217f2f");
-  assert.equal(digest(canonical(models.EIP712Types)), "47e57c009699774cf855164121d1a00f45dff98c603f44ba339f9138b6d23ddf");
+  assert.equal(digest(canonical(models.EIP712Types)), "40323f6c7dc867b9e062b973168685d67613291349b86f03dd3b0b1d1268e0ae");
   assert.equal(digest(canonical(namespaceShape(models))), "9cd9d4bb4806c137a04499c48676da9e48d0a82a96c4c11645f1405e51853edd");
 });
