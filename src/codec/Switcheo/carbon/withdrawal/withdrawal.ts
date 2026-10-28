@@ -214,6 +214,11 @@ export interface Params {
   depositDenoms: string[];
   /** the dissolved USD group's cheque (cgt/1); only that group's members may be deposit denoms */
   usdCheque: string;
+  /**
+   * the smallest withdrawal, in USD with 18 decimals: a floor against dust tickets the operator pays to relay; a
+   * balance below it stays. $1 from the snapshot; the policy changes it
+   */
+  minWithdrawalUsd: string;
 }
 
 /** Exit is the way out of the broker: a brdg/ denom paid over its bridge connection. */
@@ -1026,6 +1031,7 @@ function createBaseParams(): Params {
     pauseReason: "",
     depositDenoms: [],
     usdCheque: "",
+    minWithdrawalUsd: "",
   };
 }
 
@@ -1057,6 +1063,9 @@ export const Params = {
     }
     if (message.usdCheque !== "") {
       writer.uint32(74).string(message.usdCheque);
+    }
+    if (message.minWithdrawalUsd !== "") {
+      writer.uint32(82).string(message.minWithdrawalUsd);
     }
     return writer;
   },
@@ -1131,6 +1140,13 @@ export const Params = {
 
           message.usdCheque = reader.string();
           continue;
+        case 10:
+          if (tag !== 82) {
+            break;
+          }
+
+          message.minWithdrawalUsd = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1151,6 +1167,7 @@ export const Params = {
       pauseReason: isSet(object.pauseReason) ? String(object.pauseReason) : "",
       depositDenoms: Array.isArray(object?.depositDenoms) ? object.depositDenoms.map((e: any) => String(e)) : [],
       usdCheque: isSet(object.usdCheque) ? String(object.usdCheque) : "",
+      minWithdrawalUsd: isSet(object.minWithdrawalUsd) ? String(object.minWithdrawalUsd) : "",
     };
   },
 
@@ -1173,6 +1190,7 @@ export const Params = {
       obj.depositDenoms = [];
     }
     message.usdCheque !== undefined && (obj.usdCheque = message.usdCheque);
+    message.minWithdrawalUsd !== undefined && (obj.minWithdrawalUsd = message.minWithdrawalUsd);
     return obj;
   },
 
@@ -1191,6 +1209,7 @@ export const Params = {
     message.pauseReason = object.pauseReason ?? "";
     message.depositDenoms = object.depositDenoms?.map((e) => e) || [];
     message.usdCheque = object.usdCheque ?? "";
+    message.minWithdrawalUsd = object.minWithdrawalUsd ?? "";
     return message;
   },
 };
