@@ -1,4 +1,4 @@
-import { MsgRetryTicket, MsgWithdraw } from "@carbon-sdk/codec/Switcheo/carbon/withdrawal/tx";
+import { MsgRebalanceWithdrawal, MsgRetryTicket, MsgWithdraw } from "@carbon-sdk/codec/Switcheo/carbon/withdrawal/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import Long from "long";
@@ -21,6 +21,28 @@ export class WithdrawalModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgWithdrawalWithdraw,
+        value,
+      },
+      opts
+    );
+  }
+
+  // A listed team wallet draws amount of denom, in base units, from the broker to recipient over the denom's connection.
+  public async rebalanceWithdrawal(params: WithdrawalModule.RebalanceWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    // account stays empty, so the sender's balance pays; the admin policy draws a protocol record by group proposal
+    const value = MsgRebalanceWithdrawal.fromPartial({
+      sender: wallet.bech32Address,
+      denom: params.denom,
+      amount: params.amount.dp(0, BigNumber.ROUND_FLOOR).toString(10),
+      recipient: params.recipient,
+      account: "",
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRebalanceWithdrawal,
         value,
       },
       opts
@@ -50,6 +72,11 @@ export class WithdrawalModule extends BaseModule {
 export namespace WithdrawalModule {
   export interface WithdrawParams {
     usd: BigNumber;
+    recipient: string;
+  }
+  export interface RebalanceWithdrawalParams {
+    denom: string;
+    amount: BigNumber;
     recipient: string;
   }
   export interface RetryTicketParams {

@@ -1,0 +1,245 @@
+// This Go test writes tests/fixtures/withdrawal-amino-golden.json from carbon's own codecs.
+//
+// Copy it into a carbon checkout of the release as x/withdrawal/types/zz_sdk_golden_test.go, then run from the carbon
+// root:
+//
+//	SDK_GOLDEN_OUT=<sdk>/tests/fixtures/withdrawal-amino-golden.json SDK_GOLDEN_VERSION=<version> \
+//	go test ./x/withdrawal/types/ -run TestSdkGolden -count=1
+//
+// The fixture's source names the checkout's commit, read from git. Delete the copy afterwards. Carbon never commits it.
+//
+// Each vector records what the chain checks a signature against.
+//   - ledger_sign_bytes come from the node's SIGN_MODE_LEGACY_AMINO_JSON handler, with the wallet's timeout height.
+//   - metamask_eip712_hash is ethermint's EIP-712 hash of the same handler bytes without a timeout. MetaMask signs
+//     Carbon messages this way. The field is absent when ethermint cannot build the typed data.
+//   - legacy_eip712_hash is ethermint's hash for a legacy ExtensionOptionsWeb3Tx. The field is absent when ethermint
+//     refuses the message.
+
+package types_test
+
+import (
+	"context"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"os"
+	"os/exec"
+	"strconv"
+	"strings"
+	"testing"
+
+	"cosmossdk.io/math"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
+	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
+	"github.com/cosmos/gogoproto/proto"
+	"github.com/ethereum/go-ethereum/signer/core/apitypes"
+	"github.com/evmos/ethermint/ethereum/eip712"
+	ethermint "github.com/evmos/ethermint/types"
+
+	carbonapp "github.com/Switcheo/carbon/app"
+	"github.com/Switcheo/carbon/x/withdrawal/types"
+)
+
+const (
+	gChainID = "carbon_9790-1"
+	gAccNum  = uint64(12)
+	gSeq     = uint64(3)
+	gGas     = uint64(2_000_000)
+	gMemo    = ""
+	// A Ledger signs with the wallet's last height + 30.
+	gTimeout = uint64(91234567)
+)
+
+type gVector struct {
+	Name               string          `json:"name"`
+	TypeURL            string          `json:"type_url"`
+	Proto              string          `json:"proto"`
+	Amino              json.RawMessage `json:"amino"`
+	LedgerSignBytes    string          `json:"ledger_sign_bytes"`
+	MetamaskEip712Hash string          `json:"metamask_eip712_hash,omitempty"`
+	LegacyEip712Hash   string          `json:"legacy_eip712_hash,omitempty"`
+}
+
+type gFixture struct {
+	Source        string    `json:"source"`
+	ChainID       string    `json:"chain_id"`
+	AccountNumber string    `json:"account_number"`
+	Sequence      string    `json:"sequence"`
+	Gas           string    `json:"gas"`
+	Memo          string    `json:"memo"`
+	TimeoutHeight string    `json:"timeout_height"`
+	FeePayer      string    `json:"fee_payer"`
+	Vectors       []gVector `json:"vectors"`
+}
+
+func gAddr(seed string) string {
+	sum := sha256.Sum256([]byte(seed))
+	s, err := bech32.ConvertAndEncode("swth", sum[:20])
+	if err != nil {
+		panic(err)
+	}
+	return s
+}
+
+func gInt(s string) *math.Int {
+	i, ok := math.NewIntFromString(s)
+	if !ok {
+		panic(s)
+	}
+	return &i
+}
+
+func gDec(s string) *math.LegacyDec {
+	d := math.LegacyMustNewDecFromStr(s)
+	return &d
+}
+
+func gBool(b bool) *bool { return &b }
+
+// gHash is empty when ethermint cannot hash the typed data, as for a legacy struct with no fields.
+func gHash(typed apitypes.TypedData) string {
+	hash, _, err := apitypes.TypedDataAndHash(typed)
+	if err != nil {
+		return ""
+	}
+	return "0x" + hex.EncodeToString(hash)
+}
+
+func TestSdkGolden(t *testing.T) {
+	out, version := os.Getenv("SDK_GOLDEN_OUT"), os.Getenv("SDK_GOLDEN_VERSION")
+	if out == "" || version == "" {
+		t.Skip("SDK_GOLDEN_OUT or SDK_GOLDEN_VERSION unset")
+	}
+	commit, err := exec.Command("git", "rev-parse", "--short=9", "HEAD").Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	source := "carbon " + strings.TrimSpace(string(commit)) + " (" + version + ")"
+	carbonapp.SetConfig()
+	eip712.SetEncodingConfig(carbonapp.MakeCosmosEncodingConfig())
+	// The app's encoding config comes last so legacytx.StdSignBytes uses the app's amino codec, as on a node.
+	txCfg := carbonapp.MakeEncodingConfig().TxConfig
+
+	user, team, policy, other, record := gAddr("user"), gAddr("team"), gAddr("policy"), gAddr("other"), gAddr("record")
+	arbRecipient := "0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c"
+	usdc := "brdg/af88d065e77c8cc2239327c5edb3a432268e5831"
+	usdt := "brdg/fd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9"
+
+	samples := []struct {
+		name string
+		msg  sdk.Msg
+	}{
+		{"withdraw", &types.MsgWithdraw{Sender: user, Usd: *gInt("250000000000000000000"), Recipient: arbRecipient}},
+		{"withdraw_large", &types.MsgWithdraw{Sender: user, Usd: *gInt("123456789012345678901234567890123456"), Recipient: arbRecipient}},
+		{"withdraw_unset_usd", &types.MsgWithdraw{Sender: user, Recipient: arbRecipient}},
+		{"retry_ticket", &types.MsgRetryTicket{Sender: user, TicketId: 42, Recipient: arbRecipient}},
+		{"retry_ticket_keep_recipient", &types.MsgRetryTicket{Sender: user, TicketId: 18446744073709551615}},
+		{"update_team_list", &types.MsgUpdateTeamList{Creator: policy, Add: []string{team, other}, Remove: []string{record}}},
+		{"update_team_list_add_only", &types.MsgUpdateTeamList{Creator: policy, Add: []string{team}}},
+		{"update_controls_all", &types.MsgUpdateControls{
+			Creator:                policy,
+			UserWithdrawalsEnabled: gBool(true),
+			RebalancingEnabled:     gBool(false),
+			Exit:                   &types.ExitUpdate{Enabled: gBool(true), RelayFee: gInt("1500000")},
+			StockWarningUsd:        gDec("250000.5"),
+			Paused:                 gBool(false),
+			AddDepositDenoms:       []string{usdc},
+			RemoveDepositDenoms:    []string{usdt},
+			MinWithdrawalUsd:       gInt("10000000000000000000"),
+		}},
+		{"update_controls_pause_only", &types.MsgUpdateControls{Creator: policy, Paused: gBool(true)}},
+		{"update_controls_partial", &types.MsgUpdateControls{
+			Creator:                policy,
+			UserWithdrawalsEnabled: gBool(false),
+			Exit:                   &types.ExitUpdate{RelayFee: gInt("0")},
+			MinWithdrawalUsd:       gInt("0"),
+		}},
+		{"update_controls_empty_exit", &types.MsgUpdateControls{Creator: policy, Exit: &types.ExitUpdate{}, StockWarningUsd: gDec("0.000000000000000001")}},
+		{"rebalance_withdrawal", &types.MsgRebalanceWithdrawal{Sender: team, Denom: usdc, Amount: *gInt("250000000000"), Recipient: arbRecipient}},
+		{"rebalance_withdrawal_large", &types.MsgRebalanceWithdrawal{Sender: team, Denom: usdc, Amount: *gInt("340282366920938463463374607431768211455"), Recipient: arbRecipient}},
+		{"rebalance_withdrawal_account", &types.MsgRebalanceWithdrawal{Sender: policy, Denom: usdt, Amount: *gInt("1"), Recipient: arbRecipient, Account: record}},
+		{"resolve_unclaimed_deposit", &types.MsgResolveUnclaimedDeposit{Creator: policy, Id: 7, Recipient: arbRecipient}},
+		{"resolve_unclaimed_deposit_connection", &types.MsgResolveUnclaimedDeposit{Creator: policy, Id: 4294967301, Recipient: arbRecipient, ConnectionId: "connection-12"}},
+		{"resolve_unclaimed_deposit_zero_id", &types.MsgResolveUnclaimedDeposit{Creator: policy, Recipient: arbRecipient}},
+		{"reconcile_broker", &types.MsgReconcileBroker{Creator: policy, Denom: usdc}},
+	}
+
+	priv := secp256k1.GenPrivKeyFromSecret([]byte("golden"))
+	signer := authsigning.SignerData{Address: sdk.AccAddress(priv.PubKey().Address()).String(), ChainID: gChainID, AccountNumber: gAccNum, Sequence: gSeq, PubKey: priv.PubKey()}
+	parsed, err := ethermint.ParseChainID(gChainID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// handlerBytes is what the node's SIGN_MODE_LEGACY_AMINO_JSON handler checks a signature against.
+	handlerBytes := func(msg sdk.Msg, timeout uint64) []byte {
+		b := txCfg.NewTxBuilder()
+		if err := b.SetMsgs(msg); err != nil {
+			t.Fatal(err)
+		}
+		b.SetGasLimit(gGas)
+		b.SetMemo(gMemo)
+		b.SetTimeoutHeight(timeout)
+		if err := b.SetSignatures(signing.SignatureV2{
+			PubKey:   priv.PubKey(),
+			Data:     &signing.SingleSignatureData{SignMode: signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON},
+			Sequence: gSeq,
+		}); err != nil {
+			t.Fatal(err)
+		}
+		bz, err := authsigning.GetSignBytesAdapter(context.Background(), txCfg.SignModeHandler(), signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signer, b.GetTx())
+		if err != nil {
+			t.Fatal(err)
+		}
+		return bz
+	}
+
+	fx := gFixture{
+		Source:        source + " x/withdrawal/types: legacy amino codec, x/tx SIGN_MODE_LEGACY_AMINO_JSON handler, ethermint eip712",
+		ChainID:       gChainID,
+		AccountNumber: strconv.FormatUint(gAccNum, 10),
+		Sequence:      strconv.FormatUint(gSeq, 10),
+		Gas:           strconv.FormatUint(gGas, 10),
+		Memo:          gMemo,
+		TimeoutHeight: strconv.FormatUint(gTimeout, 10),
+		FeePayer:      gAddr("feepayer"),
+	}
+	for _, s := range samples {
+		bz, err := proto.Marshal(s.msg)
+		if err != nil {
+			t.Fatal(err)
+		}
+		v := gVector{
+			Name:            s.name,
+			TypeURL:         sdk.MsgTypeURL(s.msg),
+			Proto:           base64.StdEncoding.EncodeToString(bz),
+			Amino:           sdk.MustSortJSON(legacytx.RegressionTestingAminoCodec.MustMarshalJSON(s.msg)),
+			LedgerSignBytes: string(handlerBytes(s.msg, gTimeout)),
+		}
+
+		if typed, err := eip712.GetEIP712TypedDataForMsg(handlerBytes(s.msg, 0)); err == nil {
+			v.MetamaskEip712Hash = gHash(typed)
+		}
+
+		legacyBz := legacytx.StdSignBytes(gChainID, gAccNum, gSeq, 0, legacytx.StdFee{Amount: sdk.Coins{}, Gas: gGas}, []sdk.Msg{s.msg}, gMemo)
+		feePayer := &eip712.FeeDelegationOptions{FeePayer: sdk.MustAccAddressFromBech32(fx.FeePayer)}
+		if typed, err := eip712.LegacyWrapTxToTypedData(nil, parsed.Uint64(), s.msg, legacyBz, feePayer); err == nil {
+			v.LegacyEip712Hash = gHash(typed)
+		}
+
+		fx.Vectors = append(fx.Vectors, v)
+	}
+
+	res, err := json.MarshalIndent(fx, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(out, append(res, '\n'), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}

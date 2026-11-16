@@ -143,9 +143,9 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
       return decBnVal.toString(10);
     }
     case ConvertEncType.Long:
-      return toAmino ? value.toString() : new Long(Number(value));
+      return toAmino ? value.toString() : Long.fromValue(value);
     case ConvertEncType.LongToNum:
-      return toAmino ? value.toNumber() : new Long(value);
+      return toAmino ? value.toNumber() : Long.fromValue(value);
     case ConvertEncType.NumToStr:
       return toAmino ? value.toString() : Number(value);
     case ConvertEncType.Date:
@@ -178,6 +178,8 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
   }
 };
 
+// generateAminoType drops falsy values, writes empty lists and writes zero ids. A message whose Go json tags keep a false
+// BoolValue, omit an empty list or omit a zero uint64 uses generateFieldAminoType instead.
 export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess = {}): AminoConverter => {
   const valueMap = amino.valueMap ?? {};
   return {
@@ -245,6 +247,102 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
     },
   };
 };
+
+// An AminoFieldKind maps one field to legacy amino JSON as its Go json tag reads. toAmino returns undefined to omit the
+// field, and fromAmino receives undefined when the field is absent.
+export interface AminoFieldKind {
+  toAmino: (value: any) => unknown;
+  fromAmino: (value: any) => unknown;
+}
+
+export type AminoFields = SimpleMap<AminoFieldKind>;
+
+const DEC_PLACES = 18;
+
+// A LegacyDec with a fraction of a 10^-18 unit throws, because rounding it would sign a different number than the
+// caller gave.
+const wholeUnits = (units: BigNumber, input: string): BigNumber => {
+  if (!units.isInteger()) throw new Error(`math.LegacyDec ${input} is not a whole number of 10^-${DEC_PLACES} units`);
+  return units;
+};
+
+const toAminoFields = (fields: AminoFields, value: SimpleMap<any>): SimpleMap<unknown> => {
+  const amino: SimpleMap<unknown> = {};
+  Object.entries(fields).forEach(([key, field]) => {
+    const aminoValue = field.toAmino(value[key]);
+    if (aminoValue !== undefined) amino[TypeUtils.camelToSnake(key)] = aminoValue;
+  });
+  return amino;
+};
+
+const fromAminoFields = (fields: AminoFields, amino: SimpleMap<any>): SimpleMap<unknown> => {
+  const value: SimpleMap<unknown> = {};
+  Object.entries(fields).forEach(([key, field]) => {
+    value[key] = field.fromAmino(amino[TypeUtils.camelToSnake(key)]);
+  });
+  return value;
+};
+
+const omittedWhenEmpty: AminoFieldKind = {
+  toAmino: (value?: string) => value || undefined,
+  fromAmino: (value?: string) => value ?? "",
+};
+
+export const AminoField = {
+  // A string is omitted when empty.
+  str: omittedWhenEmpty,
+
+  // A non-nullable math.Int is always written, as "0" when unset.
+  int: {
+    toAmino: (value?: string) => value || "0",
+    fromAmino: (value?: string) => value ?? "",
+  } as AminoFieldKind,
+
+  // A nullable math.Int is omitted when unset.
+  optionalInt: omittedWhenEmpty,
+
+  // A nullable math.LegacyDec is omitted when unset. Protobuf carries it as a whole number of 10^-18 units, and amino
+  // writes it with 18 decimals.
+  optionalDec: {
+    toAmino: (value?: string) =>
+      value ? wholeUnits(new BigNumber(value), value).shiftedBy(-DEC_PLACES).toFixed(DEC_PLACES) : undefined,
+    fromAmino: (value?: string) =>
+      value === undefined ? "" : wholeUnits(new BigNumber(value).shiftedBy(DEC_PLACES), value).toFixed(0),
+  } as AminoFieldKind,
+
+  // A uint64 is written as a decimal string and omitted when zero.
+  uint64: {
+    toAmino: (value?: Long) => {
+      const id = Long.fromValue(value ?? Long.UZERO).toUnsigned();
+      return id.isZero() ? undefined : id.toString();
+    },
+    fromAmino: (value?: string) => (value === undefined ? Long.UZERO : Long.fromString(value, true)),
+  } as AminoFieldKind,
+
+  // A google.protobuf.BoolValue is omitted when unset and written when false.
+  optionalBool: {
+    toAmino: (value?: boolean) => value ?? undefined,
+    fromAmino: (value?: boolean) => value,
+  } as AminoFieldKind,
+
+  // A repeated string is omitted when empty.
+  strs: {
+    toAmino: (value?: string[]) => (value?.length ? value : undefined),
+    fromAmino: (value?: string[]) => value ?? [],
+  } as AminoFieldKind,
+
+  // A nullable nested message is omitted when unset.
+  optionalMessage: (fields: AminoFields): AminoFieldKind => ({
+    toAmino: (value?: SimpleMap<any>) => (value ? toAminoFields(fields, value) : undefined),
+    fromAmino: (value?: SimpleMap<any>) => (value === undefined ? undefined : fromAminoFields(fields, value)),
+  }),
+};
+
+export const generateFieldAminoType = (aminoType: string, fields: AminoFields): AminoConverter => ({
+  aminoType,
+  toAmino: (value: SimpleMap<any>) => toAminoFields(fields, value),
+  fromAmino: (amino: SimpleMap<any>) => fromAminoFields(fields, amino),
+});
 
 export const pruneAmino = (value: any, pruneMap: TypeUtils.SimpleMap<ConvertEncType>) => {
   const newValue = value;

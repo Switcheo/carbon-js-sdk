@@ -25,6 +25,7 @@ import {
   BridgeAmino,
   OtcAmino,
   GroupAmino,
+  WithdrawalAmino,
 } from "./types";
 
 const AminoTypesMap = new AminoTypes({
@@ -53,6 +54,7 @@ const AminoTypesMap = new AminoTypes({
   ...BridgeAmino,
   ...OtcAmino,
   ...GroupAmino,
+  ...WithdrawalAmino,
 });
 
 export default AminoTypesMap;
