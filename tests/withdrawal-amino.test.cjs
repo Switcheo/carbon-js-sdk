@@ -70,6 +70,12 @@ test("the vectors cover all seven x/withdrawal messages", () => {
   assert.deepEqual([...new Set(golden.vectors.map((v) => v.type_url))].sort(), [...WITHDRAWAL_TYPE_URLS].sort());
 });
 
+test("ethermint refuses typed data only for the expected vectors", () => {
+  const missing = (hash) => golden.vectors.filter((v) => !v[hash]).map((v) => v.name);
+  assert.deepEqual(missing("metamask_eip712_hash"), ["update_controls_all", "update_controls_pause_only", "update_controls_partial"]);
+  assert.deepEqual(missing("legacy_eip712_hash"), ["update_controls_empty_exit"]);
+});
+
 test("each converter maps every field of its codec message", () => {
   for (const typeUrl of WITHDRAWAL_TYPE_URLS) {
     const { type } = AminoTypesMap.toAmino({ typeUrl, value: {} });

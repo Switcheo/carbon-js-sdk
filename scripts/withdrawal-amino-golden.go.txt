@@ -1,12 +1,12 @@
 // This Go test writes tests/fixtures/withdrawal-amino-golden.json from carbon's own codecs.
 //
-// Copy it into a carbon checkout as x/withdrawal/types/zz_sdk_golden_test.go, then run from the carbon root:
+// Copy it into a carbon checkout of the release as x/withdrawal/types/zz_sdk_golden_test.go, then run from the carbon
+// root:
 //
-//	SDK_GOLDEN_OUT=<sdk>/tests/fixtures/withdrawal-amino-golden.json \
-//	SDK_GOLDEN_SOURCE="carbon <commit> (<version>)" \
+//	SDK_GOLDEN_OUT=<sdk>/tests/fixtures/withdrawal-amino-golden.json SDK_GOLDEN_VERSION=<version> \
 //	go test ./x/withdrawal/types/ -run TestSdkGolden -count=1
 //
-// Delete the copy afterwards. Carbon never commits it.
+// The fixture's source names the checkout's commit, read from git. Delete the copy afterwards. Carbon never commits it.
 //
 // Each vector records what the chain checks a signature against.
 //   - ledger_sign_bytes come from the node's SIGN_MODE_LEGACY_AMINO_JSON handler, with the wallet's timeout height.
@@ -24,7 +24,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"os"
+	"os/exec"
 	"strconv"
+	"strings"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -109,10 +111,15 @@ func gHash(typed apitypes.TypedData) string {
 }
 
 func TestSdkGolden(t *testing.T) {
-	out, source := os.Getenv("SDK_GOLDEN_OUT"), os.Getenv("SDK_GOLDEN_SOURCE")
-	if out == "" || source == "" {
-		t.Skip("SDK_GOLDEN_OUT or SDK_GOLDEN_SOURCE unset")
+	out, version := os.Getenv("SDK_GOLDEN_OUT"), os.Getenv("SDK_GOLDEN_VERSION")
+	if out == "" || version == "" {
+		t.Skip("SDK_GOLDEN_OUT or SDK_GOLDEN_VERSION unset")
 	}
+	commit, err := exec.Command("git", "rev-parse", "--short=9", "HEAD").Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	source := "carbon " + strings.TrimSpace(string(commit)) + " (" + version + ")"
 	carbonapp.SetConfig()
 	eip712.SetEncodingConfig(carbonapp.MakeCosmosEncodingConfig())
 	// The app's encoding config comes last so legacytx.StdSignBytes uses the app's amino codec, as on a node.
