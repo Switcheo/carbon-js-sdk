@@ -5,8 +5,8 @@ import BigNumber from "bignumber.js";
 import Long from "long";
 
 // Each field maps to carbon's legacy amino JSON as its Go json tag in x/withdrawal/types/tx.pb.go reads.
-// generateAminoType cannot express these messages: it drops a false BoolValue, writes empty lists, and rebuilds
-// uint64 ids through Number.
+// generateAminoType cannot express these messages: it drops a false BoolValue, writes empty lists, and writes zero
+// ids that Go omits.
 //
 // toAmino returns undefined to omit the field. fromAmino receives undefined when the field is absent.
 interface FieldMap {
@@ -18,28 +18,37 @@ type Fields = TypeUtils.SimpleMap<FieldMap>;
 
 const DEC_PLACES = 18;
 
-// string; omitted when empty
+// A string is omitted when empty.
 const str: FieldMap = {
   toAmino: (value?: string) => value || undefined,
   fromAmino: (value?: string) => value ?? "",
 };
 
-// non-nullable math.Int; always written, as "0" when unset
+// A non-nullable math.Int is always written, as "0" when unset.
 const int: FieldMap = {
   toAmino: (value?: string) => value || "0",
   fromAmino: (value?: string) => value ?? "",
 };
 
-// nullable math.Int; omitted when unset
+// A nullable math.Int is omitted when unset.
 const optionalInt: FieldMap = str;
 
-// nullable math.LegacyDec; protobuf carries it scaled by 10^18, and amino writes it with 18 decimals
-const optionalDec: FieldMap = {
-  toAmino: (value?: string) => (value ? new BigNumber(value).shiftedBy(-DEC_PLACES).toFixed(DEC_PLACES) : undefined),
-  fromAmino: (value?: string) => (value === undefined ? "" : new BigNumber(value).shiftedBy(DEC_PLACES).toFixed(0)),
+// A nullable math.LegacyDec is omitted when unset. Protobuf carries it as a whole number of 10^-18 units, and amino
+// writes it with 18 decimals. A value with a fraction of a unit throws, because rounding it would sign a different
+// number than the caller gave.
+const wholeUnits = (units: BigNumber, input: string): BigNumber => {
+  if (!units.isInteger()) throw new Error(`math.LegacyDec ${input} is not a whole number of 10^-${DEC_PLACES} units`);
+  return units;
 };
 
-// uint64; a decimal string, omitted when zero
+const optionalDec: FieldMap = {
+  toAmino: (value?: string) =>
+    value ? wholeUnits(new BigNumber(value), value).shiftedBy(-DEC_PLACES).toFixed(DEC_PLACES) : undefined,
+  fromAmino: (value?: string) =>
+    value === undefined ? "" : wholeUnits(new BigNumber(value).shiftedBy(DEC_PLACES), value).toFixed(0),
+};
+
+// A uint64 is written as a decimal string and omitted when zero.
 const uint64: FieldMap = {
   toAmino: (value?: Long) => {
     const id = Long.fromValue(value ?? Long.UZERO).toUnsigned();
@@ -48,13 +57,13 @@ const uint64: FieldMap = {
   fromAmino: (value?: string) => (value === undefined ? Long.UZERO : Long.fromString(value, true)),
 };
 
-// google.protobuf.BoolValue; omitted when unset, and written when false
+// A google.protobuf.BoolValue is omitted when unset and written when false.
 const optionalBool: FieldMap = {
   toAmino: (value?: boolean) => value ?? undefined,
   fromAmino: (value?: boolean) => value,
 };
 
-// repeated string; omitted when empty
+// A repeated string is omitted when empty.
 const strs: FieldMap = {
   toAmino: (value?: string[]) => (value?.length ? value : undefined),
   fromAmino: (value?: string[]) => value ?? [],
@@ -77,7 +86,7 @@ const fromAminoFields = (fields: Fields, amino: TypeUtils.SimpleMap<any>): TypeU
   return value;
 };
 
-// nullable nested message; omitted when unset
+// A nullable nested message is omitted when unset.
 const optionalMessage = (fields: Fields): FieldMap => ({
   toAmino: (value?: TypeUtils.SimpleMap<any>) => (value ? toAminoFields(fields, value) : undefined),
   fromAmino: (value?: TypeUtils.SimpleMap<any>) => (value === undefined ? undefined : fromAminoFields(fields, value)),

@@ -143,9 +143,9 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
       return decBnVal.toString(10);
     }
     case ConvertEncType.Long:
-      return toAmino ? value.toString() : new Long(Number(value));
+      return toAmino ? value.toString() : Long.fromValue(value);
     case ConvertEncType.LongToNum:
-      return toAmino ? value.toNumber() : new Long(value);
+      return toAmino ? value.toNumber() : Long.fromValue(value);
     case ConvertEncType.NumToStr:
       return toAmino ? value.toString() : Number(value);
     case ConvertEncType.Date:

@@ -27,7 +27,7 @@ export class WithdrawalModule extends BaseModule {
     );
   }
 
-  // a listed wallet's in-kind draw of amount, in denom's base units, sent to recipient over the denom's connection
+  // A listed team wallet draws amount of denom, in base units, from the broker to recipient over the denom's connection.
   public async rebalanceWithdrawal(params: WithdrawalModule.RebalanceWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 

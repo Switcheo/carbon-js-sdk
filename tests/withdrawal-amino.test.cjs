@@ -4,8 +4,10 @@ const assert = require("node:assert/strict");
 const path = require("node:path");
 const test = require("node:test");
 
-const projectRoot = path.resolve(__dirname, "..");
+// scripts/withdrawal-amino-golden.go.txt generates this fixture from carbon's own codecs.
 const golden = require("./fixtures/withdrawal-amino-golden.json");
+
+const projectRoot = path.resolve(__dirname, "..");
 
 if (!global.window) {
   global.window = {
@@ -18,7 +20,7 @@ const { makeSignDoc } = require("@cosmjs/amino");
 const { SignTypedDataVersion, TypedDataUtils } = require("@metamask/eth-sig-util");
 const BigNumber = require("bignumber.js");
 
-// the package root first, so its circular imports resolve in order
+// Load the package root first so its circular imports resolve in order.
 const { AminoTypesMap, WithdrawalModule } = require(path.join(projectRoot, "lib"));
 const { registry } = require(path.join(projectRoot, "lib/codec"));
 const { ExitUpdate } = require(path.join(projectRoot, "lib/codec/Switcheo/carbon/withdrawal/tx"));
@@ -27,36 +29,40 @@ const { legacyConstructEIP712Tx } = require(path.join(projectRoot, "lib/util/leg
 const { sortObject } = require(path.join(projectRoot, "lib/util/generic"));
 const { makeSignDocAmino } = require(path.join(projectRoot, "lib/wallet/CarbonSigningClient"));
 
+const MSG_WITHDRAW = "/Switcheo.carbon.withdrawal.MsgWithdraw";
+const MSG_UPDATE_CONTROLS = "/Switcheo.carbon.withdrawal.MsgUpdateControls";
 const WITHDRAWAL_TYPE_URLS = [
-  "/Switcheo.carbon.withdrawal.MsgWithdraw",
+  MSG_WITHDRAW,
   "/Switcheo.carbon.withdrawal.MsgRetryTicket",
   "/Switcheo.carbon.withdrawal.MsgUpdateTeamList",
-  "/Switcheo.carbon.withdrawal.MsgUpdateControls",
+  MSG_UPDATE_CONTROLS,
   "/Switcheo.carbon.withdrawal.MsgRebalanceWithdrawal",
   "/Switcheo.carbon.withdrawal.MsgResolveUnclaimedDeposit",
   "/Switcheo.carbon.withdrawal.MsgReconcileBroker",
 ];
 
-// MsgUpdateControls cases MetaMask cannot sign. Only the admin policy or the authority sends the message, never a wallet.
-const FALSE_BOOL_GAP = "eip712.ts leaves a false BoolValue out of the types, and ethermint types it";
-const EIP712_GAPS = {
-  update_controls_all: FALSE_BOOL_GAP,
-  update_controls_partial: FALSE_BOOL_GAP,
-  update_controls_empty_exit: "eth-sig-util and go-ethereum hash an empty struct differently",
-};
+// Ledger and MetaMask signatures are checked against bytes from carbon's x/tx handler, which writes MsgUpdateControls's
+// BoolValue and LegacyDec fields unlike the legacy amino codec the converter follows. No wallet signs the message,
+// because only the admin policy or the authority may send it.
+const HANDLER_GAP = "carbon's x/tx handler writes BoolValue and LegacyDec unlike legacy amino";
+const handlerGap = (v) => (v.type_url === MSG_UPDATE_CONTROLS ? HANDLER_GAP : undefined);
+
 const LEGACY_ZERO_GAP = 'legacyEIP712.ts leaves false and "0" values out of the types, and ethermint types them';
 const LEGACY_EIP712_GAPS = {
+  withdraw_unset_usd: LEGACY_ZERO_GAP,
   update_controls_all: LEGACY_ZERO_GAP,
   update_controls_partial: LEGACY_ZERO_GAP,
 };
 
-// ethermint's legacy EIP-712 domain names its verifying contract "cosmos"
+// ethermint's legacy EIP-712 domain names its verifying contract "cosmos".
 const ETHERMINT_LEGACY_DOMAIN = { verifyingContract: "cosmos" };
 
 const fee = { amount: [], gas: golden.gas };
 const vector = (name) => golden.vectors.find((v) => v.name === name);
 const decode = (v) => registry.decode({ typeUrl: v.type_url, value: Buffer.from(v.proto, "base64") });
 const toAmino = (v) => AminoTypesMap.toAmino({ typeUrl: v.type_url, value: decode(v) });
+const signDoc = (amino) => makeSignDoc([amino], fee, golden.chain_id, golden.memo, golden.account_number, golden.sequence);
+const legacyTypedData = (amino) => legacyConstructEIP712Tx({ ...signDoc(amino), fee: { ...fee, feePayer: golden.fee_payer } });
 const eip712Hash = (typedData) =>
   `0x${Buffer.from(TypedDataUtils.eip712Hash(typedData, SignTypedDataVersion.V4)).toString("hex")}`;
 
@@ -85,31 +91,39 @@ for (const v of golden.vectors) {
     assert.equal(Buffer.from(registry.encode({ typeUrl, value })).toString("base64"), v.proto);
   });
 
-  if (v.ledger_sign_bytes) {
-    test(`${v.name}: the Ledger sign doc is the node's SIGN_MODE_LEGACY_AMINO_JSON bytes`, () => {
-      const doc = makeSignDocAmino([toAmino(v)], fee, golden.chain_id, golden.memo, golden.account_number, golden.sequence, golden.timeout_height);
-      assert.equal(JSON.stringify(sortObject(doc)), v.ledger_sign_bytes);
-    });
-  }
+  test(`${v.name}: the Ledger sign doc is the node's SIGN_MODE_LEGACY_AMINO_JSON bytes`, { todo: handlerGap(v) }, () => {
+    const doc = makeSignDocAmino([toAmino(v)], fee, golden.chain_id, golden.memo, golden.account_number, golden.sequence, golden.timeout_height);
+    assert.equal(JSON.stringify(sortObject(doc)), v.ledger_sign_bytes);
+  });
 
-  test(`${v.name}: MetaMask's EIP-712 hash is ethermint's for the direct sign doc`, { todo: EIP712_GAPS[v.name] }, () => {
-    const doc = makeSignDoc([toAmino(v)], fee, golden.chain_id, golden.memo, golden.account_number, golden.sequence);
-    assert.equal(eip712Hash(constructEIP712Tx(doc, golden.chain_id)), v.eip712_hash);
+  test(`${v.name}: MetaMask's EIP-712 hash is ethermint's for the node's amino bytes`, { todo: handlerGap(v) }, () => {
+    assert.equal(eip712Hash(constructEIP712Tx(signDoc(toAmino(v)), golden.chain_id)), v.metamask_eip712_hash);
   });
 
   if (v.legacy_eip712_hash) {
     test(`${v.name}: MetaMask's legacy EIP-712 types and message are ethermint's`, { todo: LEGACY_EIP712_GAPS[v.name] }, () => {
-      const doc = makeSignDoc([toAmino(v)], fee, golden.chain_id, golden.memo, golden.account_number, golden.sequence);
-      const typedData = legacyConstructEIP712Tx({ ...doc, fee: { ...fee, feePayer: golden.fee_payer } });
+      const typedData = legacyTypedData(toAmino(v));
       assert.equal(eip712Hash({ ...typedData, domain: { ...typedData.domain, ...ETHERMINT_LEGACY_DOMAIN } }), v.legacy_eip712_hash);
     });
   }
 }
 
 test("legacyConstructEIP712Tx signs over ethermint's legacy domain", { todo: "the legacy builder reuses the direct-mode verifying contract" }, () => {
-  const doc = makeSignDoc([vector("withdraw").amino], fee, golden.chain_id, golden.memo, golden.account_number, golden.sequence);
-  const typedData = legacyConstructEIP712Tx({ ...doc, fee: { ...fee, feePayer: golden.fee_payer } });
-  assert.equal(typedData.domain.verifyingContract, ETHERMINT_LEGACY_DOMAIN.verifyingContract);
+  assert.equal(legacyTypedData(vector("withdraw").amino).domain.verifyingContract, ETHERMINT_LEGACY_DOMAIN.verifyingContract);
+});
+
+test("an unset usd is written as carbon writes a nil math.Int", () => {
+  const { sender, recipient } = vector("withdraw_unset_usd").amino.value;
+  const value = registry.lookupType(MSG_WITHDRAW).fromPartial({ sender, recipient });
+  assert.equal(value.usd, "");
+  assert.deepEqual(AminoTypesMap.toAmino({ typeUrl: MSG_WITHDRAW, value }), vector("withdraw_unset_usd").amino);
+});
+
+test("a stock warning that is not a whole number of 10^-18 units is refused, not rounded", () => {
+  const value = registry.lookupType(MSG_UPDATE_CONTROLS).fromPartial({ creator: "swth1creator", stockWarningUsd: "250000.5" });
+  assert.throws(() => AminoTypesMap.toAmino({ typeUrl: MSG_UPDATE_CONTROLS, value }), /250000\.5 is not a whole number/);
+  const amino = { type: "withdrawal/UpdateControls", value: { stock_warning_usd: "0.0000000000000000015" } };
+  assert.throws(() => AminoTypesMap.fromAmino(amino), /is not a whole number/);
 });
 
 test("rebalanceWithdrawal sends the sender's own in-kind draw, floored to base units", async () => {

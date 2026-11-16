@@ -1,5 +1,5 @@
 {
-  "source": "carbon f4793b0a3 (v2.85.0) x/withdrawal/types: legacy amino codec, the x/tx SIGN_MODE_LEGACY_AMINO_JSON handler and ethermint eip712",
+  "source": "carbon f4793b0a3 (v2.85.0) x/withdrawal/types: legacy amino codec, x/tx SIGN_MODE_LEGACY_AMINO_JSON handler, ethermint eip712",
   "chain_id": "carbon_9790-1",
   "account_number": "12",
   "sequence": "3",
@@ -21,7 +21,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/Withdraw\",\"value\":{\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\",\"sender\":\"swth1qnufjmd8vwm6j6d3q28wxqr4d8408f34km04vt\",\"usd\":\"250000000000000000000\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0x827bffcc6708d9639a22a221e759fdada42a12f856b3cce912bcb808cab54fbc",
+      "metamask_eip712_hash": "0x827bffcc6708d9639a22a221e759fdada42a12f856b3cce912bcb808cab54fbc",
       "legacy_eip712_hash": "0x2ddd3c415928bc586e41d3911615674471b7265a4dc8a5ca14aef2673a0c7a69"
     },
     {
@@ -37,8 +37,24 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/Withdraw\",\"value\":{\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\",\"sender\":\"swth1qnufjmd8vwm6j6d3q28wxqr4d8408f34km04vt\",\"usd\":\"123456789012345678901234567890123456\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0x56364cdd47162e01e9a6b0b0f685f4a1668ed7d1fa37b65f3d99883a168eed0e",
+      "metamask_eip712_hash": "0x56364cdd47162e01e9a6b0b0f685f4a1668ed7d1fa37b65f3d99883a168eed0e",
       "legacy_eip712_hash": "0x3426ab26849e5d11d5e8c9053950581583a5107e0f6ceee6414e758759b2c7b0"
+    },
+    {
+      "name": "withdraw_unset_usd",
+      "type_url": "/Switcheo.carbon.withdrawal.MsgWithdraw",
+      "proto": "Citzd3RoMXFudWZqbWQ4dndtNmo2ZDNxMjh3eHFyNGQ4NDA4ZjM0a20wNHZ0EgEwGioweDVBMGI1NEQ1ZGMxN2UwQWFkQzM4M2QyZGI0M0IwYTBEM0UwMjljNGM=",
+      "amino": {
+        "type": "withdrawal/Withdraw",
+        "value": {
+          "recipient": "0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c",
+          "sender": "swth1qnufjmd8vwm6j6d3q28wxqr4d8408f34km04vt",
+          "usd": "0"
+        }
+      },
+      "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/Withdraw\",\"value\":{\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\",\"sender\":\"swth1qnufjmd8vwm6j6d3q28wxqr4d8408f34km04vt\",\"usd\":\"0\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
+      "metamask_eip712_hash": "0xd8866970db1edf42cbe207dd1eac336906f49052e1f94df557ab1336eb93fb79",
+      "legacy_eip712_hash": "0x0b1a3dcfa023139f7a1ed8efac09be099c74d23d4a467b8eb3a22723ad3ac531"
     },
     {
       "name": "retry_ticket",
@@ -53,7 +69,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/RetryTicket\",\"value\":{\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\",\"sender\":\"swth1qnufjmd8vwm6j6d3q28wxqr4d8408f34km04vt\",\"ticket_id\":\"42\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0x9540fa38e676c524b3ea431ed36d1375c8c2c02e4a4fd0779959748e42c9953c",
+      "metamask_eip712_hash": "0x9540fa38e676c524b3ea431ed36d1375c8c2c02e4a4fd0779959748e42c9953c",
       "legacy_eip712_hash": "0x4ce4d2d00a6e72e6ff77a37ed4762a4c9d54e2bd4924fc1b132847e96ecdb928"
     },
     {
@@ -68,7 +84,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/RetryTicket\",\"value\":{\"sender\":\"swth1qnufjmd8vwm6j6d3q28wxqr4d8408f34km04vt\",\"ticket_id\":\"18446744073709551615\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0xb57f927164253c9d9923dff90ce3bd13dfe8cefe7276c8c8cd7ec259364a47cb",
+      "metamask_eip712_hash": "0xb57f927164253c9d9923dff90ce3bd13dfe8cefe7276c8c8cd7ec259364a47cb",
       "legacy_eip712_hash": "0x59148de7394d65fddb585a2ac27ce65f1e82972fb0f7b8cf130b91ee136b4600"
     },
     {
@@ -89,7 +105,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/UpdateTeamList\",\"value\":{\"add\":[\"swth1e29j95xmsw3zmvtrk4st8e89z5n72v7npwgm9g\",\"swth1my5c5yx3kpe4sd7uf0v9mtryrv8neme8gvycx6\"],\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"remove\":[\"swth1wr8gw8u285lmgjdu8savue28emczmlr56yuuqx\"]}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0xc64c36fa3bc6476a7ee9aff531a4311594bbac0f3e6265e4cc36f36723d7d1e3",
+      "metamask_eip712_hash": "0xc64c36fa3bc6476a7ee9aff531a4311594bbac0f3e6265e4cc36f36723d7d1e3",
       "legacy_eip712_hash": "0xd93b08c8462f0a6aeaf8c048dd6b7be523b1672632f2de8ab175a1737762ca02"
     },
     {
@@ -106,7 +122,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/UpdateTeamList\",\"value\":{\"add\":[\"swth1e29j95xmsw3zmvtrk4st8e89z5n72v7npwgm9g\"],\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0x0bbd488c2124c142ee2ca2f7d1dd4e16211cddda7735561726a0979fad1d8abc",
+      "metamask_eip712_hash": "0x0bbd488c2124c142ee2ca2f7d1dd4e16211cddda7735561726a0979fad1d8abc",
       "legacy_eip712_hash": "0x58ee139cabd970e0abda2fd047b33e67333b315df82b2e6c3258b43785e9399f"
     },
     {
@@ -134,7 +150,7 @@
           "user_withdrawals_enabled": true
         }
       },
-      "eip712_hash": "0x47fe66290b96ecb674ed577a69cbdbea3f617054b5afc14c282db35ba7624aed",
+      "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/UpdateControls\",\"value\":{\"add_deposit_denoms\":[\"brdg/af88d065e77c8cc2239327c5edb3a432268e5831\"],\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"exit\":{\"enabled\":{\"value\":true},\"relay_fee\":\"1500000\"},\"min_withdrawal_usd\":\"10000000000000000000\",\"paused\":{},\"rebalancing_enabled\":{},\"remove_deposit_denoms\":[\"brdg/fd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9\"],\"stock_warning_usd\":\"250000500000000000000000\",\"user_withdrawals_enabled\":{\"value\":true}}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
       "legacy_eip712_hash": "0x3bb1f1ff57e724536b2e3b277f377fd4b23ac6c8c101b316c6d6a228b486891b"
     },
     {
@@ -148,7 +164,7 @@
           "paused": true
         }
       },
-      "eip712_hash": "0x78e2a83d519617f635274bd068b7ae7c1c8e0bcb58568e014642eade682eee77",
+      "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/UpdateControls\",\"value\":{\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"paused\":{\"value\":true}}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
       "legacy_eip712_hash": "0x06fdcfa1b39aa7fd87c89bf27cb0e75d02c96bbd5278caca73d0f8d4b36ce3ea"
     },
     {
@@ -166,7 +182,7 @@
           "user_withdrawals_enabled": false
         }
       },
-      "eip712_hash": "0x41a468de15ab44d44d555799ed03c5723cb25c716530e79c754520282be92542",
+      "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/UpdateControls\",\"value\":{\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"exit\":{\"relay_fee\":\"0\"},\"min_withdrawal_usd\":\"0\",\"user_withdrawals_enabled\":{}}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
       "legacy_eip712_hash": "0xf6dd24d62b3d7165300480bd923c43b4a40575f6f425881340428c0fa1447c1a"
     },
     {
@@ -181,7 +197,8 @@
           "stock_warning_usd": "0.000000000000000001"
         }
       },
-      "eip712_hash": "0xa48fd02bef39762bab0fd62088b2d926aa2ce7db8aacac21fca7106134870149"
+      "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/UpdateControls\",\"value\":{\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"exit\":{},\"stock_warning_usd\":\"1\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
+      "metamask_eip712_hash": "0x5afdb7085ac31d4e42e8c067e8393e64819e13b54af86176d71e1dd9ff5364e9"
     },
     {
       "name": "rebalance_withdrawal",
@@ -197,7 +214,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/RebalanceWithdrawal\",\"value\":{\"amount\":\"250000000000\",\"denom\":\"brdg/af88d065e77c8cc2239327c5edb3a432268e5831\",\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\",\"sender\":\"swth1e29j95xmsw3zmvtrk4st8e89z5n72v7npwgm9g\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0x2e34fabc1bbc8d63fd502ec47ae78a7d303d751a164ff4a7b69308d2c979faf1",
+      "metamask_eip712_hash": "0x2e34fabc1bbc8d63fd502ec47ae78a7d303d751a164ff4a7b69308d2c979faf1",
       "legacy_eip712_hash": "0xe85abc0d349d383580a9011eccab923410d268d538d1b428be5e5e3334d7bffa"
     },
     {
@@ -214,7 +231,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/RebalanceWithdrawal\",\"value\":{\"amount\":\"340282366920938463463374607431768211455\",\"denom\":\"brdg/af88d065e77c8cc2239327c5edb3a432268e5831\",\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\",\"sender\":\"swth1e29j95xmsw3zmvtrk4st8e89z5n72v7npwgm9g\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0x940f80e285d9bc1c414c85c4862102a56236b5dd8c6420603a6aaeb54b749814",
+      "metamask_eip712_hash": "0x940f80e285d9bc1c414c85c4862102a56236b5dd8c6420603a6aaeb54b749814",
       "legacy_eip712_hash": "0xffccc3b4a6dd382ca240ee3350f170c8c26b7cc8927c9cb8c4969f0b436750b2"
     },
     {
@@ -232,7 +249,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/RebalanceWithdrawal\",\"value\":{\"account\":\"swth1wr8gw8u285lmgjdu8savue28emczmlr56yuuqx\",\"amount\":\"1\",\"denom\":\"brdg/fd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9\",\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\",\"sender\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0xbcb9cf55f0db9304155cf1cfdc51d5c353ae36dbb39f6ea4c2b43e1f85a9698e",
+      "metamask_eip712_hash": "0xbcb9cf55f0db9304155cf1cfdc51d5c353ae36dbb39f6ea4c2b43e1f85a9698e",
       "legacy_eip712_hash": "0xf581408de2d330cc4d97ebca4485c028eb4a0c01b7e2a111a3b4ad2d5a98dde6"
     },
     {
@@ -248,7 +265,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/ResolveUnclaimedDeposit\",\"value\":{\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"id\":\"7\",\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0x4a6577a4dbdc531eaa538e883407e1f47f72c0a49131e21e9c496ec5a29d74e6",
+      "metamask_eip712_hash": "0x4a6577a4dbdc531eaa538e883407e1f47f72c0a49131e21e9c496ec5a29d74e6",
       "legacy_eip712_hash": "0xc66af839d06803b70e6455be34da2d0a1c02c2f98cc7fc2fe193d52f8e9d2c96"
     },
     {
@@ -265,7 +282,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/ResolveUnclaimedDeposit\",\"value\":{\"connection_id\":\"connection-12\",\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"id\":\"4294967301\",\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0xee5e50edc8a37192fc02d6202491cfd1f2c63aac19357c02dfe7fdfb2528d175",
+      "metamask_eip712_hash": "0xee5e50edc8a37192fc02d6202491cfd1f2c63aac19357c02dfe7fdfb2528d175",
       "legacy_eip712_hash": "0xe16f779f7d9fcb68a3977d5255795a18c75b27daf66ee39cf0f41b4caff89138"
     },
     {
@@ -280,7 +297,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/ResolveUnclaimedDeposit\",\"value\":{\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"recipient\":\"0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0xd2a66de5b56302a6e923fbf793954de6076a62070aecc100e7554ac6b5bece57",
+      "metamask_eip712_hash": "0xd2a66de5b56302a6e923fbf793954de6076a62070aecc100e7554ac6b5bece57",
       "legacy_eip712_hash": "0xc88e5caf027dc4f9e45313eac064ddafcc80a01a3d8b95a9a89860ae8b2a701b"
     },
     {
@@ -295,7 +312,7 @@
         }
       },
       "ledger_sign_bytes": "{\"account_number\":\"12\",\"chain_id\":\"carbon_9790-1\",\"fee\":{\"amount\":[],\"gas\":\"2000000\"},\"memo\":\"\",\"msgs\":[{\"type\":\"withdrawal/ReconcileBroker\",\"value\":{\"creator\":\"swth1sg6p9502edne2c3qu5eft8cpq3srq47gj9ezdg\",\"denom\":\"brdg/af88d065e77c8cc2239327c5edb3a432268e5831\"}}],\"sequence\":\"3\",\"timeout_height\":\"91234567\"}",
-      "eip712_hash": "0x44e347490605ac22c10091e8409a1c4367a756f9827379330004464b162e248b",
+      "metamask_eip712_hash": "0x44e347490605ac22c10091e8409a1c4367a756f9827379330004464b162e248b",
       "legacy_eip712_hash": "0xe11b650732229cd1f5e05c78cd4bdd7131491e4ed98b6f1ab3d13d17658dea19"
     }
   ]
