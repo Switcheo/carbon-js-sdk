@@ -64,6 +64,8 @@ export interface MsgUpdateControls {
   /** deposit denoms added and removed: the USDC a listed wallet's deposit is credited in */
   addDepositDenoms: string[];
   removeDepositDenoms: string[];
+  /** the smallest withdrawal, in USD with 18 decimals */
+  minWithdrawalUsd: string;
 }
 
 export interface MsgUpdateControlsResponse {
@@ -635,6 +637,7 @@ function createBaseMsgUpdateControls(): MsgUpdateControls {
     paused: undefined,
     addDepositDenoms: [],
     removeDepositDenoms: [],
+    minWithdrawalUsd: "",
   };
 }
 
@@ -663,6 +666,9 @@ export const MsgUpdateControls = {
     }
     for (const v of message.removeDepositDenoms) {
       writer.uint32(66).string(v!);
+    }
+    if (message.minWithdrawalUsd !== "") {
+      writer.uint32(74).string(message.minWithdrawalUsd);
     }
     return writer;
   },
@@ -730,6 +736,13 @@ export const MsgUpdateControls = {
 
           message.removeDepositDenoms.push(reader.string());
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.minWithdrawalUsd = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -753,6 +766,7 @@ export const MsgUpdateControls = {
       removeDepositDenoms: Array.isArray(object?.removeDepositDenoms)
         ? object.removeDepositDenoms.map((e: any) => String(e))
         : [],
+      minWithdrawalUsd: isSet(object.minWithdrawalUsd) ? String(object.minWithdrawalUsd) : "",
     };
   },
 
@@ -774,6 +788,7 @@ export const MsgUpdateControls = {
     } else {
       obj.removeDepositDenoms = [];
     }
+    message.minWithdrawalUsd !== undefined && (obj.minWithdrawalUsd = message.minWithdrawalUsd);
     return obj;
   },
 
@@ -793,6 +808,7 @@ export const MsgUpdateControls = {
     message.paused = object.paused ?? undefined;
     message.addDepositDenoms = object.addDepositDenoms?.map((e) => e) || [];
     message.removeDepositDenoms = object.removeDepositDenoms?.map((e) => e) || [];
+    message.minWithdrawalUsd = object.minWithdrawalUsd ?? "";
     return message;
   },
 };

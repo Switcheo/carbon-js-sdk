@@ -1838,6 +1838,10 @@ export const EIP712Types: Record<string, Record<string, EIP712FieldDefinition[]>
         "type": "string"
       },
       {
+        "name": "nlend_bonus",
+        "type": "string"
+      },
+      {
         "name": "total",
         "type": "string"
       }
@@ -17884,6 +17888,10 @@ export const EIP712Types: Record<string, Record<string, EIP712FieldDefinition[]>
       {
         "name": "usd_cheque",
         "type": "string"
+      },
+      {
+        "name": "min_withdrawal_usd",
+        "type": "string"
       }
     ],
     "Exit": [
@@ -18368,6 +18376,10 @@ export const EIP712Types: Record<string, Record<string, EIP712FieldDefinition[]>
       {
         "name": "remove_deposit_denoms",
         "type": "string[]"
+      },
+      {
+        "name": "min_withdrawal_usd",
+        "type": "string"
       }
     ],
     "MsgUpdateControlsResponse": [],

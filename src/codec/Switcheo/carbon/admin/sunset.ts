@@ -35,7 +35,13 @@ export interface SwthHolding {
    * units; a promise, not SWTH on chain
    */
   airdrop: string;
-  /** sum of every field above, the airdrop included */
+  /**
+   * the DMX promised for the nlend the address held going into the nlend
+   * redemption: one DMX per US dollar at the sunset price table's nlend
+   * price, floored, in raw units (decision 49); a promise, not SWTH on chain
+   */
+  nlendBonus: string;
+  /** sum of every field above, the airdrop and the nlend bonus included */
   total: string;
 }
 
@@ -51,6 +57,7 @@ function createBaseSwthHolding(): SwthHolding {
     unbonding: "",
     rewards: "",
     airdrop: "",
+    nlendBonus: "",
     total: "",
   };
 }
@@ -86,6 +93,9 @@ export const SwthHolding = {
     }
     if (message.airdrop !== "") {
       writer.uint32(90).string(message.airdrop);
+    }
+    if (message.nlendBonus !== "") {
+      writer.uint32(98).string(message.nlendBonus);
     }
     if (message.total !== "") {
       writer.uint32(82).string(message.total);
@@ -170,6 +180,13 @@ export const SwthHolding = {
 
           message.airdrop = reader.string();
           continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.nlendBonus = reader.string();
+          continue;
         case 10:
           if (tag !== 82) {
             break;
@@ -198,6 +215,7 @@ export const SwthHolding = {
       unbonding: isSet(object.unbonding) ? String(object.unbonding) : "",
       rewards: isSet(object.rewards) ? String(object.rewards) : "",
       airdrop: isSet(object.airdrop) ? String(object.airdrop) : "",
+      nlendBonus: isSet(object.nlendBonus) ? String(object.nlendBonus) : "",
       total: isSet(object.total) ? String(object.total) : "",
     };
   },
@@ -214,6 +232,7 @@ export const SwthHolding = {
     message.unbonding !== undefined && (obj.unbonding = message.unbonding);
     message.rewards !== undefined && (obj.rewards = message.rewards);
     message.airdrop !== undefined && (obj.airdrop = message.airdrop);
+    message.nlendBonus !== undefined && (obj.nlendBonus = message.nlendBonus);
     message.total !== undefined && (obj.total = message.total);
     return obj;
   },
@@ -234,6 +253,7 @@ export const SwthHolding = {
     message.unbonding = object.unbonding ?? "";
     message.rewards = object.rewards ?? "";
     message.airdrop = object.airdrop ?? "";
+    message.nlendBonus = object.nlendBonus ?? "";
     message.total = object.total ?? "";
     return message;
   },

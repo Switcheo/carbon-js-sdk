@@ -1125,6 +1125,10 @@
         "type": "string"
       },
       {
+        "name": "nlend_bonus",
+        "type": "string"
+      },
+      {
         "name": "total",
         "type": "string"
       }
@@ -17171,6 +17175,10 @@
       {
         "name": "usd_cheque",
         "type": "string"
+      },
+      {
+        "name": "min_withdrawal_usd",
+        "type": "string"
       }
     ],
     "Exit": [
@@ -17655,6 +17663,10 @@
       {
         "name": "remove_deposit_denoms",
         "type": "string[]"
+      },
+      {
+        "name": "min_withdrawal_usd",
+        "type": "string"
       }
     ],
     "MsgUpdateControlsResponse": [],
