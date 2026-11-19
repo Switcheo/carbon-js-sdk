@@ -21,7 +21,7 @@ import { StdFee } from "@cosmjs/stargate";
 import { encrypt } from "@metamask/eth-sig-util";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
-import { CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, ETH_MAINNET, ETH_TESTNET } from "../../constant";
+import { getCarbonEvmNetworkParams, NetworkConfig, ChangeNetworkParam as MetaMaskChangeNetworkParam, ETH_MAINNET, ETH_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "./error";
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
@@ -285,7 +285,7 @@ export class MetaMask extends Eip6963Provider {
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
         const request = await populateEvmTransactionDetails(api, req)
-        const response = await metamask!.sendEvmTransaction(request)
+        const response = await metamask!.sendEvmTransaction(request, api.getConfig())
         return response
       }
       catch (error) {
@@ -326,9 +326,9 @@ export class MetaMask extends Eip6963Provider {
     }
   }
 
-  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): MetaMaskChangeNetworkParam {
+  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum', config?: NetworkConfig): MetaMaskChangeNetworkParam {
     if (blockchain === 'Carbon') {
-      return MetaMask.getCarbonEvmNetworkParams(network)
+      return MetaMask.getCarbonEvmNetworkParams(network, config)
     }
 
     const isMainnet = network === Network.MainNet
@@ -336,17 +336,8 @@ export class MetaMask extends Eip6963Provider {
     return isMainnet ? ETH_MAINNET : ETH_TESTNET
   }
 
-  static getCarbonEvmNetworkParams(network: Network): MetaMaskChangeNetworkParam {
-    switch (network) {
-      case Network.LocalHost:
-        return CARBON_EVM_LOCALHOST;
-      case Network.DevNet:
-        return CARBON_EVM_DEVNET;
-      case Network.TestNet:
-        return CARBON_EVM_TESTNET;
-      default:
-        return CARBON_EVM_MAINNET;
-    }
+  static getCarbonEvmNetworkParams(network: Network, config?: NetworkConfig): MetaMaskChangeNetworkParam {
+    return getCarbonEvmNetworkParams(network, config);
   }
 
   static getRequiredChainId(network: Network, blockchain: BlockchainV2 = 'Ethereum') {
@@ -453,7 +444,7 @@ export class MetaMask extends Eip6963Provider {
     return undefined
   }
 
-  async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network) {
+  async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network, config?: NetworkConfig) {
     const required = await this.isChangeNetworkRequired(blockchain, network);
     if (!required) return;
 
@@ -463,11 +454,15 @@ export class MetaMask extends Eip6963Provider {
       await metamaskApi.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: requiredChainId }] });
       await this.syncBlockchain();
     } catch (err) {
-      // This error code indicates that the chain has not been added to MetaMask.
+      if ((err as { code?: number })?.code !== 4902) throw err;
+      const params = MetaMask.getNetworkParams(network, blockchain, config);
+      if (!params.rpcUrls?.length) {
+        throw new Error("Configure evmJsonRpcUrl to add the Carbon EVM network to your wallet.");
+      }
       try {
         await metamaskApi.request({
           method: 'wallet_addEthereumChain',
-          params: [MetaMask.getNetworkParams(network, blockchain)],
+          params: [params],
         });
         await this.syncBlockchain();
       } catch (err) {
@@ -481,14 +476,14 @@ export class MetaMask extends Eip6963Provider {
     return metamaskNetwork.chainId !== requiredChainId
   }
 
-  async verifyNetworkAndConnectedAccount(evmHexAddress: string, evmChainId: string) {
-    await this.verifyNetwork(evmChainId);
+  async verifyNetworkAndConnectedAccount(evmHexAddress: string, evmChainId: string, config?: NetworkConfig) {
+    await this.verifyNetwork(evmChainId, config);
     await this.verifyConnectedAccount(evmHexAddress);
   }
 
-  async verifyNetwork(evmChainId: string) {
+  async verifyNetwork(evmChainId: string, config?: NetworkConfig) {
     const network = carbonNetworkFromChainId(evmChainId);
-    await this.changeNetworkIfRequired("Carbon", network);
+    await this.changeNetworkIfRequired("Carbon", network, config);
   }
 
   async verifyConnectedAccount(address: string) {
@@ -601,8 +596,8 @@ export class MetaMask extends Eip6963Provider {
     return { sig, signedDoc: stdSignDoc }
   }
 
-  async sendEvmTransaction(req: ethers.providers.TransactionRequest) {
-    await this.verifyNetworkAndConnectedAccount(req.from!, req.chainId!.toString())
+  async sendEvmTransaction(req: ethers.providers.TransactionRequest, config?: NetworkConfig) {
+    await this.verifyNetworkAndConnectedAccount(req.from!, req.chainId!.toString(), config)
     const api = await this.getConnectedAPI();
     const tx = {
       from: req.from,

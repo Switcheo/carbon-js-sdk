@@ -16,7 +16,7 @@ import { Algo, DirectSignResponse, EncodeObject, makeSignDoc as makeProtoSignDoc
 import { StdFee } from "@cosmjs/stargate";
 import { AuthInfo, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { ethers } from "ethers";
-import { CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET } from "../../constant";
+import { getCarbonEvmNetworkParams, NetworkConfig, ChangeNetworkParam, ETH_MAINNET, ETH_TESTNET } from "../../constant";
 import { Eip6963Provider } from "../eip6963Provider";
 import { parseEvmError } from "../metamask/error";
 import { SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
@@ -151,7 +151,7 @@ class RainbowKitAccount extends Eip6963Provider {
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       try {
         const request = await populateEvmTransactionDetails(api, req)
-        const response = await rainbowKit!.sendEvmTransaction(request)
+        const response = await rainbowKit!.sendEvmTransaction(request, api.getConfig())
         return response
       }
       catch (error) {
@@ -215,22 +215,13 @@ class RainbowKitAccount extends Eip6963Provider {
     return Number(chainId)
   }
 
-  static getCarbonEvmNetworkParams(network: Network): ChangeNetworkParam {
-    switch (network) {
-      case Network.LocalHost:
-        return CARBON_EVM_LOCALHOST;
-      case Network.DevNet:
-        return CARBON_EVM_DEVNET;
-      case Network.TestNet:
-        return CARBON_EVM_TESTNET;
-      default:
-        return CARBON_EVM_MAINNET;
-    }
+  static getCarbonEvmNetworkParams(network: Network, config?: NetworkConfig): ChangeNetworkParam {
+    return getCarbonEvmNetworkParams(network, config);
   }
 
-  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): ChangeNetworkParam {
+  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum', config?: NetworkConfig): ChangeNetworkParam {
     if (blockchain === 'Carbon') {
-      return RainbowKitAccount.getCarbonEvmNetworkParams(network)
+      return RainbowKitAccount.getCarbonEvmNetworkParams(network, config)
     }
 
     const isMainnet = network === Network.MainNet
@@ -244,7 +235,7 @@ class RainbowKitAccount extends Eip6963Provider {
     return rainbowKitNetwork.chainId !== requiredChainId
   }
 
-  async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network) {
+  async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network, config?: NetworkConfig) {
     const required = await this.isChangeNetworkRequired(blockchain, network);
     if (!required) return;
 
@@ -254,11 +245,15 @@ class RainbowKitAccount extends Eip6963Provider {
       await rainbowKitApi.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: requiredChainId }] });
       await this.syncBlockchain();
     } catch (err) {
-      // This error code indicates that the chain has not been added.
+      if ((err as { code?: number })?.code !== 4902) throw err;
+      const params = RainbowKitAccount.getNetworkParams(network, blockchain, config);
+      if (!params.rpcUrls?.length) {
+        throw new Error("Configure evmJsonRpcUrl to add the Carbon EVM network to your wallet.");
+      }
       try {
         await rainbowKitApi.request({
           method: 'wallet_addEthereumChain',
-          params: [RainbowKitAccount.getNetworkParams(network, blockchain)],
+          params: [params],
         });
         await this.syncBlockchain();
       } catch (err) {
@@ -267,8 +262,8 @@ class RainbowKitAccount extends Eip6963Provider {
     }
   }
 
-  async verifyNetworkAndConnectedAccount(evmHexAddress: string, evmChainId: string) {
-    await this.verifyNetwork(evmChainId);
+  async verifyNetworkAndConnectedAccount(evmHexAddress: string, evmChainId: string, config?: NetworkConfig) {
+    await this.verifyNetwork(evmChainId, config);
     await this.verifyConnectedAccount(evmHexAddress);
   }
 
@@ -279,9 +274,9 @@ class RainbowKitAccount extends Eip6963Provider {
       throw new Error(`${address} not connected`);
   }
 
-  async verifyNetwork(evmChainId: string) {
+  async verifyNetwork(evmChainId: string, config?: NetworkConfig) {
     const network = carbonNetworkFromChainId(evmChainId);
-    await this.changeNetworkIfRequired("Carbon", network);
+    await this.changeNetworkIfRequired("Carbon", network, config);
   }
 
   static async signAndRecoverPubKey(provider: RainbowKitAccount, enableJwtAuth?: boolean, customMsg: string = DEFAULT_PUBLIC_KEY_MESSAGE) {
@@ -338,8 +333,8 @@ class RainbowKitAccount extends Eip6963Provider {
     })) as string;
   }
 
-  async sendEvmTransaction(req: ethers.providers.TransactionRequest) {
-    await this.verifyNetworkAndConnectedAccount(req.from!, req.chainId!.toString())
+  async sendEvmTransaction(req: ethers.providers.TransactionRequest, config?: NetworkConfig) {
+    await this.verifyNetworkAndConnectedAccount(req.from!, req.chainId!.toString(), config)
     const ethereum = this.getApi();
     const tx = {
       from: req.from,

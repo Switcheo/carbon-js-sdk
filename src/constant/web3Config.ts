@@ -1,4 +1,4 @@
-import { CarbonEvmChainIDs, Network, NetworkConfigs } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, Network, NetworkConfig, NetworkConfigs } from "./network";
 import { parseChainId } from "@carbon-sdk/util/ethermint";
 
 export interface ChangeNetworkParam {
@@ -20,34 +20,42 @@ export const CarbonEvmNativeCurrency = {
   symbol: "SWTH",
 }
 
+const localRpcUrl = NetworkConfigs[Network.LocalHost].evmJsonRpcUrl;
+
 export const CARBON_EVM_LOCALHOST: ChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.LocalHost])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Localhost",
-  rpcUrls: [`${NetworkConfigs[Network.LocalHost].evmJsonRpcUrl}`],
+  rpcUrls: localRpcUrl ? [localRpcUrl] : undefined,
   nativeCurrency: CarbonEvmNativeCurrency,
 }
 export const CARBON_EVM_DEVNET: ChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.DevNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Devnet",
-  rpcUrls: [`${NetworkConfigs[Network.DevNet].evmJsonRpcUrl}`],
   nativeCurrency: CarbonEvmNativeCurrency,
 }
 export const CARBON_EVM_TESTNET: ChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.TestNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Testnet",
-  rpcUrls: [`${NetworkConfigs[Network.TestNet].evmJsonRpcUrl}`],
   nativeCurrency: CarbonEvmNativeCurrency,
 }
 
 export const CARBON_EVM_MAINNET: ChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.MainNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM",
-  rpcUrls: [`${NetworkConfigs[Network.MainNet].evmJsonRpcUrl}`],
   nativeCurrency: CarbonEvmNativeCurrency,
+}
+
+const carbonWalletNetworks = {
+  [Network.MainNet]: CARBON_EVM_MAINNET,
+  [Network.TestNet]: CARBON_EVM_TESTNET,
+  [Network.DevNet]: CARBON_EVM_DEVNET,
+  [Network.LocalHost]: CARBON_EVM_LOCALHOST,
+};
+
+export function getCarbonEvmNetworkParams(network: Network, config?: NetworkConfig): ChangeNetworkParam {
+  const params = carbonWalletNetworks[network] ?? CARBON_EVM_MAINNET;
+  const rpc = config && config.network === network ? config.evmJsonRpcUrl?.trim() : undefined;
+  return rpc ? { ...params, rpcUrls: [rpc] } : params;
 }
 
 export const ETH_MAINNET: ChangeNetworkParam = {

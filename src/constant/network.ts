@@ -54,8 +54,8 @@ export interface NetworkConfig {
   tmWsUrl: string;
   restUrl: string;
   grpcUrl: string;
-  evmJsonRpcUrl: string;
-  evmWsUrl: string;
+  evmJsonRpcUrl?: string;
+  evmWsUrl?: string;
   insightsUrl: string;
   hydrogenUrl: string;
   wsUrl: string;
@@ -109,8 +109,6 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://tm-api.carbon.network/",
     restUrl: "https://api.carbon.network",
     grpcUrl: "grpc.carbon.network",
-    evmJsonRpcUrl: "https://evm-api.carbon.network/",
-    evmWsUrl: "wss://evm-ws.carbon.network/",
     insightsUrl: "https://api-insights.carbon.network",
     hydrogenUrl: "https://hydrogen-api.carbon.network",
     wsUrl: "wss://ws-api.carbon.network/ws",
@@ -223,8 +221,6 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
     grpcUrl: "test-grpc.carbon.network",
-    evmJsonRpcUrl: "https://test-evm-api.carbon.network/",
-    evmWsUrl: "wss://test-evm-ws.carbon.network/",
     insightsUrl: "https://test-api-insights.carbon.network",
     hydrogenUrl: "https://test-hydrogen-api.carbon.network",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
@@ -336,8 +332,6 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     grpcUrl: "dev-grpc.carbon.network",
-    evmJsonRpcUrl: "https://dev-evm-api.carbon.network/",
-    evmWsUrl: "wss://dev-evm-ws.carbon.network/",
     insightsUrl: "https://dev-api-insights.carbon.network",
     hydrogenUrl: "https://dev-hydrogen-api.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
@@ -350,8 +344,6 @@ export const NetworkConfigs: {
     // tmWsUrl: "ws://202.156.63.105:30007",
     // restUrl: "http://202.156.63.105:30002",
     // grpcUrl: "http://202.156.63.105:30005",
-    // evmJsonRpcUrl: "http://202.156.63.105:30008",
-    // evmWsUrl: "ws://202.156.63.105:30009/ws",
     // insightsUrl: "https://dev-api-insights.carbon.network",
     // hydrogenUrl: "https://dev-hydrogen-api.carbon.network",
     // wsUrl: "ws://202.156.63.105:30004/ws",

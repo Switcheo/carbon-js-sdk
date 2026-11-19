@@ -1,5 +1,5 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
-import { CARBON_GAS_PRICE, CarbonEvmChainIDs, Network, NetworkConfigs, decTypeDecimals } from "@carbon-sdk/constant";
+import { CARBON_GAS_PRICE, CarbonEvmChainIDs, Network, decTypeDecimals } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
@@ -7,7 +7,7 @@ import { Algo } from "@cosmjs/proto-signing";
 import { AppCurrency, ChainInfo, EthSignType, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 import { ethers } from "ethers";
-import { PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
+import { PUBLIC_KEY_SIGNING_TEXT, parseChainId, getCarbonEvmProvider, populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { parseEvmError } from "../metamask/error";
 import { SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
@@ -79,7 +79,7 @@ class KeplrAccount {
           EthSignType.TRANSACTION,
         )
         const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
-        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+        const provider = getCarbonEvmProvider(api)
         return (await provider.sendTransaction(rlpEncodedHex)).hash
       }
       catch (error) {
@@ -130,7 +130,7 @@ class KeplrAccount {
         )
         // const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`
         const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
-        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+        const provider = getCarbonEvmProvider(api)
         return (await provider.sendTransaction(rlpEncodedHex)).hash
       }
       catch (error) {
@@ -206,6 +206,8 @@ class KeplrAccount {
     const isMainnet = config.network === Network.MainNet;
 
     const chainId = config.chainId;
+    const rpc = config.evmJsonRpcUrl?.trim();
+    const evm = rpc ? { chainId: Number(parseChainId(CarbonEvmChainIDs[config.network])), rpc } : undefined;
     const url = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/cosmos/carbon.json"
     let keplrChainInfo
     try {
@@ -219,10 +221,8 @@ class KeplrAccount {
     }
 
     if (isMainnet && keplrChainInfo) {
-      if (keplrChainInfo.nodeProvider) {
-        delete keplrChainInfo.nodeProvider;
-      }
-      return keplrChainInfo as ChainInfo
+      const { nodeProvider: _nodeProvider, evm: _registryEvm, ...chainInfo } = keplrChainInfo;
+      return { ...chainInfo, ...(evm && { evm }) } as ChainInfo;
     }
 
     const feeCurrencies = await this.queryFeeCurrencies(configProvider);
@@ -239,12 +239,7 @@ class KeplrAccount {
       rpc: config.tmRpcUrl,
       chainName: `Carbon (${config.network})`,
       chainId: chainId,
-      ...isMainnet && ({
-        evm: {
-          chainId: Number(parseChainId(CarbonEvmChainIDs[config.network])),
-          rpc: config.evmJsonRpcUrl,
-        },
-      }),
+      ...(evm && { evm }),
       bech32Config: {
         bech32PrefixAccAddr: `${bech32Prefix}`,
         bech32PrefixAccPub: `${bech32Prefix}pub`,

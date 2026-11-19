@@ -30,10 +30,10 @@ for (const [packageName, versions] of Object.entries(expectedVersions)) {
   });
 }
 
-function listen(server, host = "127.0.0.1") {
+function listen(server) {
   return new Promise((resolve, reject) => {
     server.once("error", reject);
-    server.listen(0, host, () => resolve(server.address().port));
+    server.listen(0, "127.0.0.1", () => resolve(server.address().port));
   });
 }
 
@@ -108,11 +108,11 @@ test("follow-redirects strips credentials on a cross-host redirect", async (cont
     receivedHeaders = request.headers;
     response.end("ok");
   });
-  const targetPort = await listen(target, "127.0.0.2");
+  const targetPort = await listen(target);
   context.after(() => close(target));
 
   const redirect = http.createServer((_request, response) => {
-    response.writeHead(302, { location: `http://127.0.0.2:${targetPort}/target` });
+    response.writeHead(302, { location: `http://localhost:${targetPort}/target` });
     response.end();
   });
   const redirectPort = await listen(redirect);
@@ -121,7 +121,7 @@ test("follow-redirects strips credentials on a cross-host redirect", async (cont
   await new Promise((resolve, reject) => {
     const request = redirectingHttp.get(
       `http://127.0.0.1:${redirectPort}/start`,
-      { headers: { authorization: "Bearer local-test-token", cookie: "session=local-test", "x-public": "kept" } },
+      { family: 4, headers: { authorization: "Bearer local-test-token", cookie: "session=local-test", "x-public": "kept" } },
       (response) => {
         response.resume();
         response.once("end", resolve);

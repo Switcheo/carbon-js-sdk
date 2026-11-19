@@ -126,9 +126,7 @@
           "@cosmjs/proto-signing",
           "ethers"
         ],
-        "ignoredWarnings": [
-          "CIRCULAR_DEPENDENCY"
-        ]
+        "ignoredWarnings": []
       },
       "webpack": {
         "raw": 30000,
@@ -139,8 +137,6 @@
           "@cosmjs/crypto",
           "@cosmjs/proto-signing",
           "@cosmjs/tendermint-rpc",
-          "bech32",
-          "bignumber.js",
           "ethers",
           "long",
           "protobufjs"

@@ -1,12 +1,12 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
-import { CARBON_GAS_PRICE, decTypeDecimals, Network, NetworkConfigs } from "@carbon-sdk/constant";
+import { CARBON_GAS_PRICE, decTypeDecimals, Network } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
 import { Leap } from "./types";
 import { SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
+import { getCarbonEvmProvider, populateUnsignedEvmTranscation } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { AppCurrency, ChainInfo, EthSignType, FeeCurrency } from "@keplr-wallet/types";
 import { ethers } from "ethers";
@@ -86,7 +86,7 @@ class LeapAccount {
             EthSignType.TRANSACTION,
           ) as Uint8Array
           const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
-          const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+          const provider = getCarbonEvmProvider(api)
           return (await provider.sendTransaction(rlpEncodedHex)).hash
         } else {
           throw new Error("signing not available")
@@ -148,7 +148,7 @@ class LeapAccount {
             EthSignType.TRANSACTION,
           ) as Uint8Array
           const rlpEncodedHex = ethers.utils.serializeTransaction(unsignedTx, signedTx)
-          const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+          const provider = getCarbonEvmProvider(api)
           return (await provider.sendTransaction(rlpEncodedHex)).hash
         } else {
           throw new Error("signing not available")

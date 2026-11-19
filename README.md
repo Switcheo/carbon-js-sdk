@@ -118,6 +118,8 @@ npx ts-node examples/connect_sdk
 
 ## Initializing CarbonSDK
 
+Public mainnet, testnet and devnet use Carbon’s Cosmos RPC, REST and gRPC endpoints. Orbix and the hosted Carbon EVM services have retired. To send Carbon EVM transactions to a node you operate, set `config.evmJsonRpcUrl` when creating the SDK. Set `config.evmWsUrl` if your application uses that node’s WebSocket endpoint. The local network preset uses the loopback endpoints on ports 8545 and 8546.
+
 ```typescript
 
   const sdk = await CarbonSDK.instance({

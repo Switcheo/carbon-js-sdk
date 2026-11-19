@@ -1,7 +1,7 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 import { PubKey as EthSecp256k1PubKey } from "@carbon-sdk/codec/ethermint/crypto/v1/ethsecp256k1/keys";
-import { NetworkConfigs } from "@carbon-sdk/constant";
+import type { NetworkConfigProvider } from "@carbon-sdk/constant/network";
 import { ethers } from "ethers";
 
 export const ETH_SECP256K1_TYPE = '/ethermint.crypto.v1.ethsecp256k1.PubKey'
@@ -36,8 +36,17 @@ export function parseChainId(evmChainId?: string): string {
     return chainId.split("_")[1].split("-")[0]
 }
 
+export function getCarbonEvmProvider(api: NetworkConfigProvider): ethers.providers.JsonRpcProvider {
+    const config = api.getConfig()
+    const url = config.evmJsonRpcUrl?.trim()
+    if (!url) {
+        throw new Error(`Configure evmJsonRpcUrl to send Carbon EVM transactions on ${config.network}.`)
+    }
+    return new ethers.providers.JsonRpcProvider(url)
+}
+
 export async function populateEvmTransactionDetails(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionRequest> {
-    const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+    const provider = getCarbonEvmProvider(api)
     const evmHexAddress = api.wallet?.evmHexAddress ?? ''
     const request: ethers.providers.TransactionRequest = {
         to: req.to ?? '',
@@ -80,7 +89,7 @@ export async function populateEvmTransactionDetails(api: CarbonSDK, req: ethers.
 }
 
 export async function populateUnsignedEvmTranscation(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.utils.UnsignedTransaction> {
-    const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+    const provider = getCarbonEvmProvider(api)
     const evmHexAddress = api.wallet?.evmHexAddress ?? ''
     const nonce = req.nonce ?? (await provider.getTransactionCount(evmHexAddress))
     const chainId = req.chainId ?? Number(parseChainId(await api.wallet?.getEvmChainId() ?? ''))
